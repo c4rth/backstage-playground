@@ -1,0 +1,13 @@
+site_name: 'Cats API'
+repo_url: https://github.com/backstage/backstage
+edit_uri: edit/master/plugins/techdocs-backend/examples/documented-component/docs
+
+nav:
+  - API:
+    - v1: '!include https://github.com/backstage/mkdocs-monorepo-plugin/blob/master/sample-docs/v1/mkdocs.yml'
+    - v2: '!include https://github.com/backstage/mkdocs-monorepo-plugin/blob/master/sample-docs/v2/mkdocs.yml'
+    - v3: '!include https://github.com/backstage/mkdocs-monorepo-plugin/blob/master/sample-docs/v3/mkdocs.yml'
+
+plugins:
+  - techdocs-core
+  - monorepo
