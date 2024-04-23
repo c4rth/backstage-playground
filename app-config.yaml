@@ -9,9 +9,9 @@ backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
   # information on the format
-  auth:
-    dangerouslyDisableDefaultAuthPolicy: true
-    
+  # auth:
+  #   dangerouslyDisableDefaultAuthPolicy: true
+
   baseUrl: http://localhost:7007
   listen:
     port: 7007
@@ -100,8 +100,8 @@ auth:
     idleTimeoutMinutes: 10
   environment: development
   providers:
-    guest: 
-      dangerouslyAllowOutsideDevelopment: true
+    # guest:
+    #   userEntityRef: user:default/guest
     microsoft:
       development:
         clientId: ${AZURE_AUTH_CLIENT_ID}

@@ -1,11 +1,9 @@
 import { createBackend } from '@backstage/backend-defaults';
-import searchPlugin from '@backstage/plugin-search-backend/alpha';
-import searchModuleCatalogCollator from '@backstage/plugin-search-backend-module-catalog/alpha';
-import searchModuleTechDocsCollator from '@backstage/plugin-search-backend-module-techdocs/alpha';
 import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
-import { createBackendModule } from '@backstage/backend-plugin-api';
+import { createBackendModule, coreServices, createBackendPlugin } from '@backstage/backend-plugin-api';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph/alpha';
-
+//import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
+//import { MyAllowAllPermissionPolicy } from './plugins/policy';
 
 const backend = createBackend();
 
@@ -20,9 +18,24 @@ backend.add(import('@backstage/plugin-auth-backend-module-microsoft-provider'));
 
 
 // permission plugin
-//backend.add(import('@backstage/plugin-permission-backend/alpha'));
-//backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
-backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
+backend.add(import('@backstage/plugin-permission-backend/alpha'));
+backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
+//backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
+/*
+backend.add(createBackendModule({
+    pluginId: 'permission',
+    moduleId: 'my-allow-all-policy',
+    register(reg) {
+      reg.registerInit({
+        deps: { policy: policyExtensionPoint },
+        async init({ policy }) {
+          policy.setPolicy(new MyAllowAllPermissionPolicy());
+        },
+      });
+    },
+  }));
+  */
+
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend/alpha'));
@@ -53,12 +66,9 @@ backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
 backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
 
 // search plugin
-// backend.add(import('@backstage/plugin-search-backend/alpha'));
-// backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
-// backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
-backend.add(searchPlugin());
-backend.add(searchModuleCatalogCollator());
-backend.add(searchModuleTechDocsCollator());
+backend.add(import('@backstage/plugin-search-backend/alpha'));
+backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
+backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
 // notifications plugin
 backend.add(import('@backstage/plugin-signals-backend'));
@@ -67,8 +77,5 @@ backend.add(import('@backstage/plugin-notifications-backend'));
 // Q&A
 backend.add(import('@drodil/backstage-plugin-qeta-backend'));
 backend.add(import('@drodil/backstage-plugin-search-backend-module-qeta'));
-
-// RBAC janus-idp
-// backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
 
 backend.start();

@@ -6,7 +6,6 @@ import {
     MICROSOFT_GRAPH_GROUP_ID_ANNOTATION,
 } from '@backstage/plugin-catalog-backend-module-msgraph';
 import { GroupEntity, UserEntity } from '@backstage/catalog-model';
-import { coreServices } from '@backstage/backend-plugin-api';
 import { getRootLogger } from '@backstage/backend-common';
 
 
@@ -28,9 +27,9 @@ export async function myGroupTransformer(
     // if (backstageGroup) {
     //     backstageGroup.spec.type = 'Microsoft Entra ID';
     // }
-    
+
     //return backstageGroup;
-    
+
     if (!group.id || !group.displayName) {
         return undefined;
       }
@@ -50,7 +49,7 @@ export async function myGroupTransformer(
           children: [],
         },
       };
-    
+
       if (group.description) {
         entity.metadata.description = group.description;
       }
@@ -63,7 +62,7 @@ export async function myGroupTransformer(
       if (groupPhoto) {
         entity.spec.profile!.picture = groupPhoto;
       }
-    
+
       return entity;
 
     // return {
@@ -86,7 +85,7 @@ export async function myUserTransformer(
     graphUser: MicrosoftGraph.User,
     userPhoto?: string,
 ): Promise<UserEntity | undefined> {
-    const backstageUser = await defaultUserTransformer(graphUser);
+    const backstageUser = await defaultUserTransformer(graphUser, userPhoto);
     const logger = getRootLogger();
     logger.info(JSON.stringify(backstageUser), { service: "myUserTransformer"});
 
@@ -97,7 +96,7 @@ export async function myUserTransformer(
     return backstageUser;
 }
 
-// Example organization transformer 
+// Example organization transformer
 export async function myOrganizationTransformer(
     graphOrganization: MicrosoftGraph.Organization,
 ): Promise<GroupEntity | undefined> {
