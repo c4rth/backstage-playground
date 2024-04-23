@@ -1,6 +1,6 @@
 import { createBackend } from '@backstage/backend-defaults';
 import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
-import { createBackendModule, coreServices, createBackendPlugin } from '@backstage/backend-plugin-api';
+import { createBackendModule } from '@backstage/backend-plugin-api';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph/alpha';
 //import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 //import { MyAllowAllPermissionPolicy } from './plugins/policy';
@@ -18,9 +18,9 @@ backend.add(import('@backstage/plugin-auth-backend-module-microsoft-provider'));
 
 
 // permission plugin
-backend.add(import('@backstage/plugin-permission-backend/alpha'));
-backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
-//backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
+//backend.add(import('@backstage/plugin-permission-backend/alpha'));
+//backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
+backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
 /*
 backend.add(createBackendModule({
     pluginId: 'permission',
@@ -58,7 +58,6 @@ backend.add(createBackendModule({
     },
 }));
 backend.add(import('@backstage/plugin-catalog-backend-module-openapi'));
-
 
 //
 backend.add(import('@backstage/plugin-proxy-backend/alpha'));
