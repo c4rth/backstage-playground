@@ -23,17 +23,24 @@ import {
   SidebarSpace,
   useSidebarOpenState,
   Link,
+  SidebarSubmenu,
+  SidebarSubmenuItem,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-// Home
-import CategoryIcon from '@material-ui/icons/Category';
 // Notifications
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 // Q&A
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 // RBAC janus
 import { Administration } from '@janus-idp/backstage-plugin-rbac';
+// Entity Validation
+import BuildIcon from '@material-ui/icons/Build';
+import { useApp } from '@backstage/core-plugin-api';
+
+// Permission on menu
+import { RequirePermission } from '@backstage/plugin-permission-react';
+import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -74,11 +81,65 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
         <SidebarItem icon={HomeIcon} to="/" text="Home" />
-        <SidebarItem icon={CategoryIcon} to="catalog" text="Catalog" />
-        <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
+        <SidebarItem icon={HomeIcon} to="catalog" text="Catalog">
+          <SidebarSubmenu title="Catalog">
+            <SidebarSubmenuItem
+              title="Domains"
+              to="catalog?filters[kind]=domain"
+              icon={useApp().getSystemIcon('kind:domain')}
+            />
+            <SidebarSubmenuItem
+              title="Systems"
+              to="catalog?filters[kind]=system"
+              icon={useApp().getSystemIcon('kind:system')}
+            />
+            <SidebarSubmenuItem
+              title="Components"
+              to="catalog?filters[kind]=component"
+              icon={useApp().getSystemIcon('kind:component')}
+            />
+            <SidebarSubmenuItem
+              title="APIs"
+              to="catalog?filters[kind]=api"
+              icon={useApp().getSystemIcon('kind:api')}
+            />
+            <SidebarDivider />
+            <SidebarSubmenuItem
+              title="Resources"
+              to="catalog?filters[kind]=resource"
+              icon={useApp().getSystemIcon('kind:resource')}
+            />
+            <SidebarSubmenuItem
+              title="Location"
+              to="catalog?filters[kind]=location"
+              icon={useApp().getSystemIcon('kind:location')}
+            />
+            <SidebarDivider />
+            <SidebarSubmenuItem
+              title="Groups"
+              to="catalog?filters[kind]=group"
+              icon={useApp().getSystemIcon('kind:group')}
+            />
+            <SidebarSubmenuItem
+              title="Users"
+              to="catalog?filters[kind]=user"
+              icon={useApp().getSystemIcon('kind:user')}
+            />
+          </SidebarSubmenu>
+        </SidebarItem>
+        {/*<SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />*/}
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={LiveHelpIcon} to="qeta" text="Q&A" />
-        <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
+        <SidebarItem icon={CreateComponentIcon} to="create" text="Scaffolder" />
+        <SidebarItem icon={BuildIcon} text="Tools">
+          <SidebarSubmenu title="Tools">
+            <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
+            <RequirePermission permission={catalogEntityCreatePermission}
+              children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
+              errorPage={<div />}
+            />
+          </SidebarSubmenu>
+        </SidebarItem>
         {/* End global nav */}
         <SidebarDivider />
         <SidebarScrollWrapper>

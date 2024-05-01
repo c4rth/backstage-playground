@@ -58,7 +58,10 @@ import { QetaPage } from '@drodil/backstage-plugin-qeta';
 // RBAC janus
 import { RbacPage } from '@janus-idp/backstage-plugin-rbac';
 import { policyEntityReadPermission } from '@janus-idp/backstage-plugin-rbac-common';
+// Mermaid
 import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
+// Entity Validation
+import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
 
 const app = createApp({
   apis,
@@ -151,6 +154,7 @@ const routes = (
       </RequirePermission>
     }
     />
+    <Route path="/entity-validation" element={<EntityValidationPage />} />
   </FlatRoutes>
 );
 

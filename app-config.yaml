@@ -1,6 +1,19 @@
 app:
   title: Carth Backstage App
   baseUrl: http://localhost:3000
+  support:
+    url: https://github.com/backstage/backstage/issues # Used by common ErrorPage
+    items: # Used by common SupportButton component
+      - title: Mail
+        icon: email
+        links:
+          - url: mailto:me@carth.xyz
+            title: Email me
+      - title: Teams Chatroom
+        icon: chat
+        links:
+          - url: https://discord.gg/backstage-687207715902193673
+            title: '#backstage'
 
 organization:
   name: Acme
@@ -42,15 +55,15 @@ backend:
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
 permission:
-  enabled: false
-  rbac:
-    pluginsWithPermission:
-      - catalog
-      - policy
-      - scaffolder
-      - search  # ?
-      - permission # ?
-      - qeta
+  enabled: true
+  # rbac:
+  #   pluginsWithPermission:
+  #     - catalog
+  #     - policy
+  #     - scaffolder
+  #     - search  # ?
+  #     - permission # ?
+  #     - qeta
 
 qeta:
   tags:
@@ -182,7 +195,7 @@ catalog:
         rules:
           - allow: [User, Group, Domain]
         schedule:
-          frequency: { minutes: 1 }
+          frequency: { minutes: 30 }
           timeout: { minutes: 5 }
           initialDelay: { seconds: 15 }
 

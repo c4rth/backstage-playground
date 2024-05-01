@@ -2,8 +2,8 @@ import { createBackend } from '@backstage/backend-defaults';
 import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
 import { createBackendModule } from '@backstage/backend-plugin-api';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph/alpha';
-//import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
-//import { MyAllowAllPermissionPolicy } from './plugins/policy';
+import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
+import { MyPermissionPolicy } from './plugins/policy';
 // Azure DevOps
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
 import { coreServices } from '@backstage/backend-plugin-api';
@@ -23,22 +23,21 @@ backend.add(import('@backstage/plugin-auth-backend-module-microsoft-provider'));
 
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend/alpha'));
-backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
+//backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
 //backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
-/*
+
 backend.add(createBackendModule({
     pluginId: 'permission',
-    moduleId: 'my-allow-all-policy',
+    moduleId: 'my-policy',
     register(reg) {
       reg.registerInit({
         deps: { policy: policyExtensionPoint },
         async init({ policy }) {
-          policy.setPolicy(new MyAllowAllPermissionPolicy());
+          policy.setPolicy(new MyPermissionPolicy());
         },
       });
     },
   }));
-  */
 
 
 // catalog plugin
