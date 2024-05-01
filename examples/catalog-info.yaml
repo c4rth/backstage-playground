@@ -5,7 +5,7 @@ metadata:
   description: A collection of all Backstage example entities, except users, groups, and templates
 spec:
   targets:
-    - ./apis.yaml
-    - ./entities.yaml
     - ./org.yaml
+    - ./apis.yaml
+    - ./components.yaml
     - ./docs/techdocs/catalog-info.yaml

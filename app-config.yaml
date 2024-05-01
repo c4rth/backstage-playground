@@ -20,14 +20,15 @@ backend:
     #host: 0.0.0.0
   csp:
     connect-src: ["'self'", "http:", "https:"]
+    upgrade-insecure-requests: []
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
     origin: http://localhost:3000
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE, OPTIONS, CONNECT, TRACE]
     credentials: true
-  # This is for local development only, it is not recommended to use this in production
-  # The production database configuration is stored in app-config.production.yaml
+    Access-Control-Allow-Origin: '*'
+    
   database:
     client: pg
     connection:
@@ -41,7 +42,7 @@ backend:
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
 permission:
-  enabled: true
+  enabled: false
   rbac:
     pluginsWithPermission:
       - catalog
@@ -65,15 +66,15 @@ qeta:
     - 'group:default/backstage-admin'
 
 integrations:
-  github:
-    - host: github.com
-      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
-      # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
-      token: ${GITHUB_TOKEN}
-    ### Example for how to add your GitHub Enterprise instance using the API:
-    # - host: ghe.example.net
-    #   apiBaseUrl: https://ghe.example.net/api/v3
-    #   token: ${GHE_TOKEN}
+  azure:
+    - host: dev.azure.com
+      credentials:
+        - personalAccessToken: ${AOD_PERSONAL_ACCESS_TOKEN}
+
+azureDevOps:
+  host: dev.azure.com
+  organization: thierrycarels0265
+  
 
 #proxy:
 ### Example for how to add a proxy endpoint for the frontend.
@@ -132,6 +133,7 @@ search:
         timeout: PT15M
         initialDelay: PT5S
 catalog:
+  orphanStrategy: delete
   #  import:
   #    entityFilename: catalog-info.yaml
   #    pullRequestBranchName: backstage-integration
@@ -149,6 +151,11 @@ catalog:
           User,
         ]
   providers:
+    backstageOpenapi:
+        plugins:
+          - catalog
+          - search
+          - api
     microsoftGraphOrg:
       default:
         target: https://graph.microsoft.com/v1.0
@@ -156,26 +163,26 @@ catalog:
         tenantId: ${AZURE_GRAPH_TENANT_ID}
         clientId: ${AZURE_GRAPH_CLIENT_ID}
         clientSecret: ${AZURE_GRAPH_CLIENT_SECRET}
-        #queryMode: basic # advanced
+        queryMode: advanced
         user:
-        #  filter: accountEnabled eq true and userType eq 'member'
-          select: ["id", "displayName", "description", "mail"]
+          #filter: "accountEnabled eq true and userType eq 'member'"
+          select: 
+          - "id"
+          - "displayName"
+          - "description"
+          - "mail"
+          - "accountEnabled"
         userGroupMember:
-          expand: manager
-        #  filter: "displayName eq 'backstage-users'"
+          filter: "startswith(displayName,'backstage')"
         group:
-          filter: securityEnabled eq true
-          select: ["id", "displayName", "description"]
-        #group:
-        #  filter: >
-        #    securityEnabled eq false
-        #    and mailEnabled eq true
-        #    and groupTypes/any(c:c+eq+'Unified')
-        #  select: ['id', 'displayName', 'description']
+          select: 
+          - "id"
+          - "displayName"
+          - "description"
         rules:
-          - allow: [User, Group]
+          - allow: [User, Group, Domain]
         schedule:
-          frequency: { minutes: 15 }
+          frequency: { minutes: 1 }
           timeout: { minutes: 5 }
           initialDelay: { seconds: 15 }
 
@@ -183,6 +190,19 @@ catalog:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
     - type: file
       target: ../../examples/catalog-info.yaml
+      rules:
+        - allow: 
+          [
+            Component,
+            System,
+            API,
+            Resource,
+            Template,
+            Domain,
+            Location,
+            Group,
+            User,
+          ]
     #    - type: file
     # target: ../../examples/docs/techdocs/catalog-info.yaml
 
@@ -191,12 +211,6 @@ catalog:
     #     target: ../../examples/template/template.yaml
     #     rules:
     #       - allow: [Template]
-
-    # Local example organizational data
-    - type: file
-      target: ../../examples/org.yaml
-      rules:
-        - allow: [User, Group]
 
     # Uncomment these lines to add more example data
     - type: url

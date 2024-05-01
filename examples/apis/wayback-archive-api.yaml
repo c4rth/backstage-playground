@@ -6,6 +6,8 @@ metadata:
 spec:
   type: openapi
   lifecycle: production
-  owner: team-a
+  owner: team-b
   definition:
-    $text: https://github.com/APIs-guru/openapi-directory/blob/main/APIs/archive.org/wayback/1.0.0/openapi.yaml
+    #$text: https://github.com/APIs-guru/openapi-directory/blob/main/APIs/archive.org/wayback/1.0.0/openapi.yaml
+    #$openapi: https://github.com/APIs-guru/openapi-directory/blob/main/APIs/archive.org/wayback/1.0.0/openapi.yaml
+    $openapi: ./wayback-archive.oas.yaml

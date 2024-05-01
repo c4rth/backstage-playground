@@ -17,67 +17,29 @@ export async function myGroupTransformer(
 
     const backstageGroup = await defaultGroupTransformer(group, groupPhoto);
     const logger = getRootLogger();
-    logger.info(JSON.stringify(backstageGroup), { service: "myGroupTransformer"});
+    logger.info(JSON.stringify(group), { service: "myGroupTransformer" });
+    logger.info(JSON.stringify(backstageGroup), { service: "myGroupTransformer" });
 
-    if (group.displayName?.startsWith("ENV")) {
-        logger.info(`skip ${group.displayName}`, { service: "myGroupTransformer"});
-        return undefined;
+    if (group.displayName?.startsWith('team')) {
+        if (backstageGroup) {
+            backstageGroup.spec.type = 'Microsoft Entra ID';
+            backstageGroup.spec.profile!.displayName = 'backstage-' + group.displayName;
+            return backstageGroup;
+        }
+
     }
 
-    // if (backstageGroup) {
-    //     backstageGroup.spec.type = 'Microsoft Entra ID';
+    // if (group.displayName?.startsWith("ENV")) {
+    //     logger.info(`skip ${group.displayName}`, { service: "myGroupTransformer"});
+    //     return undefined;
     // }
 
-    //return backstageGroup;
+    //  if (backstageGroup) {
+    //      backstageGroup.spec.type = 'Microsoft Entra ID';
+    //  }
 
-    if (!group.id || !group.displayName) {
-        return undefined;
-      }
-
-    const entity: GroupEntity = {
-        apiVersion: 'backstage.io/v1alpha1',
-        kind: 'Group',
-        metadata: {
-          name: group.displayName!,
-          annotations: {
-            [MICROSOFT_GRAPH_GROUP_ID_ANNOTATION]: group.id,
-          },
-        },
-        spec: {
-          type: 'Microsoft Entra ID',
-          profile: {},
-          children: [],
-        },
-      };
-
-      if (group.description) {
-        entity.metadata.description = group.description;
-      }
-      if (group.displayName) {
-        entity.spec.profile!.displayName = group.displayName;
-      }
-      if (group.mail) {
-        entity.spec.profile!.email = group.mail;
-      }
-      if (groupPhoto) {
-        entity.spec.profile!.picture = groupPhoto;
-      }
-
-      return entity;
-
-    // return {
-    //     apiVersion: 'backstage.io/v1alpha1',
-    //     kind: 'Group',
-    //     metadata: {
-    //         name: group.displayName!,
-    //         annotations: {
-    //         },
-    //     },
-    //     spec: {
-    //         type: 'Microsoft Entra ID',
-    //         children: [],
-    //     },
-    // };
+    // return backstageGroup;
+    return undefined;
 }
 
 // This user transformer makes use of the built in logic, but also sets the description field
@@ -87,7 +49,8 @@ export async function myUserTransformer(
 ): Promise<UserEntity | undefined> {
     const backstageUser = await defaultUserTransformer(graphUser, userPhoto);
     const logger = getRootLogger();
-    logger.info(JSON.stringify(backstageUser), { service: "myUserTransformer"});
+    logger.info(JSON.stringify(graphUser), { service: "myUserTransformer" });
+    logger.info(JSON.stringify(backstageUser), { service: "myUserTransformer" });
 
     if (backstageUser) {
         backstageUser.metadata.description = 'Loaded from Microsoft Entra ID';
@@ -102,6 +65,6 @@ export async function myOrganizationTransformer(
 ): Promise<GroupEntity | undefined> {
     const backstageOrg = await defaultOrganizationTransformer(graphOrganization);
     const logger = getRootLogger();
-    logger.info(JSON.stringify(backstageOrg), { service: "myOrganizationTransformer"});
+    logger.info(JSON.stringify(backstageOrg), { service: "myOrganizationTransformer" });
     return backstageOrg;
 }

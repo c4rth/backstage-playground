@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: petstore-frontend
+  description: Petstore Front end
+spec:
+  type: service
+  lifecycle: experimental
+  owner: team-a
+  dependsOn:
+  - 'component:petstore-backend'
+  consumesApis: 
+  - 'api:petstore'
+  - 'api:petstore-webhook'
+  - 'api:spotify'
