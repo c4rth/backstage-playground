@@ -203,8 +203,8 @@ catalog:
             Group,
             User,
           ]
-    #    - type: file
-    # target: ../../examples/docs/techdocs/catalog-info.yaml
+    - type: file
+      target: ../../examples/docs/techdocs/catalog-info.yaml
 
     #   # Local example template
     #   - type: file

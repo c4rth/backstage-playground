@@ -41,7 +41,7 @@ import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/
 // Theme
 import { UnifiedThemeProvider } from '@backstage/theme';
 import LightIcon from '@material-ui/icons/WbSunny';
-import { carthTheme } from './theme/carthTheme';
+import { carthDarkTheme, carthLightTheme } from './themes/carthTheme';
 // Home
 import { HomepageCompositionRoot, VisitListener } from '@backstage/plugin-home';
 import { HomePage } from './components/home/HomePage';
@@ -58,6 +58,7 @@ import { QetaPage } from '@drodil/backstage-plugin-qeta';
 // RBAC janus
 import { RbacPage } from '@janus-idp/backstage-plugin-rbac';
 import { policyEntityReadPermission } from '@janus-idp/backstage-plugin-rbac-common';
+import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
 
 const app = createApp({
   apis,
@@ -90,14 +91,24 @@ const app = createApp({
     ),
   },
   themes: [{
-    id: 'carth-theme',
-    title: 'Carth Theme',
+    id: 'carth-light-theme',
+    title: 'Light Theme',
     variant: 'light',
     icon: <LightIcon />,
     Provider: ({ children }) => (
-      <UnifiedThemeProvider theme={carthTheme} children={children} />
+      <UnifiedThemeProvider theme={carthLightTheme} children={children} />
     ),
-  }],
+  },
+  {
+    id: 'carth-dark-theme',
+    title: 'Dark Theme',
+    variant: 'dark',
+    icon: <LightIcon />,
+    Provider: ({ children }) => (
+      <UnifiedThemeProvider theme={carthDarkTheme} children={children} />
+    ),
+  },
+  ],
 });
 
 const routes = (
@@ -115,6 +126,7 @@ const routes = (
     <Route path="/docs/:namespace/:kind/:name/*" element={<TechDocsReaderPage />}    >
       <TechDocsAddons>
         <ReportIssue />
+        <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }}/>
       </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />

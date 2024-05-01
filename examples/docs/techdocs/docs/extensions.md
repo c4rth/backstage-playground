@@ -114,19 +114,14 @@ Animals: :tiger: :horse: :turtle: :wolf: :frog:
 
 ![A Scaled Image](./images/backstage-logo-cncf.svg){: style="width: 100px" }
 
-### MDX truly sane lists
+### Mermaid
 
-- `attributes`
+Here is a mermaid graph!
 
-- `customer`
-  - `first_name`
-    - `test`
-  - `family_name`
-  - `email`
-- `person`
-  - `first_name`
-  - `family_name`
-  - `birth_date`
-- `subscription_id`
-
-- `request`
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```

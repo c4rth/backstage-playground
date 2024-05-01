@@ -16,17 +16,20 @@ export async function myGroupTransformer(
 ): Promise<GroupEntity | undefined> {
 
     const backstageGroup = await defaultGroupTransformer(group, groupPhoto);
-    const logger = getRootLogger();
-    logger.info(JSON.stringify(group), { service: "myGroupTransformer" });
-    logger.info(JSON.stringify(backstageGroup), { service: "myGroupTransformer" });
+    if (backstageGroup) {
+        const logger = getRootLogger();
+        logger.info(JSON.stringify(group), { service: "myGroupTransformer" });
+        logger.info(JSON.stringify(backstageGroup), { service: "myGroupTransformer" });
+        if (backstageGroup.metadata.annotations) {
+            logger.info(backstageGroup.metadata.annotations[MICROSOFT_GRAPH_GROUP_ID_ANNOTATION], { service: "myGroupTransformer" });
+        }
 
-    if (group.displayName?.startsWith('team')) {
-        if (backstageGroup) {
+        if (group.displayName?.startsWith('team')) {
             backstageGroup.spec.type = 'Microsoft Entra ID';
             backstageGroup.spec.profile!.displayName = 'backstage-' + group.displayName;
             return backstageGroup;
-        }
 
+        }
     }
 
     // if (group.displayName?.startsWith("ENV")) {
