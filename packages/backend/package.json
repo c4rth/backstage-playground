@@ -48,7 +48,6 @@
     "@backstage/plugin-techdocs-backend": "^1.10.4",
     "@drodil/backstage-plugin-qeta-backend": "^2.2.1",
     "@drodil/backstage-plugin-search-backend-module-qeta": "^2.1.1",
-    "@internal/plugin-search-backend-module-apis": "^0.1.0",
     "@janus-idp/backstage-plugin-rbac-backend": "^2.6.4",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",

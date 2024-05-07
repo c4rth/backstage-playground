@@ -1,2 +1,0 @@
-
-export { DefaultApisCollatorFactory } from './DefaultApisCollatorFactory';

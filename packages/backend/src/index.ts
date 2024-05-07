@@ -8,6 +8,8 @@ import { MyPermissionPolicy } from './plugins/policy';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
 import { coreServices } from '@backstage/backend-plugin-api';
 import { AzureDevOpsAnnotatorProcessor } from '@backstage-community/plugin-azure-devops-backend';
+import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog/alpha';
+import { myCatalogCollatorEntityTransformer } from './plugins/collator';
 
 const backend = createBackend();
 
@@ -70,8 +72,23 @@ backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
 // search plugin
 backend.add(import('@backstage/plugin-search-backend/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
+backend.add(createBackendModule({
+  pluginId: 'search',
+  moduleId: 'catalog-collator-extension',
+  register(env) {
+    env.registerInit({
+      deps: {
+        entityTransformer: catalogCollatorExtensionPoint,
+      },
+      async init({ entityTransformer }) {
+        entityTransformer.setEntityTransformer(myCatalogCollatorEntityTransformer);
+      }
+    });
+  },
+}));
+
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
-backend.add(import('@internal/plugin-search-backend-module-apis'));
+
 
 // notifications plugin
 backend.add(import('@backstage/plugin-signals-backend'));
