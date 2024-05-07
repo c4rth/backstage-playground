@@ -10,14 +10,10 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "alpha": [
-        "src/alpha.ts"
-      ],
       "package.json": [
         "package.json"
       ]
@@ -60,8 +56,7 @@
   },
   "files": [
     "dist",
-    "config.d.ts",
-    "alpha"
+    "config.d.ts"
   ],
   "configSchema": "config.d.ts"
 }
