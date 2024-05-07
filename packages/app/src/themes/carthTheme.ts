@@ -75,7 +75,7 @@ export const carthDarkTheme = createUnifiedTheme({
         palette: {
             ...palettes.dark,
             primary: {
-                main: '#343b58',
+                main: '#ffffff',
             },
             secondary: {
                 main: '#565a6e',
@@ -98,6 +98,8 @@ export const carthDarkTheme = createUnifiedTheme({
                 text: '#343b58',
                 link: '#565a6e',
             },
+            linkHover: '#2196F3',
+            link: '#0A6EBE', 
             errorBackground: '#8c4351',
             warningBackground: '#8f5e15',
             infoBackground: '#343b58',

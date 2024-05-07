@@ -82,7 +82,7 @@ integrations:
   azure:
     - host: dev.azure.com
       credentials:
-        - personalAccessToken: ${AOD_PERSONAL_ACCESS_TOKEN}
+        - personalAccessToken: ${ADO_PERSONAL_ACCESS_TOKEN}
 
 azureDevOps:
   host: dev.azure.com
@@ -144,7 +144,12 @@ search:
       schedule:
         frequency: PT1M
         timeout: PT15M
-        initialDelay: PT5S
+        initialDelay: PT5S        
+    apis:
+      schedule:
+          frequency: PT1M
+          timeout: PT15M
+          initialDelay: PT5S
 catalog:
   orphanStrategy: delete
   #  import:
