@@ -10,6 +10,14 @@ import { coreServices } from '@backstage/backend-plugin-api';
 import { AzureDevOpsAnnotatorProcessor } from '@backstage-community/plugin-azure-devops-backend';
 import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog/alpha';
 import { myCatalogCollatorEntityTransformer } from './plugins/collator';
+// TechDocs
+import {
+  DocsBuildStrategy,
+  techdocsBuildsExtensionPoint,
+  //techdocsGeneratorExtensionPoint,
+  //techdocsPreparerExtensionPoint,
+  //TechdocsGenerator,
+} from '@backstage/plugin-techdocs-node';
 
 const backend = createBackend();
 
@@ -29,17 +37,17 @@ backend.add(import('@backstage/plugin-permission-backend/alpha'));
 //backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
 
 backend.add(createBackendModule({
-    pluginId: 'permission',
-    moduleId: 'my-policy',
-    register(reg) {
-      reg.registerInit({
-        deps: { policy: policyExtensionPoint },
-        async init({ policy }) {
-          policy.setPolicy(new MyPermissionPolicy());
-        },
-      });
-    },
-  }));
+  pluginId: 'permission',
+  moduleId: 'my-policy',
+  register(reg) {
+    reg.registerInit({
+      deps: { policy: policyExtensionPoint },
+      async init({ policy }) {
+        policy.setPolicy(new MyPermissionPolicy());
+      },
+    });
+  },
+}));
 
 
 // catalog plugin
@@ -67,7 +75,36 @@ backend.add(import('@backstage/plugin-catalog-backend-module-openapi'));
 //
 backend.add(import('@backstage/plugin-proxy-backend/alpha'));
 backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
+
+// TechDocs
 backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
+backend.add(createBackendModule({
+  pluginId: 'techdocs',
+  moduleId: 'customBuildStrategy',
+  register(env) {
+    env.registerInit({
+      deps: {
+        techdocsBuild: techdocsBuildsExtensionPoint,
+        //techdocsGenerator: techdocsGeneratorExtensionPoint,
+        //techdocsPreparer: techdocsPreparerExtensionPoint
+      },
+      //async init({ techdocsBuild, techdocsGenerator, techdocsPreparer }) {
+        async init({ techdocsBuild }) {
+        const docsBuildStrategy: DocsBuildStrategy = {
+          shouldBuild: async _ =>
+            false,
+          /*
+            params.entity.metadata?.annotations?.[
+            'demo.backstage.io/techdocs-builder'
+            ] === 'local',
+            */
+        };
+        techdocsBuild.setBuildStrategy(docsBuildStrategy);
+
+      },
+    });
+  },
+}));
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend/alpha'));
