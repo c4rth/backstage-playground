@@ -1,3 +1,4 @@
+import { getRootLogger } from '@backstage/backend-common';
 import { Entity, isGroupEntity, isUserEntity, isApiEntity } from '@backstage/catalog-model';
 import { CatalogCollatorEntityTransformer } from '@backstage/plugin-search-backend-module-catalog';
 
@@ -14,7 +15,8 @@ const getDocumentText = (entity: Entity): string => {
             }
         }
     } else if (isApiEntity(entity)) {
-        documentTexts.push(entity.spec.definition.replaceAll(/\n/g, '<br/>'));
+        getRootLogger().info('myCatalogCollatorEntityTransformer.getDocumentText - API');
+        documentTexts.push(entity.spec.definition);
     }
     return documentTexts.join(' : ');
 };

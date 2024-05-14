@@ -78,7 +78,7 @@ backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
 
 // TechDocs
 backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
-backend.add(createBackendModule({
+const techdocsModule = createBackendModule({
   pluginId: 'techdocs',
   moduleId: 'customBuildStrategy',
   register(env) {
@@ -104,7 +104,8 @@ backend.add(createBackendModule({
       },
     });
   },
-}));
+});
+// backend.add(techdocsModule);
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend/alpha'));
