@@ -58,8 +58,10 @@ import { QetaPage } from '@drodil/backstage-plugin-qeta';
 // RBAC janus
 import { RbacPage } from '@janus-idp/backstage-plugin-rbac';
 import { policyEntityReadPermission } from '@janus-idp/backstage-plugin-rbac-common';
-// Mermaid
+// Techdocs Mermaid
 import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
+// Techdocs CustomStyles
+import { CustomStyles } from '@internal/backstage-plugin-techdocs-addon-custom-styles';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
 
@@ -130,6 +132,7 @@ const routes = (
       <TechDocsAddons>
         <ReportIssue />
         <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }}/>
+        <CustomStyles />
       </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />
