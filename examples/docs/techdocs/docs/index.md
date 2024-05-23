@@ -13,17 +13,36 @@ You can see also:
 
 Headings:
 
-# h1
+# Heading 1
 
-## h2
+## Heading 2
 
-### h3
+### Heading 3
 
-#### h4
+#### Heading 4
 
-##### h5
+##### Heading 5
 
-###### h6
+
+Preformatted
+
+# **Heading 1 Bold**
+
+## _**Heading Bold 2 Italic**_
+
+### ^^Heading 3 Underlined^^
+
+#### _**^^Heading 4 bold italic and underlined^^**_
+
+
+Superscript: ^Superscript^
+
+Subcript: ~Subscript~
+
+Small: <small>Small</small>
+Big: <big>Big</big>
+
+strikethrough: ~~strikethrough~~
 
 Here is a bulleted list:
 

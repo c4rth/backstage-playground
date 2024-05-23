@@ -11,13 +11,18 @@ import { AzureDevOpsAnnotatorProcessor } from '@backstage-community/plugin-azure
 import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog/alpha';
 import { myCatalogCollatorEntityTransformer } from './plugins/collator';
 // TechDocs
-import {
-  DocsBuildStrategy,
-  techdocsBuildsExtensionPoint,
+//import {
+//  DocsBuildStrategy,
+//  techdocsBuildsExtensionPoint,
   //techdocsGeneratorExtensionPoint,
   //techdocsPreparerExtensionPoint,
   //TechdocsGenerator,
-} from '@backstage/plugin-techdocs-node';
+//} from '@backstage/plugin-techdocs-node';
+// Actions
+import { ScmIntegrations } from "@backstage/integration";
+import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
+import { cloneAzureRepoAction, pullRequestAzureRepoAction, pushAzureRepoAction} from '@internal/scaffolder-backend-module-azure-repositories';
+
 
 const backend = createBackend();
 
@@ -78,6 +83,7 @@ backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
 
 // TechDocs
 backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
+/*
 const techdocsModule = createBackendModule({
   pluginId: 'techdocs',
   moduleId: 'customBuildStrategy',
@@ -92,12 +98,10 @@ const techdocsModule = createBackendModule({
         async init({ techdocsBuild }) {
         const docsBuildStrategy: DocsBuildStrategy = {
           shouldBuild: async _ =>
-            false,
-          /*
+            false,          
             params.entity.metadata?.annotations?.[
             'demo.backstage.io/techdocs-builder'
             ] === 'local',
-            */
         };
         techdocsBuild.setBuildStrategy(docsBuildStrategy);
 
@@ -105,7 +109,8 @@ const techdocsModule = createBackendModule({
     });
   },
 });
-// backend.add(techdocsModule);
+backend.add(techdocsModule);
+*/
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend/alpha'));
@@ -154,5 +159,28 @@ const catalogModuleCustomExtensions = createBackendModule({
 });
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 backend.add(catalogModuleCustomExtensions());
+
+// Actions
+const scaffolderModuleAzureDevOpsExtensions = createBackendModule({
+  pluginId: 'scaffolder',
+  moduleId: 'azure-devops-extensions',
+  register(env) {
+    env.registerInit({
+      deps: {
+        scaffolder: scaffolderActionsExtensionPoint,  
+        config: coreServices.rootConfig,
+      },
+      async init({ scaffolder,  config }) {
+        const integrations = ScmIntegrations.fromConfig(config);
+        scaffolder.addActions(
+            cloneAzureRepoAction({ integrations }),
+            pullRequestAzureRepoAction({ integrations }),
+            pushAzureRepoAction({ integrations, config: config }),
+        );
+      },
+    });
+  },
+});
+backend.add(scaffolderModuleAzureDevOpsExtensions());
 
 backend.start();

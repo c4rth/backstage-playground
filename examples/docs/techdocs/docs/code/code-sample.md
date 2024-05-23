@@ -29,3 +29,49 @@ def getUsersInGroup(targetGroup, secure=False):
     if __debug__:
         print('targetGroup=[' + targetGroup + ']')
 ```
+
+
+Collapsed:
+
+??? example "Collapsed code"
+
+    ```python
+    def getUsersInGroup(targetGroup, secure=False):
+
+        if __debug__:
+            print('targetGroup=[' + targetGroup + ']')
+    ```
+
+??? quote "Collapsed code"
+
+    ```python
+    def getUsersInGroup(targetGroup, secure=False):
+
+        if __debug__:
+            print('targetGroup=[' + targetGroup + ']')
+    ```
+
+**Title: Hello1**
+
+```java
+// Your First Program
+
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+??? code "Title: Hello2"
+
+    ```java
+    // Your First Program
+    
+    class HelloWorld {
+        public static void main(String[] args) {
+            System.out.println("Hello, World!");
+        }
+    }
+    ```
+Bottom

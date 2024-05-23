@@ -9,6 +9,7 @@ nav:
   - Extensions: extensions.md
   - Tabs: tabs.md
   - Tables: tables.md
+  - Test: test.md
 
 plugins:
   - techdocs-core
