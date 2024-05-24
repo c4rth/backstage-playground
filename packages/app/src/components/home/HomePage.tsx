@@ -5,6 +5,9 @@ import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { Grid, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { QuestionTableCard } from '@drodil/backstage-plugin-qeta';
+import JiraIcon from '../icons/JiraIcon';
+import ConfluenceIcon from '../icons/ConfluenceIcon';
+import QuickAccess from './QuickAccess';
 
 const useStyles = makeStyles(theme => ({
     searchBarInput: {
@@ -16,12 +19,19 @@ const useStyles = makeStyles(theme => ({
     },
     searchBarOutline: {
         borderStyle: 'none'
-    }
+    },
+    img: {
+        height: '40px',
+        width: 'auto',
+    },
+    notchedOutline: {
+        borderStyle: 'none!important',
+    },
 }));
 
 const tools = [
-    { url: 'https://backstage.io/docs', label: 'Docs', icon: <TemplateBackstageLogoIcon />, },
-    { url: 'https://github.com/backstage/backstage', label: 'GitHub', icon: <TemplateBackstageLogoIcon />, },
+    { url: 'https://www.atlassian.com/software/jira', label: 'Jira', icon: <JiraIcon />, },
+    { url: 'https://www.atlassian.com/software/confluence', label: 'Confluence', icon: <ConfluenceIcon />, },
     { url: 'https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md', label: 'Contributing', icon: <TemplateBackstageLogoIcon />, },
     { url: 'https://backstage.io/plugins', label: 'Plugins Directory', icon: <TemplateBackstageLogoIcon />, },
     { url: 'https://github.com/backstage/backstage/issues/new/choose', label: 'Submit New Issue', icon: <TemplateBackstageLogoIcon />, },
@@ -43,6 +53,9 @@ export const HomePage = () => {
                             />
                         </Grid>
                         <Grid container item xs={12}>
+                            <Grid item xs={12} md={7}>
+                                <QuickAccess />
+                            </Grid>
                             <Grid item xs={12} md={6}>
                                 <HomePageStarredEntities />
                             </Grid>

@@ -1,0 +1,6 @@
+metadata:
+  name: ${{"${{ parameters.version }}"}}
+spec:
+  type: service
+  owner: user:guest
+  lifecycle: experimental

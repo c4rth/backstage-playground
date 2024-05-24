@@ -33,6 +33,7 @@ backend:
     #host: 0.0.0.0
   csp:
     connect-src: ["'self'", "http:", "https:"]
+    img-src: ["'self'", "http:", "https:", "data:"]
     upgrade-insecure-requests: []
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
@@ -88,15 +89,17 @@ integrations:
 azureDevOps:
   host: dev.azure.com
   organization: thierrycarels0265
-  
 
-#proxy:
-### Example for how to add a proxy endpoint for the frontend.
-### A typical reason to do this is to handle HTTPS and CORS for internal services.
-# endpoints:
-#   '/test':
-#     target: 'https://example.com'
-#     changeOrigin: true
+proxy:
+  skipInvalidProxies: true
+  endpoints:
+    # customize developer hub instance
+    '/developer-hub':
+      target: '/'
+      changeOrigin: true
+      # Change to "false" in case of using self hosted cluster with a self-signed certificate
+      secure: false
+
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
@@ -225,13 +228,14 @@ catalog:
     - type: file
       target: ../../examples/docs/techdocs/catalog-info.yaml
 
-    # Local example template
-    - type: file
-      target: ../../examples/templates/template/template.yaml
-      rules:
-        - allow: [Template]
+    # Local example template      
     - type: file
       target: ../../examples/templates/azdo-template/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: ../../examples/templates/template/template.yaml
       rules:
         - allow: [Template]
 

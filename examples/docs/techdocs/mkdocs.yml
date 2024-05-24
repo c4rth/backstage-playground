@@ -2,10 +2,14 @@ site_name: 'Example Documentation'
 repo_url: https://github.com/backstage/backstage
 edit_uri: edit/master/plugins/techdocs-backend/examples/documented-component/docs
 
+theme:
+  name: material
+
 nav:
   - Home: index.md
-  - Subpage: sub-page.md
-  - 'Code Sample': code/code-sample.md
+  - Subpage: 
+    - sub-page/index.md
+    - 'Code Sample': sub-page/code/code-sample.md
   - Extensions: extensions.md
   - Tabs: tabs.md
   - Tables: tables.md
@@ -13,6 +17,7 @@ nav:
 
 plugins:
   - techdocs-core
+  - section-index
 
 #markdown_extensions:
 #  - pymdownx.emoji:

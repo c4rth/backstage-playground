@@ -21,7 +21,6 @@ import {
   TechDocsReaderPage,
 } from '@backstage/plugin-techdocs';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
@@ -39,9 +38,7 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 // Theme
-import { UnifiedThemeProvider } from '@backstage/theme';
-import LightIcon from '@material-ui/icons/WbSunny';
-import { carthDarkTheme, carthLightTheme } from './themes/carthTheme';
+import { carthThemes } from './themes/carthTheme';
 // Home
 import { HomepageCompositionRoot, VisitListener } from '@backstage/plugin-home';
 import { HomePage } from './components/home/HomePage';
@@ -60,8 +57,6 @@ import { RbacPage } from '@janus-idp/backstage-plugin-rbac';
 import { policyEntityReadPermission } from '@janus-idp/backstage-plugin-rbac-common';
 // Techdocs Mermaid
 import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
-// Techdocs CustomStyles
-import { CustomStyles } from '@internal/backstage-plugin-techdocs-addon-custom-styles';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
 
@@ -95,25 +90,7 @@ const app = createApp({
       />
     ),
   },
-  themes: [{
-    id: 'carth-light-theme',
-    title: 'Light Theme',
-    variant: 'light',
-    icon: <LightIcon />,
-    Provider: ({ children }) => (
-      <UnifiedThemeProvider theme={carthLightTheme} children={children} />
-    ),
-  },
-  {
-    id: 'carth-dark-theme',
-    title: 'Dark Theme',
-    variant: 'dark',
-    icon: <LightIcon />,
-    Provider: ({ children }) => (
-      <UnifiedThemeProvider theme={carthDarkTheme} children={children} />
-    ),
-  },
-  ],
+  themes: carthThemes,
 });
 
 const routes = (
@@ -130,9 +107,7 @@ const routes = (
     </Route>
     <Route path="/docs/:namespace/:kind/:name/*" element={<TechDocsReaderPage />}    >
       <TechDocsAddons>
-        <ReportIssue />
         <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }}/>
-        <CustomStyles />
       </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />
