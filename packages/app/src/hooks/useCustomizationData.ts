@@ -1,6 +1,4 @@
-import { useApi } from '@backstage/core-plugin-api';
 import { useCallback, useEffect, useState } from 'react';
-import useAsync from 'react-use/lib/useAsync';
 import { CustomzationDataLinks } from '../types/types';
 
 const homePage = 'homePage';

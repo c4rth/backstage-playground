@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { makeStyles } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
-import MapIcon from '@material-ui/icons/MyLocation';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import LogoFull from './LogoFull';
@@ -31,12 +30,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 // Q&A
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
-// RBAC janus
-import { Administration } from '@janus-idp/backstage-plugin-rbac';
 // Entity Validation
 import BuildIcon from '@material-ui/icons/Build';
 import { useApp } from '@backstage/core-plugin-api';
-
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
@@ -138,18 +134,20 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               errorPage={<div />}
             />
           </SidebarSubmenu>
-        </SidebarItem>
-        {/* End global nav */}
+        </SidebarItem>        {/* End global nav */}
         <SidebarDivider />
         <SidebarScrollWrapper>
-          <SidebarItem icon={MapIcon} to="tech-radar" text="Tech Radar" />
+          {/* Items in this group will be scrollable if they run out of space */}
         </SidebarScrollWrapper>
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
       <NotificationsSidebarItem />
-      <Administration />
-      <SidebarGroup label="Settings" icon={<UserSettingsSignInAvatar />} to="/settings">
+      <SidebarGroup
+        label="Settings"
+        icon={<UserSettingsSignInAvatar />}
+        to="/settings"
+      >
         <SidebarSettings />
       </SidebarGroup>
     </Sidebar>

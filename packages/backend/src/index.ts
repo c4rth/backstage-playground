@@ -27,33 +27,16 @@ import { cloneAzureRepoAction, pullRequestAzureRepoAction, pushAzureRepoAction} 
 const backend = createBackend();
 
 backend.add(import('@backstage/plugin-app-backend/alpha'));
+backend.add(import('@backstage/plugin-proxy-backend/alpha'));
+backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
+backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
 
 // auth plugin
 backend.add(import('@backstage/plugin-auth-backend'));
 // See https://backstage.io/docs/backend-system/building-backends/migrating#the-auth-plugin
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
-// See https://github.com/backstage/backstage/blob/master/docs/auth/guest/provider.md
+// See https://backstage.io/docs/auth/guest/provider
 backend.add(import('@backstage/plugin-auth-backend-module-microsoft-provider'));
-
-
-// permission plugin
-backend.add(import('@backstage/plugin-permission-backend/alpha'));
-//backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
-//backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
-
-backend.add(createBackendModule({
-  pluginId: 'permission',
-  moduleId: 'my-policy',
-  register(reg) {
-    reg.registerInit({
-      deps: { policy: policyExtensionPoint },
-      async init({ policy }) {
-        policy.setPolicy(new MyPermissionPolicy());
-      },
-    });
-  },
-}));
-
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend/alpha'));
@@ -77,43 +60,35 @@ backend.add(createBackendModule({
 }));
 backend.add(import('@backstage/plugin-catalog-backend-module-openapi'));
 
-//
-backend.add(import('@backstage/plugin-proxy-backend/alpha'));
-backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
+// See https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
+backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
-// TechDocs
-backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
-/*
-const techdocsModule = createBackendModule({
-  pluginId: 'techdocs',
-  moduleId: 'customBuildStrategy',
-  register(env) {
-    env.registerInit({
-      deps: {
-        techdocsBuild: techdocsBuildsExtensionPoint,
-        //techdocsGenerator: techdocsGeneratorExtensionPoint,
-        //techdocsPreparer: techdocsPreparerExtensionPoint
-      },
-      //async init({ techdocsBuild, techdocsGenerator, techdocsPreparer }) {
-        async init({ techdocsBuild }) {
-        const docsBuildStrategy: DocsBuildStrategy = {
-          shouldBuild: async _ =>
-            false,          
-            params.entity.metadata?.annotations?.[
-            'demo.backstage.io/techdocs-builder'
-            ] === 'local',
-        };
-        techdocsBuild.setBuildStrategy(docsBuildStrategy);
+// permission plugin
+backend.add(import('@backstage/plugin-permission-backend/alpha'));
+//backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
+//backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
 
+backend.add(createBackendModule({
+  pluginId: 'permission',
+  moduleId: 'my-policy',
+  register(reg) {
+    reg.registerInit({
+      deps: { policy: policyExtensionPoint },
+      async init({ policy }) {
+        policy.setPolicy(new MyPermissionPolicy());
       },
     });
   },
-});
-backend.add(techdocsModule);
-*/
+}));
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend/alpha'));
+
+// search engine
+// See https://backstage.io/docs/features/search/search-engines
+backend.add(import('@backstage/plugin-search-backend-module-pg/alpha'));
+
+// search collators
 backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
 backend.add(createBackendModule({
   pluginId: 'search',
@@ -132,6 +107,8 @@ backend.add(createBackendModule({
 
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
+// kubernetes
+backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
 
 // notifications plugin
 backend.add(import('@backstage/plugin-signals-backend'));

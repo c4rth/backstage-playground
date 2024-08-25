@@ -215,17 +215,15 @@ catalog:
       target: ../../examples/catalog-info.yaml
       rules:
         - allow: 
-          [
-            Component,
-            System,
-            API,
-            Resource,
-            Template,
-            Domain,
-            Location,
-            Group,
-            User,
-          ]
+          - Component
+          - System
+          - API
+          - Resource
+          - Template
+          - Domain
+          - Location
+          - Group
+          - User
     - type: file
       target: ../../examples/docs/techdocs/catalog-info.yaml
 

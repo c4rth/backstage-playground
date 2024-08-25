@@ -4,12 +4,9 @@
     "packages/*/src",
     "plugins/*/src",
     "plugins/*/dev",
-    "plugins/*/migrations",
-    "plugins/*/config.d.ts"
+    "plugins/*/migrations"
   ],
-  "exclude": [
-    "node_modules"
-  ],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "dist-types",
     "rootDir": "."

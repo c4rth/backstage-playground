@@ -13,7 +13,6 @@ import {
 import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { orgPlugin } from '@backstage/plugin-org';
 import { SearchPage } from '@backstage/plugin-search';
-import { TechRadarPage } from '@backstage-community/plugin-tech-radar';
 import {
   DefaultTechDocsHome,
   TechDocsIndexPage,
@@ -52,9 +51,6 @@ import { NotificationsPage } from '@backstage/plugin-notifications';
 import { AutoLogout } from '@backstage/core-components';
 // Q&A
 import { QetaPage } from '@drodil/backstage-plugin-qeta';
-// RBAC janus
-import { RbacPage } from '@janus-idp/backstage-plugin-rbac';
-import { policyEntityReadPermission } from '@janus-idp/backstage-plugin-rbac-common';
 // Techdocs Mermaid
 import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
 // Entity Validation
@@ -99,25 +95,32 @@ const routes = (
       <HomePage />
     </Route>
     <Route path="/catalog" element={<CatalogIndexPage />} />
-    <Route path="/catalog/:namespace/:kind/:name" element={<CatalogEntityPage />}>
+    <Route
+      path="/catalog/:namespace/:kind/:name"
+      element={<CatalogEntityPage />}
+    >
       {entityPage}
     </Route>
     <Route path="/docs" element={<TechDocsIndexPage />}>
       <DefaultTechDocsHome />
     </Route>
-    <Route path="/docs/:namespace/:kind/:name/*" element={<TechDocsReaderPage />}    >
+    <Route
+      path="/docs/:namespace/:kind/:name/*"
+      element={<TechDocsReaderPage />}
+    >
       <TechDocsAddons>
-        <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }}/>
+        <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }} />
       </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
-    <Route path="/tech-radar" element={<TechRadarPage width={1500} height={800} />} />
-    <Route path="/catalog-import" element={
-      <RequirePermission permission={catalogEntityCreatePermission}>
-        <CatalogImportPage />
-      </RequirePermission>
-    }
+    <Route
+      path="/catalog-import"
+      element={
+        <RequirePermission permission={catalogEntityCreatePermission}>
+          <CatalogImportPage />
+        </RequirePermission>
+      }
     />
     <Route path="/search" element={<SearchPage />}>
       {searchPage}
@@ -126,12 +129,6 @@ const routes = (
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
     <Route path="/qeta" element={<QetaPage title="Questions" />} />
-    <Route path="/rbac" element={
-      <RequirePermission permission={policyEntityReadPermission} resourceRef="policy-entity">
-        <RbacPage />
-      </RequirePermission>
-    }
-    />
     <Route path="/entity-validation" element={<EntityValidationPage />} />
   </FlatRoutes>
 );
