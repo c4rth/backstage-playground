@@ -39,7 +39,6 @@ Paragraph lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolo
 
 [Link to google](https://www.google.be)
 
-  
 
 * * *
 

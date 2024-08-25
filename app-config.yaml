@@ -155,6 +155,7 @@ search:
           timeout: PT15M
           initialDelay: PT5S
 catalog:
+  processingInterval: { seconds: 15 }
   orphanStrategy: delete
   #  import:
   #    entityFilename: catalog-info.yaml
@@ -204,7 +205,7 @@ catalog:
         rules:
           - allow: [User, Group, Domain]
         schedule:
-          frequency: { minutes: 30 }
+          frequency: { hours: 6 }
           timeout: { minutes: 5 }
           initialDelay: { seconds: 15 }
 
@@ -229,19 +230,19 @@ catalog:
       target: ../../examples/docs/techdocs/catalog-info.yaml
 
     # Local example template      
-    - type: file
-      target: ../../examples/templates/azdo-template/template.yaml
-      rules:
-        - allow: [Template]
+#    - type: file
+#      target: ../../examples/templates/azdo-template/template.yaml
+#      rules:
+#        - allow: [Template]
 
-    - type: file
-      target: ../../examples/templates/template/template.yaml
-      rules:
-        - allow: [Template]
+#    - type: file
+#      target: ../../examples/templates/template/template.yaml
+#      rules:
+#        - allow: [Template]
 
     # Uncomment these lines to add more example data
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
+    #- type: url
+    #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
 
   #   ## Uncomment these lines to add an example org
   #   # - type: url

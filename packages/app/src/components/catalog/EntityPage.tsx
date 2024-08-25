@@ -143,7 +143,7 @@ const overviewContent = (
       <EntityLinksCard />
     </Grid>
     <Grid item md={8} xs={12}>
-      <EntityHasSubcomponentsCard variant="gridItem" />
+      <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true}} />
     </Grid>
   </Grid>
 );
