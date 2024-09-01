@@ -10,7 +10,7 @@ metadata:
 spec:
   type: graphql
   lifecycle: production
-  owner: team-b
+  owner: team-a.c
   definition: |
     schema {
       query: Root

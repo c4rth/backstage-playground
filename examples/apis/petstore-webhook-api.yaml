@@ -16,7 +16,7 @@ metadata:
 spec:
   type: openapi
   lifecycle: experimental
-  owner: team-a
+  owner: team-b
   #definition:
   #  $text: ./petstore-webhook.oas.yaml
   definition: |

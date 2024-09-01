@@ -12,7 +12,7 @@ metadata:
 spec:
   type: asyncapi
   lifecycle: production
-  owner: team-c
+  owner: team-a.c
   definition: |
     asyncapi: 2.0.0
     info:

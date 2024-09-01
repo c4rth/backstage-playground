@@ -13,6 +13,6 @@ metadata:
 spec:
   type: openapi
   lifecycle: experimental
-  owner: team-a
+  owner: team-a.c
   definition:
     $text: ./petstore.oas.yaml

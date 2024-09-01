@@ -5,7 +5,7 @@ metadata:
   title: Azure Repository Test
   description: Clone and push to an Azure repository example.
 spec:
-  owner: parfuemerie-douglas
+  owner: team-a.c
   type: service
 
   parameters:
