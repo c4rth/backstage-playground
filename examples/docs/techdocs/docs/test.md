@@ -59,8 +59,6 @@ Date is 15 september 2023
 
 :grinning: :alien: 
 
- @(BERRIC)
-
 !!! info "Information title"
     
     Information content  

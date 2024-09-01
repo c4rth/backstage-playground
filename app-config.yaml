@@ -111,6 +111,8 @@ techdocs:
     runIn: "local" # Alternatives - 'local'
   publisher:
     type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
+    local:
+      publishDirectory: "../../publisher-docs"
 
 auth:
   autologout:
