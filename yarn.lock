@@ -2091,33 +2091,6 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
-"@backstage-community/plugin-azure-devops-backend@^0.6.12":
-  version "0.6.12"
-  resolved "https://registry.yarnpkg.com/@backstage-community/plugin-azure-devops-backend/-/plugin-azure-devops-backend-0.6.12.tgz#3feb89de8ab40b74eb384e596d7ffc17de6de838"
-  integrity sha512-DIdlMNUCKkQc57H0xzPtSIkOHkf3WwJcPrgSfPj/mf21BQdQMH+68rgTkO3QHn5BVd49E+lJQpjJRQkgT3YytA==
-  dependencies:
-    "@backstage-community/plugin-azure-devops-common" "^0.4.7"
-    "@backstage/backend-common" "^0.24.0"
-    "@backstage/backend-defaults" "^0.4.3"
-    "@backstage/backend-plugin-api" "^0.8.0"
-    "@backstage/catalog-model" "^1.6.0"
-    "@backstage/config" "^1.2.0"
-    "@backstage/errors" "^1.2.4"
-    "@backstage/integration" "^1.14.0"
-    "@backstage/plugin-auth-node" "^0.5.0"
-    "@backstage/plugin-catalog-common" "^1.0.26"
-    "@backstage/plugin-catalog-node" "^1.12.5"
-    "@backstage/plugin-permission-common" "^0.8.1"
-    "@backstage/plugin-permission-node" "^0.8.1"
-    "@types/express" "^4.17.6"
-    azure-devops-node-api "^13.0.0"
-    express "^4.17.1"
-    express-promise-router "^4.1.0"
-    lodash "^4.17.21"
-    mime-types "^2.1.27"
-    p-limit "^3.1.0"
-    yn "^4.0.0"
-
 "@backstage-community/plugin-azure-devops-common@^0.4.7":
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/@backstage-community/plugin-azure-devops-common/-/plugin-azure-devops-common-0.4.7.tgz#a1a34953f44d20a804aaef3842f3b1de60855c92"
@@ -2146,6 +2119,21 @@
     humanize-duration "^3.27.0"
     luxon "^3.0.0"
     react-use "^17.2.4"
+
+"@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor/-/plugin-catalog-backend-module-azure-devops-annotator-processor-0.1.0.tgz#66e33a8a8a4c47dea86da612872429134505f53d"
+  integrity sha512-Env/PpuSM2Om+toSGdi7OEdXefW0rVaJJy9byBCK/EySrC64KmlGluY6f4oF6U79yiizjnYRkROmMWjdMb98yg==
+  dependencies:
+    "@backstage-community/plugin-azure-devops-common" "^0.4.7"
+    "@backstage/backend-common" "^0.24.0"
+    "@backstage/backend-plugin-api" "^0.8.0"
+    "@backstage/catalog-model" "^1.6.0"
+    "@backstage/config" "^1.2.0"
+    "@backstage/integration" "^1.14.0"
+    "@backstage/plugin-catalog-common" "^1.0.26"
+    "@backstage/plugin-catalog-node" "^1.12.5"
+    lodash "^4.17.21"
 
 "@backstage-community/plugin-entity-validation@^0.2.0":
   version "0.2.0"
@@ -3892,7 +3880,7 @@
     yaml "^2.0.0"
     zod "^3.22.4"
 
-"@backstage/plugin-scaffolder-backend@^1.24.1":
+"@backstage/plugin-scaffolder-backend@^1.22.6", "@backstage/plugin-scaffolder-backend@^1.24.1":
   version "1.24.1"
   resolved "https://registry.yarnpkg.com/@backstage/plugin-scaffolder-backend/-/plugin-scaffolder-backend-1.24.1.tgz#a891a746111c40cbe856c700d5db24bf80247a1d"
   integrity sha512-uOfW/iDWUa6WLnCOrjp3M7N1L2nxcNJDbOBbHz2oWAkZ4BCqYgShFtcP4ThzN46/eRLWje4vc2omaFsw+D1Z2g==

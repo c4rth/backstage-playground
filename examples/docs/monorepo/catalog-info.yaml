@@ -1,9 +1,9 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: doc-repo-component
-  title: Doc Repo Component
-  description: Repo TechDocs documentation
+  name: monorepo-component
+  title: MonoRepo Component
+  description: MonoRepo TechDocs documentation
   annotations:
     backstage.io/techdocs-ref: dir:.
     company.com/techdocs-builder: local

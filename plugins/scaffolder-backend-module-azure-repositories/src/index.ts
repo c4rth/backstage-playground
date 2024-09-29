@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2022 Parfümerie Douglas GmbH
  *
@@ -15,4 +14,5 @@
  * limitations under the License.
  */
 
+export { scaffolderModuleAzureRepositories as default } from './module';
 export * from "./actions";

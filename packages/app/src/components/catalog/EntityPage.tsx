@@ -75,7 +75,7 @@ const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
   // You can for example enforce that all components of type 'service' should use GitHubActions
   <EntitySwitch>
- 
+
     <EntitySwitch.Case if={isAzureDevOpsAvailable}>
       <EntityAzurePipelinesContent defaultLimit={25} />
     </EntitySwitch.Case>
@@ -144,7 +144,7 @@ const overviewContent = (
       <EntityLinksCard />
     </Grid>
     <Grid item md={8} xs={12}>
-    <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true}} />
+      <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true }} />
     </Grid>
   </Grid>
 );

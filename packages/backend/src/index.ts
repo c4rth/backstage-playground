@@ -1,27 +1,19 @@
 import { createBackend } from '@backstage/backend-defaults';
 import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
-import { createBackendModule } from '@backstage/backend-plugin-api';
+import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph/alpha';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
-// Azure DevOps
-import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
-import { coreServices } from '@backstage/backend-plugin-api';
-import { AzureDevOpsAnnotatorProcessor } from '@backstage-community/plugin-azure-devops-backend';
 import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog/alpha';
 import { myCatalogCollatorEntityTransformer } from './plugins/collator';
 // TechDocs
 //import {
 //  DocsBuildStrategy,
 //  techdocsBuildsExtensionPoint,
-  //techdocsGeneratorExtensionPoint,
-  //techdocsPreparerExtensionPoint,
-  //TechdocsGenerator,
+//techdocsGeneratorExtensionPoint,
+//techdocsPreparerExtensionPoint,
+//TechdocsGenerator,
 //} from '@backstage/plugin-techdocs-node';
-// Actions
-import { ScmIntegrations } from "@backstage/integration";
-import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
-import { cloneAzureRepoAction, pullRequestAzureRepoAction, pushAzureRepoAction} from '@internal/scaffolder-backend-module-azure-repositories';
 
 
 const backend = createBackend();
@@ -49,8 +41,9 @@ backend.add(createBackendModule({
     env.registerInit({
       deps: {
         microsoftGraphTransformers: microsoftGraphOrgEntityProviderTransformExtensionPoint,
+        logger: coreServices.logger
       },
-      async init({ microsoftGraphTransformers }) {
+      async init({ microsoftGraphTransformers, logger }) {
         microsoftGraphTransformers.setUserTransformer(myUserTransformer);
         microsoftGraphTransformers.setGroupTransformer(myGroupTransformer);
         microsoftGraphTransformers.setOrganizationTransformer(myOrganizationTransformer);
@@ -73,9 +66,12 @@ backend.add(createBackendModule({
   moduleId: 'my-policy',
   register(reg) {
     reg.registerInit({
-      deps: { policy: policyExtensionPoint },
-      async init({ policy }) {
-        policy.setPolicy(new MyPermissionPolicy());
+      deps: {
+        policy: policyExtensionPoint,
+        logger: coreServices.logger
+      },
+      async init({ policy, logger }) {
+        policy.setPolicy(new MyPermissionPolicy(logger));
       },
     });
   },
@@ -119,45 +115,9 @@ backend.add(import('@drodil/backstage-plugin-qeta-backend'));
 backend.add(import('@drodil/backstage-plugin-search-backend-module-qeta'));
 
 // Azure DevOps
-const catalogModuleCustomExtensions = createBackendModule({
-  pluginId: 'catalog', // name of the plugin that the module is targeting
-  moduleId: 'custom-extensions',
-  register(env) {
-    env.registerInit({
-      deps: {
-        catalog: catalogProcessingExtensionPoint,
-        config: coreServices.rootConfig,
-      },
-      async init({ catalog, config }) {
-        catalog.addProcessor(AzureDevOpsAnnotatorProcessor.fromConfig(config));
-      },
-    });
-  },
-});
-backend.add(import('@backstage-community/plugin-azure-devops-backend'));
-backend.add(catalogModuleCustomExtensions());
+backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 
 // Actions
-const scaffolderModuleAzureDevOpsExtensions = createBackendModule({
-  pluginId: 'scaffolder',
-  moduleId: 'azure-devops-extensions',
-  register(env) {
-    env.registerInit({
-      deps: {
-        scaffolder: scaffolderActionsExtensionPoint,  
-        config: coreServices.rootConfig,
-      },
-      async init({ scaffolder,  config }) {
-        const integrations = ScmIntegrations.fromConfig(config);
-        scaffolder.addActions(
-            cloneAzureRepoAction({ integrations }),
-            pullRequestAzureRepoAction({ integrations }),
-            pushAzureRepoAction({ integrations, config: config }),
-        );
-      },
-    });
-  },
-});
-backend.add(scaffolderModuleAzureDevOpsExtensions());
+backend.add(import('@internal/scaffolder-backend-module-azure-repositories'));
 
 backend.start();

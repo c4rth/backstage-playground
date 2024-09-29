@@ -24,6 +24,14 @@ backend:
   # information on the format
   # auth:
   #   dangerouslyDisableDefaultAuthPolicy: true
+  auth:
+    #dangerouslyDisableDefaultAuthPolicy: true
+    externalAccess:
+      - type: static
+        options:
+          #token: 'mpZ7Aq0y3bWAz+4BQqXKnNUmcNunl16L'
+          token: 'my-access-token'
+          subject: cicd-system-completion-events
 
   baseUrl: http://localhost:7007
   listen:
@@ -157,7 +165,7 @@ search:
           timeout: PT15M
           initialDelay: PT5S
 catalog:
-  processingInterval: { seconds: 15 }
+  processingInterval: { minutes: 15 }
   orphanStrategy: delete
   #  import:
   #    entityFilename: catalog-info.yaml
@@ -228,6 +236,8 @@ catalog:
           - User
     - type: file
       target: ../../examples/docs/techdocs/catalog-info.yaml
+    - type: file
+      target: ../../examples/docs/monorepo/catalog-info.yaml
 
     # Local example template      
 #    - type: file
