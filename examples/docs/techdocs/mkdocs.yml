@@ -24,6 +24,7 @@ plugins:
 
 markdown_extensions: 
   - attr_list
+  - markdown_inline_mermaid
 
 #markdown_extensions:
 #  - pymdownx.emoji:

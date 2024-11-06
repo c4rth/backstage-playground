@@ -41,9 +41,8 @@ backend.add(createBackendModule({
     env.registerInit({
       deps: {
         microsoftGraphTransformers: microsoftGraphOrgEntityProviderTransformExtensionPoint,
-        logger: coreServices.logger
       },
-      async init({ microsoftGraphTransformers, logger }) {
+      async init({ microsoftGraphTransformers }) {
         microsoftGraphTransformers.setUserTransformer(myUserTransformer);
         microsoftGraphTransformers.setGroupTransformer(myGroupTransformer);
         microsoftGraphTransformers.setOrganizationTransformer(myOrganizationTransformer);

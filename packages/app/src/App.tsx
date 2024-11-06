@@ -19,7 +19,6 @@ import {
   techdocsPlugin,
   TechDocsReaderPage,
 } from '@backstage/plugin-techdocs';
-import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
@@ -51,8 +50,6 @@ import { NotificationsPage } from '@backstage/plugin-notifications';
 import { AutoLogout } from '@backstage/core-components';
 // Q&A
 import { QetaPage } from '@drodil/backstage-plugin-qeta';
-// Techdocs Mermaid
-import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
 
@@ -108,9 +105,6 @@ const routes = (
       path="/docs/:namespace/:kind/:name/*"
       element={<TechDocsReaderPage />}
     >
-      <TechDocsAddons>
-        <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }} />
-      </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />

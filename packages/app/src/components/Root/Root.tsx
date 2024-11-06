@@ -98,6 +98,11 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               to="catalog?filters[kind]=api"
               icon={useApp().getSystemIcon('kind:api')}
             />
+            <SidebarSubmenuItem
+              title="Versionned APIs"
+              to="catalog?filters[kind]=api"
+              icon={useApp().getSystemIcon('kind:api')}
+            />
             <SidebarDivider />
             <SidebarSubmenuItem
               title="Resources"

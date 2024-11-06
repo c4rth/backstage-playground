@@ -60,13 +60,11 @@ import {
   isAzureDevOpsAvailable,
   isAzurePipelinesAvailable,
 } from '@backstage-community/plugin-azure-devops';
-import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
 
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
       <ReportIssue />
-      <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }} />
     </TechDocsAddons>
   </EntityTechdocsContent>
 );
