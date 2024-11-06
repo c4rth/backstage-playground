@@ -1,11 +1,11 @@
 import { createBackend } from '@backstage/backend-defaults';
 import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
 import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
-import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph/alpha';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
-import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog/alpha';
 import { myCatalogCollatorEntityTransformer } from './plugins/collator';
+import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
+import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog';
 // TechDocs
 //import {
 //  DocsBuildStrategy,

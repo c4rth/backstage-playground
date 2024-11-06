@@ -63,6 +63,10 @@ backend:
     # client: better-sqlite3
     # connection: ":memory:"
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+  reading:
+    allow:
+      - host: raw.githubusercontent.com
+      - host: github.com
 
 permission:
   enabled: true
@@ -89,6 +93,9 @@ qeta:
     - 'group:default/backstage-admin'
 
 integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
   azure:
     - host: dev.azure.com
       credentials:
