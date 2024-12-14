@@ -52,7 +52,7 @@ import { AutoLogout } from '@backstage/core-components';
 import { QetaPage } from '@drodil/backstage-plugin-qeta';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
-import { ApiPlatformPage } from '@internal/backstage-plugin-api-platform';
+import { ApiPlatformPage } from '@internal/plugin-api-platform';
 
 const app = createApp({
   apis,

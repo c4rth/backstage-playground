@@ -1,0 +1,1 @@
+export { ApiPlatformTable } from './ApiPlatformTable';

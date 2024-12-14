@@ -50,6 +50,7 @@
     "@backstage/plugin-techdocs-backend": "^1.11.3",
     "@drodil/backstage-plugin-qeta-backend": "^3.16.3",
     "@drodil/backstage-plugin-search-backend-module-qeta": "^3.16.3",
+    "@internal/plugin-api-platform-backend": "^0.1.0",
     "@internal/scaffolder-backend-module-azure-repositories": "^0.3.0",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",

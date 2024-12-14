@@ -1,0 +1,39 @@
+{
+  "name": "@internal/plugin-api-platform-common",
+  "description": "Common functionalities for the api-platform plugin",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "api-platform",
+    "pluginPackages": [
+      "@internal/plugin-api-platform",
+      "@internal/plugin-api-platform-backend",
+      "@internal/plugin-api-platform-common"
+    ]
+  },
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.29.3"
+  }
+}

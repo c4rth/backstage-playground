@@ -119,4 +119,5 @@ backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-dev
 // Actions
 backend.add(import('@internal/scaffolder-backend-module-azure-repositories'));
 
+backend.add(import('@internal/plugin-api-platform-backend'));
 backend.start();
