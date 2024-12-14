@@ -36,6 +36,8 @@ import { useApp } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+// Api
+import CodeIcon from '@material-ui/icons/Code';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -93,16 +95,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               to="catalog?filters[kind]=component"
               icon={useApp().getSystemIcon('kind:component')}
             />
-            <SidebarSubmenuItem
-              title="APIs"
-              to="catalog?filters[kind]=api"
-              icon={useApp().getSystemIcon('kind:api')}
-            />
-            <SidebarSubmenuItem
-              title="Versionned APIs"
-              to="catalog?filters[kind]=api"
-              icon={useApp().getSystemIcon('kind:api')}
-            />
             <SidebarDivider />
             <SidebarSubmenuItem
               title="Resources"
@@ -127,7 +119,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
             />
           </SidebarSubmenu>
         </SidebarItem>
-        {/*<SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />*/}
+        <SidebarItem icon={CodeIcon} to="api-docs" text="APIs" />
+        <SidebarItem icon={CodeIcon} to="api-platform" text="API Platform" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={LiveHelpIcon} to="qeta" text="Q&A" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Scaffolder" />

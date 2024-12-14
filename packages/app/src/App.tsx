@@ -52,6 +52,7 @@ import { AutoLogout } from '@backstage/core-components';
 import { QetaPage } from '@drodil/backstage-plugin-qeta';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
+import { ApiPlatformPage } from '@internal/backstage-plugin-api-platform';
 
 const app = createApp({
   apis,
@@ -124,6 +125,7 @@ const routes = (
     <Route path="/notifications" element={<NotificationsPage />} />
     <Route path="/qeta" element={<QetaPage title="Questions" />} />
     <Route path="/entity-validation" element={<EntityValidationPage />} />
+    <Route path="/api-platform" element={<ApiPlatformPage />} />
   </FlatRoutes>
 );
 
