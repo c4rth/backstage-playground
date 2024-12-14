@@ -1,0 +1,30 @@
+  Product:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      description:
+        type: string
+    required:
+      - id
+      - name
+      - email
+  ProductList:
+    type: array
+    items:
+      $ref: '#/Product'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+    required:
+      - code
+      - message
