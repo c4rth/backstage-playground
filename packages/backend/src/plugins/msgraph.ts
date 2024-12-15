@@ -26,7 +26,7 @@ export async function myGroupTransformer(
 
         if (group.displayName?.startsWith('team')) {
             backstageGroup.spec.type = 'Microsoft Entra ID';
-            backstageGroup.spec.profile!.displayName = 'backstage-' + group.displayName;
+            backstageGroup.spec.profile!.displayName = `backstage-${group.displayName}`;
             return backstageGroup;
 
         }

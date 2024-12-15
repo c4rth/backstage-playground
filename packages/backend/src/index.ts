@@ -7,13 +7,13 @@ import { myCatalogCollatorEntityTransformer } from './plugins/collator';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
 import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog';
 // TechDocs
-//import {
+// import {
 //  DocsBuildStrategy,
 //  techdocsBuildsExtensionPoint,
-//techdocsGeneratorExtensionPoint,
-//techdocsPreparerExtensionPoint,
-//TechdocsGenerator,
-//} from '@backstage/plugin-techdocs-node';
+// techdocsGeneratorExtensionPoint,
+// techdocsPreparerExtensionPoint,
+// TechdocsGenerator,
+// } from '@backstage/plugin-techdocs-node';
 
 
 const backend = createBackend();
@@ -57,8 +57,8 @@ backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend/alpha'));
-//backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
-//backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
+// backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
+// backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
 
 backend.add(createBackendModule({
   pluginId: 'permission',
@@ -117,7 +117,9 @@ backend.add(import('@drodil/backstage-plugin-search-backend-module-qeta'));
 backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 
 // Actions
-backend.add(import('@internal/scaffolder-backend-module-azure-repositories'));
+backend.add(import('@parfuemerie-douglas/scaffolder-backend-module-azure-repositories'))
 
+// Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
+
 backend.start();

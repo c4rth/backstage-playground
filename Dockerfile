@@ -1,39 +1,21 @@
-
 ARG imagename=c4rth/backstage-base:20241215.1
 
 # Stage 1 - Create yarn install skeleton layer
 FROM ${imagename} AS packages
 
 WORKDIR /app
-COPY package.json yarn.lock ./
+COPY backstage.json package.json yarn.lock ./
 COPY .yarn ./.yarn
 COPY .yarnrc.yml ./
 
 COPY packages packages
 COPY plugins plugins
 
-RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
+#RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
+RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
 
 # Stage 2 - Install dependencies and build packages
 FROM ${imagename} AS build
-
-# Set Python interpreter for `node-gyp` to use
-ENV PYTHON=/usr/bin/python3
-
-# Install isolate-vm dependencies, these are needed by the @backstage/plugin-scaffolder-backend.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
-    apt-get install -y --no-install-recommends python3 g++ build-essential && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
-# in which case you should also move better-sqlite3 to "devDependencies" in package.json.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
-    apt-get install -y --no-install-recommends libsqlite3-dev && \
-    rm -rf /var/lib/apt/lists/*
 
 USER node
 WORKDIR /app
@@ -41,6 +23,7 @@ WORKDIR /app
 COPY --from=packages --chown=node:node /app .
 COPY --from=packages --chown=node:node /app/.yarn ./.yarn
 COPY --from=packages --chown=node:node /app/.yarnrc.yml  ./
+COPY --from=packages --chown=node:node /app/backstage.json  ./
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
     yarn install --immutable
@@ -57,24 +40,6 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
 # Stage 3 - Build the actual backend image and install production dependencies
 FROM ${imagename}
 
-# Set Python interpreter for `node-gyp` to use
-ENV PYTHON=/usr/bin/python3
-
-# Install isolate-vm dependencies, these are needed by the @backstage/plugin-scaffolder-backend.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
-    apt-get install -y --no-install-recommends python3 g++ build-essential && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
-# in which case you should also move better-sqlite3 to "devDependencies" in package.json.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
-    apt-get install -y --no-install-recommends libsqlite3-dev && \
-    rm -rf /var/lib/apt/lists/*
-
 # From here on we use the least-privileged `node` user to run the backend.
 USER node
 
@@ -88,6 +53,7 @@ WORKDIR /app
 # Copy the install dependencies from the build stage and context
 COPY --from=build --chown=node:node /app/.yarn ./.yarn
 COPY --from=build --chown=node:node /app/.yarnrc.yml  ./
+COPY --from=build --chown=node:node /app/backstage.json  ./
 COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/packages/backend/dist/skeleton/ ./
 # Note: The skeleton bundle only includes package.json files -- if your app has
 # plugins that define a `bin` export, the bin files need to be copied as well to
@@ -100,7 +66,7 @@ RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid
 COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
 
 # Copy any other files that we need at runtime
-COPY --chown=node:node app-config*.yaml ./
+COPY --chown=node:node app-config.yaml app-config.*.yaml ./
 
 # This will include the examples, if you don't need these simply remove this line
 COPY --chown=node:node examples ./examples
@@ -108,9 +74,11 @@ COPY --chown=node:node examples ./examples
 # This switches many Node.js dependencies to production mode.
 ENV NODE_ENV=production
 
-# This disables node snapshot for Node 20 to work with the Scaffolder
-ENV NODE_OPTIONS="--no-node-snapshot"
+# Sets the max memory size of V8's old memory section
+# Also disables node snapshot for Node 20 to work with the Scaffolder
+ENV NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot"
 
 #CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config.production.yaml"]
 #CMD ["node", "packages/backend", "--config", "/app/app-config-from-configmap.yaml"]
-CMD ["node", "packages/backend", "--config", "/app/app-config.yaml"]
+#CMD ["node", "packages/backend", "--config", "/app/app-config.yaml"]
+CMD ["sh", "-c", "node packages/backend --config app-config.yaml"]

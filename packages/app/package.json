@@ -6,13 +6,6 @@
   "backstage": {
     "role": "frontend"
   },
-  "scripts": {
-    "start": "backstage-cli package start",
-    "build": "backstage-cli package build",
-    "clean": "backstage-cli package clean",
-    "test": "backstage-cli package test",
-    "lint": "backstage-cli package lint"
-  },
   "dependencies": {
     "@backstage-community/plugin-azure-devops": "^0.7.0",
     "@backstage-community/plugin-entity-validation": "^0.2.2",
@@ -67,6 +60,13 @@
     "@types/react-dom": "*",
     "cross-env": "^7.0.0"
   },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "test": "backstage-cli package test",
+    "lint": "backstage-cli package lint",
+    "clean": "backstage-cli package clean"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -78,8 +78,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }

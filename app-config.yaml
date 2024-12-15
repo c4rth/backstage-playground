@@ -36,8 +36,7 @@ backend:
   baseUrl: http://localhost:7007
   listen:
     port: 7007
-    # Uncomment the following host directive to bind to specific interfaces
-    #host: 127.0.0.1
+    # Uncomment for docker compose
     #host: 0.0.0.0
   csp:
     connect-src: ["'self'", "http:", "https:"]
@@ -55,7 +54,8 @@ backend:
   database:
     client: pg
     connection:
-      #host: 0.0.0.0
+      # Uncomment for docker compose
+      #host: postgres-db
       host: 127.0.0.1
       port: 5432
       user: postgres

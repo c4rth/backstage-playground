@@ -45,11 +45,11 @@
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+    "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md}": [
+    "*.{json,md,yaml,yml}": [
       "prettier --write"
     ]
   },
