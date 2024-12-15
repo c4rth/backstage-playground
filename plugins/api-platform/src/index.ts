@@ -1,1 +1,1 @@
-export { apiPlatformPlugin, ApiPlatformPage } from './plugin';
+export { apiPlatformPlugin, ApiPlatformPage, ApiPlatformDefinitionPage } from './plugin';

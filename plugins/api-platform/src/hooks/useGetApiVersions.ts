@@ -1,12 +1,13 @@
 
 import { apiPlatformApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
+import { ApiVersionDefinition } from '@internal/plugin-api-platform-common';
 import useAsync from 'react-use/esm/useAsync';
-import { ApiDefinition } from '@internal/plugin-api-platform-common';
 
-export function useApiDefinitions(
+export function useGetApiVersions(
+    id: string
 ): {
-    items?: ApiDefinition[];
+    items?: ApiVersionDefinition[];
     loading: boolean;
     error?: Error;
 } {
@@ -14,11 +15,11 @@ export function useApiDefinitions(
     const api = useApi(apiPlatformApiRef);
 
     const { value, loading, error } = useAsync(() => {
-        return api.listApiDefinitions();
+        return api.getApiDefinitionVersions({ id: id });
     }, [api, top, status]);
 
     return {
-        items: value?.items,
+        items: value,
         loading,
         error,
     };

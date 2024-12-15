@@ -1,7 +1,7 @@
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { qetaCreateQuestionPermission, qetaCreateAnswerPermission } from '@drodil/backstage-plugin-qeta-common';
+import { qetaCreatePostPermission, qetaCreateAnswerPermission } from '@drodil/backstage-plugin-qeta-common';
 import {
   AuthorizeResult,
   PolicyDecision,
@@ -25,7 +25,7 @@ export class MyPermissionPolicy implements PermissionPolicy {
     user?: BackstageIdentityResponse,
   ): Promise<PolicyDecision> {
     if (user?.identity?.userEntityRef === 'user:default/guest') {
-      if (isPermission(request.permission, catalogEntityCreatePermission) || isPermission(request.permission, qetaCreateQuestionPermission) || isPermission(request.permission, qetaCreateAnswerPermission)) {
+      if (isPermission(request.permission, catalogEntityCreatePermission) || isPermission(request.permission, qetaCreatePostPermission) || isPermission(request.permission, qetaCreateAnswerPermission)) {
         const xxx = JSON.stringify(request.permission.attributes);
         this.logger.info("****************************************");
         this.logger.info(`${request.permission.name} - ${request.permission.type} - ${xxx}`, { service: "MyPermissionPolicy" });

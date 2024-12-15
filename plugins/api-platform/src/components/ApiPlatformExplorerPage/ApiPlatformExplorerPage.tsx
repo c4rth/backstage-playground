@@ -1,6 +1,5 @@
 import {
   Content,
-  ContentHeader,
   PageWithHeader,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
@@ -24,7 +23,6 @@ export const ApiPlatformExplorerPage = () => {
       pageTitleOverride="APIs"
     >
       <Content>
-        <ContentHeader title="" />
         <ApiPlatformTable />
       </Content>
     </PageWithHeader>

@@ -1,8 +1,8 @@
-import { ApiDefinition } from '@internal/plugin-api-platform-common';
+import { ApiVersionDefinition } from "@internal/plugin-api-platform-common";
 
 export interface ApiDefinitionService {
 
-  listApiDefinitions(): Promise<{ items: ApiDefinition[] }>;
+  listApiDefinitions(): Promise<{ items: any[] }>;
 
-  getApiDefinition(request: { id: string }): Promise<ApiDefinition>;
+  getApiDefinitionVersions(request: { id: string }): Promise<ApiVersionDefinition[]>;
 }

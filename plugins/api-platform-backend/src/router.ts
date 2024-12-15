@@ -2,11 +2,15 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { ApiDefinitionService } from './services/ApiDefinitionService/types';
 
-export async function createRouter({
-  apiDefinitionService,
-}: {
+export interface RouterOptions {
   apiDefinitionService: ApiDefinitionService;
-}): Promise<express.Router> {
+}
+
+
+export async function createRouter(
+  options: RouterOptions,
+):  Promise<express.Router> {
+  const { apiDefinitionService } = options;
   const router = Router();
   router.use(express.json());
 
@@ -15,7 +19,7 @@ export async function createRouter({
   });
 
   router.get('/:id', async (req, res) => {
-    res.json(await apiDefinitionService.getApiDefinition({ id: req.params.id }));
+    res.json(await apiDefinitionService.getApiDefinitionVersions({ id: req.params.id }));
   });
 
   return router;

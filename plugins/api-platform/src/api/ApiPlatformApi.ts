@@ -1,14 +1,15 @@
 import { createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
-import { ApiDefinition } from "@internal/plugin-api-platform-common";
+import { Entity } from "@backstage/catalog-model";
+import { ApiVersionDefinition } from "@internal/plugin-api-platform-common";
 
 export const apiPlatformApiRef = createApiRef<ApiPlatformApi>({
   id: 'plugin.api-platform.service',
 });
 
 export interface ApiPlatformApi {
-  listApiDefinitions(): Promise<{ items: ApiDefinition[] }>;
+  listApiDefinitions(): Promise<{ items: Entity[] }>;
 
-  getApiDefinition(request: { id: string }): Promise<ApiDefinition>;
+  getApiDefinitionVersions(request: { id: string }): Promise<(ApiVersionDefinition[])>;
 }
 
 export class ApiPlatformClient implements ApiPlatformApi {
@@ -21,7 +22,7 @@ export class ApiPlatformClient implements ApiPlatformApi {
   }
 
 
-  async listApiDefinitions(): Promise<{ items: ApiDefinition[] }> {
+  async listApiDefinitions(): Promise<{ items: Entity[] }> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
@@ -34,7 +35,7 @@ export class ApiPlatformClient implements ApiPlatformApi {
     );
   }
 
-  async getApiDefinition(request: { id: string }): Promise<ApiDefinition> {
+  async getApiDefinitionVersions(request: { id: string }): Promise<ApiVersionDefinition[]> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
@@ -42,8 +43,8 @@ export class ApiPlatformClient implements ApiPlatformApi {
     );
     const response = await this.fetchApi.fetch(url);
     return (
-      (await response.json()).map((p: ApiDefinition) => ({
-        ...p,
+      (await response.json()).map((version: ApiVersionDefinition) => ({
+        ...version,
       })) || undefined
     );
   }

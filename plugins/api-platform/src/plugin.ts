@@ -1,5 +1,6 @@
 import {
   createApiFactory,
+  createComponentExtension,
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
@@ -29,5 +30,15 @@ export const ApiPlatformPage = apiPlatformPlugin.provide(
     component: () =>
       import('./components/ApiPlatformExplorerPage').then(m => m.ApiPlatformExplorerPage),
     mountPoint: rootRouteRef,
+  }),
+);
+
+export const ApiPlatformDefinitionPage = apiPlatformPlugin.provide(
+  createComponentExtension({
+    name: 'ApiPlatformDefinitionPage',
+    component: {
+      lazy: () =>
+        import('./components/ApiPlatformDefinitionPage').then(m => m.ApiPlatformDefinitionPage),
+    },
   }),
 );

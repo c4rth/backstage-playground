@@ -18,7 +18,6 @@ export const apiPlatformPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
-        httpAuth: coreServices.httpAuth,
         catalogClient: catalogServiceRef,
         auth: coreServices.auth,
       },
@@ -26,7 +25,6 @@ export const apiPlatformPlugin = createBackendPlugin({
         logger,
         httpRouter,
         catalogClient,
-        httpAuth, 
         auth,
       }) {
         const apiDefinitionService = await createApiDefinitionService({
@@ -37,7 +35,6 @@ export const apiPlatformPlugin = createBackendPlugin({
 
         httpRouter.use(
           await createRouter({
-            httpAuth,
             apiDefinitionService
           }),
         );

@@ -2,58 +2,73 @@ import {
     ResponseErrorPanel,
     Table,
     TableColumn,
+    Link,
+    OverflowTooltip,
 } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+    getEntityRelations,
+    humanizeEntityRef,
+    EntityRefLinks,
+} from '@backstage/plugin-catalog-react';
+import { Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import React from 'react';
-import { useApiDefinitions } from '../../hooks';
+import { useGetApiDefinitions } from '../../hooks';
 import { Box } from '@material-ui/core';
-
+import {
+    API_PLATFORM_API_NAME_ANNOTATION,
+    API_PLATFORM_API_PROJECT_ANNOTATION,
+    API_PLATFORM_API_VERSION_ANNOTATION
+} from '@internal/plugin-api-platform-common';
+import * as yaml from 'js-yaml';
+import { ApiDisplayName } from './ApiDisplayName';
 
 const columns: TableColumn[] = [
     {
-        title: 'App',
-        field: 'project',
-        highlight: false,
-        width: '5%',
-        resizable: true,
-    },
-    {
         title: 'Name',
-        field: 'name',
-        highlight: true,
-        width: '25%',
-        resizable: true,
+        width: '20%',
+        render: ({ entity, api }: any) => {
+            return (
+                <Link to={api.name}>
+                    <ApiDisplayName 
+                        entityRef={entity}
+                    />
+                </Link>
+            );
+        },
     },
     {
         title: 'Title',
-        field: 'title',
-        highlight: false,
+        field: 'api.title',
         width: '25%',
-        resizable: true,
     },
     {
         title: 'Description',
-        field: 'description',
-        highlight: false,
-        width: '47%',
-        resizable: true,
-    }
+        width: '40%',
+        render: ({api} : any) => {
+           return(
+                <OverflowTooltip text={api.description} line={2} />
+           )
+        },
+    },
+    {
+        title: 'Owner',
+        width: '15%',
+        render: ({ resolved }: any) => (
+            <EntityRefLinks
+                entityRefs={resolved.ownedByRelations}
+                defaultKind="group"
+            />
+        ),
+    },
 ];
 
-/**
- * ApiPlatformTable
- * @public
- */
+
 export const ApiPlatformTable = () => {
-
-    const configApi = useApi(configApiRef);
-
-    const { items, loading, error } = useApiDefinitions();
-
+    const { items, loading, error } = useGetApiDefinitions();
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
-
+    const rows = items?.map(toEntityRow);
     return (
         <Table
             isLoading={loading}
@@ -70,7 +85,32 @@ export const ApiPlatformTable = () => {
                     API ({items ? items.length : 0})
                 </Box>
             }
-            data={items ?? []}
+            data={rows ?? []}
         />
     );
 };
+
+
+function toEntityRow(entity: Entity) {
+    const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
+    const openApi: any = yaml.load(entity.spec?.definition?.toString() ?? '');
+    const description: string = openApi?.info?.description || '';
+    return {
+        entity,
+        api: {
+            name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION],
+            project: entity.metadata[API_PLATFORM_API_PROJECT_ANNOTATION],
+            version: entity.metadata[API_PLATFORM_API_VERSION_ANNOTATION],
+            title: openApi?.info?.title || '',
+            // description: description.length > 512 ? `${description.slice(0, 512)}...` : description
+            description: description
+        },
+        resolved: {
+            entityRef: stringifyEntityRef(entity),
+            ownedByRelationsTitle: ownedByRelations
+                .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
+                .join(', '),
+            ownedByRelations,
+        },
+    };
+}
