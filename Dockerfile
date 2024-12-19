@@ -1,4 +1,4 @@
-ARG imagename=c4rth/backstage-base:20241215.1
+ARG imagename=c4rth/backstage-base:20241214.1
 
 # Stage 1 - Create yarn install skeleton layer
 FROM ${imagename} AS packages
@@ -17,7 +17,7 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs
 # Stage 2 - Install dependencies and build packages
 FROM ${imagename} AS build
 
-USER node
+#USER node
 WORKDIR /app
 
 COPY --from=packages --chown=node:node /app .
@@ -26,7 +26,8 @@ COPY --from=packages --chown=node:node /app/.yarnrc.yml  ./
 COPY --from=packages --chown=node:node /app/backstage.json  ./
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
-    yarn install --immutable
+    yarn install
+    #yarn install --immutable
 
 COPY --chown=node:node . .
 
@@ -41,7 +42,7 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
 FROM ${imagename}
 
 # From here on we use the least-privileged `node` user to run the backend.
-USER node
+#USER node
 
 # This should create the app dir as `node`.
 # If it is instead created as `root` then the `tar` command below will
@@ -60,7 +61,7 @@ COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/packag
 # be linked in node_modules/.bin during yarn install.
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
-    yarn workspaces focus --all --production && rm -rf "$(yarn cache clean)"
+    yarn workspaces focus --all --production 
 
 # Copy the built packages from the build stage
 COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
@@ -69,7 +70,7 @@ COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
 COPY --chown=node:node app-config.yaml app-config.*.yaml ./
 
 # This will include the examples, if you don't need these simply remove this line
-COPY --chown=node:node examples ./examples
+#COPY --chown=node:node examples ./examples
 
 # This switches many Node.js dependencies to production mode.
 ENV NODE_ENV=production
@@ -81,4 +82,5 @@ ENV NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot"
 #CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config.production.yaml"]
 #CMD ["node", "packages/backend", "--config", "/app/app-config-from-configmap.yaml"]
 #CMD ["node", "packages/backend", "--config", "/app/app-config.yaml"]
-CMD ["sh", "-c", "node packages/backend --config app-config.yaml"]
+#CMD ["sh", "-c", "node packages/backend --config app-config.yaml"]
+CMD ["sh", "-c", "node packages/backend --config /app/app-config-from-configmap.yaml"]

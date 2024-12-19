@@ -7,7 +7,7 @@ import useAsync from 'react-use/esm/useAsync';
 export function useGetApiVersions(
     id: string
 ): {
-    items?: ApiVersionDefinition[];
+    apiVersions?: ApiVersionDefinition[];
     loading: boolean;
     error?: Error;
 } {
@@ -19,7 +19,7 @@ export function useGetApiVersions(
     }, [api, top, status]);
 
     return {
-        items: value,
+        apiVersions: value,
         loading,
         error,
     };

@@ -5,4 +5,6 @@ export interface ApiDefinitionService {
   listApiDefinitions(): Promise<{ items: any[] }>;
 
   getApiDefinitionVersions(request: { id: string }): Promise<ApiVersionDefinition[]>;
+
+  registerCatalogInfo(location: { target: string }): Promise<String>;
 }

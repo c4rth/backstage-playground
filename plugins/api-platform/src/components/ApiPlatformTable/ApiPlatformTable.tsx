@@ -19,13 +19,13 @@ import {
     API_PLATFORM_API_PROJECT_ANNOTATION,
     API_PLATFORM_API_VERSION_ANNOTATION
 } from '@internal/plugin-api-platform-common';
-import * as yaml from 'js-yaml';
 import { ApiDisplayName } from './ApiDisplayName';
 
 const columns: TableColumn[] = [
     {
         title: 'Name',
-        width: '20%',
+        width: '25%',
+        field: 'api.name',
         render: ({ entity, api }: any) => {
             return (
                 <Link to={api.name}>
@@ -37,13 +37,9 @@ const columns: TableColumn[] = [
         },
     },
     {
-        title: 'Title',
-        field: 'api.title',
-        width: '25%',
-    },
-    {
         title: 'Description',
-        width: '40%',
+        field: 'api.description',
+        width: '50%',
         render: ({api} : any) => {
            return(
                 <OverflowTooltip text={api.description} line={2} />
@@ -52,7 +48,8 @@ const columns: TableColumn[] = [
     },
     {
         title: 'Owner',
-        width: '15%',
+        width: '25%',
+        field: 'resolved.ownedByRelationsTitle',
         render: ({ resolved }: any) => (
             <EntityRefLinks
                 entityRefs={resolved.ownedByRelations}
@@ -93,17 +90,13 @@ export const ApiPlatformTable = () => {
 
 function toEntityRow(entity: Entity) {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
-    const openApi: any = yaml.load(entity.spec?.definition?.toString() ?? '');
-    const description: string = openApi?.info?.description || '';
     return {
         entity,
         api: {
             name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION],
             project: entity.metadata[API_PLATFORM_API_PROJECT_ANNOTATION],
             version: entity.metadata[API_PLATFORM_API_VERSION_ANNOTATION],
-            title: openApi?.info?.title || '',
-            // description: description.length > 512 ? `${description.slice(0, 512)}...` : description
-            description: description
+            description: entity.metadata.description || '',
         },
         resolved: {
             entityRef: stringifyEntityRef(entity),

@@ -16,7 +16,7 @@ import { ApiPlatformDefinitionCard } from './ApiPlatformDefinitionCard';
 
 export const ApiPlatformDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
-  const { items, loading, error } = useGetApiVersions(name);
+  const { apiVersions, loading, error } = useGetApiVersions(name);
   const catalogApi = useApi(catalogApiRef);
 
   const [selectedVersion, setSelectedVersion] = useState<string>("");
@@ -37,10 +37,10 @@ export const ApiPlatformDefinitionPage = () => {
   }, [selectedVersion, catalogApi]);
 
   useEffect(() => {
-    setVersions(items
-      ? items.map(item => ({ label: item.version, value: item.entityRef }))
+    setVersions(apiVersions
+      ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
       : []);
-  }, [items])
+  }, [apiVersions])
 
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`;

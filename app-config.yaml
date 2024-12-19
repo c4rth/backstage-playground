@@ -32,6 +32,8 @@ backend:
           #token: 'mpZ7Aq0y3bWAz+4BQqXKnNUmcNunl16L'
           token: 'my-access-token'
           subject: cicd-system-completion-events
+        accessRestrictions:
+          - plugin: api-platform
 
   baseUrl: http://localhost:7007
   listen:
