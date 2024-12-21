@@ -1,4 +1,4 @@
-ARG imagename=c4rth/backstage-base:20241214.1
+ARG imagename=c4rth/backstage-base:20241221.1
 
 # Stage 1 - Create yarn install skeleton layer
 FROM ${imagename} AS packages
@@ -17,7 +17,7 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs
 # Stage 2 - Install dependencies and build packages
 FROM ${imagename} AS build
 
-#USER node
+USER node
 WORKDIR /app
 
 COPY --from=packages --chown=node:node /app .
@@ -42,7 +42,7 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
 FROM ${imagename}
 
 # From here on we use the least-privileged `node` user to run the backend.
-#USER node
+USER node
 
 # This should create the app dir as `node`.
 # If it is instead created as `root` then the `tar` command below will
