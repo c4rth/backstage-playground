@@ -4,7 +4,6 @@ import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { Grid, makeStyles } from '@material-ui/core';
 import React from 'react';
-import { QuestionTableCard } from '@drodil/backstage-plugin-qeta';
 import JiraIcon from '../icons/JiraIcon';
 import ConfluenceIcon from '../icons/ConfluenceIcon';
 import QuickAccess from './QuickAccess';
@@ -62,9 +61,6 @@ export const HomePage = () => {
                             <Grid item xs={12} md={6}>
                                 <HomePageToolkit
                                     tools={tools} />
-                            </Grid>
-                            <Grid item xs={12} md={12}>
-                                <QuestionTableCard />
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <HomePageRecentlyVisited />

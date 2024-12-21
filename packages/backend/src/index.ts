@@ -109,10 +109,6 @@ backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
 backend.add(import('@backstage/plugin-signals-backend'));
 backend.add(import('@backstage/plugin-notifications-backend'));
 
-// Q&A
-backend.add(import('@drodil/backstage-plugin-qeta-backend'));
-backend.add(import('@drodil/backstage-plugin-search-backend-module-qeta'));
-
 // Azure DevOps
 backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 

@@ -48,8 +48,6 @@ import * as plugins from './plugins';
 import { NotificationsPage } from '@backstage/plugin-notifications';
 // Auto-logout
 import { AutoLogout } from '@backstage/core-components';
-// Q&A
-import { QetaPage } from '@drodil/backstage-plugin-qeta';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
 import { ApiPlatformDefinitionPage, ApiPlatformPage } from '@internal/plugin-api-platform';
@@ -122,7 +120,6 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
-    <Route path="/qeta" element={<QetaPage title="Questions" />} />
     <Route path="/entity-validation" element={<EntityValidationPage />} />
     <Route path="/api-platform" element={<ApiPlatformPage />} />
     <Route path="/api-platform/:name" element={<ApiPlatformDefinitionPage />} />
