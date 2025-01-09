@@ -18,10 +18,11 @@ import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-
 
 const backend = createBackend();
 
-backend.add(import('@backstage/plugin-app-backend/alpha'));
-backend.add(import('@backstage/plugin-proxy-backend/alpha'));
-backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
-backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
+backend.add(import('@backstage/plugin-app-backend'));
+backend.add(import('@backstage/plugin-proxy-backend'));
+backend.add(import('@backstage/plugin-scaffolder-backend'));
+backend.add(import('@backstage/plugin-techdocs-backend'));
+backend.add(import('@backstage/plugin-events-backend'));
 
 // auth plugin
 backend.add(import('@backstage/plugin-auth-backend'));
@@ -31,9 +32,9 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 backend.add(import('@backstage/plugin-auth-backend-module-microsoft-provider'));
 
 // catalog plugin
-backend.add(import('@backstage/plugin-catalog-backend/alpha'));
+backend.add(import('@backstage/plugin-catalog-backend'));
 backend.add(import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'));
-backend.add(import('@backstage/plugin-catalog-backend-module-msgraph/alpha'));
+backend.add(import('@backstage/plugin-catalog-backend-module-msgraph'));
 backend.add(createBackendModule({
   pluginId: 'catalog',
   moduleId: 'microsoft-graph-extensions',
@@ -56,7 +57,7 @@ backend.add(import('@backstage/plugin-catalog-backend-module-openapi'));
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // permission plugin
-backend.add(import('@backstage/plugin-permission-backend/alpha'));
+backend.add(import('@backstage/plugin-permission-backend'));
 // backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
 // backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
 
@@ -77,14 +78,14 @@ backend.add(createBackendModule({
 }));
 
 // search plugin
-backend.add(import('@backstage/plugin-search-backend/alpha'));
+backend.add(import('@backstage/plugin-search-backend'));
 
 // search engine
 // See https://backstage.io/docs/features/search/search-engines
-backend.add(import('@backstage/plugin-search-backend-module-pg/alpha'));
+backend.add(import('@backstage/plugin-search-backend-module-pg'));
 
 // search collators
-backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
+backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(createBackendModule({
   pluginId: 'search',
   moduleId: 'catalog-collator-extension',
@@ -100,10 +101,10 @@ backend.add(createBackendModule({
   },
 }));
 
-backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
+backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // kubernetes
-backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
+// backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
 
 // notifications plugin
 backend.add(import('@backstage/plugin-signals-backend'));

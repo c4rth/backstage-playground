@@ -1,7 +1,7 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { ApiDefinitionService } from './types';
 import { API_PLATFORM_API_NAME_ANNOTATION, API_PLATFORM_API_VERSION_ANNOTATION, ApiVersionDefinition } from '@internal/plugin-api-platform-common';
-import { CatalogApi } from '@backstage/catalog-client/index';
+import { CatalogApi } from '@backstage/catalog-client';
 import * as semver from 'semver';
 
 export async function createApiDefinitionService({

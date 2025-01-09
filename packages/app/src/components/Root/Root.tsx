@@ -29,7 +29,7 @@ import SearchIcon from '@material-ui/icons/Search';
 // Notifications
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 // Q&A
-import LiveHelpIcon from '@material-ui/icons/LiveHelp';
+// import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 // Entity Validation
 import BuildIcon from '@material-ui/icons/Build';
 import { useApp } from '@backstage/core-plugin-api';
@@ -122,7 +122,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={CodeIcon} to="api-docs" text="APIs" />
         <SidebarItem icon={CodeIcon} to="api-platform" text="API Platform" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
-        <SidebarItem icon={LiveHelpIcon} to="qeta" text="Q&A" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Scaffolder" />
         <SidebarItem icon={BuildIcon} text="Tools">
           <SidebarSubmenu title="Tools">

@@ -3,8 +3,8 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
 import { createApiDefinitionService } from './services/ApiDefinitionService';
+import { CatalogClient } from '@backstage/catalog-client';
 
 /**
  * apiPlatformPlugin backend plugin
@@ -18,15 +18,18 @@ export const apiPlatformPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
-        catalogClient: catalogServiceRef,
+        discovery: coreServices.discovery,
         auth: coreServices.auth,
       },
       async init({
         logger,
         httpRouter,
-        catalogClient,
+        discovery,
         auth,
       }) {
+        const catalogClient = new CatalogClient({
+          discoveryApi: discovery,
+        });
         const apiDefinitionService = await createApiDefinitionService({
           logger,
           catalogClient,
