@@ -25,7 +25,7 @@ backend:
   # auth:
   #   dangerouslyDisableDefaultAuthPolicy: true
   auth:
-    #dangerouslyDisableDefaultAuthPolicy: true
+    dangerouslyDisableDefaultAuthPolicy: true
     externalAccess:
       - type: static
         options:
@@ -39,10 +39,11 @@ backend:
   listen:
     port: 7007
     # Uncomment for docker compose
-    #host: 0.0.0.0
+    host: 0.0.0.0
   csp:
     connect-src: ["'self'", "http:", "https:"]
-    img-src: ["'self'", "http:", "https:", "data:"]
+    img-src: ["'self'", "http:", "https:", "data:", "blob:"]
+    script-src: ["'self'", "http:", "https:", "data:", "blob:"]
     upgrade-insecure-requests: []
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
@@ -57,8 +58,8 @@ backend:
     client: pg
     connection:
       # Uncomment for docker compose
-      #host: postgres-db
-      host: 127.0.0.1
+      host: postgres-db
+      #host: 127.0.0.1
       port: 5432
       user: postgres
       password: postgres
@@ -80,19 +81,6 @@ permission:
   #     - search  # ?
   #     - permission # ?
   #     - qeta
-
-qeta:
-  tags:
-    allowCreation: false
-    allowedTags:
-      - java
-      - javascript
-      - azure
-      - ccoe
-      - python
-    max: 3
-  moderators:
-    - 'group:default/backstage-admin'
 
 integrations:
   github:
@@ -138,6 +126,7 @@ auth:
   environment: development
   providers:
     guest:
+      dangerouslyAllowOutsideDevelopment: true
       userEntityRef: user:default/guest
     microsoft:
       development:

@@ -1,0 +1,47 @@
+services:
+  postgres-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=backstage
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    container_name: postgres-db
+  backstage:
+    #hostname: localhost
+    image: carth-backstage:0.0.1
+    environment:
+      - AZURE_AUTH_CLIENT_ID=$AZURE_PRD_AUTH_CLIENT_ID
+      - AZURE_AUTH_CLIENT_SECRET=$AZURE_PRD_AUTH_CLIENT_SECRET
+      - AZURE_AUTH_TENANT_ID=$AZURE_AUTH_TENANT_ID
+      - AZURE_GRAPH_CLIENT_ID=$AZURE_GRAPH_CLIENT_ID
+      - AZURE_GRAPH_CLIENT_SECRET=$AZURE_GRAPH_CLIENT_SECRET
+      - AZURE_GRAPH_TENANT_ID=$AZURE_GRAPH_TENANT_ID
+      - ADO_PERSONAL_ACCESS_TOKEN=$ADO_PERSONAL_ACCESS_TOKEN
+      - GITHUB_TOKEN=$GITHUB_TOKEN
+    ports:
+      - 3000:3000
+      - 7007:7007
+    depends_on:
+      - postgres-db
+ # opa:
+ #   image: openpolicyagent/opa:0.63.0-static
+ #   command:
+ #     - 'run'
+ #     - '--server'
+ #     - '--watch'
+ #     - '--log-format=json-pretty'
+ #     - '--set=decision_logs.console=true'
+ #     - '/policies/rbac_policy.rego'
+ #     - '/policies/entity_checker.rego'
+ #   ports:
+ #     - 8181:8181
+ #   volumes:
+ #     - ./opa-policies:/policies
+
+volumes:
+  pgdata: {}

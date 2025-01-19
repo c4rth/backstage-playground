@@ -33,7 +33,7 @@ dist-types
 site
 
 # Local configuration files
-*.local.yaml
+# *.local.yaml
 
 # IntelliJ configuration files
 .idea

@@ -1,4 +1,4 @@
-ARG imagename=c4rth/backstage-base:20241221.1
+ARG imagename=c4rth/backstage-base:20250118.1
 
 # Stage 1 - Create yarn install skeleton layer
 FROM ${imagename} AS packages
@@ -81,6 +81,6 @@ ENV NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot"
 
 #CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config.production.yaml"]
 #CMD ["node", "packages/backend", "--config", "/app/app-config-from-configmap.yaml"]
-#CMD ["node", "packages/backend", "--config", "/app/app-config.yaml"]
+CMD ["node", "packages/backend", "--config", "/app/app-config.yaml"]
 #CMD ["sh", "-c", "node packages/backend --config app-config.yaml"]
-CMD ["sh", "-c", "node packages/backend --config /app/app-config-from-configmap.yaml"]
+#CMD ["sh", "-c", "node packages/backend --config /app/app-config-from-configmap.yaml"]
