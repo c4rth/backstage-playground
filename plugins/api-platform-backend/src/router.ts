@@ -1,12 +1,12 @@
 import express from 'express';
 import { Request } from 'express';
 import Router from 'express-promise-router';
-import { ApiDefinitionService } from './services/ApiDefinitionService/types';
+import { ApiPlatformService } from './services/ApiPlatformService/types';
 import { InputError } from '@backstage/errors';
 import lodash from 'lodash';
 
 export interface RouterOptions {
-  apiDefinitionService: ApiDefinitionService;
+  apiPlatformService: ApiPlatformService;
 }
 
 function validateRequestBody(req: Request) {
@@ -24,16 +24,20 @@ function validateRequestBody(req: Request) {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { apiDefinitionService } = options;
+  const { apiPlatformService } = options;
   const router = Router();
   router.use(express.json());
 
   router.get('/', async (_req, res) => {
-    res.json(await apiDefinitionService.listApiDefinitions());
+    res.json(await apiPlatformService.listApis());
   });
 
-  router.get('/:id', async (req, res) => {
-    res.json(await apiDefinitionService.getApiDefinitionVersions({ id: req.params.id }));
+  router.get('/:apiName', async (req, res) => {
+    res.json(await apiPlatformService.getApiVersions({ apiName: req.params.apiName }));
+  });
+
+  router.get('/:apiName/:apiVersion', async (req, res) => {
+    res.json(await apiPlatformService.getApiMatchingVersion({ apiName: req.params.apiName, apiVersion: req.params.apiVersion }));
   });
 
   router.post('/location', async (req, res) => {
@@ -43,7 +47,7 @@ export async function createRouter(
     if (!target) {
       throw new InputError('Invalid request body');
     }
-    res.status(201).json(await apiDefinitionService.registerCatalogInfo({target: target}));
+    res.status(201).json(await apiPlatformService.registerCatalogInfo({target: target}));
   });
 
   return router;

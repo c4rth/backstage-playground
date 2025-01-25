@@ -35,7 +35,7 @@ export const ApiDisplayName = (
     const { entityRef } = props;
 
     const classes = useStyles();
-    const primaryTitle = entityRef.metadata[API_PLATFORM_API_NAME_ANNOTATION]?.toString() || entityRef.metadata.name;
+    const primaryTitle = entityRef.metadata[API_PLATFORM_API_NAME_ANNOTATION]?.toString() || 'api-name not found';
 
     let content = <div>{primaryTitle}</div>;
     content = (

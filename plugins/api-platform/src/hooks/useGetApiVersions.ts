@@ -5,7 +5,7 @@ import { ApiVersionDefinition } from '@internal/plugin-api-platform-common';
 import useAsync from 'react-use/esm/useAsync';
 
 export function useGetApiVersions(
-    id: string
+    apiName: string
 ): {
     apiVersions?: ApiVersionDefinition[];
     loading: boolean;
@@ -15,7 +15,7 @@ export function useGetApiVersions(
     const api = useApi(apiPlatformApiRef);
 
     const { value, loading, error } = useAsync(() => {
-        return api.getApiDefinitionVersions({ id: id });
+        return api.getApiVersions({ apiName: apiName });
     }, [api, top, status]);
 
     return {

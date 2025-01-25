@@ -1,2 +1,2 @@
-export * from './useGetApiDefinitions';
+export * from './useGetApis';
 export * from './useGetApiVersions';

@@ -138,9 +138,6 @@ const overviewContent = (
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
 
-    <Grid item md={4} xs={12}>
-      <EntityLinksCard />
-    </Grid>
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true }} />
     </Grid>
@@ -168,7 +165,7 @@ const serviceEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/dependencies" title="Dependencies">
+    <EntityLayout.Route path="/dependencies" title="App Registry">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
           <EntityDependsOnComponentsCard variant="gridItem" />
@@ -256,9 +253,6 @@ const apiPage = (
         <Grid item md={6} xs={12}>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
         </Grid>
-        <Grid item md={4} xs={12}>
-          <EntityLinksCard />
-        </Grid>
         <Grid container item md={12}>
           <Grid item md={6}>
             <EntityProvidingComponentsCard />
@@ -310,9 +304,6 @@ const groupPage = (
         <Grid item xs={12} md={6}>
           <EntityMembersListCard />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityLinksCard />
-        </Grid>
       </Grid>
     </EntityLayout.Route>
   </EntityLayout>
@@ -329,17 +320,11 @@ const systemPage = (
         <Grid item md={6} xs={12}>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
         </Grid>
-        <Grid item md={4} xs={12}>
-          <EntityLinksCard />
-        </Grid>
-        <Grid item md={8}>
+        <Grid item md={12}>
           <EntityHasComponentsCard variant="gridItem" />
         </Grid>
-        <Grid item md={6}>
+        <Grid item md={12}>
           <EntityHasApisCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
-          <EntityHasResourcesCard variant="gridItem" />
         </Grid>
       </Grid>
     </EntityLayout.Route>

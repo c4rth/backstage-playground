@@ -7,9 +7,9 @@ export const apiPlatformApiRef = createApiRef<ApiPlatformApi>({
 });
 
 export interface ApiPlatformApi {
-  listApiDefinitions(): Promise<{ items: Entity[] }>;
+  listApis(): Promise<{ items: Entity[] }>;
 
-  getApiDefinitionVersions(request: { id: string }): Promise<(ApiVersionDefinition[])>;
+  getApiVersions(request: { apiName: string }): Promise<(ApiVersionDefinition[])>;
 }
 
 export class ApiPlatformClient implements ApiPlatformApi {
@@ -22,7 +22,7 @@ export class ApiPlatformClient implements ApiPlatformApi {
   }
 
 
-  async listApiDefinitions(): Promise<{ items: Entity[] }> {
+  async listApis(): Promise<{ items: Entity[] }> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
@@ -35,11 +35,11 @@ export class ApiPlatformClient implements ApiPlatformApi {
     );
   }
 
-  async getApiDefinitionVersions(request: { id: string }): Promise<ApiVersionDefinition[]> {
+  async getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
-      )}/${request.id}`,
+      )}/${request.apiName}`,
     );
     const response = await this.fetchApi.fetch(url);
     return (
@@ -48,4 +48,5 @@ export class ApiPlatformClient implements ApiPlatformApi {
       })) || undefined
     );
   }
+
 }

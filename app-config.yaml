@@ -39,7 +39,7 @@ backend:
   listen:
     port: 7007
     # Uncomment for docker compose
-    host: 0.0.0.0
+    # host: 0.0.0.0
   csp:
     connect-src: ["'self'", "http:", "https:"]
     img-src: ["'self'", "http:", "https:", "data:", "blob:"]
@@ -58,7 +58,7 @@ backend:
     client: pg
     connection:
       # Uncomment for docker compose
-      host: postgres-db
+      #host: postgres-db
       #host: 127.0.0.1
       port: 5432
       user: postgres

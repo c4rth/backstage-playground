@@ -12,12 +12,10 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import React from 'react';
-import { useGetApiDefinitions } from '../../hooks';
+import { useGetApis } from '../../hooks';
 import { Box } from '@material-ui/core';
 import {
     API_PLATFORM_API_NAME_ANNOTATION,
-    API_PLATFORM_API_PROJECT_ANNOTATION,
-    API_PLATFORM_API_VERSION_ANNOTATION
 } from '@internal/plugin-api-platform-common';
 import { ApiDisplayName } from './ApiDisplayName';
 
@@ -61,7 +59,7 @@ const columns: TableColumn[] = [
 
 
 export const ApiPlatformTable = () => {
-    const { items, loading, error } = useGetApiDefinitions();
+    const { items, loading, error } = useGetApis();
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
@@ -94,8 +92,6 @@ function toEntityRow(entity: Entity) {
         entity,
         api: {
             name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION],
-            project: entity.metadata[API_PLATFORM_API_PROJECT_ANNOTATION],
-            version: entity.metadata[API_PLATFORM_API_VERSION_ANNOTATION],
             description: entity.metadata.description || '',
         },
         resolved: {

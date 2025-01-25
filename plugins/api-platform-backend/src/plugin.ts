@@ -3,7 +3,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { createApiDefinitionService } from './services/ApiDefinitionService';
+import { createApiPlatformService } from './services/ApiPlatformService';
 import { CatalogClient } from '@backstage/catalog-client';
 
 /**
@@ -30,7 +30,7 @@ export const apiPlatformPlugin = createBackendPlugin({
         const catalogClient = new CatalogClient({
           discoveryApi: discovery,
         });
-        const apiDefinitionService = await createApiDefinitionService({
+        const apiPlatformService = await createApiPlatformService({
           logger,
           catalogClient,
           auth,
@@ -38,7 +38,7 @@ export const apiPlatformPlugin = createBackendPlugin({
 
         httpRouter.use(
           await createRouter({
-            apiDefinitionService
+            apiPlatformService
           }),
         );
         httpRouter.addAuthPolicy({
