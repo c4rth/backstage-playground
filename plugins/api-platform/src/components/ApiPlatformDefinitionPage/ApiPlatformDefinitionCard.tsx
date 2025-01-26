@@ -4,9 +4,9 @@ import {
     TabbedCard,
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
-import React, { version } from 'react';
+import React from 'react';
 import { OpenApiDefinitionWidget, PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
-import { Box, makeStyles, Theme, Typography } from '@material-ui/core';
+import { Box, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { AboutContent, AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
