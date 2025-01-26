@@ -1,11 +1,12 @@
 import {
     CardTab,
+    CodeSnippet,
     TabbedCard,
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
-import React from 'react';
+import React, { version } from 'react';
 import { OpenApiDefinitionWidget, PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
-import { Box, makeStyles, Theme } from '@material-ui/core';
+import { Box, makeStyles, Theme, Typography } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { AboutContent, AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
@@ -46,6 +47,14 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
     const artifactId = `${apiEntity.metadata[API_PLATFORM_API_NAME_ANNOTATION]}-openapi`;
     const artifactUrl = `https://dev.azure.com/organization/${project}/_artifacts/feed/feedName/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`
     const artifactText = `${groupId}:${artifactId}:${apiVersion}`;
+    const mavenXml = `
+<dependency>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${apiVersion}</version>
+    <type>yaml</type>
+</dependency>
+`;
 
     return (
         <TabbedCard title="" >
@@ -60,7 +69,7 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
             </CardTab>
             {isApiDocsSpectralLinterAvailable(apiEntity) ?
                 <CardTab label="Linter" key="linter">
-                    <EntityApiDocsSpectralLinterCard entity={apiEntity}/>
+                    <EntityApiDocsSpectralLinterCard entity={apiEntity} />
                 </CardTab>
                 : <div />
             }
@@ -87,6 +96,14 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
                                 {artifactText}
                             </Box>
                         </Link>
+                    </AboutField>
+                </Box>
+                <Box sx={{ mt: 5 }}>
+                    <AboutField
+                        label="Get this package"
+                        gridSizes={{ xs: 4 }}
+                    >
+                        <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
                     </AboutField>
                 </Box>
             </CardTab>
