@@ -1,12 +1,14 @@
 import express from 'express';
 import { Request } from 'express';
 import Router from 'express-promise-router';
-import { ApiPlatformService } from './services/ApiPlatformService/types';
 import { InputError } from '@backstage/errors';
 import lodash from 'lodash';
+import { ApiPlatformService } from './services/ApiPlatformService/types';
+import { CatalogPlatformService } from './services/CatalogPlatformService/types';
 
 export interface RouterOptions {
   apiPlatformService: ApiPlatformService;
+  catalogPlatformService: CatalogPlatformService;
 }
 
 function validateRequestBody(req: Request) {
@@ -24,7 +26,7 @@ function validateRequestBody(req: Request) {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { apiPlatformService } = options;
+  const { apiPlatformService, catalogPlatformService } = options;
   const router = Router();
   router.use(express.json());
 
@@ -47,7 +49,7 @@ export async function createRouter(
     if (!target) {
       throw new InputError('Invalid request body');
     }
-    res.status(201).json(await apiPlatformService.registerCatalogInfo({target: target}));
+    res.status(201).json(await catalogPlatformService.registerCatalogInfo({target: target}));
   });
 
   return router;

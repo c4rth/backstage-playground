@@ -7,6 +7,4 @@ export interface ApiPlatformService {
   getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]>;
 
   getApiMatchingVersion(request: { apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined>;
-
-  registerCatalogInfo(location: { target: string }): Promise<String>;
 }
