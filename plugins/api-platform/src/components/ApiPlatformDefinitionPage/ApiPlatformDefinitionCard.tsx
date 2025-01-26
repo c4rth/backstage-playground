@@ -11,6 +11,9 @@ import { AboutContent, AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
 import CloudCircleIcon from '@material-ui/icons/CloudCircle';
 import { API_PLATFORM_API_NAME_ANNOTATION, API_PLATFORM_API_PROJECT_ANNOTATION, API_PLATFORM_API_VERSION_ANNOTATION } from '@internal/plugin-api-platform-common';
+// Spectral 
+import { EntityApiDocsSpectralLinterCard } from '../EntityApiDocsSpectralLinterContent';
+import { isApiDocsSpectralLinterAvailable } from '../../lib/helper';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -55,6 +58,12 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
                     language={apiEntity.spec.type}
                 />
             </CardTab>
+            {isApiDocsSpectralLinterAvailable(apiEntity) ?
+                <CardTab label="Linter" key="linter">
+                    <EntityApiDocsSpectralLinterCard entity={apiEntity}/>
+                </CardTab>
+                : <div />
+            }
             <CardTab label="Info" key="info" className="m-3">
                 <Box sx={{ mb: 4 }}>
                     <AboutField

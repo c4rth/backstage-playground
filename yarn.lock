@@ -7796,6 +7796,10 @@ __metadata:
     "@internal/plugin-api-platform-common": "npm:^0.1.0"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/lab": "npm:^4.0.0-alpha.61"
+    "@stoplight/spectral-core": "npm:^1.19.4"
+    "@stoplight/spectral-ruleset-bundler": "npm:^1.6.1"
+    "@stoplight/spectral-runtime": "npm:^1.1.3"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -10757,6 +10761,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rollup/plugin-commonjs@npm:~22.0.2":
+  version: 22.0.2
+  resolution: "@rollup/plugin-commonjs@npm:22.0.2"
+  dependencies:
+    "@rollup/pluginutils": "npm:^3.1.0"
+    commondir: "npm:^1.0.1"
+    estree-walker: "npm:^2.0.1"
+    glob: "npm:^7.1.6"
+    is-reference: "npm:^1.2.1"
+    magic-string: "npm:^0.25.7"
+    resolve: "npm:^1.17.0"
+  peerDependencies:
+    rollup: ^2.68.0
+  checksum: 10c0/2b9df23a40493e5ca6dab50b28a7803c0fe73f5fe84c16f38e3e00e38b9a246de450d1ee8dba145ea5dc3c661616a4ae1927b084fdbb47ae3afcac979fdfa1d1
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-json@npm:^6.0.0":
   version: 6.1.0
   resolution: "@rollup/plugin-json@npm:6.1.0"
@@ -10802,6 +10823,19 @@ __metadata:
     rollup:
       optional: true
   checksum: 10c0/75c6e60b927cb016045bb3ac2a0ab1891da09f022ba40d6272d131c29c01530c13f13160bb27d505be36a3ee981335ad1eec47e028631395c01d08c2e32d0943
+  languageName: node
+  linkType: hard
+
+"@rollup/pluginutils@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@rollup/pluginutils@npm:3.1.0"
+  dependencies:
+    "@types/estree": "npm:0.0.39"
+    estree-walker: "npm:^1.0.1"
+    picomatch: "npm:^2.2.2"
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0
+  checksum: 10c0/7151753160d15ba2b259461a6c25b3932150994ea52dba8fd3144f634c7647c2e56733d986e2c15de67c4d96a9ee7d6278efa6d2e626a7169898fd64adc0f90c
   languageName: node
   linkType: hard
 
@@ -11796,7 +11830,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/ordered-object-literal@npm:^1.0.3, @stoplight/ordered-object-literal@npm:^1.0.5":
+"@stoplight/ordered-object-literal@npm:^1.0.1, @stoplight/ordered-object-literal@npm:^1.0.3, @stoplight/ordered-object-literal@npm:^1.0.5, @stoplight/ordered-object-literal@npm:~1.0.4":
   version: 1.0.5
   resolution: "@stoplight/ordered-object-literal@npm:1.0.5"
   checksum: 10c0/e14402990f66f48478fb0871c14fd3c034f1bf9c56161921c354ccaa6dfb2639408fe9a8c77275119d6b734ee5513258f51a0ee2459d1cc6d9068b67eeb48862
@@ -11810,7 +11844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/spectral-core@npm:^1.18.3, @stoplight/spectral-core@npm:^1.19.2, @stoplight/spectral-core@npm:^1.19.4":
+"@stoplight/spectral-core@npm:>=1, @stoplight/spectral-core@npm:^1.18.3, @stoplight/spectral-core@npm:^1.19.2, @stoplight/spectral-core@npm:^1.19.4":
   version: 1.19.4
   resolution: "@stoplight/spectral-core@npm:1.19.4"
   dependencies:
@@ -11851,7 +11885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/spectral-functions@npm:^1.7.2":
+"@stoplight/spectral-functions@npm:>=1, @stoplight/spectral-functions@npm:^1.7.2, @stoplight/spectral-functions@npm:^1.9.1":
   version: 1.9.3
   resolution: "@stoplight/spectral-functions@npm:1.9.3"
   dependencies:
@@ -11870,7 +11904,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/spectral-parsers@npm:^1.0.0, @stoplight/spectral-parsers@npm:^1.0.2":
+"@stoplight/spectral-parsers@npm:>=1, @stoplight/spectral-parsers@npm:^1.0.0, @stoplight/spectral-parsers@npm:^1.0.2":
   version: 1.0.5
   resolution: "@stoplight/spectral-parsers@npm:1.0.5"
   dependencies:
@@ -11895,7 +11929,76 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/spectral-runtime@npm:^1.1.2":
+"@stoplight/spectral-ruleset-bundler@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@stoplight/spectral-ruleset-bundler@npm:1.6.1"
+  dependencies:
+    "@rollup/plugin-commonjs": "npm:~22.0.2"
+    "@stoplight/path": "npm:1.3.2"
+    "@stoplight/spectral-core": "npm:>=1"
+    "@stoplight/spectral-formats": "npm:^1.8.1"
+    "@stoplight/spectral-functions": "npm:>=1"
+    "@stoplight/spectral-parsers": "npm:>=1"
+    "@stoplight/spectral-ref-resolver": "npm:^1.0.4"
+    "@stoplight/spectral-ruleset-migrator": "npm:^1.9.6"
+    "@stoplight/spectral-rulesets": "npm:>=1"
+    "@stoplight/spectral-runtime": "npm:^1.1.2"
+    "@stoplight/types": "npm:^13.6.0"
+    "@types/node": "npm:*"
+    pony-cause: "npm:1.1.1"
+    rollup: "npm:~2.79.2"
+    tslib: "npm:^2.8.1"
+    validate-npm-package-name: "npm:3.0.0"
+  checksum: 10c0/cd25bb428e954f486e9d185bf368a4515e6e9a1f01dc5d361f7538909bf1720cd01c2feb010b964338fee272dd7b9326746fafa4a491964ef6c6fec16cad3659
+  languageName: node
+  linkType: hard
+
+"@stoplight/spectral-ruleset-migrator@npm:^1.9.6":
+  version: 1.11.1
+  resolution: "@stoplight/spectral-ruleset-migrator@npm:1.11.1"
+  dependencies:
+    "@stoplight/json": "npm:~3.21.0"
+    "@stoplight/ordered-object-literal": "npm:~1.0.4"
+    "@stoplight/path": "npm:1.3.2"
+    "@stoplight/spectral-functions": "npm:^1.9.1"
+    "@stoplight/spectral-runtime": "npm:^1.1.2"
+    "@stoplight/types": "npm:^13.6.0"
+    "@stoplight/yaml": "npm:~4.2.3"
+    "@types/node": "npm:*"
+    ajv: "npm:^8.17.1"
+    ast-types: "npm:0.14.2"
+    astring: "npm:^1.9.0"
+    reserved: "npm:0.1.2"
+    tslib: "npm:^2.8.1"
+    validate-npm-package-name: "npm:3.0.0"
+  checksum: 10c0/4db0db7d56b440ddeeefd79ddc062e70fa35189e91a450b732f4a98299cf33e3fe946354ca34e28bff33552872be90ebe1a2859dadc7ccf9547d7e16efe9f80b
+  languageName: node
+  linkType: hard
+
+"@stoplight/spectral-rulesets@npm:>=1":
+  version: 1.21.3
+  resolution: "@stoplight/spectral-rulesets@npm:1.21.3"
+  dependencies:
+    "@asyncapi/specs": "npm:^6.8.0"
+    "@stoplight/better-ajv-errors": "npm:1.0.3"
+    "@stoplight/json": "npm:^3.17.0"
+    "@stoplight/spectral-core": "npm:^1.19.4"
+    "@stoplight/spectral-formats": "npm:^1.8.1"
+    "@stoplight/spectral-functions": "npm:^1.9.1"
+    "@stoplight/spectral-runtime": "npm:^1.1.2"
+    "@stoplight/types": "npm:^13.6.0"
+    "@types/json-schema": "npm:^7.0.7"
+    ajv: "npm:^8.17.1"
+    ajv-formats: "npm:~2.1.0"
+    json-schema-traverse: "npm:^1.0.0"
+    leven: "npm:3.1.0"
+    lodash: "npm:~4.17.21"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/6699bbfad3509d8f8c652bc1c54c61f80b8f17d0d02898481eab54a7dc7e6948ec44a603b603b45542172f7beddca53582cc5e233a0265eb337fcc4c16bd4ec7
+  languageName: node
+  linkType: hard
+
+"@stoplight/spectral-runtime@npm:^1.1.2, @stoplight/spectral-runtime@npm:^1.1.3":
   version: 1.1.3
   resolution: "@stoplight/spectral-runtime@npm:1.1.3"
   dependencies:
@@ -11910,7 +12013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/types@npm:^12.3.0 || ^13.0.0, @stoplight/types@npm:^13.12.0, @stoplight/types@npm:^13.6.0":
+"@stoplight/types@npm:^12.3.0 || ^13.0.0, @stoplight/types@npm:^13.0.0, @stoplight/types@npm:^13.12.0, @stoplight/types@npm:^13.6.0":
   version: 13.20.0
   resolution: "@stoplight/types@npm:13.20.0"
   dependencies:
@@ -11940,10 +12043,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stoplight/yaml-ast-parser@npm:0.0.48":
+  version: 0.0.48
+  resolution: "@stoplight/yaml-ast-parser@npm:0.0.48"
+  checksum: 10c0/55e40fbac3b3997cf6a1e34319e3bcd0c823ad654a86ee79e1e3857264e2b22375d07c1187d3fb953db57a7ef8802d82aa315d77a7b40b25e5169d18bcc89d29
+  languageName: node
+  linkType: hard
+
 "@stoplight/yaml-ast-parser@npm:0.0.50":
   version: 0.0.50
   resolution: "@stoplight/yaml-ast-parser@npm:0.0.50"
   checksum: 10c0/44d83c7081888402bee88ad0c1e90cd191478005773d8f9767015e109f8499c17da57eb790cca30ba1c02d2f1b74f82992f01ca8ffa272085d17b5f4b5a618cf
+  languageName: node
+  linkType: hard
+
+"@stoplight/yaml@npm:~4.2.3":
+  version: 4.2.3
+  resolution: "@stoplight/yaml@npm:4.2.3"
+  dependencies:
+    "@stoplight/ordered-object-literal": "npm:^1.0.1"
+    "@stoplight/types": "npm:^13.0.0"
+    "@stoplight/yaml-ast-parser": "npm:0.0.48"
+    tslib: "npm:^2.2.0"
+  checksum: 10c0/1426b00755965cdbde36c1ec1642e2fa3b292beef0ede1d5d57a48a9bbe7d4c841c7574f5d1992d6c40f9d7d5688089226653bc5583ff6c084a42ba8e4f4c417
   languageName: node
   linkType: hard
 
@@ -13188,6 +13310,13 @@ __metadata:
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
   checksum: 10c0/cdfd751f6f9065442cd40957c07fd80361c962869aa853c1c2fd03e101af8b9389d8ff4955a43a6fcfa223dd387a089937f95be0f3eec21ca527039fd2d9859a
+  languageName: node
+  linkType: hard
+
+"@types/estree@npm:0.0.39":
+  version: 0.0.39
+  resolution: "@types/estree@npm:0.0.39"
+  checksum: 10c0/f0af6c95ac1988c4827964bd9d3b51d24da442e2188943f6dfcb1e1559103d5d024d564b2e9d3f84c53714a02a0a7435c7441138eb63d9af5de4dfc66cdc0d92
   languageName: node
   linkType: hard
 
@@ -15204,6 +15333,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ast-types@npm:0.14.2":
+  version: 0.14.2
+  resolution: "ast-types@npm:0.14.2"
+  dependencies:
+    tslib: "npm:^2.0.1"
+  checksum: 10c0/5d66d89b6c07fe092087454b6042dbaf81f2882b176db93861e2b986aafe0bce49e1f1ff59aac775d451c1426ad1e967d250e9e3548f5166ea8a3475e66c169d
+  languageName: node
+  linkType: hard
+
 "ast-types@npm:^0.13.4":
   version: 0.13.4
   resolution: "ast-types@npm:0.13.4"
@@ -15213,7 +15351,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astring@npm:^1.8.1":
+"astring@npm:^1.8.1, astring@npm:^1.9.0":
   version: 1.9.0
   resolution: "astring@npm:1.9.0"
   bin:
@@ -16142,6 +16280,13 @@ __metadata:
   version: 3.0.0
   resolution: "builtin-status-codes@npm:3.0.0"
   checksum: 10c0/c37bbba11a34c4431e56bd681b175512e99147defbe2358318d8152b3a01df7bf25e0305873947e5b350073d5ef41a364a22b37e48f1fb6d2fe6d5286a0f348c
+  languageName: node
+  linkType: hard
+
+"builtins@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "builtins@npm:1.0.3"
+  checksum: 10c0/493afcc1db0a56d174cc85bebe5ca69144f6fdd0007d6cbe6b2434185314c79d83cb867e492b56aa5cf421b4b8a8135bf96ba4c3ce71994cf3da154d1ea59747
   languageName: node
   linkType: hard
 
@@ -19575,6 +19720,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"estree-walker@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "estree-walker@npm:1.0.1"
+  checksum: 10c0/fa9e5f8c1bbe8d01e314c0f03067b64a4f22d4c58410fc5237060d0c15b81e58c23921c41acc60abbdab490f1fdfcbd6408ede2d03ca704454272e0244d61a55
+  languageName: node
+  linkType: hard
+
 "estree-walker@npm:^2.0.1, estree-walker@npm:^2.0.2":
   version: 2.0.2
   resolution: "estree-walker@npm:2.0.2"
@@ -22377,7 +22529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-reference@npm:1.2.1":
+"is-reference@npm:1.2.1, is-reference@npm:^1.2.1":
   version: 1.2.1
   resolution: "is-reference@npm:1.2.1"
   dependencies:
@@ -24070,7 +24222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leven@npm:^3.1.0":
+"leven@npm:3.1.0, leven@npm:^3.1.0":
   version: 3.1.0
   resolution: "leven@npm:3.1.0"
   checksum: 10c0/cd778ba3fbab0f4d0500b7e87d1f6e1f041507c56fdcd47e8256a3012c98aaee371d4c15e0a76e0386107af2d42e2b7466160a2d80688aaa03e66e49949f42df
@@ -24557,6 +24709,15 @@ __metadata:
   bin:
     lz-string: bin/bin.js
   checksum: 10c0/36128e4de34791838abe979b19927c26e67201ca5acf00880377af7d765b38d1c60847e01c5ec61b1a260c48029084ab3893a3925fd6e48a04011364b089991b
+  languageName: node
+  linkType: hard
+
+"magic-string@npm:^0.25.7":
+  version: 0.25.9
+  resolution: "magic-string@npm:0.25.9"
+  dependencies:
+    sourcemap-codec: "npm:^1.4.8"
+  checksum: 10c0/37f5e01a7e8b19a072091f0b45ff127cda676232d373ce2c551a162dd4053c575ec048b9cbb4587a1f03adb6c5d0fd0dd49e8ab070cd2c83a4992b2182d9cb56
   languageName: node
   linkType: hard
 
@@ -27567,7 +27728,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pony-cause@npm:^1.1.1":
+"pony-cause@npm:1.1.1, pony-cause@npm:^1.1.1":
   version: 1.1.1
   resolution: "pony-cause@npm:1.1.1"
   checksum: 10c0/63ee3e22c3a9ddda3aca17c2368657934b6c713a1af5b44b48aa6d06a1afc0f0c1f49e20b641be94f33f6c5bd2877977c4b6ca8de2514756b9351318ec4f14a5
@@ -29585,6 +29746,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"reserved@npm:0.1.2":
+  version: 0.1.2
+  resolution: "reserved@npm:0.1.2"
+  checksum: 10c0/c023f32a5933a7411292a16f3bcd9f5e78aad49f6d411f73d3f3336028a2f54ed2f6b144cb1172c81b0b1cfbb492208fdfcae8a2636df872d9b14602998c9bc6
+  languageName: node
+  linkType: hard
+
 "resize-observer-polyfill@npm:^1.5.1":
   version: 1.5.1
   resolution: "resize-observer-polyfill@npm:1.5.1"
@@ -29659,7 +29827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.14.2, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.4":
+"resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.4":
   version: 1.22.10
   resolution: "resolve@npm:1.22.10"
   dependencies:
@@ -29698,7 +29866,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.19.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.17.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.19.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>":
   version: 1.22.10
   resolution: "resolve@patch:resolve@npm%3A1.22.10#optional!builtin<compat/resolve>::version=1.22.10&hash=c3c19d"
   dependencies:
@@ -29983,6 +30151,20 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 10c0/a318c57e2ca9741e1503bcd75483949c6e83edd72234a468010a3098a34248f523e44f7ad4fde90dc5c2da56abc1b78ac42a9329e1dbd708682728adbd8df7cc
+  languageName: node
+  linkType: hard
+
+"rollup@npm:~2.79.2":
+  version: 2.79.2
+  resolution: "rollup@npm:2.79.2"
+  dependencies:
+    fsevents: "npm:~2.3.2"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    rollup: dist/bin/rollup
+  checksum: 10c0/bc3746c988d903c2211266ddc539379d53d92689b9cc5c2b4e3ae161689de9af491957a567c629b6cc81f48d0928a7591fc4c383fba68a48d2966c9fb8a2bce9
   languageName: node
   linkType: hard
 
@@ -30704,6 +30886,13 @@ __metadata:
   version: 0.7.4
   resolution: "source-map@npm:0.7.4"
   checksum: 10c0/dc0cf3768fe23c345ea8760487f8c97ef6fca8a73c83cd7c9bf2fde8bc2c34adb9c0824d6feb14bc4f9e37fb522e18af621543f1289038a66ac7586da29aa7dc
+  languageName: node
+  linkType: hard
+
+"sourcemap-codec@npm:^1.4.8":
+  version: 1.4.8
+  resolution: "sourcemap-codec@npm:1.4.8"
+  checksum: 10c0/f099279fdaae070ff156df7414bbe39aad69cdd615454947ed3e19136bfdfcb4544952685ee73f56e17038f4578091e12b17b283ed8ac013882916594d95b9e6
   languageName: node
   linkType: hard
 
@@ -33138,6 +33327,15 @@ __metadata:
   version: 1.0.9
   resolution: "valid-url@npm:1.0.9"
   checksum: 10c0/3995e65f9942dbcb1621754c0f9790335cec61e9e9310c0a809e9ae0e2ae91bb7fc6a471fba788e979db0418d9806639f681ecebacc869bc8c3de88efa562ee6
+  languageName: node
+  linkType: hard
+
+"validate-npm-package-name@npm:3.0.0":
+  version: 3.0.0
+  resolution: "validate-npm-package-name@npm:3.0.0"
+  dependencies:
+    builtins: "npm:^1.0.3"
+  checksum: 10c0/064f21f59aefae6cc286dd4a50b15d14adb0227e0facab4316197dfb8d06801669e997af5081966c15f7828a5e6ff1957bd20886aeb6b9d0fa430e4cb5db9c4a
   languageName: node
   linkType: hard
 

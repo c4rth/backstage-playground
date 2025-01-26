@@ -13,11 +13,9 @@ import {
   EntityDependsOnComponentsCard,
   EntityDependsOnResourcesCard,
   EntityHasComponentsCard,
-  EntityHasResourcesCard,
   EntityHasSubcomponentsCard,
   EntityHasSystemsCard,
   EntityLayout,
-  EntityLinksCard,
   EntitySwitch,
   EntityOrphanWarning,
   EntityProcessingErrorsPanel,
@@ -60,6 +58,9 @@ import {
   isAzureDevOpsAvailable,
   isAzurePipelinesAvailable,
 } from '@backstage-community/plugin-azure-devops';
+
+// Spectral 
+import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-platform';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -270,6 +271,10 @@ const apiPage = (
           <EntityApiDefinitionCard />
         </Grid>
       </Grid>
+    </EntityLayout.Route>
+
+    <EntityLayout.Route if={isApiDocsSpectralLinterAvailable} path="/linter" title="Linter">
+      <EntityApiDocsSpectralLinterContent />
     </EntityLayout.Route>
   </EntityLayout>
 );

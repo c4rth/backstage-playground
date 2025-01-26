@@ -1,13 +1,7 @@
-# api-platform
+## Spectral plugin 
 
-Welcome to the api-platform plugin!
+from https://github.com/dweber019/backstage-plugins/tree/main/plugins/api-docs-spectral-linter
 
-_This plugin was created through the Backstage CLI_
-
-## Getting started
-
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/api-platform](http://localhost:3000/api-platform).
-
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+Changes:
+- split component in routed and not-routed
+  allow to show in api-platform definition card
