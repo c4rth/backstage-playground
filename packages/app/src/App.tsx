@@ -53,7 +53,7 @@ import { EntityValidationPage } from '@backstage-community/plugin-entity-validat
 import { ApiPlatformDefinitionPage, ApiPlatformExplorerPage, ServiceExplorerPage } from '@internal/plugin-api-platform';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
-import { TechDocsAddons } from '@backstage/plugin-techdocs-react/index';
+import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 
 const app = createApp({
   apis,

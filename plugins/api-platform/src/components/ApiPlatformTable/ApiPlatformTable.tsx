@@ -27,7 +27,7 @@ const columns: TableColumn[] = [
         render: ({ entity, api }: any) => {
             return (
                 <Link to={api.name}>
-                    <ApiDisplayName 
+                    <ApiDisplayName
                         entityRef={entity}
                     />
                 </Link>
@@ -38,10 +38,10 @@ const columns: TableColumn[] = [
         title: 'Description',
         field: 'api.description',
         width: '50%',
-        render: ({api} : any) => {
-           return(
+        render: ({ api }: any) => {
+            return (
                 <OverflowTooltip text={api.description} line={2} />
-           )
+            )
         },
     },
     {
@@ -71,6 +71,7 @@ export const ApiPlatformTable = () => {
             options={{
                 search: true,
                 paging: true,
+                padding: 'dense',
                 pageSize: 15,
                 showEmptyDataSourceMessage: !loading,
             }}
