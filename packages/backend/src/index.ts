@@ -102,9 +102,6 @@ backend.add(createBackendModule({
 
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
-// kubernetes
-// backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
-
 // notifications plugin
 backend.add(import('@backstage/plugin-signals-backend'));
 backend.add(import('@backstage/plugin-notifications-backend'));
@@ -114,6 +111,9 @@ backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-dev
 
 // Actions
 backend.add(import('@parfuemerie-douglas/scaffolder-backend-module-azure-repositories'))
+
+// Kubernetes
+backend.add(import('@backstage/plugin-kubernetes-backend'));
 
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));

@@ -39,6 +39,8 @@ import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/
 // Api Platform
 import CodeIcon from '@material-ui/icons/Code';
 import MuiMemoryIcon from '@material-ui/icons/Memory';
+// Kiali
+import { KialiIcon } from '@backstage-community/plugin-kiali';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -134,6 +136,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
               errorPage={<div />}
             />
+            <SidebarDivider />
+          <SidebarSubmenuItem icon={KialiIcon} to="kiali" title="Kiali" />
           </SidebarSubmenu>
         </SidebarItem>        {/* End global nav */}
         <SidebarDivider />
