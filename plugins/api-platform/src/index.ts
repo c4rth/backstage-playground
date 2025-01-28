@@ -1,4 +1,4 @@
-export { apiPlatformPlugin, ApiPlatformPage, ApiPlatformDefinitionPage } from './plugin';
+export { apiPlatformPlugin, ApiPlatformExplorerPage, ApiPlatformDefinitionPage, ServiceExplorerPage } from './plugin';
 
 export { isApiDocsSpectralLinterAvailable } from './lib/helper';
 export {

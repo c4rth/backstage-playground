@@ -50,7 +50,6 @@ import {
 } from '@backstage/catalog-model';
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
 // Azure Devops
 import {
@@ -61,11 +60,12 @@ import {
 
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-platform';
+import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
-      <ReportIssue />
+      <Mermaid />
     </TechDocsAddons>
   </EntityTechdocsContent>
 );

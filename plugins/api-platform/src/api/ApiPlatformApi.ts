@@ -21,7 +21,6 @@ export class ApiPlatformClient implements ApiPlatformApi {
     this.fetchApi = options.fetchApi;
   }
 
-
   async listApis(): Promise<{ items: Entity[] }> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(

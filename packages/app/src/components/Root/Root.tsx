@@ -36,8 +36,9 @@ import { useApp } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-// Api
+// Api Platform
 import CodeIcon from '@material-ui/icons/Code';
+import MuiMemoryIcon from '@material-ui/icons/Memory';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -117,10 +118,13 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               to="catalog?filters[kind]=user"
               icon={useApp().getSystemIcon('kind:user')}
             />
+            <SidebarDivider />
+            <SidebarSubmenuItem icon={CodeIcon} to="api-docs" title="APIs" />
           </SidebarSubmenu>
         </SidebarItem>
-        <SidebarItem icon={CodeIcon} to="api-docs" text="APIs" />
-        <SidebarItem icon={CodeIcon} to="api-platform" text="API Platform" />
+        <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
+        <SidebarItem icon={MuiMemoryIcon} to="catalog?filters[kind]=component&filters[type]=service" text="Services" />
+        <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Scaffolder" />
         <SidebarItem icon={BuildIcon} text="Tools">

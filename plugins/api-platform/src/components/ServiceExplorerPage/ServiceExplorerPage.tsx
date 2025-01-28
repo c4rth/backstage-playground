@@ -4,22 +4,22 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import React from 'react';
-import { ApiPlatformTable } from '../ApiPlatformTable';
+import { ServiceTable } from '../ServiceTable';
 
-export const ApiPlatformExplorerPage = () => {
+export const ServiceExplorerPage = () => {
 
   const configApi = useApi(configApiRef);
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`;
+  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
 
   return (
     <PageWithHeader
       themeId="apis"
-      title="APIs"
+      title="Services"
       subtitle={generatedSubtitle}
-      pageTitleOverride="APIs"
+      pageTitleOverride="Services"
     >
       <Content>
-        <ApiPlatformTable />
+        <ServiceTable />
       </Content>
     </PageWithHeader>
   );

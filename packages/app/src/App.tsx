@@ -50,7 +50,10 @@ import { NotificationsPage } from '@backstage/plugin-notifications';
 import { AutoLogout } from '@backstage/core-components';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
-import { ApiPlatformDefinitionPage, ApiPlatformPage } from '@internal/plugin-api-platform';
+import { ApiPlatformDefinitionPage, ApiPlatformExplorerPage, ServiceExplorerPage } from '@internal/plugin-api-platform';
+// Mermaid
+import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
+import { TechDocsAddons } from '@backstage/plugin-techdocs-react/index';
 
 const app = createApp({
   apis,
@@ -102,8 +105,11 @@ const routes = (
     </Route>
     <Route
       path="/docs/:namespace/:kind/:name/*"
-      element={<TechDocsReaderPage />}
-    />
+      element={<TechDocsReaderPage />}>
+        <TechDocsAddons>
+          <Mermaid />
+        </TechDocsAddons>
+    </Route>
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
     <Route
@@ -121,8 +127,9 @@ const routes = (
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
     <Route path="/entity-validation" element={<EntityValidationPage />} />
-    <Route path="/api-platform" element={<ApiPlatformPage />} />
-    <Route path="/api-platform/:name" element={<ApiPlatformDefinitionPage />} />
+    <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
+    <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
+    <Route path="/api-platform/service" element={<ServiceExplorerPage />} />
   </FlatRoutes>
 );
 

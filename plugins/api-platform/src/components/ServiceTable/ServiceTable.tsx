@@ -2,8 +2,6 @@ import {
     ResponseErrorPanel,
     Table,
     TableColumn,
-    Link,
-    OverflowTooltip,
 } from '@backstage/core-components';
 import {
     getEntityRelations,
@@ -12,37 +10,48 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import React from 'react';
-import { useGetApis } from '../../hooks';
 import { Box } from '@material-ui/core';
 import {
-    API_PLATFORM_API_NAME_ANNOTATION,
+    API_PLATFORM_SERVICE_NAME_ANNOTATION,
+    API_PLATFORM_SERVICE_VERSION_ANNOTATION,
 } from '@internal/plugin-api-platform-common';
-import { ApiDisplayName } from './ApiDisplayName';
+import { useGetServices } from '../../hooks';
 
 const columns: TableColumn[] = [
     {
         title: 'Name',
         width: '25%',
-        field: 'api.name',
-        render: ({ entity, api }: any) => {
-            return (
-                <Link to={api.name}>
-                    <ApiDisplayName 
-                        entityRef={entity}
-                    />
-                </Link>
-            );
-        },
+        field: 'service.name'
     },
     {
-        title: 'Description',
-        field: 'api.description',
-        width: '50%',
-        render: ({api} : any) => {
-           return(
-                <OverflowTooltip text={api.description} line={2} />
-           )
-        },
+        title: 'Version',
+        width: '5%',
+        field: 'service.version'
+    },
+    {
+        title: 'TST',
+        field: 'service.environment',
+        width: '10%',
+    },
+    {
+        title: 'GTU',
+        field: 'service.environment',
+        width: '10%',
+    },
+    {
+        title: 'UAT',
+        field: 'service.environment',
+        width: '10%',
+    },
+    {
+        title: 'PTP',
+        field: 'service.environment',
+        width: '10%',
+    },
+    {
+        title: 'PRD',
+        field: 'service.environment',
+        width: '10%',
     },
     {
         title: 'Owner',
@@ -57,9 +66,8 @@ const columns: TableColumn[] = [
     },
 ];
 
-
-export const ApiPlatformTable = () => {
-    const { items, loading, error } = useGetApis();
+export const ServiceTable = () => {
+    const { items, loading, error } = useGetServices();
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
@@ -77,7 +85,7 @@ export const ApiPlatformTable = () => {
             title={
                 <Box display="flex" alignItems="center">
                     <Box mr={1} />
-                    APIs ({items ? items.length : 0})
+                    Services ({items ? items.length : 0})
                 </Box>
             }
             data={rows ?? []}
@@ -90,9 +98,11 @@ function toEntityRow(entity: Entity) {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
         entity,
-        api: {
-            name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION],
+        service: {
+            name: entity.metadata[API_PLATFORM_SERVICE_NAME_ANNOTATION],
             description: entity.metadata.description || '',
+            environment: entity.spec?.lifecycle,
+            version: entity.metadata[API_PLATFORM_SERVICE_VERSION_ANNOTATION],
         },
         resolved: {
             entityRef: stringifyEntityRef(entity),

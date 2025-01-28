@@ -26,7 +26,7 @@ export const apiPlatformPlugin = createPlugin({
   },
 });
 
-export const ApiPlatformPage = apiPlatformPlugin.provide(
+export const ApiPlatformExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
     name: 'ApiPlatformPage',
     component: () =>
@@ -44,6 +44,19 @@ export const ApiPlatformDefinitionPage = apiPlatformPlugin.provide(
     },
   }),
 );
+
+//-------------------------------------------------------------------------------------------------
+
+export const ServiceExplorerPage = apiPlatformPlugin.provide(
+  createRoutableExtension({
+    name: 'ServicePage',
+    component: () =>
+      import('./components/ServiceExplorerPage').then(m => m.ServiceExplorerPage),
+    mountPoint: rootRouteRef,
+  }),
+);
+
+//-------------------------------------------------------------------------------------------------
 
 /**
 * The Backstage plugin that holds API docs spectral linter specific components
