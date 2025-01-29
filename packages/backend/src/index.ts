@@ -111,6 +111,7 @@ backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-dev
 
 // Actions
 backend.add(import('@parfuemerie-douglas/scaffolder-backend-module-azure-repositories'))
+backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
 
 // Kubernetes
 backend.add(import('@backstage/plugin-kubernetes-backend'));
