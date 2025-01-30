@@ -6,7 +6,6 @@ import { Grid, makeStyles } from '@material-ui/core';
 import React from 'react';
 import JiraIcon from '../icons/JiraIcon';
 import ConfluenceIcon from '../icons/ConfluenceIcon';
-import QuickAccess from './QuickAccess';
 
 const useStyles = makeStyles(theme => ({
     searchBarInput: {
