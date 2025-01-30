@@ -9,4 +9,4 @@ spec:
     - ./apis.yaml
     - ./components.yaml
     - ./docs/techdocs/catalog-info.yaml
-    - ./templates.yaml
+    #- ./templates.yaml
