@@ -5,3 +5,77 @@ backend:
   database:
     connection:
       host: 127.0.0.1
+
+auth:
+  autologout:
+    enabled: true
+    idleTimeoutMinutes: 10
+  environment: development
+  providers:
+    guest:
+      dangerouslyAllowOutsideDevelopment: true
+      userEntityRef: user:default/guest
+    microsoft:
+      development:
+        clientId: ${AZURE_AUTH_CLIENT_ID}
+        clientSecret: ${AZURE_AUTH_CLIENT_SECRET}
+        tenantId: ${AZURE_AUTH_TENANT_ID}
+        domainHint: ${AZURE_AUTH_TENANT_ID}
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+            
+catalog:
+  locations:
+  # Local example data, file locations are relative to the backend process, typically `packages/backend`
+  - type: file
+    target: ../../examples/catalog-info.yaml
+    rules:
+      - allow: 
+        - Component
+        - System
+        - API
+        - Resource
+        - Template
+        - Domain
+        - Location
+        - Group
+        - User
+  - type: file
+    target: ../../examples/docs/techdocs/catalog-info.yaml
+  - type: file
+    target: ../../examples/templates/azdo-template/template.yaml
+  - type: file
+    target: ../../examples/templates/template/template.yaml
+  - type: file
+    target: ../../examples/templates/azdo-run1-template/template.yaml
+  - type: file
+    target: ../../examples/templates/azdo-run2-template/template.yaml
+  - type: file
+    target: ../../examples/templates/azdo-run3-template/template.yaml
+  - type: file
+    target: ../../examples/templates/azdo-run4-template/template.yaml
+    
+#    - type: file
+#      target: ../../examples/docs/monorepo/catalog-info.yaml
+
+  # Local example template      
+#    - type: file
+#      target: ../../examples/templates/azdo-template/template.yaml
+#      rules:
+#        - allow: [Template]
+
+#    - type: file
+#      target: ../../examples/templates/template/template.yaml
+#      rules:
+#        - allow: [Template]
+
+  # Uncomment these lines to add more example data
+  #- type: url
+  #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
+
+#   ## Uncomment these lines to add an example org
+#   # - type: url
+#   #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
+#   #   rules:
+#   #     - allow: [User, Group]

@@ -38,8 +38,6 @@ backend:
   baseUrl: http://localhost:7007
   listen:
     port: 7007
-    # Uncomment for docker compose
-    # host: 0.0.0.0
   csp:
     connect-src: ["'self'", "http:", "https:"]
     img-src: ["'self'", "http:", "https:", "data:", "blob:"]
@@ -49,9 +47,7 @@ backend:
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
 
   cors:
-    # dockercompose
     origin: http://localhost:3000
-    #origin: http://localhost:7007
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE, OPTIONS, CONNECT, TRACE]
     credentials: true
     Access-Control-Allow-Origin: '*'
@@ -59,8 +55,6 @@ backend:
   database:
     client: pg
     connection:
-      # Uncomment for docker compose
-      # host: postgres-db
       #host: 127.0.0.1
       port: 5432
       user: postgres
@@ -120,25 +114,6 @@ techdocs:
     type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
     local:
       publishDirectory: "../../publisher-docs"
-
-auth:
-  autologout:
-    enabled: true
-    idleTimeoutMinutes: 10
-  environment: development
-  providers:
-    guest:
-      dangerouslyAllowOutsideDevelopment: true
-      userEntityRef: user:default/guest
-    microsoft:
-      development:
-        clientId: ${AZURE_AUTH_CLIENT_ID}
-        clientSecret: ${AZURE_AUTH_CLIENT_SECRET}
-        tenantId: ${AZURE_AUTH_TENANT_ID}
-        domainHint: ${AZURE_AUTH_TENANT_ID}
-        signIn:
-          resolvers:
-            - resolver: emailMatchingUserEntityProfileEmail
 
 #scaffolder:
 # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -218,60 +193,6 @@ catalog:
           frequency: { hours: 6 }
           timeout: { minutes: 5 }
           initialDelay: { seconds: 15 }
-
-  locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
-    - type: file
-      target: ../../examples/catalog-info.yaml
-      rules:
-        - allow: 
-          - Component
-          - System
-          - API
-          - Resource
-          - Template
-          - Domain
-          - Location
-          - Group
-          - User
-    - type: file
-      target: ../../examples/docs/techdocs/catalog-info.yaml
-    - type: file
-      target: ../../examples/templates/azdo-template/template.yaml
-    - type: file
-      target: ../../examples/templates/template/template.yaml
-    - type: file
-      target: ../../examples/templates/azdo-run1-template/template.yaml
-    - type: file
-      target: ../../examples/templates/azdo-run2-template/template.yaml
-    - type: file
-      target: ../../examples/templates/azdo-run3-template/template.yaml
-    - type: file
-      target: ../../examples/templates/azdo-run4-template/template.yaml
-      
-#    - type: file
-#      target: ../../examples/docs/monorepo/catalog-info.yaml
-
-    # Local example template      
-#    - type: file
-#      target: ../../examples/templates/azdo-template/template.yaml
-#      rules:
-#        - allow: [Template]
-
-#    - type: file
-#      target: ../../examples/templates/template/template.yaml
-#      rules:
-#        - allow: [Template]
-
-    # Uncomment these lines to add more example data
-    #- type: url
-    #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
-
-  #   ## Uncomment these lines to add an example org
-  #   # - type: url
-  #   #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
-  #   #   rules:
-  #   #     - allow: [User, Group]
 
 spectralLinter:
   openApiRulesetUrl: https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/spectral/.spectral.yaml

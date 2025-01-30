@@ -7,7 +7,7 @@ services:
       - POSTGRES_DB=backstage
       - PGDATA=/var/lib/postgresql/data
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata-aio:/var/lib/postgresql/data
     ports:
       - 5432:5432
     container_name: postgres-db
@@ -15,8 +15,8 @@ services:
     #hostname: localhost
     image: carth-backstage:0.0.1
     environment:
-      - AZURE_AUTH_CLIENT_ID=$AZURE_PRD_AUTH_CLIENT_ID
-      - AZURE_AUTH_CLIENT_SECRET=$AZURE_PRD_AUTH_CLIENT_SECRET
+      - AZURE_PRD_AUTH_CLIENT_ID=$AZURE_PRD_AUTH_CLIENT_ID
+      - AZURE_PRD_AUTH_CLIENT_SECRET=$AZURE_PRD_AUTH_CLIENT_SECRET
       - AZURE_AUTH_TENANT_ID=$AZURE_AUTH_TENANT_ID
       - AZURE_GRAPH_CLIENT_ID=$AZURE_GRAPH_CLIENT_ID
       - AZURE_GRAPH_CLIENT_SECRET=$AZURE_GRAPH_CLIENT_SECRET
@@ -44,4 +44,4 @@ services:
  #     - ./opa-policies:/policies
 
 volumes:
-  pgdata: {}
+  pgdata-aio: {}

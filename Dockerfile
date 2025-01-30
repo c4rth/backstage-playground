@@ -79,4 +79,4 @@ ENV NODE_ENV=production
 # Also disables node snapshot for Node 20 to work with the Scaffolder
 ENV NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot"
 
-CMD ["sh" ,"-c", "node packages/backend --config /app/app-config.yaml --config /app/app-config-docker.yaml"]
+CMD ["sh" ,"-c", "node packages/backend --config /app/app-config.yaml --config /app/app-config.docker.yaml"]
