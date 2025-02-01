@@ -32,6 +32,7 @@
     "@backstage/backend-defaults": "^0.7.0",
     "@backstage/backend-plugin-api": "^1.1.1",
     "@backstage/catalog-client": "^1.9.1",
+    "@backstage/catalog-model": "^1.7.3",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-backend": "^1.30.0",
     "@backstage/plugin-catalog-node": "^1.15.1",

@@ -1,7 +1,7 @@
 import {
-    CardTab,
     CodeSnippet,
-    TabbedCard,
+    InfoCard,
+    TabbedLayout,
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
 import React from 'react';
@@ -31,8 +31,13 @@ const useStyles = makeStyles(
                 verticalAlign: 'middle',
             },
         },
+        gridItemCard: {
+            display: 'flex',
+            flexDirection: 'column',
+            height: 'calc(100% - 10px)', // for pages without content header
+            marginBottom: '10px',
+        },
     }),
-    { name: 'CatalogReactEntityDisplayName' },
 );
 
 export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
@@ -55,58 +60,58 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
     <type>yaml</type>
 </dependency>
 `;
+    const cardClass = classes.gridItemCard;
 
     return (
-        <TabbedCard title="" >
-            <CardTab label='OpenApi' key="widget">
+        <TabbedLayout>
+            <TabbedLayout.Route path="/" title="OpenApi">
                 <OpenApiDefinitionWidget definition={apiEntity.spec.definition.toString()} />
-            </CardTab>
-            <CardTab label="Raw" key="raw">
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/raw" title="Raw">
                 <PlainApiDefinitionWidget
                     definition={apiEntity.spec.definition}
                     language={apiEntity.spec.type}
                 />
-            </CardTab>
+            </TabbedLayout.Route>
             {isApiDocsSpectralLinterAvailable(apiEntity) ?
-                <CardTab label="Linter" key="linter">
+                <TabbedLayout.Route path="/linter" title="Linter">
                     <EntityApiDocsSpectralLinterCard entity={apiEntity} />
-                </CardTab>
+                </TabbedLayout.Route>
                 : <div />
             }
-            <CardTab label="Info" key="info" className="m-3">
-                <Box sx={{ mb: 4 }}>
-                    <AboutField
-                        label="API reference"
-                        gridSizes={{ xs: 12 }}
-                    >
-                        <EntityRefLink entityRef={apiEntity!} />
-                    </AboutField>
-                </Box>
-                <AboutContent entity={apiEntity} />
-                <Box sx={{ mt: 5 }}>
-                    <AboutField
-                        label="Azure Artifact"
-                        gridSizes={{ xs: 12 }}
-                    >
-                        <Link to={artifactUrl} target="_blank" rel="noopener noreferrer" >
-                            <Box component="span" className={classes.root}>
-                                <Box component="span" className={classes.icon}>
-                                    <CloudCircleIcon fontSize="inherit" />
+            <TabbedLayout.Route path="/info" title="Info">
+                <InfoCard title='About' divider className={cardClass}>
+                    <Box sx={{ mb: 4 }}>
+                        <AboutField
+                            label="API reference"
+                            gridSizes={{ xs: 12 }} >
+                            <EntityRefLink entityRef={apiEntity!} />
+                        </AboutField>
+                    </Box>
+                    <AboutContent entity={apiEntity} />
+                    <Box sx={{ mt: 5 }}>
+                        <AboutField
+                            label="Azure Artifact"
+                            gridSizes={{ xs: 12 }} >
+                            <Link to={artifactUrl} target="_blank" rel="noopener noreferrer" >
+                                <Box component="span" className={classes.root}>
+                                    <Box component="span" className={classes.icon}>
+                                        <CloudCircleIcon fontSize="inherit" />
+                                    </Box>
+                                    {artifactText}
                                 </Box>
-                                {artifactText}
-                            </Box>
-                        </Link>
-                    </AboutField>
-                </Box>
-                <Box sx={{ mt: 5 }}>
-                    <AboutField
-                        label="Get this package"
-                        gridSizes={{ xs: 4 }}
-                    >
-                        <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
-                    </AboutField>
-                </Box>
-            </CardTab>
-        </TabbedCard >
+                            </Link>
+                        </AboutField>
+                    </Box>
+                    <Box sx={{ mt: 5 }}>
+                        <AboutField
+                            label="Get this package"
+                            gridSizes={{ xs: 4 }}>
+                            <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
+                        </AboutField>
+                    </Box>
+                </InfoCard>
+            </TabbedLayout.Route>
+        </TabbedLayout>
     );
 }

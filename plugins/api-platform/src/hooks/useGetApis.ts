@@ -1,5 +1,5 @@
 
-import { apiPlatformApiRef } from '../api';
+import { apiPlatformBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { Entity } from '@backstage/catalog-model';
@@ -11,7 +11,7 @@ export function useGetApis(
     error?: Error;
 } {
 
-    const api = useApi(apiPlatformApiRef);
+    const api = useApi(apiPlatformBackendApiRef);
 
     const { value, loading, error } = useAsync(() => {
         return api.listApis();

@@ -5,6 +5,7 @@ import {
 import { createRouter } from './router';
 import { createApiPlatformService } from './services/ApiPlatformService';
 import { createCatalogPlatformService } from './services/CatalogPlatformService';
+import { createServicePlatformService } from './services/ServicePlatformService';
 import { CatalogClient } from '@backstage/catalog-client';
 
 /**
@@ -41,11 +42,17 @@ export const apiPlatformPlugin = createBackendPlugin({
           catalogClient,
           auth,
         });
+        const servicePlatformService = await createServicePlatformService({
+          logger,
+          catalogClient,
+          auth
+        });
 
         httpRouter.use(
           await createRouter({
             apiPlatformService,
-            catalogPlatformService
+            catalogPlatformService,
+            servicePlatformService,
           }),
         );
         httpRouter.addAuthPolicy({

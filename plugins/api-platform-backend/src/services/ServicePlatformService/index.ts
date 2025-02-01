@@ -1,1 +1,1 @@
-export { servicePlatformService as createApiPlatformService} from './servicePlatformService';
+export { servicePlatformService as createServicePlatformService} from './servicePlatformService';

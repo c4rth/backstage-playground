@@ -1,6 +1,4 @@
-import { Entity } from '@backstage/catalog-model';
-import MuiMemoryIcon from '@material-ui/icons/Memory';
-import { API_PLATFORM_SERVICE_NAME_ANNOTATION } from '@internal/plugin-api-platform-common';
+import ExtensionIcon from '@material-ui/icons/Extension';
 import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
 import React from 'react';
@@ -25,23 +23,20 @@ const useStyles = makeStyles(
     { name: 'CatalogReactEntityDisplayName' },
 );
 
-export type ServiceDisplayNameProps = {
-    entityRef: Entity;
+export type ApiPlatformDisplayNameProps = {
+    name: string;
 };
 
-export const ServiceDisplayName = (
-    props: ServiceDisplayNameProps,
+export const ApiPlatformDisplayName = (
+    props: ApiPlatformDisplayNameProps,
 ): JSX.Element => {
-    const { entityRef } = props;
 
     const classes = useStyles();
-    const primaryTitle = entityRef.metadata[API_PLATFORM_SERVICE_NAME_ANNOTATION]?.toString() || 'service-name not found';
-
-    let content = <div>{primaryTitle}</div>;
+    let content = <div>{props.name}</div>;
     content = (
         <Box component="span" className={classes.root}>
             <Box component="span" className={classes.icon}>
-                <MuiMemoryIcon fontSize="inherit" />
+                <ExtensionIcon fontSize="inherit" />
             </Box>
             {content}
         </Box>

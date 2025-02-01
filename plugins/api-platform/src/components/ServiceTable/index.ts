@@ -1,1 +1,0 @@
-export { ServiceTable } from './ServiceTable';

@@ -56,6 +56,7 @@ import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 // Kiali
 import { KialiPage } from '@backstage-community/plugin-kiali';
+import { ServicePlatformDefinitionPage } from '@internal/plugin-api-platform/src/plugin';
 
 const app = createApp({
   apis,
@@ -133,6 +134,7 @@ const routes = (
     <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
     <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
     <Route path="/api-platform/service" element={<ServiceExplorerPage />} />
+    <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
   </FlatRoutes>
 );
 

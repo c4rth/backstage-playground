@@ -5,10 +5,12 @@ import { InputError } from '@backstage/errors';
 import lodash from 'lodash';
 import { ApiPlatformService } from './services/ApiPlatformService/types';
 import { CatalogPlatformService } from './services/CatalogPlatformService/types';
+import { ServicePlatformService } from './services/ServicePlatformService/types';
 
 export interface RouterOptions {
   apiPlatformService: ApiPlatformService;
   catalogPlatformService: CatalogPlatformService;
+  servicePlatformService: ServicePlatformService;
 }
 
 function validateRequestBody(req: Request) {
@@ -26,23 +28,23 @@ function validateRequestBody(req: Request) {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { apiPlatformService, catalogPlatformService } = options;
+  const { apiPlatformService, catalogPlatformService, servicePlatformService } = options;
   const router = Router();
   router.use(express.json());
 
-  router.get('/', async (_req, res) => {
+  router.get('/apis', async (_req, res) => {
     res.json(await apiPlatformService.listApis());
   });
 
-  router.get('/:apiName', async (req, res) => {
+  router.get('/apis/:apiName', async (req, res) => {
     res.json(await apiPlatformService.getApiVersions({ apiName: req.params.apiName }));
   });
 
-  router.get('/:apiName/:apiVersion', async (req, res) => {
+  router.get('/apis/:apiName/:apiVersion', async (req, res) => {
     res.json(await apiPlatformService.getApiMatchingVersion({ apiName: req.params.apiName, apiVersion: req.params.apiVersion }));
   });
 
-  router.post('/location', async (req, res) => {
+  router.post('/locations', async (req, res) => {
     console.log(" locations");
     validateRequestBody(req);
     const target: string = req.body.target;
@@ -50,6 +52,14 @@ export async function createRouter(
       throw new InputError('Invalid request body');
     }
     res.status(201).json(await catalogPlatformService.registerCatalogInfo({target: target}));
+  });
+
+  router.get('/services', async (_req, res) => {
+    res.json(await servicePlatformService.listServices());
+  });
+
+  router.get('/services/:serviceName', async (req, res) => {
+    res.json(await servicePlatformService.getServiceVersions({ serviceName: req.params.serviceName }));
   });
 
   return router;

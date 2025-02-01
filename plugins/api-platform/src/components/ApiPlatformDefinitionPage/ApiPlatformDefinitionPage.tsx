@@ -13,6 +13,7 @@ import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
 import { ApiPlatformDefinitionCard } from './ApiPlatformDefinitionCard';
+import { Box } from '@material-ui/core';
 
 export const ApiPlatformDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
@@ -59,7 +60,9 @@ export const ApiPlatformDefinitionPage = () => {
       title={`API - ${name}`}
       subtitle={generatedSubtitle}>
       <Content>
-        <Select onChange={(selected) => { setSelectedVersion(selected.toString()) }} label="Versions" items={versions} selected={selectedVersion} />
+        <Box mb={1}>
+          <Select onChange={(selected) => { setSelectedVersion(selected.toString()) }} label="Versions" items={versions} selected={selectedVersion} />
+        </Box>
         {apiEntity ?
           <ApiPlatformDefinitionCard apiEntity={apiEntity!} />
           : <div />

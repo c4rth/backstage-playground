@@ -33,6 +33,9 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack"
   },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.3"
+  },
   "devDependencies": {
     "@backstage/cli": "^0.29.6"
   }

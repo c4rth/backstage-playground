@@ -2,7 +2,7 @@ import { ApiVersionDefinition } from "@internal/plugin-api-platform-common";
 
 export interface ApiPlatformService {
 
-  listApis(): Promise<{ items: any[] }>;
+  listApis(): Promise<{ items: ApiVersionDefinition[] }>;
 
   getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]>;
 

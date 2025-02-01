@@ -7,7 +7,7 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-import { ApiPlatformClient, apiPlatformApiRef } from './api';
+import { ApiPlatformBackendClient, apiPlatformBackendApiRef } from './api';
 import { rootRouteRef } from './routes';
 import { linterApiRef, LinterClient } from './api';
 
@@ -15,10 +15,10 @@ export const apiPlatformPlugin = createPlugin({
   id: 'api-platform',
   apis: [
     createApiFactory({
-      api: apiPlatformApiRef,
+      api: apiPlatformBackendApiRef,
       deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
       factory: ({ discoveryApi, fetchApi }) =>
-        new ApiPlatformClient({ discoveryApi, fetchApi }),
+        new ApiPlatformBackendClient({ discoveryApi, fetchApi }),
     }),
   ],
   routes: {
@@ -51,17 +51,23 @@ export const ServiceExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
     name: 'ServicePage',
     component: () =>
-      import('./components/ServiceExplorerPage').then(m => m.ServiceExplorerPage),
+      import('./components/ServicePlatformExplorerPage').then(m => m.ServicePlatformExplorerPage),
     mountPoint: rootRouteRef,
+  }),
+);
+
+export const ServicePlatformDefinitionPage = apiPlatformPlugin.provide(
+  createComponentExtension({
+    name: 'ServicePlatformDefinitionPage',
+    component: {
+      lazy: () =>
+        import('./components/ServicePlatformDefinitionPage').then(m => m.ServicePlatformDefinitionPage),
+    },
   }),
 );
 
 //-------------------------------------------------------------------------------------------------
 
-/**
-* The Backstage plugin that holds API docs spectral linter specific components
-* @public
-*/
 export const apiDocsSpectralLinterPlugin = createPlugin({
   id: 'api-docs-spectral-linter',
   apis: [
@@ -81,10 +87,6 @@ export const apiDocsSpectralLinterPlugin = createPlugin({
 });
 
 
-/**
- * An extension for browsing API docs spectral linter on an entity page.
- * @public
- */
 export const EntityApiDocsSpectralLinterContent =
   apiDocsSpectralLinterPlugin.provide(
     createRoutableExtension({

@@ -17,18 +17,19 @@ import { Box } from '@material-ui/core';
 import {
     API_PLATFORM_API_NAME_ANNOTATION,
 } from '@internal/plugin-api-platform-common';
-import { ApiDisplayName } from './ApiDisplayName';
+import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
 
 const columns: TableColumn[] = [
     {
         title: 'Name',
         width: '25%',
         field: 'api.name',
-        render: ({ entity, api }: any) => {
+        highlight: true,
+        render: ({ api }: any) => {
             return (
                 <Link to={api.name}>
-                    <ApiDisplayName
-                        entityRef={entity}
+                    <ApiPlatformDisplayName
+                        name={api.name}
                     />
                 </Link>
             );
@@ -90,9 +91,8 @@ export const ApiPlatformTable = () => {
 function toEntityRow(entity: Entity) {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
-        entity,
         api: {
-            name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION],
+            name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION]?.toString() || '?',
             description: entity.metadata.description || '',
         },
         resolved: {

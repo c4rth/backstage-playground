@@ -7,6 +7,6 @@ spec:
   targets:
     - ./org.yaml
     - ./apis.yaml
-    - ./components.yaml
+    #- ./components.yaml
     - ./docs/techdocs/catalog-info.yaml
     #- ./templates.yaml
