@@ -3,14 +3,18 @@ import { Request } from 'express';
 import Router from 'express-promise-router';
 import { InputError } from '@backstage/errors';
 import lodash from 'lodash';
-import { ApiPlatformService } from './services/ApiPlatformService/types';
-import { CatalogPlatformService } from './services/CatalogPlatformService/types';
-import { ServicePlatformService } from './services/ServicePlatformService/types';
+import { DatabaseApiPlatformStore } from './database/apiPlatformStore';
+import { AuthService, DatabaseService, LoggerService } from '@backstage/backend-plugin-api/index';
+import { CatalogApi } from '@backstage/catalog-client/index';
+import { createApiPlatformService } from './services/ApiPlatformService';
+import { createCatalogPlatformService } from './services/CatalogPlatformService';
+import { createServicePlatformService } from './services/ServicePlatformService';
 
 export interface RouterOptions {
-  apiPlatformService: ApiPlatformService;
-  catalogPlatformService: CatalogPlatformService;
-  servicePlatformService: ServicePlatformService;
+  logger: LoggerService;  
+  catalogClient: CatalogApi;
+  database: DatabaseService;
+  auth: AuthService;
 }
 
 function validateRequestBody(req: Request) {
@@ -28,8 +32,33 @@ function validateRequestBody(req: Request) {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { apiPlatformService, catalogPlatformService, servicePlatformService } = options;
+  const { logger, catalogClient, database, auth } = options;
   const router = Router();
+
+  const apiPlatformStore = await DatabaseApiPlatformStore.create({
+    database,
+    skipMigrations: false,
+    logger,
+  });
+
+
+  const apiPlatformService = await createApiPlatformService({
+    logger,
+    catalogClient,
+    auth,
+  });
+  const catalogPlatformService = await createCatalogPlatformService({
+    logger,
+    catalogClient,
+    auth,
+  });
+  const servicePlatformService = await createServicePlatformService({
+    logger,
+    catalogClient,
+    apiPlatformStore,
+    auth
+  });
+
   router.use(express.json());
 
   router.get('/apis', async (_req, res) => {
@@ -60,6 +89,25 @@ export async function createRouter(
 
   router.get('/services/:serviceName', async (req, res) => {
     res.json(await servicePlatformService.getServiceVersions({ serviceName: req.params.serviceName }));
+  });
+
+  router.get('/services/:serviceName/:serviceVersion/:containerVersion', async (req, res) => {
+    res.json(await servicePlatformService.getServiceApis({
+      serviceName: req.params.serviceName,
+      serviceVersion: req.params.serviceVersion,
+      containerVersion: req.params.containerVersion,
+    }));
+  });
+
+  router.post('/services/:serviceName/:serviceVersion/:containerVersion', async (req, res) => {
+    const apis = req.body;
+    res.json(await servicePlatformService.addServiceApis({
+      serviceName: req.params.serviceName,
+      serviceVersion: req.params.serviceVersion,
+      containerVersion: req.params.containerVersion,
+      consumedApis: apis,
+      providedApis: apis
+    }));
   });
 
   return router;

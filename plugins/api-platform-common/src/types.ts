@@ -26,3 +26,8 @@ export type ServiceDefinition = {
   owner: string;
   versions: ServiceVersionDefinition[];
 };
+
+export type ServiceApisDefinition = {
+  consumedApis?: string[],
+  providedApis?: string[],
+}

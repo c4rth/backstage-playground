@@ -2,15 +2,16 @@ import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { CatalogPlatformService } from './types';
 
-export async function catalogPlatformService({
-  logger,
-  catalogClient,
-  auth,
-}: {
+export interface CatalogPlatformServiceOptions {
   logger: LoggerService;
-  catalogClient: CatalogApi,
-  auth: AuthService,
-}): Promise<CatalogPlatformService> {
+  catalogClient: CatalogApi;
+  auth: AuthService;
+}
+
+export async function catalogPlatformService(options: CatalogPlatformServiceOptions): Promise<CatalogPlatformService> {
+
+  const {logger, catalogClient, auth } = options;
+
   logger.info('Initializing CatalogPlatformService');
 
   return {

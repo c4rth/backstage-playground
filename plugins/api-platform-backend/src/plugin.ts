@@ -3,9 +3,6 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { createApiPlatformService } from './services/ApiPlatformService';
-import { createCatalogPlatformService } from './services/CatalogPlatformService';
-import { createServicePlatformService } from './services/ServicePlatformService';
 import { CatalogClient } from '@backstage/catalog-client';
 
 /**
@@ -22,37 +19,25 @@ export const apiPlatformPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
+        database: coreServices.database,
       },
       async init({
         logger,
         httpRouter,
         discovery,
         auth,
+        database,
       }) {
         const catalogClient = new CatalogClient({
           discoveryApi: discovery,
         });
-        const apiPlatformService = await createApiPlatformService({
-          logger,
-          catalogClient,
-          auth,
-        });
-        const catalogPlatformService = await createCatalogPlatformService({
-          logger,
-          catalogClient,
-          auth,
-        });
-        const servicePlatformService = await createServicePlatformService({
-          logger,
-          catalogClient,
-          auth
-        });
 
         httpRouter.use(
           await createRouter({
-            apiPlatformService,
-            catalogPlatformService,
-            servicePlatformService,
+            logger,
+            catalogClient,
+            database,
+            auth
           }),
         );
         httpRouter.addAuthPolicy({

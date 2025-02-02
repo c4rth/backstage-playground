@@ -4,8 +4,8 @@ import { API_PLATFORM_API_NAME_ANNOTATION, API_PLATFORM_API_PROJECT_ANNOTATION, 
 import { CatalogApi } from '@backstage/catalog-client';
 import * as semver from 'semver';
 
-async function innerGetApiVersions(logger: LoggerService,  catalogClient: CatalogApi,  auth: AuthService, apiName: string): Promise<ApiVersionDefinition[]> {
-    const { token } = await auth.getPluginRequestToken({
+async function innerGetApiVersions(logger: LoggerService, catalogClient: CatalogApi, auth: AuthService, apiName: string): Promise<ApiVersionDefinition[]> {
+  const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
     targetPluginId: 'catalog',
   });
@@ -27,15 +27,14 @@ async function innerGetApiVersions(logger: LoggerService,  catalogClient: Catalo
   return versions.sort((a, b) => semver.compare(a.version, b.version)).reverse();
 }
 
-export async function apiPlatformService({
-  logger,
-  catalogClient,
-  auth,
-}: {
+export interface ApiPlatformServiceOptions {
   logger: LoggerService;
-  catalogClient: CatalogApi,
-  auth: AuthService,
-}): Promise<ApiPlatformService> {
+  catalogClient: CatalogApi;
+  auth: AuthService;
+}
+
+export async function apiPlatformService(options: ApiPlatformServiceOptions): Promise<ApiPlatformService> {
+  const { logger, catalogClient, auth } = options;
   logger.info('Initializing ApiDefinitionService');
 
   return {
@@ -67,7 +66,7 @@ export async function apiPlatformService({
       return innerGetApiVersions(logger, catalogClient, auth, request.apiName);
     },
 
-    async getApiMatchingVersion(request: { apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {      
+    async getApiMatchingVersion(request: { apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {
       const sortedVersions = await innerGetApiVersions(logger, catalogClient, auth, request.apiName);
       const filteredVersion = sortedVersions.filter(apiDef => apiDef.version.startsWith(request.apiVersion));
       if (filteredVersion.length > 0) {

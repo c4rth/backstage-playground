@@ -1,7 +1,8 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { ServicePlatformService } from './types';
-import { API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION, API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION, API_PLATFORM_SERVICE_NAME_ANNOTATION, API_PLATFORM_SERVICE_VERSION_ANNOTATION, ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+import { API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION, API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION, API_PLATFORM_SERVICE_NAME_ANNOTATION, API_PLATFORM_SERVICE_VERSION_ANNOTATION, ServiceApisDefinition, ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
+import { ApiPlatformStore } from '../../database/apiPlatformStore';
 
 function getFilter(serviceName?: string): EntityFilterQuery {
   if (serviceName) {
@@ -110,15 +111,16 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
   return Array.from(mapServices.values());
 }
 
-export async function servicePlatformService({
-  logger,
-  catalogClient,
-  auth,
-}: {
+export interface ServicePlatformServiceOptions {
   logger: LoggerService;
-  catalogClient: CatalogApi,
-  auth: AuthService,
-}): Promise<ServicePlatformService> {
+  catalogClient: CatalogApi;
+  apiPlatformStore: ApiPlatformStore;
+  auth: AuthService;
+}
+
+export async function servicePlatformService(options: ServicePlatformServiceOptions): Promise<ServicePlatformService> {
+  const { logger, catalogClient, apiPlatformStore, auth } = options;
+
   logger.info('Initializing ServicePlatformService');
 
   return {
@@ -129,8 +131,29 @@ export async function servicePlatformService({
     },
 
     async getServiceVersions(request: { serviceName: string }): Promise<ServiceDefinition> {
-      const services = await innerGetServices(logger, catalogClient, auth, request.serviceName);
+      const { serviceName } = request;
+      const services = await innerGetServices(logger, catalogClient, auth, serviceName);
       return services[0];
+    },
+
+    
+    async getServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string}): Promise<ServiceApisDefinition> {
+      const { serviceName, serviceVersion, containerVersion } = request;
+      logger.info(`Get service ${serviceName}-${serviceVersion}-${containerVersion}`);
+      return await apiPlatformStore.getServiceApis(serviceName, serviceVersion, containerVersion);
+    },
+    
+    async addServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string, consumedApis?: string[], providedApis?: string[]}): Promise<string> {
+      const { serviceName, serviceVersion, containerVersion, consumedApis, providedApis } = request;
+      logger.info(`Add service ${serviceName}-${serviceVersion}-${containerVersion}: ${consumedApis} ${providedApis}`);
+      await apiPlatformStore.storeServiceApis(
+        serviceName,
+        serviceVersion,
+        containerVersion,
+        consumedApis ? JSON.stringify(consumedApis) : undefined,
+        providedApis ? JSON.stringify(providedApis) : undefined
+      )
+      return "ok";
     }
   }
 
