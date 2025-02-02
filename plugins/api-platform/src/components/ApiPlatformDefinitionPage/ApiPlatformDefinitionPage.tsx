@@ -63,10 +63,12 @@ export const ApiPlatformDefinitionPage = () => {
         <Box mb={1}>
           <Select onChange={(selected) => { setSelectedVersion(selected.toString()) }} label="Versions" items={versions} selected={selectedVersion} />
         </Box>
-        {apiEntity ?
-          <ApiPlatformDefinitionCard apiEntity={apiEntity!} />
-          : <div />
-        }
+        <Box mb={-3}>
+          {apiEntity ?
+            <ApiPlatformDefinitionCard apiEntity={apiEntity!} />
+            : <div />
+          }
+        </Box>
       </Content>
     </PageWithHeader>
   );

@@ -104,10 +104,13 @@ export const ServicePlatformDefinitionPage = () => {
             </Grid>
           </Grid>
         </Box>
-        {serviceEntity ?
-          <ServicePlatformDefinitionCard serviceEntity={serviceEntity} />
-          : <div />
-        }
+
+        <Box mb={-3}>
+          {serviceEntity ?
+            <ServicePlatformDefinitionCard serviceEntity={serviceEntity} />
+            : <div />
+          }
+        </Box>
       </Content>
     </PageWithHeader>
   );

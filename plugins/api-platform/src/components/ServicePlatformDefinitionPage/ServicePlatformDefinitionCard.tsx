@@ -118,6 +118,7 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
     const containerName = serviceEntity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString();
     const containerVersion = serviceEntity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString();
     return (
+
         <EntityProvider entity={props.serviceEntity}>
             <TabbedLayout>
                 <TabbedLayout.Route path="/" title="Overview">
