@@ -2,14 +2,15 @@ import {
     EmptyState,
     InfoCard,
     TabbedLayout,
+    Link,
 } from '@backstage/core-components';
-import { ComponentEntity } from "@backstage/catalog-model"
+import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
 import React from 'react';
 import {
     EntityConsumedApisCard,
     EntityProvidedApisCard,
 } from '@backstage/plugin-api-docs';
-import { Box, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
 import { EntityProvider, EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
     EntitySwitch,
@@ -27,7 +28,7 @@ import {
     isAzureDevOpsAvailable,
     isAzurePipelinesAvailable,
 } from '@backstage-community/plugin-azure-devops';
-
+import DocsIcon from '@material-ui/icons/Description';
 import {
     Direction,
     EntityCatalogGraphCard,
@@ -117,15 +118,29 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
 
     const containerName = serviceEntity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString();
     const containerVersion = serviceEntity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString();
-    return (
+    const entityRef = getCompoundEntityRef(serviceEntity);
+    const hasDocs = serviceEntity.metadata.annotations?.['backstage.io/techdocs-ref'];
 
+    return (
         <EntityProvider entity={props.serviceEntity}>
             <TabbedLayout>
                 <TabbedLayout.Route path="/" title="Overview">
                     <Grid container spacing={3} alignItems="stretch">
                         {entityWarningContent}
                         <Grid item md={6}>
-                            <InfoCard title='About' divider className={classes.gridItemCard}>
+                            <InfoCard title='About' divider className={classes.gridItemCard} action={
+                                <>
+                                    <IconButton
+                                        aria-label="Documentation"
+                                        title="TechDocs"
+                                        disabled={!hasDocs}
+                                        component={Link}
+                                        to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+                                    >
+                                        <DocsIcon />
+                                    </IconButton>
+                                </>
+                            }>
                                 <Box sx={{ mb: 4 }}>
                                     <AboutField
                                         label="Service reference"
