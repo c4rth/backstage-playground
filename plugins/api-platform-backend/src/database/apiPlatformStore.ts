@@ -6,6 +6,7 @@ import {
 import { ServiceApisDefinition } from '@internal/plugin-api-platform-common';
 
 import { Knex } from 'knex';
+import { DbServicesRow } from './tables';
 
 export interface ApiPlatformStore {
 
@@ -60,20 +61,14 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
 
   async getServiceApis(service: string, version: string, containerVersion: string): Promise<ServiceApisDefinition> {
     this.logger.info(`Fetch service ${service}-${version}-${containerVersion}`);
-    const result = await this.db('services')
+    const result = await this.db<DbServicesRow>('services')
       .select('*')
       .where({ service: service, version: version, containerVersion: containerVersion })
       .first();
-    this.logger.info(`Result: ${JSON.stringify(result)}`);
+    this.logger.info(`Result: ${JSON.stringify(result)}`);    
     const def: ServiceApisDefinition = {
-      consumedApis: [
-        'x',
-        'y'
-      ],
-      providedApis: [
-        'x',
-        'y'
-      ],
+      consumedApis: result?.consumedApis ? JSON.parse(result?.consumedApis) : undefined,
+      providedApis: result?.providedApis ? JSON.parse(result?.providedApis) : undefined,
     }
     return def;
   }

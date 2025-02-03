@@ -4,8 +4,8 @@ exports.up = async function up(knex) {
       table.string('service').notNullable();
       table.string('version').notNullable();
       table.string('containerVersion').notNullable();
-      table.jsonb('providedApis');
-      table.jsonb('consumedApis');
+      table.text('providedApis');
+      table.text('consumedApis');
       table.index(['service', 'version', 'containerVersion'], 'service_version_containerVersion_index');
     });
   };
