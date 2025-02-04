@@ -106,6 +106,7 @@ backend.add(import('@backstage/plugin-signals-backend'));
 backend.add(import('@backstage/plugin-notifications-backend'));
 
 // Azure DevOps
+backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 
 // Actions

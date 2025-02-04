@@ -16,6 +16,7 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/plugin-azure-devops-backend": "^0.11.0",
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.3.0",
     "@backstage-community/plugin-kiali-backend": "^1.20.1",
     "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.4.0",

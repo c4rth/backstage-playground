@@ -1,5 +1,4 @@
 import {
-    EmptyState,
     InfoCard,
     TabbedLayout,
     Link,
@@ -13,21 +12,9 @@ import {
 import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
 import { EntityProvider, EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
-    EntitySwitch,
-    EntityOrphanWarning,
-    EntityProcessingErrorsPanel,
-    hasCatalogProcessingErrors,
-    isOrphan,
-    hasRelationWarnings,
-    EntityRelationWarning,
     AboutField,
     AboutContent,
 } from '@backstage/plugin-catalog';
-import {
-    EntityAzurePipelinesContent,
-    isAzureDevOpsAvailable,
-    isAzurePipelinesAvailable,
-} from '@backstage-community/plugin-azure-devops';
 import DocsIcon from '@material-ui/icons/Description';
 import {
     Direction,
@@ -64,52 +51,6 @@ const useStyles = makeStyles(
     }),
 );
 
-const cicdContent = (
-    <EntitySwitch>
-        <EntitySwitch.Case if={isAzureDevOpsAvailable}>
-            <EntityAzurePipelinesContent defaultLimit={25} />
-        </EntitySwitch.Case>
-        <EntitySwitch.Case if={isAzurePipelinesAvailable}>
-            <EntityAzurePipelinesContent defaultLimit={25} />
-        </EntitySwitch.Case>
-        <EntitySwitch.Case>
-            <EmptyState
-                title="No CI/CD available for this service"
-                missing="info"
-                description="You need to add an annotation to the catalog-info if you want to enable CI/CD for it."
-            />
-        </EntitySwitch.Case>
-    </EntitySwitch>
-);
-
-const entityWarningContent = (
-    <>
-        <EntitySwitch>
-            <EntitySwitch.Case if={isOrphan}>
-                <Grid item xs={12}>
-                    <EntityOrphanWarning />
-                </Grid>
-            </EntitySwitch.Case>
-        </EntitySwitch>
-
-        <EntitySwitch>
-            <EntitySwitch.Case if={hasRelationWarnings}>
-                <Grid item xs={12}>
-                    <EntityRelationWarning />
-                </Grid>
-            </EntitySwitch.Case>
-        </EntitySwitch>
-
-        <EntitySwitch>
-            <EntitySwitch.Case if={hasCatalogProcessingErrors}>
-                <Grid item xs={12}>
-                    <EntityProcessingErrorsPanel />
-                </Grid>
-            </EntitySwitch.Case>
-        </EntitySwitch>
-    </>
-);
-
 export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentEntity }) => {
 
     const { serviceEntity } = props;
@@ -122,77 +63,75 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
     const hasDocs = serviceEntity.metadata.annotations?.['backstage.io/techdocs-ref'];
 
     return (
-        <EntityProvider entity={props.serviceEntity}>
-            <TabbedLayout>
-                <TabbedLayout.Route path="/" title="Overview">
-                    <Grid container spacing={3} alignItems="stretch">
-                        {entityWarningContent}
-                        <Grid item md={6}>
-                            <InfoCard title='About' divider className={classes.gridItemCard} action={
-                                <>
-                                    <IconButton
-                                        aria-label="Documentation"
-                                        title="TechDocs"
-                                        disabled={!hasDocs}
-                                        component={Link}
-                                        to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
-                                    >
-                                        <DocsIcon />
-                                    </IconButton>
-                                </>
-                            }>
-                                <Box sx={{ mb: 4 }}>
-                                    <AboutField
-                                        label="Service reference"
-                                        gridSizes={{ xs: 12 }} >
-                                        <EntityRefLink entityRef={serviceEntity!} />
-                                    </AboutField>
-                                </Box>
-                                <Box sx={{ mb: 4 }}>
-                                    <AboutField
-                                        label="Container"
-                                        gridSizes={{ xs: 12 }} >
-                                        <div>
-                                            <Typography variant='overline' display='inline' className={classes.label}>name:</Typography>
-                                            <Box display='inline' mr={1} />
-                                            <Typography variant='body2' display='inline' className={classes.value}>{containerName}</Typography>
-                                        </div>
-                                        <div>
-                                            <Typography variant='overline' display='inline' className={classes.label}>version:</Typography>
-                                            <Box display='inline' mr={1} />
-                                            <Typography variant='body2' display='inline' className={classes.value}>{containerVersion}</Typography>
-                                        </div>
-                                    </AboutField>
-                                </Box>
-                                <AboutContent entity={serviceEntity} />
-                            </InfoCard>
+        <>
+            <EntityProvider entity={serviceEntity}>
+                <TabbedLayout>
+                    <TabbedLayout.Route path="/" title="Overview">
+                        <Grid container spacing={3} alignItems="stretch">
+                            <Grid item md={6}>
+                                <InfoCard title='About' divider className={classes.gridItemCard} action={
+                                    <>
+                                        <IconButton
+                                            aria-label="Documentation"
+                                            title="TechDocs"
+                                            disabled={!hasDocs}
+                                            component={Link}
+                                            to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+                                        >
+                                            <DocsIcon />
+                                        </IconButton>
+                                    </>
+                                }>
+                                    <Box sx={{ mb: 4 }}>
+                                        <AboutField
+                                            label="Service reference"
+                                            gridSizes={{ xs: 12 }} >
+                                            <EntityRefLink entityRef={serviceEntity!} />
+                                        </AboutField>
+                                    </Box>
+                                    <Box sx={{ mb: 4 }}>
+                                        <AboutField
+                                            label="Container"
+                                            gridSizes={{ xs: 12 }} >
+                                            <div>
+                                                <Typography variant='overline' display='inline' className={classes.label}>name:</Typography>
+                                                <Box display='inline' mr={1} />
+                                                <Typography variant='body2' display='inline' className={classes.value}>{containerName}</Typography>
+                                            </div>
+                                            <div>
+                                                <Typography variant='overline' display='inline' className={classes.label}>version:</Typography>
+                                                <Box display='inline' mr={1} />
+                                                <Typography variant='body2' display='inline' className={classes.value}>{containerVersion}</Typography>
+                                            </div>
+                                        </AboutField>
+                                    </Box>
+                                    <AboutContent entity={serviceEntity} />
+                                </InfoCard>
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                                <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} />
+                            </Grid>
                         </Grid>
-                        <Grid item md={6} xs={12}>
-                            <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} />
+                    </TabbedLayout.Route>
+                    <TabbedLayout.Route path="/api" title="API">
+                        <Grid container spacing={3} alignItems="stretch">
+                            <Grid item md={6}>
+                                <EntityProvidedApisCard />
+                            </Grid>
+                            <Grid item md={6}>
+                                <EntityConsumedApisCard />
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </TabbedLayout.Route>
-                <TabbedLayout.Route path="/cicd" title="CI/CD">
-                    {cicdContent}
-                </TabbedLayout.Route>
-                <TabbedLayout.Route path="/apis" title="API">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={6}>
-                            <EntityProvidedApisCard />
+                    </TabbedLayout.Route>
+                    <TabbedLayout.Route path="/appreg" title="App Registry">
+                        <Grid container spacing={3} alignItems="stretch">
+                            <Grid item md={12}>
+                                <Typography variant='h5'><i>Soon...</i></Typography>
+                            </Grid>
                         </Grid>
-                        <Grid item md={6}>
-                            <EntityConsumedApisCard />
-                        </Grid>
-                    </Grid>
-                </TabbedLayout.Route>
-                <TabbedLayout.Route path="/appreg" title="App Registry">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={12}>
-                            <Typography variant='h5'><i>Soon...</i></Typography>
-                        </Grid>
-                    </Grid>
-                </TabbedLayout.Route>
-            </TabbedLayout>
-        </EntityProvider>
+                    </TabbedLayout.Route>
+                </TabbedLayout>
+            </EntityProvider >
+        </>
     );
 }
