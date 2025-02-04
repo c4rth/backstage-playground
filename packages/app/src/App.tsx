@@ -50,13 +50,12 @@ import { NotificationsPage } from '@backstage/plugin-notifications';
 import { AutoLogout } from '@backstage/core-components';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
-import { ApiPlatformDefinitionPage, ApiPlatformExplorerPage, ServiceExplorerPage } from '@internal/plugin-api-platform';
+import { ApiPlatformDefinitionPage, ApiPlatformExplorerPage, ServicePlatformExplorerPage, ServicePlatformDefinitionPage } from '@internal/plugin-api-platform';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 // Kiali
 import { KialiPage } from '@backstage-community/plugin-kiali';
-import { ServicePlatformDefinitionPage } from '@internal/plugin-api-platform/src/plugin';
 
 const app = createApp({
   apis,
@@ -133,7 +132,7 @@ const routes = (
     <Route path="/entity-validation" element={<EntityValidationPage />} />
     <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
     <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
-    <Route path="/api-platform/service" element={<ServiceExplorerPage />} />
+    <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />
     <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
   </FlatRoutes>
 );

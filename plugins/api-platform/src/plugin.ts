@@ -28,7 +28,7 @@ export const apiPlatformPlugin = createPlugin({
 
 export const ApiPlatformExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
-    name: 'ApiPlatformPage',
+    name: 'ApiPlatformExplorerPage',
     component: () =>
       import('./components/ApiPlatformExplorerPage').then(m => m.ApiPlatformExplorerPage),
     mountPoint: rootRouteRef,
@@ -47,9 +47,9 @@ export const ApiPlatformDefinitionPage = apiPlatformPlugin.provide(
 
 //-------------------------------------------------------------------------------------------------
 
-export const ServiceExplorerPage = apiPlatformPlugin.provide(
+export const ServicePlatformExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
-    name: 'ServicePage',
+    name: 'ServicePlatformExplorerPage',
     component: () =>
       import('./components/ServicePlatformExplorerPage').then(m => m.ServicePlatformExplorerPage),
     mountPoint: rootRouteRef,

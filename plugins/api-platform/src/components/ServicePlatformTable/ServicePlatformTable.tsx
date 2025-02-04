@@ -12,7 +12,7 @@ import React from 'react';
 import { Box } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
-import { ServicePlatformChip } from './ServicePlarformChip';
+import { ServicePlatformChip } from './ServicePlatformChip';
 
 
 const columns: TableColumn[] = [

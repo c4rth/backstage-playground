@@ -40,8 +40,6 @@ export async function createRouter(
     skipMigrations: false,
     logger,
   });
-
-
   const apiPlatformService = await createApiPlatformService({
     logger,
     catalogClient,
