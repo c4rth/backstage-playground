@@ -325,13 +325,25 @@ const systemPage = (
         <Grid item md={6} xs={12}>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
         </Grid>
-        <Grid item md={12}>
-          <EntityHasComponentsCard variant="gridItem" />
-        </Grid>
-        <Grid item md={12}>
-          <EntityHasApisCard variant="gridItem" />
-        </Grid>
       </Grid>
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/components" title="Components">
+          <EntityHasComponentsCard variant="gridItem"
+          tableOptions={{
+            search: true,
+            paging: true,
+            pageSize: 15
+          }
+          }/>
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/apis" title="APIS">
+          <EntityHasApisCard variant="gridItem" 
+          tableOptions={{
+            search: true,
+            paging: true,
+            pageSize: 15
+          }
+          }/>
     </EntityLayout.Route>
     <EntityLayout.Route path="/diagram" title="Diagram">
       <EntityCatalogGraphCard
