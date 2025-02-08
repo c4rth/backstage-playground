@@ -1,0 +1,1 @@
+export { SystemPlatformDefinitionPage } from './SystemPlatformDefinitionPage';

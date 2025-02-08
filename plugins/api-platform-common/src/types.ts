@@ -1,3 +1,5 @@
+import { Entity } from "@backstage/catalog-model/index";
+
 export type ApiVersionDefinition = {
   entityRef: string;
   version: string;
@@ -31,3 +33,9 @@ export type ServiceApisDefinition = {
   consumedApis?: string[],
   providedApis?: string[],
 }
+
+export type SystemDefinition = {
+  entity: Entity;
+  apis: string[],
+  services: string[]
+};

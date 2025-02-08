@@ -4,6 +4,8 @@ export {
   ApiPlatformDefinitionPage, 
   ServicePlatformExplorerPage, 
   ServicePlatformDefinitionPage,
+  SystemPlatformExplorerPage,
+  SystemPlatformDefinitionPage,
   apiDocsSpectralLinterPlugin,
   EntityApiDocsSpectralLinterContent,
   EntityApiDocsSpectralLinterCard,

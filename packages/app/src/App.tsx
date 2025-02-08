@@ -50,7 +50,14 @@ import { NotificationsPage } from '@backstage/plugin-notifications';
 import { AutoLogout } from '@backstage/core-components';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
-import { ApiPlatformDefinitionPage, ApiPlatformExplorerPage, ServicePlatformExplorerPage, ServicePlatformDefinitionPage } from '@internal/plugin-api-platform';
+import { 
+  ApiPlatformDefinitionPage, 
+  ApiPlatformExplorerPage, 
+  ServicePlatformExplorerPage, 
+  ServicePlatformDefinitionPage, 
+  SystemPlatformExplorerPage,
+  SystemPlatformDefinitionPage, 
+} from '@internal/plugin-api-platform';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
@@ -134,6 +141,8 @@ const routes = (
     <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
     <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />
     <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
+    <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
+    <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
   </FlatRoutes>
 );
 

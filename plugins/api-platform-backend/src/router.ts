@@ -9,6 +9,7 @@ import { CatalogApi } from '@backstage/catalog-client/index';
 import { createApiPlatformService } from './services/ApiPlatformService';
 import { createCatalogPlatformService } from './services/CatalogPlatformService';
 import { createServicePlatformService } from './services/ServicePlatformService';
+import { createSystemPlatformService } from './services/SystemPlatformService';
 
 export interface RouterOptions {
   logger: LoggerService;  
@@ -56,6 +57,11 @@ export async function createRouter(
     apiPlatformStore,
     auth
   });
+  const systemPlatformService = await createSystemPlatformService({
+    logger,
+    catalogClient,
+    auth
+  });
 
   router.use(express.json());
 
@@ -72,7 +78,6 @@ export async function createRouter(
   });
 
   router.post('/locations', async (req, res) => {
-    console.log(" locations");
     validateRequestBody(req);
     const target: string = req.body.target;
     if (!target) {
@@ -106,6 +111,14 @@ export async function createRouter(
       consumedApis: apis,
       providedApis: apis
     }));
+  });
+
+  router.get('/systems', async (_req, res) => {
+    res.json(await systemPlatformService.listSystems());
+  });
+
+  router.get('/systems/:systemName', async (req, res) => {
+    res.json(await systemPlatformService.getSystem({ systemName: req.params.systemName }));
   });
 
   return router;

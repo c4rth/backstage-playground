@@ -68,6 +68,27 @@ export const ServicePlatformDefinitionPage = apiPlatformPlugin.provide(
 
 //-------------------------------------------------------------------------------------------------
 
+export const SystemPlatformExplorerPage = apiPlatformPlugin.provide(
+  createRoutableExtension({
+    name: 'SystemPlatformExplorerPage',
+    component: () =>
+      import('./components/SystemPlatformExplorerPage').then(m => m.SystemPlatformExplorerPage),
+    mountPoint: rootRouteRef,
+  }),
+);
+
+export const SystemPlatformDefinitionPage = apiPlatformPlugin.provide(
+  createComponentExtension({
+    name: 'SystemPlatformDefinitionPage',
+    component: {
+      lazy: () =>
+        import('./components/SystemPlatformDefinitionPage').then(m => m.SystemPlatformDefinitionPage),
+    },
+  }),
+);
+
+//-------------------------------------------------------------------------------------------------
+
 export const apiDocsSpectralLinterPlugin = createPlugin({
   id: 'api-docs-spectral-linter',
   apis: [
@@ -85,7 +106,6 @@ export const apiDocsSpectralLinterPlugin = createPlugin({
     root: rootRouteRef,
   },
 });
-
 
 export const EntityApiDocsSpectralLinterContent =
   apiDocsSpectralLinterPlugin.provide(

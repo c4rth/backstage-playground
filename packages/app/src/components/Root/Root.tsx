@@ -122,12 +122,13 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
             />
             <SidebarDivider />
             <SidebarSubmenuItem icon={CodeIcon} to="api-docs" title="APIs" />
+            <SidebarSubmenuItem icon={MuiMemoryIcon} to="catalog?filters[kind]=component&filters[type]=service" title="Services" />
+            <SidebarSubmenuItem icon={useApp().getSystemIcon('kind:system')} to="catalog?filters[kind]=system" title="Systems" />
           </SidebarSubmenu>
         </SidebarItem>
-        <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
-        <SidebarItem icon={MuiMemoryIcon} to="catalog?filters[kind]=component&filters[type]=service" text="Services (default)" />
+        <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Teams" />
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
-        <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="catalog?filters[kind]=system" text="Systems" />
+        <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Scaffolder" />
         <SidebarItem icon={BuildIcon} text="Tools">
