@@ -1,5 +1,6 @@
 import {
     Link,
+    Progress,
     ResponseErrorPanel,
     Table,
     TableColumn,
@@ -9,28 +10,39 @@ import {
     getEntityRelations,
     humanizeEntityRef,
 } from '@backstage/plugin-catalog-react';
-import { Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
+import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import React from 'react';
 import { Box } from '@material-ui/core';
 import { useGetSystems } from '../../hooks';
 import { SystemPlatformDisplayName } from './SystemPlatformDisplayName';
 
 
-const columns: TableColumn[] = [
+type TableRow = {
+    id: number,
+    system: {
+        name: string,
+        description: string,
+    },
+    resolved: {
+        entityRef: string,
+        ownedByRelationsTitle: string,
+        ownedByRelations: CompoundEntityRef[],
+    },
+}
+
+const columns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
         field: 'system.name',
         highlight: true,
-        render: ({ system }: any) => {
-            return (
-                <Link to={system.name}>
-                    <SystemPlatformDisplayName
-                        name={system.name}
-                    />
-                </Link>
-            );
-        },
+        render: ({ system }) => (
+            <Link to={system.name}>
+                <SystemPlatformDisplayName
+                    name={system.name}
+                />
+            </Link>
+        ),
     },
     {
         title: 'Description',
@@ -41,7 +53,7 @@ const columns: TableColumn[] = [
         title: 'Owner',
         width: '25%',
         field: 'resolved.ownedByRelationsTitle',
-        render: ({ resolved }: any) => (
+        render: ({ resolved }) => (
             <EntityRefLinks
                 entityRefs={resolved.ownedByRelations}
                 defaultKind="group"
@@ -52,27 +64,32 @@ const columns: TableColumn[] = [
 
 export const SystemPlatformTable = () => {
     const { items, loading, error } = useGetSystems();
+
+    if (loading) {
+        return <Progress />;
+    }
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
-
-    const rows = items?.map(toEntityRow);
+    const rows = items?.map(toEntityRow) || [];
+    const showPagination = rows.length > 20 || false;
 
     return (
-        <Table
+        <Table<TableRow>
             isLoading={loading}
             columns={columns}
             options={{
                 search: true,
                 padding: 'dense',
-                paging: true,
-                pageSize: 15,
+                paging: showPagination,
+                pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
+                
             }}
             title={
                 <Box display="flex" alignItems="center">
                     <Box mr={1} />
-                    Teams ({items ? items.length : 0})
+                    Systems ({items ? items.length : 0})
                 </Box>
             }
             data={rows ?? []}
@@ -81,9 +98,10 @@ export const SystemPlatformTable = () => {
 };
 
 
-function toEntityRow(entity: Entity) {
+function toEntityRow(entity: Entity, idx: number): TableRow {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
+        id: idx,
         system: {
             name: entity.metadata.name?.toString() || '?',
             description: entity.metadata.description || '',

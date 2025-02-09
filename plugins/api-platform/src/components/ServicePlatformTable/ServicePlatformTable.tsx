@@ -1,5 +1,6 @@
 import {
     Link,
+    Progress,
     ResponseErrorPanel,
     Table,
     TableColumn,
@@ -13,130 +14,79 @@ import { Box } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
+import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+
+type TableRow = {
+    id: number,
+    serviceDefinition: ServiceDefinition,
+}
 
 
-const columns: TableColumn[] = [
+function getColumn(env: string): TableColumn<TableRow> {
+    return {
+        title: env.toUpperCase(),
+        width: '10%',
+        align: 'center',
+        render: ({ serviceDefinition }) => {
+            return (
+                <div>
+                    {serviceDefinition.versions &&
+                        serviceDefinition.versions.map((version: ServiceVersionDefinition, idx: number) =>
+                            version.environments.hasOwnProperty(env) ?
+                                <ServicePlatformChip
+                                    index={idx}
+                                    service={version.environments[env as keyof typeof version.environments]}
+                                    link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}&env=${env}`} />
+                                : <div />
+                        )}
+                </div>
+            );
+        },
+    };
+}
+
+const columns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
         field: 'name',
         highlight: true,
-        render: (data: any) => {
+        render: ({ serviceDefinition }) => {
             return (
-                <Link to={data.name}>
+                <Link to={serviceDefinition.name}>
                     <ServicePlatformDisplayName
-                        name={data.name} />
+                        name={serviceDefinition.name} />
                 </Link>
             );
         },
     },
     {
-        title: 'Version',
+        title: 'Versions',
         width: '5%',
         field: 'version',
-        render: (data: any) => {
+        render: ({ serviceDefinition }) => {
             return (
                 <div>
-                    {data.versions &&
-                        data.versions.map((v: any, idx: number) => (
-                            <ServicePlatformChip index={idx} text={v.version} />
+                    {serviceDefinition.versions &&
+                        serviceDefinition.versions.map((v: any, idx: number) => (
+                            <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
                         ))}
                 </div>
             );
         },
     },
-    {
-        title: 'TST',
-        width: '10%',
-        align: 'center',
-        render: (data: any) => {
-            return (
-                <div>
-                    {data.versions &&
-                        data.versions.map((v: any, idx: number) =>
-                            v.environments.tst ?
-                                <ServicePlatformChip index={idx} service={v.environments.tst} />
-                                : <div />
-                        )}
-                </div>
-            );
-        },
-    },
-    {
-        title: 'GTU',
-        width: '10%',
-        align: 'center',
-        render: (data: any) => {
-            return (
-                <div>
-                    {data.versions &&
-                        data.versions.map((v: any, idx: number) =>
-                            v.environments.gtu ?
-                                <ServicePlatformChip index={idx} service={v.environments.gtu} />
-                                : <div />
-                        )}
-                </div>
-            );
-        },
-    },
-    {
-        title: 'UAT',
-        width: '10%',
-        align: 'center',
-        render: (data: any) => {
-            return (
-                <div>
-                    {data.versions &&
-                        data.versions.map((v: any, idx: number) =>
-                            v.environments.uat ?
-                                <ServicePlatformChip index={idx} service={v.environments.uat} />
-                                : <div />
-                        )}
-                </div>
-            );
-        },
-    },
-    {
-        title: 'PTP',
-        width: '10%',
-        align: 'center',
-        render: (data: any) => {
-            return (
-                <div>
-                    {data.versions &&
-                        data.versions.map((v: any, idx: number) =>
-                            v.environments.ptp ?
-                                <ServicePlatformChip index={idx} service={v.environments.ptp} />
-                                : <div />
-                        )}
-                </div>
-            );
-        },
-    },
-    {
-        title: 'PRD',
-        width: '10%',
-        align: 'center',
-        render: (data: any) => {
-            return (
-                <div>
-                    {data.versions &&
-                        data.versions.map((v: any, idx: number) =>
-                            v.environments.prd ?
-                                <ServicePlatformChip index={idx} service={v.environments.prd} />
-                                : <div />
-                        )}
-                </div>
-            );
-        },
-    },
+    getColumn('tst'),
+    getColumn('gtu'),
+    getColumn('uat'),
+    getColumn('ptp'),
+    getColumn('prd'),
     {
         title: 'Owner',
         width: '25%',
         field: 'owner',
-        render: (data: any) => (
+        render: ({ serviceDefinition }) => (
             <EntityRefLink
-                entityRef={parseEntityRef(data.owner)}
+                entityRef={parseEntityRef(serviceDefinition.owner)}
             />
         ),
     },
@@ -144,19 +94,25 @@ const columns: TableColumn[] = [
 
 export const ServicePlatformTable = () => {
     const { items, loading, error } = useGetServices();
+
+    if (loading) {
+        return <Progress />;
+    }
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
+    const rows = items?.map(toRow) || [];
+    const showPagination = rows.length > 20 || false;
 
     return (
-        <Table
+        <Table<TableRow>
             isLoading={loading}
             columns={columns}
             options={{
                 search: true,
                 padding: 'dense',
-                paging: true,
-                pageSize: 15,
+                paging: showPagination,
+                pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
             }}
             title={
@@ -165,7 +121,15 @@ export const ServicePlatformTable = () => {
                     Services ({items ? items.length : 0})
                 </Box>
             }
-            data={items ?? []}
+            data={rows}
         />
     );
 };
+
+
+function toRow(serviceDefinition: ServiceDefinition, idx: number) {
+    return {
+        id: idx,
+        serviceDefinition: serviceDefinition,
+    };
+}

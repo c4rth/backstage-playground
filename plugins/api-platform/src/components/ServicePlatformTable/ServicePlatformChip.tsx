@@ -2,10 +2,12 @@ import React from 'react';
 import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
+import { Link } from '@backstage/core-components';
 
 export type ServicePlatformChipProps = {
     index: number;
     text?: string;
+    link: string;
     service?: ServiceEnvironmentDefinition;
 };
 
@@ -22,32 +24,42 @@ export const ServicePlatformChip = (
 ): JSX.Element => {
     const classes = useStyles(props);
 
+    const handleClick = () => () => {
+
+    };
+
     return (
         props.text ?
-            <Chip
-                key={props.text}
-                label={props.text}
-                size="small"
-                variant="outlined"
-                className={classes.badge}
-            />
-            :
-            <Tooltip
-                placement='bottom'
-                arrow
-                title={
-                    <React.Fragment>
-                        <Typography variant='caption'>Name: <b>{props.service?.containerName}</b></Typography><br/>
-                        <Typography variant='caption'>Version: <b>{props.service?.containerVersion}</b></Typography><br/>
-                    </React.Fragment>
-                }>
+            <Link to={props.link}>
                 <Chip
-                    key={props.service?.containerVersion}
-                    label={props.service?.containerVersion}
+                    key={props.text}
+                    label={props.text}
                     size="small"
                     variant="outlined"
                     className={classes.badge}
-                />
-            </Tooltip>
+                    clickable
+                /></Link>
+            :
+            <Link to={props.link}>
+                <Tooltip
+                    placement='bottom'
+                    arrow
+                    title={
+                        <React.Fragment>
+                            <Typography variant='caption'>Name: <b>{props.service?.containerName}</b></Typography><br />
+                            <Typography variant='caption'>Version: <b>{props.service?.containerVersion}</b></Typography><br />
+                        </React.Fragment>
+                    }>
+                    <Chip
+                        key={props.service?.containerVersion}
+                        label={props.service?.containerVersion}
+                        size="small"
+                        variant="outlined"
+                        className={classes.badge}
+                        clickable
+                        onClick={handleClick}
+                    />
+                </Tooltip>
+            </Link>
     );
 };

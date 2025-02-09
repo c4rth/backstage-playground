@@ -126,7 +126,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
             <SidebarSubmenuItem icon={useApp().getSystemIcon('kind:system')} to="catalog?filters[kind]=system" title="Systems" />
           </SidebarSubmenu>
         </SidebarItem>
-        <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Teams" />
+        <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
         <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />

@@ -64,22 +64,7 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
 
     return (
         <TabbedLayout>
-            <TabbedLayout.Route path="/" title="OpenApi">
-                <OpenApiDefinitionWidget definition={apiEntity.spec.definition.toString()} />
-            </TabbedLayout.Route>
-            <TabbedLayout.Route path="/raw" title="Raw">
-                <PlainApiDefinitionWidget
-                    definition={apiEntity.spec.definition}
-                    language={apiEntity.spec.type}
-                />
-            </TabbedLayout.Route>
-            {isApiDocsSpectralLinterAvailable(apiEntity) ?
-                <TabbedLayout.Route path="/linter" title="Linter">
-                    <EntityApiDocsSpectralLinterCard entity={apiEntity} />
-                </TabbedLayout.Route>
-                : <div />
-            }
-            <TabbedLayout.Route path="/info" title="Info">
+            <TabbedLayout.Route path="/" title="Overview">
                 <InfoCard title='About' divider className={cardClass}>
                     <Box sx={{ mb: 4 }}>
                         <AboutField
@@ -112,6 +97,21 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
                     </Box>
                 </InfoCard>
             </TabbedLayout.Route>
+            <TabbedLayout.Route path="/openapi" title="OpenApi">
+                <OpenApiDefinitionWidget definition={apiEntity.spec.definition.toString()} />
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/raw" title="Raw">
+                <PlainApiDefinitionWidget
+                    definition={apiEntity.spec.definition}
+                    language={apiEntity.spec.type}
+                />
+            </TabbedLayout.Route>
+            {isApiDocsSpectralLinterAvailable(apiEntity) ?
+                <TabbedLayout.Route path="/linter" title="Linter">
+                    <EntityApiDocsSpectralLinterCard entity={apiEntity} />
+                </TabbedLayout.Route>
+                : <div />
+            }
         </TabbedLayout>
     );
 }

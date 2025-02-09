@@ -6,76 +6,109 @@ import {
   Select,
   SelectItem,
 } from '@backstage/core-components';
-import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
-import { entityRouteRef } from '@backstage/plugin-catalog-react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import React, { useEffect, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
 import { Box, Grid } from '@material-ui/core';
 import { ServicePlatformDefinitionCard } from './ServicePlatformDefinitionCard';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { ServiceDefinition } from '@internal/plugin-api-platform-common';
+
+type MapVersionEnvironment = Map<string, Map<string, string>>
+
+function parseServiceDefinition(svcDef: ServiceDefinition | undefined): MapVersionEnvironment {
+  const mapVersion = new Map<string, Map<string, string>>();
+  if (svcDef) {
+    svcDef.versions.forEach(version => {
+      const mapEnv = new Map<string, string>();
+      if (version?.environments.tst) {
+        mapEnv.set('TST', version.environments.tst.entityRef);
+      }
+      if (version?.environments.gtu) {
+        mapEnv.set('GTU', version.environments.gtu.entityRef);
+      }
+      if (version?.environments.uat) {
+        mapEnv.set('UAT', version.environments.uat.entityRef);
+      }
+      if (version?.environments.ptp) {
+        mapEnv.set('PTP', version.environments.ptp.entityRef);
+      }
+      if (version?.environments.prd) {
+        mapEnv.set('PRD', version.environments.prd.entityRef);
+      }
+      mapVersion.set(version.version, mapEnv);
+    });
+  }
+  return mapVersion;
+}
 
 export const ServicePlatformDefinitionPage = () => {
+  const { name } = useParams();
+  const [searchParams] = useSearchParams();
+  const { item: serviceDefinition, loading, error } = useGetServiceVersions(name!);
 
-  const { name } = useRouteRefParams(entityRouteRef);
-  const { item: serviceDefinition, loading, error } = useGetServiceVersions(name);
+  const [queryVersion, setQueryVersion] = useState<string | null>(searchParams.get('version'));
+  const [queryEnv, setQueryEnv] = useState<string | null>(searchParams.get('env'));
 
-  const [selectedVersion, setSelectedVersion] = useState<string>("");
+  const [mapVersionEnv, setMapVersionEnv] = useState<MapVersionEnvironment>();
   const [versions, setVersions] = useState<SelectItem[]>([]);
-  const [selectedEnvironment, setSelectedEnvironment] = useState<string>("");
   const [environments, setEnvironments] = useState<SelectItem[]>([]);
+  const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
+  const [selectedEnvironment, setSelectedEnvironment] = useState<string | undefined>(undefined);
   const [serviceEntity, setServiceEntity] = useState<ComponentEntity | undefined>(undefined);
 
   const catalogApi = useApi(catalogApiRef);
 
   useEffect(() => {
-    if (versions.length > 0) {
-      setSelectedVersion(versions.at(0)?.value.toString()!);
-    }
-  }, [versions]);
-
-  useEffect(() => {
-    if (environments.length > 0) {
-      setSelectedEnvironment(environments.at(0)?.value.toString()!);
-    }
-  }, [environments]);
-
-  useEffect(() => {
-    if (selectedVersion !== "") {
-      const selectedSvc = serviceDefinition?.versions.filter(versDef => versDef.version === selectedVersion)[0];
-      const envs: SelectItem[] = []
-      if (selectedSvc?.environments.tst) {
-        envs.push({ label: 'TST', value: selectedSvc.environments.tst.entityRef });
-      }
-      if (selectedSvc?.environments.gtu) {
-        envs.push({ label: 'GTU', value: selectedSvc.environments.gtu.entityRef });
-      }
-      if (selectedSvc?.environments.uat) {
-        envs.push({ label: 'UAT', value: selectedSvc.environments.uat.entityRef });
-      }
-      if (selectedSvc?.environments.ptp) {
-        envs.push({ label: 'PTP', value: selectedSvc.environments.ptp.entityRef });
-      }
-      if (selectedSvc?.environments.prd) {
-        envs.push({ label: 'PRD', value: selectedSvc.environments.prd.entityRef });
-      }
-      setEnvironments(envs);
-    }
-  }, [selectedVersion, serviceDefinition]);
-
-
-  useEffect(() => {
-    if (selectedVersion !== "" && selectedEnvironment !== "") {
-      catalogApi.getEntityByRef(selectedEnvironment)
-        .then(entity => setServiceEntity(entity as ComponentEntity));
-    }
-  }, [selectedVersion, selectedEnvironment, catalogApi]);
-
-  useEffect(() => {
+    setMapVersionEnv(parseServiceDefinition(serviceDefinition));
     setVersions(serviceDefinition && serviceDefinition.versions
       ? serviceDefinition.versions.map((serviceVersion) => ({ label: serviceVersion.version, value: serviceVersion.version }))
       : []);
   }, [serviceDefinition])
+
+  useEffect(() => {
+    if (versions.length > 0) {
+      if (queryVersion) {
+        setSelectedVersion(queryVersion);
+        setQueryVersion(null);
+      } else {
+        setSelectedVersion(versions.at(0)?.value.toString()!);
+      }
+    }
+  }, [versions, queryVersion]);
+
+  useEffect(() => {
+    if (environments.length > 0) {
+      if (queryEnv) {
+        setSelectedEnvironment(queryEnv.toUpperCase());
+        setQueryEnv(null);
+      } else {
+        setSelectedEnvironment(environments.at(0)?.value.toString()!);
+      }
+    }
+  }, [environments, queryEnv]);
+
+  useEffect(() => {
+    if (selectedVersion) {
+      const selectedSvc = mapVersionEnv!.get(selectedVersion)!;
+      setSelectedEnvironment(undefined);
+      const envs: SelectItem[] = Array.from(selectedSvc.keys()).map(s => ({ label: s, value: s }));
+      setEnvironments(envs);
+    }
+  }, [selectedVersion, mapVersionEnv]);
+
+
+  useEffect(() => {
+    if (selectedVersion && selectedEnvironment) {
+      const selectSvcEnv = mapVersionEnv!.get(selectedVersion)?.get(selectedEnvironment);
+      if (selectSvcEnv) {
+        catalogApi.getEntityByRef(selectSvcEnv)
+          .then(entity => setServiceEntity(entity as ComponentEntity));
+      }
+    }
+  }, [selectedVersion, selectedEnvironment, catalogApi, mapVersionEnv]);
 
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;

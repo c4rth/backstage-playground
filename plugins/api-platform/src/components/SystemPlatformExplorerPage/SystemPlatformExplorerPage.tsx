@@ -14,9 +14,9 @@ export const SystemPlatformExplorerPage = () => {
   return (
     <PageWithHeader
       themeId="systems"
-      title="Teams"
+      title="Systems"
       subtitle={generatedSubtitle}
-      pageTitleOverride="Teams"
+      pageTitleOverride="Systems"
     >
       <Content>
         <SystemPlatformTable />

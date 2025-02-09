@@ -109,7 +109,7 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
                                 </InfoCard>
                             </Grid>
                             <Grid item md={6} xs={12}>
-                                <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} />
+                                <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} unidirectional />
                             </Grid>
                         </Grid>
                     </TabbedLayout.Route>

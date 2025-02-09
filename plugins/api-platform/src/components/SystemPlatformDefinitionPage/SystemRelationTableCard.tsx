@@ -58,14 +58,15 @@ export const SystemRelationTableCard = (props: { dependency: 'api' | 'service', 
     } else {
         return (<></>);
     }
+    const showPagination = rows.length > 20 || false;
     return (
         <Table
             columns={columns}
             options={{
                 search: true,
                 padding: 'dense',
-                paging: true,
-                pageSize: 15,
+                paging: showPagination,
+                pageSize: 20,
             }}
             title={
                 <Box display="flex" alignItems="center">
@@ -78,8 +79,9 @@ export const SystemRelationTableCard = (props: { dependency: 'api' | 'service', 
     );
 }
 
-function toRow(item: string) {
+function toRow(item: string, idx: number) {
     return {
+        id: idx,
         data: {
             name: item
         }

@@ -4,13 +4,14 @@ import {
     TableColumn,
     Link,
     OverflowTooltip,
+    Progress,
 } from '@backstage/core-components';
 import {
     getEntityRelations,
     humanizeEntityRef,
     EntityRefLinks,
 } from '@backstage/plugin-catalog-react';
-import { Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
+import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import React from 'react';
 import { useGetApis } from '../../hooks';
 import { Box } from '@material-ui/core';
@@ -19,13 +20,26 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
 
-const columns: TableColumn[] = [
+type TableRow = {
+    id: number,
+    api: {
+        name: string,
+        description: string,
+    },
+    resolved: {
+        entityRef: string,
+        ownedByRelationsTitle: string,
+        ownedByRelations: CompoundEntityRef[],
+    },
+}
+
+const columns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
         field: 'api.name',
         highlight: true,
-        render: ({ api }: any) => {
+        render: ({ api }) => {
             return (
                 <Link to={api.name}>
                     <ApiPlatformDisplayName
@@ -39,7 +53,7 @@ const columns: TableColumn[] = [
         title: 'Description',
         field: 'api.description',
         width: '50%',
-        render: ({ api }: any) => {
+        render: ({ api }) => {
             return (
                 <OverflowTooltip text={api.description} line={2} />
             )
@@ -49,7 +63,7 @@ const columns: TableColumn[] = [
         title: 'Owner',
         width: '25%',
         field: 'resolved.ownedByRelationsTitle',
-        render: ({ resolved }: any) => (
+        render: ({ resolved }) => (
             <EntityRefLinks
                 entityRefs={resolved.ownedByRelations}
                 defaultKind="group"
@@ -61,19 +75,24 @@ const columns: TableColumn[] = [
 
 export const ApiPlatformTable = () => {
     const { items, loading, error } = useGetApis();
+
+    if (loading) {
+        return <Progress />;
+    }
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
-    const rows = items?.map(toEntityRow);
+    const rows = items?.map(toEntityRow) || [];
+    const showPagination = rows.length > 20;
     return (
-        <Table
+        <Table<TableRow>
             isLoading={loading}
             columns={columns}
             options={{
                 search: true,
-                paging: true,
+                paging: showPagination,
                 padding: 'dense',
-                pageSize: 15,
+                pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
             }}
             title={
@@ -82,15 +101,16 @@ export const ApiPlatformTable = () => {
                     APIs ({items ? items.length : 0})
                 </Box>
             }
-            data={rows ?? []}
+            data={rows}
         />
     );
 };
 
 
-function toEntityRow(entity: Entity) {
+function toEntityRow(entity: Entity, idx: number) {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
+        id: idx,
         api: {
             name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION]?.toString() || '?',
             description: entity.metadata.description || '',
