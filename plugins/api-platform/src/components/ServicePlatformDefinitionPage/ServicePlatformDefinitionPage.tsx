@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
 import { Box, Grid } from '@material-ui/core';
 import { ServicePlatformDefinitionCard } from './ServicePlatformDefinitionCard';
@@ -47,58 +47,53 @@ function parseServiceDefinition(svcDef: ServiceDefinition | undefined): MapVersi
 export const ServicePlatformDefinitionPage = () => {
   const { name } = useParams();
   const [searchParams] = useSearchParams();
-  const { item: serviceDefinition, loading, error } = useGetServiceVersions(name!);
+  const queryVersion = searchParams.get('version');
+  const queryEnv = searchParams.get('env');
 
-  const [queryVersion, setQueryVersion] = useState<string | null>(searchParams.get('version'));
-  const [queryEnv, setQueryEnv] = useState<string | null>(searchParams.get('env'));
+  const { item: serviceDefinition, loading, error } = useGetServiceVersions(name!);
 
   const [mapVersionEnv, setMapVersionEnv] = useState<MapVersionEnvironment>();
   const [versions, setVersions] = useState<SelectItem[]>([]);
-  const [environments, setEnvironments] = useState<SelectItem[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
+  const [environments, setEnvironments] = useState<SelectItem[]>([]);
   const [selectedEnvironment, setSelectedEnvironment] = useState<string | undefined>(undefined);
   const [serviceEntity, setServiceEntity] = useState<ComponentEntity | undefined>(undefined);
+
+  const isInitialLoad = useRef(true);
 
   const catalogApi = useApi(catalogApiRef);
 
   useEffect(() => {
     setMapVersionEnv(parseServiceDefinition(serviceDefinition));
-    setVersions(serviceDefinition && serviceDefinition.versions
+    const data = serviceDefinition && serviceDefinition.versions
       ? serviceDefinition.versions.map((serviceVersion) => ({ label: serviceVersion.version, value: serviceVersion.version }))
-      : []);
-  }, [serviceDefinition])
-
-  useEffect(() => {
-    if (versions.length > 0) {
-      if (queryVersion) {
-        setSelectedVersion(queryVersion);
-        setQueryVersion(null);
-      } else {
-        setSelectedVersion(versions.at(0)?.value.toString()!);
-      }
+      : [];
+    setVersions(data);
+    let selVersion = null;
+    if (isInitialLoad.current && queryVersion && data.some(item => item.value === queryVersion)) {
+      selVersion = queryVersion;
+    } else if (data.length > 0) {
+      selVersion = data[0].value;
     }
-  }, [versions, queryVersion]);
-
-  useEffect(() => {
-    if (environments.length > 0) {
-      if (queryEnv) {
-        setSelectedEnvironment(queryEnv.toUpperCase());
-        setQueryEnv(null);
-      } else {
-        setSelectedEnvironment(environments.at(0)?.value.toString()!);
-      }
-    }
-  }, [environments, queryEnv]);
+    if (selVersion)
+      setSelectedVersion(selVersion);
+  }, [serviceDefinition, queryVersion])
 
   useEffect(() => {
     if (selectedVersion) {
       const selectedSvc = mapVersionEnv!.get(selectedVersion)!;
-      setSelectedEnvironment(undefined);
-      const envs: SelectItem[] = Array.from(selectedSvc.keys()).map(s => ({ label: s, value: s }));
-      setEnvironments(envs);
+      const data = Array.from(selectedSvc.keys()).map(s => ({ label: s, value: s }));
+      setEnvironments(data);
+      let selEnv = null;
+      if (isInitialLoad.current && queryEnv && data.some(item => item.value === queryEnv.toUpperCase())) {
+        selEnv = queryEnv.toUpperCase();
+      } else if (data.length > 0) {
+        selEnv = data[0].value;
+      }
+      if (selEnv)
+        setSelectedEnvironment(selEnv);
     }
-  }, [selectedVersion, mapVersionEnv]);
-
+  }, [selectedVersion, mapVersionEnv, queryEnv]);
 
   useEffect(() => {
     if (selectedVersion && selectedEnvironment) {
@@ -109,6 +104,12 @@ export const ServicePlatformDefinitionPage = () => {
       }
     }
   }, [selectedVersion, selectedEnvironment, catalogApi, mapVersionEnv]);
+
+  useEffect(() => {
+    if (selectedEnvironment && selectedVersion) {
+      isInitialLoad.current = false;
+    }
+  }, [selectedVersion, selectedEnvironment]);
 
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
