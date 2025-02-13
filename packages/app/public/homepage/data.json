@@ -1,0 +1,27 @@
+[
+    {
+        "iconUrl": "/homepage/icons/icons8/web.png",
+        "label": "Jira",
+        "url": "https://www.atlassian.com/software/jira"
+    },
+    {
+        "iconUrl": "/homepage/icons/podman_logo.svg",
+        "label": "Confluence",
+        "url": "https://www.atlassian.com/software/confluence"
+    },
+    {
+        "iconUrl": "/homepage/icons/quay.svg",
+        "label": "Contributing",
+        "url": "https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md"
+    },
+    {
+        "iconUrl": "/homepage/icons/sonarqube.svg",
+        "label": "Plugins Directory",
+        "url": "https://backstage.io/plugins"
+    },
+    {
+        "iconUrl": "/homepage/icons/argo-icon-color.svg",
+        "label": "Submit New Issue",
+        "url": "https://github.com/backstage/backstage/issues/new/choose"
+    }
+]
