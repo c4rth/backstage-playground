@@ -1,33 +1,17 @@
 import {
   HomePageToolkit,
 } from '@backstage/plugin-home';
-import CircularProgress from '@mui/material/CircularProgress';
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { useToolkitData } from '../../hooks/useToolkitData';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ToolkitLink } from '../../types/types';
-import { ErrorReport } from './ErrorReport';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   img: {
-    height: '40px',
+    height: '38px',
     width: 'auto',
-  },
-  searchBar: {
-    display: 'flex',
-    maxWidth: '60vw',
-    boxShadow: theme.shadows.at(1),
-    borderRadius: '50px',
-    margin: 'auto',
-  },
-  title: {
-    'div > div > div > div > p': {
-      textTransform: 'uppercase',
-    },
-  },
-  notchedOutline: {
-    borderStyle: 'none!important',
   },
 }));
 
@@ -43,18 +27,18 @@ export const ToolkitCard = () => {
   };
 
   if (isLoading) {
-    return <CircularProgress />;
+    return <Progress />;
+  }
+
+  if (error) {
+    return (
+      <ResponseErrorPanel title="Could not fetch data." error={error} />
+    );
   }
 
   if (!data) {
     return (
-      <ErrorReport title="Could not fetch data." errorText="Unknown error" />
-    );
-  }
-
-  if (!isLoading && !data && error) {
-    return (
-      <ErrorReport title="Could not fetch data." errorText={error.toString()} />
+      <ResponseErrorPanel title="Could not fetch data." error={Error("Unknown error - no data")} />
     );
   }
 
