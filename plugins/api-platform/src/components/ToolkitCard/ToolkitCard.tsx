@@ -4,9 +4,10 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { ErrorReport } from '../../common';
-import { ToolkitLink } from '../../types/types';
 import { useToolkitData } from '../../hooks/useToolkitData';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { ToolkitLink } from '../../types/types';
+import { ErrorReport } from './ErrorReport';
 
 const useStyles = makeStyles(theme => ({
   img: {
@@ -30,9 +31,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Toolkit = () => {
+export const ToolkitCard = () => {
+
+  const configApi = useApi(configApiRef);
+  const baseUrl = configApi.getString('app.baseUrl')
   const classes = useStyles();
-  const { data, error, isLoading } = useToolkitData() as {
+  const { data, error, isLoading } = useToolkitData(baseUrl) as {
     data: ToolkitLink[] | undefined;
     error: Error | undefined;
     isLoading: boolean;
@@ -63,7 +67,7 @@ const Toolkit = () => {
           icon: (
             <img
               className={classes.img}
-              src={link.iconUrl}
+              src={`${baseUrl}/${link.iconUrl}`}
               alt={link.label}
             />
           ),
@@ -73,5 +77,3 @@ const Toolkit = () => {
   );
 
 };
-
-export default Toolkit;

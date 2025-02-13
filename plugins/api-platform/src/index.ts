@@ -9,6 +9,7 @@ export {
   apiDocsSpectralLinterPlugin,
   EntityApiDocsSpectralLinterContent,
   EntityApiDocsSpectralLinterCard,
+  ToolkitCard,
  } from './plugin';
 
 export { isApiDocsSpectralLinterAvailable } from './lib/helper';

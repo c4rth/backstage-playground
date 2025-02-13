@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ToolkitLink } from '../types/types';
 
-export function useToolkitData(): {
+export function useToolkitData(baseUrl: string): {
     data: ToolkitLink[] | undefined;
     error: Error | undefined;
     isLoading: boolean;
@@ -11,7 +11,7 @@ export function useToolkitData(): {
     const [error, setError] = useState<Error>();
 
     const fetchData = useCallback(async () => {
-        const res = await fetch('/homepage/data.json');
+        const res = await fetch(`${baseUrl}/homepage/data.json`);
         const qsData = await res.json();
         setData(qsData);
         setIsLoading(false);

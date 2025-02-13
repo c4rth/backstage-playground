@@ -119,12 +119,25 @@ export const EntityApiDocsSpectralLinterContent =
     }),
   );
 
-  export const EntityApiDocsSpectralLinterCard = apiDocsSpectralLinterPlugin.provide(
-    createComponentExtension({
-      name: 'EntityApiDocsSpectralLinterCard',
-      component: {
-        lazy: () =>
-          import('./components/EntityApiDocsSpectralLinterContent').then(m => m.EntityApiDocsSpectralLinterContent),
-      },
-    }),
-  );
+export const EntityApiDocsSpectralLinterCard = apiDocsSpectralLinterPlugin.provide(
+  createComponentExtension({
+    name: 'EntityApiDocsSpectralLinterCard',
+    component: {
+      lazy: () =>
+        import('./components/EntityApiDocsSpectralLinterContent').then(m => m.EntityApiDocsSpectralLinterContent),
+    },
+  }),
+);
+
+
+//-------------------------------------------------------------------------------------------------
+
+export const ToolkitCard = apiPlatformPlugin.provide(
+  createComponentExtension({
+    name: 'ToolkitCard',
+    component: {
+      lazy: () =>
+        import('./components/ToolkitCard').then(m => m.ToolkitCard),
+    },
+  }),
+);
