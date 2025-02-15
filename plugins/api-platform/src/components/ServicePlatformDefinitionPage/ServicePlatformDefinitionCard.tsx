@@ -20,10 +20,11 @@ import {
     Direction,
     EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
-import { API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION, API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION } from '@internal/plugin-api-platform-common';
+import { ANNOTATION_CONTAINER_VERSION, ANNOTATION_CONTAINER_NAME } from '@internal/plugin-api-platform-common';
 // SonarQube
 import { EntitySonarQubeCard, EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
+import { ServicePlatformRelationCard } from './ServicePlatformRelationCard';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -60,8 +61,8 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
 
     const classes = useStyles();
 
-    const containerName = serviceEntity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString();
-    const containerVersion = serviceEntity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString();
+    const containerName = serviceEntity.metadata[ANNOTATION_CONTAINER_NAME]?.toString();
+    const containerVersion = serviceEntity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString();
     const entityRef = getCompoundEntityRef(serviceEntity);
     const hasDocs = serviceEntity.metadata.annotations?.['backstage.io/techdocs-ref'];
 
@@ -132,6 +133,16 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
                             </Grid>
                         </Grid>
                     </TabbedLayout.Route>
+                    <TabbedLayout.Route path="/relations" title="Relations">
+                        <Grid container spacing={3} alignItems="stretch">
+                            <Grid item md={6}>
+                                <ServicePlatformRelationCard dependency='provided' serviceEntity={serviceEntity} />
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                                <ServicePlatformRelationCard dependency='consumed' serviceEntity={serviceEntity} />
+                            </Grid>
+                        </Grid>
+                    </TabbedLayout.Route>
                     <TabbedLayout.Route path="/appreg" title="App Registry">
                         <Grid container spacing={3} alignItems="stretch">
                             <Grid item md={12}>
@@ -141,7 +152,7 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
                     </TabbedLayout.Route>
                     {isSonarQubeAvailable(serviceEntity) ?
                         <TabbedLayout.Route path="/sonarqube" title="SonarQube">
-                            <EntitySonarQubeContentPage  />
+                            <EntitySonarQubeContentPage />
                         </TabbedLayout.Route>
                         : <div />
                     }

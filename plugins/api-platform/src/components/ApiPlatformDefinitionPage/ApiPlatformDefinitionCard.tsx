@@ -6,15 +6,16 @@ import {
 import { ApiEntity } from "@backstage/catalog-model"
 import React from 'react';
 import { OpenApiDefinitionWidget, PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
-import { Box, makeStyles, Theme } from '@material-ui/core';
+import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { AboutContent, AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
 import CloudCircleIcon from '@material-ui/icons/CloudCircle';
-import { API_PLATFORM_API_NAME_ANNOTATION, API_PLATFORM_API_PROJECT_ANNOTATION, API_PLATFORM_API_VERSION_ANNOTATION } from '@internal/plugin-api-platform-common';
+import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } from '@internal/plugin-api-platform-common';
 // Spectral 
 import { EntityApiDocsSpectralLinterCard } from '../EntityApiDocsSpectralLinterContent';
 import { isApiDocsSpectralLinterAvailable } from '../../lib/helper';
+import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -46,10 +47,10 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
 
     const classes = useStyles();
 
-    const project = apiEntity.metadata[API_PLATFORM_API_PROJECT_ANNOTATION];
-    const apiVersion = apiEntity.metadata[API_PLATFORM_API_VERSION_ANNOTATION]?.toString().toUpperCase();
+    const project = apiEntity.metadata[ANNOTATION_API_PROJECT];
+    const apiVersion = apiEntity.metadata[ANNOTATION_API_VERSION]?.toString().toUpperCase();
     const groupId = `c4rth.${project}.apis`;
-    const artifactId = `${apiEntity.metadata[API_PLATFORM_API_NAME_ANNOTATION]}-openapi`;
+    const artifactId = `${apiEntity.metadata[ANNOTATION_API_NAME]}-openapi`;
     const artifactUrl = `https://dev.azure.com/organization/${project}/_artifacts/feed/feedName/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`
     const artifactText = `${groupId}:${artifactId}:${apiVersion}`;
     const mavenXml = `
@@ -112,6 +113,16 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
                 </TabbedLayout.Route>
                 : <div />
             }
+            <TabbedLayout.Route path="/relations" title="Relations">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={6}>
+                        <ApiPlatformRelationCard dependency='provider' apiEntity={apiEntity} />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <ApiPlatformRelationCard dependency='consumer' apiEntity={apiEntity} />
+                    </Grid>
+                </Grid>
+            </TabbedLayout.Route>
         </TabbedLayout>
     );
 }

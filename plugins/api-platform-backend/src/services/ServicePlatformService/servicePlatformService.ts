@@ -1,8 +1,25 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { ServicePlatformService } from './types';
-import { API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION, API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION, API_PLATFORM_SERVICE_NAME_ANNOTATION, API_PLATFORM_SERVICE_VERSION_ANNOTATION, ServiceApisDefinition, ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+import {
+  ANNOTATION_CONTAINER_NAME,
+  ANNOTATION_CONTAINER_VERSION,
+  ANNOTATION_SERVICE_NAME,
+  ANNOTATION_SERVICE_VERSION,
+  CATALOG_METADATA_CONTAINER_NAME,
+  CATALOG_METADATA_CONTAINER_VERSION,
+  CATALOG_METADATA_NAME,
+  CATALOG_METADATA_NAMESPACE,
+  CATALOG_METADATA_SERVICE_NAME,
+  CATALOG_METADATA_SERVICE_VERSION,
+  CATALOG_RELATIONS,
+  CATALOG_SPEC_LIFECYCLE,
+  ServiceApisDefinition,
+  ServiceDefinition,
+  ServiceVersionDefinition
+} from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
 import { ApiPlatformStore } from '../../database/apiPlatformStore';
+import { RELATION_API_CONSUMED_BY } from '@backstage/catalog-model/index';
 
 function getFilter(serviceName?: string): EntityFilterQuery {
   if (serviceName) {
@@ -27,22 +44,22 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
     {
       filter: getFilter(serviceName),
       fields: [
-        'metadata.name',
-        'metadata.namespace',
-        'metadata.service-name',
-        'metadata.service-version',
-        'metadata.container-version',
-        'metadata.container-name',
-        'spec.lifecycle',
-        'relations'],
+        CATALOG_METADATA_NAME,
+        CATALOG_METADATA_NAMESPACE,
+        CATALOG_METADATA_SERVICE_NAME,
+        CATALOG_METADATA_SERVICE_VERSION,
+        CATALOG_METADATA_CONTAINER_NAME,
+        CATALOG_METADATA_CONTAINER_VERSION,
+        CATALOG_SPEC_LIFECYCLE,
+        CATALOG_RELATIONS],
     },
     { token });
 
   const mapServices: Map<string, ServiceDefinition> = new Map();
 
   entities.items.forEach(entity => {
-    const name = entity.metadata[API_PLATFORM_SERVICE_NAME_ANNOTATION]?.toString() || '?';
-    const version = entity.metadata[API_PLATFORM_SERVICE_VERSION_ANNOTATION]?.toString() || '?';
+    const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() || '?';
+    const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString() || '?';
     const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '?';
     let def: ServiceDefinition;
     if (mapServices.has(name)) {
@@ -50,7 +67,7 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
     } else {
       def = {
         name: name,
-        owner: entity.relations?.filter(rel => rel.type === 'ownedBy').at(0)?.targetRef || '',
+        owner: entity.relations?.filter(rel => rel.type === RELATION_API_CONSUMED_BY).at(0)?.targetRef || '',
         versions: []
       };
     }
@@ -69,36 +86,36 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
     switch (lifecycle) {
       case 'tst':
         defVersion.environments.tst = {
-          containerVersion: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString() || '?',
-          containerName: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString() || '?',
+          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
+          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'gtu':
         defVersion.environments.gtu = {
-          containerVersion: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString() || '?',
-          containerName: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString() || '?',
+          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
+          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'uat':
         defVersion.environments.uat = {
-          containerVersion: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString() || '?',
-          containerName: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString() || '?',
+          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
+          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'ptp':
         defVersion.environments.ptp = {
-          containerVersion: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString() || '?',
-          containerName: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString() || '?',
+          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
+          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'prd':
         defVersion.environments.prd = {
-          containerVersion: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_VERSION_ANNOTATION]?.toString() || '?',
-          containerName: entity.metadata[API_PLATFORM_SERVICE_CONTAINER_NAME_ANNOTATION]?.toString() || '?',
+          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
+          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
@@ -136,14 +153,14 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
       return services[0];
     },
 
-    
-    async getServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string}): Promise<ServiceApisDefinition> {
+
+    async getServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string }): Promise<ServiceApisDefinition> {
       const { serviceName, serviceVersion, containerVersion } = request;
       logger.info(`Get service ${serviceName}-${serviceVersion}-${containerVersion}`);
       return await apiPlatformStore.getServiceApis(serviceName, serviceVersion, containerVersion);
     },
-    
-    async addServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string, consumedApis?: string[], providedApis?: string[]}): Promise<string> {
+
+    async addServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string, consumedApis?: string[], providedApis?: string[] }): Promise<string> {
       const { serviceName, serviceVersion, containerVersion, consumedApis, providedApis } = request;
       logger.info(`Add service ${serviceName}-${serviceVersion}-${containerVersion}: ${consumedApis} ${providedApis}`);
       await apiPlatformStore.storeServiceApis(

@@ -1,8 +1,16 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { SystemPlatformService } from './types';
-import { Entity } from '@backstage/catalog-model/index';
-import { API_PLATFORM_API_NAME_ANNOTATION, API_PLATFORM_SERVICE_NAME_ANNOTATION, SystemDefinition } from '@internal/plugin-api-platform-common';
+import { Entity, RELATION_OWNED_BY } from '@backstage/catalog-model';
+import { 
+  ANNOTATION_API_NAME, 
+  ANNOTATION_SERVICE_NAME, 
+  CATALOG_KIND, 
+  CATALOG_METADATA_DESCRIPTION, 
+  CATALOG_METADATA_NAME, 
+  CATALOG_RELATIONS, 
+  SystemDefinition 
+} from '@internal/plugin-api-platform-common';
 
 export interface CatalogPlatformServiceOptions {
   logger: LoggerService;
@@ -28,10 +36,10 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
             kind: ['System'],
           },
           fields: [
-            'kind',
-            'metadata.name',
-            'metadata.description',
-            'relations'
+            CATALOG_KIND,
+            CATALOG_METADATA_NAME,
+            CATALOG_METADATA_DESCRIPTION,
+            CATALOG_RELATIONS
           ],
         },
         { token });
@@ -42,12 +50,11 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
             apiVersion: entity.apiVersion,
             kind: entity.kind,
             metadata: entity.metadata,
-            relations: entity.relations?.filter(relation => relation.type === 'ownedBy')
+            relations: entity.relations?.filter(relation => relation.type === RELATION_OWNED_BY)
           }
         );
       }
       );
-      logger.info(JSON.stringify(filteredEntities));
       return { items: filteredEntities };
     },
 
@@ -60,13 +67,13 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
         {
           filter: {
             kind: ['System'],
-            'metadata.name': request.systemName,
+            CATALOG_METADATA_NAME: request.systemName,
           },
           fields: [
-            'kind',
-            'metadata.name',
-            'metadata.description',
-            'relations'
+            CATALOG_KIND,
+            CATALOG_METADATA_NAME,
+            CATALOG_METADATA_DESCRIPTION,
+            CATALOG_RELATIONS,
           ],
         },
         { token });
@@ -81,12 +88,12 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
           const element = entity.relations[index];
           const relEntity = await catalogClient.getEntityByRef(element.targetRef, { token });
           if (relEntity?.kind === 'API') {
-            const name = relEntity.metadata[API_PLATFORM_API_NAME_ANNOTATION]?.toString();
+            const name = relEntity.metadata[ANNOTATION_API_NAME]?.toString();
             if (name && !system.apis.includes(name)) {
               system.apis.push(name);
             }
           } else if (relEntity?.kind === 'Component') {
-            const name = relEntity.metadata[API_PLATFORM_SERVICE_NAME_ANNOTATION]?.toString();
+            const name = relEntity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
             if (name &&!system.services.includes(name)) {
               system.services.push(name);
             }

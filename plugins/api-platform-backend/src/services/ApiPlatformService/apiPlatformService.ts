@@ -1,6 +1,16 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { ApiPlatformService } from './types';
-import { API_PLATFORM_API_NAME_ANNOTATION, API_PLATFORM_API_PROJECT_ANNOTATION, API_PLATFORM_API_VERSION_ANNOTATION, ApiVersionDefinition } from '@internal/plugin-api-platform-common';
+import {
+  ANNOTATION_API_NAME,
+  ANNOTATION_API_PROJECT,
+  ANNOTATION_API_VERSION,
+  ApiVersionDefinition,
+  CATALOG_KIND,
+  CATALOG_METADATA_API_NAME,
+  CATALOG_METADATA_DESCRIPTION,
+  CATALOG_METADATA_NAME,
+  CATALOG_RELATIONS
+} from '@internal/plugin-api-platform-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import * as semver from 'semver';
 
@@ -14,15 +24,15 @@ async function innerGetApiVersions(logger: LoggerService, catalogClient: Catalog
     {
       filter: {
         kind: ['API'],
-        'metadata.api-name': apiName
+        CATALOG_METADATA_API_NAME: apiName
       },
     },
     { token });
-  const apisSameName = entities.items.filter(entity => entity.metadata[API_PLATFORM_API_NAME_ANNOTATION] === apiName);
+  const apisSameName = entities.items.filter(entity => entity.metadata[ANNOTATION_API_NAME] === apiName);
   const versions: ApiVersionDefinition[] = apisSameName.map(entity => ({
     entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
-    version: entity.metadata[API_PLATFORM_API_VERSION_ANNOTATION]?.toString() || '',
-    project: entity.metadata[API_PLATFORM_API_PROJECT_ANNOTATION]?.toString() || '',
+    version: entity.metadata[ANNOTATION_API_VERSION]?.toString() || '',
+    project: entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '',
   }));
   return versions.sort((a, b) => semver.compare(a.version, b.version)).reverse();
 }
@@ -49,15 +59,16 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
           filter: {
             kind: ['API'],
           },
-          fields: ['kind',
-            'metadata.name',
-            'metadata.description',
-            'metadata.api-name',
-            'relations'],
+          fields: [
+            CATALOG_KIND,
+            CATALOG_METADATA_NAME,
+            CATALOG_METADATA_DESCRIPTION,
+            CATALOG_METADATA_API_NAME,
+            CATALOG_RELATIONS],
         },
         { token });
       const uniqueEntities = Array.from(
-        new Map(entities.items.map(entity => [entity.metadata[API_PLATFORM_API_NAME_ANNOTATION], entity])).values()
+        new Map(entities.items.map(entity => [entity.metadata[ANNOTATION_API_NAME], entity])).values()
       );
       return { items: uniqueEntities };
     },

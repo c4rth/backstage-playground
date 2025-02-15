@@ -16,7 +16,7 @@ import React from 'react';
 import { useGetApis } from '../../hooks';
 import { Box } from '@material-ui/core';
 import {
-    API_PLATFORM_API_NAME_ANNOTATION,
+    ANNOTATION_API_NAME,
 } from '@internal/plugin-api-platform-common';
 import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
 
@@ -112,7 +112,7 @@ function toEntityRow(entity: Entity, idx: number) {
     return {
         id: idx,
         api: {
-            name: entity.metadata[API_PLATFORM_API_NAME_ANNOTATION]?.toString() || '?',
+            name: entity.metadata[ANNOTATION_API_NAME]?.toString() || '?',
             description: entity.metadata.description || '',
         },
         resolved: {

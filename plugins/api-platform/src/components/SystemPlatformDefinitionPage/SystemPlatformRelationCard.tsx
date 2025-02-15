@@ -5,10 +5,17 @@ import { ApiPlatformDisplayName } from "../ApiPlatformTable";
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 
-const apiColumns: TableColumn[] = [
+type TableRow = {
+    id: number,
+    data: {
+        name: string,
+    },
+}
+
+const apiColumns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
-        width: '100%%',
+        width: '100%',
         field: 'name',
         highlight: true,
         render: ({ data }: any) => {
@@ -23,10 +30,10 @@ const apiColumns: TableColumn[] = [
     },
 ];
 
-const serviceColumns: TableColumn[] = [
+const serviceColumns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
-        width: '100%%',
+        width: '100%',
         field: 'name',
         highlight: true,
         render: ({ data }: any) => {
@@ -41,26 +48,24 @@ const serviceColumns: TableColumn[] = [
     },
 ];
 
-export const SystemRelationTableCard = (props: { dependency: 'api' | 'service', systemDefinition: SystemDefinition }) => {
+export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service', systemDefinition: SystemDefinition }) => {
     const { dependency, systemDefinition } = props;
 
-    let rows: any[];
+    let rows: TableRow[];
     let title: string;
-    let columns: TableColumn[];
+    let columns: TableColumn<TableRow>[];
     if (dependency === 'api') {
         rows = systemDefinition?.apis.map(toRow);
         title = "APIs";
         columns = apiColumns;
-    } else if (dependency === 'service') {
+    } else {
         rows = systemDefinition?.services.map(toRow);
         title = "Services";
         columns = serviceColumns;
-    } else {
-        return (<></>);
     }
     const showPagination = rows.length > 20 || false;
     return (
-        <Table
+        <Table<TableRow>
             columns={columns}
             options={{
                 search: true,
@@ -74,7 +79,7 @@ export const SystemRelationTableCard = (props: { dependency: 'api' | 'service', 
                     {title} ({rows ? rows.length : 0})
                 </Box>
             }
-            data={rows ?? []}
+            data={rows}
         />
     );
 }

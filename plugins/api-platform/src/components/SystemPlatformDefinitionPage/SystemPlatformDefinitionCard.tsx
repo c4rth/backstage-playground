@@ -17,7 +17,7 @@ import {
     EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
 import { SystemDefinition } from '@internal/plugin-api-platform-common';
-import { SystemRelationTableCard } from './SystemRelationTableCard';
+import { SystemPlatformRelationCard } from './SystemPlatformRelationCard';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -95,10 +95,10 @@ export const SystemPlatformDefinitionCard = (props: { systemDefinition: SystemDe
                     <TabbedLayout.Route path="/relations" title="Relations">
                         <Grid container spacing={3} alignItems="stretch">
                             <Grid item md={6}>
-                                <SystemRelationTableCard dependency='service' systemDefinition={systemDefinition} />
+                                <SystemPlatformRelationCard dependency='service' systemDefinition={systemDefinition} />
                             </Grid>
                             <Grid item md={6} xs={12}>
-                                <SystemRelationTableCard dependency='api' systemDefinition={systemDefinition} />
+                                <SystemPlatformRelationCard dependency='api' systemDefinition={systemDefinition} />
                             </Grid>
                         </Grid>
                     </TabbedLayout.Route>
