@@ -196,3 +196,10 @@ catalog:
 
 spectralLinter:
   openApiRulesetUrl: https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/spectral/.spectral.yaml
+
+# https://github.com/backstage/community-plugins/blob/main/workspaces/sonarqube/plugins/sonarqube-backend/README.md
+sonarqube:
+  baseUrl: https://sonarqube-internal.example.com
+  instanceKey: mySonarqube
+  externalBaseUrl: https://sonarqube.example.com
+  apiKey: 123456789abcdef0123456789abcedf012

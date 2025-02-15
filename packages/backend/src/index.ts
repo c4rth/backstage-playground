@@ -116,6 +116,9 @@ backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-
 // Kubernetes
 backend.add(import('@backstage/plugin-kubernetes-backend'));
 
+// SonarQube
+backend.add(import('@backstage-community/plugin-sonarqube-backend'));
+
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
 

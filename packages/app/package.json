@@ -11,6 +11,8 @@
     "@backstage-community/plugin-entity-validation": "^0.3.0",
     "@backstage-community/plugin-kiali": "^1.36.2",
     "@backstage-community/plugin-shortcuts": "^0.4.0",
+    "@backstage-community/plugin-sonarqube": "^0.10.0",
+    "@backstage-community/plugin-sonarqube-react": "^0.4.0",
     "@backstage/app-defaults": "^1.5.16",
     "@backstage/catalog-client": "^1.9.1",
     "@backstage/catalog-model": "^1.7.3",

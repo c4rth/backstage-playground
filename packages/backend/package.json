@@ -20,6 +20,7 @@
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.3.0",
     "@backstage-community/plugin-kiali-backend": "^1.20.1",
     "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.4.0",
+    "@backstage-community/plugin-sonarqube-backend": "^0.5.0",
     "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.7.0",
     "@backstage/backend-plugin-api": "^1.1.1",

@@ -48,16 +48,16 @@ import {
   RELATION_PART_OF,
   RELATION_PROVIDES_API,
 } from '@backstage/catalog-model';
-
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-
+// SonarQube
+import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
+import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 // Azure Devops
 import {
   EntityAzurePipelinesContent,
   isAzureDevOpsAvailable,
   isAzurePipelinesAvailable,
 } from '@backstage-community/plugin-azure-devops';
-
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-platform';
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
@@ -166,7 +166,7 @@ const serviceEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/dependencies" title="App Registry">
+    <EntityLayout.Route path="/dependencies" title="Dependencies">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
           <EntityDependsOnComponentsCard variant="gridItem" />
@@ -179,6 +179,10 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route if={isSonarQubeAvailable} path="/sonarqube" title="SonarQube">
+      <EntitySonarQubeContentPage />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -328,22 +332,22 @@ const systemPage = (
       </Grid>
     </EntityLayout.Route>
     <EntityLayout.Route path="/components" title="Components">
-          <EntityHasComponentsCard variant="gridItem"
-          tableOptions={{
-            search: true,
-            paging: true,
-            pageSize: 15
-          }
-          }/>
+      <EntityHasComponentsCard variant="gridItem"
+        tableOptions={{
+          search: true,
+          paging: true,
+          pageSize: 15
+        }
+        } />
     </EntityLayout.Route>
     <EntityLayout.Route path="/apis" title="APIS">
-          <EntityHasApisCard variant="gridItem" 
-          tableOptions={{
-            search: true,
-            paging: true,
-            pageSize: 15
-          }
-          }/>
+      <EntityHasApisCard variant="gridItem"
+        tableOptions={{
+          search: true,
+          paging: true,
+          pageSize: 15
+        }
+        } />
     </EntityLayout.Route>
     <EntityLayout.Route path="/diagram" title="Diagram">
       <EntityCatalogGraphCard
