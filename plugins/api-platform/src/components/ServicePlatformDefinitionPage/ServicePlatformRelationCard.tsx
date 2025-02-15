@@ -52,7 +52,7 @@ const fetchEntities = async (catalogApi: CatalogApi, serviceEntity: Entity, depe
         ],
         filter: {
             kind: ['API'],
-            CATALOG_METADATA_NAME: filteredNames
+            'metadata.name': filteredNames
         },
     });
     return response.items;

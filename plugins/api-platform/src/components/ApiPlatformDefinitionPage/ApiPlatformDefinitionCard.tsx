@@ -113,7 +113,7 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
                 </TabbedLayout.Route>
                 : <div />
             }
-            <TabbedLayout.Route path="/relations" title="Relations">
+            <TabbedLayout.Route path="/services" title="Services">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={6}>
                         <ApiPlatformRelationCard dependency='provider' apiEntity={apiEntity} />

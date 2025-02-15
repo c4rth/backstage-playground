@@ -59,8 +59,8 @@ const fetchEntities = async (catalogApi: CatalogApi, apiEntity: ApiEntity, depen
         ],
         filter: {
             kind: ['Component'],
-            CATALOG_SPEC_TYPE: ['service'],
-            CATALOG_METADATA_NAME: filteredNames
+            'spec.type': ['service'],
+            'metadata.name': filteredNames
         },
     });
     return response.items;

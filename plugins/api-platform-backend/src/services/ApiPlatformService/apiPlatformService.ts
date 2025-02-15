@@ -24,7 +24,7 @@ async function innerGetApiVersions(logger: LoggerService, catalogClient: Catalog
     {
       filter: {
         kind: ['API'],
-        CATALOG_METADATA_API_NAME: apiName
+        'metadata.api-name': apiName
       },
     },
     { token });

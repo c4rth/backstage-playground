@@ -67,7 +67,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
         {
           filter: {
             kind: ['System'],
-            CATALOG_METADATA_NAME: request.systemName,
+            'metadata.name': request.systemName,
           },
           fields: [
             CATALOG_KIND,

@@ -19,7 +19,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
 import { ApiPlatformStore } from '../../database/apiPlatformStore';
-import { RELATION_API_CONSUMED_BY } from '@backstage/catalog-model/index';
+import { RELATION_OWNED_BY } from '@backstage/catalog-model';
 
 function getFilter(serviceName?: string): EntityFilterQuery {
   if (serviceName) {
@@ -67,7 +67,7 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
     } else {
       def = {
         name: name,
-        owner: entity.relations?.filter(rel => rel.type === RELATION_API_CONSUMED_BY).at(0)?.targetRef || '',
+        owner: entity.relations?.filter(rel => rel.type === RELATION_OWNED_BY).at(0)?.targetRef || '',
         versions: []
       };
     }
