@@ -3,9 +3,9 @@ import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from
 import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
-import { myCatalogCollatorEntityTransformer } from './plugins/collator';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
 import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog';
+import { apiPlatformCatalogCollatorEntityTransformer } from '@internal/plugin-api-platform-backend';
 // TechDocs
 // import {
 //  DocsBuildStrategy,
@@ -86,19 +86,18 @@ backend.add(import('@backstage/plugin-search-backend-module-pg'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(createBackendModule({
   pluginId: 'search',
-  moduleId: 'catalog-collator-extension',
+  moduleId: 'api-platform-catalog-collator-extension',
   register(env) {
     env.registerInit({
       deps: {
         entityTransformer: catalogCollatorExtensionPoint,
       },
       async init({ entityTransformer }) {
-        entityTransformer.setEntityTransformer(myCatalogCollatorEntityTransformer);
+        entityTransformer.setEntityTransformer(apiPlatformCatalogCollatorEntityTransformer);
       }
     });
   },
 }));
-
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // notifications plugin
@@ -121,5 +120,4 @@ backend.add(import('@backstage-community/plugin-sonarqube-backend'));
 
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
-
 backend.start();

@@ -5,10 +5,6 @@ import {
 } from '@backstage/core-components';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
 import React from 'react';
-import {
-    EntityConsumedApisCard,
-    EntityProvidedApisCard,
-} from '@backstage/plugin-api-docs';
 import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
 import { EntityProvider, EntityRefLink } from '@backstage/plugin-catalog-react';
 import {

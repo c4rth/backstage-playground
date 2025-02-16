@@ -24,7 +24,7 @@ import {
   Page,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import BuildIcon from '@material-ui/icons/Build';
+import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -71,11 +71,6 @@ const SearchPage = () => {
                   name: 'Documentation',
                   icon: <DocsIcon />,
                 },
-                {
-                  value: 'tools',
-                  name: 'Tools',
-                  icon: <BuildIcon />,
-                },
               ]}
             />
             <Paper className={classes.filters}>
@@ -106,17 +101,12 @@ const SearchPage = () => {
                 name="kind"
                 values={['Component', 'API', 'Template']}
               />
-              <SearchFilter.Checkbox
-                className={classes.filter}
-                label="Lifecycle"
-                name="lifecycle"
-                values={['experimental', 'production']}
-              />
             </Paper>
           </Grid>
           <Grid item xs={9}>
             <SearchPagination />
             <SearchResult>
+              <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
             </SearchResult>

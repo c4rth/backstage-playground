@@ -23,6 +23,8 @@ import {
   Link,
   SidebarSubmenu,
   SidebarSubmenuItem,
+  CatalogIcon,
+  DocsIcon,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
@@ -39,8 +41,12 @@ import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/
 // Api Platform
 import CodeIcon from '@material-ui/icons/Code';
 import MuiMemoryIcon from '@material-ui/icons/Memory';
+import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
 // Kiali
 import { KialiIcon } from '@backstage-community/plugin-kiali';
+// Search
+import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
+import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -75,7 +81,11 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
     <Sidebar>
       <SidebarLogo />
       <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-        <SidebarSearchModal />
+        <SidebarSearchModal resultItemComponents={[
+          <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />,
+          <CatalogSearchResultListItem icon={<CatalogIcon />} />,
+          <TechDocsSearchResultListItem icon={<DocsIcon />} />
+        ]} />
       </SidebarGroup>
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
@@ -138,11 +148,9 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
               errorPage={<div />}
             />
-            <SidebarDivider />
-          <SidebarSubmenuItem icon={KialiIcon} to="kiali" title="Kiali" />
+            <SidebarSubmenuItem icon={KialiIcon} to="kiali" title="Kiali" />
           </SidebarSubmenu>
         </SidebarItem>        {/* End global nav */}
-        <SidebarDivider />
         <SidebarScrollWrapper>
           {/* Items in this group will be scrollable if they run out of space */}
         </SidebarScrollWrapper>

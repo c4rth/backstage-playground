@@ -10,6 +10,8 @@ import {
 import { ApiPlatformBackendClient, apiPlatformBackendApiRef } from './api';
 import { rootRouteRef } from './routes';
 import { linterApiRef, LinterClient } from './api';
+import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import { ApiPlatformSearchResultListItemProps } from './components/ApiPlatformSearchResultListItem';
 
 export const apiPlatformPlugin = createPlugin({
   id: 'api-platform',
@@ -89,6 +91,22 @@ export const SystemPlatformDefinitionPage = apiPlatformPlugin.provide(
 
 //-------------------------------------------------------------------------------------------------
 
+export const ApiPlatformSearchResultListItem: (
+  props: SearchResultListItemExtensionProps<ApiPlatformSearchResultListItemProps>,
+) => JSX.Element | null = apiPlatformPlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'ApiPlatformSearchResultListItem',
+    component: () =>
+      import('./components/ApiPlatformSearchResultListItem').then(
+        m => m.ApiPlatformSearchResultListItem,
+      ),
+    predicate: result => 
+      result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.'),
+  }),
+);
+
+//-------------------------------------------------------------------------------------------------
+
 export const apiDocsSpectralLinterPlugin = createPlugin({
   id: 'api-docs-spectral-linter',
   apis: [
@@ -128,7 +146,6 @@ export const EntityApiDocsSpectralLinterCard = apiDocsSpectralLinterPlugin.provi
     },
   }),
 );
-
 
 //-------------------------------------------------------------------------------------------------
 
