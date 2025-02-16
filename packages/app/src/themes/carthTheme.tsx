@@ -1,19 +1,29 @@
 import { AppTheme } from '@backstage/core-plugin-api';
 import LightIcon from '@material-ui/icons/WbSunny';
 import DarkIcon from '@material-ui/icons/WbSunnyOutlined';
-import React from 'react';
- 
+import React from 'react'; 
 import { PageTheme, UnifiedTheme, UnifiedThemeOptions, UnifiedThemeProvider, createUnifiedTheme, genPageTheme, palettes, shapes } from '@backstage/theme';
+
+const colors = {
+    rubyRed: '#C30045',
+    darkCrimson: '#74002A',
+    roseRed: '#E34E79',
+    paleRose: '#F3CCDA',
+    slateGray: '#51626F',
+    charcoalBlue: '#2F3D47',
+    white: '#ffffff',
+    black: '#000000',
+};
  
-function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], pageTheme: PageTheme): UnifiedTheme {
+function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], primary: string, secondary: string, pageTheme: PageTheme): UnifiedTheme {
     return createUnifiedTheme({
         palette: {
             ...palette,
             primary: {
-                main: '#C30045',
+                main: primary
             },
             secondary: {
-                main: '#51626F',
+                main: secondary,
             },
             error: {
                 main: '#f44336',
@@ -28,19 +38,22 @@ function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], pageThem
                 main: '#4caf50',
             },
             banner: {
-                info: '#C30045',
+                info: colors.rubyRed,
                 error: '#f44336',
-                text: '#ffffff',
-                link: '#ffffff',
+                text: colors.white,
+                link: colors.white,
             },
             errorBackground: '#8c4351',
             warningBackground: '#8f5e15',
             infoBackground: '#343b58',
             navigation: {
-                background: '#51626F',
-                indicator: '#C30045',
+                background: colors.charcoalBlue,
+                indicator: colors.rubyRed,
                 color: '#d5d6db',
-                selectedColor: '#ffffff',
+                selectedColor: colors.white,
+                submenu: {
+                    background: colors.slateGray,
+                }
             },
         },
         defaultPageTheme: 'home',
@@ -58,8 +71,8 @@ function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], pageThem
     });
 }
  
-const lightPageTheme = genPageTheme({ colors: ['#C30045', '#F3CCDA'], shape: shapes.round });
-const darkPageTheme = genPageTheme({ colors: ['#C30045', '#880030'], shape: shapes.round });
+const lightPageTheme = genPageTheme({ colors: [colors.rubyRed, colors.paleRose], shape: shapes.round });
+const darkPageTheme = genPageTheme({ colors: [colors.darkCrimson, colors.rubyRed], shape: shapes.round });
  
 export const carthThemes: AppTheme[] = [
     {
@@ -67,13 +80,13 @@ export const carthThemes: AppTheme[] = [
         title: 'Light Theme',
         variant: 'light',
         icon: <LightIcon />,
-        Provider: ({ children }) => <UnifiedThemeProvider theme={createCustomBaseTheme(palettes.light, lightPageTheme)} children={children} />,
+        Provider: ({ children }) => <UnifiedThemeProvider theme={createCustomBaseTheme(palettes.light, colors.rubyRed, colors.slateGray, lightPageTheme)} children={children} />,
     },
     {
         id: 'dark-theme',
         title: 'Dark Theme',
         variant: 'dark',
         icon: <DarkIcon />,
-        Provider: ({ children }) => <UnifiedThemeProvider theme={createCustomBaseTheme(palettes.dark, darkPageTheme)} children={children} />,
+        Provider: ({ children }) => <UnifiedThemeProvider theme={createCustomBaseTheme(palettes.dark, colors.roseRed, colors.slateGray, darkPageTheme)} children={children} />,
     },
 ];
