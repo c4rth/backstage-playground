@@ -13,11 +13,9 @@ import {
   EntityDependsOnComponentsCard,
   EntityDependsOnResourcesCard,
   EntityHasComponentsCard,
-  EntityHasResourcesCard,
   EntityHasSubcomponentsCard,
   EntityHasSystemsCard,
   EntityLayout,
-  EntityLinksCard,
   EntitySwitch,
   EntityOrphanWarning,
   EntityProcessingErrorsPanel,
@@ -50,23 +48,24 @@ import {
   RELATION_PART_OF,
   RELATION_PROVIDES_API,
 } from '@backstage/catalog-model';
-
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-
+// SonarQube
+import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
+import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 // Azure Devops
 import {
   EntityAzurePipelinesContent,
   isAzureDevOpsAvailable,
   isAzurePipelinesAvailable,
 } from '@backstage-community/plugin-azure-devops';
-import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
+// Spectral 
+import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-platform';
+import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
-      <ReportIssue />
-      <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }} />
+      <Mermaid />
     </TechDocsAddons>
   </EntityTechdocsContent>
 );
@@ -82,6 +81,7 @@ const cicdContent = (
     <EntitySwitch.Case if={isAzurePipelinesAvailable}>
       <EntityAzurePipelinesContent defaultLimit={25} />
     </EntitySwitch.Case>
+
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"
@@ -139,11 +139,8 @@ const overviewContent = (
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
 
-    <Grid item md={4} xs={12}>
-      <EntityLinksCard />
-    </Grid>
     <Grid item md={8} xs={12}>
-      <EntityHasSubcomponentsCard variant="gridItem" />
+      <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true }} />
     </Grid>
   </Grid>
 );
@@ -182,6 +179,10 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route if={isSonarQubeAvailable} path="/sonarqube" title="SonarQube">
+      <EntitySonarQubeContentPage />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -257,9 +258,6 @@ const apiPage = (
         <Grid item md={6} xs={12}>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
         </Grid>
-        <Grid item md={4} xs={12}>
-          <EntityLinksCard />
-        </Grid>
         <Grid container item md={12}>
           <Grid item md={6}>
             <EntityProvidingComponentsCard />
@@ -277,6 +275,10 @@ const apiPage = (
           <EntityApiDefinitionCard />
         </Grid>
       </Grid>
+    </EntityLayout.Route>
+
+    <EntityLayout.Route if={isApiDocsSpectralLinterAvailable} path="/linter" title="Linter">
+      <EntityApiDocsSpectralLinterContent />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -311,9 +313,6 @@ const groupPage = (
         <Grid item xs={12} md={6}>
           <EntityMembersListCard />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityLinksCard />
-        </Grid>
       </Grid>
     </EntityLayout.Route>
   </EntityLayout>
@@ -330,19 +329,25 @@ const systemPage = (
         <Grid item md={6} xs={12}>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
         </Grid>
-        <Grid item md={4} xs={12}>
-          <EntityLinksCard />
-        </Grid>
-        <Grid item md={8}>
-          <EntityHasComponentsCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
-          <EntityHasApisCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
-          <EntityHasResourcesCard variant="gridItem" />
-        </Grid>
       </Grid>
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/components" title="Components">
+      <EntityHasComponentsCard variant="gridItem"
+        tableOptions={{
+          search: true,
+          paging: true,
+          pageSize: 15
+        }
+        } />
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/apis" title="APIS">
+      <EntityHasApisCard variant="gridItem"
+        tableOptions={{
+          search: true,
+          paging: true,
+          pageSize: 15
+        }
+        } />
     </EntityLayout.Route>
     <EntityLayout.Route path="/diagram" title="Diagram">
       <EntityCatalogGraphCard

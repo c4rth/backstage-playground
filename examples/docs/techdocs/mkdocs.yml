@@ -18,6 +18,13 @@ nav:
 plugins:
   - techdocs-core
   - section-index
+  # - drawio-exporter:
+  #     format: svg
+  #     drawio_args: [--embed-svg-images]
+
+markdown_extensions: 
+  - attr_list
+  - markdown_inline_mermaid
 
 #markdown_extensions:
 #  - pymdownx.emoji:

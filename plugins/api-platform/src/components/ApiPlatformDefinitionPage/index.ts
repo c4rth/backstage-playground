@@ -1,0 +1,1 @@
+export { ApiPlatformDefinitionPage } from './ApiPlatformDefinitionPage';

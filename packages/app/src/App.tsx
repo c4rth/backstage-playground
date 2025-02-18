@@ -13,14 +13,12 @@ import {
 import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { orgPlugin } from '@backstage/plugin-org';
 import { SearchPage } from '@backstage/plugin-search';
-import { TechRadarPage } from '@backstage-community/plugin-tech-radar';
 import {
   DefaultTechDocsHome,
   TechDocsIndexPage,
   techdocsPlugin,
   TechDocsReaderPage,
 } from '@backstage/plugin-techdocs';
-import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
@@ -50,15 +48,21 @@ import * as plugins from './plugins';
 import { NotificationsPage } from '@backstage/plugin-notifications';
 // Auto-logout
 import { AutoLogout } from '@backstage/core-components';
-// Q&A
-import { QetaPage } from '@drodil/backstage-plugin-qeta';
-// RBAC janus
-import { RbacPage } from '@janus-idp/backstage-plugin-rbac';
-import { policyEntityReadPermission } from '@janus-idp/backstage-plugin-rbac-common';
-// Techdocs Mermaid
-import { Mermaid } from '@internal/backstage-plugin-techdocs-addon-mermaid';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
+import { 
+  ApiPlatformDefinitionPage, 
+  ApiPlatformExplorerPage, 
+  ServicePlatformExplorerPage, 
+  ServicePlatformDefinitionPage, 
+  SystemPlatformExplorerPage,
+  SystemPlatformDefinitionPage, 
+} from '@internal/plugin-api-platform';
+// Mermaid
+import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
+import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
+// Kiali
+import { KialiPage } from '@backstage-community/plugin-kiali';
 
 const app = createApp({
   apis,
@@ -99,25 +103,31 @@ const routes = (
       <HomePage />
     </Route>
     <Route path="/catalog" element={<CatalogIndexPage />} />
-    <Route path="/catalog/:namespace/:kind/:name" element={<CatalogEntityPage />}>
+    <Route
+      path="/catalog/:namespace/:kind/:name"
+      element={<CatalogEntityPage />}
+    >
       {entityPage}
     </Route>
     <Route path="/docs" element={<TechDocsIndexPage />}>
       <DefaultTechDocsHome />
     </Route>
-    <Route path="/docs/:namespace/:kind/:name/*" element={<TechDocsReaderPage />}    >
-      <TechDocsAddons>
-        <Mermaid darkConfig={{ theme: 'dark' }} lightConfig={{ theme: 'default' }}/>
-      </TechDocsAddons>
+    <Route
+      path="/docs/:namespace/:kind/:name/*"
+      element={<TechDocsReaderPage />}>
+        <TechDocsAddons>
+          <Mermaid />
+        </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
-    <Route path="/tech-radar" element={<TechRadarPage width={1500} height={800} />} />
-    <Route path="/catalog-import" element={
-      <RequirePermission permission={catalogEntityCreatePermission}>
-        <CatalogImportPage />
-      </RequirePermission>
-    }
+    <Route
+      path="/catalog-import"
+      element={
+        <RequirePermission permission={catalogEntityCreatePermission}>
+          <CatalogImportPage />
+        </RequirePermission>
+      }
     />
     <Route path="/search" element={<SearchPage />}>
       {searchPage}
@@ -125,14 +135,14 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
-    <Route path="/qeta" element={<QetaPage title="Questions" />} />
-    <Route path="/rbac" element={
-      <RequirePermission permission={policyEntityReadPermission} resourceRef="policy-entity">
-        <RbacPage />
-      </RequirePermission>
-    }
-    />
+    <Route path="/kiali" element={<KialiPage />} />
     <Route path="/entity-validation" element={<EntityValidationPage />} />
+    <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
+    <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
+    <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />
+    <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
+    <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
+    <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
   </FlatRoutes>
 );
 

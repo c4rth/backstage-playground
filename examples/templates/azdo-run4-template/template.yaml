@@ -1,0 +1,55 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: ado-run-4
+  title: AzDo Run Parameters
+  description: AzDo Run Parameters
+spec:
+  owner: user:guest
+  type: service
+  parameters:
+    - title: Choose a location
+      required:
+        - repoUrl
+        - pipelineId
+        - parameter1
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - dev.azure.com
+            allowedOrganizations:
+            - thierrycarels0265
+            allowedProjects:
+            - java-playground
+            allowedRepos:
+            - java-playground
+        pipelineId:
+          title: Pipeline Id
+          type: string
+          description: The Id for the pipeline you want to execute
+        parameter1:
+          title: Template Parameter
+          type: string
+          description: Parameter1
+  steps:
+    - id: runAzurePipeline
+      name: Run Pipeline
+      action: azure:pipeline:run
+      input:
+        organization: ${{ (parameters.repoUrl | parseRepoUrl)['organization'] }}
+        pipelineId: ${{ parameters.pipelineId }}
+        project: ${{ (parameters.repoUrl | parseRepoUrl)['project'] }}
+        templateParameters:
+          projectRepo: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+          parameter1: ['parameter1']
+
+  output:
+    links:
+      - title: Open in DevOps
+        icon: catalog
+        url: ${{ steps['runAzurePipeline'].output.pipelineRunUrl }}

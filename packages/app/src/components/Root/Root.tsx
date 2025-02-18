@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { makeStyles } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
-import MapIcon from '@material-ui/icons/MyLocation';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import LogoFull from './LogoFull';
@@ -24,22 +23,30 @@ import {
   Link,
   SidebarSubmenu,
   SidebarSubmenuItem,
+  CatalogIcon,
+  DocsIcon,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 // Notifications
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 // Q&A
-import LiveHelpIcon from '@material-ui/icons/LiveHelp';
-// RBAC janus
-import { Administration } from '@janus-idp/backstage-plugin-rbac';
+// import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 // Entity Validation
 import BuildIcon from '@material-ui/icons/Build';
 import { useApp } from '@backstage/core-plugin-api';
-
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+// Api Platform
+import CodeIcon from '@material-ui/icons/Code';
+import MuiMemoryIcon from '@material-ui/icons/Memory';
+import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
+// Kiali
+import { KialiIcon } from '@backstage-community/plugin-kiali';
+// Search
+import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
+import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -74,7 +81,11 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
     <Sidebar>
       <SidebarLogo />
       <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-        <SidebarSearchModal />
+        <SidebarSearchModal resultItemComponents={[
+          <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />,
+          <CatalogSearchResultListItem icon={<CatalogIcon />} />,
+          <TechDocsSearchResultListItem icon={<DocsIcon />} />
+        ]} />
       </SidebarGroup>
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
@@ -96,11 +107,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               title="Components"
               to="catalog?filters[kind]=component"
               icon={useApp().getSystemIcon('kind:component')}
-            />
-            <SidebarSubmenuItem
-              title="APIs"
-              to="catalog?filters[kind]=api"
-              icon={useApp().getSystemIcon('kind:api')}
             />
             <SidebarDivider />
             <SidebarSubmenuItem
@@ -124,11 +130,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               to="catalog?filters[kind]=user"
               icon={useApp().getSystemIcon('kind:user')}
             />
+            <SidebarDivider />
+            <SidebarSubmenuItem icon={CodeIcon} to="api-docs" title="APIs" />
+            <SidebarSubmenuItem icon={MuiMemoryIcon} to="catalog?filters[kind]=component&filters[type]=service" title="Services" />
+            <SidebarSubmenuItem icon={useApp().getSystemIcon('kind:system')} to="catalog?filters[kind]=system" title="Systems" />
           </SidebarSubmenu>
         </SidebarItem>
-        {/*<SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />*/}
+        <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
+        <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
+        <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
-        <SidebarItem icon={LiveHelpIcon} to="qeta" text="Q&A" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Scaffolder" />
         <SidebarItem icon={BuildIcon} text="Tools">
           <SidebarSubmenu title="Tools">
@@ -137,19 +148,21 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
               errorPage={<div />}
             />
+            <SidebarSubmenuItem icon={KialiIcon} to="kiali" title="Kiali" />
           </SidebarSubmenu>
-        </SidebarItem>
-        {/* End global nav */}
-        <SidebarDivider />
+        </SidebarItem>        {/* End global nav */}
         <SidebarScrollWrapper>
-          <SidebarItem icon={MapIcon} to="tech-radar" text="Tech Radar" />
+          {/* Items in this group will be scrollable if they run out of space */}
         </SidebarScrollWrapper>
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
       <NotificationsSidebarItem />
-      <Administration />
-      <SidebarGroup label="Settings" icon={<UserSettingsSignInAvatar />} to="/settings">
+      <SidebarGroup
+        label="Settings"
+        icon={<UserSettingsSignInAvatar />}
+        to="/settings"
+      >
         <SidebarSettings />
       </SidebarGroup>
     </Sidebar>

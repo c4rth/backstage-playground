@@ -24,16 +24,24 @@ backend:
   # information on the format
   # auth:
   #   dangerouslyDisableDefaultAuthPolicy: true
+  auth:
+    dangerouslyDisableDefaultAuthPolicy: true
+    externalAccess:
+      - type: static
+        options:
+          #token: 'mpZ7Aq0y3bWAz+4BQqXKnNUmcNunl16L'
+          token: 'my-access-token'
+          subject: cicd-system-completion-events
+        accessRestrictions:
+          - plugin: api-platform
 
   baseUrl: http://localhost:7007
   listen:
     port: 7007
-    # Uncomment the following host directive to bind to specific interfaces
-    #host: 127.0.0.1
-    #host: 0.0.0.0
   csp:
     connect-src: ["'self'", "http:", "https:"]
-    img-src: ["'self'", "http:", "https:", "data:"]
+    img-src: ["'self'", "http:", "https:", "data:", "blob:"]
+    script-src: ["'self'", "http:", "https:", "data:", "blob:", "'unsafe-eval'"]
     upgrade-insecure-requests: []
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
@@ -47,14 +55,17 @@ backend:
   database:
     client: pg
     connection:
-      #host: 0.0.0.0
-      host: 127.0.0.1
+      #host: 127.0.0.1
       port: 5432
       user: postgres
       password: postgres
     # client: better-sqlite3
     # connection: ":memory:"
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+  reading:
+    allow:
+      - host: raw.githubusercontent.com
+      - host: github.com
 
 permission:
   enabled: true
@@ -67,20 +78,10 @@ permission:
   #     - permission # ?
   #     - qeta
 
-qeta:
-  tags:
-    allowCreation: false
-    allowedTags:
-      - java
-      - javascript
-      - azure
-      - ccoe
-      - python
-    max: 3
-  moderators:
-    - 'group:default/backstage-admin'
-
 integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
   azure:
     - host: dev.azure.com
       credentials:
@@ -111,24 +112,8 @@ techdocs:
     runIn: "local" # Alternatives - 'local'
   publisher:
     type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
-
-auth:
-  autologout:
-    enabled: true
-    idleTimeoutMinutes: 10
-  environment: development
-  providers:
-    guest:
-      userEntityRef: user:default/guest
-    microsoft:
-      development:
-        clientId: ${AZURE_AUTH_CLIENT_ID}
-        clientSecret: ${AZURE_AUTH_CLIENT_SECRET}
-        tenantId: ${AZURE_AUTH_TENANT_ID}
-        domainHint: ${AZURE_AUTH_TENANT_ID}
-        signIn:
-          resolvers:
-            - resolver: emailMatchingUserEntityProfileEmail
+    local:
+      publishDirectory: "../../publisher-docs"
 
 #scaffolder:
 # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -155,6 +140,7 @@ search:
           timeout: PT15M
           initialDelay: PT5S
 catalog:
+  processingInterval: { minutes: 15 }
   orphanStrategy: delete
   #  import:
   #    entityFilename: catalog-info.yaml
@@ -204,47 +190,16 @@ catalog:
         rules:
           - allow: [User, Group, Domain]
         schedule:
-          frequency: { minutes: 30 }
+          frequency: { hours: 6 }
           timeout: { minutes: 5 }
           initialDelay: { seconds: 15 }
 
-  locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
-    - type: file
-      target: ../../examples/catalog-info.yaml
-      rules:
-        - allow: 
-          [
-            Component,
-            System,
-            API,
-            Resource,
-            Template,
-            Domain,
-            Location,
-            Group,
-            User,
-          ]
-    - type: file
-      target: ../../examples/docs/techdocs/catalog-info.yaml
+spectralLinter:
+  openApiRulesetUrl: https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/spectral/.spectral.yaml
 
-    # Local example template      
-    - type: file
-      target: ../../examples/templates/azdo-template/template.yaml
-      rules:
-        - allow: [Template]
-
-    - type: file
-      target: ../../examples/templates/template/template.yaml
-      rules:
-        - allow: [Template]
-
-    # Uncomment these lines to add more example data
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
-
-  #   ## Uncomment these lines to add an example org
-  #   # - type: url
-  #   #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
-  #   #   rules:
-  #   #     - allow: [User, Group]
+# https://github.com/backstage/community-plugins/blob/main/workspaces/sonarqube/plugins/sonarqube-backend/README.md
+sonarqube:
+  baseUrl: https://sonarqube-internal.example.com
+  instanceKey: mySonarqube
+  externalBaseUrl: https://sonarqube.example.com
+  apiKey: 123456789abcdef0123456789abcedf012

@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: monorepo-component
+  title: MonoRepo Component
+  description: MonoRepo TechDocs documentation
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    company.com/techdocs-builder: local
+spec:
+  type: service
+  lifecycle: experimental
+  owner: user:guest

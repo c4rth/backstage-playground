@@ -1,0 +1,60 @@
+backend:
+  listen:
+    host: 0.0.0.0
+
+  cors:
+    origin: http://localhost:7007
+
+  database:
+    connection:
+      host: postgres-db
+
+auth:
+  autologout:
+    enabled: true
+    idleTimeoutMinutes: 10
+  environment: development
+  providers:
+    guest:
+      dangerouslyAllowOutsideDevelopment: true
+      userEntityRef: user:default/guest
+    microsoft:
+      development:
+        clientId: ${AZURE_PRD_AUTH_CLIENT_ID}
+        clientSecret: ${AZURE_PRD_AUTH_CLIENT_SECRET}
+        tenantId: ${AZURE_AUTH_TENANT_ID}
+        domainHint: ${AZURE_AUTH_TENANT_ID}
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+catalog:
+  rules:
+    - allow:
+        [
+          Component,
+          System,
+          API,
+          Resource,
+          Template,
+          Domain,
+          Location,
+          Group,
+          User,
+        ]
+  locations:
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/catalog-info.yaml
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/docs/techdocs/catalog-info.yaml
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/templates/azdo-template/template.yaml
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/templates/template/template.yaml
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/templates/azdo-run1-template/template.yaml
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/templates/azdo-run2-template/template.yaml
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/templates/azdo-run3-template/template.yaml
+    - type: url
+      target: https://github.com/c4rth/backstage-playground/blob/feature/playground-1.35/examples/templates/azdo-run4-template/template.yaml

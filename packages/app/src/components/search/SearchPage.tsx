@@ -1,3 +1,21 @@
+import React from 'react';
+import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
+
+import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
+import {
+  catalogApiRef,
+  CATALOG_FILTER_EXISTS,
+} from '@backstage/plugin-catalog-react';
+import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
+
+import { SearchType } from '@backstage/plugin-search';
+import {
+  SearchBar,
+  SearchFilter,
+  SearchResult,
+  SearchPagination,
+  useSearch,
+} from '@backstage/plugin-search-react';
 import {
   CatalogIcon,
   Content,
@@ -5,25 +23,8 @@ import {
   Header,
   Page,
 } from '@backstage/core-components';
-import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
-import { SearchType } from '@backstage/plugin-search';
-import {
-  DefaultResultListItem,
-  SearchBar,
-  SearchFilter,
-  SearchResult,
-  SearchResultPager,
-  useSearch,
-} from '@backstage/plugin-search-react';
-import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
-import { Grid, List, makeStyles, Paper, Theme } from '@material-ui/core';
-import React from 'react';
 import { useApi } from '@backstage/core-plugin-api';
-import {
-  catalogApiRef,
-  CATALOG_FILTER_EXISTS,
-} from '@backstage/plugin-catalog-react';
-import BuildIcon from '@material-ui/icons/Build';
+import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -44,18 +45,21 @@ const SearchPage = () => {
   const classes = useStyles();
   const { types } = useSearch();
   const catalogApi = useApi(catalogApiRef);
+
   return (
     <Page themeId="home">
       <Header title="Search" />
       <Content>
         <Grid container direction="row">
           <Grid item xs={12}>
-            <SearchBar />
+            <Paper className={classes.bar}>
+              <SearchBar />
+            </Paper>
           </Grid>
           <Grid item xs={3}>
             <SearchType.Accordion
               name="Result Type"
-              defaultValue=""
+              defaultValue="software-catalog"
               types={[
                 {
                   value: 'software-catalog',
@@ -66,11 +70,6 @@ const SearchPage = () => {
                   value: 'techdocs',
                   name: 'Documentation',
                   icon: <DocsIcon />,
-                },
-                {
-                  value: 'tools',
-                  name: 'Tools',
-                  icon: <BuildIcon />,
                 },
               ]}
             />
@@ -102,53 +101,15 @@ const SearchPage = () => {
                 name="kind"
                 values={['Component', 'API', 'Template']}
               />
-              <SearchFilter.Checkbox
-                className={classes.filter}
-                label="Lifecycle"
-                name="lifecycle"
-                values={['experimental', 'production']}
-              />
             </Paper>
           </Grid>
           <Grid item xs={9}>
+            <SearchPagination />
             <SearchResult>
-              {({ results }) => (
-                <List>
-                  {results.map(({ type, document, highlight, rank }) => {
-                    switch (type) {
-                      case 'software-catalog':
-                        return (
-                          <CatalogSearchResultListItem
-                            key={document.location}
-                            result={document}
-                            highlight={highlight}
-                            rank={rank}
-                          />
-                        );
-                      case 'techdocs':
-                        return (
-                          <TechDocsSearchResultListItem
-                            key={document.location}
-                            result={document}
-                            highlight={highlight}
-                            rank={rank}
-                          />
-                        );
-                      default:
-                        return (
-                          <DefaultResultListItem
-                            key={document.location}
-                            result={document}
-                            highlight={highlight}
-                            rank={rank}
-                          />
-                        );
-                    }
-                  })}
-                </List>
-              )}
+              <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />
+              <CatalogSearchResultListItem icon={<CatalogIcon />} />
+              <TechDocsSearchResultListItem icon={<DocsIcon />} />
             </SearchResult>
-            <SearchResultPager />
           </Grid>
         </Grid>
       </Content>

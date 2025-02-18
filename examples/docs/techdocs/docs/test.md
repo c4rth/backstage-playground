@@ -39,7 +39,6 @@ Paragraph lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolo
 
 [Link to google](https://www.google.be)
 
-  
 
 * * *
 
@@ -59,8 +58,6 @@ Date is 15 september 2023
 ¥
 
 :grinning: :alien: 
-
- @(BERRIC)
 
 !!! info "Information title"
     

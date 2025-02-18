@@ -1,0 +1,1 @@
+export { apiPlatformCatalogCollatorEntityTransformer} from './apiPlatformCatalogCollator';
