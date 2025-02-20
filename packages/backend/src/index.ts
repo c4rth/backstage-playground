@@ -66,10 +66,11 @@ backend.add(createBackendModule({
     reg.registerInit({
       deps: {
         policy: policyExtensionPoint,
+        config: coreServices.rootConfig,
         logger: coreServices.logger
       },
-      async init({ policy, logger }) {
-        policy.setPolicy(new MyPermissionPolicy(logger));
+      async init({ policy, logger, config }) {
+        policy.setPolicy(new MyPermissionPolicy(logger, config));
       },
     });
   },

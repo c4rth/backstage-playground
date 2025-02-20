@@ -69,6 +69,11 @@ backend:
 
 permission:
   enabled: true
+  # Custom policy configuration
+  rbac:
+    admin:
+      superUsers:
+        - group:default/team-a.c
   # rbac:
   #   pluginsWithPermission:
   #     - catalog
@@ -203,3 +208,4 @@ sonarqube:
   instanceKey: mySonarqube
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
+

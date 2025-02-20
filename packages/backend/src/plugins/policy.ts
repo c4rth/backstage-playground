@@ -1,6 +1,6 @@
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { catalogEntityCreatePermission, catalogEntityDeletePermission } from '@backstage/plugin-catalog-common/alpha';
 import {
   AuthorizeResult,
   PolicyDecision,
@@ -10,28 +10,42 @@ import {
   PermissionPolicy,
   PolicyQuery,
 } from '@backstage/plugin-permission-node';
+import { Config } from '@backstage/config';
+
 
 export class MyPermissionPolicy implements PermissionPolicy {
 
   logger: LoggerService;
+  config: Config;
+  adminGroups: string[] = [];
 
-  constructor(logger: LoggerService) {
+  constructor(logger: LoggerService, config: Config) {
     this.logger = logger;
+    this.config = config;
+    this.adminGroups = this.config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
   }
 
   async handle(
     request: PolicyQuery,
     user?: BackstageIdentityResponse,
   ): Promise<PolicyDecision> {
+    // guest
     if (user?.identity?.userEntityRef === 'user:default/guest') {
-      if (isPermission(request.permission, catalogEntityCreatePermission)) {
-        const xxx = JSON.stringify(request.permission.attributes);
-        this.logger.info("****************************************");
-        this.logger.info(`${request.permission.name} - ${request.permission.type} - ${xxx}`, { service: "MyPermissionPolicy" });
-        this.logger.info(`${user?.identity.userEntityRef}`, { service: "MyPermissionPolicy" });
-        this.logger.info("****************************************");
-        return { result: AuthorizeResult.DENY };
+      return { result: AuthorizeResult.DENY };
+    }
+    // catalogEntityCreatePermission
+    if (isPermission(request.permission, catalogEntityCreatePermission)) {
+      if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
+        return { result: AuthorizeResult.ALLOW };
       }
+      return { result: AuthorizeResult.DENY };
+    }
+    // catalogEntityDeletePermission
+    if (isPermission(request.permission, catalogEntityDeletePermission)) {
+      if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
+        return { result: AuthorizeResult.ALLOW };
+      }
+      return { result: AuthorizeResult.DENY };
     }
     return {
       result: AuthorizeResult.ALLOW,
