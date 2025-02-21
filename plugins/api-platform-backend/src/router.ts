@@ -10,6 +10,7 @@ import { createApiPlatformService } from './services/ApiPlatformService';
 import { createCatalogPlatformService } from './services/CatalogPlatformService';
 import { createServicePlatformService } from './services/ServicePlatformService';
 import { createSystemPlatformService } from './services/SystemPlatformService';
+import { ServiceApisDefinition } from '@internal/plugin-api-platform-common';
 
 export interface RouterOptions {
   logger: LoggerService;  
@@ -103,13 +104,13 @@ export async function createRouter(
   });
 
   router.post('/services/:serviceName/:serviceVersion/:containerVersion', async (req, res) => {
-    const apis = req.body;
+    const apis: ServiceApisDefinition = req.body;
     res.json(await servicePlatformService.addServiceApis({
       serviceName: req.params.serviceName,
       serviceVersion: req.params.serviceVersion,
       containerVersion: req.params.containerVersion,
-      consumedApis: apis,
-      providedApis: apis
+      consumedApis: apis.consumedApis,
+      providedApis: apis.providedApis
     }));
   });
 
