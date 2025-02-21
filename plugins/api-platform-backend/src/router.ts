@@ -65,7 +65,7 @@ export async function createRouter(
 
   router.use(express.json());
 
-  router.get('/apis', async (_req, res) => {
+    router.get('/apis', async (_req, res) => {
     res.json(await apiPlatformService.listApis());
   });
 
@@ -108,8 +108,8 @@ export async function createRouter(
       serviceName: req.params.serviceName,
       serviceVersion: req.params.serviceVersion,
       containerVersion: req.params.containerVersion,
-      consumedApis: apis,
-      providedApis: apis
+      consumedApis: apis.consumedApis,
+      providedApis: apis.providedApis,
     }));
   });
 
