@@ -71,9 +71,16 @@ permission:
   enabled: true
   # Custom policy configuration
   rbac:
+    policies-csv-file: /Users/carth/Development/github.c4rth/backstage-playground/packages/backend/src/permissions/rbac-policy.csv
     admin:
+      users:
+        - name: group:default/team-a.c
       superUsers:
-        - group:default/team-a.c
+        - name: user:default/thierry.carels_gmail.com
+    pluginsWithPermission:
+      - catalog
+      - scaffolder
+      - permission
   # rbac:
   #   pluginsWithPermission:
   #     - catalog

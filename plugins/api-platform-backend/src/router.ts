@@ -10,9 +10,10 @@ import { createApiPlatformService } from './services/ApiPlatformService';
 import { createCatalogPlatformService } from './services/CatalogPlatformService';
 import { createServicePlatformService } from './services/ServicePlatformService';
 import { createSystemPlatformService } from './services/SystemPlatformService';
+import { ServiceApisDefinition } from '@internal/plugin-api-platform-common';
 
 export interface RouterOptions {
-  logger: LoggerService;  
+  logger: LoggerService;
   catalogClient: CatalogApi;
   database: DatabaseService;
   auth: AuthService;
@@ -65,7 +66,7 @@ export async function createRouter(
 
   router.use(express.json());
 
-    router.get('/apis', async (_req, res) => {
+  router.get('/apis', async (_req, res) => {
     res.json(await apiPlatformService.listApis());
   });
 
@@ -83,7 +84,7 @@ export async function createRouter(
     if (!target) {
       throw new InputError('Invalid request body');
     }
-    res.status(201).json(await catalogPlatformService.registerCatalogInfo({target: target}));
+    res.status(201).json(await catalogPlatformService.registerCatalogInfo({ target: target }));
   });
 
   router.get('/services', async (_req, res) => {
@@ -103,7 +104,7 @@ export async function createRouter(
   });
 
   router.post('/services/:serviceName/:serviceVersion/:containerVersion', async (req, res) => {
-    const apis = req.body;
+    const apis: ServiceApisDefinition = req.body;
     res.json(await servicePlatformService.addServiceApis({
       serviceName: req.params.serviceName,
       serviceVersion: req.params.serviceVersion,

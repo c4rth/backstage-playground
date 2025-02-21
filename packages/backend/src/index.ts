@@ -1,8 +1,6 @@
 import { createBackend } from '@backstage/backend-defaults';
 import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
-import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
-import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
-import { MyPermissionPolicy } from './plugins/policy';
+import { createBackendModule } from '@backstage/backend-plugin-api';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
 import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog';
 import { apiPlatformCatalogCollatorEntityTransformer } from '@internal/plugin-api-platform-backend';
@@ -56,25 +54,7 @@ backend.add(import('@backstage/plugin-catalog-backend-module-openapi'));
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // permission plugin
-backend.add(import('@backstage/plugin-permission-backend'));
-// backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
-
-backend.add(createBackendModule({
-  pluginId: 'permission',
-  moduleId: 'my-policy',
-  register(reg) {
-    reg.registerInit({
-      deps: {
-        policy: policyExtensionPoint,
-        config: coreServices.rootConfig,
-        logger: coreServices.logger
-      },
-      async init({ policy, logger, config }) {
-        policy.setPolicy(new MyPermissionPolicy(logger, config));
-      },
-    });
-  },
-}));
+backend.add(import('@backstage-community/plugin-rbac-backend'));
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));

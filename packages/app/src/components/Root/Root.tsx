@@ -47,6 +47,8 @@ import { KialiIcon } from '@backstage-community/plugin-kiali';
 // Search
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
+// RBAC
+import { Administration } from '@backstage-community/plugin-rbac';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -149,6 +151,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               errorPage={<div />}
             />
             <SidebarSubmenuItem icon={KialiIcon} to="kiali" title="Kiali" />
+            <Administration />
           </SidebarSubmenu>
         </SidebarItem>        {/* End global nav */}
         <SidebarScrollWrapper>

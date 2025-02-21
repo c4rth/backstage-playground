@@ -19,6 +19,7 @@
     "@backstage-community/plugin-azure-devops-backend": "^0.11.0",
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.4.0",
     "@backstage-community/plugin-kiali-backend": "^1.20.1",
+    "@backstage-community/plugin-rbac-backend": "^5.4.0",
     "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.5.0",
     "@backstage-community/plugin-sonarqube-backend": "^0.5.0",
     "@backstage/backend-common": "^0.25.0",
