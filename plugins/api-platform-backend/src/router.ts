@@ -105,7 +105,7 @@ export async function createRouter(
 
   router.post('/services/:serviceName/:serviceVersion/:containerVersion', async (req, res) => {
     const apis: ServiceApisDefinition = req.body;
-    res.json(await servicePlatformService.addServiceApis({
+    res.status(201).json(await servicePlatformService.addServiceApis({
       serviceName: req.params.serviceName,
       serviceVersion: req.params.serviceVersion,
       containerVersion: req.params.containerVersion,

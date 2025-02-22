@@ -25,13 +25,12 @@ backend:
   # auth:
   #   dangerouslyDisableDefaultAuthPolicy: true
   auth:
-    dangerouslyDisableDefaultAuthPolicy: true
+    #dangerouslyDisableDefaultAuthPolicy: true
     externalAccess:
       - type: static
         options:
-          #token: 'mpZ7Aq0y3bWAz+4BQqXKnNUmcNunl16L'
           token: 'my-access-token'
-          subject: cicd-system-completion-events
+          subject: cicd-system
         accessRestrictions:
           - plugin: api-platform
 

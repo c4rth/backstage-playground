@@ -35,6 +35,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Theme
 import { carthThemes } from './themes/carthTheme';
 // Home
@@ -50,19 +51,20 @@ import { NotificationsPage } from '@backstage/plugin-notifications';
 import { AutoLogout } from '@backstage/core-components';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
-import { 
-  ApiPlatformDefinitionPage, 
-  ApiPlatformExplorerPage, 
-  ServicePlatformExplorerPage, 
-  ServicePlatformDefinitionPage, 
+import {
+  ApiPlatformDefinitionPage,
+  ApiPlatformExplorerPage,
+  ServicePlatformExplorerPage,
+  ServicePlatformDefinitionPage,
   SystemPlatformExplorerPage,
-  SystemPlatformDefinitionPage, 
+  SystemPlatformDefinitionPage,
 } from '@internal/plugin-api-platform';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 // Kiali
 import { KialiPage } from '@backstage-community/plugin-kiali';
+import { toolsReadPermission } from '@internal/plugin-api-platform-common';
 
 const app = createApp({
   apis,
@@ -115,11 +117,18 @@ const routes = (
     <Route
       path="/docs/:namespace/:kind/:name/*"
       element={<TechDocsReaderPage />}>
-        <TechDocsAddons>
-          <Mermaid />
-        </TechDocsAddons>
+      <TechDocsAddons>
+        <Mermaid />
+      </TechDocsAddons>
     </Route>
-    <Route path="/create" element={<ScaffolderPage />} />
+    <Route
+      path="/create"
+      element={
+        <RequirePermission permission={taskCreatePermission}>
+          <ScaffolderPage />
+        </RequirePermission>
+      }
+    />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
     <Route
       path="/catalog-import"
@@ -135,8 +144,12 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
-    <Route path="/kiali" element={<KialiPage />} />
-    <Route path="/entity-validation" element={<EntityValidationPage />} />
+    <RequirePermission permission={toolsReadPermission}>
+      <Route path="/kiali" element={<KialiPage />} />
+    </RequirePermission>
+    <RequirePermission permission={catalogEntityCreatePermission}>
+      <Route path="/entity-validation" element={<EntityValidationPage />} />
+    </RequirePermission>
     <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
     <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
     <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />

@@ -1,21 +1,34 @@
 # [Backstage](https://backstage.io)
 
-This is your newly scaffolded Backstage App, Good Luck!
+## bump versions
+```sh
+yarn backstage-cli versions:bump 
+```
 
-To start the app, run:
-
+## install packages
 ```sh
 yarn install
 ```
+## outdated packages
 ```sh
-yarn dev
+yarn upgrade-interactive
 ```
-## Local dev
-Start with .env and debug logging
+
+## compile
 ```sh
-docker compose up
-yarn env-dev
+yarn tsc
 ```
+
+## run dev
+start db
+```sh
+podman compose -f docker-db-compose.yml up
+```
+start backstage
+```sh
+./run-dev.sh
+```
+
 ### .env
 ```
 AZURE_AUTH_CLIENT_ID="..."

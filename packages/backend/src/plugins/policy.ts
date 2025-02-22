@@ -1,6 +1,6 @@
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { catalogEntityCreatePermission, catalogEntityDeletePermission } from '@backstage/plugin-catalog-common/alpha';
+import { catalogEntityCreatePermission, catalogEntityDeletePermission, catalogEntityReadPermission } from '@backstage/plugin-catalog-common/alpha';
 import {
   AuthorizeResult,
   PolicyDecision,
@@ -25,26 +25,31 @@ export class MyPermissionPolicy implements PermissionPolicy {
     this.adminGroups = this.config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
   }
 
+  // guest: allow catalog.read, deny others
+  // superUsers groups: allow all
+  // others: deny catalog.create + catalog.delete, allow others
+
   async handle(
     request: PolicyQuery,
     user?: BackstageIdentityResponse,
   ): Promise<PolicyDecision> {
+
     // guest
     if (user?.identity?.userEntityRef === 'user:default/guest') {
+      if (isPermission(request.permission, catalogEntityReadPermission)) {
+        return { result: AuthorizeResult.ALLOW };
+      }
       return { result: AuthorizeResult.DENY };
     }
-    // catalogEntityCreatePermission
+    // superUsers
+    if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
+      return { result: AuthorizeResult.ALLOW };
+    }
+    // others
     if (isPermission(request.permission, catalogEntityCreatePermission)) {
-      if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
-        return { result: AuthorizeResult.ALLOW };
-      }
       return { result: AuthorizeResult.DENY };
     }
-    // catalogEntityDeletePermission
     if (isPermission(request.permission, catalogEntityDeletePermission)) {
-      if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
-        return { result: AuthorizeResult.ALLOW };
-      }
       return { result: AuthorizeResult.DENY };
     }
     return {
