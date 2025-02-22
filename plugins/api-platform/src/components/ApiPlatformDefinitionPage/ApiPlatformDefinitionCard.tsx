@@ -5,7 +5,7 @@ import {
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
 import React from 'react';
-import { OpenApiDefinitionWidget, PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
+import { PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { AboutContent, AboutField } from '@backstage/plugin-catalog';
@@ -16,6 +16,7 @@ import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } f
 import { EntityApiDocsSpectralLinterCard } from '../EntityApiDocsSpectralLinterContent';
 import { isApiDocsSpectralLinterAvailable } from '../../lib/helper';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
+import { OpenApiDefinitionWidget } from '../OpenApiDefinitionWidget';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
