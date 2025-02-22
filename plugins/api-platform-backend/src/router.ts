@@ -80,11 +80,11 @@ export async function createRouter(
 
   router.post('/locations', async (req, res) => {
     validateRequestBody(req);
-    const target: string = req.body.target;
-    if (!target) {
+    const request = req.body;
+    if (!request) {
       throw new InputError('Invalid request body');
     }
-    res.status(201).json(await catalogPlatformService.registerCatalogInfo({target: target}));
+    res.status(201).json(await catalogPlatformService.registerCatalogInfo(request));
   });
 
   router.get('/services', async (_req, res) => {

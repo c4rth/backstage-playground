@@ -20,7 +20,31 @@ tags:
 
 paths:
   ###############################################################################
-  /api-platform/services/{serviceName}/{serviceVersion}/{containerVersion}:
+  /api/api-platform/catalog:
+    # -[POST]----------------------------------------------------------------------
+    post:
+      tags:
+        - ApiPlatformBackend
+      description: Register or refresh a Backstage catalog
+      operationId: registerCatalog
+      requestBody:
+        description: The catalog to register or refresh
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Catalog'
+      responses:
+        "201":
+          description: "Created"
+        "400":
+          description: Bad request.
+        "401":
+          description: Authorization information is missing or invalid.
+        "500":
+          description: Unexpected error.
+  ###############################################################################
+  /api/api-platform/services/{serviceName}/{serviceVersion}/{containerVersion}:
     # -[POST]----------------------------------------------------------------------
     post:
       tags:
@@ -105,6 +129,16 @@ paths:
 # -[Schemas]-------------------------------------------------------------------
 components:
   schemas:
+    Catalog:
+      type: object
+      properties:
+        target:
+          type: string
+        kind:
+          type: string
+      example:
+        target: https://backstage.example.com
+        kind: 'API'
     Apis:
       type: object
       properties:
