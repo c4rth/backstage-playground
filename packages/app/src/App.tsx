@@ -51,6 +51,7 @@ import { NotificationsPage } from '@backstage/plugin-notifications';
 import { AutoLogout } from '@backstage/core-components';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
+// API platform
 import {
   ApiPlatformDefinitionPage,
   ApiPlatformExplorerPage,
@@ -59,13 +60,12 @@ import {
   SystemPlatformExplorerPage,
   SystemPlatformDefinitionPage,
 } from '@internal/plugin-api-platform';
+import { toolsReadPermission } from '@internal/plugin-api-platform-common';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 // Kiali
 import { KialiPage } from '@backstage-community/plugin-kiali';
-import { toolsReadPermission } from '@internal/plugin-api-platform-common';
-
 const app = createApp({
   apis,
   plugins: Object.values(plugins),

@@ -18,7 +18,7 @@ import {
 } from '@backstage/plugin-catalog-graph';
 import { ANNOTATION_CONTAINER_VERSION, ANNOTATION_CONTAINER_NAME } from '@internal/plugin-api-platform-common';
 // SonarQube
-import { EntitySonarQubeCard, EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
+import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 import { ServicePlatformRelationCard } from './ServicePlatformRelationCard';
 
@@ -111,12 +111,6 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
                             <Grid item md={6} xs={12}>
                                 <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} unidirectional />
                             </Grid>
-                            {isSonarQubeAvailable(serviceEntity) ?
-                                <Grid item md={6}>
-                                    <EntitySonarQubeCard variant="gridItem" />
-                                </Grid>
-                                : <div />
-                            }
                         </Grid>
                     </TabbedLayout.Route>
                     <TabbedLayout.Route path="/api" title="API">
@@ -140,7 +134,7 @@ export const ServicePlatformDefinitionCard = (props: { serviceEntity: ComponentE
                         <TabbedLayout.Route path="/sonarqube" title="SonarQube">
                             <EntitySonarQubeContentPage />
                         </TabbedLayout.Route>
-                        : <div />
+                        : null
                     }
                 </TabbedLayout>
             </EntityProvider >

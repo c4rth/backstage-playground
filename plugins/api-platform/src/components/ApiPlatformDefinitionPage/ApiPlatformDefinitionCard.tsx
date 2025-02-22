@@ -112,7 +112,7 @@ export const ApiPlatformDefinitionCard = (props: { apiEntity: ApiEntity }) => {
                 <TabbedLayout.Route path="/linter" title="Linter">
                     <EntityApiDocsSpectralLinterCard entity={apiEntity} />
                 </TabbedLayout.Route>
-                : <div />
+                : null
             }
             <TabbedLayout.Route path="/services" title="Services">
                 <Grid container spacing={3} alignItems="stretch">

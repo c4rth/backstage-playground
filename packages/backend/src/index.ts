@@ -109,7 +109,7 @@ backend.add(import('@backstage/plugin-notifications-backend'));
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 
-// Actions
+// Scaffolder Actions
 backend.add(import('@parfuemerie-douglas/scaffolder-backend-module-azure-repositories'))
 backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
 
@@ -121,4 +121,5 @@ backend.add(import('@backstage-community/plugin-sonarqube-backend'));
 
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
+
 backend.start();
