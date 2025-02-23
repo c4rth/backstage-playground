@@ -12,7 +12,7 @@ import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
 import { Box, Grid } from '@material-ui/core';
 import { ServicePlatformDefinitionCard } from './ServicePlatformDefinitionCard';
 import { ComponentEntity } from '@backstage/catalog-model';
-import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 
@@ -141,7 +141,9 @@ export const ServicePlatformDefinitionPage = () => {
 
         <Box mb={-3}>
           {serviceEntity ?
-            <ServicePlatformDefinitionCard serviceEntity={serviceEntity} />
+            <EntityProvider entity={serviceEntity}>
+              <ServicePlatformDefinitionCard />
+            </EntityProvider>
             : <div />
           }
         </Box>

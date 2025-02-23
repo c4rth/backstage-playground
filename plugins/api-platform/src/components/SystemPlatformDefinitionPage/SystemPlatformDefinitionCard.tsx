@@ -6,7 +6,7 @@ import {
 import { getCompoundEntityRef } from "@backstage/catalog-model";
 import React from 'react';
 import { Box, Grid, IconButton, makeStyles, Theme } from '@material-ui/core';
-import { EntityProvider, EntityRefLink } from '@backstage/plugin-catalog-react';
+import { EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
     AboutField,
     AboutContent,
@@ -48,62 +48,60 @@ const useStyles = makeStyles(
     }),
 );
 
-export const SystemPlatformDefinitionCard = (props: { systemDefinition: SystemDefinition }) => {
-
-    const { systemDefinition } = props;
+export const SystemPlatformDefinitionCard = (props: { apis: string[], services: string[] }) => {
+    const { entity } = useEntity();
+    const { apis, services } = props;
 
     const classes = useStyles();
 
-    const entityRef = getCompoundEntityRef(systemDefinition.entity);
-    const hasDocs = systemDefinition.entity.metadata.annotations?.['backstage.io/techdocs-ref'];
+    const entityRef = getCompoundEntityRef(entity);
+    const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];
 
     return (
         <>
-            <EntityProvider entity={systemDefinition.entity}>
-                <TabbedLayout>
-                    <TabbedLayout.Route path="/" title="Overview">
-                        <Grid container spacing={3} alignItems="stretch">
-                            <Grid item md={6}>
-                                <InfoCard title='About' divider className={classes.gridItemCard} action={
-                                    <>
-                                        <IconButton
-                                            aria-label="Documentation"
-                                            title="TechDocs"
-                                            disabled={!hasDocs}
-                                            component={Link}
-                                            to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
-                                        >
-                                            <DocsIcon />
-                                        </IconButton>
-                                    </>
-                                }>
-                                    <Box sx={{ mb: 4 }}>
-                                        <AboutField
-                                            label="System reference"
-                                            gridSizes={{ xs: 12 }} >
-                                            <EntityRefLink entityRef={systemDefinition.entity!} />
-                                        </AboutField>
-                                    </Box>
-                                    <AboutContent entity={systemDefinition.entity} />
-                                </InfoCard>
-                            </Grid>
-                            <Grid item md={6} xs={12}>
-                                <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} />
-                            </Grid>
+            <TabbedLayout>
+                <TabbedLayout.Route path="/" title="Overview">
+                    <Grid container spacing={3} alignItems="stretch">
+                        <Grid item md={6}>
+                            <InfoCard title='About' divider className={classes.gridItemCard} action={
+                                <>
+                                    <IconButton
+                                        aria-label="Documentation"
+                                        title="TechDocs"
+                                        disabled={!hasDocs}
+                                        component={Link}
+                                        to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+                                    >
+                                        <DocsIcon />
+                                    </IconButton>
+                                </>
+                            }>
+                                <Box sx={{ mb: 4 }}>
+                                    <AboutField
+                                        label="System reference"
+                                        gridSizes={{ xs: 12 }} >
+                                        <EntityRefLink entityRef={entity!} />
+                                    </AboutField>
+                                </Box>
+                                <AboutContent entity={entity} />
+                            </InfoCard>
                         </Grid>
-                    </TabbedLayout.Route>
-                    <TabbedLayout.Route path="/relations" title="Relations">
-                        <Grid container spacing={3} alignItems="stretch">
-                            <Grid item md={6}>
-                                <SystemPlatformRelationCard dependency='service' systemDefinition={systemDefinition} />
-                            </Grid>
-                            <Grid item md={6} xs={12}>
-                                <SystemPlatformRelationCard dependency='api' systemDefinition={systemDefinition} />
-                            </Grid>
+                        <Grid item md={6} xs={12}>
+                            <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} />
                         </Grid>
-                    </TabbedLayout.Route>
-                </TabbedLayout>
-            </EntityProvider >
+                    </Grid>
+                </TabbedLayout.Route>
+                <TabbedLayout.Route path="/relations" title="Relations">
+                    <Grid container spacing={3} alignItems="stretch">
+                        <Grid item md={6}>
+                            <SystemPlatformRelationCard dependency='service' data={services} />
+                        </Grid>
+                        <Grid item md={6} xs={12}>
+                            <SystemPlatformRelationCard dependency='api' data={apis} />
+                        </Grid>
+                    </Grid>
+                </TabbedLayout.Route>
+            </TabbedLayout>
         </>
     );
 }

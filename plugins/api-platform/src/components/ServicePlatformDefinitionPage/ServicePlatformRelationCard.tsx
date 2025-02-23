@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_CONSUMES_API, RELATION_PROVIDES_API } from "@backstage/catalog-model";
-import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
+import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
 import { ANNOTATION_API_NAME, ANNOTATION_API_VERSION, CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, } from "@internal/plugin-api-platform-common";
@@ -58,13 +58,14 @@ const fetchEntities = async (catalogApi: CatalogApi, serviceEntity: Entity, depe
     return response.items;
 };
 
-export const ServicePlatformRelationCard = (props: { dependency: 'provided' | 'consumed', serviceEntity: Entity }) => {
-    const { dependency, serviceEntity } = props;
+export const ServicePlatformRelationCard = (props: { dependency: 'provided' | 'consumed' }) => {
+    const { dependency } = props;
+    const { entity } = useEntity();
     const catalogApi = useApi(catalogApiRef);
 
     const title = dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs';
 
-    const fetchAsync = useCallback(() => fetchEntities(catalogApi, serviceEntity, dependency), [catalogApi, serviceEntity, dependency]);
+    const fetchAsync = useCallback(() => fetchEntities(catalogApi, entity, dependency), [catalogApi, entity, dependency]);
     const {
         value: entities,
         loading,

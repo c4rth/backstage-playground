@@ -1,4 +1,4 @@
-import { Entity } from "@backstage/catalog-model/index";
+import { Entity } from "@backstage/catalog-model";
 
 export type ApiVersionDefinition = {
   entityRef: string;

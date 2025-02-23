@@ -36,6 +36,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { useApi } from '@backstage/core-plugin-api';
 import { linterApiRef } from '../../api';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 const useStyles = makeStyles(() => ({
   alertButton: {
@@ -48,14 +49,14 @@ const useStyles = makeStyles(() => ({
  * Component for browsing API docs spectral linter on an entity page.
  * @public
  */
-export const EntityApiDocsSpectralLinterCard = (props: { entity: ApiEntity }) => {
+export const EntityApiDocsSpectralLinterCard = () => {
+  const { entity } = useEntity<ApiEntity>();
   const classes = useStyles();
   const [expanded, setExpanded] = useState<string | false>(false);
   const linterApi = useApi(linterApiRef);
-  const { entity } = props;
 
   const { value, loading, error } = useAsync(async () => {
-    return linterApi.lint({ entity });
+    return linterApi.lint({ entity: (entity as ApiEntity) });
   }, [entity]);
 
   const handleChange = (alert: string) => () => {

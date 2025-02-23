@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
-import { entityRouteRef } from '@backstage/plugin-catalog-react';
+import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
@@ -34,9 +34,9 @@ export const ApiPlatformDefinitionPage = () => {
 
   useEffect(() => {
     const data = apiVersions
-    ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
-    : []
-    setVersions(data);      
+      ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
+      : []
+    setVersions(data);
     let selVersion = null;
     if (isInitialLoad.current && queryVersion && data.some(item => item.label === queryVersion)) {
       selVersion = data.find(item => item.label === queryVersion)?.value;
@@ -46,7 +46,7 @@ export const ApiPlatformDefinitionPage = () => {
     if (selVersion)
       setSelectedVersion(selVersion);
   }, [apiVersions, queryVersion])
-  
+
   useEffect(() => {
     if (selectedVersion) {
       catalogApi.getEntityByRef(selectedVersion)
@@ -74,7 +74,9 @@ export const ApiPlatformDefinitionPage = () => {
         </Box>
         <Box mb={-3}>
           {apiEntity ?
-            <ApiPlatformDefinitionCard apiEntity={apiEntity!} />
+            <EntityProvider entity={apiEntity}>
+              <ApiPlatformDefinitionCard />
+            </EntityProvider>
             : <div />
           }
         </Box>

@@ -2,8 +2,8 @@ import { Link, Progress, ResponseErrorPanel, Table, TableColumn } from "@backsta
 import React, { useCallback } from 'react';
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
-import { ApiEntity, Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
-import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
+import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
+import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION, CATALOG_METADATA_SERVICE_NAME, CATALOG_METADATA_SERVICE_VERSION, CATALOG_SPEC_LIFECYCLE } from "@internal/plugin-api-platform-common";
@@ -43,10 +43,10 @@ const serviceColumns: TableColumn<TableRow>[] = [
     },
 ];
 
-const fetchEntities = async (catalogApi: CatalogApi, apiEntity: ApiEntity, dependency: 'provider' | 'consumer') => {
+const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency: 'provider' | 'consumer') => {
 
     const type = dependency === 'consumer' ? RELATION_API_CONSUMED_BY : RELATION_API_PROVIDED_BY;
-    const filteredRelations = apiEntity.relations?.filter((relation) => relation.type === type) || [];
+    const filteredRelations = entity.relations?.filter((relation) => relation.type === type) || [];
     const filteredNames = filteredRelations.map((relation) => parseEntityRef(relation.targetRef).name);
     if (filteredNames.length === 0) {
         return [];
@@ -66,13 +66,14 @@ const fetchEntities = async (catalogApi: CatalogApi, apiEntity: ApiEntity, depen
     return response.items;
 };
 
-export const ApiPlatformRelationCard = (props: { dependency: 'provider' | 'consumer', apiEntity: ApiEntity }) => {
-    const { dependency, apiEntity } = props;
+export const ApiPlatformRelationCard = (props: { dependency: 'provider' | 'consumer' }) => {
+    const { dependency } = props;
+    const { entity } = useEntity();
     const catalogApi = useApi(catalogApiRef);
 
     const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
-    const fetchAsync = useCallback(() => fetchEntities(catalogApi, apiEntity, dependency), [catalogApi, apiEntity, dependency]);
+    const fetchAsync = useCallback(() => fetchEntities(catalogApi, entity, dependency), [catalogApi, entity, dependency]);
     const {
         value: entities,
         loading,
