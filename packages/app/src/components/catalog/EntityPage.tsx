@@ -54,10 +54,10 @@ import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqub
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 // Azure Devops
 import {
-  EntityAzurePipelinesContent,
+  EntityAzurePipelinesCard,
   isAzureDevOpsAvailable,
   isAzurePipelinesAvailable,
-} from '@backstage-community/plugin-azure-devops';
+} from '@internal/plugin-azure-devops';
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-platform';
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
@@ -76,10 +76,10 @@ const cicdContent = (
   <EntitySwitch>
 
     <EntitySwitch.Case if={isAzureDevOpsAvailable}>
-      <EntityAzurePipelinesContent defaultLimit={25} />
+      <EntityAzurePipelinesCard defaultLimit={25} />
     </EntitySwitch.Case>
     <EntitySwitch.Case if={isAzurePipelinesAvailable}>
-      <EntityAzurePipelinesContent defaultLimit={25} />
+      <EntityAzurePipelinesCard defaultLimit={25} />
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>

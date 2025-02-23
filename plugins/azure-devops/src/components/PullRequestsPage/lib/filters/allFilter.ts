@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { BaseFilter, FilterType, PullRequestFilter } from './types';
 
-import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCard';
+import { DashboardPullRequest } from '@backstage-community/plugin-azure-devops-common';
 
-/**
- * Component for browsing API docs spectral linter on an entity page.
- * @public
- */
-export const EntityApiDocsSpectralLinterContent = () => {
-
-  return (
-    <EntityApiDocsSpectralLinterCard/>
-  );
+/** @public */
+export type AllFilter = BaseFilter & {
+  type: FilterType.All;
 };
+
+export function createAllFilter(): PullRequestFilter {
+  return (_pullRequest: DashboardPullRequest): boolean => true;
+}

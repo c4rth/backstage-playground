@@ -14,17 +14,4 @@
  * limitations under the License.
  */
 
-import React from 'react';
-
-import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCard';
-
-/**
- * Component for browsing API docs spectral linter on an entity page.
- * @public
- */
-export const EntityApiDocsSpectralLinterContent = () => {
-
-  return (
-    <EntityApiDocsSpectralLinterCard/>
-  );
-};
+export { ReadmeCard } from './ReadmeCard';

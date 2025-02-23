@@ -23,6 +23,7 @@ import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-reac
 import { ServicePlatformRelationCard } from './ServicePlatformRelationCard';
 // Azure DevOps
 import {
+    EntityAzurePipelinesCard,
     EntityAzurePipelinesContent,
     isAzureDevOpsAvailable,
     isAzurePipelinesAvailable,
@@ -69,85 +70,89 @@ export const ServicePlatformDefinitionCard = () => {
     const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];
 
     return (
-        <>
-            <TabbedLayout>
-                <TabbedLayout.Route path="/" title="Overview">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={6}>
-                            <InfoCard title='About' divider className={classes.gridItemCard} action={
-                                <>
-                                    <IconButton
-                                        aria-label="Documentation"
-                                        title="TechDocs"
-                                        disabled={!hasDocs}
-                                        component={Link}
-                                        to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
-                                    >
-                                        <DocsIcon />
-                                    </IconButton>
-                                </>
-                            }>
-                                <Box sx={{ mb: 4 }}>
-                                    <AboutField
-                                        label="Service reference"
-                                        gridSizes={{ xs: 12 }} >
-                                        <EntityRefLink entityRef={entity!} />
-                                    </AboutField>
-                                </Box>
-                                <Box sx={{ mb: 4 }}>
-                                    <AboutField
-                                        label="Container"
-                                        gridSizes={{ xs: 12 }} >
-                                        <div>
-                                            <Typography variant='overline' display='inline' className={classes.label}>name:</Typography>
-                                            <Box display='inline' mr={1} />
-                                            <Typography variant='body2' display='inline' className={classes.value}>{containerName}</Typography>
-                                        </div>
-                                        <div>
-                                            <Typography variant='overline' display='inline' className={classes.label}>version:</Typography>
-                                            <Box display='inline' mr={1} />
-                                            <Typography variant='body2' display='inline' className={classes.value}>{containerVersion}</Typography>
-                                        </div>
-                                    </AboutField>
-                                </Box>
-                                <AboutContent entity={entity} />
-                            </InfoCard>
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                            <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} unidirectional />
-                        </Grid>
+        <TabbedLayout>
+            <TabbedLayout.Route path="/" title="Overview">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={6}>
+                        <InfoCard title='About' divider className={classes.gridItemCard} action={
+                            <>
+                                <IconButton
+                                    aria-label="Documentation"
+                                    title="TechDocs"
+                                    disabled={!hasDocs}
+                                    component={Link}
+                                    to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+                                >
+                                    <DocsIcon />
+                                </IconButton>
+                            </>
+                        }>
+                            <Box sx={{ mb: 4 }}>
+                                <AboutField
+                                    label="Service reference"
+                                    gridSizes={{ xs: 12 }} >
+                                    <EntityRefLink entityRef={entity!} />
+                                </AboutField>
+                            </Box>
+                            <Box sx={{ mb: 4 }}>
+                                <AboutField
+                                    label="Container"
+                                    gridSizes={{ xs: 12 }} >
+                                    <div>
+                                        <Typography variant='overline' display='inline' className={classes.label}>name:</Typography>
+                                        <Box display='inline' mr={1} />
+                                        <Typography variant='body2' display='inline' className={classes.value}>{containerName}</Typography>
+                                    </div>
+                                    <div>
+                                        <Typography variant='overline' display='inline' className={classes.label}>version:</Typography>
+                                        <Box display='inline' mr={1} />
+                                        <Typography variant='body2' display='inline' className={classes.value}>{containerVersion}</Typography>
+                                    </div>
+                                </AboutField>
+                            </Box>
+                            <AboutContent entity={entity} />
+                        </InfoCard>
                     </Grid>
-                </TabbedLayout.Route>
-                <TabbedLayout.Route path="/api" title="API">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={6}>
-                            <ServicePlatformRelationCard dependency='provided' />
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                            <ServicePlatformRelationCard dependency='consumed' />
-                        </Grid>
+                    <Grid item md={6} xs={12}>
+                        <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API']} direction={Direction.TOP_BOTTOM} unidirectional />
                     </Grid>
-                </TabbedLayout.Route>
-                <TabbedLayout.Route path="/appreg" title="App Registry">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={12}>
-                            <Typography variant='h5'><i>Soon...</i></Typography>
-                        </Grid>
+                </Grid>
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/api" title="API">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={6}>
+                        <ServicePlatformRelationCard dependency='provided' />
                     </Grid>
+                    <Grid item md={6} xs={12}>
+                        <ServicePlatformRelationCard dependency='consumed' />
+                    </Grid>
+                </Grid>
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/appreg" title="App Registry">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={12}>
+                        <Typography variant='h5'><i>Soon...</i></Typography>
+                    </Grid>
+                </Grid>
+            </TabbedLayout.Route>
+            {isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity) ?
+                <TabbedLayout.Route path="/ci-cd2" title="CI/CD2">
+                    <EntityAzurePipelinesCard defaultLimit={10} />
                 </TabbedLayout.Route>
-                {isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity) ?
-                    <TabbedLayout.Route path="/ci-cd" title="CI/CD">
-                        <EntityAzurePipelinesContent />
-                    </TabbedLayout.Route>
-                    : null
-                }
-                {isSonarQubeAvailable(entity) ?
-                    <TabbedLayout.Route path="/sonarqube" title="SonarQube">
-                        <EntitySonarQubeContentPage />
-                    </TabbedLayout.Route>
-                    : null
-                }
-            </TabbedLayout>
-        </>
+                : null
+            }
+            {isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity) ?
+                <TabbedLayout.Route path="/ci-cd" title="CI/CD">
+                    <EntityAzurePipelinesContent />
+                </TabbedLayout.Route>
+                : null
+            }
+            {isSonarQubeAvailable(entity) ?
+                <TabbedLayout.Route path="/sonarqube" title="SonarQube">
+                    <EntitySonarQubeContentPage />
+                </TabbedLayout.Route>
+                : null
+            }
+        </TabbedLayout>
     );
 }

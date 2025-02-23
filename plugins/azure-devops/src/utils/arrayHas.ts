@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-import React from 'react';
+export function arrayHas<T>(arr: T[], value: T): boolean {
+  return new Set<T>(arr).has(value);
+}
 
-import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCard';
+export function stringArrayHas(
+  arr: Array<string | undefined>,
+  value: string | undefined,
+  ignoreCase: boolean = false,
+): boolean {
+  if (ignoreCase) {
+    return arrayHas(
+      arr.map(a => a?.toLocaleLowerCase('en-US')),
+      value?.toLocaleLowerCase('en-US'),
+    );
+  }
 
-/**
- * Component for browsing API docs spectral linter on an entity page.
- * @public
- */
-export const EntityApiDocsSpectralLinterContent = () => {
-
-  return (
-    <EntityApiDocsSpectralLinterCard/>
-  );
-};
+  return arrayHas(arr, value);
+}

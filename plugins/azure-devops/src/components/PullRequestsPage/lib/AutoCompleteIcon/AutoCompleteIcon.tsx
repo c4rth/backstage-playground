@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCard';
+const useStyles = makeStyles(theme => ({
+  root: (props: { hasAutoComplete: boolean }) => ({
+    color: props.hasAutoComplete
+      ? theme.palette.success.main
+      : theme.palette.grey[400],
+  }),
+}));
 
-/**
- * Component for browsing API docs spectral linter on an entity page.
- * @public
- */
-export const EntityApiDocsSpectralLinterContent = () => {
-
-  return (
-    <EntityApiDocsSpectralLinterCard/>
-  );
+export const AutoCompleteIcon = (props: { hasAutoComplete: boolean }) => {
+  const classes = useStyles(props);
+  return <DoneAllIcon className={classes.root} />;
 };

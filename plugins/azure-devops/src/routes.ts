@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { createRouteRef } from '@backstage/core-plugin-api';
 
-import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCard';
+export const azurePullRequestDashboardRouteRef = createRouteRef({
+  id: 'azure-pull-request-dashboard',
+});
 
-/**
- * Component for browsing API docs spectral linter on an entity page.
- * @public
- */
-export const EntityApiDocsSpectralLinterContent = () => {
+export const azurePipelinesEntityContentRouteRef = createRouteRef({
+  id: 'azure-pipelines-entity-content',
+});
 
-  return (
-    <EntityApiDocsSpectralLinterCard/>
-  );
-};
+export const azureGitTagsEntityContentRouteRef = createRouteRef({
+  id: 'azure-git-tags-entity-content',
+});
+
+export const azurePullRequestsEntityContentRouteRef = createRouteRef({
+  id: 'azure-pull-requests-entity-content',
+});

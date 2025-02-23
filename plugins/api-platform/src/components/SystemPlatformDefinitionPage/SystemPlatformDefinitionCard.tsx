@@ -6,7 +6,7 @@ import {
 import { getCompoundEntityRef } from "@backstage/catalog-model";
 import React from 'react';
 import { Box, Grid, IconButton, makeStyles, Theme } from '@material-ui/core';
-import { EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
     AboutField,
     AboutContent,
@@ -16,7 +16,6 @@ import {
     Direction,
     EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
-import { SystemDefinition } from '@internal/plugin-api-platform-common';
 import { SystemPlatformRelationCard } from './SystemPlatformRelationCard';
 
 const useStyles = makeStyles(

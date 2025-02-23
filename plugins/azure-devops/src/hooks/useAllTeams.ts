@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,29 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { Team } from '@backstage-community/plugin-azure-devops-common';
+import { azureDevOpsApiRef } from '../api';
+import { useApi } from '@backstage/core-plugin-api';
+import useAsync from 'react-use/esm/useAsync';
 
-import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCard';
+export function useAllTeams(): {
+  teams?: Team[];
+  loading: boolean;
+  error?: Error;
+} {
+  const api = useApi(azureDevOpsApiRef);
 
-/**
- * Component for browsing API docs spectral linter on an entity page.
- * @public
- */
-export const EntityApiDocsSpectralLinterContent = () => {
+  const {
+    value: teams,
+    loading,
+    error,
+  } = useAsync(() => {
+    return api.getAllTeams();
+  }, [api]);
 
-  return (
-    <EntityApiDocsSpectralLinterCard/>
-  );
-};
+  return {
+    teams,
+    loading,
+    error,
+  };
+}
