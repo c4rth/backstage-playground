@@ -16,6 +16,7 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
 
   return {
     async registerCatalogInfo(request: { target: string, kind: string }): Promise<String> {
+      logger.info("Get token");
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
@@ -32,8 +33,11 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
       logger.debug(JSON.stringify(existResponse));
       let returnMessage = '';
       if (existResponse.exists) {
-        const apiEntity = existResponse.entities.filter(entity => entity.kind === request.kind)[0];
-        const entityRef = `api:${apiEntity.metadata.namespace}/${apiEntity.metadata.name}`;
+        const entity = existResponse.entities.find(candidate => candidate.kind === request.kind);
+        if (!entity) {
+          throw new Error("Entity to refresh but not found");
+        }
+        const entityRef = `${entity.kind.toLowerCase()}:${entity.metadata.namespace}/${entity.metadata.name}`;
         logger.debug(`Refresh entity: ${entityRef}`);
         await catalogClient.refreshEntity(
           entityRef,

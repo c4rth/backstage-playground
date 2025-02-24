@@ -13,14 +13,14 @@ import {
   CATALOG_METADATA_SERVICE_VERSION,
   CATALOG_RELATIONS,
   CATALOG_SPEC_LIFECYCLE,
-  ServiceApisDefinition,
   ServiceDefinition,
+  ServiceInformation,
   ServiceVersionDefinition
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
 import { ApiPlatformStore } from '../../database/apiPlatformStore';
 import { RELATION_OWNED_BY } from '@backstage/catalog-model';
-
+ 
 function getFilter(serviceName?: string): EntityFilterQuery {
   if (serviceName) {
     return {
@@ -34,7 +34,7 @@ function getFilter(serviceName?: string): EntityFilterQuery {
     'spec.type': ['service']
   };
 }
-
+ 
 async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi, auth: AuthService, serviceName: string | undefined): Promise<ServiceDefinition[]> {
   const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
@@ -54,9 +54,9 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
         CATALOG_RELATIONS],
     },
     { token });
-
+ 
   const mapServices: Map<string, ServiceDefinition> = new Map();
-
+ 
   entities.items.forEach(entity => {
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() || '?';
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString() || '?';
@@ -127,51 +127,44 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
   });
   return Array.from(mapServices.values());
 }
-
+ 
 export interface ServicePlatformServiceOptions {
   logger: LoggerService;
   catalogClient: CatalogApi;
   apiPlatformStore: ApiPlatformStore;
   auth: AuthService;
 }
-
+ 
 export async function servicePlatformService(options: ServicePlatformServiceOptions): Promise<ServicePlatformService> {
   const { logger, catalogClient, apiPlatformStore, auth } = options;
-
+ 
   logger.info('Initializing ServicePlatformService');
-
+ 
   return {
-
+ 
     async listServices(): Promise<{ items: ServiceDefinition[] }> {
       const services = await innerGetServices(logger, catalogClient, auth, undefined);
       return { items: services };
     },
-
+ 
     async getServiceVersions(request: { serviceName: string }): Promise<ServiceDefinition> {
       const { serviceName } = request;
       const services = await innerGetServices(logger, catalogClient, auth, serviceName);
       return services[0];
     },
-
-
-    async getServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string }): Promise<ServiceApisDefinition> {
+ 
+    async getServiceInformation(request: { serviceName: string, serviceVersion: string, containerVersion: string }): Promise<ServiceInformation | undefined> {
       const { serviceName, serviceVersion, containerVersion } = request;
       logger.info(`Get service ${serviceName}-${serviceVersion}-${containerVersion}`);
-      return await apiPlatformStore.getServiceApis(serviceName, serviceVersion, containerVersion);
+      return await apiPlatformStore.getServiceInformation(serviceName, serviceVersion, containerVersion);
     },
-
-    async addServiceApis(request: { serviceName: string, serviceVersion: string, containerVersion: string, consumedApis?: string[], providedApis?: string[] }): Promise<string> {
-      const { serviceName, serviceVersion, containerVersion, consumedApis, providedApis } = request;
-      logger.info(`Add service ${serviceName}-${serviceVersion}-${containerVersion}: ${consumedApis} ${providedApis}`);
-      await apiPlatformStore.storeServiceApis(
-        serviceName,
-        serviceVersion,
-        containerVersion,
-        consumedApis ? JSON.stringify(consumedApis) : undefined,
-        providedApis ? JSON.stringify(providedApis) : undefined
-      )
+ 
+    async addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string> {
+      const { serviceInformation } = request;
+      logger.info(`Add serviceInformation ${serviceInformation}`);
+      await apiPlatformStore.storeServiceInformation(serviceInformation)
       return "ok";
     }
   }
-
+ 
 }

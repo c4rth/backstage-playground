@@ -29,5 +29,5 @@ curl -H "Authorization: Bearer my-access-token" http://localhost:7007/api/api-pl
 ## Exposed APIs
 
 ```
-curl -H "Authorization: Bearer my-access-token" http://localhost:7007/api/api-platform/services/service-ecommerce/1/20250120.2
+curl -H "Authorization: Bearer my-access-token" http://localhost:7007/api/api-platform/service-informations/service-ecommerce/1/20250120.2
 ```
