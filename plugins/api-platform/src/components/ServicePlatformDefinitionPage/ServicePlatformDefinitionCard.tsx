@@ -24,7 +24,6 @@ import { ServicePlatformRelationCard } from './ServicePlatformRelationCard';
 // Azure DevOps
 import {
     EntityAzurePipelinesCard,
-    EntityAzurePipelinesContent,
     isAzureDevOpsAvailable,
     isAzurePipelinesAvailable,
 } from '@internal/plugin-azure-devops';
@@ -136,14 +135,8 @@ export const ServicePlatformDefinitionCard = () => {
                 </Grid>
             </TabbedLayout.Route>
             {isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity) ?
-                <TabbedLayout.Route path="/ci-cd2" title="CI/CD2">
-                    <EntityAzurePipelinesCard defaultLimit={10} />
-                </TabbedLayout.Route>
-                : null
-            }
-            {isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity) ?
                 <TabbedLayout.Route path="/ci-cd" title="CI/CD">
-                    <EntityAzurePipelinesContent />
+                    <EntityAzurePipelinesCard defaultLimit={10} />
                 </TabbedLayout.Route>
                 : null
             }
