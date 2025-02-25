@@ -12,7 +12,7 @@ export interface ApiPlatformStore {
  
   storeServiceInformation(serviceInformation: ServiceInformation): Promise<void>;
  
-  getServiceInformation(service: string, version: string, containerVersion: string): Promise<ServiceInformation | undefined>;
+  getServiceInformation(applicationCode: string, service: string, version: string,imageVersion: string): Promise<ServiceInformation | undefined>;
  
 }
  
@@ -53,8 +53,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
       applicationCode: serviceInformation.applicationCode,
       service: serviceInformation.serviceName,
       version: serviceInformation.serviceVersion,
-      containerVersion: serviceInformation.containerVersion,
-      containerName: serviceInformation.containerName,
+      imageVersion: serviceInformation.imageVersion,
       repository: serviceInformation.repository,
       sonarQubeProjectKey: serviceInformation.sonarQubeProjectKey,
       consumedApis: JSON.stringify(serviceInformation.apiDependencies.consumedApis || []),
@@ -62,11 +61,11 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
     });
   }
  
-  async getServiceInformation(service: string, version: string, containerVersion: string): Promise<ServiceInformation | undefined> {
-    this.logger.info(`Fetch service ${service}-${version}-${containerVersion}`);
+  async getServiceInformation(applicationCode: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined> {
+    this.logger.info(`Fetch service ${applicationCode}-${service}-${version}-${imageVersion}`);
     const result = await this.db<DbServicesRow>('services')
       .select('*')
-      .where({ service: service, version: version, containerVersion: containerVersion })
+      .where({ service: service, version: version, imageVersion: imageVersion })
       .first();
     this.logger.info(`Result: ${JSON.stringify(result)}`);
     if (result) {
@@ -74,8 +73,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
         applicationCode: result.applicationCode,
         serviceName: service,
         serviceVersion: version,
-        containerName: result.containerName,
-        containerVersion: containerVersion,
+        imageVersion: imageVersion,
         repository: result.repository,
         sonarQubeProjectKey: result.sonarQubeProjectKey,
         apiDependencies: {

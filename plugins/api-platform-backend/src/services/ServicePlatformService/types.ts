@@ -10,7 +10,7 @@ export interface ServicePlatformService {
  
   // api-management service
  
-  getServiceInformation(request: { serviceName: string, serviceVersion: string, containerVersion: string }): Promise<ServiceInformation | undefined>;
+  getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined>;
  
   addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string>;
 }

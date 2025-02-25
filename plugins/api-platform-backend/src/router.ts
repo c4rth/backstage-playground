@@ -103,11 +103,12 @@ export async function createRouter(
  
   // Exposed endpoints: /services
  
-  router.get('/service-informations/:serviceName/:serviceVersion/:containerVersion', async (req, res) => {
+  router.get('/service-informations/:applicationCode/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
     const info = await servicePlatformService.getServiceInformation({
+      applicationCode: req.params.applicationCode,
       serviceName: req.params.serviceName,
       serviceVersion: req.params.serviceVersion,
-      containerVersion: req.params.containerVersion,
+      imageVersion: req.params.imageVersion,
     });
     if (info) {
       res.json(info);

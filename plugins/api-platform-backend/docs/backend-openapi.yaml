@@ -149,7 +149,7 @@ components:
             type: string
   schemas:
     problem:
-      $ref: 'https://swaggerhub.belwired.net/api-domains/common/common-components/1.3.3#/components/schemas/problem'
+      type: object
     applicationCode:
       type: string
       description: "Application code (DEFL)"
@@ -164,7 +164,7 @@ components:
         kind:
           type: string
       example:
-        target: https://dev.azure.com/organization/defl/_git/repository?path=/api/desb/desb-infirmary/2.0.9/catalog-info.yaml
+        target: https://dev.azure.com/organization/defl/_git/repository?path=/api/wxyz/service-name/1.2.3/catalog-info.yaml
         kind: 'API'
     apiDependencies:
       type: object
@@ -192,8 +192,7 @@ components:
         - applicationCode
         - serviceName
         - serviceVersion
-        - containerName
-        - containerVersion
+        - imageVersion
         - repository
         - sonarQubeProjectKey
         - apiDependencies
@@ -208,13 +207,9 @@ components:
           type: string
           description: "Service version"
           example: "1"
-        containerName:
+        imageVersion:
           type: string
-          description: "Container name"
-          example: "my-service-backend"
-        containerVersion:
-          type: string
-          description: "Container version"
+          description: "Image version"
           example: "20250124.1"
         repository:
           type: string
@@ -223,7 +218,7 @@ components:
         sonarQubeProjectKey:
           type: string
           description: "SonarQube project key"
-          example: "belfius.desb.infirmary:infirmary-backend-parent"
+          example: "org.wxyz.test:test-backend-parent"
         apiDependencies:
           $ref: '#/components/schemas/apiDependencies'
   securitySchemes:

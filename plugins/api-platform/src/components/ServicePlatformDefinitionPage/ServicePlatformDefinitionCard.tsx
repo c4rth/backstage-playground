@@ -16,7 +16,7 @@ import {
     Direction,
     EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
-import { ANNOTATION_CONTAINER_VERSION, ANNOTATION_CONTAINER_NAME } from '@internal/plugin-api-platform-common';
+import { ANNOTATION_IMAGE_VERSION } from '@internal/plugin-api-platform-common';
 // SonarQube
 import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
@@ -63,8 +63,7 @@ export const ServicePlatformDefinitionCard = () => {
 
     const classes = useStyles();
 
-    const containerName = entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString();
-    const containerVersion = entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString();
+    const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
     const entityRef = getCompoundEntityRef(entity);
     const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];
 
@@ -95,17 +94,12 @@ export const ServicePlatformDefinitionCard = () => {
                             </Box>
                             <Box sx={{ mb: 4 }}>
                                 <AboutField
-                                    label="Container"
+                                    label="Image"
                                     gridSizes={{ xs: 12 }} >
-                                    <div>
-                                        <Typography variant='overline' display='inline' className={classes.label}>name:</Typography>
-                                        <Box display='inline' mr={1} />
-                                        <Typography variant='body2' display='inline' className={classes.value}>{containerName}</Typography>
-                                    </div>
                                     <div>
                                         <Typography variant='overline' display='inline' className={classes.label}>version:</Typography>
                                         <Box display='inline' mr={1} />
-                                        <Typography variant='body2' display='inline' className={classes.value}>{containerVersion}</Typography>
+                                        <Typography variant='body2' display='inline' className={classes.value}>{imageVersion}</Typography>
                                     </div>
                                 </AboutField>
                             </Box>

@@ -3,8 +3,7 @@ export type DbServicesRow = {
   applicationCode: string;
   service: string;
   version: string;
-  containerName: string;
-  containerVersion: string;
+  imageVersion: string;
   repository: string;
   sonarQubeProjectKey: string;
   providedApis?: string;

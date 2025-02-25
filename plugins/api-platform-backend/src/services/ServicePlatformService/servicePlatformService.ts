@@ -1,12 +1,10 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { ServicePlatformService } from './types';
 import {
-  ANNOTATION_CONTAINER_NAME,
-  ANNOTATION_CONTAINER_VERSION,
+  ANNOTATION_IMAGE_VERSION,
   ANNOTATION_SERVICE_NAME,
   ANNOTATION_SERVICE_VERSION,
-  CATALOG_METADATA_CONTAINER_NAME,
-  CATALOG_METADATA_CONTAINER_VERSION,
+  CATALOG_METADATA_IMAGE_VERSION,
   CATALOG_METADATA_NAME,
   CATALOG_METADATA_NAMESPACE,
   CATALOG_METADATA_SERVICE_NAME,
@@ -48,8 +46,7 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
         CATALOG_METADATA_NAMESPACE,
         CATALOG_METADATA_SERVICE_NAME,
         CATALOG_METADATA_SERVICE_VERSION,
-        CATALOG_METADATA_CONTAINER_NAME,
-        CATALOG_METADATA_CONTAINER_VERSION,
+        CATALOG_METADATA_IMAGE_VERSION,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_RELATIONS],
     },
@@ -86,36 +83,31 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
     switch (lifecycle) {
       case 'tst':
         defVersion.environments.tst = {
-          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
-          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
+          imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'gtu':
         defVersion.environments.gtu = {
-          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
-          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
+          imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'uat':
         defVersion.environments.uat = {
-          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
-          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
+          imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'ptp':
         defVersion.environments.ptp = {
-          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
-          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
+          imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
       case 'prd':
         defVersion.environments.prd = {
-          containerVersion: entity.metadata[ANNOTATION_CONTAINER_VERSION]?.toString() || '?',
-          containerName: entity.metadata[ANNOTATION_CONTAINER_NAME]?.toString() || '?',
+          imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
           entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         }
         break;
@@ -153,10 +145,10 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
       return services[0];
     },
  
-    async getServiceInformation(request: { serviceName: string, serviceVersion: string, containerVersion: string }): Promise<ServiceInformation | undefined> {
-      const { serviceName, serviceVersion, containerVersion } = request;
-      logger.info(`Get service ${serviceName}-${serviceVersion}-${containerVersion}`);
-      return await apiPlatformStore.getServiceInformation(serviceName, serviceVersion, containerVersion);
+    async getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
+      const { applicationCode, serviceName, serviceVersion, imageVersion } = request;
+      logger.info(`Get service ${applicationCode}-${serviceName}-${serviceVersion}-${imageVersion}`);
+      return await apiPlatformStore.getServiceInformation(applicationCode,serviceName, serviceVersion, imageVersion);
     },
  
     async addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string> {

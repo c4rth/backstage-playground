@@ -46,13 +46,12 @@ export const ServicePlatformChip = (
                     arrow
                     title={
                         <React.Fragment>
-                            <Typography variant='caption'>Name: <b>{props.service?.containerName}</b></Typography><br />
-                            <Typography variant='caption'>Version: <b>{props.service?.containerVersion}</b></Typography><br />
+                            <Typography variant='caption'>Version: <b>{props.service?.imageVersion}</b></Typography><br />
                         </React.Fragment>
                     }>
                     <Chip
-                        key={props.service?.containerVersion}
-                        label={props.service?.containerVersion}
+                        key={props.service?.imageVersion}
+                        label={props.service?.imageVersion}
                         size="small"
                         variant="outlined"
                         className={classes.badge}

@@ -3,19 +3,18 @@ exports.up = async function up(knex) {
     table.string('applicationCode').notNullable();
     table.string('service').notNullable();
     table.string('version').notNullable();
-    table.string('containerName').notNullable();
-    table.string('containerVersion').notNullable();
+    table.string('imageVersion').notNullable();
     table.string('repository').notNullable();
     table.string('sonarQubeProjectKey').notNullable();
     table.text('providedApis');
     table.text('consumedApis');
-    table.index(['applicationCode', 'service', 'version', 'containerVersion'], 'service_version_containerVersion_index');
+    table.index(['applicationCode', 'service', 'version', 'imageVersion'], 'defl_service_version_imageVersion_index');
   });
 };
 
 exports.down = async function down(knex) {
   await knex.schema.alterTable('services', table => {
-    table.dropIndex(['service', 'version', 'containerVersion'], 'service_version_containerVersion_index');
+    table.dropIndex(['applicationCode', 'service', 'version', 'imageVersion'], 'defl_service_version_imageVersion_index');
   });
   return await knex.schema.dropTable('services');
 };

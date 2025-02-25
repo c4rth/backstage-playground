@@ -7,8 +7,7 @@ export type ApiVersionDefinition = {
 };
 
 export type ServiceEnvironmentDefinition = {
-  containerVersion: string;
-  containerName: string;
+  imageVersion: string;
   entityRef: string;
 }
 
@@ -44,8 +43,7 @@ export type ServiceInformation = {
   applicationCode: string;
   serviceName: string;
   serviceVersion: string;
-  containerName: string;
-  containerVersion: string;
+  imageVersion: string;
   repository: string;
   sonarQubeProjectKey: string;
   apiDependencies: ServiceApisDefinition;
