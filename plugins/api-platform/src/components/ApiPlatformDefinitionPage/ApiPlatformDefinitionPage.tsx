@@ -33,19 +33,22 @@ export const ApiPlatformDefinitionPage = () => {
   const configApi = useApi(configApiRef);
 
   useEffect(() => {
-    const data = apiVersions
-      ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
-      : []
-    setVersions(data);
-    let selVersion = null;
-    if (isInitialLoad.current && queryVersion && data.some(item => item.label === queryVersion)) {
-      selVersion = data.find(item => item.label === queryVersion)?.value;
-    } else if (data.length > 0) {
-      selVersion = data[0].value;
+    if (!selectedVersion) {
+      const data = apiVersions
+        ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
+        : []
+      setVersions(data);
+      let selVersion = null;
+      if (isInitialLoad.current && queryVersion && data.some(item => item.label === queryVersion)) {
+        selVersion = data.find(item => item.label === queryVersion)?.value;
+      } else if (data.length > 0) {
+        selVersion = data[0].value;
+      }
+      if (selVersion) {
+        setSelectedVersion(selVersion);
+      }
     }
-    if (selVersion)
-      setSelectedVersion(selVersion);
-  }, [apiVersions, queryVersion])
+  }, [apiVersions, queryVersion, selectedVersion])
 
   useEffect(() => {
     if (selectedVersion) {

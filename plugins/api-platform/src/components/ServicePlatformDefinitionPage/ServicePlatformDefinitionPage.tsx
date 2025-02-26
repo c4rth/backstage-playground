@@ -64,36 +64,38 @@ export const ServicePlatformDefinitionPage = () => {
   const catalogApi = useApi(catalogApiRef);
 
   useEffect(() => {
-    setMapVersionEnv(parseServiceDefinition(serviceDefinition));
-    const data = serviceDefinition && serviceDefinition.versions
-      ? serviceDefinition.versions.map((serviceVersion) => ({ label: serviceVersion.version, value: serviceVersion.version }))
-      : [];
-    setVersions(data);
-    let selVersion = null;
-    if (isInitialLoad.current && queryVersion && data.some(item => item.value === queryVersion)) {
-      selVersion = queryVersion;
-    } else if (data.length > 0) {
-      selVersion = data[0].value;
+    if (!selectedVersion) {
+      setMapVersionEnv(parseServiceDefinition(serviceDefinition));
+      const data = serviceDefinition && serviceDefinition.versions
+        ? serviceDefinition.versions.map((serviceVersion) => ({ label: serviceVersion.version, value: serviceVersion.version }))
+        : [];
+      setVersions(data);
+      let selVersion = null;
+      if (isInitialLoad.current && queryVersion && data.some(item => item.value === queryVersion)) {
+        selVersion = queryVersion;
+      } else if (data.length > 0) {
+        selVersion = data[0].value;
+      }
+      if (selVersion)
+        setSelectedVersion(selVersion);
     }
-    if (selVersion)
-      setSelectedVersion(selVersion);
-  }, [serviceDefinition, queryVersion])
+  }, [serviceDefinition, queryVersion, selectedVersion])
 
   useEffect(() => {
-    if (selectedVersion) {
+    if (selectedVersion && !selectedEnvironment) {
       const selectedSvc = mapVersionEnv!.get(selectedVersion)!;
       const data = Array.from(selectedSvc.keys()).map(s => ({ label: s, value: s }));
       setEnvironments(data);
       let selEnv = null;
       if (isInitialLoad.current && queryEnv && data.some(item => item.value === queryEnv.toUpperCase())) {
         selEnv = queryEnv.toUpperCase();
-      } else if (data.length > 0) {
+      } else if (selectedEnvironment === undefined && data.length > 0) {
         selEnv = data[0].value;
       }
       if (selEnv)
         setSelectedEnvironment(selEnv);
     }
-  }, [selectedVersion, mapVersionEnv, queryEnv]);
+  }, [selectedVersion, mapVersionEnv, queryEnv, selectedEnvironment]);
 
   useEffect(() => {
     if (selectedVersion && selectedEnvironment) {
