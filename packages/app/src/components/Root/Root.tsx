@@ -41,8 +41,6 @@ import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha'
 import CodeIcon from '@material-ui/icons/Code';
 import MuiMemoryIcon from '@material-ui/icons/Memory';
 import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
-// Kiali
-import { KialiIcon } from '@backstage-community/plugin-kiali';
 // Search
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
@@ -155,7 +153,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
                   children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
                   errorPage={<div />}
                 />
-                <SidebarSubmenuItem icon={KialiIcon} to="kiali" title="Kiali" />
               </SidebarSubmenu>
             </SidebarItem>
           }

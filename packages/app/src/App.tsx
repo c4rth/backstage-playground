@@ -64,8 +64,6 @@ import { toolsReadPermission } from '@internal/plugin-api-platform-common';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-// Kiali
-import { KialiPage } from '@backstage-community/plugin-kiali';
 
 const app = createApp({
   apis,
@@ -145,12 +143,14 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/notifications" element={<NotificationsPage />} />
-    <RequirePermission permission={toolsReadPermission}>
-      <Route path="/kiali" element={<KialiPage />} />
-    </RequirePermission>
-    <RequirePermission permission={catalogEntityCreatePermission}>
-      <Route path="/entity-validation" element={<EntityValidationPage />} />
-    </RequirePermission>
+    <Route
+      path="/entity-validation"
+      element={
+        <RequirePermission permission={toolsReadPermission}>
+          <EntityValidationPage />
+        </RequirePermission>
+      }
+    />
     <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
     <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
     <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />

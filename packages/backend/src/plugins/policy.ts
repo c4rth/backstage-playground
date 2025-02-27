@@ -43,9 +43,11 @@ export class MyPermissionPolicy implements PermissionPolicy {
     }
     // superUsers
     if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
+      this.logger.info("superUsers -> allow all");
       return { result: AuthorizeResult.ALLOW };
     }
     // others
+      this.logger.info("standard use -> allow all");
     if (isPermission(request.permission, catalogEntityCreatePermission)) {
       return { result: AuthorizeResult.DENY };
     }

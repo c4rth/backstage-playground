@@ -60,6 +60,7 @@ import {
 } from '@internal/plugin-azure-devops';
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-platform';
+// Techdocs
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 
 const techdocsContent = (
@@ -143,6 +144,7 @@ const overviewContent = (
       <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true }} />
     </Grid>
   </Grid>
+  
 );
 
 const serviceEntityPage = (
