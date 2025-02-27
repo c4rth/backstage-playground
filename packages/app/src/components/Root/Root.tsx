@@ -164,7 +164,10 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-      <NotificationsSidebarItem />
+      <NotificationsSidebarItem 
+        titleCounterEnabled
+        snackbarEnabled={false}
+        />
       <SidebarGroup
         label="Settings"
         icon={<UserSettingsSignInAvatar />}

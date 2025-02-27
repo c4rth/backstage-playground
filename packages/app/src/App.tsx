@@ -46,6 +46,7 @@ import { providers } from './identityProviders';
 // Plugins
 import * as plugins from './plugins';
 // Notifications
+import { SignalsDisplay } from '@backstage/plugin-signals';
 import { NotificationsPage } from '@backstage/plugin-notifications';
 // Auto-logout
 import { AutoLogout } from '@backstage/core-components';
@@ -164,6 +165,7 @@ const routes = (
 export default app.createRoot(
   <>
     <AlertDisplay />
+    <SignalsDisplay />
     <OAuthRequestDialog />
     <AutoLogout />
     <AppRouter>
