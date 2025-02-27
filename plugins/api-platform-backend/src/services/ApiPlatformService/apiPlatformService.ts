@@ -14,12 +14,11 @@ import {
 import { CatalogApi } from '@backstage/catalog-client';
 import * as semver from 'semver';
 
-async function innerGetApiVersions(logger: LoggerService, catalogClient: CatalogApi, auth: AuthService, apiName: string): Promise<ApiVersionDefinition[]> {
+async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService, apiName: string): Promise<ApiVersionDefinition[]> {
   const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
     targetPluginId: 'catalog',
   });
-  logger.debug(`Get versions of : ${apiName}`);
   const entities = await catalogClient.getEntities(
     {
       filter: {
@@ -74,11 +73,11 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
     },
 
     async getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]> {
-      return innerGetApiVersions(logger, catalogClient, auth, request.apiName);
+      return innerGetApiVersions(catalogClient, auth, request.apiName);
     },
 
     async getApiMatchingVersion(request: { apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {
-      const sortedVersions = await innerGetApiVersions(logger, catalogClient, auth, request.apiName);
+      const sortedVersions = await innerGetApiVersions(catalogClient, auth, request.apiName);
       const filteredVersion = sortedVersions.filter(apiDef => apiDef.version.startsWith(request.apiVersion));
       if (filteredVersion.length > 0) {
         return filteredVersion.at(0);
