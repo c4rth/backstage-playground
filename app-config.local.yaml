@@ -55,6 +55,8 @@ catalog:
     target: ../../examples/templates/azdo-run3-template/template.yaml
   - type: file
     target: ../../examples/templates/azdo-run4-template/template.yaml
+  - type: file
+    target: ../../examples/templates/sb-init/template.yaml
     
 #    - type: file
 #      target: ../../examples/docs/monorepo/catalog-info.yaml
