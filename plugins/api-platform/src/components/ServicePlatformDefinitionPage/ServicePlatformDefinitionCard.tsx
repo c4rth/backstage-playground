@@ -27,6 +27,8 @@ import {
     isAzureDevOpsAvailable,
     isAzurePipelinesAvailable,
 } from '@internal/plugin-azure-devops';
+// App Registry
+import { AppRegistryPage } from '@internal/plugin-app-registry';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -124,7 +126,7 @@ export const ServicePlatformDefinitionCard = () => {
             <TabbedLayout.Route path="/appreg" title="App Registry">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={12}>
-                        <Typography variant='h5'><i>Soon...</i></Typography>
+                        <AppRegistryPage />
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>

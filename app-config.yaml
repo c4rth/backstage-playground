@@ -96,12 +96,12 @@ azureDevOps:
   organization: thierrycarels0265
 
 proxy:
-  skipInvalidProxies: true
+  # skipInvalidProxies: true
   endpoints:
-    # customize developer hub instance
-    '/developer-hub':
-      target: '/'
-      changeOrigin: true
+    '/app-registry':
+      target: 'http://localhost:8080'
+      allowedMethods: ['GET']
+      # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
 
