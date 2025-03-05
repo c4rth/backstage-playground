@@ -1,12 +1,24 @@
-import { ConfigApi, createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
-import { AppRegistryEndpoint } from "../types";
+import { ConfigApi, createApiRef, FetchApi } from "@backstage/core-plugin-api";
+import { AppRegistryEndpoint, AppRegistryOperation, AppRegistryOperationPdpMapping } from "../types";
 
 export const appRegistryBackendApiRef = createApiRef<AppRegistryBackendApi>({
     id: 'plugin.app-registry.service',
 });
 
 export interface AppRegistryBackendApi {
-    getPolicies(appCode: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryEndpoint[]>;
+    getOperations(appCode: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryOperation[]>;
+}
+
+
+function getOperationName(endpoint: AppRegistryEndpoint) {
+    if (endpoint.cobolName && endpoint.cobolName.length > 0) {
+        return endpoint.operationId || "no operationId found";
+    }
+    return `${endpoint.method} ${endpoint.realPath}`;
+}
+
+function isAbac(endpoint: AppRegistryEndpoint) {
+    return endpoint.policies?.some(policy => policy.type === 'ACCESS_CHECK' && policy.active);
 }
 
 
@@ -19,10 +31,9 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
         this.fetchApi = options.fetchApi;
     }
 
-    async getPolicies(appCode: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryEndpoint[]> {
+    async getOperations(appCode: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryOperation[]> {
         const url = new URL(
             `${this.configApi.getString('backend.baseUrl')}/api/proxy/app-registry/endpoints?application-code=${appCode}&service-name=${appName}&major-version=${appVersion}&environment=${environment}`,
-            // `${this.configApi.getString('appRegistry.baseUrl')}/endpoints?application-code=${appCode}&service-name=${appName}&major-version=${appVersion}&environment=${environment}`,
         );
         const headers = new Headers({
             'Accept': '*/*',
@@ -33,10 +44,35 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
             throw new Error(`${response.status}: Failed fetching AppRegistry ${await response.text()}`);
         }
         const data = (await response.json()) as AppRegistryEndpoint[];
-        if (!data) {
-            return [];
-        }
-        return data;
+
+        const operations: AppRegistryOperation[] = [];
+
+        data.forEach(endpoint => {
+            const abac = isAbac(endpoint) || false;
+
+            const pdpMapping: AppRegistryOperationPdpMapping[] = [];
+            if (abac) {
+                endpoint.policies?.forEach(policy => {
+                    if (policy && "pdpMapping" in policy) {
+                        policy.pdpMapping?.forEach(mapping => {
+                            pdpMapping.push({
+                                valuePath: mapping.valuePath,
+                                pdpField: mapping.pdpField,
+                            });
+                        });
+                    }
+                });
+            }
+
+            const operation: AppRegistryOperation = {
+                name: getOperationName(endpoint),
+                abac: abac,
+                bFunction: endpoint.bFunction,
+                pdpMapping: pdpMapping.length > 0 ? pdpMapping : undefined,
+            };
+            operations.push(operation);
+        });
+        return operations;
     }
 
 }
