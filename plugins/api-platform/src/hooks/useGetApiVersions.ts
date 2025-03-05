@@ -16,7 +16,7 @@ export function useGetApiVersions(
 
     const { value, loading, error } = useAsync(() => {
         return api.getApiVersions({ apiName: apiName });
-    }, [api, top, status]);
+    }, [api]);
 
     return {
         apiVersions: value,

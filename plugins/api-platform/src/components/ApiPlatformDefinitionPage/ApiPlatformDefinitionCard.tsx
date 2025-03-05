@@ -44,7 +44,7 @@ const useStyles = makeStyles(
 
 export const ApiPlatformDefinitionCard = () => {
 
-    const { entity } = useEntity<ApiEntity>();
+    const { entity } = useEntity<ApiEntity>();  
 
     const classes = useStyles();
 
@@ -66,7 +66,32 @@ export const ApiPlatformDefinitionCard = () => {
 
     return (
         <TabbedLayout>
-            <TabbedLayout.Route path="/" title="Overview">
+            <TabbedLayout.Route path="/" title="OpenApi">
+                <OpenApiDefinitionWidget definition={entity.spec.definition.toString()} />
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/raw" title="Raw">
+                <PlainApiDefinitionWidget
+                    definition={entity.spec.definition}
+                    language={entity.spec.type}
+                />
+            </TabbedLayout.Route>
+            {isApiDocsSpectralLinterAvailable(entity) ?
+                <TabbedLayout.Route path="/linter" title="Linter">
+                    <EntityApiDocsSpectralLinterCard />
+                </TabbedLayout.Route>
+                : null
+            }
+            <TabbedLayout.Route path="/services" title="Services">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={6}>
+                        <ApiPlatformRelationCard dependency='provider' />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <ApiPlatformRelationCard dependency='consumer' />
+                    </Grid>
+                </Grid>
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/overview" title="Overview">
                 <InfoCard title='About' divider className={cardClass}>
                     <Box sx={{ mb: 4 }}>
                         <AboutField
@@ -98,31 +123,6 @@ export const ApiPlatformDefinitionCard = () => {
                         </AboutField>
                     </Box>
                 </InfoCard>
-            </TabbedLayout.Route>
-            <TabbedLayout.Route path="/openapi" title="OpenApi">
-                <OpenApiDefinitionWidget definition={entity.spec.definition.toString()} />
-            </TabbedLayout.Route>
-            <TabbedLayout.Route path="/raw" title="Raw">
-                <PlainApiDefinitionWidget
-                    definition={entity.spec.definition}
-                    language={entity.spec.type}
-                />
-            </TabbedLayout.Route>
-            {isApiDocsSpectralLinterAvailable(entity) ?
-                <TabbedLayout.Route path="/linter" title="Linter">
-                    <EntityApiDocsSpectralLinterCard />
-                </TabbedLayout.Route>
-                : null
-            }
-            <TabbedLayout.Route path="/services" title="Services">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={6}>
-                        <ApiPlatformRelationCard dependency='provider' />
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                        <ApiPlatformRelationCard dependency='consumer' />
-                    </Grid>
-                </Grid>
             </TabbedLayout.Route>
         </TabbedLayout>
     );

@@ -89,6 +89,7 @@ export const ServicePlatformDefinitionPage = () => {
       let selEnv = null;
       if (isInitialLoad.current && queryEnv && data.some(item => item.value === queryEnv.toUpperCase())) {
         selEnv = queryEnv.toUpperCase();
+        isInitialLoad.current = false;
       } else if (selectedEnvironment === undefined && data.length > 0) {
         selEnv = data[0].value;
       }
@@ -106,12 +107,6 @@ export const ServicePlatformDefinitionPage = () => {
       }
     }
   }, [selectedVersion, selectedEnvironment, catalogApi, mapVersionEnv]);
-
-  useEffect(() => {
-    if (selectedEnvironment && selectedVersion) {
-      isInitialLoad.current = false;
-    }
-  }, [selectedVersion, selectedEnvironment]);
 
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;

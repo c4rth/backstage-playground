@@ -15,7 +15,7 @@ export function useGetSystems(
 
     const { value, loading, error } = useAsync(() => {
         return api.listSystems();
-    }, [api, top, status]);
+    }, [api]);
 
     return {
         items: value?.items,

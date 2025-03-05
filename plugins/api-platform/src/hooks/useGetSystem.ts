@@ -16,7 +16,7 @@ export function useGetSystem(
 
     const { value, loading, error } = useAsync(() => {
         return api.getSystem({ systemName: systemName });
-    }, [api, top, status]);
+    }, [api]);
 
     return {
         systemDefinition: value,

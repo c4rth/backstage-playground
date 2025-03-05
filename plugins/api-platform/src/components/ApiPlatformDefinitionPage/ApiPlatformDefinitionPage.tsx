@@ -41,6 +41,7 @@ export const ApiPlatformDefinitionPage = () => {
       let selVersion = null;
       if (isInitialLoad.current && queryVersion && data.some(item => item.label === queryVersion)) {
         selVersion = data.find(item => item.label === queryVersion)?.value;
+        isInitialLoad.current = false;
       } else if (data.length > 0) {
         selVersion = data[0].value;
       }
@@ -56,6 +57,7 @@ export const ApiPlatformDefinitionPage = () => {
         .then(entity => setApiEntity(entity as ApiEntity));
     }
   }, [selectedVersion, catalogApi]);
+
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`;
 
   if (error) {
@@ -73,7 +75,9 @@ export const ApiPlatformDefinitionPage = () => {
       subtitle={generatedSubtitle}>
       <Content>
         <Box mb={1}>
-          <Select onChange={(selected) => { setSelectedVersion(selected.toString()) }} label="Versions" items={versions} selected={selectedVersion} />
+          <Select onChange={(selected) => { 
+            setSelectedVersion(selected.toString()) ;
+            }} label="Versions" items={versions} selected={selectedVersion} />
         </Box>
         <Box mb={-3}>
           {apiEntity ?

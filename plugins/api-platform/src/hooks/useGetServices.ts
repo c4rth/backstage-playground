@@ -13,7 +13,7 @@ export function useGetServices(): {
 
     const { value, loading, error } = useAsync(() => {
         return api.listServices();
-    }, [api, top, status]);
+    }, [api]);
 
     return {
         items: value?.items,

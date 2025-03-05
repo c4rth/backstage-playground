@@ -15,7 +15,7 @@ export function useGetApis(
 
     const { value, loading, error } = useAsync(() => {
         return api.listApis();
-    }, [api, top, status]);
+    }, [api]);
 
     return {
         items: value?.items,
