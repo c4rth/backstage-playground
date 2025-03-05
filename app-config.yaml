@@ -101,6 +101,7 @@ proxy:
     '/app-registry':
       target: 'http://localhost:8080'
       allowedMethods: ['GET']
+      allowedHeaders: ['Accept', 'x-api-version']
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
@@ -207,3 +208,7 @@ sonarqube:
   instanceKey: mySonarqube
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
+
+appRegistry:
+  baseUrl: http://localhost:8080
+  version: v2

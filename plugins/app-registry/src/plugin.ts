@@ -3,7 +3,6 @@ import {
   createApiFactory,
   createComponentExtension,
   createPlugin,
-  discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { appRegistryBackendApiRef, AppRegistryBackendClient } from './api';
@@ -15,9 +14,9 @@ export const appRegistryPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: appRegistryBackendApiRef,
-      deps: { configApi: configApiRef, discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
-      factory: ({ configApi, discoveryApi, fetchApi }) =>
-        new AppRegistryBackendClient({ configApi, discoveryApi, fetchApi }),
+      deps: { configApi: configApiRef, fetchApi: fetchApiRef },
+      factory: ({ configApi, fetchApi }) =>
+        new AppRegistryBackendClient({ configApi, fetchApi }),
     }),
   ],
   routes: {

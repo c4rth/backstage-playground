@@ -24,7 +24,7 @@ export const AppRegistryPage = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <ResponseErrorPanel error={error} />;
+    return <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />;
   }
 
   return (
