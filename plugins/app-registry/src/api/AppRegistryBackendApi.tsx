@@ -12,7 +12,7 @@ export interface AppRegistryBackendApi {
 
 function getOperationName(endpoint: AppRegistryEndpoint) {
     if (endpoint.cobolName && endpoint.cobolName.length > 0) {
-        return endpoint.operationId || "no operationId found";
+        return endpoint.operationId || endpoint.cobolName;
     }
     return `${endpoint.method} ${endpoint.realPath}`;
 }

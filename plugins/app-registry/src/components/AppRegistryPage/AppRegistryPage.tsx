@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
   Progress,
   ResponseErrorPanel,
-  StatusAborted,
   StatusOK,
+  StatusPending,
   Table,
   TableColumn,
 } from '@backstage/core-components';
@@ -11,10 +11,10 @@ import { ComponentEntity } from "@backstage/catalog-model";
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
-import { Box, Collapse, IconButton, Typography } from '@material-ui/core';
+import { Box, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, Typography } from '@material-ui/core';
 import { AppRegistryOperation } from '../../types';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import MapIcon from '@material-ui/icons/Map';
+import CloseIcon from '@material-ui/icons/Close';
 
 type TableRow = {
   id: number,
@@ -22,74 +22,97 @@ type TableRow = {
   open: boolean,
 }
 
-const ExpandRow = ({ row }: { row: TableRow }) => {
+const useStyles = makeStyles(theme => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+}));
+
+const PdpMappingDialog = ({ row }: { row: TableRow }) => {
   const [open, setOpen] = useState(false);
+  const classes = useStyles();
   return (
     <Box>
       <IconButton size="small" onClick={() => setOpen(!open)}>
-        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        <MapIcon />
       </IconButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <Box margin={1}>
-          <Table
-            title="PDP Mapping"
-            options={{
-              search: false,
-              paging: false,
-              padding: 'dense',
-          }}
-            columns={[
-              { title: 'Value Path', field: 'valuePath' },
-              { title: 'PDP Field', field: 'pdpField' },
-            ]}
-            data={row.operation.pdpMapping || []}
-          />
-        </Box>
-      </Collapse>
+      <Dialog open={open} maxWidth="md" fullWidth>
+        <DialogTitle id="dialog-title">
+          PDP Mapping
+          <IconButton className={classes.closeButton} onClick={() => setOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+            <Table
+              options={{
+                search: false,
+                paging: false,
+                padding: 'dense',
+                showTitle: false,
+                toolbar: false,
+              }}
+              columns={[
+                { title: 'Value Path', field: 'valuePath' },
+                { title: 'PDP Field', field: 'pdpField' },
+              ]}
+              data={row.operation.pdpMapping || []}
+            />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
 
 const columns: TableColumn<TableRow>[] = [
   {
-    title: '',
-    width: '1%',
+    title: 'Name',
+    width: '75%',
+    field: 'operation.name',
+    highlight: true,
+    render: ({ operation }) => {
+      return (
+        <Typography variant="body2">
+          {operation.name}
+        </Typography>
+      );
+    },
+  },
+  {
+    title: 'ABAC',
+    field: 'operation.abac',
+    width: '5%',
+    render: ({ operation }) => {
+      return operation.abac ? <StatusOK /> : <StatusPending />;
+    },
+  },
+  {
+    title: 'B-Function',
+    width: '10%',
+    field: 'operation.bFunction',
+  },
+  {
+    title: 'PDP Mapping',
+    width: '10%',
     field: 'id',
-    render: row => row.operation.pdpMapping ? <ExpandRow row={row} /> : null,
-  },
-  {
-      title: 'Name',
-      width: '75%',
-      field: 'operation.name',
-      highlight: true,
-      render: ({ operation }) => {
-          return (
-            <Typography variant="body2">
-              {operation.name}
-            </Typography>
-          );
-      },
-  },
-  {
-      title: 'ABAC',
-      field: 'operation.abac',
-      width: '10%',
-      render: ({ operation }) => {
-          return operation.abac ? <StatusOK /> : <StatusAborted />;
-      }
-  },
-  {
-      title: 'BFunction',
-      width: '14%',
-      field: 'operation.bFunction',
+    render: row => row.operation.pdpMapping ?
+      <PdpMappingDialog row={row} />
+      : null,
   },
 ];
 
 function toTableRow(operation: AppRegistryOperation, idx: number) {
   return {
-      id: idx,
-      operation: operation,
-      open: true,
+    id: idx,
+    operation: operation,
+    open: true,
   };
 }
 
@@ -112,26 +135,23 @@ export const AppRegistryPage = () => {
 
   const rows = data?.map(toTableRow) || [];
 
-  const showPagination = rows.length > 15;
-
   return (
     <Table<TableRow>
-            isLoading={loading}
-            columns={columns}
-            options={{
-                search: true,
-                paging: showPagination,
-                padding: 'dense',
-                pageSize: 15,
-                showEmptyDataSourceMessage: !loading,
-            }}
-            title={
-                <Box display="flex" alignItems="center">
-                    <Box mr={1} />
-                    Operations ({rows ? rows.length : 0})
-                </Box>
-            }
-            data={rows}
-        />
+      isLoading={loading}
+      columns={columns}
+      options={{
+        search: true,
+        padding: 'dense',
+        paging: false,
+        showEmptyDataSourceMessage: !loading,
+      }}
+      title={
+        <Box display="flex" alignItems="center">
+          <Box mr={1} />
+          Operations ({rows ? rows.length : 0})
+        </Box>
+      }
+      data={rows}
+    />
   );
 };
