@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Progress,
   ResponseErrorPanel,
@@ -11,65 +11,18 @@ import { ComponentEntity } from "@backstage/catalog-model";
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
-import { Box, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, Typography } from '@material-ui/core';
+// import { Box, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, Typography } from '@material-ui/core';
+import { Box, IconButton, Typography } from '@material-ui/core';
 import { AppRegistryOperation } from '../../types';
 import MapIcon from '@material-ui/icons/Map';
-import CloseIcon from '@material-ui/icons/Close';
+// import CloseIcon from '@material-ui/icons/Close';
+import { AppRegistryPdpMappingPopOver } from './AppRegistryPdpMappingPopOver';
 
 type TableRow = {
   id: number,
   operation: AppRegistryOperation,
   open: boolean,
 }
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-}));
-
-const PdpMappingDialog = ({ row }: { row: TableRow }) => {
-  const [open, setOpen] = useState(false);
-  const classes = useStyles();
-  return (
-    <Box>
-      <IconButton size="small" onClick={() => setOpen(!open)}>
-        <MapIcon />
-      </IconButton>
-      <Dialog open={open} maxWidth="md" fullWidth>
-        <DialogTitle id="dialog-title">
-          PDP Mapping
-          <IconButton className={classes.closeButton} onClick={() => setOpen(false)}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-            <Table
-              options={{
-                search: false,
-                paging: false,
-                padding: 'dense',
-                showTitle: false,
-                toolbar: false,
-              }}
-              columns={[
-                { title: 'Value Path', field: 'valuePath' },
-                { title: 'PDP Field', field: 'pdpField' },
-              ]}
-              data={row.operation.pdpMapping || []}
-            />
-        </DialogContent>
-      </Dialog>
-    </Box>
-  );
-};
 
 const columns: TableColumn<TableRow>[] = [
   {
@@ -102,8 +55,12 @@ const columns: TableColumn<TableRow>[] = [
     title: 'PDP Mapping',
     width: '10%',
     field: 'id',
-    render: row => row.operation.pdpMapping ?
-      <PdpMappingDialog row={row} />
+    render: ({ operation }) => operation.pdpMapping ?
+      <AppRegistryPdpMappingPopOver operation={operation}>
+        <IconButton size="small" onClick={() => { }}>
+          <MapIcon />
+        </IconButton>
+      </AppRegistryPdpMappingPopOver>
       : null,
   },
 ];

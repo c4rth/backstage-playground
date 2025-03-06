@@ -8499,6 +8499,9 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
+    "@types/lodash": "npm:^4.14.151"
+    lodash: "npm:^4.17.21"
+    material-ui-popup-state: "npm:^5.3.3"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-use: "npm:^17.2.4"
@@ -27253,6 +27256,25 @@ __metadata:
     "@material-ui/core": ^4.0.0 || ^5.0.0-beta
     react: ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 10c0/8c7caf1183728df53554f04fca119bcc4a125d9f0aeb1ae46314b6cfc632d7c9ffda17d62d0dbaa5c58b9343d8e9537df2d8f289d2f161c9d8a774ab41b40daf
+  languageName: node
+  linkType: hard
+
+"material-ui-popup-state@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "material-ui-popup-state@npm:5.3.3"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.6"
+    "@types/prop-types": "npm:^15.7.3"
+    classnames: "npm:^2.2.6"
+    prop-types: "npm:^15.7.2"
+  peerDependencies:
+    "@mui/material": ^5.0.0 || ^6.0.0
+    "@types/react": ^16.8.0 || ^17 || ^18 || ^19
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/8e2a3c48394d0465ba4707f63db5d0e8f0f5832b42b55fe8612bc6cb279771acb289b1f3e2057dcfb98c0a5722bcb03be6fe614d4d0ef579130c016b85d46cb2
   languageName: node
   linkType: hard
 
