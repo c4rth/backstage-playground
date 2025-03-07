@@ -63,20 +63,20 @@ export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service
     const showPagination = rows.length > 20 || false;
     return (
         <Table<TableRow>
-        columns={columns}
-        options={{
-            search: true,
-            padding: 'dense',
-            paging: showPagination,
-            pageSize: 20,
-        }}
-        title={
-            <Box display="flex" alignItems="center">
-            <Box mr={1} />
-            {title} ({rows ? rows.length : 0})
-            </Box>
-        }
-        data={rows}
+            columns={columns}
+            options={{
+                search: true,
+                padding: 'dense',
+                paging: showPagination,
+                pageSize: 20,
+            }}
+            title={
+                <Box display="flex" alignItems="center">
+                    <Box mr={1} />
+                    {title} ({rows ? rows.length : 0})
+                </Box>
+            }
+            data={rows}
         />
     );
 }

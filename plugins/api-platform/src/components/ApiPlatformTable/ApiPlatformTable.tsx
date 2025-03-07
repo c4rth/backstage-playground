@@ -4,7 +4,6 @@ import {
     TableColumn,
     Link,
     OverflowTooltip,
-    Progress,
 } from '@backstage/core-components';
 import {
     getEntityRelations,
@@ -76,9 +75,6 @@ const columns: TableColumn<TableRow>[] = [
 export const ApiPlatformTable = () => {
     const { items, loading, error } = useGetApis();
 
-    if (loading) {
-        return <Progress />;
-    }
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }

@@ -1,4 +1,4 @@
-import { Link, Progress, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
+import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
 import React, { useCallback } from 'react';
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
@@ -72,9 +72,6 @@ export const ServicePlatformRelationCard = (props: { dependency: 'provided' | 'c
         error,
     } = useAsync(fetchAsync, [fetchAsync]);
 
-    if (loading) {
-        return <Progress />;
-    }
     if (error) {
         return (
             <ResponseErrorPanel title="Error" error={error} />
@@ -86,6 +83,7 @@ export const ServicePlatformRelationCard = (props: { dependency: 'provided' | 'c
     return (
         <>
             <Table<TableRow>
+                isLoading={loading}
                 columns={serviceColumns}
                 options={{
                     search: true,

@@ -1,6 +1,5 @@
 import {
     Link,
-    Progress,
     ResponseErrorPanel,
     Table,
     TableColumn,
@@ -65,9 +64,6 @@ const columns: TableColumn<TableRow>[] = [
 export const SystemPlatformTable = () => {
     const { items, loading, error } = useGetSystems();
 
-    if (loading) {
-        return <Progress />;
-    }
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }

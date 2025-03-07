@@ -116,7 +116,6 @@ export const ServicePlatformTable = () => {
 
     return (
         <Table<TableRow>
-            isLoading={loading}
             columns={columns}
             options={{
                 search: true,

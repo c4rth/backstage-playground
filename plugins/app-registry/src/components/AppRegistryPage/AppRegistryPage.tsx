@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Progress,
   ResponseErrorPanel,
   StatusOK,
   StatusPending,
@@ -84,9 +83,7 @@ export const AppRegistryPage = () => {
 
   const { data, loading, error } = useGetOperations(appCode, appName, appVersion, environment);
 
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
+  if (error) {
     return <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />;
   }
 
