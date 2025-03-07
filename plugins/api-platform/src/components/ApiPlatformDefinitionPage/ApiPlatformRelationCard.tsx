@@ -27,7 +27,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
             return (
                 <Link to={`/api-platform/service/${data.name}?version=${data.version}&env=${data.environment}`}>
                     <ServicePlatformDisplayName
-                        name={data.name}
+                        text={data.name}
                     />
                 </Link>
             );

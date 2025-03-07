@@ -32,12 +32,19 @@ function getColumn(env: string): TableColumn<TableRow> {
                 <div>
                     {serviceDefinition.versions &&
                         serviceDefinition.versions.map((version: ServiceVersionDefinition, idx: number) =>
-                            version.environments.hasOwnProperty(env) ?
+                        (<>
+                            {version.environments.hasOwnProperty(env) ?
                                 <ServicePlatformChip
                                     index={idx}
                                     service={version.environments[env as keyof typeof version.environments]}
                                     link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}&env=${env}`} />
-                                : <div />
+                                : <ServicePlatformChip
+                                    index={-2}
+                                    text="n/a"
+                                    disabled
+                                    link="#" />}
+                            {idx < serviceDefinition.versions.length - 1 && <br />}
+                        </>)
                         )}
                 </div>
             );
@@ -55,7 +62,7 @@ const columns: TableColumn<TableRow>[] = [
             return (
                 <Link to={serviceDefinition.name}>
                     <ServicePlatformDisplayName
-                        name={serviceDefinition.name} />
+                        text={serviceDefinition.name} />
                 </Link>
             );
         },
@@ -69,7 +76,10 @@ const columns: TableColumn<TableRow>[] = [
                 <div>
                     {serviceDefinition.versions &&
                         serviceDefinition.versions.map((v: any, idx: number) => (
-                            <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
+                            <>
+                                <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
+                                {idx < serviceDefinition.versions.length - 1 && <br />}
+                            </>
                         ))}
                 </div>
             );

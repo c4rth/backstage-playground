@@ -21,7 +21,7 @@ const apiColumns: TableColumn<TableRow>[] = [
             return (
                 <Link to={`/api-platform/api/${data.name}`}>
                     <ApiPlatformDisplayName
-                        name={data.name}
+                        text={data.name}
                     />
                 </Link>
             );
@@ -39,7 +39,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
             return (
                 <Link to={`/api-platform/service/${data.name}`}>
                     <ServicePlatformDisplayName
-                        name={data.name}
+                        text={data.name}
                     />
                 </Link>
             );

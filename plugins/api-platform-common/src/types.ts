@@ -9,6 +9,7 @@ export type ApiVersionDefinition = {
 export type ServiceEnvironmentDefinition = {
   imageVersion: string;
   entityRef: string;
+  platform: string;
 }
 
 export type ServiceVersionDefinition = {

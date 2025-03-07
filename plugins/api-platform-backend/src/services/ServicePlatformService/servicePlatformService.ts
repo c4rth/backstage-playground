@@ -3,11 +3,13 @@ import { ServicePlatformService } from './types';
 import {
   ANNOTATION_IMAGE_VERSION,
   ANNOTATION_SERVICE_NAME,
+  ANNOTATION_SERVICE_PLATFORM,
   ANNOTATION_SERVICE_VERSION,
   CATALOG_METADATA_IMAGE_VERSION,
   CATALOG_METADATA_NAME,
   CATALOG_METADATA_NAMESPACE,
   CATALOG_METADATA_SERVICE_NAME,
+  CATALOG_METADATA_SERVICE_PLATFORM,
   CATALOG_METADATA_SERVICE_VERSION,
   CATALOG_RELATIONS,
   CATALOG_SPEC_LIFECYCLE,
@@ -46,6 +48,7 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
         CATALOG_METADATA_NAMESPACE,
         CATALOG_METADATA_SERVICE_NAME,
         CATALOG_METADATA_SERVICE_VERSION,
+        CATALOG_METADATA_SERVICE_PLATFORM,
         CATALOG_METADATA_IMAGE_VERSION,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_RELATIONS],
@@ -86,30 +89,35 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
           defVersion.environments.tst = {
             imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
             entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
           }
           break;
         case 'gtu':
           defVersion.environments.gtu = {
             imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
             entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
           }
           break;
         case 'uat':
           defVersion.environments.uat = {
             imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
             entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
           }
           break;
         case 'ptp':
           defVersion.environments.ptp = {
             imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
             entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
           }
           break;
         case 'prd':
           defVersion.environments.prd = {
             imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
             entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
           }
           break;
         default:

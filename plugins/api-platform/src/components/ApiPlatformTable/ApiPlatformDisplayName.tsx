@@ -24,7 +24,7 @@ const useStyles = makeStyles(
 );
 
 export type ApiPlatformDisplayNameProps = {
-    name: string;
+    text: string;
 };
 
 export const ApiPlatformDisplayName = (
@@ -32,7 +32,7 @@ export const ApiPlatformDisplayName = (
 ): JSX.Element => {
 
     const classes = useStyles();
-    let content = <div>{props.name}</div>;
+    let content = <div>{props.text}</div>;
     content = (
         <Box component="span" className={classes.root}>
             <Box component="span" className={classes.icon}>

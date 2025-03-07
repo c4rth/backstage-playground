@@ -43,7 +43,7 @@ const columns: TableColumn<TableRow>[] = [
             return (
                 <Link to={api.name}>
                     <ApiPlatformDisplayName
-                        name={api.name}
+                        text={api.name}
                     />
                 </Link>
             );

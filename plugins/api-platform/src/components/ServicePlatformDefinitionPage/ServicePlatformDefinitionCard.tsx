@@ -16,7 +16,7 @@ import {
     Direction,
     EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
-import { ANNOTATION_IMAGE_VERSION } from '@internal/plugin-api-platform-common';
+import { ANNOTATION_IMAGE_VERSION, ANNOTATION_SERVICE_PLATFORM } from '@internal/plugin-api-platform-common';
 // SonarQube
 import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
@@ -65,6 +65,7 @@ export const ServicePlatformDefinitionCard = () => {
 
     const classes = useStyles();
 
+    const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString();
     const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
     const entityRef = getCompoundEntityRef(entity);
     const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];
@@ -88,22 +89,27 @@ export const ServicePlatformDefinitionCard = () => {
                             </>
                         }>
                             <Box sx={{ mb: 4 }}>
-                                <AboutField
-                                    label="Service reference"
-                                    gridSizes={{ xs: 12 }} >
-                                    <EntityRefLink entityRef={entity!} />
-                                </AboutField>
-                            </Box>
-                            <Box sx={{ mb: 4 }}>
-                                <AboutField
-                                    label="Image"
-                                    gridSizes={{ xs: 12 }} >
-                                    <div>
-                                        <Typography variant='overline' display='inline' className={classes.label}>version:</Typography>
-                                        <Box display='inline' mr={1} />
-                                        <Typography variant='body2' display='inline' className={classes.value}>{imageVersion}</Typography>
-                                    </div>
-                                </AboutField>
+                                <Grid container>
+                                    <AboutField
+                                        label="Service reference"
+                                        gridSizes={{ xs: 12, sm: 6, lg: 4 }} >
+                                        <EntityRefLink entityRef={entity!} />
+                                    </AboutField>
+                                    <AboutField
+                                        label="Platform"
+                                        gridSizes={{ xs: 12, sm: 6, lg: 4 }} >
+                                        <div>
+                                            <Typography variant='body2' display='inline' className={classes.value}>{platform}</Typography>
+                                        </div>
+                                    </AboutField>
+                                    <AboutField
+                                        label="Image version"
+                                        gridSizes={{ xs: 12, sm: 6, lg: 4 }} >
+                                        <div>
+                                            <Typography variant='body2' display='inline' className={classes.value}>{imageVersion}</Typography>
+                                        </div>
+                                    </AboutField>
+                                </Grid>
                             </Box>
                             <AboutContent entity={entity} />
                         </InfoCard>
