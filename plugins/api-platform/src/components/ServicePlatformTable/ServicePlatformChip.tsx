@@ -8,6 +8,7 @@ import HomeIcon from '@material-ui/icons/Home';
 
 export type ServicePlatformChipProps = {
     index: number;
+    icon?: JSX.Element;
     text?: string;
     link: string;
     service?: ServiceEnvironmentDefinition;
@@ -32,7 +33,7 @@ export const ServicePlatformChip = (
 
     return (
         props.text ?
-            <Link to={props.link}>
+            <Link to={props.link} style={{ padding: '0px', margin: '0px' }}>
                 <Chip
                     key={props.text}
                     label={props.text}
@@ -41,9 +42,11 @@ export const ServicePlatformChip = (
                     className={classes.badge}
                     clickable={!props.disabled}
                     disabled={props.disabled}
+                    icon={props.icon}
+                    style={{ padding: '0px', margin: '0px' }}
                 /></Link>
             :
-            <Link to={props.link}>
+            <Link to={props.link} style={{ padding: '0px', margin: '0px' }}>
                 <Tooltip
                     placement='bottom'
                     arrow
@@ -63,6 +66,7 @@ export const ServicePlatformChip = (
                         disabled={props.disabled}
                         onClick={handleClick}
                         icon={props.service?.platform === 'azure' ? <CloudIcon /> : <HomeIcon />}
+                        style={{ padding: '0px', margin: '0px' }}
                     />
                 </Tooltip>
             </Link>

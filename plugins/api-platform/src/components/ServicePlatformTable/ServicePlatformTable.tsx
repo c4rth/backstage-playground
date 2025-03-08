@@ -10,43 +10,65 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box, Divider, List, ListItem } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+import NotInterestedIcon from '@material-ui/icons/NotInterested';
 
 type TableRow = {
     id: number,
     serviceDefinition: ServiceDefinition,
 }
 
-
 function getColumn(env: string): TableColumn<TableRow> {
     return {
         title: env.toUpperCase(),
         width: '10%',
         align: 'center',
+        cellStyle: { padding: '0px' },
+        sorting: false,
+        searchable: true,
+        customFilterAndSearch: (query, row) => {
+            if (!row.serviceDefinition) return false;
+            let res = false;
+            for (const version of row.serviceDefinition.versions) {
+                if (version.environments.hasOwnProperty(env)) {
+                    const v = version.environments[env as keyof typeof version.environments]
+                    if (v?.imageVersion.includes(query.toLowerCase())) {
+                        res = true;
+                    }
+                }
+            };
+            return res;
+        },
         render: ({ serviceDefinition }) => {
             return (
-                <div>
+                <List style={{ padding: '0px', margin: '0px' }}>
                     {serviceDefinition.versions &&
                         serviceDefinition.versions.map((version: ServiceVersionDefinition, idx: number) =>
-                        (<>
-                            {version.environments.hasOwnProperty(env) ?
-                                <ServicePlatformChip
-                                    index={idx}
-                                    service={version.environments[env as keyof typeof version.environments]}
-                                    link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}&env=${env}`} />
-                                : <ServicePlatformChip
-                                    index={-2}
-                                    text="n/a"
-                                    disabled
-                                    link="#" />}
-                            {idx < serviceDefinition.versions.length - 1 && <br />}
-                        </>)
+                        (
+                            <>
+                                <ListItem key={idx} 
+                                style={{ margin: '2px', display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                    {version.environments.hasOwnProperty(env) ?
+                                        <ServicePlatformChip
+                                            index={idx}
+                                            service={version.environments[env as keyof typeof version.environments]}
+                                            link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}&env=${env}`} />
+                                        : <ServicePlatformChip
+                                            index={-2}
+                                            icon={<NotInterestedIcon />}
+                                            text='N/A'
+                                            disabled
+                                            link="#" />}
+                                </ListItem>
+                                {idx < serviceDefinition.versions.length - 1 && <Divider />}
+                            </>
+                        )
                         )}
-                </div>
+                </List>
             );
         },
     };
@@ -56,7 +78,7 @@ const columns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
-        field: 'name',
+        field: 'serviceDefinition.name',
         highlight: true,
         render: ({ serviceDefinition }) => {
             return (
@@ -71,17 +93,22 @@ const columns: TableColumn<TableRow>[] = [
         title: 'Versions',
         width: '5%',
         field: 'version',
+        sorting: false,
+        align: 'center',
+        cellStyle: { padding: '0px' },
         render: ({ serviceDefinition }) => {
             return (
-                <div>
+                <List style={{ padding: '0px', margin: '0px' }}>
                     {serviceDefinition.versions &&
                         serviceDefinition.versions.map((v: any, idx: number) => (
                             <>
-                                <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
-                                {idx < serviceDefinition.versions.length - 1 && <br />}
+                                <ListItem key={idx} style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                    <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
+                                </ListItem>
+                            {idx < serviceDefinition.versions.length - 1 && <Divider />}
                             </>
                         ))}
-                </div>
+                </List>
             );
         },
     },
@@ -93,7 +120,7 @@ const columns: TableColumn<TableRow>[] = [
     {
         title: 'Owner',
         width: '25%',
-        field: 'owner',
+        field: 'serviceDefinition.owner',
         render: ({ serviceDefinition }) => (
             <EntityRefLink
                 entityRef={parseEntityRef(serviceDefinition.owner)}
