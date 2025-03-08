@@ -43,9 +43,6 @@ function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], primary:
                 text: colors.white,
                 link: colors.white,
             },
-            errorBackground: '#8c4351',
-            warningBackground: '#8f5e15',
-            infoBackground: '#343b58',
             navigation: {
                 background: colors.charcoalBlue,
                 indicator: colors.rubyRed,

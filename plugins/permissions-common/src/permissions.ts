@@ -2,8 +2,8 @@ import {
     createPermission,
   } from '@backstage/plugin-permission-common';
 
-export const toolsReadPermission = createPermission({
-    name: 'tools.read',
+export const adminToolsPermission = createPermission({
+    name: 'adminTools.read',
     attributes: {
       action: 'read',
     },

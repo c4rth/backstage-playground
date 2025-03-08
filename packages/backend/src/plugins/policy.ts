@@ -11,6 +11,8 @@ import {
   PolicyQuery,
 } from '@backstage/plugin-permission-node';
 import { Config } from '@backstage/config';
+import { adminToolsPermission } from '@internal/plugin-permissions-common';
+import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 
 
 export class MyPermissionPolicy implements PermissionPolicy {
@@ -43,15 +45,19 @@ export class MyPermissionPolicy implements PermissionPolicy {
     }
     // superUsers
     if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
-      this.logger.info("superUsers -> allow all");
       return { result: AuthorizeResult.ALLOW };
     }
     // others
-      this.logger.info("standard use -> allow all");
     if (isPermission(request.permission, catalogEntityCreatePermission)) {
       return { result: AuthorizeResult.DENY };
     }
     if (isPermission(request.permission, catalogEntityDeletePermission)) {
+      return { result: AuthorizeResult.DENY };
+    }
+    if (isPermission(request.permission, adminToolsPermission)) {
+      return { result: AuthorizeResult.DENY };
+    }
+    if (isPermission(request.permission, devToolsAdministerPermission)) {
       return { result: AuthorizeResult.DENY };
     }
     return {

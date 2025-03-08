@@ -119,6 +119,10 @@ backend.add(import('@backstage/plugin-kubernetes-backend'));
 // SonarQube
 backend.add(import('@backstage-community/plugin-sonarqube-backend'));
 
+// DevTools
+backend.add(import('@backstage/plugin-devtools-backend'));
+backend.add(import('@backstage/plugin-catalog-backend-module-unprocessed'));
+
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
 

@@ -61,10 +61,15 @@ import {
   SystemPlatformExplorerPage,
   SystemPlatformDefinitionPage,
 } from '@internal/plugin-api-platform';
-import { toolsReadPermission } from '@internal/plugin-api-platform-common';
+import { adminToolsPermission } from '@internal/plugin-permissions-common';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
+// DevTools
+import { DevToolsPage } from '@backstage/plugin-devtools';
+import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
+import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
 
 const app = createApp({
   apis,
@@ -147,7 +152,7 @@ const routes = (
     <Route
       path="/entity-validation"
       element={
-        <RequirePermission permission={toolsReadPermission}>
+        <RequirePermission permission={adminToolsPermission}>
           <EntityValidationPage />
         </RequirePermission>
       }
@@ -158,7 +163,18 @@ const routes = (
     <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
     <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
-    
+    <Route path="/devtools"
+      element={
+        <RequirePermission permission={devToolsAdministerPermission}>
+          <DevToolsPage />
+        </RequirePermission>
+      }>
+      {customDevToolsPage}
+    </Route>
+    <Route
+      path="/catalog-unprocessed-entities"
+      element={<CatalogUnprocessedEntitiesPage />}
+    />;
   </FlatRoutes>
 );
 

@@ -44,7 +44,8 @@ import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
 // Search
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
-import { toolsReadPermission } from '@internal/plugin-api-platform-common';
+import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+import { adminToolsPermission } from '@internal/plugin-permissions-common';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -144,7 +145,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
             to="create" text="Scaffolder" />}
           errorPage={<div />} />
 
-        <RequirePermission permission={toolsReadPermission}
+        <RequirePermission permission={adminToolsPermission}
           children={
             <SidebarItem icon={BuildIcon} text="Tools">
               <SidebarSubmenu title="Tools">
@@ -164,18 +165,21 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-      <NotificationsSidebarItem 
-        titleCounterEnabled
-        snackbarEnabled={false}
-        />
-      <SidebarGroup
-        label="Settings"
-        icon={<UserSettingsSignInAvatar />}
-        to="/settings"
-      >
-        <SidebarSettings />
-      </SidebarGroup>
-    </Sidebar>
-    {children}
-  </SidebarPage>
+    <RequirePermission permission={devToolsAdministerPermission}
+      children={<SidebarItem icon={BuildIcon} to="devtools" text="Admin" />}
+      errorPage={<div />} />
+    <NotificationsSidebarItem
+      titleCounterEnabled
+      snackbarEnabled={false}
+    />
+    <SidebarGroup
+      label="Settings"
+      icon={<UserSettingsSignInAvatar />}
+      to="/settings"
+    >
+      <SidebarSettings />
+    </SidebarGroup>
+  </Sidebar>
+    { children }
+  </SidebarPage >
 );

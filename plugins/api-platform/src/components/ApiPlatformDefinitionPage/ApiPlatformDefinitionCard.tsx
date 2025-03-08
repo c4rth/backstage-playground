@@ -91,7 +91,7 @@ export const ApiPlatformDefinitionCard = () => {
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>
-            <TabbedLayout.Route path="/overview" title="Overview">
+            <TabbedLayout.Route path="/info" title="Info">
                 <InfoCard title='About' divider className={cardClass}>
                     <Box sx={{ mb: 4 }}>
                         <AboutField
