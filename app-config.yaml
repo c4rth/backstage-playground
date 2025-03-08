@@ -145,6 +145,7 @@ search:
           timeout: PT15M
           initialDelay: PT5S
 catalog:
+  disableRelationsCompatibility: true
   processingInterval: { minutes: 15 }
   orphanStrategy: delete
   #  import:
@@ -197,7 +198,7 @@ catalog:
         schedule:
           frequency: { hours: 6 }
           timeout: { minutes: 5 }
-          initialDelay: { seconds: 15 }
+          initialDelay: { minutes: 5 }
 
 spectralLinter:
   openApiRulesetUrl: https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/spectral/.spectral.yaml
@@ -212,3 +213,16 @@ sonarqube:
 appRegistry:
   baseUrl: http://localhost:8080
   version: v2
+  
+devTools:
+  externalDependencies:
+    endpoints:
+      - name: 'Google'
+        type: 'fetch'
+        target: 'https://google.com'
+      - name: 'Google Public DNS'
+        type: 'ping'
+        target: '8.8.8.8'
+      - name: 'App Registry'
+        type: 'fetch'
+        target: 'http://localhost:8080/actuator'
