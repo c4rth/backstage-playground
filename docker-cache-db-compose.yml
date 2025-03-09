@@ -1,0 +1,28 @@
+services:
+  postgres-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=backstage
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    container_name: postgres-db
+  cache:
+    image: redis:7.4.2
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel debug --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    cpus: "1.5"  # Limits Redis to 1.5 CPU cores
+    mem_limit: "512m"  # Limits memory to 512MB
+    volumes: 
+      - cache:/data
+
+volumes:
+  pgdata: {}
+  cache:
+    driver: local
