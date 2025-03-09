@@ -1,5 +1,5 @@
 import { createBackend } from '@backstage/backend-defaults';
-import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
+import { createGraphTransformerService } from './plugins/msgraph';
 import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
@@ -40,12 +40,14 @@ backend.add(createBackendModule({
   register(env) {
     env.registerInit({
       deps: {
+        logger: coreServices.logger,
         microsoftGraphTransformers: microsoftGraphOrgEntityProviderTransformExtensionPoint,
       },
-      async init({ microsoftGraphTransformers }) {
-        microsoftGraphTransformers.setUserTransformer(myUserTransformer);
-        microsoftGraphTransformers.setGroupTransformer(myGroupTransformer);
-        microsoftGraphTransformers.setOrganizationTransformer(myOrganizationTransformer);
+      async init({ logger, microsoftGraphTransformers }) {
+        const graphTransformerService = await createGraphTransformerService({ logger });
+        microsoftGraphTransformers.setUserTransformer(graphTransformerService.userTransformer);
+        microsoftGraphTransformers.setGroupTransformer(graphTransformerService.groupTransformer);
+        microsoftGraphTransformers.setOrganizationTransformer(graphTransformerService.organizationTransformer);
       }
     });
   },
