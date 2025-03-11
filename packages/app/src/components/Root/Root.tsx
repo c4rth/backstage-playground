@@ -30,23 +30,22 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 // Notifications
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
-// Q&A
-// import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 // Entity Validation
 import BuildIcon from '@material-ui/icons/Build';
 import { useApp } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Api Platform
 import CodeIcon from '@material-ui/icons/Code';
 import MuiMemoryIcon from '@material-ui/icons/Memory';
 import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
-// Kiali
-import { KialiIcon } from '@backstage-community/plugin-kiali';
 // Search
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
+import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+import { adminToolsPermission } from '@internal/plugin-permissions-common';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -140,32 +139,47 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
         <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
-        <SidebarItem icon={CreateComponentIcon} to="create" text="Scaffolder" />
-        <SidebarItem icon={BuildIcon} text="Tools">
-          <SidebarSubmenu title="Tools">
-            <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
-            <RequirePermission permission={catalogEntityCreatePermission}
-              children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
-              errorPage={<div />}
-            />
-            <SidebarSubmenuItem icon={KialiIcon} to="kiali" title="Kiali" />
-          </SidebarSubmenu>
-        </SidebarItem>        {/* End global nav */}
+        <RequirePermission permission={taskCreatePermission}
+          children={<SidebarItem
+            icon={CreateComponentIcon}
+            to="create" text="Scaffolder" />}
+          errorPage={<div />} />
+
+        <RequirePermission permission={adminToolsPermission}
+          children={
+            <SidebarItem icon={BuildIcon} text="Tools">
+              <SidebarSubmenu title="Tools">
+                <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
+                <RequirePermission permission={catalogEntityCreatePermission}
+                  children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
+                  errorPage={<div />}
+                />
+              </SidebarSubmenu>
+            </SidebarItem>
+          }
+          errorPage={<div />} />
+        {/* End global nav */}
         <SidebarScrollWrapper>
           {/* Items in this group will be scrollable if they run out of space */}
         </SidebarScrollWrapper>
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-      <NotificationsSidebarItem />
-      <SidebarGroup
-        label="Settings"
-        icon={<UserSettingsSignInAvatar />}
-        to="/settings"
-      >
-        <SidebarSettings />
-      </SidebarGroup>
-    </Sidebar>
-    {children}
-  </SidebarPage>
+    <RequirePermission permission={devToolsAdministerPermission}
+      children={<SidebarItem icon={BuildIcon} to="devtools" text="Admin" />}
+      errorPage={<div />} />
+    <NotificationsSidebarItem
+      titleCounterEnabled
+      snackbarEnabled={false}
+    />
+    <SidebarGroup
+      label="Settings"
+      icon={<UserSettingsSignInAvatar />}
+      to="/settings"
+    >
+      <SidebarSettings />
+    </SidebarGroup>
+  </Sidebar>
+    { children }
+  </SidebarPage >
 );

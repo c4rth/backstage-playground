@@ -15,8 +15,6 @@
  */
 
 import React from 'react';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { ApiEntity } from '@backstage/catalog-model';
 
 import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCard';
 
@@ -26,9 +24,7 @@ import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCa
  */
 export const EntityApiDocsSpectralLinterContent = () => {
 
-  const { entity } = useEntity<ApiEntity>();
-
   return (
-    <EntityApiDocsSpectralLinterCard entity={entity!}/>
+    <EntityApiDocsSpectralLinterCard/>
   );
 };

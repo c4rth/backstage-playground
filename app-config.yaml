@@ -18,6 +18,11 @@ app:
 organization:
   name: Acme
 
+appRegistry:
+  baseUrl: &appRegistryUrl http://localhost:8080
+  faetch: &appRegistryFetchUrl http://localhost:8080/actuator
+  version: v2
+
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
@@ -25,13 +30,12 @@ backend:
   # auth:
   #   dangerouslyDisableDefaultAuthPolicy: true
   auth:
-    dangerouslyDisableDefaultAuthPolicy: true
+    #dangerouslyDisableDefaultAuthPolicy: true
     externalAccess:
       - type: static
         options:
-          #token: 'mpZ7Aq0y3bWAz+4BQqXKnNUmcNunl16L'
           token: 'my-access-token'
-          subject: cicd-system-completion-events
+          subject: cicd-system
         accessRestrictions:
           - plugin: api-platform
 
@@ -57,8 +61,8 @@ backend:
     connection:
       #host: 127.0.0.1
       port: 5432
-      user: postgres
-      password: postgres
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
     # client: better-sqlite3
     # connection: ":memory:"
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
@@ -66,9 +70,17 @@ backend:
     allow:
       - host: raw.githubusercontent.com
       - host: github.com
+  #cache:
+  #  store: redis
+  #  connection: redis://default:${REDIS_PASSWORD}@127.0.0.1:6379
 
 permission:
   enabled: true
+  # Custom policy configuration
+  rbac:
+    admin:
+      superUsers:
+        - group:default/team-a.c
   # rbac:
   #   pluginsWithPermission:
   #     - catalog
@@ -92,12 +104,13 @@ azureDevOps:
   organization: thierrycarels0265
 
 proxy:
-  skipInvalidProxies: true
+  # skipInvalidProxies: true
   endpoints:
-    # customize developer hub instance
-    '/developer-hub':
-      target: '/'
-      changeOrigin: true
+    '/app-registry':
+      target: *appRegistryUrl
+      allowedMethods: ['GET']
+      allowedHeaders: ['Accept', 'x-api-version']
+      # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
 
@@ -140,6 +153,7 @@ search:
           timeout: PT15M
           initialDelay: PT5S
 catalog:
+  disableRelationsCompatibility: true
   processingInterval: { minutes: 15 }
   orphanStrategy: delete
   #  import:
@@ -192,7 +206,7 @@ catalog:
         schedule:
           frequency: { hours: 6 }
           timeout: { minutes: 5 }
-          initialDelay: { seconds: 15 }
+          initialDelay: { minutes: 5 }
 
 spectralLinter:
   openApiRulesetUrl: https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/spectral/.spectral.yaml
@@ -203,3 +217,17 @@ sonarqube:
   instanceKey: mySonarqube
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
+
+  
+devTools:
+  externalDependencies:
+    endpoints:
+      - name: 'Google'
+        type: 'fetch'
+        target: 'https://google.com'
+      - name: 'Google Public DNS'
+        type: 'ping'
+        target: '8.8.8.8'
+      - name: 'App Registry'
+        type: 'fetch'
+        target: *appRegistryFetchUrl

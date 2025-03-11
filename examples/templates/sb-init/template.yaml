@@ -1,0 +1,220 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: spring-boot-init-template
+  title: Spring Boot Init Template
+  description: Scaffold a new Spring Boot project
+spec:
+  owner: user:guest
+  type: service
+
+  # These parameters are used to generate the input form in the frontend, and are
+  # used to gather input data for the execution of the template.
+ parameters:
+    - definitions: {}
+      title: "General Information"
+      ui:order:
+        - defl
+        - type
+        - name
+        - k8s_application_name
+        - java_version
+        - devx_version
+        - api_choice
+        - application_api_name
+        - application_api_version
+        - flyway_choice
+      required:
+        - defl
+        - type
+      properties:
+        defl:
+          title: DEFL
+          type: string
+          description: What is your application DEFL?
+          default: "defl"
+          pattern: "^[a-z][a-z0-9]{3}$"
+        type:
+          title: Type
+          type: string
+          default: standard
+          enum:
+            - standard
+            - cronjob
+            - cloudtask
+            - scdf
+          enumNames:
+            - 'Standard Spring Boot Application'
+            - 'Cronjob'
+            - 'Spring Cloud Task (for SCDF)'
+            - 'Spring Cloud Data Flow server'
+      dependencies:
+        type:
+          allOf:
+            - if:
+                properties:
+                  type:
+                    enum:
+                      - standard
+                      - cronjob
+                      - cloudtask
+              then:
+                properties:
+                  name:
+                    title: Name
+                    type: string
+                    description: What is the application name? Usually with the defl as a prefix.
+                    default: "defl-sample-app"
+                  k8s_application_name:
+                    title: Kubernetes Application Name
+                    type: string
+                    description: What is your application name when deployed in Kubernetes? Generally the application name without the defl prefix.                    
+                    default: "sample-app"
+                  java_version:
+                    title: Java Version
+                    type: string
+                    default: "21"
+                    enum:
+                      - "21"
+                      - "17"
+                      - "17-temurin"
+                    enumNames:
+                      - 'Azul Zulu 21'
+                      - 'Azul Zulu 17'
+                      - 'Eclipse Temurin 17'
+                  devx_version:
+                    title: DevX Version
+                    type: string
+                    default: devx-5
+                    description: What is the version of the DevX libraries to use?
+                    enum:
+                      - devx-5
+                      - devx-4
+                    enumNames:
+                      - 'DEVX 5 based on Spring Boot 3.3'
+                      - 'DEVX 4 based on Spring Boot 2.7'
+                  api_choice:
+                    title: API
+                    type: string
+                    default: YES_API
+                    enum:
+                      - YES_API
+                      - YES_TEMP
+                      - NO_API
+                    enumNames:
+                      - 'YES, and my application has an API defined'
+                      - 'YES, but my application has not yet a defined API'
+                      - 'NO, my application will not expose a Rest API'
+                  flyway_choice:
+                    title: Flyway
+                    type: boolean
+                    default: true
+                    description: Do you want to create a Flyway module?
+                dependencies:
+                  api_choice:
+                    allOf:
+                      - if:
+                          properties:
+                            api_choice:
+                              const: YES_API
+                        then:
+                          properties:
+                            application_api_name:
+                              title: API Name
+                              type: string
+                              description: What is the name the api artifact id ? ("loan-commercial-product-openapi" for example)
+                            application_api_version:
+                              title: API Version
+                              type: string
+                              description: What is the version of the api artifact ? ("1.0.0-SNAPSHOT" for example)
+                          required:
+                            - application_api_name
+                            - application_api_version
+                required:
+                  - name
+                  - k8s_application_name
+                  - java_version
+                  - devx_version
+                  - api_choice
+                  - flyway_choice
+
+  # These steps are executed in the scaffolder backend, using data that we gathered
+  # via the parameters above.
+  steps:
+    # Each step executes an action, in this case one templates files into the working directory.
+    # - id: fetch-base
+    #   name: Fetch Base
+    #   action: fetch:template
+    #   input:
+    #     url: ./content
+    #     values:
+    #       name: ${{ parameters.name }}
+    
+    - action: debug:log
+      id: write-workspace-directory
+      name: List the workspace directory
+      input:
+        listWorkspace: true
+
+#    - action: debug:wait
+#      id: wait-1min
+#      name: Waiting for 1 minutes
+#      input:
+#        minutes: 1
+
+    - action: debug:log
+      id: message
+      name: Message
+      input:
+        message: ${{ parameters.put('realOwner', parameters.owner.split('/')[1].split('.')[0]) }}
+
+
+    - action: debug:log
+      id: message
+      name: Message
+      input:
+        message: ${{ parameters.realOwner }}
+
+    - action: debug:log
+      id: debugCreateRepo
+      name: Create Repo
+      if: ${{ parameters.mode == 'repo' }}
+      input:
+        message: Create new repo
+
+    - action: debug:log
+      id: debugCreatePR
+      name: Create PR
+      if: ${{ parameters.mode == 'pr' }}
+      input:
+        message: Create PR
+
+
+    # This step publishes the contents of the working directory to GitHub.
+    # - id: publish
+    #   name: Publish
+    #   if: ${{ parameters.createRepo }}
+    #   action: publish:github
+    #   input:
+    #     allowedHosts: ['github.com']
+    #     description: This is ${{ parameters.name }}
+    #     repoUrl: ${{ parameters.repoUrl }}
+        
+
+    # The final step is to register our new component in the catalog.
+#    - id: register
+#      name: Register
+#      action: catalog:register
+#     input:
+#        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+#        catalogInfoPath: '/catalog-info.yaml'
+
+  # Outputs are displayed to the user after a successful execution of the template.
+#  output:
+#    links:
+#      - title: Repository
+#        url: ${{ steps['publish'].output.remoteUrl }}
+#      - title: Open in catalog
+#        icon: catalog
+#        entityRef: ${{ steps['register'].output.entityRef }}

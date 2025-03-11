@@ -15,16 +15,17 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
   logger.info('Initializing CatalogPlatformService');
 
   return {
-    async registerCatalogInfo(location: { target: string }): Promise<String> {
+    async registerCatalogInfo(request: { target: string, kind: string }): Promise<String> {
+      logger.info("Get token");
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
       });
-      logger.debug(`Test location: ${location.target}`);
+      logger.debug(`Test location: ${request.target}`);
       const existResponse = await catalogClient.addLocation(
         {
           type: 'url',
-          target: location.target,
+          target: request.target,
           dryRun: true
         },
         { token }
@@ -32,8 +33,11 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
       logger.debug(JSON.stringify(existResponse));
       let returnMessage = '';
       if (existResponse.exists) {
-        const apiEntity = existResponse.entities.filter(entity => entity.kind === 'API')[0];
-        const entityRef = `api:${apiEntity.metadata.namespace}/${apiEntity.metadata.name}`;
+        const entity = existResponse.entities.find(candidate => candidate.kind === request.kind);
+        if (!entity) {
+          throw new Error("Entity to refresh but not found");
+        }
+        const entityRef = `${entity.kind.toLowerCase()}:${entity.metadata.namespace}/${entity.metadata.name}`;
         logger.debug(`Refresh entity: ${entityRef}`);
         await catalogClient.refreshEntity(
           entityRef,
@@ -41,11 +45,11 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
         );
         returnMessage = 'Refreshed';
       } else {
-        logger.debug(`Add new location: ${location.target}`);
+        logger.debug(`Add new location: ${request.target}`);
         const locationResponse = await catalogClient.addLocation(
           {
             type: 'url',
-            target: location.target,
+            target: request.target,
             dryRun: false
           },
           { token }
@@ -53,7 +57,7 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
         logger.debug(`Location created: ${locationResponse.location.target}`);
         returnMessage = 'Created';
       }
-      return `{"message" : "${returnMessage}: ${location.target}"}`;
+      return `{"message" : "${returnMessage}: ${request.target}"}`;
     },
 
   };

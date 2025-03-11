@@ -5,7 +5,7 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
-import { entityRouteRef } from '@backstage/plugin-catalog-react';
+import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
 import React from 'react';
 import { useGetSystem } from '../../hooks';
 import { Box } from '@material-ui/core';
@@ -34,7 +34,9 @@ export const SystemPlatformDefinitionPage = () => {
       <Content>
         <Box mb={-3}>
           {systemDefinition ?
-            <SystemPlatformDefinitionCard systemDefinition={systemDefinition} />
+            <EntityProvider entity={systemDefinition.entity}>
+              <SystemPlatformDefinitionCard apis={systemDefinition.apis} services={systemDefinition.services} />
+            </EntityProvider>
             : <div />
           }
         </Box>

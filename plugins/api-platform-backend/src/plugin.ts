@@ -6,11 +6,11 @@ import { createRouter } from './router';
 import { CatalogClient } from '@backstage/catalog-client';
 
 /**
- * apiPlatformPlugin backend plugin
+ * apiPlatformBackendPlugin backend plugin
  *
  * @public
  */
-export const apiPlatformPlugin = createBackendPlugin({
+export const apiPlatformBackendPlugin = createBackendPlugin({
   pluginId: 'api-platform',
   register(env) {
     env.registerInit({

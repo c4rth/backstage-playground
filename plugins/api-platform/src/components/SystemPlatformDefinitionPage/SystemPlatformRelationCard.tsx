@@ -1,5 +1,4 @@
 import { Link, Table, TableColumn } from "@backstage/core-components";
-import { SystemDefinition } from "@internal/plugin-api-platform-common";
 import React from 'react';
 import { ApiPlatformDisplayName } from "../ApiPlatformTable";
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
@@ -22,7 +21,7 @@ const apiColumns: TableColumn<TableRow>[] = [
             return (
                 <Link to={`/api-platform/api/${data.name}`}>
                     <ApiPlatformDisplayName
-                        name={data.name}
+                        text={data.name}
                     />
                 </Link>
             );
@@ -40,7 +39,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
             return (
                 <Link to={`/api-platform/service/${data.name}`}>
                     <ServicePlatformDisplayName
-                        name={data.name}
+                        text={data.name}
                     />
                 </Link>
             );
@@ -48,18 +47,16 @@ const serviceColumns: TableColumn<TableRow>[] = [
     },
 ];
 
-export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service', systemDefinition: SystemDefinition }) => {
-    const { dependency, systemDefinition } = props;
+export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service', data: string[] }) => {
+    const { dependency, data } = props;
 
-    let rows: TableRow[];
+    const rows: TableRow[] = data.map(toRow);
     let title: string;
     let columns: TableColumn<TableRow>[];
     if (dependency === 'api') {
-        rows = systemDefinition?.apis.map(toRow);
         title = "APIs";
         columns = apiColumns;
     } else {
-        rows = systemDefinition?.services.map(toRow);
         title = "Services";
         columns = serviceColumns;
     }

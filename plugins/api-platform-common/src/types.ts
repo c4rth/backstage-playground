@@ -1,4 +1,4 @@
-import { Entity } from "@backstage/catalog-model/index";
+import { Entity } from "@backstage/catalog-model";
 
 export type ApiVersionDefinition = {
   entityRef: string;
@@ -7,19 +7,19 @@ export type ApiVersionDefinition = {
 };
 
 export type ServiceEnvironmentDefinition = {
-  containerVersion: string;
-  containerName: string;
+  imageVersion: string;
   entityRef: string;
+  platform: string;
 }
 
 export type ServiceVersionDefinition = {
   version: string;
   environments: {
-    tst?: ServiceEnvironmentDefinition,
-    gtu?: ServiceEnvironmentDefinition,
-    uat?: ServiceEnvironmentDefinition,
-    ptp?: ServiceEnvironmentDefinition,
-    prd?: ServiceEnvironmentDefinition,
+    tst?: ServiceEnvironmentDefinition;
+    gtu?: ServiceEnvironmentDefinition;
+    uat?: ServiceEnvironmentDefinition;
+    ptp?: ServiceEnvironmentDefinition;
+    prd?: ServiceEnvironmentDefinition;
   };
 }
 
@@ -30,12 +30,22 @@ export type ServiceDefinition = {
 };
 
 export type ServiceApisDefinition = {
-  consumedApis?: string[],
-  providedApis?: string[],
+  consumedApis?: string[];
+  providedApis?: string[];
 }
 
 export type SystemDefinition = {
   entity: Entity;
-  apis: string[],
-  services: string[]
+  apis: string[];
+  services: string[];
 };
+
+export type ServiceInformation = {
+  applicationCode: string;
+  serviceName: string;
+  serviceVersion: string;
+  imageVersion: string;
+  repository: string;
+  sonarQubeProjectKey: string;
+  apiDependencies: ServiceApisDefinition;
+}

@@ -1,0 +1,1 @@
+export { appRegistryBackendApiRef, AppRegistryBackendClient } from './AppRegistryBackendApi';

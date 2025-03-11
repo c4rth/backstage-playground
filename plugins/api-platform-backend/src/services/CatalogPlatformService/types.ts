@@ -1,4 +1,4 @@
 
 export interface CatalogPlatformService {
-  registerCatalogInfo(location: { target: string }): Promise<String>;
+  registerCatalogInfo(request: { target: string, kind: string }): Promise<String>;
 }

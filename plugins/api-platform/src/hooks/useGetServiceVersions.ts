@@ -15,7 +15,7 @@ export function useGetServiceVersions(
 
     const { value, loading, error } = useAsync(() => {
         return api.getServiceVersions({ serviceName: serviceName });
-    }, [api, top, status]);
+    }, [api]);
 
     return {
         item: value,

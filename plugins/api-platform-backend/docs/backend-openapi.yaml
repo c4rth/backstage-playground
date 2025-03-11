@@ -1,0 +1,228 @@
+openapi: 3.0.1
+info:
+  title: Backstage Api Platform Backend
+  description: OpenAPI exposed but the Backstage Api Platform Backend
+  version: 0.0.1
+  x-api-type: inner
+  x-application-code: depf
+servers:
+  - description: Test URL
+    url: https://demo.backstage.xyz
+ 
+tags:
+  - name: ApiPlatformBackend
+    description: Operations about services
+ 
+paths:
+  ###############################################################################
+  /catalog:
+    # -[POST]----------------------------------------------------------------------
+    post:
+      tags:
+        - ApiPlatformBackend
+      description: Register or refresh a Backstage catalog
+      operationId: registerCatalog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/backstageCatalog'
+      responses:
+        "201":
+          description: "Created"
+        '400':
+          $ref: "#/components/responses/errorBadRequest"
+        '401':
+          $ref: "#/components/responses/errorUnauthorized"
+        '404':
+          $ref: "#/components/responses/errorNotFound"
+        '500':
+          $ref: "#/components/responses/errorServerError"
+        '503':
+          $ref: "#/components/responses/errorServiceUnavailable"
+  ###############################################################################
+  /service-informations:
+    # -[POST]----------------------------------------------------------------------
+    post:
+      tags:
+        - ApiPlatformBackend
+      description: TODO
+      operationId: addServiceInformation
+      security:
+        - { }
+        - JWT: [ ]
+      requestBody:
+        description: The service information to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/backstageServiceInformation'
+      responses:
+        "201":
+          description: "Created"
+        '401':
+          $ref: "#/components/responses/errorUnauthorized"
+        '404':
+          $ref: "#/components/responses/errorNotFound"
+        '500':
+          $ref: "#/components/responses/errorServerError"
+        '503':
+          $ref: "#/components/responses/errorServiceUnavailable"
+  /service-informations/{serviceName}/{serviceVersion}/{containerVersion}:
+    # -[GET]-----------------------------------------------------------------------
+    get:
+      tags:
+        - ApiPlatformBackend
+      description: TODO
+      operationId: getServiceInformation
+      security:
+        - { }
+        - JWT: [ ]
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          description: The name of the service
+          schema:
+            type: string
+        - name: serviceVersion
+          in: path
+          required: true
+          description: The version of the service
+          schema:
+            type: string
+        - name: containerVersion
+          in: path
+          required: true
+          description: The version of the container
+          schema:
+            type: string
+      responses:
+        "200": # status code
+          description: The service information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/backstageServiceInformation'
+        '401':
+          $ref: "#/components/responses/errorUnauthorized"
+        '404':
+          $ref: "#/components/responses/errorNotFound"
+        '500':
+          $ref: "#/components/responses/errorServerError"
+        '503':
+          $ref: "#/components/responses/errorServiceUnavailable"
+# -[Schemas]-------------------------------------------------------------------
+components:
+  responses:
+    errorUnauthorized:
+      description: "Unauthorized."
+      content:
+        application/problem+json:
+          schema:
+            type: string
+    errorBadRequest:
+      description: "Wrong parameter value or format"
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem'
+    errorNotFound:
+      description: "Resource not found."
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem'
+    errorServerError:
+      description: "Internal Server Error."
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem'
+    errorServiceUnavailable:
+      description: "Service Unavailable."
+      content:
+        text/plain:
+          schema:
+            type: string
+  schemas:
+    problem:
+      type: object
+    applicationCode:
+      type: string
+      description: "Application code (DEFL)"
+      minLength: 4
+      maxLength: 4
+      example: "desb"
+    backstageCatalog:
+      type: object
+      properties:
+        target:
+          type: string
+        kind:
+          type: string
+      example:
+        target: https://dev.azure.com/organization/defl/_git/repository?path=/api/wxyz/service-name/1.2.3/catalog-info.yaml
+        kind: 'API'
+    apiDependencies:
+      type: object
+      properties:
+        consumedApis:
+          type: array
+          items:
+            $ref: '#/components/schemas/apiDependency'
+        providedApis:
+          type: array
+          items:
+            $ref: '#/components/schemas/apiDependency'
+      example:
+        consumedApis:
+          - ServiceA
+          - ServiceB
+        providedApis:
+          - ServiceC
+          - ServiceD
+    apiDependency:
+      type: string
+      example: "ServiceA"
+    backstageServiceInformation:
+      required:
+        - applicationCode
+        - serviceName
+        - serviceVersion
+        - imageVersion
+        - repository
+        - sonarQubeProjectKey
+        - apiDependencies
+      properties:
+        applicationCode:
+          $ref: '#/components/schemas/applicationCode'
+        serviceName:
+          type: string
+          description: "Service name"
+          example: "my-service"
+        serviceVersion:
+          type: string
+          description: "Service version"
+          example: "1"
+        imageVersion:
+          type: string
+          description: "Image version"
+          example: "20250124.1"
+        repository:
+          type: string
+          description: "Azure DevOps repository name"
+          example: "desb-demo-infirmary-backend"
+        sonarQubeProjectKey:
+          type: string
+          description: "SonarQube project key"
+          example: "org.wxyz.test:test-backend-parent"
+        apiDependencies:
+          $ref: '#/components/schemas/apiDependencies'
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

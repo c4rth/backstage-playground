@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
-import { entityRouteRef } from '@backstage/plugin-catalog-react';
+import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
@@ -33,26 +33,31 @@ export const ApiPlatformDefinitionPage = () => {
   const configApi = useApi(configApiRef);
 
   useEffect(() => {
-    const data = apiVersions
-    ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
-    : []
-    setVersions(data);      
-    let selVersion = null;
-    if (isInitialLoad.current && queryVersion && data.some(item => item.label === queryVersion)) {
-      selVersion = data.find(item => item.label === queryVersion)?.value;
-    } else if (data.length > 0) {
-      selVersion = data[0].value;
+    if (!selectedVersion) {
+      const data = apiVersions
+        ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
+        : []
+      setVersions(data);
+      let selVersion = null;
+      if (isInitialLoad.current && queryVersion && data.some(item => item.label === queryVersion)) {
+        selVersion = data.find(item => item.label === queryVersion)?.value;
+        isInitialLoad.current = false;
+      } else if (data.length > 0) {
+        selVersion = data[0].value;
+      }
+      if (selVersion) {
+        setSelectedVersion(selVersion);
+      }
     }
-    if (selVersion)
-      setSelectedVersion(selVersion);
-  }, [apiVersions, queryVersion])
-  
+  }, [apiVersions, queryVersion, selectedVersion])
+
   useEffect(() => {
     if (selectedVersion) {
       catalogApi.getEntityByRef(selectedVersion)
         .then(entity => setApiEntity(entity as ApiEntity));
     }
   }, [selectedVersion, catalogApi]);
+
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`;
 
   if (error) {
@@ -70,11 +75,15 @@ export const ApiPlatformDefinitionPage = () => {
       subtitle={generatedSubtitle}>
       <Content>
         <Box mb={1}>
-          <Select onChange={(selected) => { setSelectedVersion(selected.toString()) }} label="Versions" items={versions} selected={selectedVersion} />
+          <Select onChange={(selected) => { 
+            setSelectedVersion(selected.toString()) ;
+            }} label="Versions" items={versions} selected={selectedVersion} />
         </Box>
         <Box mb={-3}>
           {apiEntity ?
-            <ApiPlatformDefinitionCard apiEntity={apiEntity!} />
+            <EntityProvider entity={apiEntity}>
+              <ApiPlatformDefinitionCard />
+            </EntityProvider>
             : <div />
           }
         </Box>

@@ -1,5 +1,5 @@
 import { createBackend } from '@backstage/backend-defaults';
-import { myGroupTransformer, myOrganizationTransformer, myUserTransformer } from './plugins/msgraph';
+import { createGraphTransformerService } from './plugins/msgraph';
 import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
@@ -40,12 +40,14 @@ backend.add(createBackendModule({
   register(env) {
     env.registerInit({
       deps: {
+        logger: coreServices.logger,
         microsoftGraphTransformers: microsoftGraphOrgEntityProviderTransformExtensionPoint,
       },
-      async init({ microsoftGraphTransformers }) {
-        microsoftGraphTransformers.setUserTransformer(myUserTransformer);
-        microsoftGraphTransformers.setGroupTransformer(myGroupTransformer);
-        microsoftGraphTransformers.setOrganizationTransformer(myOrganizationTransformer);
+      async init({ logger, microsoftGraphTransformers }) {
+        const graphTransformerService = await createGraphTransformerService({ logger });
+        microsoftGraphTransformers.setUserTransformer(graphTransformerService.userTransformer);
+        microsoftGraphTransformers.setGroupTransformer(graphTransformerService.groupTransformer);
+        microsoftGraphTransformers.setOrganizationTransformer(graphTransformerService.organizationTransformer);
       }
     });
   },
@@ -66,10 +68,11 @@ backend.add(createBackendModule({
     reg.registerInit({
       deps: {
         policy: policyExtensionPoint,
+        config: coreServices.rootConfig,
         logger: coreServices.logger
       },
-      async init({ policy, logger }) {
-        policy.setPolicy(new MyPermissionPolicy(logger));
+      async init({ policy, logger, config }) {
+        policy.setPolicy(new MyPermissionPolicy(logger, config));
       },
     });
   },
@@ -108,7 +111,7 @@ backend.add(import('@backstage/plugin-notifications-backend'));
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 
-// Actions
+// Scaffolder Actions
 backend.add(import('@parfuemerie-douglas/scaffolder-backend-module-azure-repositories'))
 backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
 
@@ -118,6 +121,11 @@ backend.add(import('@backstage/plugin-kubernetes-backend'));
 // SonarQube
 backend.add(import('@backstage-community/plugin-sonarqube-backend'));
 
+// DevTools
+backend.add(import('@backstage/plugin-devtools-backend'));
+backend.add(import('@backstage/plugin-catalog-backend-module-unprocessed'));
+
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
+
 backend.start();

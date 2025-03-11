@@ -23,9 +23,6 @@ export const apiPlatformPlugin = createPlugin({
         new ApiPlatformBackendClient({ discoveryApi, fetchApi }),
     }),
   ],
-  routes: {
-    root: rootRouteRef,
-  },
 });
 
 export const ApiPlatformExplorerPage = apiPlatformPlugin.provide(
