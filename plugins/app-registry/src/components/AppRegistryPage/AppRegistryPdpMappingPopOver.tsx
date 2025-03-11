@@ -80,7 +80,7 @@ export const AppRegistryPdpMappingPopOver = (props: AppRegistryPdpMappingPopOver
           onMouseLeave={handleOnMouseLeave}
         >
           <Card>
-            <CardHeader title="PDP Mapping" />
+            <CardHeader title="PDP Mapping" titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
               <Table size="small">
                 <TableHead>
