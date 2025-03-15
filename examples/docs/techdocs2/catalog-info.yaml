@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sample-techdocs
+  title: Sample TechDocs
+  description: Sample TechDocs
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - techdocs
+spec:
+  type: documentation
+  lifecycle: TST
+  owner: user:guest

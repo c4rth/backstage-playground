@@ -1,0 +1,34 @@
+site_name: 'Example Documentation'
+repo_url: https://github.com/backstage/backstage
+edit_uri: edit/master/plugins/techdocs-backend/examples/documented-component/docs
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+
+nav:
+  - Home: index.md
+  - Subpage:
+    - subpages/index.md
+    - 'Subpage 1':
+      - subpages/subpage1/index.md
+      - 'Subpage 1-1': subpages/subpage1/sub-page11.md
+      - 'Subpage 1-2': subpages/subpage1/sub-page12.md
+    - 'Subpage 2': subpages/sub-page2.md
+    - 'Subpage 3': subpages/sub-page3.md
+    - 'Subpage 4': subpages/sub-page4.md
+  - 'Code Sample': code/code-sample.md
+  - Extensions: extensions.md
+  - 'Long description for a entry in Navigation': navigation.md
+  - Mermaid: sample-mermaid.md
+
+plugins:
+  - techdocs-core
+  - section-index
+  - git-revision-date-localized:
+      fallback_to_build_date: true
+
+markdown_extensions:
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_alt
