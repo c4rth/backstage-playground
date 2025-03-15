@@ -97,7 +97,10 @@ integrations:
   azure:
     - host: dev.azure.com
       credentials:
-        - personalAccessToken: ${ADO_PERSONAL_ACCESS_TOKEN}
+        #- personalAccessToken: ${ADO_PERSONAL_ACCESS_TOKEN}
+        - tenantId: ${AZURE_TENANT_ID}
+          clientId: ${AZURE_CLIENT_ID}
+          clientSecret: ${AZURE_CLIENT_SECRET}
 
 azureDevOps:
   host: dev.azure.com
@@ -124,9 +127,14 @@ techdocs:
   generator:
     runIn: "local" # Alternatives - 'local'
   publisher:
-    type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
-    local:
-      publishDirectory: "../../publisher-docs"
+    #type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
+    #local:
+    #  publishDirectory: "../../publisher-docs"
+    type: "azureBlobStorage"
+    azureBlobStorage:
+      containerName: ${AZURE_STORAGE_CONTAINER_NAME}
+      credentials:
+        accountName: ${AZURE_STORAGE_ACCOUNT_NAME}
 
 #scaffolder:
 # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -182,9 +190,9 @@ catalog:
       default:
         target: https://graph.microsoft.com/v1.0
         authority: https://login.microsoftonline.com
-        tenantId: ${AZURE_GRAPH_TENANT_ID}
-        clientId: ${AZURE_GRAPH_CLIENT_ID}
-        clientSecret: ${AZURE_GRAPH_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANT_ID}
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
         queryMode: advanced
         user:
           #filter: "accountEnabled eq true and userType eq 'member'"

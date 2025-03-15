@@ -31,13 +31,9 @@ start backstage
 
 ### .env
 ```
-AZURE_AUTH_CLIENT_ID="..."
-AZURE_AUTH_CLIENT_SECRET="..."
-AZURE_AUTH_TENANT_ID="..."
-
-AZURE_GRAPH_CLIENT_ID="..."
-AZURE_GRAPH_CLIENT_SECRET="..."
-AZURE_GRAPH_TENANT_ID="..."
+AZURE_CLIENT_ID="..."
+AZURE_CLIENT_SECRET="..."
+AZURE_TENANT_ID="..."
 ```
 
 ### app-config.local.yaml
