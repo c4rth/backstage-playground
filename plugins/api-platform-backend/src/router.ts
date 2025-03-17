@@ -11,14 +11,14 @@ import { createCatalogPlatformService } from './services/CatalogPlatformService'
 import { createServicePlatformService } from './services/ServicePlatformService';
 import { createSystemPlatformService } from './services/SystemPlatformService';
 import { ServiceInformation } from '@internal/plugin-api-platform-common';
- 
+
 export interface RouterOptions {
   logger: LoggerService;
   catalogClient: CatalogApi;
   database: DatabaseService;
   auth: AuthService;
 }
- 
+
 function validateRequestBody(req: Request) {
   const body = req.body;
   if (!body) {
@@ -30,13 +30,13 @@ function validateRequestBody(req: Request) {
     throw new InputError('Empty request body');
   }
 }
- 
+
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
   const { logger, catalogClient, database, auth } = options;
   const router = Router();
- 
+
   const apiPlatformStore = await DatabaseApiPlatformStore.create({
     database,
     skipMigrations: false,
@@ -63,46 +63,54 @@ export async function createRouter(
     catalogClient,
     auth
   });
- 
+
   router.use(express.json());
- 
+
   // Endpoints: /apis
- 
+
   router.get('/apis', async (_req, res) => {
     res.json(await apiPlatformService.listApis());
   });
- 
+
   router.get('/apis/:apiName', async (req, res) => {
     res.json(await apiPlatformService.getApiVersions({ apiName: req.params.apiName }));
   });
- 
+
   router.get('/apis/:apiName/:apiVersion', async (req, res) => {
     res.json(await apiPlatformService.getApiMatchingVersion({ apiName: req.params.apiName, apiVersion: req.params.apiVersion }));
   });
- 
+
   // Endpoints: /catalog
- 
+
   router.post('/catalog', async (req, res) => {
-    validateRequestBody(req);
-    const target = req.body;
-    if (!target) {
-      throw new InputError('Invalid request body');
-    }
-    res.status(201).json(await catalogPlatformService.registerCatalogInfo(target));
+    res.status(201).json(await catalogPlatformService.registerCatalogInfo(req.body));
   });
- 
+
+  router.delete('/catalog/:kind/:name', async (req, res) => {
+    const entity = await catalogPlatformService.getEntityByName({ name: req.params.name, kind: req.params.kind });
+    if (entity) {
+      try {
+        res.status(204).json(await catalogPlatformService.unregisterCatalogInfo(entity));
+      } catch (error) {
+        res.status(500).json({ error: error });
+      }
+    } else {
+      res.status(404).json();
+    }
+  });
+
   // Endpoints: /services
- 
+
   router.get('/services', async (_req, res) => {
     res.json(await servicePlatformService.listServices());
   });
- 
+
   router.get('/services/:serviceName', async (req, res) => {
     res.json(await servicePlatformService.getServiceVersions({ serviceName: req.params.serviceName }));
   });
- 
+
   // Exposed endpoints: /services
- 
+
   router.get('/service-informations/:applicationCode/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
     const info = await servicePlatformService.getServiceInformation({
       applicationCode: req.params.applicationCode,
@@ -116,24 +124,24 @@ export async function createRouter(
       res.status(404).json();
     }
   });
- 
+
   router.post('/service-informations', async (req, res) => {
     const serviceInformation: ServiceInformation = req.body;
     logger.info("POST service-informations", serviceInformation);
     res.status(201).json(await servicePlatformService.addServiceInformation({ serviceInformation }));
   });
- 
+
   // Endpoints: /systems
- 
+
   router.get('/systems', async (_req, res) => {
     res.json(await systemPlatformService.listSystems());
   });
- 
+
   router.get('/systems/:systemName', async (req, res) => {
     res.json(await systemPlatformService.getSystem({ systemName: req.params.systemName }));
   });
- 
+
   //
- 
+
   return router;
 }

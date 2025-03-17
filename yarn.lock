@@ -8510,6 +8510,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/plugin-api-platform-backend@workspace:plugins/api-platform-backend"
   dependencies:
+    "@backstage/backend-common": "npm:^0.25.0"
     "@backstage/backend-defaults": "npm:^0.8.1"
     "@backstage/backend-plugin-api": "npm:^1.2.0"
     "@backstage/backend-test-utils": "npm:^1.3.0"

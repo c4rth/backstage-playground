@@ -1,6 +1,7 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { CatalogPlatformService } from './types';
+import { Entity, getCompoundEntityRef } from "@backstage/catalog-model";
 
 export interface CatalogPlatformServiceOptions {
   logger: LoggerService;
@@ -9,9 +10,7 @@ export interface CatalogPlatformServiceOptions {
 }
 
 export async function catalogPlatformService(options: CatalogPlatformServiceOptions): Promise<CatalogPlatformService> {
-
-  const {logger, catalogClient, auth } = options;
-
+  const { logger, catalogClient, auth } = options;
   logger.info('Initializing CatalogPlatformService');
 
   return {
@@ -60,6 +59,37 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
       return `{"message" : "${returnMessage}: ${request.target}"}`;
     },
 
-  };
+    async getEntityByName(request: { name: string, kind: string }): Promise<Entity | undefined> {
+      const { token } = await auth.getPluginRequestToken({
+        onBehalfOf: await auth.getOwnServiceCredentials(),
+        targetPluginId: 'catalog',
+      });
+      const entities = await catalogClient.getEntities(
+        {
+          filter: {
+            kind: request.kind,
+            'metadata.name': request.name
+          },
+        },
+        { token }
+      );
+      if (entities.items.length === 0) {
+        return undefined;
+      }
+      return entities.items[0];
+    },
 
+    async unregisterCatalogInfo(entity: Entity): Promise<String> {
+      const { token } = await auth.getPluginRequestToken({
+        onBehalfOf: await auth.getOwnServiceCredentials(),
+        targetPluginId: 'catalog',
+      });
+      const location = await catalogClient.getLocationByEntity(getCompoundEntityRef(entity), { token });
+      if (!location) {
+        throw new Error("Location not found");
+      }
+      await catalogClient.removeLocationById(location.id, { token });
+      return `{"message" : "unregistered "${entity.metadata.name}"}`;
+    },
+  };
 }
