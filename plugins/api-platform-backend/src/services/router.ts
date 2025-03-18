@@ -1,15 +1,12 @@
 import express from 'express';
-import { Request } from 'express';
 import Router from 'express-promise-router';
-import { InputError } from '@backstage/errors';
-import lodash from 'lodash';
-import { DatabaseApiPlatformStore } from './database/apiPlatformStore';
+import { DatabaseApiPlatformStore } from '../database/apiPlatformStore';
 import { AuthService, DatabaseService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
-import { createApiPlatformService } from './services/ApiPlatformService';
-import { createCatalogPlatformService } from './services/CatalogPlatformService';
-import { createServicePlatformService } from './services/ServicePlatformService';
-import { createSystemPlatformService } from './services/SystemPlatformService';
+import { createApiPlatformService } from './ApiPlatformService';
+import { createCatalogPlatformService } from './CatalogPlatformService';
+import { createServicePlatformService } from './ServicePlatformService';
+import { createSystemPlatformService } from './SystemPlatformService';
 import { ServiceInformation } from '@internal/plugin-api-platform-common';
 
 export interface RouterOptions {
@@ -17,18 +14,6 @@ export interface RouterOptions {
   catalogClient: CatalogApi;
   database: DatabaseService;
   auth: AuthService;
-}
-
-function validateRequestBody(req: Request) {
-  const body = req.body;
-  if (!body) {
-    throw new InputError('Missing request body');
-  } else if (!lodash.isPlainObject(body)) {
-    throw new InputError('Expected body to be a JSON object');
-  } else if (Object.keys(body).length === 0) {
-    // Because of how express.json() translates the empty body to {}
-    throw new InputError('Empty request body');
-  }
 }
 
 export async function createRouter(
