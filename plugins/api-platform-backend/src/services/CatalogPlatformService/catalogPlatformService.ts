@@ -15,12 +15,10 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
 
   return {
     async registerCatalogInfo(request: { target: string, kind: string }): Promise<String> {
-      logger.info("Get token");
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
       });
-      logger.debug(`Test location: ${request.target}`);
       const existResponse = await catalogClient.addLocation(
         {
           type: 'url',
@@ -37,14 +35,12 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
           throw new Error("Entity to refresh but not found");
         }
         const entityRef = `${entity.kind.toLowerCase()}:${entity.metadata.namespace}/${entity.metadata.name}`;
-        logger.debug(`Refresh entity: ${entityRef}`);
         await catalogClient.refreshEntity(
           entityRef,
           { token }
         );
         returnMessage = 'Refreshed';
       } else {
-        logger.debug(`Add new location: ${request.target}`);
         const locationResponse = await catalogClient.addLocation(
           {
             type: 'url',
@@ -53,8 +49,7 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
           },
           { token }
         );
-        logger.debug(`Location created: ${locationResponse.location.target}`);
-        returnMessage = 'Created';
+        returnMessage = `Created: ${locationResponse.location.target}`;
       }
       return `{"message" : "${returnMessage}: ${request.target}"}`;
     },
@@ -84,7 +79,11 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
       });
-      const location = await catalogClient.getLocationByEntity(getCompoundEntityRef(entity), { token });
+      const annotations = entity.metadata.annotations;
+      if (!annotations || !annotations['backstage.io/managed-by-origin-location']) {
+        throw new Error("Metadata location not found");
+      }
+      const location = await catalogClient.getLocationByRef(annotations['backstage.io/managed-by-origin-location'], { token });
       if (!location) {
         throw new Error("Location not found");
       }
