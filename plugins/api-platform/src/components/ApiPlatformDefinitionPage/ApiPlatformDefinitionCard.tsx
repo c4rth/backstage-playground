@@ -13,8 +13,7 @@ import { Link } from 'react-router-dom';
 import CloudCircleIcon from '@material-ui/icons/CloudCircle';
 import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } from '@internal/plugin-api-platform-common';
 // Spectral 
-import { EntityApiDocsSpectralLinterCard } from '../EntityApiDocsSpectralLinterContent';
-import { isApiDocsSpectralLinterAvailable } from '../../lib/helper';
+import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
 import { OpenApiDefinitionWidget } from '../OpenApiDefinitionWidget';
 
@@ -117,7 +116,7 @@ export const ApiPlatformDefinitionCard = () => {
                     </Box>
                     <Box sx={{ mt: 5 }}>
                         <AboutField
-                            label="Get this package"
+                            label="Snippet"
                             gridSizes={{ xs: 4 }}>
                             <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
                         </AboutField>
