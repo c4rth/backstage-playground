@@ -139,25 +139,21 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
         <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
-        <RequirePermission permission={taskCreatePermission}
-          children={<SidebarItem
+        <RequirePermission permission={taskCreatePermission} errorPage={<div />} >
+          <SidebarItem
             icon={CreateComponentIcon}
-            to="create" text="Scaffolder" />}
-          errorPage={<div />} />
-
-        <RequirePermission permission={adminToolsPermission}
-          children={
-            <SidebarItem icon={BuildIcon} text="Tools">
-              <SidebarSubmenu title="Tools">
-                <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
-                <RequirePermission permission={catalogEntityCreatePermission}
-                  children={<SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />}
-                  errorPage={<div />}
-                />
-              </SidebarSubmenu>
-            </SidebarItem>
-          }
-          errorPage={<div />} />
+            to="create" text="Scaffolder" />
+        </RequirePermission>
+        <RequirePermission permission={adminToolsPermission} errorPage={<div />} >
+          <SidebarItem icon={BuildIcon} text="Tools">
+            <SidebarSubmenu title="Tools">
+              <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
+              <RequirePermission permission={catalogEntityCreatePermission} errorPage={<div />}>
+                <SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />
+              </RequirePermission>
+            </SidebarSubmenu>
+          </SidebarItem>
+        </RequirePermission>
         {/* End global nav */}
         <SidebarScrollWrapper>
           {/* Items in this group will be scrollable if they run out of space */}
@@ -165,21 +161,21 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-    <RequirePermission permission={devToolsAdministerPermission}
-      children={<SidebarItem icon={BuildIcon} to="devtools" text="Admin" />}
-      errorPage={<div />} />
-    <NotificationsSidebarItem
-      titleCounterEnabled
-      snackbarEnabled={false}
-    />
-    <SidebarGroup
-      label="Settings"
-      icon={<UserSettingsSignInAvatar />}
-      to="/settings"
-    >
-      <SidebarSettings />
-    </SidebarGroup>
-  </Sidebar>
-    { children }
+      <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
+        <SidebarItem icon={BuildIcon} to="devtools" text="Admin" />
+      </RequirePermission>
+      <NotificationsSidebarItem
+        titleCounterEnabled
+        snackbarEnabled={false}
+      />
+      <SidebarGroup
+        label="Settings"
+        icon={<UserSettingsSignInAvatar />}
+        to="/settings"
+      >
+        <SidebarSettings />
+      </SidebarGroup>
+    </Sidebar>
+    {children}
   </SidebarPage >
 );
