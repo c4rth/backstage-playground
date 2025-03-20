@@ -12,10 +12,10 @@ import { AboutContent, AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
 import CloudCircleIcon from '@material-ui/icons/CloudCircle';
 import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } from '@internal/plugin-api-platform-common';
+import { OpenApiDefinitionWidget } from '@internal/plugin-api-swagger-docs';
 // Spectral 
 import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
-import { OpenApiDefinitionWidget } from '../OpenApiDefinitionWidget';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({

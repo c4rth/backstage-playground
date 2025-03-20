@@ -48,6 +48,7 @@
     "@backstage/theme": "^0.6.4",
     "@internal/plugin-api-docs-spectral-linter": "workspace:^",
     "@internal/plugin-api-platform-common": "workspace:^",
+    "@internal/plugin-api-swagger-docs": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
     "@internal/plugin-azure-devops": "workspace:^",
     "@material-ui/core": "^4.12.2",
@@ -55,8 +56,7 @@
     "@material-ui/lab": "^4.0.0-alpha.61",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "react-use": "^17.6.0",
-    "swagger-ui-react": "^5.0.0"
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.31.0",
