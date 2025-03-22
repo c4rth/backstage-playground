@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
-import CloudIcon from '@material-ui/icons/Cloud';
-import HomeIcon from '@material-ui/icons/Home';
+import PlatformAllIcon from '../icons/PlatformAllIcon';
+import PlatformOnpremIcon from '../icons/PlatformOnpremIcon';
+import PlatformAzureIcon from '../icons/PlatformAzureIcon';
 
 export type ServicePlatformChipProps = {
     index: number;
@@ -31,6 +32,15 @@ export const ServicePlatformChip = (
     const handleClick = () => () => {
     };
 
+    let icon: ReactElement;
+    if (props.service?.platform.includes('azure') && props.service?.platform.includes('onprem')) {
+        icon = <PlatformAllIcon />;
+    } else if (props.service?.platform.includes('onprem')) {
+        icon = <PlatformOnpremIcon />;
+    } else {
+        icon = <PlatformAzureIcon />;
+    }
+
     return (
         props.text ?
             <Link to={props.link} style={{ padding: '0px', margin: '0px' }}>
@@ -56,6 +66,7 @@ export const ServicePlatformChip = (
                             <Typography variant='caption'>Version: <b>{props.service?.imageVersion}</b></Typography><br />
                         </>
                     }>
+
                     <Chip
                         key={props.service?.imageVersion}
                         label={props.service?.imageVersion}
@@ -65,8 +76,8 @@ export const ServicePlatformChip = (
                         clickable={!props.disabled}
                         disabled={props.disabled}
                         onClick={handleClick}
-                        icon={props.service?.platform === 'azure' ? <CloudIcon /> : <HomeIcon />}
-                        style={{ padding: '0px', margin: '0px' }}
+                        icon={icon}
+                        style={{ padding: '5px', margin: '0px' }}
                     />
                 </Tooltip>
             </Link>

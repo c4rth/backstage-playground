@@ -35,7 +35,7 @@ function getFilter(serviceName?: string): EntityFilterQuery {
   };
 }
 
-async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi, auth: AuthService, serviceName: string | undefined): Promise<ServiceDefinition[]> {
+async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, serviceName: string | undefined): Promise<ServiceDefinition[]> {
   const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
     targetPluginId: 'catalog',
@@ -84,48 +84,19 @@ async function innerGetServices(logger: LoggerService, catalogClient: CatalogApi
         };
         def.versions.push(defVersion);
       }
-      switch (lifecycle) {
-        case 'tst':
-          defVersion.environments.tst = {
-            imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
-            entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
-          }
-          break;
-        case 'gtu':
-          defVersion.environments.gtu = {
-            imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
-            entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
-          }
-          break;
-        case 'uat':
-          defVersion.environments.uat = {
-            imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
-            entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
-          }
-          break;
-        case 'ptp':
-          defVersion.environments.ptp = {
-            imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
-            entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
-          }
-          break;
-        case 'prd':
-          defVersion.environments.prd = {
-            imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
-            entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-            platform: (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString(),
-          }
-          break;
-        default:
-          logger.warn(`Unknonw lifecyle: ${lifecycle}`);
-          break;
-      }
+      const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'azure';
+      defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
+        imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
+        entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+        platform: platforms,
+      };
       mapServices.set(name, def);
     }
+  });
+  const sortVersions = (a: { version: string }, b: { version: string }) =>
+    a.version.localeCompare(b.version, undefined, { numeric: true });
+  mapServices.forEach(def => {
+    def.versions.sort(sortVersions);
   });
   return Array.from(mapServices.values());
 }
@@ -145,25 +116,23 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
   return {
 
     async listServices(): Promise<{ items: ServiceDefinition[] }> {
-      const services = await innerGetServices(logger, catalogClient, auth, undefined);
+      const services = await innerGetServices(catalogClient, auth, undefined);
       return { items: services };
     },
 
     async getServiceVersions(request: { serviceName: string }): Promise<ServiceDefinition> {
       const { serviceName } = request;
-      const services = await innerGetServices(logger, catalogClient, auth, serviceName);
+      const services = await innerGetServices(catalogClient, auth, serviceName);
       return services[0];
     },
 
     async getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
       const { applicationCode, serviceName, serviceVersion, imageVersion } = request;
-      logger.info(`Get service ${applicationCode}-${serviceName}-${serviceVersion}-${imageVersion}`);
       return await apiPlatformStore.getServiceInformation(applicationCode, serviceName, serviceVersion, imageVersion);
     },
 
     async addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string> {
       const { serviceInformation } = request;
-      logger.info(`Add serviceInformation ${serviceInformation}`);
       await apiPlatformStore.storeServiceInformation(serviceInformation)
       return "ok";
     }
