@@ -128,7 +128,19 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
 
     async getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
       const { applicationCode, serviceName, serviceVersion, imageVersion } = request;
-      return await apiPlatformStore.getServiceInformation(applicationCode, serviceName, serviceVersion, imageVersion);
+      const res = await apiPlatformStore.getServiceInformation(applicationCode, serviceName, serviceVersion, imageVersion);
+      if (res) {
+        return res;
+      }
+      return {
+        applicationCode: applicationCode,
+        serviceName: serviceName,
+        serviceVersion: serviceVersion,
+        imageVersion: imageVersion,
+        repository: '',
+        sonarQubeProjectKey: '',
+        apiDependencies: {},
+      };
     },
 
     async addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string> {

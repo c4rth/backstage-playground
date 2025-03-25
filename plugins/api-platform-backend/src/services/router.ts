@@ -103,11 +103,7 @@ export async function createRouter(
       serviceVersion: req.params.serviceVersion,
       imageVersion: req.params.imageVersion,
     });
-    if (info) {
-      res.json(info);
-    } else {
-      res.status(404).json();
-    }
+    res.status(200).json(info);
   });
 
   router.post('/service-informations', async (req, res) => {
