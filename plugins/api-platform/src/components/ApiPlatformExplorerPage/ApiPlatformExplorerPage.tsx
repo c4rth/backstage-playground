@@ -5,6 +5,7 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import React from 'react';
 import { ApiPlatformTable } from '../ApiPlatformTable';
+import { InfoPopUp } from '../SubtitleInfo/SubtitleInfo';
 
 export const ApiPlatformExplorerPage = () => {
 
@@ -15,7 +16,9 @@ export const ApiPlatformExplorerPage = () => {
     <PageWithHeader
       themeId="apis"
       title="APIs"
-      subtitle={generatedSubtitle}
+      subtitle={
+        <InfoPopUp text={generatedSubtitle} variant="subtitle2" />
+      }
       pageTitleOverride="APIs"
     >
       <Content>

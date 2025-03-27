@@ -1,17 +1,24 @@
 {
-  "name": "@internal/plugin-app-registry",
+  "name": "@internal/plugin-api-platform-react",
   "version": "0.1.0",
-  "license": "Apache-2.0",
-  "private": true,
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "private": true,
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "api-platform",
+    "pluginPackages": [
+      "@internal/plugin-api-platform",
+      "@internal/plugin-api-platform-backend",
+      "@internal/plugin-api-platform-common",
+      "@internal/plugin-api-platform-react"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -24,24 +31,16 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.3",
-    "@backstage/core-components": "^0.17.0",
     "@backstage/core-plugin-api": "^1.10.5",
-    "@backstage/plugin-catalog-react": "^1.16.0",
-    "@backstage/theme": "^0.6.4",
-    "@internal/plugin-api-platform-common": "workspace:^",
-    "@internal/plugin-api-platform-react": "workspace:^",
-    "@material-ui/core": "^4.9.13",
+    "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/material": "^6.4.4",
     "lodash": "^4.17.21",
     "material-ui-popup-state": "^5.3.3",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "react-use": "^17.2.4"
-  },
-  "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.31.0",
@@ -50,16 +49,18 @@
     "@backstage/test-utils": "^1.7.6",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/lodash": "^4.14.151",
     "@types/react": "^18",
-    "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
-    "dist",
-    "config.d.ts"
+    "dist"
   ],
-  "configSchema": "config.d.ts"
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  }
 }

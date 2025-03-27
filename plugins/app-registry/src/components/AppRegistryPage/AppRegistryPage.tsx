@@ -15,7 +15,8 @@ import { Box, IconButton, Typography } from '@material-ui/core';
 import { AppRegistryOperation } from '../../types';
 import MapIcon from '@material-ui/icons/Map';
 // import CloseIcon from '@material-ui/icons/Close';
-import { AppRegistryPdpMappingPopOver } from './AppRegistryPdpMappingPopOver';
+import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow } from '@material-ui/core';
+import { InfoPopover } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number,
@@ -55,11 +56,33 @@ const columns: TableColumn<TableRow>[] = [
     width: '10%',
     field: 'id',
     render: ({ operation }) => operation.pdpMapping ?
-      <AppRegistryPdpMappingPopOver operation={operation}>
+      <InfoPopover
+        title="PDP Mapping"
+        variant='h6'
+        content={
+          <MuiTable size="small">
+            <MuiTableHead>
+              <MuiTableRow>
+                <MuiTableCell><Typography variant='button'>Value Path</Typography></MuiTableCell>
+                <MuiTableCell><Typography variant='button'>PDP Field</Typography></MuiTableCell>
+              </MuiTableRow>
+            </MuiTableHead>
+            <MuiTableBody>
+              {operation.pdpMapping?.map((row, index) => (
+                <MuiTableRow key={index}>
+                  <MuiTableCell component="th" scope="row">
+                    {row.valuePath}
+                  </MuiTableCell>
+                  <MuiTableCell>{row.pdpField}</MuiTableCell>
+                </MuiTableRow>
+              ))}
+            </MuiTableBody>
+          </MuiTable>
+        }>
         <IconButton size="small" onClick={() => { }}>
           <MapIcon />
         </IconButton>
-      </AppRegistryPdpMappingPopOver>
+      </InfoPopover>
       : null,
   },
 ];

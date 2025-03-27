@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo, useState } from 'react';
+import React, { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
 import HoverPopover from 'material-ui-popup-state/HoverPopover';
 import {
   bindHover,
@@ -10,12 +10,14 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { debounce } from 'lodash';
-import { AppRegistryOperation } from '../../types';
-import { CardHeader, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { CardHeader } from '@material-ui/core';
+import { Variant } from '@material-ui/core/styles/createTypography';
 
-export type AppRegistryPdpMappingPopOverProps = PropsWithChildren<{
-  operation: AppRegistryOperation;
+export type InfoPopoverProps = PropsWithChildren<{
+  title: string;
+  variant?: Variant;
   delayTime?: number;
+  content?: ReactNode;
 }>;
 
 const useStyles = makeStyles(() => {
@@ -23,18 +25,11 @@ const useStyles = makeStyles(() => {
     popoverPaper: {
       width: '30em',
     },
-    descriptionTypography: {
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      display: '-webkit-box',
-      WebkitLineClamp: 2,
-      WebkitBoxOrient: 'vertical',
-    },
   };
 });
 
-export const AppRegistryPdpMappingPopOver = (props: AppRegistryPdpMappingPopOverProps) => {
-  const { operation, children, delayTime = 500 } = props;
+export const InfoPopover = (props: InfoPopoverProps) => {
+  const { children, delayTime = 500 } = props;
   const classes = useStyles();
   const popupState = usePopupState({
     variant: 'popover',
@@ -65,9 +60,7 @@ export const AppRegistryPdpMappingPopOver = (props: AppRegistryPdpMappingPopOver
       </Typography>
       {isHovered && (
         <HoverPopover
-          PaperProps={{
-            className: classes.popoverPaper,
-          }}
+          slotProps={{ paper: { className: classes.popoverPaper, } }}
           {...bindPopover(popupState)}
           anchorOrigin={{
             vertical: 'bottom',
@@ -80,26 +73,9 @@ export const AppRegistryPdpMappingPopOver = (props: AppRegistryPdpMappingPopOver
           onMouseLeave={handleOnMouseLeave}
         >
           <Card>
-            <CardHeader title="PDP Mapping" titleTypographyProps={{ variant: 'h6' }} />
+            <CardHeader title={props.title} titleTypographyProps={{ variant: props.variant || 'h6' }} />
             <CardContent>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell><Typography variant='button'>Value Path</Typography></TableCell>
-                    <TableCell><Typography variant='button'>PDP Field</Typography></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {operation.pdpMapping?.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell component="th" scope="row">
-                        {row.valuePath}
-                      </TableCell>
-                      <TableCell>{row.pdpField}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {props.content}
             </CardContent>
           </Card>
         </HoverPopover>
