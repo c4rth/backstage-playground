@@ -37,6 +37,7 @@ const columns: TableColumn<TableRow>[] = [
         title: 'Name',
         width: '25%',
         field: 'api.name',
+        defaultSort: 'asc',
         highlight: true,
         render: ({ api }) => {
             return (
@@ -90,6 +91,7 @@ export const ApiPlatformTable = () => {
                 padding: 'dense',
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
+                draggable: false,
             }}
             title={
                 <Box display="flex" alignItems="center">

@@ -79,7 +79,8 @@ const columns: TableColumn<TableRow>[] = [
         title: 'Name',
         width: '25%',
         field: 'serviceDefinition.name',
-        highlight: true,
+        highlight: true,        
+        defaultSort: 'asc',
         render: ({ serviceDefinition }) => {
             return (
                 <Link to={serviceDefinition.name}>
@@ -150,6 +151,8 @@ export const ServicePlatformTable = () => {
                 paging: showPagination,
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
+                draggable: false,
+                
             }}
             title={
                 <Box display="flex" alignItems="center">

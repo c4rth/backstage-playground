@@ -35,6 +35,7 @@ const columns: TableColumn<TableRow>[] = [
         width: '25%',
         field: 'system.name',
         highlight: true,
+        defaultSort: 'asc',
         render: ({ system }) => (
             <Link to={system.name}>
                 <SystemPlatformDisplayName
@@ -80,7 +81,7 @@ export const SystemPlatformTable = () => {
                 paging: showPagination,
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
-                
+                draggable: false,              
             }}
             title={
                 <Box display="flex" alignItems="center">

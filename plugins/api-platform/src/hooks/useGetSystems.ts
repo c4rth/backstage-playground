@@ -17,6 +17,22 @@ export function useGetSystems(
         return api.listSystems();
     }, [api]);
 
+    if (value) {
+        value.items.sort((a, b) => {
+            const nameA = a.metadata.name.toLowerCase();
+            const nameB = b.metadata.name.toLowerCase();
+
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        }
+        );
+    }
+
     return {
         items: value?.items,
         loading,

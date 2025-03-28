@@ -5,12 +5,7 @@ import {
   ANNOTATION_SERVICE_NAME,
   ANNOTATION_SERVICE_PLATFORM,
   ANNOTATION_SERVICE_VERSION,
-  CATALOG_METADATA_IMAGE_VERSION,
-  CATALOG_METADATA_NAME,
-  CATALOG_METADATA_NAMESPACE,
-  CATALOG_METADATA_SERVICE_NAME,
-  CATALOG_METADATA_SERVICE_PLATFORM,
-  CATALOG_METADATA_SERVICE_VERSION,
+  CATALOG_METADATA,
   CATALOG_RELATIONS,
   CATALOG_SPEC_LIFECYCLE,
   ServiceDefinition,
@@ -44,12 +39,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
     {
       filter: getFilter(serviceName),
       fields: [
-        CATALOG_METADATA_NAME,
-        CATALOG_METADATA_NAMESPACE,
-        CATALOG_METADATA_SERVICE_NAME,
-        CATALOG_METADATA_SERVICE_VERSION,
-        CATALOG_METADATA_SERVICE_PLATFORM,
-        CATALOG_METADATA_IMAGE_VERSION,
+        CATALOG_METADATA,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_RELATIONS],
     },
@@ -95,9 +85,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
   });
   const sortVersions = (a: { version: string }, b: { version: string }) =>
     a.version.localeCompare(b.version, undefined, { numeric: true });
-  mapServices.forEach(def => {
-    def.versions.sort(sortVersions);
-  });
+  mapServices.forEach(def => { def.versions.sort(sortVersions); });
   return Array.from(mapServices.values());
 }
 

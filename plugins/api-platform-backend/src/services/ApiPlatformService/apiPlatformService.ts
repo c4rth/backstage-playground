@@ -6,6 +6,7 @@ import {
   ANNOTATION_API_VERSION,
   ApiVersionDefinition,
   CATALOG_KIND,
+  CATALOG_METADATA,
   CATALOG_METADATA_API_NAME,
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
@@ -25,6 +26,9 @@ async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService,
         kind: ['API'],
         'metadata.api-name': apiName
       },
+      fields: [
+        CATALOG_METADATA,
+      ],
     },
     { token });
   const apisSameName = entities.items.filter(entity => entity.metadata[ANNOTATION_API_NAME] === apiName);
@@ -63,7 +67,8 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
             CATALOG_METADATA_NAME,
             CATALOG_METADATA_DESCRIPTION,
             CATALOG_METADATA_API_NAME,
-            CATALOG_RELATIONS],
+            CATALOG_RELATIONS
+          ],
         },
         { token });
       const uniqueEntities = Array.from(

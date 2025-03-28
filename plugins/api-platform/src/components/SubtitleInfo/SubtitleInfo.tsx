@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Variant } from '@material-ui/core/styles/createTypography';
@@ -25,24 +25,19 @@ const useStyles = makeStyles(
 export interface InfoPopUpProps {
     text: string;
     variant: Variant;
+    content: ReactNode;
 }
 
 export const InfoPopUp = (props: InfoPopUpProps) => {
 
-    const text = props.text;
+    const { text, variant, content } = props;
     const classes = useStyles();
 
     return (
         <Box display="flex" alignItems="center">
-            <Typography className={classes.subtitle} variant={props.variant}>{text} </Typography>
+            <Typography className={classes.subtitle} variant={variant}>{text} </Typography>
             <InfoPopover title={text}
-                content={
-                    <>
-                        <Typography variant="body2">This is a description of the {text}.</Typography>
-                        <Typography variant="body2">This is a description of the {text}.</Typography>
-                        <Typography variant="body2">This is a description of the {text}.</Typography>
-                        <Typography variant="body2">This is a description of the {text}.</Typography>
-                    </>}>
+                content={content}>
                 <InfoOutlinedIcon className={classes.icon} />
             </InfoPopover>
         </Box>

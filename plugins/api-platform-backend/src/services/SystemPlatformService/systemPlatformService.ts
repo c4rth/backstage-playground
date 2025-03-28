@@ -6,6 +6,7 @@ import {
   ANNOTATION_API_NAME, 
   ANNOTATION_SERVICE_NAME, 
   CATALOG_KIND, 
+  CATALOG_METADATA, 
   CATALOG_METADATA_DESCRIPTION, 
   CATALOG_METADATA_NAME, 
   CATALOG_RELATIONS, 
@@ -37,8 +38,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
           },
           fields: [
             CATALOG_KIND,
-            CATALOG_METADATA_NAME,
-            CATALOG_METADATA_DESCRIPTION,
+            CATALOG_METADATA,
             CATALOG_RELATIONS
           ],
         },
