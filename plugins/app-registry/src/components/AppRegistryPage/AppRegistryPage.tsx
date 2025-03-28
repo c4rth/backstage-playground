@@ -26,10 +26,23 @@ type TableRow = {
 
 const columns: TableColumn<TableRow>[] = [
   {
+    title: 'Method',
+    width: '5%',
+    field: 'operation.method',
+    render: ({ operation }) => {
+      return (
+        <Typography variant="body2">
+          {operation.method}
+        </Typography>
+      );
+    },
+  },
+  {
     title: 'Name',
     width: '75%',
     field: 'operation.name',
     highlight: true,
+    defaultSort: 'asc',
     render: ({ operation }) => {
       return (
         <Typography variant="body2">

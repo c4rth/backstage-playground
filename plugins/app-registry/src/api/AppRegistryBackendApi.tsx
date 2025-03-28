@@ -14,7 +14,7 @@ function getOperationName(endpoint: AppRegistryEndpoint) {
     if (endpoint.cobolName && endpoint.cobolName.length > 0) {
         return endpoint.operationId || endpoint.cobolName;
     }
-    return `${endpoint.method} ${endpoint.realPath}`;
+    return `${endpoint.realPath}`;
 }
 
 function isAbac(endpoint: AppRegistryEndpoint) {
@@ -65,6 +65,7 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
             }
 
             const operation: AppRegistryOperation = {
+                method: endpoint.method,
                 name: getOperationName(endpoint),
                 abac: abac,
                 bFunction: endpoint.bFunction,
