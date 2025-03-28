@@ -17,6 +17,7 @@ const apiColumns: TableColumn<TableRow>[] = [
         width: '100%',
         field: 'name',
         highlight: true,
+        defaultSort: 'asc',
         render: ({ data }: any) => {
             return (
                 <Link to={`/api-platform/api/${data.name}`}>
@@ -35,6 +36,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
         width: '100%',
         field: 'name',
         highlight: true,
+        defaultSort: 'asc',
         render: ({ data }: any) => {
             return (
                 <Link to={`/api-platform/service/${data.name}`}>
@@ -69,6 +71,7 @@ export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service
                 padding: 'dense',
                 paging: showPagination,
                 pageSize: 20,
+                draggable: false,              
             }}
             title={
                 <Box display="flex" alignItems="center">

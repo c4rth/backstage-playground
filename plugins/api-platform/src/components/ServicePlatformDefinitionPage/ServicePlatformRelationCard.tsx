@@ -22,6 +22,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
         width: '60%',
         field: 'name',
         highlight: true,
+        defaultSort: 'asc',
         render: ({ data }: any) => {
             return (
                 <Link to={`/api-platform/api/${data.name}?version=${data.version}`}>
@@ -89,6 +90,7 @@ export const ServicePlatformRelationCard = (props: { dependency: 'provided' | 'c
                     search: true,
                     padding: 'dense',
                     paging: false,
+                    draggable: false,              
                 }}
                 title={
                     <Box display="flex" alignItems="center">

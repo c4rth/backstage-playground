@@ -59,7 +59,17 @@ export const SystemPlatformDefinitionCard = (props: { apis: string[], services: 
     return (
         <>
             <TabbedLayout>
-                <TabbedLayout.Route path="/" title="Overview">
+                <TabbedLayout.Route path="/" title="Ownership">
+                    <Grid container spacing={3} alignItems="stretch">
+                        <Grid item md={6}>
+                            <SystemPlatformRelationCard dependency='service' data={services} />
+                        </Grid>
+                        <Grid item md={6} xs={12}>
+                            <SystemPlatformRelationCard dependency='api' data={apis} />
+                        </Grid>
+                    </Grid>
+                </TabbedLayout.Route>
+                <TabbedLayout.Route path="/info" title="Info">
                     <Grid container spacing={3} alignItems="stretch">
                         <Grid item md={6}>
                             <InfoCard title='About' divider className={classes.gridItemCard} action={
@@ -85,20 +95,10 @@ export const SystemPlatformDefinitionCard = (props: { apis: string[], services: 
                                 <AboutContent entity={entity} />
                             </InfoCard>
                         </Grid>
-                        <Grid item md={6} xs={12}>
-                            <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API', 'component']} direction={Direction.TOP_BOTTOM} />
-                        </Grid>
                     </Grid>
                 </TabbedLayout.Route>
                 <TabbedLayout.Route path="/relations" title="Relations">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={6}>
-                            <SystemPlatformRelationCard dependency='service' data={services} />
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                            <SystemPlatformRelationCard dependency='api' data={apis} />
-                        </Grid>
-                    </Grid>
+                    <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API', 'component']} direction={Direction.TOP_BOTTOM} />
                 </TabbedLayout.Route>
             </TabbedLayout>
         </>

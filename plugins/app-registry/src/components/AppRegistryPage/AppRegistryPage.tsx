@@ -39,7 +39,7 @@ const columns: TableColumn<TableRow>[] = [
   },
   {
     title: 'Name',
-    width: '75%',
+    width: '70%',
     field: 'operation.name',
     highlight: true,
     defaultSort: 'asc',
@@ -134,6 +134,7 @@ export const AppRegistryPage = () => {
         padding: 'dense',
         paging: false,
         showEmptyDataSourceMessage: !loading,
+        draggable: false,              
       }}
       title={
         <Box display="flex" alignItems="center">
