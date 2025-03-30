@@ -70,6 +70,7 @@ import { DevToolsPage } from '@backstage/plugin-devtools';
 import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
+import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 
 const app = createApp({
   apis,
@@ -126,6 +127,15 @@ const routes = (
         <Mermaid />
       </TechDocsAddons>
     </Route>
+    <Route
+      path="/external-docs"
+      element={
+        <TechDocsHome />
+      }
+    />
+    <Route
+      path="/external-docs/:namespace/:kind/:name/*"
+      element={<CustomDocsReaderPage />} />
     <Route
       path="/create"
       element={

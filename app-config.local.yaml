@@ -45,6 +45,10 @@ catalog:
       target: ../../examples/docs/techdocs/catalog-info.yaml
     - type: file
       target: ../../examples/docs/techdocs2/catalog-info.yaml
+    - type: file
+      target: ../../examples/docs/techdocs3/catalog-info.yaml
+    - type: file
+      target: ../../examples/docs/techdocs4/catalog-info.yaml
     #- type: file
     #  target: ../../examples/templates/azdo-template/template.yaml
     #- type: file
