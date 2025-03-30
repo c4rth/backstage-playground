@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: spring-boot-techdocs
+  title: Spring Boot TechDocs
+  description: Spring Boot TechDocs
+  annotations:
+    backstage.io/techdocs-ref: external:https://docs.spring.io/spring-boot/
+spec:
+  type: documentation
+  lifecycle: TST
+  owner: group:default/team-a.o

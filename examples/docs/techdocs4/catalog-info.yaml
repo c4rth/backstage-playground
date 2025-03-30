@@ -1,13 +1,11 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: sample-techdocs
-  title: Sample TechDocs
-  description: Sample TechDocs
+  name: maven-techdocs
+  title: Maven TechDocs
+  description: Maven TechDocs
   annotations:
-    backstage.io/techdocs-ref: dir:.
-  tags:
-    - techdocs
+    backstage.io/techdocs-ref: external:https://central.sonatype.com/
 spec:
   type: documentation
   lifecycle: TST
