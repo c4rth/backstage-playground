@@ -8,3 +8,5 @@ export {
   SystemPlatformDefinitionPage,
   ApiPlatformSearchResultListItem,
  } from './plugin';
+
+ export * from './hooks';
