@@ -5,6 +5,8 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import React from 'react';
 import { SystemPlatformTable } from '../SystemPlatformTable';
+import { InfoPopUp } from '../SubtitleInfo/SubtitleInfo';
+import { Typography } from '@material-ui/core';
 
 export const SystemPlatformExplorerPage = () => {
 
@@ -15,7 +17,17 @@ export const SystemPlatformExplorerPage = () => {
     <PageWithHeader
       themeId="systems"
       title="Systems"
-      subtitle={generatedSubtitle}
+      subtitle={
+        <InfoPopUp
+          text={generatedSubtitle}
+          variant="subtitle2"
+          content={
+            <>
+              <Typography variant="body1">This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.</Typography>
+              <Typography variant="body2">This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.</Typography>
+            </>
+          } />
+        }
       pageTitleOverride="Systems"
     >
       <Content>

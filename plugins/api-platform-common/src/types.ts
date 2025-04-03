@@ -26,6 +26,7 @@ export type ServiceVersionDefinition = {
 export type ServiceDefinition = {
   name: string;
   owner: string;
+  system: string
   versions: ServiceVersionDefinition[];
 };
 

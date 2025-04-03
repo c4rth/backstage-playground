@@ -10,7 +10,7 @@ import {
   CATALOG_METADATA_API_NAME,
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
-  CATALOG_RELATIONS
+  CATALOG_SPEC_SYSTEM
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import * as semver from 'semver';
@@ -67,7 +67,7 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
             CATALOG_METADATA_NAME,
             CATALOG_METADATA_DESCRIPTION,
             CATALOG_METADATA_API_NAME,
-            CATALOG_RELATIONS
+            CATALOG_SPEC_SYSTEM,
           ],
         },
         { token });

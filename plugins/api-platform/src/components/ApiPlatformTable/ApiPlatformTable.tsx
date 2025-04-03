@@ -5,12 +5,7 @@ import {
     Link,
     OverflowTooltip,
 } from '@backstage/core-components';
-import {
-    getEntityRelations,
-    humanizeEntityRef,
-    EntityRefLinks,
-} from '@backstage/plugin-catalog-react';
-import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import React from 'react';
 import { useGetApis } from '../../hooks';
 import { Box } from '@material-ui/core';
@@ -18,17 +13,17 @@ import {
     ANNOTATION_API_NAME,
 } from '@internal/plugin-api-platform-common';
 import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
+import { SystemPlatformDisplayName } from '../SystemPlatformTable';
 
 type TableRow = {
     id: number,
     api: {
         name: string,
         description: string,
+        system: string,
     },
     resolved: {
         entityRef: string,
-        ownedByRelationsTitle: string,
-        ownedByRelations: CompoundEntityRef[],
     },
 }
 
@@ -60,14 +55,14 @@ const columns: TableColumn<TableRow>[] = [
         },
     },
     {
-        title: 'Owner',
-        width: '25%',
-        field: 'resolved.ownedByRelationsTitle',
-        render: ({ resolved }) => (
-            <EntityRefLinks
-                entityRefs={resolved.ownedByRelations}
-                defaultKind="group"
-            />
+        title: 'System',
+        width: '10%',
+        field: 'api.system',
+        highlight: true,
+        render: ({ api }) => (
+            <Link to={`/api-platform/system/${api.system}`}>
+                <SystemPlatformDisplayName name={api.system} />
+            </Link>
         ),
     },
 ];
@@ -104,21 +99,16 @@ export const ApiPlatformTable = () => {
     );
 };
 
-
 function toEntityRow(entity: Entity, idx: number) {
-    const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
         id: idx,
         api: {
             name: entity.metadata[ANNOTATION_API_NAME]?.toString() || '?',
             description: entity.metadata.description || '',
+            system: entity.spec?.system?.toString() || '-',
         },
         resolved: {
             entityRef: stringifyEntityRef(entity),
-            ownedByRelationsTitle: ownedByRelations
-                .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
-                .join(', '),
-            ownedByRelations,
         },
     };
 }

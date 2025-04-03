@@ -8,6 +8,7 @@ import {
   CATALOG_METADATA,
   CATALOG_RELATIONS,
   CATALOG_SPEC_LIFECYCLE,
+  CATALOG_SPEC_SYSTEM,
   ServiceDefinition,
   ServiceInformation,
   ServiceVersionDefinition
@@ -40,6 +41,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
       filter: getFilter(serviceName),
       fields: [
         CATALOG_METADATA,
+        CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_RELATIONS],
     },
@@ -51,7 +53,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
     if (name && version) {
-      const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '?';
+      const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '-';
       let def: ServiceDefinition;
       if (mapServices.has(name)) {
         def = mapServices.get(name)!;
@@ -59,6 +61,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
         def = {
           name: name,
           owner: entity.relations?.filter(rel => rel.type === RELATION_OWNED_BY).at(0)?.targetRef || '',
+          system: entity.spec?.system?.toString() || '-',
           versions: []
         };
       }

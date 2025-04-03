@@ -5,16 +5,13 @@ import {
     Table,
     TableColumn,
 } from '@backstage/core-components';
-import {
-    EntityRefLink,
-} from '@backstage/plugin-catalog-react';
-import { parseEntityRef } from '@backstage/catalog-model';
 import React from 'react';
 import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+import { SystemPlatformDisplayName } from '../SystemPlatformTable';
 
 type TableRow = {
     id: number,
@@ -24,7 +21,7 @@ type TableRow = {
 function getColumn(env: string): TableColumn<TableRow> {
     return {
         title: env.toUpperCase(),
-        width: '10%',
+        width: '12%',
         align: 'center',
         cellStyle: { padding: '0px' },
         sorting: false,
@@ -115,13 +112,14 @@ const columns: TableColumn<TableRow>[] = [
     getColumn('ptp'),
     getColumn('prd'),
     {
-        title: 'Owner',
-        width: '25%',
-        field: 'serviceDefinition.owner',
+        title: 'System',
+        width: '10%',
+        highlight: true,
+        field: 'serviceDefinition.system',
         render: ({ serviceDefinition }) => (
-            <EntityRefLink
-                entityRef={parseEntityRef(serviceDefinition.owner)}
-            />
+            <Link to={`/api-platform/system/${serviceDefinition.system}`}>
+                <SystemPlatformDisplayName name={serviceDefinition.system} />
+            </Link>
         ),
     },
 ];

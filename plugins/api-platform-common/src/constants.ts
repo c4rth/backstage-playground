@@ -21,6 +21,7 @@ export const CATALOG_METADATA_SERVICE_VERSION = `${CATALOG_METADATA}.${ANNOTATIO
 export const CATALOG_METADATA_SERVICE_PLATFORM = `${CATALOG_METADATA}.${ANNOTATION_SERVICE_PLATFORM}`;
 
 export const CATALOG_SPEC_LIFECYCLE = "spec.lifecycle";
+export const CATALOG_SPEC_SYSTEM = "spec.system";
 export const CATALOG_SPEC_TYPE = "spec.type";
 export const CATALOG_RELATIONS = "relations";
 export const CATALOG_KIND = "kind";
