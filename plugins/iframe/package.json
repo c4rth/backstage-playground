@@ -26,7 +26,7 @@
   "dependencies": {
     "@backstage/core-components": "^0.17.0",
     "@backstage/core-plugin-api": "^1.10.5",
-    "@backstage/dev-utils": "^1.1.4",
+    "@backstage/dev-utils": "^1.1.8",
     "@backstage/plugin-catalog-react": "^1.16.0",
     "@backstage/plugin-home": "^0.8.6",
     "@backstage/test-utils": "^1.7.6",
