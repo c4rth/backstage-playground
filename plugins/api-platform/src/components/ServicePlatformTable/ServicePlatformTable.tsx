@@ -10,12 +10,11 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 import React from 'react';
-import { Box, Divider, List, ListItem } from '@material-ui/core';
+import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
-import NotInterestedIcon from '@material-ui/icons/NotInterested';
 
 type TableRow = {
     id: number,
@@ -50,19 +49,16 @@ function getColumn(env: string): TableColumn<TableRow> {
                         serviceDefinition.versions.map((version: ServiceVersionDefinition, idx: number) =>
                         (
                             <>
-                                <ListItem key={idx} 
-                                style={{ margin: '2px', display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                <ListItem key={idx}
+                                    style={{ margin: '2px', display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                     {version.environments.hasOwnProperty(env) ?
                                         <ServicePlatformChip
                                             index={idx}
                                             service={version.environments[env as keyof typeof version.environments]}
                                             link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}&env=${env}`} />
-                                        : <ServicePlatformChip
-                                            index={-2}
-                                            icon={<NotInterestedIcon />}
-                                            text='N/A'
-                                            disabled
-                                            link="#" />}
+                                        : <div style={{ pointerEvents: 'none' }}>
+                                            <Typography variant='body1'>-</Typography>
+                                        </div>}
                                 </ListItem>
                                 {idx < serviceDefinition.versions.length - 1 && <Divider />}
                             </>
@@ -79,7 +75,7 @@ const columns: TableColumn<TableRow>[] = [
         title: 'Name',
         width: '25%',
         field: 'serviceDefinition.name',
-        highlight: true,        
+        highlight: true,
         defaultSort: 'asc',
         render: ({ serviceDefinition }) => {
             return (
@@ -106,7 +102,7 @@ const columns: TableColumn<TableRow>[] = [
                                 <ListItem key={idx} style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                     <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
                                 </ListItem>
-                            {idx < serviceDefinition.versions.length - 1 && <Divider />}
+                                {idx < serviceDefinition.versions.length - 1 && <Divider />}
                             </>
                         ))}
                 </List>
@@ -152,7 +148,7 @@ export const ServicePlatformTable = () => {
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
                 draggable: false,
-                
+
             }}
             title={
                 <Box display="flex" alignItems="center">
