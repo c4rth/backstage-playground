@@ -112,7 +112,7 @@ backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 
 // Scaffolder Actions
-backend.add(import('@parfuemerie-douglas/scaffolder-backend-module-azure-repositories'))
+backend.add(import('@internal/scaffolder-backend-module-azure-repositories'))
 backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
 
 // Kubernetes

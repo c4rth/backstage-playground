@@ -16,10 +16,10 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops-backend": "^0.12.0",
-    "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.5.0",
-    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.6.0",
-    "@backstage-community/plugin-sonarqube-backend": "^0.5.0",
+    "@backstage-community/plugin-azure-devops-backend": "^0.14.0",
+    "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.6.0",
+    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.7.0",
+    "@backstage-community/plugin-sonarqube-backend": "^0.6.0",
     "@backstage/backend-defaults": "^0.8.2",
     "@backstage/backend-plugin-api": "^1.2.1",
     "@backstage/catalog-model": "^1.7.3",
@@ -59,7 +59,7 @@
     "@backstage/plugin-techdocs-backend": "^2.0.0",
     "@internal/plugin-api-platform-backend": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",
-    "@parfuemerie-douglas/scaffolder-backend-module-azure-repositories": "^0.3.0",
+    "@internal/scaffolder-backend-module-azure-repositories": "workspace:^",
     "app": "0.0.0",
     "node-gyp": "^10.0.0",
     "pg": "^8.11.3",
@@ -69,7 +69,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.0",
+    "@backstage/cli": "^0.31.1",
     "@types/express": "^4.17.6",
     "@types/express-serve-static-core": "^4.17.5",
     "@types/luxon": "^2.0.4"
