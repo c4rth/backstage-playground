@@ -4,7 +4,6 @@ import {
     Link,
 } from '@backstage/core-components';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
-import React from 'react';
 import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {

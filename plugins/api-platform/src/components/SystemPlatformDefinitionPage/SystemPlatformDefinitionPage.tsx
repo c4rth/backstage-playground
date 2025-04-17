@@ -6,7 +6,6 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
-import React from 'react';
 import { useGetSystem } from '../../hooks';
 import { Box } from '@material-ui/core';
 import { SystemPlatformDefinitionCard } from './SystemPlatformDefinitionCard';

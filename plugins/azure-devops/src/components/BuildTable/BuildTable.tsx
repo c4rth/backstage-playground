@@ -36,7 +36,6 @@ import {
 
 import { AzurePipelinesIcon } from '../AzurePipelinesIcon';
 import { DateTime } from 'luxon';
-import React from 'react';
 import { getDurationFromDates } from '../../utils/getDurationFromDates';
 
 export const getBuildResultComponent = (result: number | undefined) => {

@@ -1,5 +1,5 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_CONSUMES_API, RELATION_PROVIDES_API } from "@backstage/catalog-model";

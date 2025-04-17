@@ -4,7 +4,6 @@ import {
     InfoContent,
 } from '@backstage/plugin-devtools';
 import { DevToolsLayout } from '@backstage/plugin-devtools';
-import React from 'react';
 import { UnprocessedEntitiesContent } from '@backstage/plugin-catalog-unprocessed-entities';
 
 export const DevToolsPage = () => {

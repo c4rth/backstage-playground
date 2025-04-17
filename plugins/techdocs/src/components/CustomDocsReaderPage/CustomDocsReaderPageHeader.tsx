@@ -8,7 +8,6 @@ import {
     RELATION_OWNED_BY,
 } from '@backstage/catalog-model';
 import { Header, HeaderLabel } from "@backstage/core-components";
-import React from "react";
 
 export type CustomDocsReaderPageHeaderProps = PropsWithChildren<{
     entity?: Entity;

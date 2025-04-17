@@ -1,7 +1,6 @@
 import {
   HomePageToolkit,
 } from '@backstage/plugin-home';
-import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { useToolkitData } from '../../hooks/useToolkitData';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';

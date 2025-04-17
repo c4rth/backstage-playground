@@ -8,7 +8,7 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';

@@ -6,7 +6,6 @@ import {
     OverflowTooltip,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import React from 'react';
 import { useGetApis } from '../../hooks';
 import { Box } from '@material-ui/core';
 import {

@@ -3,7 +3,6 @@ import {
   PageWithHeader,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import React from 'react';
 import { SystemPlatformTable } from '../SystemPlatformTable';
 import { InfoPopUp } from '../SubtitleInfo/SubtitleInfo';
 import { Typography } from '@material-ui/core';

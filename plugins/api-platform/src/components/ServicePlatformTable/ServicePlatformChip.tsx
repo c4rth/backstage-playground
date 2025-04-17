@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';

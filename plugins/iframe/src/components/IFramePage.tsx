@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Content,
 } from '@backstage/core-components';

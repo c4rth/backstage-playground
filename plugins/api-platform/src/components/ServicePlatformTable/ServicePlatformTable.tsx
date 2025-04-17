@@ -5,7 +5,6 @@ import {
     Table,
     TableColumn,
 } from '@backstage/core-components';
-import React from 'react';
 import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';

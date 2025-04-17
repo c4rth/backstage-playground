@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
 import { Box, Grid } from '@material-ui/core';
 import { ServicePlatformDefinitionCard } from './ServicePlatformDefinitionCard';

@@ -10,7 +10,6 @@ import {
     humanizeEntityRef,
 } from '@backstage/plugin-catalog-react';
 import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
-import React from 'react';
 import { Box } from '@material-ui/core';
 import { useGetSystems } from '../../hooks';
 import { SystemPlatformDisplayName } from './SystemPlatformDisplayName';

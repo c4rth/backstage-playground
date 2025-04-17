@@ -4,7 +4,6 @@ import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { ToolkitCard } from '@internal/plugin-toolkit';
 import { Box, Grid, makeStyles } from '@material-ui/core';
-import React from 'react';
 
 const useStyles = makeStyles(theme => ({
     searchBarInput: {

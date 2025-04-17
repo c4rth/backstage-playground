@@ -1,7 +1,6 @@
 import CategoryIcon from '@material-ui/icons/Category';
 import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 

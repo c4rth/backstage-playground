@@ -1,7 +1,6 @@
 import ExtensionIcon from '@material-ui/icons/Extension';
 import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 

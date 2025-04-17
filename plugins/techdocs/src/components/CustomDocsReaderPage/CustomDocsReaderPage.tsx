@@ -1,4 +1,3 @@
-import React from 'react';
 import { Page, Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { useRouteRefParams, } from '@backstage/core-plugin-api';

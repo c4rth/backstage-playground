@@ -1,4 +1,3 @@
-import React from "react";
 import { Content, PageWithHeader } from "@backstage/core-components";
 import { TechDocsTable } from "../TechDocsTable";
 

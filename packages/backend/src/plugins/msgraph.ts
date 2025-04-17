@@ -6,7 +6,7 @@ import {
     MICROSOFT_GRAPH_GROUP_ID_ANNOTATION,
 } from '@backstage/plugin-catalog-backend-module-msgraph';
 import { GroupEntity, UserEntity } from '@backstage/catalog-model';
-import { LoggerService } from '@backstage/backend-plugin-api/index';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 
 export interface GraphTransformerService {

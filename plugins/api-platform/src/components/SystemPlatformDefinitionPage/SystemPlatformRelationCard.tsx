@@ -1,5 +1,4 @@
 import { Link, Table, TableColumn } from "@backstage/core-components";
-import React from 'react';
 import { ApiPlatformDisplayName } from "../ApiPlatformTable";
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
