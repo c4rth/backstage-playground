@@ -1,1 +1,1 @@
-export $(cat .env | xargs) && LOG_LEVEL=debug yarn dev 
+export $(cat .env | xargs) && LOG_LEVEL=debug yarn start 
