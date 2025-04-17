@@ -23,5 +23,10 @@
         "iconUrl": "/homepage/icons/Backstage.svg",
         "label": "Submit New Issue",
         "url": "https://github.com/backstage/backstage/issues/new/choose"
+    },
+    {
+        "iconUrl": "/homepage/icons/mistral.svg",
+        "label": "Mistral AI",
+        "url": "https://github.com/backstage/backstage/issues/new/choose"
     }
 ]
