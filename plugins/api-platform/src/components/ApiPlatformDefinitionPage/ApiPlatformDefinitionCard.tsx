@@ -4,7 +4,6 @@ import {
     TabbedLayout,
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
-import React from 'react';
 import { PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
@@ -16,6 +15,7 @@ import { OpenApiDefinitionWidget } from '@internal/plugin-api-swagger-docs';
 // Spectral 
 import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
+import LanguageIcon from '@material-ui/icons/Language';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -43,7 +43,7 @@ const useStyles = makeStyles(
 
 export const ApiPlatformDefinitionCard = () => {
 
-    const { entity } = useEntity<ApiEntity>();  
+    const { entity } = useEntity<ApiEntity>();
 
     const classes = useStyles();
 
@@ -61,6 +61,7 @@ export const ApiPlatformDefinitionCard = () => {
     <type>yaml</type>
 </dependency>
 `;
+    const href = `https://api-platform.example.com/api-resolved/${project}/${entity.metadata[ANNOTATION_API_NAME]}/${entity.metadata[ANNOTATION_API_VERSION]}`;
     const cardClass = classes.gridItemCard;
 
     return (
@@ -116,9 +117,23 @@ export const ApiPlatformDefinitionCard = () => {
                     </Box>
                     <Box sx={{ mt: 5 }}>
                         <AboutField
-                            label="Snippet"
+                            label="Maven Snippet"
                             gridSizes={{ xs: 4 }}>
                             <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
+                        </AboutField>
+                    </Box>
+                    <Box sx={{ mt: 5 }}>
+                        <AboutField
+                            label="API Platform URL"
+                            gridSizes={{ xs: 12 }}>
+                            <Box component="span" className={classes.root}>
+                                <Box component="span" className={classes.icon}>
+                                    <LanguageIcon fontSize="inherit" />
+                                </Box>
+                                <Link to={href} target="_blank" rel="noopener noreferrer" >
+                                    {href}
+                                </Link>
+                            </Box>
                         </AboutField>
                     </Box>
                 </InfoCard>
