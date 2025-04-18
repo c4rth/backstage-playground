@@ -14,7 +14,7 @@ export function useGetServiceVersions(
     const api = useApi(apiPlatformBackendApiRef);
 
     const { value, loading, error } = useAsync(() => {
-        return api.getServiceVersions({ serviceName: serviceName });
+        return api.getServiceVersions(serviceName);
     }, [api]);
 
     return {

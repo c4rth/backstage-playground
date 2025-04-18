@@ -9,15 +9,16 @@ export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
 export interface ApiPlatformBackendApi {
   listApis(): Promise<{ items: Entity[] }>;
 
-  getApiVersions(request: { apiName: string }): Promise<(ApiVersionDefinition[])>;
+  getApiVersions(apiName: string): Promise<(ApiVersionDefinition[])>;
 
   listServices(): Promise<{ items: ServiceDefinition[] }>;
 
-  getServiceVersions(request: { serviceName: string }): Promise<(ServiceDefinition)>;
+  getServiceVersions(serviceName: string): Promise<(ServiceDefinition)>;
 
   listSystems(): Promise<{ items: Entity[] }>;
 
-  getSystem(request: { systemName: string }): Promise<(SystemDefinition)>;
+  getSystem(systemName: string): Promise<(SystemDefinition)>;
+
 }
 
 
@@ -43,11 +44,11 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     );
   }
 
-  async getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]> {
+  async getApiVersions(apiName: string): Promise<ApiVersionDefinition[]> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
-      )}/apis/${request.apiName}`
+      )}/apis/${apiName}`
     );
     const response = await this.fetchApi.fetch(url);
     return (
@@ -70,11 +71,11 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     );
   }
 
-  async getServiceVersions(request: { serviceName: string }): Promise<ServiceDefinition> {
+  async getServiceVersions(serviceName: string): Promise<ServiceDefinition> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
-      )}/services/${request.serviceName}`
+      )}/services/${serviceName}`
     );
     const response = await this.fetchApi.fetch(url);
     const item = await response.json();
@@ -96,11 +97,11 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     );
   }
 
-  async getSystem(request: { systemName: string; }): Promise<(SystemDefinition)> {
+  async getSystem(systemName: string): Promise<(SystemDefinition)> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
-      )}/systems/${request.systemName}`
+      )}/systems/${systemName}`
     );
     const response = await this.fetchApi.fetch(url);
     const item = await response.json();

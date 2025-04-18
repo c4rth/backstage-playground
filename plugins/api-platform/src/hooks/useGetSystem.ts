@@ -15,7 +15,7 @@ export function useGetSystem(
     const api = useApi(apiPlatformBackendApiRef);
 
     const { value, loading, error } = useAsync(() => {
-        return api.getSystem({ systemName: systemName });
+        return api.getSystem(systemName);
     }, [api]);
 
     return {

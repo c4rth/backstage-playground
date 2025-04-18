@@ -4,7 +4,7 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformTable } from '../ApiPlatformTable';
-import { InfoPopUp } from '../SubtitleInfo/SubtitleInfo';
+import { InfoPopUp } from '@internal/plugin-api-platform-react';
 import { Typography } from '@material-ui/core';
 
 export const ApiPlatformExplorerPage = () => {

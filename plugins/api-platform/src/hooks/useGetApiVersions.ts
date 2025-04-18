@@ -15,7 +15,7 @@ export function useGetApiVersions(
     const api = useApi(apiPlatformBackendApiRef);
 
     const { value, loading, error } = useAsync(() => {
-        return api.getApiVersions({ apiName: apiName });
+        return api.getApiVersions(apiName);
     }, [api]);
 
     return {

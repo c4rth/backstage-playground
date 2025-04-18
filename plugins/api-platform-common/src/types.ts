@@ -10,7 +10,7 @@ export type ServiceEnvironmentDefinition = {
   imageVersion: string;
   entityRef: string;
   platform: string;
-}
+};
 
 export type ServiceVersionDefinition = {
   version: string;
@@ -21,7 +21,7 @@ export type ServiceVersionDefinition = {
     ptp?: ServiceEnvironmentDefinition;
     prd?: ServiceEnvironmentDefinition;
   };
-}
+};
 
 export type ServiceDefinition = {
   name: string;
@@ -33,7 +33,7 @@ export type ServiceDefinition = {
 export type ServiceApisDefinition = {
   consumedApis?: string[];
   providedApis?: string[];
-}
+};
 
 export type SystemDefinition = {
   entity: Entity;
@@ -49,4 +49,4 @@ export type ServiceInformation = {
   repository: string;
   sonarQubeProjectKey: string;
   apiDependencies: ServiceApisDefinition;
-}
+};

@@ -14,10 +14,21 @@ export const apiPlatformReactPlugin = createPlugin({
 
 export const InfoPopover = apiPlatformReactPlugin.provide(
   createComponentExtension({
-    name: 'ApiPlatformDefinitionPage',
+    name: 'InfoPopover',
     component: {
       lazy: () =>
         import('./components/InfoPopover').then(m => m.InfoPopover),
     },
   }),
 );
+
+export const InfoPopUp = apiPlatformReactPlugin.provide(
+  createComponentExtension({
+    name: 'InfoPopUp',
+    component: {
+      lazy: () =>
+        import('./components/InfoPopUp').then(m => m.InfoPopUp),
+    },
+  }),
+);
+

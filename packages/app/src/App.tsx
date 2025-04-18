@@ -70,6 +70,8 @@ import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
+import { McaComponentExplorerPage } from '@internal/plugin-mca-components';
+import { McaComponentDefinitionPage } from '@internal/plugin-mca-components';
 
 const app = createApp({
   apis,
@@ -172,6 +174,8 @@ const routes = (
     <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
     <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
+    <Route path="/mca-components/mca" element={<McaComponentExplorerPage />} />
+    <Route path="/mca-components/mca/:name" element={<McaComponentDefinitionPage />} />
     <Route path="/devtools"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>

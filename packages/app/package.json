@@ -49,6 +49,8 @@
     "@internal/plugin-api-platform-common": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
     "@internal/plugin-azure-devops": "workspace:^",
+    "@internal/plugin-mca-components": "workspace:^",
+    "@internal/plugin-mca-components-common": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",
     "@internal/plugin-techdocs": "workspace:^",
     "@internal/plugin-toolkit": "workspace:^",

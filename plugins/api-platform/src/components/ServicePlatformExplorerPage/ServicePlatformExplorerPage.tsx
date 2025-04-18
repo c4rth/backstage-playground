@@ -4,7 +4,7 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ServicePlatformTable } from '../ServicePlatformTable';
-import { InfoPopUp } from '../SubtitleInfo/SubtitleInfo';
+import { InfoPopUp } from '@internal/plugin-api-platform-react';
 import { Typography } from '@material-ui/core';
 
 export const ServicePlatformExplorerPage = () => {

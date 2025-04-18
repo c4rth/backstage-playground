@@ -122,7 +122,5 @@ export async function createRouter(
     res.json(await systemPlatformService.getSystem({ systemName: req.params.systemName }));
   });
 
-  //
-
   return router;
 }

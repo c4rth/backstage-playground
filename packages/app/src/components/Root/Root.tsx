@@ -138,6 +138,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
         <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
+        <SidebarItem icon={CodeIcon} to="mca-components/mca" text="MCA" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={LibraryBooks} to="external-docs" text="ExtDocs" />
         <RequirePermission permission={taskCreatePermission} errorPage={<div />} >

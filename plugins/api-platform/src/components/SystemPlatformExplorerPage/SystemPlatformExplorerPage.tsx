@@ -4,8 +4,8 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { SystemPlatformTable } from '../SystemPlatformTable';
-import { InfoPopUp } from '../SubtitleInfo/SubtitleInfo';
 import { Typography } from '@material-ui/core';
+import { InfoPopUp } from '@internal/plugin-api-platform-react';
 
 export const SystemPlatformExplorerPage = () => {
 

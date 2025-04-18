@@ -1,1 +1,1 @@
-export { apiPlatformReactPlugin, InfoPopover } from './plugin';
+export { apiPlatformReactPlugin, InfoPopover, InfoPopUp } from './plugin';

@@ -4,29 +4,27 @@ import {
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import { ServiceInformation } from '@internal/plugin-api-platform-common';
- 
 import { Knex } from 'knex';
 import { DbServicesRow } from './tables';
- 
+
 export interface ApiPlatformStore {
- 
+
   storeServiceInformation(serviceInformation: ServiceInformation): Promise<void>;
- 
-  getServiceInformation(applicationCode: string, service: string, version: string,imageVersion: string): Promise<ServiceInformation | undefined>;
- 
+  getServiceInformation(applicationCode: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined>;
+
 }
- 
+
 const migrationsDir = resolvePackagePath(
   '@internal/plugin-api-platform-backend', // Package name
   'migrations', // Migrations directory
 );
- 
+
 export class DatabaseApiPlatformStore implements ApiPlatformStore {
   private constructor(
     private readonly db: Knex,
     private readonly logger: LoggerService,
   ) { }
- 
+
   static async create({
     database,
     skipMigrations,
@@ -38,15 +36,16 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   }): Promise<ApiPlatformStore> {
     logger.info("Init API platform database");
     const client = await database.getClient();
- 
+
     if (!database.migrations?.skip && !skipMigrations) {
+      logger.info("Migrate api-platform database");
       await client.migrate.latest({
         directory: migrationsDir,
       });
     }
     return new DatabaseApiPlatformStore(client, logger);
   }
- 
+
   async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
     this.logger.info(`Add service ${serviceInformation}`);
     await this.db('services').insert({
@@ -60,7 +59,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
       providedApis: JSON.stringify(serviceInformation.apiDependencies.providedApis || []),
     });
   }
- 
+
   async getServiceInformation(applicationCode: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined> {
     this.logger.info(`Fetch service ${applicationCode}-${service}-${version}-${imageVersion}`);
     const result = await this.db<DbServicesRow>('services')
@@ -85,4 +84,5 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
     }
     return undefined;
   }
+
 }
