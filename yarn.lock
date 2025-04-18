@@ -5272,9 +5272,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend@npm:^1.32.0":
-  version: 1.32.0
-  resolution: "@backstage/plugin-scaffolder-backend@npm:1.32.0"
+"@backstage/plugin-scaffolder-backend@npm:^1.32.1":
+  version: 1.32.1
+  resolution: "@backstage/plugin-scaffolder-backend@npm:1.32.1"
   dependencies:
     "@backstage/backend-common": "npm:^0.25.0"
     "@backstage/backend-defaults": "npm:^0.9.0"
@@ -5330,7 +5330,7 @@ __metadata:
     zen-observable: "npm:^0.10.0"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.20.4"
-  checksum: 10/31d33f34e9305b3638c209d0c925bce34c2444a4805614c288ab6264eb4ac87defcc21e38c8cc33fb82809319c259d6ae370137e21914ad728865e0568320707
+  checksum: 10/91ab2ae9e6d747843215280c8c98e47397c4c3bfb7d116ece3b504e5137aa0f9aa0391799bc4ac2584c670fb27dc89eb9cb3ee26bbfa4d9e8d072408a01adb4b
   languageName: node
   linkType: hard
 
@@ -5371,9 +5371,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-react@npm:^1.15.0":
-  version: 1.15.0
-  resolution: "@backstage/plugin-scaffolder-react@npm:1.15.0"
+"@backstage/plugin-scaffolder-react@npm:^1.15.1":
+  version: 1.15.1
+  resolution: "@backstage/plugin-scaffolder-react@npm:1.15.1"
   dependencies:
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
@@ -5419,13 +5419,13 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/5c4cb3d9e749301ad68a2b36cfe3b0c82982a6128c203f36235f1150afb65ae22ddf668e9b850d9d05d5e65aca863ce580e98aabb974be10e537b4d3208cf950
+  checksum: 10/b058521cb1328607f61f64b8774be592447603469ad5827c62f4c785415ecffcdfb20d6fde593ce833c08658516a292be4412a19bef609bab0062def0ac34d3f
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder@npm:^1.30.0":
-  version: 1.30.0
-  resolution: "@backstage/plugin-scaffolder@npm:1.30.0"
+"@backstage/plugin-scaffolder@npm:^1.30.1":
+  version: 1.30.1
+  resolution: "@backstage/plugin-scaffolder@npm:1.30.1"
   dependencies:
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
@@ -5440,7 +5440,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.17.0"
     "@backstage/plugin-permission-react": "npm:^0.4.33"
     "@backstage/plugin-scaffolder-common": "npm:^1.5.10"
-    "@backstage/plugin-scaffolder-react": "npm:^1.15.0"
+    "@backstage/plugin-scaffolder-react": "npm:^1.15.1"
     "@backstage/types": "npm:^1.2.1"
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
@@ -5480,7 +5480,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/6fab934d882adbe58edb1bea0d36394a1addeeaec01aedd29e8de487cdb8a5ac31fb406972718536f718cb42bfb89d6adcaff6e19c94210f0e038053e649dd0b
+  checksum: 10/8fb3e8424b31c3430195ac087ab753ece2b9965d9859ab5a9ca2e24e5829bba55333c33e7a088f2d6c64d4bd8855c99e2c13da5cbce77aae278f5e504303b1b8
   languageName: node
   linkType: hard
 
@@ -7826,7 +7826,7 @@ __metadata:
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/integration": "npm:^1.16.3"
-    "@backstage/plugin-scaffolder-backend": "npm:^1.32.0"
+    "@backstage/plugin-scaffolder-backend": "npm:^1.32.1"
     "@backstage/plugin-scaffolder-node": "npm:^0.8.1"
     "@backstage/types": "npm:^1.2.1"
     azure-devops-node-api: "npm:^14.1.0"
@@ -15500,7 +15500,7 @@ __metadata:
     "@backstage/plugin-notifications-node": "npm:^0.2.14"
     "@backstage/plugin-org": "npm:^0.6.38"
     "@backstage/plugin-permission-react": "npm:^0.4.33"
-    "@backstage/plugin-scaffolder": "npm:^1.30.0"
+    "@backstage/plugin-scaffolder": "npm:^1.30.1"
     "@backstage/plugin-scaffolder-common": "npm:^1.5.10"
     "@backstage/plugin-search": "npm:^1.4.25"
     "@backstage/plugin-search-react": "npm:^1.8.8"
@@ -16245,7 +16245,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.8.4"
     "@backstage/plugin-permission-node": "npm:^0.9.1"
     "@backstage/plugin-proxy-backend": "npm:^0.6.1"
-    "@backstage/plugin-scaffolder-backend": "npm:^1.32.0"
+    "@backstage/plugin-scaffolder-backend": "npm:^1.32.1"
     "@backstage/plugin-scaffolder-backend-module-azure": "npm:^0.2.8"
     "@backstage/plugin-search-backend": "npm:^2.0.1"
     "@backstage/plugin-search-backend-module-catalog": "npm:^0.3.3"
