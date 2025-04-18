@@ -77,8 +77,10 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
   }
 
   async getMcaComponentDefinition(component: string, packageName: string, refP: string): Promise<string | undefined> {
+    const defaultPackage = this.configApi.getString('mcaOperationSources.defaultPackage');
+    const extension = component.startsWith("Operation") ? "osml" : "esml";
     const url = new URL(
-      `${this.configApi.getString('backend.baseUrl')}/api/proxy/operations-sources/v1/operation-sources/${component}.osml/historic?packageName=${packageName}&refP=${refP}`,
+      `${this.configApi.getString('backend.baseUrl')}/api/proxy/operations-sources/v1/operation-sources/${component}.${extension}/historic?packageName=${defaultPackage}.${packageName}&refP=${refP}`,
     );
     const response = await this.fetchApi.fetch(url);
     return (

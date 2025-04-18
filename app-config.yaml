@@ -20,11 +20,12 @@ organization:
 
 appRegistry:
   baseUrl: &appRegistryUrl http://localhost:8080
-  faetch: &appRegistryFetchUrl http://localhost:8080/actuator
+  fetch: &appRegistryFetchUrl http://localhost:8080/actuator
   version: v2
 
 mcaOperationSources:
   baseUrl: &mcaOperationSourcesUrl http://localhost:8080
+  defaultPackage: dexia.opmk.operation
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins

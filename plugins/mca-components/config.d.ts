@@ -5,5 +5,10 @@ export interface Config {
     * @visibility frontend
     */
     baseUrl?: string;
+    /**
+    * The 'defaultPackage' attribute
+    * @visibility frontend
+    */
+    defaultPackage?: string;
   };
 }

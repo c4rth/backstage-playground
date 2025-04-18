@@ -27,6 +27,7 @@
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.17.1",
     "@backstage/core-plugin-api": "^1.10.6",
+    "@backstage/plugin-catalog": "^1.29.0",
     "@backstage/plugin-catalog-react": "^1.17.0",
     "@backstage/theme": "^0.6.5",
     "@internal/plugin-api-platform-react": "workspace:^",
@@ -34,6 +35,7 @@
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.61",
+    "fast-xml-parser": "^5.0.7",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-use": "^17.2.4"
