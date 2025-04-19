@@ -1,6 +1,7 @@
 exports.up = async function up(knex) {
   return await knex.schema.createTable('mca', table => {
     table.string('component').notNullable();
+    table.string('type').notNullable();
     table.string('prd_version').notNullable();
     table.string('p1_version').notNullable();
     table.string('p2_version').notNullable();

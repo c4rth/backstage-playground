@@ -43,4 +43,7 @@ export type McaComponentListOptions = {
     direction: 'asc' | 'desc';
   };
   search?: string;
+  type: McaComponentType;
 };
+
+export type McaComponentType = 'element' | 'operation' | 'all';

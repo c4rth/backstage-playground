@@ -1,16 +1,33 @@
 import {
   Content,
   PageWithHeader,
+  Select,
+  SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { McaComponentTable } from '../McaComponentTable';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
+import { useEffect, useState } from 'react';
+import { McaComponentType } from '@internal/plugin-mca-components-common';
 
 export const McaComponentExplorerPage = () => {
 
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} MCA Explorer`;
+
+  const [types, _] = useState<SelectItem[]>([{ label: 'Operations', value: 'operation' }, { label: 'Elements', value: 'element' }, { label: 'All components', value: 'all' }]);
+  const [selectedStringType, setSelectedStringType] = useState<string>('operation');
+  const [selectedType, setSelectedType] = useState<McaComponentType>('operation');
+
+  useEffect(() => {
+    if (selectedStringType) {
+      const selected = types.find(item => item.value === selectedStringType);
+      if (selected) {
+        setSelectedType(selected.value as McaComponentType);
+      }
+    }
+  }, [selectedStringType, types]);
 
   return (
     <PageWithHeader
@@ -30,7 +47,14 @@ export const McaComponentExplorerPage = () => {
       pageTitleOverride="MCA Components"
     >
       <Content>
-        <McaComponentTable />
+        <Box mb={1}>
+          <Grid container>
+            <Grid item md={6}>
+              <Select onChange={(selected) => { setSelectedStringType(selected.toString()) }} label="Type" items={types} selected={selectedStringType} />
+            </Grid>
+          </Grid>
+        </Box>
+        <McaComponentTable type={selectedType} />
       </Content>
     </PageWithHeader>
   );

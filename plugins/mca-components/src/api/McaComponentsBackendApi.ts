@@ -1,5 +1,5 @@
 import { ConfigApi, createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
-import { McaComponent, McaComponentListOptions, McaComponentListResult } from "@internal/plugin-mca-components-common";
+import { McaComponent, McaComponentListOptions, McaComponentListResult, McaComponentType } from "@internal/plugin-mca-components-common";
 
 export const mcaComponentsBackendApiRef = createApiRef<McaComponentsBackendApi>({
   id: 'plugin.mca-components.service',
@@ -7,7 +7,7 @@ export const mcaComponentsBackendApiRef = createApiRef<McaComponentsBackendApi>(
 
 export interface McaComponentsBackendApi {
 
-  getMcaComponentsCount(): Promise<number>;
+  getMcaComponentsCount(type: McaComponentType): Promise<number>;
 
   listMcaComponents(options: McaComponentListOptions): Promise<McaComponentListResult>
 
@@ -28,11 +28,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     this.configApi = options.configApi;
   }
 
-  async getMcaComponentsCount(): Promise<number> {
+  async getMcaComponentsCount(type: McaComponentType): Promise<number> {
     const url = new URL(
-      `${await this.discoveryApi.getBaseUrl(
-        'mca-components',
-      )}/mca/count`
+      `${await this.discoveryApi.getBaseUrl('mca-components')}/mca/count?type=${type}`
     );
     const response = await this.fetchApi.fetch(url);
     const item = await response.json();
@@ -57,6 +55,7 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     if (search) {
       query.set('search', search);
     }
+    query.set('type', options.type);
     const url = new URL(`${baseUrl}/mca/components?${query}`);
     const response = await this.fetchApi.fetch(url);
     const items = await response.json();

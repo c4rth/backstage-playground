@@ -1,4 +1,4 @@
-import { McaComponent, McaComponentListFields, McaComponentListResult } from "@internal/plugin-mca-components-common";
+import { McaComponent, McaComponentListFields, McaComponentListResult, McaComponentType } from "@internal/plugin-mca-components-common";
 
 export type McaComponentOrderByOptions = {
     field: McaComponentListFields;
@@ -9,12 +9,13 @@ export type McaComponentListRequest = {
     offset?: number,
     limit?: number,
     orderBy?: McaComponentOrderByOptions,
-    search?: string
+    search?: string,
+    type: McaComponentType
 };
 
 export interface McaService {
 
-    getMcaComponentsCount(): Promise<number>;
+    getMcaComponentsCount(request: {type: McaComponentType }): Promise<number>;
 
     listMcaComponents(request: McaComponentListRequest): Promise<McaComponentListResult>
 

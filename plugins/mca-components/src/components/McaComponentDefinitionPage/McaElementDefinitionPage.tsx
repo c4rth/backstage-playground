@@ -1,6 +1,7 @@
 import { ResponseErrorPanel, TabbedLayout } from "@backstage/core-components";
 import { McaElementAboutCard } from "./McaElementAboutCard";
 import { McaElementFieldsCard } from "./McaElementFieldsCard";
+import { McaElementMethodsCard } from "./McaElementMethodsCard";
 
 export interface McaElementDefinitionPageProps {
     mcaComponent: any;
@@ -21,6 +22,9 @@ export const McaElementDefinitionPage = (props: McaElementDefinitionPageProps) =
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/fields" title="Fields">
                 <McaElementFieldsCard element={element} />
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/methods" title="Methods">
+                <McaElementMethodsCard element={element} />
             </TabbedLayout.Route>
         </TabbedLayout>
     );

@@ -42,8 +42,6 @@ function mapMcaVersions(mca: McaComponent | undefined): McaComponentVersion[] {
   return versions;
 }
 
-
-
 export const McaComponentDefinitionPage = () => {
   const { name } = useParams();
   const [searchParams] = useSearchParams();

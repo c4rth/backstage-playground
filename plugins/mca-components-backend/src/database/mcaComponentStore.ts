@@ -3,7 +3,7 @@ import {
   LoggerService,
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
-import { McaComponent, McaComponentListResult } from '@internal/plugin-mca-components-common';
+import { McaComponent, McaComponentListResult, McaComponentType } from '@internal/plugin-mca-components-common';
 
 import { Knex } from 'knex';
 import { DbMcaRow } from './tables';
@@ -12,8 +12,8 @@ import { McaComponentOrderByOptions } from '../services/McaService/types';
 export interface McaComponentsStore {
 
   getMcaComponent(component: string): Promise<McaComponent | undefined>;
-  getMcaComponents(limit: number, offset: number, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult>;
-  getMcaComponentsCount(): Promise<number>;
+  getMcaComponents(limit: number, offset: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string,): Promise<McaComponentListResult>;
+  getMcaComponentsCount(type: McaComponentType): Promise<number>;
 
 }
 
@@ -94,13 +94,19 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
     return undefined;
   }
 
-  async getMcaComponents(offset: number, limit: number, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
+  async getMcaComponents(offset: number, limit: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
     this.logger.info(`Fetch mca components`);
 
     const baseQuery = this.db<DbMcaRow>('mca')
       .select('*')
       .offset(offset)
       .limit(limit);
+
+    if (type === 'element') {
+      baseQuery.where('type', 'like', 'e');
+    } else if (type === 'operation') {
+      baseQuery.where('type', 'like', 'o');
+    }
 
     if (search) {
       const searchQuery = [
@@ -147,9 +153,16 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
     };;
   }
 
-  async getMcaComponentsCount(): Promise<number> {
+  async getMcaComponentsCount(type: McaComponentType): Promise<number> {
     this.logger.info(`Mca components count`);
-    const total = await this.db<DbMcaRow>('mca').count({ count: '*' });
+    const baseQuery = this.db<DbMcaRow>('mca')
+      .count({ count: '*' });
+    if (type === 'element') {
+      baseQuery.where('component', 'like', 'E%');
+    } else if (type === 'operation') {
+      baseQuery.where('component', 'like', 'O%');
+    }
+    const total = await baseQuery;
     this.logger.info(`Mca components count: ${JSON.stringify(total)}`);
     return Number(total[0].count);
   }

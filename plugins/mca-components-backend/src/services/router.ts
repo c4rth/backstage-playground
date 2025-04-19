@@ -2,7 +2,7 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { DatabaseMcaComponentsStore } from '../database/mcaComponentStore';
 import { DatabaseService, LoggerService } from '@backstage/backend-plugin-api';
-import { MCACOMPONENT_FIELDS } from '@internal/plugin-mca-components-common';
+import { MCACOMPONENT_FIELDS, McaComponentType } from '@internal/plugin-mca-components-common';
 import { createMcaService } from './McaService';
 import { parseOrderByParam, parseSearchParam } from './utils';
 
@@ -36,15 +36,17 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, MCACOMPONENT_FIELDS);
     const search = parseSearchParam(req.query.search);
-    res.json(await mcaService.listMcaComponents({ limit, offset, orderBy, search }));
+    const type = req.query.type as McaComponentType;
+    res.json(await mcaService.listMcaComponents({ limit, offset, type, orderBy, search }));
   });
 
   router.get('/mca/components/:component', async (req, res) => {
     res.json(await mcaService.getMcaComponent({ component: req.params.component }));
   });
 
-  router.get('/mca/count', async (_req, res) => {
-    res.json(await mcaService.getMcaComponentsCount());
+  router.get('/mca/count', async (req, res) => {    
+    const type = req.query.type as McaComponentType;
+    res.json(await mcaService.getMcaComponentsCount({type}));
   });
 
   return router;

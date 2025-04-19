@@ -9,10 +9,13 @@ import { Box } from '@material-ui/core';
 import {
     McaComponent,
     McaComponentListOptions,
+    McaComponentType,
 } from '@internal/plugin-mca-components-common';
-import { useGetMcaComponentsCount } from '@internal/plugin-mca-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
+import { Query } from '@material-table/core';
+import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
+import { useEffect, useState } from 'react';
 
 type TableRow = {
     id: number,
@@ -108,9 +111,67 @@ const columns: TableColumn<TableRow>[] = [
 
 const PAGE_SIZE = 20;
 
-export const McaComponentTable = () => {
-    const { count: countRows, loading, error } = useGetMcaComponentsCount();
+type McaComponentTableProps = {
+    type: McaComponentType;
+};
+
+async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>, type: McaComponentType, countRows: number) {
+    const page = query.page || 0;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const result = await mcaApi.listMcaComponents({
+        offset: page * pageSize,
+        limit: pageSize,
+        search: query.search,
+        orderBy: query?.orderBy &&
+            ({
+                field: query.orderBy.field,
+                direction: query.orderDirection,
+            } as McaComponentListOptions['orderBy']),
+        type: type,
+    });
+    return {
+        data: result?.items.map(toEntityRow) || [],
+        totalCount: countRows,
+        page: Math.floor(result.offset / result.limit),
+    };
+}
+
+function getCount(mcaApi: McaComponentsBackendApi, type: McaComponentType) {
+    return mcaApi.getMcaComponentsCount(type);
+}
+
+function getTitle(type: McaComponentType) {
+    switch (type) {
+        case 'operation':
+            return 'Operations';
+        case 'element':
+            return 'Elements';
+        case 'all':
+            return 'All components';
+        default:
+            return 'Unknown type';
+    }
+}
+
+export const McaComponentTable = (props: McaComponentTableProps) => {
     const mcaApi = useApi(mcaComponentsBackendApiRef);
+    const [selectedType, setSelectedType] = useState<McaComponentType>(props.type);
+    const [countRows, setCountRows] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+        setSelectedType(props.type);
+        getCount(mcaApi, props.type).then(count => {
+            setCountRows(count);
+            setLoading(false);
+        }).catch(err => {
+            setError(err);
+            setLoading(false);
+        }
+        );
+    }, [props.type, mcaApi]);
+
 
     if (loading) {
         return <Progress />;
@@ -120,6 +181,7 @@ export const McaComponentTable = () => {
     }
     return (
         <Table<TableRow>
+            key={selectedType}
             columns={columns}
             options={{
                 paginationPosition: 'bottom',
@@ -132,28 +194,13 @@ export const McaComponentTable = () => {
             title={
                 <Box display="flex" alignItems="center">
                     <Box mr={1} />
-                    MCA Components ({countRows})
+                    {getTitle(selectedType)} ({countRows})
                 </Box>
             }
-            data={async query => {
-                const page = query.page || 0;
-                const pageSize = query.pageSize || PAGE_SIZE;
-                const result = await mcaApi.listMcaComponents({
-                    offset: page * pageSize,
-                    limit: pageSize,
-                    search: query.search,
-                    orderBy: query?.orderBy &&
-                        ({
-                            field: query.orderBy.field,
-                            direction: query.orderDirection,
-                        } as McaComponentListOptions['orderBy']),
-                });
-                return {
-                    data: result?.items.map(toEntityRow) || [],
-                    totalCount: countRows,
-                    page: Math.floor(result.offset / result.limit),
-                };
-            }
+            data={
+                async query => {
+                    return getData(mcaApi, query, selectedType, countRows);
+                }
             }
         />
     );
