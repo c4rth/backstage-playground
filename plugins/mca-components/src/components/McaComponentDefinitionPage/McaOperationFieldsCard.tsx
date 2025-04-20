@@ -15,10 +15,30 @@ type TableRow = {
     elementType: string,
 }
 
+function getClassName(row: TableRow) {
+    if (row.className && row.className .startsWith('dexia.gemk.operationlayer.client.')) {
+        const className = row.className.split('.').pop();
+        const element = row.elementType.split('.').pop();
+        return (
+            <div>{className} of <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link></div>
+        );
+    }
+    if (row.className && row.className.startsWith('dexia.opmk.operation')) {
+        const element = row.className.split('.').pop();
+        return (
+            <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link>
+        );
+    }
+    const element = row.className.split('.').pop();
+    return (
+        <div>{element}</div>
+    );
+}
+
 const inputColumns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
-        width: '25%',
+        width: '20%',
         field: 'name',
         defaultSort: 'asc',
         highlight: true,
@@ -31,22 +51,17 @@ const inputColumns: TableColumn<TableRow>[] = [
     {
         title: 'Class',
         width: '25%',
-        field: 'className',
+        searchable: true,
+        customFilterAndSearch: (query, row) => {
+            return `${row.className} ${row.elementType}`.toLowerCase().includes(query.toLowerCase());
+        },
         render: (row) => {
-            if (row.className && row.className.startsWith('dexia.opmk.operation')) {
-                const element = row.className.split('.').pop();
-                return (
-                    <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link>
-                );
-            }
-            return (
-                <div>{row.className}</div>
-            );
+           return getClassName(row);
         },
     },
     {
         title: 'Description',
-        width: '40%',
+        width: '48%',
         field: 'description',
         render: (row) => {
             return (
@@ -56,7 +71,7 @@ const inputColumns: TableColumn<TableRow>[] = [
     },
     {
         title: 'Mandatory',
-        width: '5%',
+        width: '7%',
         field: 'mandatory',
         render: (row) => {
             return (
@@ -70,7 +85,7 @@ const inputColumns: TableColumn<TableRow>[] = [
 const outputColumns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
-        width: '25%',
+        width: '20%',
         field: 'name',
         defaultSort: 'asc',
         highlight: true,
@@ -83,33 +98,17 @@ const outputColumns: TableColumn<TableRow>[] = [
     {
         title: 'Class',
         width: '25%',
-        field: 'className',
-        highlight: false,
-        render: (row) => {
-            return (
-                <div>{row.className}</div>
-            );
+        searchable: true,
+        customFilterAndSearch: (query, row) => {
+            return `${row.className} ${row.elementType}`.toLowerCase().includes(query.toLowerCase());
         },
-    },
-    {
-        title: 'Element Type',
-        width: '20%',
-        field: 'elementType',
         render: (row) => {
-            if (row.elementType && row.elementType.startsWith('dexia.opmk.operation')) {
-                const element = row.elementType.split('.').pop();
-                return (
-                    <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link>
-                );
-            }
-            return (
-                <div>{row.elementType}</div>
-            );
+            return getClassName(row);
         },
     },
     {
         title: 'Description',
-        width: '30%',
+        width: '55%',
         field: 'description',
         highlight: false,
         render: (row) => {

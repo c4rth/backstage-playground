@@ -1,4 +1,4 @@
-import { Table, TableColumn } from "@backstage/core-components";
+import { Table, TableColumn, Link } from "@backstage/core-components";
 import { Box } from "@material-ui/core";
 
 export interface McaElementFieldsCardProps {
@@ -9,14 +9,34 @@ type TableRow = {
     id: number,
     name: string,
     className: string,
+    elementType: string,
     description: string,
     mandatory: boolean,
+}
+
+function getClassName(row: TableRow) {
+    if (row.className && row.className === 'dexia.gemk.operationlayer.client.BaseTypeList') {
+        const element = row.elementType.split('.').pop();
+        return (
+            <div>List of <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link></div>
+        );
+    }
+    if (row.className && row.className.startsWith('dexia.opmk.operation')) {
+        const element = row.className.split('.').pop();
+        return (
+            <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link>
+        );
+    }
+    const element = row.className.split('.').pop();
+    return (
+        <div>{element}</div>
+    );
 }
 
 const columns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
-        width: '25%',
+        width: '20%',
         field: 'name',
         defaultSort: 'asc',
         highlight: true,
@@ -29,19 +49,18 @@ const columns: TableColumn<TableRow>[] = [
     {
         title: 'Class',
         width: '25%',
-        field: 'className',
-        highlight: false,
+        searchable: true,
+        customFilterAndSearch: (query, row) => {
+            return `${row.className} ${row.elementType}`.toLowerCase().includes(query.toLowerCase());
+        },
         render: (row) => {
-            return (
-                <div>{row.className}</div>
-            );
+           return getClassName(row);
         },
     },
     {
         title: 'Description',
-        width: '40%',
+        width: '48%',
         field: 'description',
-        highlight: false,
         render: (row) => {
             return (
                 <div>{row.description}</div>
@@ -50,9 +69,8 @@ const columns: TableColumn<TableRow>[] = [
     },
     {
         title: 'Mandatory',
-        width: '5%',
+        width: '7%',
         field: 'mandatory',
-        highlight: true,
         render: (row) => {
             return (
                 <div>{row.mandatory ? 'Y' : 'N'}</div>
@@ -95,6 +113,7 @@ function toTableRows(
             id: index,
             name: item.field.name,
             className: item.field.className,
+            elementType: item.field.elementType,
             description: item.field.description,
             mandatory: item.mandatory,
         }));
@@ -104,6 +123,7 @@ function toTableRows(
             id: 0,
             name: fields.field.name,
             className: fields.field.className,
+            elementType: fields.field.elementType,
             description: fields.field.description,
             mandatory: fields.mandatory,
         },
