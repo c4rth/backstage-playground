@@ -124,7 +124,6 @@ export const McaOperationFieldsCard = (props: McaOperationFieldsCardProps) => {
     const inputFieldRows = toInputTableRows(operation.inputFields.FieldInput);
     const outputFieldRows = toOutputTableRows(operation.outputFields.field);
 
-
     return (
         <>
             <Table<TableRow>
