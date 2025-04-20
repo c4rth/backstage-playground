@@ -174,8 +174,8 @@ const routes = (
     <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
     <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
-    <Route path="/mca-components/mca" element={<McaComponentExplorerPage />} />
-    <Route path="/mca-components/mca/:name" element={<McaComponentDefinitionPage />} />
+    <Route path="/mca-components/components" element={<McaComponentExplorerPage />} />
+    <Route path="/mca-components/components/:name" element={<McaComponentDefinitionPage />} />
     <Route path="/devtools"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>

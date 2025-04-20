@@ -36,7 +36,7 @@ const inputColumns: TableColumn<TableRow>[] = [
             if (row.className && row.className.startsWith('dexia.opmk.operation')) {
                 const element = row.className.split('.').pop();
                 return (
-                    <Link to={`/mca-components/mca/${element}`}><b>{element}</b></Link>
+                    <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link>
                 );
             }
             return (
@@ -99,7 +99,7 @@ const outputColumns: TableColumn<TableRow>[] = [
             if (row.elementType && row.elementType.startsWith('dexia.opmk.operation')) {
                 const element = row.elementType.split('.').pop();
                 return (
-                    <Link to={`/mca-components/mca/${element}`}><b>{element}</b></Link>
+                    <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link>
                 );
             }
             return (

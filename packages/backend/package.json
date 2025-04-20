@@ -60,6 +60,7 @@
     "@internal/plugin-api-platform-backend": "workspace:^",
     "@internal/plugin-mca-components-backend": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",
+    "@internal/plugin-search-backend-module-mca-components": "workspace:^",
     "@internal/scaffolder-backend-module-azure-repositories": "workspace:^",
     "app": "0.0.0",
     "node-gyp": "^10.0.0",

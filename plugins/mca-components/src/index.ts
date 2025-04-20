@@ -1,6 +1,7 @@
 export { 
   McaComponentExplorerPage,
-  McaComponentDefinitionPage
+  McaComponentDefinitionPage,
+  McaComponentSearchResultListItem,
  } from './plugin';
 
  export * from './hooks';

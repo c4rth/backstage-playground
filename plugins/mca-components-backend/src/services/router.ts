@@ -36,7 +36,7 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, MCACOMPONENT_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const type = req.query.type as McaComponentType;
+    const type = (req.query.type || 'all') as McaComponentType;
     res.json(await mcaService.listMcaComponents({ limit, offset, type, orderBy, search }));
   });
 

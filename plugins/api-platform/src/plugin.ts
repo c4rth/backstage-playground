@@ -95,8 +95,7 @@ export const ApiPlatformSearchResultListItem: (
       import('./components/ApiPlatformSearchResultListItem').then(
         m => m.ApiPlatformSearchResultListItem,
       ),
-    predicate: result =>
-      result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.')
+    predicate: result => result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.')
   }),
 );
 

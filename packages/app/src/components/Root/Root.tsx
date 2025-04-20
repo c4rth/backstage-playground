@@ -46,6 +46,7 @@ import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { adminToolsPermission } from '@internal/plugin-permissions-common';
+import { McaComponentSearchResultListItem } from '@internal/plugin-mca-components';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -82,6 +83,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
         <SidebarSearchModal resultItemComponents={[
           <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />,
+          <McaComponentSearchResultListItem icon={<CodeIcon />} />,
           <CatalogSearchResultListItem icon={<CatalogIcon />} />,
           <TechDocsSearchResultListItem icon={<DocsIcon />} />
         ]} />
@@ -138,7 +140,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
         <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
-        <SidebarItem icon={CodeIcon} to="mca-components/mca" text="MCA" />
+        <SidebarItem icon={CodeIcon} to="mca-components/components" text="MCA" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={LibraryBooks} to="external-docs" text="ExtDocs" />
         <RequirePermission permission={taskCreatePermission} errorPage={<div />} >
