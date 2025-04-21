@@ -1,7 +1,7 @@
 import { ResponseErrorPanel, TabbedLayout } from "@backstage/core-components";
-import { McaElementAboutCard } from "./McaElementAboutCard";
-import { McaElementFieldsCard } from "./McaElementFieldsCard";
-import { McaElementMethodsCard } from "./McaElementMethodsCard";
+import { McaElementAboutCard } from "../McaComponentAboutCard";
+import { McaElementFieldsCard } from "../McaComponentFieldsCard";
+import { McaElementMethodsCard } from "../McaComponentMethodsCard";
 
 export interface McaElementDefinitionPageProps {
     mcaComponent: any;

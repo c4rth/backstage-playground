@@ -74,8 +74,7 @@ export const McaComponentDefinitionPage = () => {
       setMca(undefined);
       setLoading(true);
       setError(null);
-    };
-  
+    };  
     resetState();
     getMca(mcaApi, name!).then(component => {
       setVersions([]);

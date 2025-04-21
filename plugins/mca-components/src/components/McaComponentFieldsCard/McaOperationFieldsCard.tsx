@@ -10,9 +10,9 @@ type TableRow = {
     id: number,
     name: string,
     className: string,
+    elementType: string,
     description: string,
     mandatory: boolean,
-    elementType: string,
 }
 
 function getClassName(row: TableRow) {
