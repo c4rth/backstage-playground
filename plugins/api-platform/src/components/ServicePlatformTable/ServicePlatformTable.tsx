@@ -125,6 +125,7 @@ const columns: TableColumn<TableRow>[] = [
 
 export const ServicePlatformTable = () => {
     const { items, loading, error } = useGetServices();
+    const initialSearch = sessionStorage.getItem('servicePlatformTableSearch') || '';
 
     if (loading) {
         return <Progress />;
@@ -145,7 +146,11 @@ export const ServicePlatformTable = () => {
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
                 draggable: false,
-                thirdSortClick: false,     
+                thirdSortClick: false, 
+                searchText: initialSearch,    
+            }}
+            onSearchChange={search => {
+                sessionStorage.setItem('servicePlatformTableSearch', search);
             }}
             title={
                 <Box display="flex" alignItems="center">

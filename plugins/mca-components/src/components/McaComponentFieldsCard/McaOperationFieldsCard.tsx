@@ -1,4 +1,4 @@
-import { Table, TableColumn, Link } from "@backstage/core-components";
+import { Table, TableColumn, Link, StatusOK, StatusAborted } from "@backstage/core-components";
 import { Box } from "@material-ui/core";
 
 export interface McaOperationFieldsCardProps {
@@ -16,7 +16,7 @@ type TableRow = {
 }
 
 function getClassName(row: TableRow) {
-    if (row.className && row.className .startsWith('dexia.gemk.operationlayer.client.')) {
+    if (row.className && row.className.startsWith('dexia.gemk.operationlayer.client.')) {
         const className = row.className.split('.').pop();
         const element = row.elementType.split('.').pop();
         return (
@@ -56,7 +56,7 @@ const inputColumns: TableColumn<TableRow>[] = [
             return `${row.className} ${row.elementType}`.toLowerCase().includes(query.toLowerCase());
         },
         render: (row) => {
-           return getClassName(row);
+            return getClassName(row);
         },
     },
     {
@@ -75,7 +75,7 @@ const inputColumns: TableColumn<TableRow>[] = [
         field: 'mandatory',
         render: (row) => {
             return (
-                <div>{row.mandatory ? 'Y' : 'N'}</div>
+                row.mandatory ? <StatusOK /> : <StatusAborted />
             );
         },
     },
@@ -133,7 +133,7 @@ export const McaOperationFieldsCard = (props: McaOperationFieldsCardProps) => {
                     padding: 'dense',
                     paging: false,
                     draggable: false,
-                    thirdSortClick: false,     
+                    thirdSortClick: false,
                 }}
                 title={
                     <Box display="flex" alignItems="center">

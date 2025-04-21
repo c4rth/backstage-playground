@@ -1,4 +1,4 @@
-import { Table, TableColumn, Link } from "@backstage/core-components";
+import { Table, TableColumn, Link, StatusOK, StatusAborted } from "@backstage/core-components";
 import { Box } from "@material-ui/core";
 
 export interface McaElementFieldsCardProps {
@@ -73,7 +73,7 @@ const columns: TableColumn<TableRow>[] = [
         field: 'mandatory',
         render: (row) => {
             return (
-                <div>{row.mandatory ? 'Y' : 'N'}</div>
+                row.mandatory ? <StatusOK /> : <StatusAborted />
             );
         },
     },

@@ -17,8 +17,8 @@ export const McaComponentExplorerPage = () => {
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} MCA Explorer`;
 
   const [types, _] = useState<SelectItem[]>([{ label: 'Operations', value: 'operation' }, { label: 'Elements', value: 'element' }, { label: 'All components', value: 'all' }]);
-  const [selectedStringType, setSelectedStringType] = useState<string>('operation');
-  const [selectedType, setSelectedType] = useState<McaComponentType>('operation');
+  const [selectedStringType, setSelectedStringType] = useState<string>(sessionStorage.getItem('mcaComponentExplorerPageType') ||'operation');
+  const [selectedType, setSelectedType] = useState<McaComponentType>((sessionStorage.getItem('mcaComponentExplorerPageType') ||'operation') as McaComponentType);
 
   useEffect(() => {
     if (selectedStringType) {
@@ -28,6 +28,11 @@ export const McaComponentExplorerPage = () => {
       }
     }
   }, [selectedStringType, types]);
+
+  function handleSelectChange(selected: string) {
+    sessionStorage.setItem('mcaComponentExplorerPageType', selected);
+    setSelectedStringType(selected);
+  }
 
   return (
     <PageWithHeader
@@ -50,7 +55,7 @@ export const McaComponentExplorerPage = () => {
         <Box mb={1}>
           <Grid container>
             <Grid item md={6}>
-              <Select onChange={(selected) => { setSelectedStringType(selected.toString()) }} label="Type" items={types} selected={selectedStringType} />
+              <Select onChange={(selected) => { handleSelectChange(selected.toString()) }} label="Type" items={types} selected={selectedStringType} />
             </Grid>
           </Grid>
         </Box>

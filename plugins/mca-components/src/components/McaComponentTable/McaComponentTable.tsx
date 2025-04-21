@@ -159,6 +159,7 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
     const [countRows, setCountRows] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
+    const initialSearch = sessionStorage.getItem('mcaComponentTableSearch') || '';
 
     useEffect(() => {
         setSelectedType(props.type);
@@ -191,6 +192,7 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
                 showEmptyDataSourceMessage: !loading,
                 draggable: false,    
                 thirdSortClick: false,  
+                searchText: initialSearch,
             }}
             title={
                 <Box display="flex" alignItems="center">
@@ -200,6 +202,7 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
             }
             data={
                 async query => {
+                    sessionStorage.setItem('mcaComponentTableSearch', query.search || '');
                     return getData(mcaApi, query, selectedType, countRows);
                 }
             }

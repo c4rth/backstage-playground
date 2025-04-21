@@ -69,6 +69,7 @@ const columns: TableColumn<TableRow>[] = [
 
 export const ApiPlatformTable = () => {
     const { items, loading, error } = useGetApis();
+    const initialSearch = sessionStorage.getItem('apiPlatformTableSearch') || '';
 
     if (error) {
         return <ResponseErrorPanel error={error} />;
@@ -87,6 +88,10 @@ export const ApiPlatformTable = () => {
                 showEmptyDataSourceMessage: !loading,
                 draggable: false,
                 thirdSortClick: false,     
+                searchText: initialSearch,
+            }}
+            onSearchChange={search => {
+                sessionStorage.setItem('apiPlatformTableSearch', search);
             }}
             title={
                 <Box display="flex" alignItems="center">
