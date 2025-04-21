@@ -133,7 +133,8 @@ export const AppRegistryPage = () => {
         padding: 'dense',
         paging: false,
         showEmptyDataSourceMessage: !loading,
-        draggable: false,              
+        draggable: false,  
+        thirdSortClick: false,                 
       }}
       title={
         <Box display="flex" alignItems="center">

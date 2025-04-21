@@ -90,7 +90,8 @@ export const ServicePlatformRelationCard = (props: { dependency: 'provided' | 'c
                     search: true,
                     padding: 'dense',
                     paging: false,
-                    draggable: false,              
+                    draggable: false, 
+                    thirdSortClick: false,                  
                 }}
                 title={
                     <Box display="flex" alignItems="center">

@@ -80,7 +80,8 @@ export const SystemPlatformTable = () => {
                 paging: showPagination,
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
-                draggable: false,              
+                draggable: false,    
+                thirdSortClick: false,               
             }}
             title={
                 <Box display="flex" alignItems="center">

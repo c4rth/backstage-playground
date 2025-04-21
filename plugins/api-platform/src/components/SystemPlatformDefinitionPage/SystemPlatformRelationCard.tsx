@@ -70,7 +70,8 @@ export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service
                 padding: 'dense',
                 paging: showPagination,
                 pageSize: 20,
-                draggable: false,              
+                draggable: false,  
+                thirdSortClick: false,                 
             }}
             title={
                 <Box display="flex" alignItems="center">

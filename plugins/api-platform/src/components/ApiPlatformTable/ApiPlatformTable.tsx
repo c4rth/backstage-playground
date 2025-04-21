@@ -86,6 +86,7 @@ export const ApiPlatformTable = () => {
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
                 draggable: false,
+                thirdSortClick: false,     
             }}
             title={
                 <Box display="flex" alignItems="center">
