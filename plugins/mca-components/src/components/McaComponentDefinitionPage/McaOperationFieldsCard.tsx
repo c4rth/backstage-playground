@@ -133,7 +133,7 @@ export const McaOperationFieldsCard = (props: McaOperationFieldsCardProps) => {
                     padding: 'dense',
                     paging: false,
                     draggable: false,
-
+                    thirdSortClick: false,     
                 }}
                 title={
                     <Box display="flex" alignItems="center">

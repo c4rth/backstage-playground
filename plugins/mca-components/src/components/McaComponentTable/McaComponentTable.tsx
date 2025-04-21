@@ -189,7 +189,8 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
                 padding: 'dense',
                 pageSize: PAGE_SIZE,
                 showEmptyDataSourceMessage: !loading,
-                draggable: false,
+                draggable: false,    
+                thirdSortClick: false,  
             }}
             title={
                 <Box display="flex" alignItems="center">

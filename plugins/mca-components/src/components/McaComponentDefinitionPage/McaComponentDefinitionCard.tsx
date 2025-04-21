@@ -38,7 +38,7 @@ export const McaComponentDefinitionCard = (props: McaComponentDefinitionCardProp
         return <Progress />
     }
     if (!data) {
-        return <ResponseErrorPanel error={new Error('No data received')} />;
+        return <ResponseErrorPanel error={new Error(`No MCA component definition for '${mca.component}' received`)} />;
     }
 
     const mcaComponent = parseXML(data);

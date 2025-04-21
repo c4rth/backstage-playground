@@ -12,7 +12,8 @@ import { Box, Grid } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-components-common';
 import { McaComponentDefinitionCard } from './McaComponentDefinitionCard';
-import { useGetMcaComponent } from '../../hooks';
+import { mcaComponentsBackendApiRef } from '../../api';
+import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 
 type McaComponentVersion = {
   label: string;
@@ -42,17 +43,50 @@ function mapMcaVersions(mca: McaComponent | undefined): McaComponentVersion[] {
   return versions;
 }
 
+async function getMca(
+  mcaApi: McaComponentsBackendApi,
+  name: string,
+): Promise<McaComponent> {
+  const mca = await mcaApi.getMcaComponent(name);
+  if (!mca) {
+    throw new Error(`MCA component ${name} not found`);
+  }
+  return mca;
+}
+
 export const McaComponentDefinitionPage = () => {
+  const mcaApi = useApi(mcaComponentsBackendApiRef);
   const { name } = useParams();
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
-
-  const { mca, loading, error } = useGetMcaComponent(name!);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [mca, setMca] = useState<McaComponent | undefined>(undefined);
 
   const [versions, setVersions] = useState<SelectItem[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
 
   const isInitialLoad = useRef(true);
+
+  useEffect(() => {
+    const resetState = () => {
+      setSelectedVersion(undefined);
+      setMca(undefined);
+      setLoading(true);
+      setError(null);
+    };
+  
+    resetState();
+    getMca(mcaApi, name!).then(component => {
+      setVersions([]);
+      setMca(component);
+      setLoading(false);
+    }).catch(err => {
+      setError(err);
+      setLoading(false);
+    }
+    );
+  }, [name, mcaApi]);
 
   useEffect(() => {
     if (!selectedVersion) {
@@ -87,6 +121,7 @@ export const McaComponentDefinitionPage = () => {
 
   return (
     <PageWithHeader
+      key={name}
       themeId="apis"
       title={`MCA Component - ${name}`}
       subtitle={generatedSubtitle}>
