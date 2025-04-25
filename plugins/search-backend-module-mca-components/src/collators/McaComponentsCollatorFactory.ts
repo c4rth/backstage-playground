@@ -12,6 +12,7 @@ import { McaComponent } from '@internal/plugin-mca-components-common';
 
 export type IndexableMcaComponentDocument = IndexableDocument & {
   applicationCode: string;
+  shortName: string;
   prdVersion: string;
   otherVersions: string[];
 };
@@ -82,7 +83,8 @@ export class McaComponentsCollatorFactory implements DocumentCollatorFactory {
   ): IndexableMcaComponentDocument {
     return {
       title: mcaComponent.component,
-      text: `package: ${mcaComponent.packageName}`,
+      text: `package: dexia.opmk.operation.${mcaComponent.packageName}`,
+      shortName: mcaComponent.component.replace(/^(Operation)/,"").replace(/^(Element)/,""),
       applicationCode: mcaComponent.applicationCode,
       prdVersion: mcaComponent.prdVersion,
       otherVersions: [mcaComponent.p1Version, mcaComponent.p2Version, mcaComponent.p3Version, mcaComponent.p4Version].filter(x => x) as string[],
