@@ -235,7 +235,7 @@ catalog:
           initialDelay: { minutes: 5 }
 
 spectralLinter:
-  openApiRulesetUrl: https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/spectral/.spectral.yaml
+  openApiRulesetUrl: http://localhost:3000/spectral.yaml
 
 # https://github.com/backstage/community-plugins/blob/main/workspaces/sonarqube/plugins/sonarqube-backend/README.md
 sonarqube:
