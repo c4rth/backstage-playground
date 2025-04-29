@@ -49,5 +49,9 @@ export async function createRouter(
     res.json(await mcaService.getMcaComponentsCount({type}));
   });
 
+  router.get('/mca/versions', async (_req, res) => {    
+    res.json(await mcaService.getMcaVersions());
+  });
+
   return router;
 }

@@ -47,3 +47,10 @@ export type McaComponentListOptions = {
 };
 
 export type McaComponentType = 'element' | 'operation' | 'all';
+
+export type McaVersions = {
+  p1Version: string;
+  p2Version: string;
+  p3Version: string;
+  p4Version: string;
+};

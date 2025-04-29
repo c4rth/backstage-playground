@@ -3,7 +3,7 @@ import {
   LoggerService,
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
-import { McaComponent, McaComponentListResult, McaComponentType } from '@internal/plugin-mca-components-common';
+import { McaComponent, McaComponentListResult, McaComponentType, McaVersions } from '@internal/plugin-mca-components-common';
 
 import { Knex } from 'knex';
 import { DbMcaRow } from './tables';
@@ -14,7 +14,7 @@ export interface McaComponentsStore {
   getMcaComponent(component: string): Promise<McaComponent | undefined>;
   getMcaComponents(limit: number, offset: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string,): Promise<McaComponentListResult>;
   getMcaComponentsCount(type: McaComponentType): Promise<number>;
-
+  getMcaVersions(): Promise<McaVersions | undefined>;
 }
 
 const migrationsDir = resolvePackagePath(
@@ -74,7 +74,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
 
   async getMcaComponent(component: string): Promise<McaComponent | undefined> {
     this.logger.info(`Fetch mca ${component}`);
-    const row = await this.db<DbMcaRow>('mca')
+    const row = await this.db<DbMcaRow>('mca_components')
       .select('*')
       .where({ component: component })
       .first();
@@ -97,7 +97,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   async getMcaComponents(offset: number, limit: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
     this.logger.info(`Fetch mca components`);
 
-    const baseQuery = this.db<DbMcaRow>('mca')
+    const baseQuery = this.db<DbMcaRow>('mca_components')
       .select('*')
       .offset(offset)
       .limit(limit);
@@ -155,7 +155,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
 
   async getMcaComponentsCount(type: McaComponentType): Promise<number> {
     this.logger.info(`Mca components count`);
-    const baseQuery = this.db<DbMcaRow>('mca')
+    const baseQuery = this.db<DbMcaRow>('mca_components')
       .count({ count: '*' });
     if (type === 'element') {
       baseQuery.where('component', 'like', 'E%');
@@ -165,6 +165,23 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
     const total = await baseQuery;
     this.logger.info(`Mca components count: ${JSON.stringify(total)}`);
     return Number(total[0].count);
+  }
+
+  async getMcaVersions(): Promise<McaVersions | undefined> {
+    this.logger.info(`Fetch mca versions`);
+    const row = await this.db('mca_versions')
+      .select('*')
+      .first();
+    if (row) {
+      const mcaVersions: McaVersions = {
+        p1Version: row.p1_version,
+        p2Version: row.p2_version,
+        p3Version: row.p3_version,
+        p4Version: row.p4_version,
+      };
+      return mcaVersions;
+    }
+    return undefined;
   }
 
 }

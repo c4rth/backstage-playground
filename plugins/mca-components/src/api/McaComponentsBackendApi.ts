@@ -1,5 +1,5 @@
 import { ConfigApi, createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
-import { McaComponent, McaComponentListOptions, McaComponentListResult, McaComponentType } from "@internal/plugin-mca-components-common";
+import { McaComponent, McaComponentListOptions, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
 
 export const mcaComponentsBackendApiRef = createApiRef<McaComponentsBackendApi>({
   id: 'plugin.mca-components.service',
@@ -9,11 +9,13 @@ export interface McaComponentsBackendApi {
 
   getMcaComponentsCount(type: McaComponentType): Promise<number>;
 
-  listMcaComponents(options: McaComponentListOptions): Promise<McaComponentListResult>
+  listMcaComponents(options: McaComponentListOptions): Promise<McaComponentListResult>;
 
-  getMcaComponent(component: string): Promise<McaComponent | undefined>
+  getMcaComponent(component: string): Promise<McaComponent | undefined>;
 
-  getMcaComponentDefinition(component: string, refP: string): Promise<string | undefined>
+  getMcaComponentDefinition(component: string, refP: string): Promise<string | undefined>;
+
+  getMcaVersions(): Promise<McaVersions | undefined>;
 
 }
 
@@ -83,6 +85,17 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     const response = await this.fetchApi.fetch(url);
     return (
       response.ok ? response.text() : undefined
+    );
+  }
+
+  async getMcaVersions(): Promise<McaVersions> {
+    const url = new URL(
+      `${await this.discoveryApi.getBaseUrl('mca-components')}/mca/versions`
+    );
+    const response = await this.fetchApi.fetch(url);
+    const item = await response.json();
+    return (
+      item
     );
   }
 

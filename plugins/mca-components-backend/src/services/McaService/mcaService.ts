@@ -1,7 +1,7 @@
 import { LoggerService } from "@backstage/backend-plugin-api";
 import { McaComponentListRequest, McaService } from "./types";
 import { McaComponentsStore } from "../../database/mcaComponentStore";
-import { McaComponent, McaComponentListResult, McaComponentType } from "@internal/plugin-mca-components-common";
+import { McaComponent, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -36,6 +36,19 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
       }
       return undefined;
 
+    },
+
+    async getMcaVersions(): Promise<McaVersions> {
+      const res = await mcaComponentsStore.getMcaVersions();
+      if (res) {
+        return res;
+      }
+      return {
+        p1Version: 'P+1',
+        p2Version: 'P+2',
+        p3Version: 'P+3',
+        p4Version: 'P+4',
+      };
     }
   };
 

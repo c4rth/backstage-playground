@@ -10,6 +10,7 @@ import {
     McaComponent,
     McaComponentListOptions,
     McaComponentType,
+    McaVersions,
 } from '@internal/plugin-mca-components-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
@@ -29,85 +30,87 @@ type TableRow = {
     packageName: string,
 }
 
-const columns: TableColumn<TableRow>[] = [
-    {
-        title: 'Name',
-        width: '45%',
-        field: 'component',
-        defaultSort: 'asc',
-        highlight: true,
-        render: (row) => {
-            return (
-                <Link to={row.component}>{row.component}</Link>
-            );
+function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
+    return [
+        {
+            title: 'Name',
+            width: '45%',
+            field: 'component',
+            defaultSort: 'asc',
+            highlight: true,
+            render: (row) => {
+                return (
+                    <Link to={row.component}>{row.component}</Link>
+                );
+            },
         },
-    },
-    {
-        title: 'PRD',
-        width: '5%',
-        field: 'prdVersion',
-        highlight: true,
-        render: (row) => {
-            return (
-                <Link to={`${row.component}?version=${row.prdVersion}`}>{row.prdVersion}</Link>
-            );
+        {
+            title: 'PRD',
+            width: '5%',
+            field: 'prdVersion',
+            highlight: true,
+            render: (row) => {
+                return (
+                    <Link to={`${row.component}?version=${row.prdVersion}`}>{row.prdVersion}</Link>
+                );
+            },
         },
-    },
-    {
-        title: 'P+1',
-        width: '5%',
-        field: 'p1Version',
-        highlight: true,
-        render: (row) => {
-            return (
-                <Link to={`${row.component}?version=${row.p1Version}`}>{row.p1Version}</Link>
-            );
+        {
+            title: versions?.p1Version || 'P+1',
+            width: '5%',
+            field: 'p1Version',
+            highlight: true,
+            render: (row) => {
+                return (
+                    <Link to={`${row.component}?version=${row.p1Version}`}>{row.p1Version}</Link>
+                );
+            },
         },
-    },
-    {
-        title: 'P+2',
-        width: '5%',
-        field: 'p2Version',
-        highlight: true,
-        render: (row) => {
-            return (
-                <Link to={`${row.component}?version=${row.p2Version}`}>{row.p2Version}</Link>
-            );
+        {
+            title: versions?.p2Version || 'P+2',
+            width: '5%',
+            field: 'p2Version',
+            highlight: true,
+            render: (row) => {
+                return (
+                    <Link to={`${row.component}?version=${row.p2Version}`}>{row.p2Version}</Link>
+                );
+            },
         },
-    },
-    {
-        title: 'P+3',
-        width: '5%',
-        field: 'p3Version',
-        highlight: true,
-        render: (row) => {
-            return (
-                <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
-            );
+        {
+            title: versions?.p3Version || 'P+3',
+            width: '5%',
+            field: 'p3Version',
+            highlight: true,
+            render: (row) => {
+                return (
+                    <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
+                );
+            },
         },
-    },
-    {
-        title: 'P+4',
-        width: '5%',
-        field: 'p4Version',
-        highlight: true,
-        render: (row) => {
-            return (
-                <Link to={`${row.component}?version=${row.p4Version}`}>{row.p4Version}</Link>
-            );
+        {
+            title: versions?.p4Version || 'P+4',
+            width: '5%',
+            field: 'p4Version',
+            highlight: true,
+            render: (row) => {
+                return (
+                    <Link to={`${row.component}?version=${row.p4Version}`}>{row.p4Version}</Link>
+                );
+            },
         },
-    },
-    {
-        title: 'Package',
-        width: '20%',
-        field: 'packageName',
-    },
-    {
-        title: 'System',
-        width: '10%',
-        field: 'applicationCode',
-    },
-];
+        {
+            title: 'Package',
+            width: '20%',
+            field: 'packageName',
+        },
+        {
+            title: 'System',
+            width: '10%',
+            field: 'applicationCode',
+        },
+    ];
+}
 
 const PAGE_SIZE = 20;
 
@@ -140,6 +143,10 @@ function getCount(mcaApi: McaComponentsBackendApi, type: McaComponentType) {
     return mcaApi.getMcaComponentsCount(type);
 }
 
+function getVersions(mcaApi: McaComponentsBackendApi) {
+    return mcaApi.getMcaVersions();
+}
+
 function getTitle(type: McaComponentType) {
     switch (type) {
         case 'operation':
@@ -156,25 +163,37 @@ function getTitle(type: McaComponentType) {
 export const McaComponentTable = (props: McaComponentTableProps) => {
     const mcaApi = useApi(mcaComponentsBackendApiRef);
     const [selectedType, setSelectedType] = useState<McaComponentType>(props.type);
+    const [mcaVersions, setMcaVersions] = useState<McaVersions>();
     const [countRows, setCountRows] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loadingCount, setLoadingCount] = useState<boolean>(true);
+    const [loadingVersions, setLoadingVersions] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
     const initialSearch = sessionStorage.getItem('mcaComponentTableSearch') || '';
+
+    useEffect(() => {
+        getVersions(mcaApi).then(versions => {
+            setMcaVersions(versions);
+            setLoadingVersions(false);
+        }).catch(err => {
+            setError(err);
+            setLoadingVersions(false);   
+        });
+    }, [mcaApi])
 
     useEffect(() => {
         setSelectedType(props.type);
         getCount(mcaApi, props.type).then(count => {
             setCountRows(count);
-            setLoading(false);
+            setLoadingCount(false);
         }).catch(err => {
             setError(err);
-            setLoading(false);
+            setLoadingCount(false);
         }
         );
     }, [props.type, mcaApi]);
 
 
-    if (loading) {
+    if (loadingVersions || loadingCount) {
         return <Progress />;
     }
     if (error) {
@@ -183,15 +202,15 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
     return (
         <Table<TableRow>
             key={selectedType}
-            columns={columns}
+            columns={getColumns(mcaVersions)}
             options={{
                 paginationPosition: 'bottom',
                 search: true,
                 padding: 'dense',
                 pageSize: PAGE_SIZE,
-                showEmptyDataSourceMessage: !loading,
-                draggable: false,    
-                thirdSortClick: false,  
+                showEmptyDataSourceMessage: !loadingVersions && !loadingCount,
+                draggable: false,
+                thirdSortClick: false,
                 searchText: initialSearch,
             }}
             title={
