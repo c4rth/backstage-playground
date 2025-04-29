@@ -23,9 +23,10 @@ appRegistry:
   fetch: &appRegistryFetchUrl http://localhost:8080/actuator
   version: v2
 
-mcaOperationSources:
-  baseUrl: &mcaOperationSourcesUrl http://localhost:8080
+mcaComponents:
+  serviceBaseUrl: &mcaComponentsServiceUrl http://localhost:8080
   defaultPackage: dexia.opmk.operation
+  baseTypesUrl: https://docs.oracle.com/en/java/javase/24/docs/api/java.base
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
@@ -122,7 +123,7 @@ proxy:
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
     '/operations-sources':
-      target: *mcaOperationSourcesUrl
+      target: *mcaComponentsServiceUrl
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true
@@ -243,7 +244,6 @@ sonarqube:
   instanceKey: mySonarqube
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
-
   
 devTools:
   externalDependencies:

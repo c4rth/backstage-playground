@@ -1,14 +1,19 @@
 export interface Config {
-  mcaOperationSources?: {
+  mcaComponents?: {
     /**
     * The 'baseUrl' attribute
     * @visibility frontend
     */
-    baseUrl?: string;
+    serviceBaseUrl?: string;
     /**
     * The 'defaultPackage' attribute
     * @visibility frontend
     */
     defaultPackage?: string;
+    /**
+     * The 'baseTypesUrl' attribute
+     * @visibility frontend
+     */
+    baseTypesUrl?: string;
   };
 }

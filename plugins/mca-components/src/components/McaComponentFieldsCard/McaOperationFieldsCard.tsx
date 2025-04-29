@@ -29,9 +29,14 @@ function getClassName(row: TableRow) {
             <Link to={`/mca-components/components/${element}`}><b>{element}</b></Link>
         );
     }
-    const element = row.className.split('.').pop();
+    if (row.className && row.className.startsWith('dexia.opmk.basetypes')) {
+        const element = row.className.split('.').pop();
+        return (
+            <Link to={`/mca-components/basetypes/${row.className}`}><b>{element}</b></Link>
+        );
+    }
     return (
-        <div>{element}</div>
+        <div>{row.className}</div>
     );
 }
 

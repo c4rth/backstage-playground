@@ -55,3 +55,24 @@ export const McaComponentSearchResultListItem: (
     predicate: result => result.type === 'mca-components',
   }),
 );
+
+
+export const McaBaseTypesPage = mcaComponentPlugin.provide(
+  createComponentExtension({
+    name: 'McaBaseTypesPage',
+    component: {
+      lazy: () =>
+        import('./components/McaBaseTypesPage').then(m => m.McaBaseTypesPage),
+    }
+  }),
+);
+
+export const McaBaseTypePage = mcaComponentPlugin.provide(
+  createComponentExtension({
+    name: 'McaBaseTypePage',
+    component: {
+      lazy: () =>
+        import('./components/McaBaseTypesPage').then(m => m.McaBaseTypePage),
+    }
+  }),
+);
