@@ -29,7 +29,7 @@ export const McaComponentDefinitionCard = (props: McaComponentDefinitionCardProp
 
     const { mca, version } = props;
 
-    const { data, loading, error } = useGetMcaComponentDefinition(mca.component, mca.packageName, version);
+    const { data, loading, error } = useGetMcaComponentDefinition(mca.component, version);
 
     if (error) {
         return <ResponseErrorPanel error={error} />;
