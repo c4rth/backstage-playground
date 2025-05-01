@@ -61,7 +61,7 @@ async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>, 
     });
     return {
         data: result?.items.map(toEntityRow) || [],
-        totalCount: countRows,
+        totalCount: result?.totalCount || countRows,
         page: Math.floor(result.offset / result.limit),
     };
 }

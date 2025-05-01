@@ -33,7 +33,7 @@ function getClassName(row: TableRow) {
     if (row.className && row.className.startsWith('dexia.opmk.basetypes')) {
         const element = row.className.split('.').pop();
         return (
-            <Link to={`/mca-components/basetypes/${row.className}`}><b>{element}</b></Link>
+            <Link to={`/mca-components/basetypes/${element}`}><b>{element}</b></Link>
         );
     }
     return (

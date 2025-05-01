@@ -121,11 +121,15 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
       .select('*')
       .offset(offset)
       .limit(limit);
+    const countQuery = this.db<DbMcaRow>('mca_components')
+      .count({ count: '*' });
 
     if (type === 'element') {
       baseQuery.where('type', 'like', 'e');
+      countQuery.where('type', 'like', 'e');
     } else if (type === 'operation') {
       baseQuery.where('type', 'like', 'o');
+      countQuery.where('type', 'like', 'o');
     }
 
     if (search) {
@@ -139,8 +143,8 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
         'application_code',
         'package_name',
       ].map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
-
       baseQuery.and.whereRaw(`(${searchQuery})`, Array(8).fill(`%${search.toLowerCase()}%`));
+      countQuery.and.whereRaw(`(${searchQuery})`, Array(8).fill(`%${search.toLowerCase()}%`));
     }
 
     if (orderBy) {
@@ -148,6 +152,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
     }
     this.logger.debug(`Mca components query: ${baseQuery.toQuery()}`);
 
+    const total = await countQuery;
     const result = await baseQuery;
 
     if (result) {
@@ -165,12 +170,14 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
         items: mcaComponents,
         offset,
         limit,
+        totalCount: Number(total[0].count),
       };
     }
     return {
       items: [],
       offset,
       limit,
+      totalCount: 0,
     };
   }
 
@@ -222,19 +229,23 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
       .select('*')
       .offset(offset)
       .limit(limit);
+    const countQuery = this.db<DbMcaRow>('mca_basetypes')
+      .count({ count: '*' });
 
     if (search) {
       const searchQuery = [
         'base_type',
         'package_name',
       ].map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
-
       baseQuery.and.whereRaw(`(${searchQuery})`, Array(2).fill(`%${search.toLowerCase()}%`));
+      countQuery.and.whereRaw(`(${searchQuery})`, Array(2).fill(`%${search.toLowerCase()}%`));
     }
 
     if (orderBy) {
       baseQuery.orderBy(mapMcaBaseTypeOrderByField(orderBy.field), orderBy.direction);
     }
+
+    const total = await countQuery;
     const result = await baseQuery;
 
     if (result) {
@@ -246,12 +257,14 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
         items: mcaBaseTypes,
         offset,
         limit,
+        totalCount: Number(total[0].count),
       };
     }
     return {
       items: [],
       offset,
       limit,
+      totalCount: 0,
     };
   }
 

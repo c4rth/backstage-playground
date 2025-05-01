@@ -13,6 +13,7 @@ export type McaComponentListResult = {
   items: McaComponent[];
   offset: number;
   limit: number;
+  totalCount: number;
 };
 
 export type McaComponentListFields =
@@ -83,4 +84,5 @@ export type McaBaseTypeListResult = {
   items: McaBaseType[];
   offset: number;
   limit: number;
+  totalCount: number;
 };
