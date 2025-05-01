@@ -92,7 +92,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   }
 
   async getMcaComponent(component: string): Promise<McaComponent | undefined> {
-    this.logger.info(`Fetch mca ${component}`);
+    this.logger.debug(`Fetch mca ${component}`);
     const row = await this.db<DbMcaRow>('mca_components')
       .select('*')
       .where({ component: component })
@@ -115,7 +115,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
 
   async getMcaComponents(offset: number, limit: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
 
-    this.logger.info(`Fetch mca components with offset: ${offset}, limit: ${limit}, type: ${type}, orderBy: ${orderBy}, search: ${search}`);
+    this.logger.debug(`Fetch mca components with offset: ${offset}, limit: ${limit}, type: ${type}, orderBy: ${orderBy}, search: ${search}`);
 
     const baseQuery = this.db<DbMcaRow>('mca_components')
       .select('*')
@@ -146,7 +146,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
     if (orderBy) {
       baseQuery.orderBy(mapMcaComponentOrderByField(orderBy.field), orderBy.direction);
     }
-    this.logger.info(`Mca components query: ${baseQuery.toQuery()}`);
+    this.logger.debug(`Mca components query: ${baseQuery.toQuery()}`);
 
     const result = await baseQuery;
 
@@ -175,7 +175,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   }
 
   async getMcaComponentsCount(type: McaComponentType): Promise<number> {
-    this.logger.info(`Mca components count`);
+    this.logger.debug(`Mca components count`);
     const baseQuery = this.db<DbMcaRow>('mca_components')
       .count({ count: '*' });
     if (type === 'element') {
@@ -184,12 +184,12 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
       baseQuery.where('component', 'like', 'O%');
     }
     const total = await baseQuery;
-    this.logger.info(`Mca components count: ${JSON.stringify(total)}`);
+    this.logger.debug(`Mca components count: ${JSON.stringify(total)}`);
     return Number(total[0].count);
   }
 
   async getMcaVersions(): Promise<McaVersions | undefined> {
-    this.logger.info(`Fetch mca versions`);
+    this.logger.debug(`Fetch mca versions`);
     const row = await this.db('mca_versions')
       .select('*')
       .first();
@@ -206,17 +206,17 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   }
 
   async getMcaBaseTypesCount(): Promise<number> {
-    this.logger.info(`Mca basetypes count`);
+    this.logger.debug(`Mca basetypes count`);
     const baseQuery = this.db<DbBaseTypeRow>('mca_basetypes')
       .count({ count: '*' });
     const total = await baseQuery;
-    this.logger.info(`Mca basetypes count: ${JSON.stringify(total)}`);
+    this.logger.debug(`Mca basetypes count: ${JSON.stringify(total)}`);
     return Number(total[0].count);
   }
 
   async getMcaBaseTypes(offset: number, limit: number, orderBy?: McaBaseTypeOrderByOptions, search?: string): Promise<McaBaseTypeListResult> {
 
-    this.logger.info(`Fetch mca basetypes with offset: ${offset}, limit: ${limit}, orderBy: ${orderBy}, search: ${search}`);
+    this.logger.debug(`Fetch mca basetypes with offset: ${offset}, limit: ${limit}, orderBy: ${orderBy}, search: ${search}`);
 
     const baseQuery = this.db<DbBaseTypeRow>('mca_basetypes')
       .select('*')
@@ -256,7 +256,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   }
 
   async getMcaBaseType(baseTypeName: string): Promise<McaBaseType | undefined> {
-    this.logger.info(`Fetch mca ${baseTypeName}`);
+    this.logger.debug(`Fetch mca ${baseTypeName}`);
     const row = await this.db<DbBaseTypeRow>('mca_basetypes')
       .select('*')
       .where({ base_type: baseTypeName })
@@ -272,7 +272,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   }
 
   async addOrUpdateMcaVersions(mcaVersions: McaVersions): Promise<void> {
-    this.logger.info(`Update mca versions`);
+    this.logger.debug(`Update mca versions`);
     await this.db('mca_versions')
       .insert({
         version: 'current',

@@ -108,7 +108,6 @@ export async function createRouter(
 
   router.post('/service-informations', async (req, res) => {
     const serviceInformation: ServiceInformation = req.body;
-    logger.info("POST service-informations", serviceInformation);
     res.status(201).json(await servicePlatformService.addServiceInformation({ serviceInformation }));
   });
 

@@ -47,7 +47,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   }
 
   async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
-    this.logger.info(`Add service ${serviceInformation}`);
+    this.logger.debug(`Add service ${serviceInformation}`);
     await this.db('services').insert({
       applicationCode: serviceInformation.applicationCode,
       service: serviceInformation.serviceName,
@@ -61,12 +61,12 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   }
 
   async getServiceInformation(applicationCode: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined> {
-    this.logger.info(`Fetch service ${applicationCode}-${service}-${version}-${imageVersion}`);
+    this.logger.debug(`Fetch service ${applicationCode}-${service}-${version}-${imageVersion}`);
     const result = await this.db<DbServicesRow>('services')
       .select('*')
       .where({ service: service, version: version, imageVersion: imageVersion })
       .first();
-    this.logger.info(`Result: ${JSON.stringify(result)}`);
+    this.logger.debug(`Result: ${JSON.stringify(result)}`);
     if (result) {
       const info: ServiceInformation = {
         applicationCode: result.applicationCode,

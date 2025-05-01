@@ -3,7 +3,7 @@ import { McaBaseTypeListRequest, McaComponentListRequest, McaService } from "./t
 import { McaComponentsStore } from "../../database/mcaComponentStore";
 import { McaBaseType, McaBaseTypeListResult, McaComponent, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
 import { Config } from "@backstage/config";
-import { taskAllOperationsCsv, taskBaseTypes } from "./scheduledTasks";
+import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from "../../task";
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -19,21 +19,28 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
   logger.info('Initializing McaService');
 
   const scheduleOperations = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('mcaComponents.operations.schedule'));
-  const scheduleBaseTypes = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('mcaComponents.baseTypes.schedule'));
-
   await scheduler.scheduleTask({
     ...scheduleOperations,
     id: 'update-all-operations-csv',
     fn: async () => {
-      taskAllOperationsCsv(logger, config, mcaComponentsStore);
+      McaOperationScheduledTask.create({
+        logger,
+        mcaComponentsStore,
+        config,
+      }).runAsync();
     },
   },);
 
+  const scheduleBaseTypes = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('mcaComponents.baseTypes.schedule'));
   await scheduler.scheduleTask({
     ...scheduleBaseTypes,
     id: 'update-basetypes',
     fn: async () => {
-      taskBaseTypes(logger, config, mcaComponentsStore)
+      McaBaseTypeScheduledTask.create({
+        logger,
+        mcaComponentsStore,
+        config,
+      }).runAsync();
     },
   },);
 
