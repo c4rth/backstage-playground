@@ -2,8 +2,8 @@ export {
   McaComponentExplorerPage,
   McaComponentDefinitionPage,
   McaComponentSearchResultListItem,
-  McaBaseTypesPage,
-  McaBaseTypePage,
+  McaBaseTypeDefinitionPage,
+  McaBaseTypeExplorerPage,
  } from './plugin';
 
  export * from './hooks';

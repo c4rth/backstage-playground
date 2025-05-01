@@ -3,10 +3,14 @@ import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend
 export interface Config {
   search?: {
     collators?: {
-      /**
-       * Configuration options for `@backstage-community/plugin-search-backend-module-announcements`
-       */
       mcaComponents?: {
+        /**
+         * The schedule for how often to run the collation job.
+         */
+        schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
+        limit?: number;
+      };
+      mcaBaseTypes?: {
         /**
          * The schedule for how often to run the collation job.
          */

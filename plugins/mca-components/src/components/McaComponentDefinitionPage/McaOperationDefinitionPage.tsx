@@ -1,7 +1,6 @@
 import { ResponseErrorPanel, TabbedLayout } from "@backstage/core-components";
 import { McaOperationAboutCard } from "../McaComponentAboutCard";
 import { McaOperationFieldsCard } from "../McaComponentFieldsCard";
-import { McaOperationMethodsCard } from "../McaComponentMethodsCard";
 
 export interface McaOperationDefinitionPageProps {
     mcaComponent: any;
@@ -66,14 +65,12 @@ export const McaOperationDefinitionPage = (props: McaOperationDefinitionPageProp
             <TabbedLayout.Route path="/" title="Overview">
                 <McaOperationAboutCard operationAnalyze={operationAnalyze} operation={operation} />
             </TabbedLayout.Route>
-            <TabbedLayout.Route path="/fields" title="Fields">
-                <McaOperationFieldsCard operation={operation} operationType={operationType} />
+            <TabbedLayout.Route path="/inputfields" title="Input Fields">
+                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType='input' />
             </TabbedLayout.Route>
-            {operation.implementedMethods && (
-                <TabbedLayout.Route path="/implementedMethods" title="Implemented Methods">
-                    <McaOperationMethodsCard operation={operation} />
-                </TabbedLayout.Route>
-            )}
+            <TabbedLayout.Route path="/outputfields" title="Output Fields">
+                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType='output' />
+            </TabbedLayout.Route>
         </TabbedLayout>
     );
 }

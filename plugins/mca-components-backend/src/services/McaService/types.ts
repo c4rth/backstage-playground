@@ -1,4 +1,4 @@
-import { McaComponent, McaComponentListFields, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
+import { McaBaseType, McaBaseTypeListFields, McaBaseTypeListResult, McaComponent, McaComponentListFields, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
 
 export type McaComponentOrderByOptions = {
     field: McaComponentListFields;
@@ -13,6 +13,19 @@ export type McaComponentListRequest = {
     type: McaComponentType
 };
 
+
+export type McaBaseTypeListRequest = {
+    offset?: number,
+    limit?: number,
+    orderBy?: McaBaseTypeOrderByOptions,
+    search?: string,
+};
+
+export type McaBaseTypeOrderByOptions = {
+    field: McaBaseTypeListFields;
+    direction: 'asc' | 'desc';
+};
+
 export interface McaService {
 
     getMcaComponentsCount(request: { type: McaComponentType }): Promise<number>;
@@ -22,4 +35,10 @@ export interface McaService {
     getMcaComponent(request: { component: string }): Promise<McaComponent | undefined>
 
     getMcaVersions(): Promise<McaVersions>;
+
+    listMcaBaseTypes(request: McaBaseTypeListRequest): Promise<McaBaseTypeListResult>;
+    
+    getMcaBaseTypesCount(): Promise<number>;
+
+    getMcaBaseType(request: { baseType: string }): Promise<McaBaseType | undefined>
 }

@@ -3,11 +3,11 @@ import {
   LoggerService,
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
-import { McaComponent, McaComponentListResult, McaComponentType, McaVersions } from '@internal/plugin-mca-components-common';
+import { McaBaseType, McaBaseTypeListResult, McaComponent, McaComponentListResult, McaComponentType, McaVersions } from '@internal/plugin-mca-components-common';
 
 import { Knex } from 'knex';
-import { DbMcaRow } from './tables';
-import { McaComponentOrderByOptions } from '../services/McaService/types';
+import { DbBaseTypeRow, DbMcaRow } from './tables';
+import { McaBaseTypeOrderByOptions, McaComponentOrderByOptions } from '../services/McaService/types';
 
 export interface McaComponentsStore {
 
@@ -15,6 +15,13 @@ export interface McaComponentsStore {
   getMcaComponents(limit: number, offset: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string,): Promise<McaComponentListResult>;
   getMcaComponentsCount(type: McaComponentType): Promise<number>;
   getMcaVersions(): Promise<McaVersions | undefined>;
+  getMcaBaseTypes(limit: number, offset: number, orderBy?: McaBaseTypeOrderByOptions, search?: string,): Promise<McaBaseTypeListResult>;
+  getMcaBaseTypesCount(): Promise<number>;
+  getMcaBaseType(baseTypeName: string): Promise<McaBaseType | undefined>;
+
+  addOrUpdateMcaVersions(mcaVersions: McaVersions): Promise<void>;
+  addOrUpdateMcaComponent(mcaComponent: McaComponent): Promise<void>;
+  addOrUpdateBaseType(baseType: McaBaseType): Promise<void>;
 }
 
 const migrationsDir = resolvePackagePath(
@@ -38,6 +45,18 @@ function mapMcaComponentOrderByField(field: string): string {
       return 'p4_version';
     case 'applicationCode':
       return 'application_code';
+    case 'packageName':
+      return 'package_name';
+    default:
+      throw new Error(`Invalid order by field: ${field}`);
+  }
+}
+
+
+function mapMcaBaseTypeOrderByField(field: string): string {
+  switch (field) {
+    case 'baseType':
+      return 'base_type';
     case 'packageName':
       return 'package_name';
     default:
@@ -95,7 +114,8 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   }
 
   async getMcaComponents(offset: number, limit: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
-    this.logger.info(`Fetch mca components`);
+
+    this.logger.info(`Fetch mca components with offset: ${offset}, limit: ${limit}, type: ${type}, orderBy: ${orderBy}, search: ${search}`);
 
     const baseQuery = this.db<DbMcaRow>('mca_components')
       .select('*')
@@ -120,12 +140,13 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
         'package_name',
       ].map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
 
-      baseQuery.whereRaw(searchQuery, Array(8).fill(`%${search.toLowerCase()}%`));
+      baseQuery.and.whereRaw(`(${searchQuery})`, Array(8).fill(`%${search.toLowerCase()}%`));
     }
 
     if (orderBy) {
       baseQuery.orderBy(mapMcaComponentOrderByField(orderBy.field), orderBy.direction);
     }
+    this.logger.info(`Mca components query: ${baseQuery.toQuery()}`);
 
     const result = await baseQuery;
 
@@ -150,7 +171,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
       items: [],
       offset,
       limit,
-    };;
+    };
   }
 
   async getMcaComponentsCount(type: McaComponentType): Promise<number> {
@@ -182,6 +203,114 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
       return mcaVersions;
     }
     return undefined;
+  }
+
+  async getMcaBaseTypesCount(): Promise<number> {
+    this.logger.info(`Mca basetypes count`);
+    const baseQuery = this.db<DbBaseTypeRow>('mca_basetypes')
+      .count({ count: '*' });
+    const total = await baseQuery;
+    this.logger.info(`Mca basetypes count: ${JSON.stringify(total)}`);
+    return Number(total[0].count);
+  }
+
+  async getMcaBaseTypes(offset: number, limit: number, orderBy?: McaBaseTypeOrderByOptions, search?: string): Promise<McaBaseTypeListResult> {
+
+    this.logger.info(`Fetch mca basetypes with offset: ${offset}, limit: ${limit}, orderBy: ${orderBy}, search: ${search}`);
+
+    const baseQuery = this.db<DbBaseTypeRow>('mca_basetypes')
+      .select('*')
+      .offset(offset)
+      .limit(limit);
+
+    if (search) {
+      const searchQuery = [
+        'base_type',
+        'package_name',
+      ].map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
+
+      baseQuery.and.whereRaw(`(${searchQuery})`, Array(2).fill(`%${search.toLowerCase()}%`));
+    }
+
+    if (orderBy) {
+      baseQuery.orderBy(mapMcaBaseTypeOrderByField(orderBy.field), orderBy.direction);
+    }
+    const result = await baseQuery;
+
+    if (result) {
+      const mcaBaseTypes: McaBaseType[] = result.map((row) => ({
+        baseType: row.base_type,
+        packageName: row.package_name,
+      }));
+      return {
+        items: mcaBaseTypes,
+        offset,
+        limit,
+      };
+    }
+    return {
+      items: [],
+      offset,
+      limit,
+    };
+  }
+
+  async getMcaBaseType(baseTypeName: string): Promise<McaBaseType | undefined> {
+    this.logger.info(`Fetch mca ${baseTypeName}`);
+    const row = await this.db<DbBaseTypeRow>('mca_basetypes')
+      .select('*')
+      .where({ base_type: baseTypeName })
+      .first();
+    if (row) {
+      const baseType: McaBaseType = {
+        baseType: row.base_type,
+        packageName: row.package_name,
+      };
+      return baseType;
+    }
+    return undefined;
+  }
+
+  async addOrUpdateMcaVersions(mcaVersions: McaVersions): Promise<void> {
+    this.logger.info(`Update mca versions`);
+    await this.db('mca_versions')
+      .insert({
+        version: 'current',
+        p1_version: mcaVersions.p1Version,
+        p2_version: mcaVersions.p2Version,
+        p3_version: mcaVersions.p3Version,
+        p4_version: mcaVersions.p4Version,
+      })
+      .onConflict('version')
+      .merge();
+  }
+
+  async addOrUpdateMcaComponent(mcaComponent: McaComponent): Promise<void> {
+    await this.db('mca_components')
+      .insert({
+        component: mcaComponent.component,
+        type: mcaComponent.component.startsWith('Operation') ? 'o' : 'e',
+        prd_version: mcaComponent.prdVersion,
+        p1_version: mcaComponent.p1Version,
+        p2_version: mcaComponent.p2Version,
+        p3_version: mcaComponent.p3Version,
+        p4_version: mcaComponent.p4Version,
+        application_code: mcaComponent.applicationCode,
+        package_name: mcaComponent.packageName,
+      })
+      .onConflict('component')
+      .merge();
+  }
+
+
+  async addOrUpdateBaseType(mcaBaseType: McaBaseType): Promise<void> {
+    await this.db('mca_basetypes')
+      .insert({
+        base_type: mcaBaseType.baseType,
+        package_name: mcaBaseType.packageName,
+      })
+      .onConflict('base_type')
+      .merge();
   }
 
 }

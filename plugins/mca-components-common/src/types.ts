@@ -54,3 +54,33 @@ export type McaVersions = {
   p3Version: string;
   p4Version: string;
 };
+
+export type McaBaseType = {
+  baseType: string;
+  packageName: string;
+};
+
+export type McaBaseTypeListFields =
+  | 'baseType'
+  | 'packageName';
+
+
+export const MCABASETYPE_FIELDS = [
+  'baseType',
+  'packageName'] as const;
+
+export type McaBaseTypeListOptions = {
+  offset?: number;
+  limit?: number;
+  orderBy?: {
+    field: McaBaseTypeListFields;
+    direction: 'asc' | 'desc';
+  };
+  search?: string;
+};
+
+export type McaBaseTypeListResult = {
+  items: McaBaseType[];
+  offset: number;
+  limit: number;
+};

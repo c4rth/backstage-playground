@@ -1,0 +1,1 @@
+export { McaBaseTypeTable } from './McaBaseTypeTable';

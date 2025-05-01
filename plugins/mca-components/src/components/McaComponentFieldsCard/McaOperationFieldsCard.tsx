@@ -4,6 +4,7 @@ import { Box } from "@material-ui/core";
 export interface McaOperationFieldsCardProps {
     operation: any;
     operationType: 'atomic' | 'list';
+    fieldType: 'input' | 'output';
 }
 
 type TableRow = {
@@ -125,12 +126,12 @@ const outputColumns: TableColumn<TableRow>[] = [
 ];
 
 export const McaOperationFieldsCard = (props: McaOperationFieldsCardProps) => {
-    const { operation } = props;
+    const { operation, fieldType } = props;
     const inputFieldRows = toInputTableRows(operation.inputFields.FieldInput);
     const outputFieldRows = toOutputTableRows(operation.outputFields.field);
 
-    return (
-        <>
+    if (fieldType === 'input') {
+        return (
             <Table<TableRow>
                 columns={inputColumns}
                 options={{
@@ -148,25 +149,26 @@ export const McaOperationFieldsCard = (props: McaOperationFieldsCardProps) => {
                 }
                 data={inputFieldRows}
             />
-            <
-                Table<TableRow>
-                columns={outputColumns}
-                options={{
-                    search: true,
-                    padding: 'dense',
-                    paging: false,
-                    draggable: false,
+        );
+    }
+    return (
+        <Table<TableRow>
+            columns={outputColumns}
+            options={{
+                search: true,
+                padding: 'dense',
+                paging: false,
+                draggable: false,
 
-                }}
-                title={
-                    <Box display="flex" alignItems="center">
-                        <Box mr={1} />
-                        Output Fields
-                    </Box>
-                }
-                data={outputFieldRows}
-            />
-        </>
+            }}
+            title={
+                <Box display="flex" alignItems="center">
+                    <Box mr={1} />
+                    Output Fields
+                </Box>
+            }
+            data={outputFieldRows}
+        />
     );
 }
 

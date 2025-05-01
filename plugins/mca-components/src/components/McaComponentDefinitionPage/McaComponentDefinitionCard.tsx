@@ -8,7 +8,6 @@ import { XMLParser } from 'fast-xml-parser';
 import { McaOperationDefinitionPage } from './McaOperationDefinitionPage';
 import { McaElementDefinitionPage } from './McaElementDefinitionPage';
 
-
 function parseXML(data: string) {
     const parser = new XMLParser({
         ignoreAttributes: false,

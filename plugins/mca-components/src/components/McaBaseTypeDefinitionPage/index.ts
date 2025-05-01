@@ -1,0 +1,1 @@
+export { McaBaseTypeDefinitionPage } from './McaBaseTypeDefinitionPage';

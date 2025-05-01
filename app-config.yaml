@@ -25,15 +25,21 @@ appRegistry:
 
 mcaComponents:
   serviceBaseUrl: &mcaComponentsServiceUrl http://localhost:8080
-  defaultPackage: dexia.opmk.operation
-  baseTypesUrl: https://docs.oracle.com/en/java/javase/24/docs/api/java.base
+  baseTypes:
+    baseUrl: http://localhost:8080/basetypes
+    listBaseUrl: http://localhost:8080/basetypes/allclasses-frame.html
+    schedule:
+      frequency: PT1M
+      timeout: PT30S
+  operations:
+    csvBaseUrl: http://localhost:8080/mca/alloperations.csv
+    schedule:
+      frequency: PT1M
+      timeout: PT30S
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
-  # information on the format
-  # auth:
-  #   dangerouslyDisableDefaultAuthPolicy: true
   auth:
     #dangerouslyDisableDefaultAuthPolicy: true
     externalAccess:
@@ -174,6 +180,12 @@ search:
           timeout: PT15M
           initialDelay: PT5S
     mcaComponents:
+      schedule:
+          frequency: PT1H
+          timeout: PT15M
+          initialDelay: PT5S
+      limit: 1000
+    mcaBaseTypes:
       schedule:
           frequency: PT1H
           timeout: PT15M

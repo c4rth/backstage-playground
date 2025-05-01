@@ -52,27 +52,25 @@ export const McaComponentSearchResultListItem: (
       import('./components/McaComponentSearchResultListItem').then(
         m => m.McaComponentSearchResultListItem,
       ),
-    predicate: result => result.type === 'mca-components',
+    predicate: result => result.type === 'mca-components' || result.type === 'mca-basetypes',
   }),
 );
 
-
-export const McaBaseTypesPage = mcaComponentPlugin.provide(
-  createComponentExtension({
-    name: 'McaBaseTypesPage',
-    component: {
-      lazy: () =>
-        import('./components/McaBaseTypesPage').then(m => m.McaBaseTypesPage),
-    }
+export const McaBaseTypeExplorerPage = mcaComponentPlugin.provide(
+  createRoutableExtension({
+    name: 'McaBaseTypeExplorerPage',
+    component: () =>
+      import('../../mca-components/src/components/McaBaseTypeExplorerPage').then(m => m.McaBaseTypeExplorerPage),
+    mountPoint: rootRouteRef,
   }),
 );
 
-export const McaBaseTypePage = mcaComponentPlugin.provide(
+export const McaBaseTypeDefinitionPage = mcaComponentPlugin.provide(
   createComponentExtension({
-    name: 'McaBaseTypePage',
+    name: 'McaBaseTypeDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/McaBaseTypesPage').then(m => m.McaBaseTypePage),
+        import('./components/McaBaseTypeDefinitionPage').then(m => m.McaBaseTypeDefinitionPage),
     }
   }),
 );

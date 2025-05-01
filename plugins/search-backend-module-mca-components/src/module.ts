@@ -5,6 +5,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
 import { McaComponentsCollatorFactory } from './collators/McaComponentsCollatorFactory';
+import { McaBaseTypesCollatorFactory } from './collators/McaBaseTypesCollatorFactory';
 
 /**
  * Search backend module for mca-components.
@@ -39,20 +40,38 @@ export const searchModuleMcaComponentsCollator = createBackendModule({
           initialDelay: { seconds: 3 },
         };
 
-        const schedule = config.has('search.collators.mcaComponents.schedule')
+        const scheduleComponents = config.has('search.collators.mcaComponents.schedule')
           ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
             config.getConfig('search.collators.mcaComponents.schedule'),
           )
           : defaultSchedule;
-        const limit = config.getOptionalNumber('search.collators.mcaComponents.limit') ?? 100;
+        const limitComponents = config.getOptionalNumber('search.collators.mcaComponents.limit') ?? 100;
 
         indexRegistry.addCollator({
-          schedule: scheduler.createScheduledTaskRunner(schedule),
+          schedule: scheduler.createScheduledTaskRunner(scheduleComponents),
           factory: McaComponentsCollatorFactory.fromConfig({
             discoveryApi: discovery,
             logger,
             auth,
-            limit
+            limit: limitComponents,
+          }),
+        });
+
+
+        const scheduleBaseTypes = config.has('search.collators.mcaBaseTypes.schedule')
+          ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+            config.getConfig('search.collators.mcaBaseTypes.schedule'),
+          )
+          : defaultSchedule;
+        const limitBaseTypes = config.getOptionalNumber('search.collators.mcaBaseTypes.limit') ?? 100;
+
+        indexRegistry.addCollator({
+          schedule: scheduler.createScheduledTaskRunner(scheduleBaseTypes),
+          factory: McaBaseTypesCollatorFactory.fromConfig({
+            discoveryApi: discovery,
+            logger,
+            auth,
+            limit: limitBaseTypes,
           }),
         });
       },

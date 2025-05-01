@@ -1,5 +1,5 @@
 import { ConfigApi, createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
-import { McaComponent, McaComponentListOptions, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
+import { McaBaseType, McaBaseTypeListOptions, McaBaseTypeListResult, McaComponent, McaComponentListOptions, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
 
 export const mcaComponentsBackendApiRef = createApiRef<McaComponentsBackendApi>({
   id: 'plugin.mca-components.service',
@@ -16,6 +16,12 @@ export interface McaComponentsBackendApi {
   getMcaComponentDefinition(component: string, refP: string): Promise<string | undefined>;
 
   getMcaVersions(): Promise<McaVersions | undefined>;
+
+  listMcaBaseTypes(options: McaBaseTypeListOptions): Promise<McaBaseTypeListResult>;
+
+  getMcaBaseTypesCount(): Promise<number>;
+
+  getMcaBaseType(baseType: string): Promise<McaBaseType | undefined>;
 
 }
 
@@ -91,6 +97,52 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
   async getMcaVersions(): Promise<McaVersions> {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl('mca-components')}/mca/versions`
+    );
+    const response = await this.fetchApi.fetch(url);
+    const item = await response.json();
+    return (
+      item
+    );
+  }
+
+  async getMcaBaseTypesCount(): Promise<number> {
+    const url = new URL(
+      `${await this.discoveryApi.getBaseUrl('mca-components')}/basetypes/count`
+    );
+    const response = await this.fetchApi.fetch(url);
+    const item = await response.json();
+    return (
+      item
+    );
+  }
+
+  async listMcaBaseTypes(options: McaBaseTypeListOptions): Promise<McaBaseTypeListResult> {
+    const { offset, limit, orderBy, search } = options;
+    const baseUrl = await this.discoveryApi.getBaseUrl('mca-components');
+    const query = new URLSearchParams();
+    if (typeof offset === 'number') {
+      query.set('offset', String(offset));
+    }
+    if (typeof limit === 'number') {
+      query.set('limit', String(limit));
+    }
+    if (orderBy) {
+      query.set('orderBy', `${orderBy.field}=${orderBy.direction}`);
+    }
+    if (search) {
+      query.set('search', search);
+    }
+    const url = new URL(`${baseUrl}/basetypes/components?${query}`);
+    const response = await this.fetchApi.fetch(url);
+    const items = await response.json();
+    return (
+      items
+    );
+  }
+
+  async getMcaBaseType(baseType: string): Promise<McaBaseType | undefined> {
+    const url = new URL(
+      `${await this.discoveryApi.getBaseUrl('mca-components')}/baseTypes/components/${baseType}`
     );
     const response = await this.fetchApi.fetch(url);
     const item = await response.json();

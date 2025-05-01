@@ -208,6 +208,7 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
                 search: true,
                 padding: 'dense',
                 pageSize: PAGE_SIZE,
+                pageSizeOptions: [10, PAGE_SIZE, 50],
                 showEmptyDataSourceMessage: !loadingVersions && !loadingCount,
                 draggable: false,
                 thirdSortClick: false,

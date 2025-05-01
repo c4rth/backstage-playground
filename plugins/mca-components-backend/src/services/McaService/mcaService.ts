@@ -1,17 +1,41 @@
-import { LoggerService } from "@backstage/backend-plugin-api";
-import { McaComponentListRequest, McaService } from "./types";
+import { LoggerService, readSchedulerServiceTaskScheduleDefinitionFromConfig, SchedulerService } from "@backstage/backend-plugin-api";
+import { McaBaseTypeListRequest, McaComponentListRequest, McaService } from "./types";
 import { McaComponentsStore } from "../../database/mcaComponentStore";
-import { McaComponent, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
+import { McaBaseType, McaBaseTypeListResult, McaComponent, McaComponentListResult, McaComponentType, McaVersions } from "@internal/plugin-mca-components-common";
+import { Config } from "@backstage/config";
+import { taskAllOperationsCsv, taskBaseTypes } from "./scheduledTasks";
 
 export interface McaServiceOptions {
   logger: LoggerService;
   mcaComponentsStore: McaComponentsStore;
+  scheduler: SchedulerService;
+  config: Config;
 }
 
+
 export async function mcaService(options: McaServiceOptions): Promise<McaService> {
-  const { logger, mcaComponentsStore } = options;
+  const { logger, mcaComponentsStore, scheduler, config } = options;
 
   logger.info('Initializing McaService');
+
+  const scheduleOperations = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('mcaComponents.operations.schedule'));
+  const scheduleBaseTypes = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('mcaComponents.baseTypes.schedule'));
+
+  await scheduler.scheduleTask({
+    ...scheduleOperations,
+    id: 'update-all-operations-csv',
+    fn: async () => {
+      taskAllOperationsCsv(logger, config, mcaComponentsStore);
+    },
+  },);
+
+  await scheduler.scheduleTask({
+    ...scheduleBaseTypes,
+    id: 'update-basetypes',
+    fn: async () => {
+      taskBaseTypes(logger, config, mcaComponentsStore)
+    },
+  },);
 
   return {
     async getMcaComponentsCount(request: { type: McaComponentType }): Promise<number> {
@@ -35,7 +59,6 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
         return res;
       }
       return undefined;
-
     },
 
     async getMcaVersions(): Promise<McaVersions> {
@@ -48,8 +71,32 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
         p2Version: 'P+2',
         p3Version: 'P+3',
         p4Version: 'P+4',
-      };
-    }
+      }
+    },
+
+    async listMcaBaseTypes(request: McaBaseTypeListRequest): Promise<McaBaseTypeListResult> {
+      const offset = request.offset ?? 0;
+      const limit = request.limit ?? 20;
+      return await mcaComponentsStore.getMcaBaseTypes(offset, limit, request.orderBy, request.search);
+    },
+
+    async getMcaBaseTypesCount(): Promise<number> {
+      const res = await mcaComponentsStore.getMcaBaseTypesCount();
+      if (res) {
+        return res;
+      }
+      return 0;
+    },
+
+    async getMcaBaseType(request: { baseType: string }): Promise<McaBaseType | undefined> {
+      const { baseType } = request;
+      const res = await mcaComponentsStore.getMcaBaseType(baseType);
+      if (res) {
+        return res;
+      }
+      return undefined;
+    },
+
   };
 
 }
