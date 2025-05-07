@@ -147,7 +147,7 @@ export const ServicePlatformTable = () => {
                 showEmptyDataSourceMessage: !loading,
                 draggable: false,
                 thirdSortClick: false, 
-                searchText: initialSearch,    
+                searchText: initialSearch,
             }}
             onSearchChange={search => {
                 sessionStorage.setItem('servicePlatformTableSearch', search);

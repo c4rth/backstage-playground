@@ -59,10 +59,17 @@ async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>, 
                 direction: query.orderDirection,
             } as McaBaseTypeListOptions['orderBy']),
     });
+    if (result) {
+        return {
+            data: result.items.map(toEntityRow),
+            totalCount: result.totalCount,
+            page: Math.floor(result.offset / result.limit),
+        };
+    }
     return {
-        data: result?.items.map(toEntityRow) || [],
-        totalCount: result?.totalCount || countRows,
-        page: Math.floor(result.offset / result.limit),
+        data: [],
+        totalCount: 0,
+        page: 0,
     };
 }
 
