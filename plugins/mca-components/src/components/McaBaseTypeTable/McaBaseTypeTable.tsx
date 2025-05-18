@@ -46,7 +46,7 @@ function getColumns(): TableColumn<TableRow>[] {
 
 const PAGE_SIZE = 20;
 
-async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>, countRows: number) {
+async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>) {
     const page = query.page || 0;
     const pageSize = query.pageSize || PAGE_SIZE;
     const result = await mcaApi.listMcaBaseTypes({
@@ -123,7 +123,7 @@ export const McaBaseTypeTable = () => {
             data={
                 async query => {
                     sessionStorage.setItem('mcaBaseTypeTableSearch', query.search || '');
-                    return getData(mcaApi, query, countRows);
+                    return getData(mcaApi, query);
                 }
             }
         />

@@ -1,8 +1,22 @@
-import { ApiVersionDefinition } from "@internal/plugin-api-platform-common";
+import { ApiDefinitionListResult, ApiDefinitionsListFields, ApiVersionDefinition } from "@internal/plugin-api-platform-common";
+
+export type ApiDefinitionsOptions = {
+  field: ApiDefinitionsListFields;
+  direction: 'asc' | 'desc';
+};
+
+export type ApiDefinitionsListRequest = {
+  offset?: number,
+  limit?: number,
+  orderBy?: ApiDefinitionsOptions,
+  search?: string,
+};
 
 export interface ApiPlatformService {
 
-  listApis(): Promise<{ items: ApiVersionDefinition[] }>;
+  getApisCount(): Promise<number>;
+
+  listApis(request: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult>;
 
   getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]>;
 

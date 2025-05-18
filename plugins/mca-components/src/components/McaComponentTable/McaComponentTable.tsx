@@ -118,7 +118,7 @@ type McaComponentTableProps = {
     type: McaComponentType;
 };
 
-async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>, type: McaComponentType, countRows: number) {
+async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>, type: McaComponentType) {
     const page = query.page || 0;
     const pageSize = query.pageSize || PAGE_SIZE;
     const result = await mcaApi.listMcaComponents({
@@ -230,7 +230,7 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
             data={
                 async query => {
                     sessionStorage.setItem('mcaComponentTableSearch', query.search || '');
-                    return getData(mcaApi, query, selectedType, countRows);
+                    return getData(mcaApi, query, selectedType);
                 }
             }
         />

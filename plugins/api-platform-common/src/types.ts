@@ -50,3 +50,31 @@ export type ServiceInformation = {
   sonarQubeProjectKey: string;
   apiDependencies: ServiceApisDefinition;
 };
+
+
+export type ApiDefinitionsListFields =
+  | 'api.name'
+  | 'api.description'
+  | 'api.system';
+
+export const APIDEFINITIONS_FIELDS = [
+  'api.name',
+  'api.description',
+  'api.system'] as const;
+
+export type ApiDefinitionListOptions = {
+  offset?: number;
+  limit?: number;
+  orderBy?: {
+    field: ApiDefinitionsListFields;
+    direction: 'asc' | 'desc';
+  };
+  search?: string;
+};
+
+export type ApiDefinitionListResult = {
+  items: Entity[];
+  offset: number;
+  limit: number;
+  totalCount: number;
+};

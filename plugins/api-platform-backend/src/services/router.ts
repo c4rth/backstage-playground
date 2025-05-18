@@ -7,7 +7,8 @@ import { createApiPlatformService } from './ApiPlatformService';
 import { createCatalogPlatformService } from './CatalogPlatformService';
 import { createServicePlatformService } from './ServicePlatformService';
 import { createSystemPlatformService } from './SystemPlatformService';
-import { ServiceInformation } from '@internal/plugin-api-platform-common';
+import { APIDEFINITIONS_FIELDS, ServiceInformation } from '@internal/plugin-api-platform-common';
+import { parseOrderByParam, parseSearchParam } from './ApiPlatformService/utils';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -53,15 +54,23 @@ export async function createRouter(
 
   // Endpoints: /apis
 
-  router.get('/apis', async (_req, res) => {
-    res.json(await apiPlatformService.listApis());
+  router.get('/apis/definitions', async (req, res) => {
+    const offset = parseInt(req.query.offset as string, 10) || 0;
+    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const orderBy = parseOrderByParam(req.query.orderBy, APIDEFINITIONS_FIELDS);
+    const search = parseSearchParam(req.query.search);
+    res.json(await apiPlatformService.listApis({ limit, offset, orderBy, search }));
   });
 
-  router.get('/apis/:apiName', async (req, res) => {
+  router.get('/apis/count', async (_req, res) => {
+    res.json(await apiPlatformService.getApisCount());
+  });
+
+  router.get('/apis/definitions/:apiName', async (req, res) => {
     res.json(await apiPlatformService.getApiVersions({ apiName: req.params.apiName }));
   });
 
-  router.get('/apis/:apiName/:apiVersion', async (req, res) => {
+  router.get('/apis/definitions/:apiName/:apiVersion', async (req, res) => {
     res.json(await apiPlatformService.getApiMatchingVersion({ apiName: req.params.apiName, apiVersion: req.params.apiVersion }));
   });
 

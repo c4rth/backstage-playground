@@ -1,13 +1,15 @@
 import { createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
 import { Entity } from "@backstage/catalog-model";
-import { ApiVersionDefinition, ServiceDefinition, SystemDefinition } from "@internal/plugin-api-platform-common";
+import { ApiDefinitionListOptions, ApiDefinitionListResult, ApiVersionDefinition, ServiceDefinition, SystemDefinition } from "@internal/plugin-api-platform-common";
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
   id: 'plugin.api-platform.service',
 });
 
 export interface ApiPlatformBackendApi {
-  listApis(): Promise<{ items: Entity[] }>;
+  listApis(options: ApiDefinitionListOptions): Promise<ApiDefinitionListResult>;
+
+  getApisCount(): Promise<number>;
 
   getApiVersions(apiName: string): Promise<(ApiVersionDefinition[])>;
 
@@ -21,7 +23,6 @@ export interface ApiPlatformBackendApi {
 
 }
 
-
 export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
@@ -31,12 +32,35 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     this.fetchApi = options.fetchApi;
   }
 
-  async listApis(): Promise<{ items: Entity[] }> {
+  async getApisCount(): Promise<number> {
     const url = new URL(
-      `${await this.discoveryApi.getBaseUrl(
-        'api-platform',
-      )}/apis`,
+      `${await this.discoveryApi.getBaseUrl('api-platform')}/apis/count`
     );
+    const response = await this.fetchApi.fetch(url);
+    const item = await response.json();
+    return (
+      item
+    );
+  }
+
+  async listApis(options: ApiDefinitionListOptions): Promise<ApiDefinitionListResult> {
+    const { offset, limit, orderBy, search } = options;
+    const baseUrl = await this.discoveryApi.getBaseUrl('api-platform');
+    const query = new URLSearchParams();
+    if (typeof offset === 'number') {
+      query.set('offset', String(offset));
+    }
+    if (typeof limit === 'number') {
+      query.set('limit', String(limit));
+    }
+    if (orderBy) {
+      query.set('orderBy', `${orderBy.field}=${orderBy.direction}`);
+    }
+    if (search) {
+      query.set('search', search);
+    }
+
+    const url = new URL(`${baseUrl}/apis/definitions?${query}`);
     const response = await this.fetchApi.fetch(url);
     const items = await response.json();
     return (
@@ -48,7 +72,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
         'api-platform',
-      )}/apis/${apiName}`
+      )}/apis/definitions/${apiName}`
     );
     const response = await this.fetchApi.fetch(url);
     return (

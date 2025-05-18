@@ -41,14 +41,14 @@ catalog:
   #      - Location
   #      - Group
   #      - User
-    - type: file
-      target: ../../examples/docs/techdocs/catalog-info.yaml
-    - type: file
-      target: ../../examples/docs/techdocs2/catalog-info.yaml
-    - type: file
-      target: ../../examples/docs/techdocs-ext/catalog-info.yaml
-    - type: file
-      target: ../../examples/docs/techdocs-rst/catalog-info.yaml
+  #  - type: file
+  #    target: ../../examples/docs/techdocs/catalog-info.yaml
+  #  - type: file
+  #    target: ../../examples/docs/techdocs2/catalog-info.yaml
+  #  - type: file
+  #    target: ../../examples/docs/techdocs-ext/catalog-info.yaml
+  #  - type: file
+  #    target: ../../examples/docs/techdocs-rst/catalog-info.yaml
 
     #- type: file
     #  target: ../../examples/docs/techdocs-spring/catalog-info.yaml

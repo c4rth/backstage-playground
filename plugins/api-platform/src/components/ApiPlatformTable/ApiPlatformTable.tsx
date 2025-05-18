@@ -4,15 +4,21 @@ import {
     TableColumn,
     Link,
     OverflowTooltip,
+    Progress,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { useGetApis } from '../../hooks';
 import { Box } from '@material-ui/core';
 import {
     ANNOTATION_API_NAME,
+    ApiDefinitionListOptions,
 } from '@internal/plugin-api-platform-common';
 import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
 import { SystemPlatformDisplayName } from '../SystemPlatformTable';
+import { useApi } from '@backstage/core-plugin-api';
+import { apiPlatformBackendApiRef } from '../../api';
+import { useEffect, useState } from 'react';
+import { Query } from '@material-table/core';
+import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 
 type TableRow = {
     id: number,
@@ -66,40 +72,88 @@ const columns: TableColumn<TableRow>[] = [
     },
 ];
 
+const PAGE_SIZE = 20;
+
+async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>) {
+    const page = query.page || 0;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const result = await apiPlatformApi.listApis({
+        offset: page * pageSize,
+        limit: pageSize,
+        search: query.search,
+        orderBy: query?.orderBy &&
+            ({
+                field: query.orderBy.field,
+                direction: query.orderDirection,
+            } as ApiDefinitionListOptions['orderBy']),
+    });
+    if (result) {
+        return {
+            data: result.items.map(toEntityRow) || [],
+            totalCount: result.totalCount,
+            page: Math.floor(result.offset / result.limit),
+        };
+    }
+    return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+    };
+}
+
+function getCount(apiPlatformApi: ApiPlatformBackendApi) {
+    return apiPlatformApi.getApisCount();
+}
 
 export const ApiPlatformTable = () => {
-    const { items, loading, error } = useGetApis();
+    const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem('apiPlatformTableSearch') || '';
+    const [countRows, setCountRows] = useState<number>(0);
+    const [loadingCount, setLoadingCount] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+ 
+    useEffect(() => {
+        getCount(apiPlatformApi).then(count => {
+            setCountRows(count);
+            setLoadingCount(false);
+        }).catch(err => {
+            setError(err);
+            setLoadingCount(false);
+        });
+    }, [apiPlatformApi]);
 
+    if (loadingCount) {
+        return <Progress />;
+    }
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
-    const rows = items?.map(toEntityRow) || [];
-    const showPagination = rows.length > 20;
     return (
         <Table<TableRow>
-            isLoading={loading}
+            isLoading={loadingCount}
             columns={columns}
             options={{
                 search: true,
-                paging: showPagination,
                 padding: 'dense',
-                pageSize: 20,
-                showEmptyDataSourceMessage: !loading,
+                pageSize: PAGE_SIZE,
+                pageSizeOptions: [10, PAGE_SIZE, 50],
+                showEmptyDataSourceMessage: !loadingCount,
                 draggable: false,
-                thirdSortClick: false,     
+                thirdSortClick: false,
                 searchText: initialSearch,
-            }}
-            onSearchChange={search => {
-                sessionStorage.setItem('apiPlatformTableSearch', search);
             }}
             title={
                 <Box display="flex" alignItems="center">
                     <Box mr={1} />
-                    APIs ({items ? items.length : 0})
+                    APIs ({countRows})
                 </Box>
             }
-            data={rows}
+            data={
+                async query => {
+                    sessionStorage.setItem('apiPlatformTableSearch', query.search || '');
+                    return getData(apiPlatformApi, query);
+                }
+            }
         />
     );
 };
