@@ -5,7 +5,7 @@ import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-comm
 import { Link } from '@backstage/core-components';
 import PlatformAllIcon from '../icons/PlatformAllIcon';
 import PlatformOnpremIcon from '../icons/PlatformOnpremIcon';
-import PlatformAzureIcon from '../icons/PlatformAzureIcon';
+import PlatformCloudIcon from '../icons/PlatformCloudIcon';
 
 export type ServicePlatformChipProps = {
     index: number;
@@ -33,12 +33,12 @@ export const ServicePlatformChip = (
     };
 
     let icon: ReactElement;
-    if (props.service?.platform.includes('azure') && props.service?.platform.includes('onprem')) {
+    if (props.service?.platform.includes('cloud') && props.service?.platform.includes('onprem')) {
         icon = <PlatformAllIcon />;
     } else if (props.service?.platform.includes('onprem')) {
         icon = <PlatformOnpremIcon />;
     } else {
-        icon = <PlatformAzureIcon />;
+        icon = <PlatformCloudIcon />;
     }
 
     return (

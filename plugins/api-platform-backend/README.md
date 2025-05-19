@@ -1,4 +1,4 @@
-# @internal/plugin-api-platform-backend
+# @internal/plugin-catalog-helper-backend
 
 ## APIS
 

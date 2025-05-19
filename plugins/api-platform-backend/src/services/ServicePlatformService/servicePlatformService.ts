@@ -77,7 +77,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
         };
         def.versions.push(defVersion);
       }
-      const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'azure';
+      const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
       defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
         imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
         entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,

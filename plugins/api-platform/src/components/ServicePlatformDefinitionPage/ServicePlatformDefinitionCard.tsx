@@ -64,7 +64,7 @@ export const ServicePlatformDefinitionCard = () => {
 
     const classes = useStyles();
 
-    const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure').toString();
+    const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
     const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
     const entityRef = getCompoundEntityRef(entity);
     const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];

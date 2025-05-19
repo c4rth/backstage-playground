@@ -28,7 +28,7 @@ const getDocumentText = (entity: Entity): string => {
     } else {
         text.push(entity.metadata.description || '');
         text.push(`Image: ${entity.metadata[ANNOTATION_IMAGE_VERSION]}`);
-        text.push(`Platform: ${entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'azure'}`);
+        text.push(`Platform: ${entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud'}`);
     }
     return text.join(',');
 };
