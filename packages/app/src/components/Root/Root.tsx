@@ -46,7 +46,7 @@ import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { adminToolsPermission } from '@internal/plugin-permissions-common';
-import { McaComponentSearchResultListItem } from '@internal/plugin-mca-components';
+import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -142,8 +142,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
         <SidebarItem icon={CodeIcon} text="MCA">
           <SidebarSubmenu title="MCA">
-            <SidebarSubmenuItem icon={CodeIcon} to="mca-components/components" title="Components" />
-            <SidebarSubmenuItem icon={CodeIcon} to="mca-components/basetypes" title="BaseTypes" />
+            <SidebarSubmenuItem icon={CodeIcon} to="mca/components" title="Components" />
+            <SidebarSubmenuItem icon={CodeIcon} to="mca/basetypes" title="BaseTypes" />
           </SidebarSubmenu>
         </SidebarItem>
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />

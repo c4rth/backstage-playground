@@ -128,7 +128,7 @@ backend.add(import('@backstage/plugin-catalog-backend-module-unprocessed'));
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
 // Mca Components
-backend.add(import('@internal/plugin-mca-components-backend'));
-backend.add(import('@internal/plugin-search-backend-module-mca-components'));
+backend.add(import('@internal/plugin-mca-backend'));
+backend.add(import('@internal/plugin-search-backend-module-mca'));
 
 backend.start();

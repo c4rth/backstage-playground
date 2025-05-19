@@ -1,6 +1,6 @@
 {
-    "name": "@internal/plugin-search-backend-module-mca-components",
-    "description": "The mca-components backend module for the search plugin.",
+    "name": "@internal/plugin-search-backend-module-mca",
+    "description": "The mca backend module for the search plugin.",
     "version": "0.1.0",
     "main": "src/index.ts",
     "types": "src/index.ts",
@@ -28,7 +28,7 @@
         "@backstage/backend-plugin-api": "^1.3.0",
         "@backstage/plugin-search-backend-node": "^1.3.10",
         "@backstage/plugin-search-common": "^1.2.17",
-        "@internal/plugin-mca-components-common": "workspace:^"
+        "@internal/plugin-mca-common": "workspace:^"
     },
     "devDependencies": {
         "@backstage/backend-test-utils": "^1.4.0",

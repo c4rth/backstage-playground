@@ -49,7 +49,7 @@ backend:
           subject: cicd-system
         accessRestrictions:
           - plugin: api-platform
-          - plugin: mca-components
+          - plugin: mca
 
   baseUrl: http://localhost:7007
   listen:

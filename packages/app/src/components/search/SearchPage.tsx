@@ -24,7 +24,7 @@ import {
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
-import { McaComponentSearchResultListItem } from '@internal/plugin-mca-components';
+import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 import CodeIcon from '@material-ui/icons/Code';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -73,7 +73,7 @@ const SearchPage = () => {
                   icon: <DocsIcon />,
                 },
                 {
-                  value: 'mca-components',
+                  value: 'mca',
                   name: 'MCA Components',
                   icon: <CodeIcon />,
                 },

@@ -8,7 +8,7 @@ import {
   DiscoveryService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
-import { McaComponent } from '@internal/plugin-mca-components-common';
+import { McaComponent } from '@internal/plugin-mca-common';
 
 export type IndexableMcaComponentDocument = IndexableDocument & {
   applicationCode: string;
@@ -47,19 +47,19 @@ export class McaComponentsCollatorFactory implements DocumentCollatorFactory {
   }
 
   private async *execute(): AsyncGenerator<IndexableMcaComponentDocument> {
-    this.logger.info('Indexing mca-components');
+    this.logger.info('Indexing mca components');
 
     const { token } = await this.auth.getPluginRequestToken({
       onBehalfOf: await this.auth.getOwnServiceCredentials(),
-      targetPluginId: 'mca-components',
+      targetPluginId: 'mca',
     });
 
-    const baseUrl = await this.discoveryApi.getBaseUrl('mca-components');
+    const baseUrl = await this.discoveryApi.getBaseUrl('mca');
 
     const countUrl = new URL(`${baseUrl}/mca/count?type=all`);
     const responseCount = await fetch(countUrl, { headers: { Authorization: `Bearer ${token}` } });
     const dataCount = await responseCount.json() as number;
-    this.logger.debug(`mca-components/count: ${JSON.stringify(dataCount)} - limit: ${this.limit}`);
+    this.logger.debug(`mca/count: ${JSON.stringify(dataCount)} - limit: ${this.limit}`);
 
     let offset = 0;
     while (offset < dataCount) {
@@ -88,7 +88,7 @@ export class McaComponentsCollatorFactory implements DocumentCollatorFactory {
       applicationCode: mcaComponent.applicationCode,
       prdVersion: mcaComponent.prdVersion,
       otherVersions: [mcaComponent.p1Version, mcaComponent.p2Version, mcaComponent.p3Version, mcaComponent.p4Version].filter(x => x) as string[],
-      location: `/mca-components/components/${mcaComponent.component}`,
+      location: `/mca/components/${mcaComponent.component}`,
     };
   }
 }

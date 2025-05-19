@@ -8,7 +8,7 @@ import {
   DiscoveryService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
-import { McaBaseType } from '@internal/plugin-mca-components-common';
+import { McaBaseType } from '@internal/plugin-mca-common';
 
 export type IndexableMcaBaseTypeDocument = IndexableDocument;
 
@@ -46,10 +46,10 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
 
     const { token } = await this.auth.getPluginRequestToken({
       onBehalfOf: await this.auth.getOwnServiceCredentials(),
-      targetPluginId: 'mca-components',
+      targetPluginId: 'mca',
     });
 
-    const baseUrl = await this.discoveryApi.getBaseUrl('mca-components');
+    const baseUrl = await this.discoveryApi.getBaseUrl('mca');
 
     const countUrl = new URL(`${baseUrl}/basetypes/count`);
     const responseCount = await fetch(countUrl, { headers: { Authorization: `Bearer ${token}` } });
@@ -76,7 +76,7 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
     return {
       title: mcaBaseType.baseType,
       text: `package: ${mcaBaseType.packageName}`,
-      location: `/mca-components/basetypes/${mcaBaseType.baseType}`,
+      location: `/mca/basetypes/${mcaBaseType.baseType}`,
     };
   }
 }
