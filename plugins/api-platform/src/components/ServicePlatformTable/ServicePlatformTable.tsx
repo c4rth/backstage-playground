@@ -11,6 +11,7 @@ import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
 import { SystemPlatformDisplayName } from '../SystemPlatformTable';
+import { useMemo } from 'react';
 
 type TableRow = {
     id: number,
@@ -126,15 +127,11 @@ const columns: TableColumn<TableRow>[] = [
 export const ServicePlatformTable = () => {
     const { items, loading, error } = useGetServices();
     const initialSearch = sessionStorage.getItem('servicePlatformTableSearch') || '';
+    const rows = useMemo(() => (items?.map(toRow) || []), [items]);
+    const showPagination = rows.length > 20;
 
-    if (loading) {
-        return <Progress />;
-    }
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
-    const rows = items?.map(toRow) || [];
-    const showPagination = rows.length > 20 || false;
+    if (loading) return <Progress />;
+    if (error) return <ResponseErrorPanel error={error} />;
 
     return (
         <Table<TableRow>
@@ -146,7 +143,7 @@ export const ServicePlatformTable = () => {
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
                 draggable: false,
-                thirdSortClick: false, 
+                thirdSortClick: false,
                 searchText: initialSearch,
             }}
             onSearchChange={search => {

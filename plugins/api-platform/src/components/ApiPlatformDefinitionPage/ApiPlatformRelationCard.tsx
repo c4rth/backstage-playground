@@ -1,5 +1,5 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
@@ -81,35 +81,31 @@ export const ApiPlatformRelationCard = (props: { dependency: 'provider' | 'consu
         error,
     } = useAsync(fetchAsync, [fetchAsync]);
 
+    const rows = useMemo(() => entities?.map(toRow) || [], [entities]);
+
     if (error) {
-        return (
-            <ResponseErrorPanel title="Error" error={error} />
-        );
+        return <ResponseErrorPanel title="Error" error={error} />;
     }
 
-    const rows = entities?.map(toRow) || [];
-
     return (
-        <>
-            <Table<TableRow>
-                isLoading={loading}
-                columns={serviceColumns}
-                options={{
-                    search: true,
-                    padding: 'dense',
-                    paging: false,
-                    draggable: false,   
-                    thirdSortClick: false,           
-                }}
-                title={
-                    <Box display="flex" alignItems="center">
-                        <Box mr={1} />
-                        {title} ({rows ? rows.length : 0})
-                    </Box>
-                }
-                data={rows}
-            />
-        </>
+        <Table<TableRow>
+            isLoading={loading}
+            columns={serviceColumns}
+            options={{
+                search: true,
+                padding: 'dense',
+                paging: false,
+                draggable: false,   
+                thirdSortClick: false,           
+            }}
+            title={
+                <Box display="flex" alignItems="center">
+                    <Box mr={1} />
+                    {title} ({rows.length})
+                </Box>
+            }
+            data={rows}
+        />
     );
 }
 

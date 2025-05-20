@@ -2,6 +2,7 @@ import { Link, Table, TableColumn } from "@backstage/core-components";
 import { ApiPlatformDisplayName } from "../ApiPlatformTable";
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
+import { useMemo } from 'react';
 
 type TableRow = {
     id: number,
@@ -51,17 +52,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
 export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service', data: string[] }) => {
     const { dependency, data } = props;
 
-    const rows: TableRow[] = data.map(toRow);
-    let title: string;
-    let columns: TableColumn<TableRow>[];
-    if (dependency === 'api') {
-        title = "APIs";
-        columns = apiColumns;
-    } else {
-        title = "Services";
-        columns = serviceColumns;
-    }
-    const showPagination = rows.length > 20 || false;
+    const rows = useMemo(() => data.map(toRow), [data]);
+    const isApi = dependency === 'api';
+    const title = isApi ? 'APIs' : 'Services';
+    const columns = isApi ? apiColumns : serviceColumns;
+    const showPagination = rows.length > 20;
+
     return (
         <Table<TableRow>
             columns={columns}
@@ -70,13 +66,13 @@ export const SystemPlatformRelationCard = (props: { dependency: 'api' | 'service
                 padding: 'dense',
                 paging: showPagination,
                 pageSize: 20,
-                draggable: false,  
-                thirdSortClick: false,                 
+                draggable: false,
+                thirdSortClick: false,
             }}
             title={
                 <Box display="flex" alignItems="center">
                     <Box mr={1} />
-                    {title} ({rows ? rows.length : 0})
+                    {title} ({rows.length})
                 </Box>
             }
             data={rows}

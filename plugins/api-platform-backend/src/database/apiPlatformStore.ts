@@ -47,7 +47,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   }
 
   async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
-    this.logger.debug(`Add service ${serviceInformation}`);
+    this.logger.debug(`Add service ${JSON.stringify(serviceInformation)}`);
     await this.db('services').insert({
       applicationCode: serviceInformation.applicationCode,
       service: serviceInformation.serviceName,
@@ -55,34 +55,41 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
       imageVersion: serviceInformation.imageVersion,
       repository: serviceInformation.repository,
       sonarQubeProjectKey: serviceInformation.sonarQubeProjectKey,
-      consumedApis: JSON.stringify(serviceInformation.apiDependencies.consumedApis || []),
-      providedApis: JSON.stringify(serviceInformation.apiDependencies.providedApis || []),
+      consumedApis: JSON.stringify(serviceInformation.apiDependencies.consumedApis ?? []),
+      providedApis: JSON.stringify(serviceInformation.apiDependencies.providedApis ?? []),
     });
   }
 
-  async getServiceInformation(applicationCode: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined> {
+  async getServiceInformation(
+    applicationCode: string,
+    service: string,
+    version: string,
+    imageVersion: string
+  ): Promise<ServiceInformation | undefined> {
     this.logger.debug(`Fetch service ${applicationCode}-${service}-${version}-${imageVersion}`);
     const result = await this.db<DbServicesRow>('services')
       .select('*')
-      .where({ service: service, version: version, imageVersion: imageVersion })
+      .where({
+        applicationCode,
+        service,
+        version,
+        imageVersion,
+      })
       .first();
     this.logger.debug(`Result: ${JSON.stringify(result)}`);
-    if (result) {
-      const info: ServiceInformation = {
-        applicationCode: result.applicationCode,
-        serviceName: service,
-        serviceVersion: version,
-        imageVersion: imageVersion,
-        repository: result.repository,
-        sonarQubeProjectKey: result.sonarQubeProjectKey,
-        apiDependencies: {
-          consumedApis: result.consumedApis ? JSON.parse(result.consumedApis) : undefined,
-          providedApis: result.providedApis ? JSON.parse(result.providedApis) : undefined,
-        }
-      };
-      return info;
-    }
-    return undefined;
+    if (!result) return undefined;
+    return {
+      applicationCode: result.applicationCode,
+      serviceName: result.service,
+      serviceVersion: result.version,
+      imageVersion: result.imageVersion,
+      repository: result.repository,
+      sonarQubeProjectKey: result.sonarQubeProjectKey,
+      apiDependencies: {
+        consumedApis: result.consumedApis ? JSON.parse(result.consumedApis) : [],
+        providedApis: result.providedApis ? JSON.parse(result.providedApis) : [],
+      },
+    };
   }
 
 }

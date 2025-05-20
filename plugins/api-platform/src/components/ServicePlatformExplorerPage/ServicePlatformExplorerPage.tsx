@@ -8,9 +8,19 @@ import { InfoPopUp } from '@internal/plugin-api-platform-react';
 import { Typography } from '@material-ui/core';
 
 export const ServicePlatformExplorerPage = () => {
-
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
+
+  const infoPopUpContent = (
+    <>
+      <Typography variant="body1">
+        This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
+      </Typography>
+      <Typography variant="body2">
+        This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
+      </Typography>
+    </>
+  );
 
   return (
     <PageWithHeader
@@ -20,12 +30,9 @@ export const ServicePlatformExplorerPage = () => {
         <InfoPopUp
           text={generatedSubtitle}
           variant="subtitle2"
-          content={
-            <>
-              <Typography variant="body1">This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.</Typography>
-              <Typography variant="body2">This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.</Typography>
-            </>
-          } />}
+          content={infoPopUpContent}
+        />
+      }
       pageTitleOverride="Services"
     >
       <Content>

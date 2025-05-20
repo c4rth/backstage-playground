@@ -29,57 +29,52 @@ export const ServicePlatformChip = (
 ): JSX.Element => {
     const classes = useStyles(props);
 
-    const handleClick = () => () => {
+    const handleClick = () => () => {};
+
+    // Icon selection logic
+    const getPlatformIcon = () => {
+        if (props.service?.platform?.includes('cloud') && props.service?.platform?.includes('onprem')) {
+            return <PlatformAllIcon />;
+        }
+        if (props.service?.platform?.includes('onprem')) {
+            return <PlatformOnpremIcon />;
+        }
+        return <PlatformCloudIcon />;
     };
 
-    let icon: ReactElement;
-    if (props.service?.platform.includes('cloud') && props.service?.platform.includes('onprem')) {
-        icon = <PlatformAllIcon />;
-    } else if (props.service?.platform.includes('onprem')) {
-        icon = <PlatformOnpremIcon />;
-    } else {
-        icon = <PlatformCloudIcon />;
+    // Render a Chip inside a Link, optionally with Tooltip
+    const renderChip = (label: string, iconEl: ReactElement | undefined, tooltip?: ReactElement) => {
+        const chip = (
+            <Chip
+                key={label}
+                label={label}
+                size="small"
+                variant="outlined"
+                className={classes.badge}
+                clickable={!props.disabled}
+                disabled={props.disabled}
+                onClick={handleClick}
+                icon={iconEl}
+                style={{ padding: tooltip ? '5px' : '0px', margin: '0px' }}
+            />
+        );
+        return (
+            <Link to={props.link} style={{ padding: '0px', margin: '0px' }}>
+                {tooltip ? <Tooltip placement='bottom' arrow title={tooltip}>{chip}</Tooltip> : chip}
+            </Link>
+        );
+    };
+
+    if (props.text) {
+        return renderChip(props.text, props.icon);
     }
 
-    return (
-        props.text ?
-            <Link to={props.link} style={{ padding: '0px', margin: '0px' }}>
-                <Chip
-                    key={props.text}
-                    label={props.text}
-                    size="small"
-                    variant="outlined"
-                    className={classes.badge}
-                    clickable={!props.disabled}
-                    disabled={props.disabled}
-                    icon={props.icon}
-                    style={{ padding: '0px', margin: '0px' }}
-                /></Link>
-            :
-            <Link to={props.link} style={{ padding: '0px', margin: '0px' }}>
-                <Tooltip
-                    placement='bottom'
-                    arrow
-                    title={
-                        <>
-                            <Typography variant='caption'>Platform: <b>{props.service?.platform}</b></Typography><br />
-                            <Typography variant='caption'>Version: <b>{props.service?.imageVersion}</b></Typography><br />
-                        </>
-                    }>
-
-                    <Chip
-                        key={props.service?.imageVersion}
-                        label={props.service?.imageVersion}
-                        size="small"
-                        variant="outlined"
-                        className={classes.badge}
-                        clickable={!props.disabled}
-                        disabled={props.disabled}
-                        onClick={handleClick}
-                        icon={icon}
-                        style={{ padding: '5px', margin: '0px' }}
-                    />
-                </Tooltip>
-            </Link>
+    // Tooltip content for service chips
+    const tooltipContent = (
+        <>
+            <Typography variant='caption'>Platform: <b>{props.service?.platform}</b></Typography><br />
+            <Typography variant='caption'>Version: <b>{props.service?.imageVersion}</b></Typography><br />
+        </>
     );
+    return renderChip(props.service?.imageVersion || '?', getPlatformIcon(), tooltipContent);
 };

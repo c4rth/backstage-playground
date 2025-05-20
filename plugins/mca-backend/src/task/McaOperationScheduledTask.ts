@@ -29,13 +29,12 @@ export class McaOperationScheduledTask {
     async runAsync() {
         const allOperationsCsvBaseUrl = this.config.getString('mcaComponents.operations.csvBaseUrl');
         this.logger.debug(`Scheduled task: get all operations CSV from ${allOperationsCsvBaseUrl}`);
-        await fetch(allOperationsCsvBaseUrl).then((response) => {
+        try {
+            const response = await fetch(allOperationsCsvBaseUrl);
             if (!response.ok) {
                 throw new Error(`Failed to fetch CSV: ${response.statusText}`);
             }
-            return response.text();
-        }
-        ).then((csvData) => {
+            const csvData = await response.text();
             this.logger.debug('CSV data fetched successfully');
             let isHeaders = true;
             Readable.from(csvData as any)
@@ -44,8 +43,7 @@ export class McaOperationScheduledTask {
                     headers: true,
                     mapValues: ({ value }) => value.trim(),
                 }))
-
-                .on('data', (data) => {
+                .on('data', data => {
                     if (isHeaders) {
                         isHeaders = false;
                         this.mcaComponentsStore.addOrUpdateMcaVersions({
@@ -70,13 +68,11 @@ export class McaOperationScheduledTask {
                 .on('end', () => {
                     this.logger.debug('CSV data parsed successfully');
                 })
-                .on('error', (error) => {
+                .on('error', error => {
                     this.logger.debug(`Error parsing CSV: ${error.message}`);
                 });
-        }
-        ).catch((error) => {
+        } catch (error: any) {
             this.logger.error(`Error fetching CSV: ${error.message}`);
         }
-        );
     }
 }

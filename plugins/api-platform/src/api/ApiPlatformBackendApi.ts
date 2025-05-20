@@ -37,101 +37,60 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
       `${await this.discoveryApi.getBaseUrl('api-platform')}/apis/count`
     );
     const response = await this.fetchApi.fetch(url);
-    const item = await response.json();
-    return (
-      item
-    );
+    return await response.json();
   }
 
   async listApis(options: ApiDefinitionListOptions): Promise<ApiDefinitionListResult> {
     const { offset, limit, orderBy, search } = options;
     const baseUrl = await this.discoveryApi.getBaseUrl('api-platform');
     const query = new URLSearchParams();
-    if (typeof offset === 'number') {
-      query.set('offset', String(offset));
-    }
-    if (typeof limit === 'number') {
-      query.set('limit', String(limit));
-    }
-    if (orderBy) {
-      query.set('orderBy', `${orderBy.field}=${orderBy.direction}`);
-    }
-    if (search) {
-      query.set('search', search);
-    }
-
+    if (typeof offset === 'number') query.set('offset', String(offset));
+    if (typeof limit === 'number') query.set('limit', String(limit));
+    if (orderBy) query.set('orderBy', `${orderBy.field}=${orderBy.direction}`);
+    if (search) query.set('search', search);
     const url = new URL(`${baseUrl}/apis/definitions?${query}`);
     const response = await this.fetchApi.fetch(url);
-    const items = await response.json();
-    return (
-      items
-    );
+    return await response.json();
   }
 
   async getApiVersions(apiName: string): Promise<ApiVersionDefinition[]> {
     const url = new URL(
-      `${await this.discoveryApi.getBaseUrl(
-        'api-platform',
-      )}/apis/definitions/${apiName}`
+      `${await this.discoveryApi.getBaseUrl('api-platform')}/apis/definitions/${apiName}`
     );
     const response = await this.fetchApi.fetch(url);
-    return (
-      (await response.json()).map((version: ApiVersionDefinition) => ({
-        ...version,
-      })) || undefined
-    );
+    return (await response.json()).map((version: ApiVersionDefinition) => ({ ...version }));
   }
 
   async listServices(): Promise<{ items: ServiceDefinition[] }> {
     const url = new URL(
-      `${await this.discoveryApi.getBaseUrl(
-        'api-platform',
-      )}/services`,
+      `${await this.discoveryApi.getBaseUrl('api-platform')}/services`
     );
     const response = await this.fetchApi.fetch(url);
-    const items = await response.json();
-    return (
-      items
-    );
+    return await response.json();
   }
 
   async getServiceVersions(serviceName: string): Promise<ServiceDefinition> {
     const url = new URL(
-      `${await this.discoveryApi.getBaseUrl(
-        'api-platform',
-      )}/services/${serviceName}`
+      `${await this.discoveryApi.getBaseUrl('api-platform')}/services/${serviceName}`
     );
     const response = await this.fetchApi.fetch(url);
-    const item = await response.json();
-    return (
-      item
-    );
+    return await response.json();
   }
 
   async listSystems(): Promise<{ items: Entity[] }> {
     const url = new URL(
-      `${await this.discoveryApi.getBaseUrl(
-        'api-platform',
-      )}/systems`,
+      `${await this.discoveryApi.getBaseUrl('api-platform')}/systems`
     );
     const response = await this.fetchApi.fetch(url);
-    const items = await response.json();
-    return (
-      items
-    );
+    return await response.json();
   }
 
-  async getSystem(systemName: string): Promise<(SystemDefinition)> {
+  async getSystem(systemName: string): Promise<SystemDefinition> {
     const url = new URL(
-      `${await this.discoveryApi.getBaseUrl(
-        'api-platform',
-      )}/systems/${systemName}`
+      `${await this.discoveryApi.getBaseUrl('api-platform')}/systems/${systemName}`
     );
     const response = await this.fetchApi.fetch(url);
-    const item = await response.json();
-    return (
-      item
-    );
+    return await response.json();
   }
 
 }

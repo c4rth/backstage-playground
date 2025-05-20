@@ -53,7 +53,19 @@ export const SystemPlatformDefinitionCard = (props: { apis: string[], services: 
     const classes = useStyles();
 
     const entityRef = getCompoundEntityRef(entity);
-    const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];
+    const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+
+    const docsButton = (
+        <IconButton
+            aria-label="Documentation"
+            title="TechDocs"
+            disabled={!hasDocs}
+            component={Link}
+            to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+        >
+            <DocsIcon />
+        </IconButton>
+    );
 
     return (
         <>
@@ -71,19 +83,7 @@ export const SystemPlatformDefinitionCard = (props: { apis: string[], services: 
                 <TabbedLayout.Route path="/info" title="Info">
                     <Grid container spacing={3} alignItems="stretch">
                         <Grid item md={6}>
-                            <InfoCard title='About' divider className={classes.gridItemCard} action={
-                                <>
-                                    <IconButton
-                                        aria-label="Documentation"
-                                        title="TechDocs"
-                                        disabled={!hasDocs}
-                                        component={Link}
-                                        to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
-                                    >
-                                        <DocsIcon />
-                                    </IconButton>
-                                </>
-                            }>
+                            <InfoCard title='About' divider className={classes.gridItemCard} action={docsButton}>
                                 <Box sx={{ mb: 4 }}>
                                     <AboutField
                                         label="System reference"

@@ -19,12 +19,12 @@ export class MyPermissionPolicy implements PermissionPolicy {
 
   logger: LoggerService;
   config: Config;
-  adminGroups: string[] = [];
+  superUserGroups: string[] = [];
 
   constructor(logger: LoggerService, config: Config) {
     this.logger = logger;
     this.config = config;
-    this.adminGroups = this.config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
+    this.superUserGroups = this.config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
   }
 
   // guest: allow catalog.read, deny others
@@ -35,33 +35,35 @@ export class MyPermissionPolicy implements PermissionPolicy {
     request: PolicyQuery,
     user?: BackstageIdentityResponse,
   ): Promise<PolicyDecision> {
-
-    // guest
+    // Guest: allow only catalog.read, deny all others
     if (user?.identity?.userEntityRef === 'user:default/guest') {
-      if (isPermission(request.permission, catalogEntityReadPermission)) {
-        return { result: AuthorizeResult.ALLOW };
-      }
-      return { result: AuthorizeResult.DENY };
+      return {
+        result: isPermission(request.permission, catalogEntityReadPermission)
+          ? AuthorizeResult.ALLOW
+          : AuthorizeResult.DENY,
+      };
     }
-    // superUsers
-    if (this.adminGroups.length === 0 || user?.identity?.ownershipEntityRefs.some((entityRef) => this.adminGroups.includes(entityRef))) {
+
+    // SuperUsers: allow all if in adminGroups
+    const isSuperUser =
+      this.superUserGroups.length !== 0 &&
+      user?.identity?.ownershipEntityRefs.some(entityRef => this.superUserGroups.includes(entityRef));
+    if (isSuperUser) {
       return { result: AuthorizeResult.ALLOW };
     }
-    // others
-    if (isPermission(request.permission, catalogEntityCreatePermission)) {
+
+    // Deny list for regular users
+    const denyPermissions = [
+      catalogEntityCreatePermission,
+      catalogEntityDeletePermission,
+      adminToolsPermission,
+      devToolsAdministerPermission,
+    ];
+    if (denyPermissions.some(perm => isPermission(request.permission, perm))) {
       return { result: AuthorizeResult.DENY };
     }
-    if (isPermission(request.permission, catalogEntityDeletePermission)) {
-      return { result: AuthorizeResult.DENY };
-    }
-    if (isPermission(request.permission, adminToolsPermission)) {
-      return { result: AuthorizeResult.DENY };
-    }
-    if (isPermission(request.permission, devToolsAdministerPermission)) {
-      return { result: AuthorizeResult.DENY };
-    }
-    return {
-      result: AuthorizeResult.ALLOW,
-    };
+
+    // Allow all other permissions
+    return { result: AuthorizeResult.ALLOW };
   }
 }

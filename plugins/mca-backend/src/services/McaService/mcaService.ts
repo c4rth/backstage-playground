@@ -60,48 +60,30 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
     },
 
     async getMcaComponent(request: { component: string }): Promise<McaComponent | undefined> {
-      const { component } = request;
-      const res = await mcaComponentsStore.getMcaComponent(component);
-      if (res) {
-        return res;
-      }
-      return undefined;
+      return mcaComponentsStore.getMcaComponent(request.component);
     },
 
     async getMcaVersions(): Promise<McaVersions> {
-      const res = await mcaComponentsStore.getMcaVersions();
-      if (res) {
-        return res;
-      }
-      return {
+      return (await mcaComponentsStore.getMcaVersions()) || {
         p1Version: 'P+1',
         p2Version: 'P+2',
         p3Version: 'P+3',
         p4Version: 'P+4',
-      }
+      };
     },
 
     async listMcaBaseTypes(request: McaBaseTypeListRequest): Promise<McaBaseTypeListResult> {
       const offset = request.offset ?? 0;
       const limit = request.limit ?? 20;
-      return await mcaComponentsStore.getMcaBaseTypes(offset, limit, request.orderBy, request.search);
+      return mcaComponentsStore.getMcaBaseTypes(offset, limit, request.orderBy, request.search);
     },
 
     async getMcaBaseTypesCount(): Promise<number> {
-      const res = await mcaComponentsStore.getMcaBaseTypesCount();
-      if (res) {
-        return res;
-      }
-      return 0;
+      return (await mcaComponentsStore.getMcaBaseTypesCount()) || 0;
     },
 
     async getMcaBaseType(request: { baseType: string }): Promise<McaBaseType | undefined> {
-      const { baseType } = request;
-      const res = await mcaComponentsStore.getMcaBaseType(baseType);
-      if (res) {
-        return res;
-      }
-      return undefined;
+      return mcaComponentsStore.getMcaBaseType(request.baseType);
     },
 
   };

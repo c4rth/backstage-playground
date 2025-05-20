@@ -28,13 +28,9 @@ const columns: TableColumn<TableRow>[] = [
     title: 'Method',
     width: '5%',
     field: 'operation.method',
-    render: ({ operation }) => {
-      return (
-        <Typography variant="body2">
-          {operation.method}
-        </Typography>
-      );
-    },
+    render: ({ operation }) => (
+      <Typography variant="body2">{operation.method}</Typography>
+    ),
   },
   {
     title: 'Name',
@@ -42,21 +38,15 @@ const columns: TableColumn<TableRow>[] = [
     field: 'operation.name',
     highlight: true,
     defaultSort: 'asc',
-    render: ({ operation }) => {
-      return (
-        <Typography variant="body2">
-          {operation.name}
-        </Typography>
-      );
-    },
+    render: ({ operation }) => (
+      <Typography variant="body2">{operation.name}</Typography>
+    ),
   },
   {
     title: 'ABAC',
     field: 'operation.abac',
     width: '5%',
-    render: ({ operation }) => {
-      return operation.abac ? <StatusOK /> : <StatusPending />;
-    },
+    render: ({ operation }) => (operation.abac ? <StatusOK /> : <StatusPending />),
   },
   {
     title: 'B-Function',
@@ -67,55 +57,58 @@ const columns: TableColumn<TableRow>[] = [
     title: 'PDP Mapping',
     width: '10%',
     field: 'id',
-    render: ({ operation }) => operation.pdpMapping ?
-      <InfoPopover
-        title="PDP Mapping"
-        variant='h6'
-        content={
-          <MuiTable size="small">
-            <MuiTableHead>
-              <MuiTableRow>
-                <MuiTableCell><Typography variant='button'>Value Path</Typography></MuiTableCell>
-                <MuiTableCell><Typography variant='button'>PDP Field</Typography></MuiTableCell>
-              </MuiTableRow>
-            </MuiTableHead>
-            <MuiTableBody>
-              {operation.pdpMapping?.map((row, index) => (
-                <MuiTableRow key={index}>
-                  <MuiTableCell component="th" scope="row">
-                    {row.valuePath}
+    render: ({ operation }) =>
+      operation.pdpMapping ? (
+        <InfoPopover
+          title="PDP Mapping"
+          variant="h6"
+          content={
+            <MuiTable size="small">
+              <MuiTableHead>
+                <MuiTableRow>
+                  <MuiTableCell>
+                    <Typography variant="button">Value Path</Typography>
                   </MuiTableCell>
-                  <MuiTableCell>{row.pdpField}</MuiTableCell>
+                  <MuiTableCell>
+                    <Typography variant="button">PDP Field</Typography>
+                  </MuiTableCell>
                 </MuiTableRow>
-              ))}
-            </MuiTableBody>
-          </MuiTable>
-        }>
-        <IconButton size="small" onClick={() => { }}>
-          <MapIcon />
-        </IconButton>
-      </InfoPopover>
-      : null,
+              </MuiTableHead>
+              <MuiTableBody>
+                {operation.pdpMapping.map((row, index) => (
+                  <MuiTableRow key={index}>
+                    <MuiTableCell component="th" scope="row">
+                      {row.valuePath}
+                    </MuiTableCell>
+                    <MuiTableCell>{row.pdpField}</MuiTableCell>
+                  </MuiTableRow>
+                ))}
+              </MuiTableBody>
+            </MuiTable>
+          }
+        >
+          <IconButton size="small">
+            <MapIcon />
+          </IconButton>
+        </InfoPopover>
+      ) : null,
   },
 ];
 
-function toTableRow(operation: AppRegistryOperation, idx: number) {
+function toTableRow(operation: AppRegistryOperation, idx: number): TableRow {
   return {
     id: idx,
-    operation: operation,
+    operation,
     open: true,
   };
 }
 
 export const AppRegistryPage = () => {
-
   const { entity } = useEntity<ComponentEntity>();
-
   const appCode = entity.spec.system;
   const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
   const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
   const environment = entity.spec?.lifecycle.toUpperCase();
-
   const { data, loading, error } = useGetOperations(appCode, appName, appVersion, environment);
 
   if (error) {
@@ -133,13 +126,13 @@ export const AppRegistryPage = () => {
         padding: 'dense',
         paging: false,
         showEmptyDataSourceMessage: !loading,
-        draggable: false,  
-        thirdSortClick: false,                 
+        draggable: false,
+        thirdSortClick: false,
       }}
       title={
         <Box display="flex" alignItems="center">
           <Box mr={1} />
-          Operations ({rows ? rows.length : 0})
+          Operations ({rows.length})
         </Box>
       }
       data={rows}

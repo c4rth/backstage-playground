@@ -1,23 +1,15 @@
 import { mcaComponentsBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
-import { McaVersions } from '@internal/plugin-mca-common';
 import useAsync from 'react-use/esm/useAsync';
 
-export function useGetMcaVersions(): {
-    versions?: McaVersions;
-    loading: boolean;
-    error?: Error;
-} {
+export function useGetMcaVersions() {
+  const api = useApi(mcaComponentsBackendApiRef);
 
-    const api = useApi(mcaComponentsBackendApiRef);
+  const { value, loading, error } = useAsync(() => api.getMcaVersions(), [api]);
 
-    const { value, loading, error } = useAsync(() => {
-        return api.getMcaVersions();
-    }, [api]);
-
-    return {
-        versions: value || undefined,
-        loading,
-        error,
-    };
+  return {
+    versions: value,
+    loading,
+    error,
+  };
 }

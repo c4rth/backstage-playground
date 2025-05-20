@@ -94,7 +94,6 @@ export async function createRouter(
   });
 
   // Endpoints: /services
-
   router.get('/services', async (_req, res) => {
     res.json(await servicePlatformService.listServices());
   });
@@ -104,24 +103,24 @@ export async function createRouter(
   });
 
   // Exposed endpoints: /services
-
   router.get('/service-informations/:applicationCode/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
+    const { applicationCode, serviceName, serviceVersion, imageVersion } = req.params;
     const info = await servicePlatformService.getServiceInformation({
-      applicationCode: req.params.applicationCode,
-      serviceName: req.params.serviceName,
-      serviceVersion: req.params.serviceVersion,
-      imageVersion: req.params.imageVersion,
+      applicationCode,
+      serviceName,
+      serviceVersion,
+      imageVersion,
     });
     res.status(200).json(info);
   });
 
   router.post('/service-informations', async (req, res) => {
     const serviceInformation: ServiceInformation = req.body;
-    res.status(201).json(await servicePlatformService.addServiceInformation({ serviceInformation }));
+    const result = await servicePlatformService.addServiceInformation({ serviceInformation });
+    res.status(201).json(result);
   });
 
   // Endpoints: /systems
-
   router.get('/systems', async (_req, res) => {
     res.json(await systemPlatformService.listSystems());
   });

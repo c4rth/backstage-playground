@@ -1,26 +1,15 @@
-
 import { apiPlatformBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
-import { ApiVersionDefinition } from '@internal/plugin-api-platform-common';
 import useAsync from 'react-use/esm/useAsync';
 
-export function useGetApiVersions(
-    apiName: string
-): {
-    apiVersions?: ApiVersionDefinition[];
-    loading: boolean;
-    error?: Error;
-} {
+export function useGetApiVersions(apiName: string) {
+  const api = useApi(apiPlatformBackendApiRef);
 
-    const api = useApi(apiPlatformBackendApiRef);
+  const { value, loading, error } = useAsync(() => api.getApiVersions(apiName), [api, apiName]);
 
-    const { value, loading, error } = useAsync(() => {
-        return api.getApiVersions(apiName);
-    }, [api]);
-
-    return {
-        apiVersions: value,
-        loading,
-        error,
-    };
+  return {
+    apiVersions: value,
+    loading,
+    error,
+  };
 }

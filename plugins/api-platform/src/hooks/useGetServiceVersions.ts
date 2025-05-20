@@ -1,25 +1,16 @@
 import { apiPlatformBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 
 
-export function useGetServiceVersions(
-    serviceName: string
-): {
-    item?: ServiceDefinition;
-    loading: boolean;
-    error?: Error;
-} {
-    const api = useApi(apiPlatformBackendApiRef);
+export function useGetServiceVersions(serviceName: string) {
+  const api = useApi(apiPlatformBackendApiRef);
 
-    const { value, loading, error } = useAsync(() => {
-        return api.getServiceVersions(serviceName);
-    }, [api]);
+  const { value, loading, error } = useAsync(() => api.getServiceVersions(serviceName), [api, serviceName]);
 
-    return {
-        item: value,
-        loading,
-        error,
-    };
+  return {
+    item: value,
+    loading,
+    error,
+  };
 }

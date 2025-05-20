@@ -78,56 +78,53 @@ function getCount(mcaApi: McaComponentsBackendApi) {
 }
 
 export const McaBaseTypeTable = () => {
-    const mcaApi = useApi(mcaComponentsBackendApiRef);
-    const [countRows, setCountRows] = useState<number>(0);
-    const [loadingCount, setLoadingCount] = useState<boolean>(true);
-    const [error, setError] = useState<Error | null>(null);
-    const initialSearch = sessionStorage.getItem('mcaBaseTypeTableSearch') || '';
+  const mcaApi = useApi(mcaComponentsBackendApiRef);
+  const [countRows, setCountRows] = useState(0);
+  const [loadingCount, setLoadingCount] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const initialSearch = sessionStorage.getItem('mcaBaseTypeTableSearch') || '';
 
-    useEffect(() => {
-        getCount(mcaApi).then(count => {
-            setCountRows(count);
-            setLoadingCount(false);
-        }).catch(err => {
-            setError(err);
-            setLoadingCount(false);
-        });
-    }, [mcaApi]);
+  useEffect(() => {
+    getCount(mcaApi)
+      .then(count => {
+        setCountRows(count);
+        setLoadingCount(false);
+      })
+      .catch(err => {
+        setError(err);
+        setLoadingCount(false);
+      });
+  }, [mcaApi]);
 
-    if (loadingCount) {
-        return <Progress />;
-    }
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
-    return (
-        <Table<TableRow>
-            columns={getColumns()}
-            options={{
-                paginationPosition: 'bottom',
-                search: true,
-                padding: 'dense',
-                pageSize: PAGE_SIZE,
-                pageSizeOptions: [10, PAGE_SIZE, 50],
-                showEmptyDataSourceMessage: !loadingCount,
-                draggable: false,
-                thirdSortClick: false,
-                searchText: initialSearch,
-            }}
-            title={
-                <Box display="flex" alignItems="center">
-                    <Box mr={1} />
-                    BaseTypes ({countRows})
-                </Box>
-            }
-            data={
-                async query => {
-                    sessionStorage.setItem('mcaBaseTypeTableSearch', query.search || '');
-                    return getData(mcaApi, query);
-                }
-            }
-        />
-    );
+  if (loadingCount) return <Progress />;
+  if (error) return <ResponseErrorPanel error={error} />;
+
+  return (
+    <Table<TableRow>
+      columns={getColumns()}
+      options={{
+        paginationPosition: 'bottom',
+        search: true,
+        padding: 'dense',
+        pageSize: PAGE_SIZE,
+        pageSizeOptions: [10, PAGE_SIZE, 50],
+        showEmptyDataSourceMessage: !loadingCount,
+        draggable: false,
+        thirdSortClick: false,
+        searchText: initialSearch,
+      }}
+      title={
+        <Box display="flex" alignItems="center">
+          <Box mr={1} />
+          BaseTypes ({countRows})
+        </Box>
+      }
+      data={async query => {
+        sessionStorage.setItem('mcaBaseTypeTableSearch', query.search || '');
+        return getData(mcaApi, query);
+      }}
+    />
+  );
 };
 
 function toEntityRow(item: McaBaseType, idx: number) {

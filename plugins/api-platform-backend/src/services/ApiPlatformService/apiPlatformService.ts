@@ -27,20 +27,24 @@ async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService,
     {
       filter: {
         kind: ['API'],
-        'metadata.api-name': apiName
+        'metadata.api-name': apiName,
       },
-      fields: [
-        CATALOG_METADATA,
-      ],
+      fields: [CATALOG_METADATA],
     },
-    { token });
-  const apisSameName = entities.items.filter(entity => entity.metadata[ANNOTATION_API_NAME] === apiName);
-  const versions: ApiVersionDefinition[] = apisSameName.map(entity => ({
+    { token }
+  );
+  const apisSameName = entities.items.filter(
+    entity => entity.metadata[ANNOTATION_API_NAME] === apiName
+  );
+  const versions = apisSameName.map(entity => ({
     entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
     version: entity.metadata[ANNOTATION_API_VERSION]?.toString() || '',
     project: entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '',
   }));
-  return versions.sort((a, b) => semver.compare(a.version, b.version)).reverse();
+  return versions
+    .filter(v => v.version)
+    .sort((a, b) => semver.compare(a.version, b.version))
+    .reverse();
 }
 
 function getLatestByApiName(input: GetEntitiesResponse): Entity[] {
@@ -49,8 +53,13 @@ function getLatestByApiName(input: GetEntitiesResponse): Entity[] {
 
   for (const item of input.items) {
     const apiName = item.metadata['api-name']?.toString() ?? '';
-    const version = new semver.SemVer(item.metadata['api-version']?.toString().toUpperCase() ?? '0.0.0');
-
+    const versionStr = item.metadata['api-version']?.toString() || '0.0.0';
+    let version: semver.SemVer;
+    try {
+      version = new semver.SemVer(versionStr);
+    } catch {
+      version = new semver.SemVer('0.0.0');
+    }
     const existing = latest.get(apiName);
     const existingVersion = existingVersions.get(apiName);
     if (!existing || !existingVersion || semver.gt(version, existingVersion)) {

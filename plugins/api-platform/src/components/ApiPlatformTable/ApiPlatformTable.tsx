@@ -16,7 +16,7 @@ import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
 import { SystemPlatformDisplayName } from '../SystemPlatformTable';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 
@@ -111,23 +111,38 @@ export const ApiPlatformTable = () => {
     const [countRows, setCountRows] = useState<number>(0);
     const [loadingCount, setLoadingCount] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
- 
+
+    // Helper for rendering error/loading
+    const renderPanel = () => {
+        if (loadingCount) return <Progress />;
+        if (error) return <ResponseErrorPanel error={error} />;
+        return null;
+    };
+
     useEffect(() => {
-        getCount(apiPlatformApi).then(count => {
-            setCountRows(count);
-            setLoadingCount(false);
-        }).catch(err => {
-            setError(err);
-            setLoadingCount(false);
-        });
+        setLoadingCount(true);
+        getCount(apiPlatformApi)
+            .then(count => {
+                setCountRows(count);
+                setLoadingCount(false);
+            })
+            .catch(err => {
+                setError(err);
+                setLoadingCount(false);
+            });
     }, [apiPlatformApi]);
 
-    if (loadingCount) {
-        return <Progress />;
-    }
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
+    const fetchData = useCallback(
+        async (query: Query<TableRow>) => {
+            sessionStorage.setItem('apiPlatformTableSearch', query.search || '');
+            return getData(apiPlatformApi, query);
+        },
+        [apiPlatformApi]
+    );
+
+    const panel = renderPanel();
+    if (panel) return panel;
+
     return (
         <Table<TableRow>
             isLoading={loadingCount}
@@ -148,12 +163,7 @@ export const ApiPlatformTable = () => {
                     APIs ({countRows})
                 </Box>
             }
-            data={
-                async query => {
-                    sessionStorage.setItem('apiPlatformTableSearch', query.search || '');
-                    return getData(apiPlatformApi, query);
-                }
-            }
+            data={fetchData}
         />
     );
 };

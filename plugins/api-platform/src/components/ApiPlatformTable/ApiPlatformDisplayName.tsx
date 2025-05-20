@@ -26,20 +26,17 @@ export type ApiPlatformDisplayNameProps = {
     text: string;
 };
 
-export const ApiPlatformDisplayName = (
-    props: ApiPlatformDisplayNameProps,
-): JSX.Element => {
-
+export const ApiPlatformDisplayName = ({ text }: ApiPlatformDisplayNameProps): JSX.Element => {
     const classes = useStyles();
-    let content = <div>{props.text}</div>;
-    content = (
-        <Box component="span" className={classes.root}>
-            <Box component="span" className={classes.icon}>
-                <ExtensionIcon fontSize="inherit" />
-            </Box>
-            {content}
+    const icon = (
+        <Box component="span" className={classes.icon}>
+            <ExtensionIcon fontSize="inherit" />
         </Box>
     );
-
-    return content;
+    return (
+        <Box component="span" className={classes.root}>
+            {icon}
+            <span>{text}</span>
+        </Box>
+    );
 };

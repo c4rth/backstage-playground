@@ -167,45 +167,34 @@ function getTitle(type: McaComponentType) {
     }
 }
 
-export const McaComponentTable = (props: McaComponentTableProps) => {
+export const McaComponentTable = ({ type }: McaComponentTableProps) => {
     const mcaApi = useApi(mcaComponentsBackendApiRef);
-    const [selectedType, setSelectedType] = useState<McaComponentType>(props.type);
+    const [selectedType, setSelectedType] = useState<McaComponentType>(type);
     const [mcaVersions, setMcaVersions] = useState<McaVersions>();
     const [countRows, setCountRows] = useState<number>(0);
-    const [loadingCount, setLoadingCount] = useState<boolean>(true);
-    const [loadingVersions, setLoadingVersions] = useState<boolean>(true);
+    const [loadingCount, setLoadingCount] = useState(true);
+    const [loadingVersions, setLoadingVersions] = useState(true);
     const [error, setError] = useState<Error | null>(null);
     const initialSearch = sessionStorage.getItem('mcaComponentTableSearch') || '';
 
     useEffect(() => {
-        getVersions(mcaApi).then(versions => {
-            setMcaVersions(versions);
-            setLoadingVersions(false);
-        }).catch(err => {
-            setError(err);
-            setLoadingVersions(false);
-        });
-    }, [mcaApi])
+        getVersions(mcaApi)
+            .then(versions => setMcaVersions(versions))
+            .catch(setError)
+            .finally(() => setLoadingVersions(false));
+    }, [mcaApi]);
 
     useEffect(() => {
-        setSelectedType(props.type);
-        getCount(mcaApi, props.type).then(count => {
-            setCountRows(count);
-            setLoadingCount(false);
-        }).catch(err => {
-            setError(err);
-            setLoadingCount(false);
-        }
-        );
-    }, [props.type, mcaApi]);
+        setSelectedType(type);
+        getCount(mcaApi, type)
+            .then(setCountRows)
+            .catch(setError)
+            .finally(() => setLoadingCount(false));
+    }, [type, mcaApi]);
 
+    if (loadingVersions || loadingCount) return <Progress />;
+    if (error) return <ResponseErrorPanel error={error} />;
 
-    if (loadingVersions || loadingCount) {
-        return <Progress />;
-    }
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
     return (
         <Table<TableRow>
             key={selectedType}
@@ -227,12 +216,10 @@ export const McaComponentTable = (props: McaComponentTableProps) => {
                     {getTitle(selectedType)} ({countRows})
                 </Box>
             }
-            data={
-                async query => {
-                    sessionStorage.setItem('mcaComponentTableSearch', query.search || '');
-                    return getData(mcaApi, query, selectedType);
-                }
-            }
+            data={async query => {
+                sessionStorage.setItem('mcaComponentTableSearch', query.search || '');
+                return getData(mcaApi, query, selectedType);
+            }}
         />
     );
 };

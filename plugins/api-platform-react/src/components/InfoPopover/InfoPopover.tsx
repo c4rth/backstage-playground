@@ -28,8 +28,13 @@ const useStyles = makeStyles(() => {
   };
 });
 
-export const InfoPopover = (props: InfoPopoverProps) => {
-  const { children, delayTime = 500 } = props;
+export const InfoPopover = ({
+  children,
+  delayTime = 500,
+  title,
+  variant = 'h6',
+  content,
+}: InfoPopoverProps) => {
   const classes = useStyles();
   const popupState = usePopupState({
     variant: 'popover',
@@ -60,23 +65,15 @@ export const InfoPopover = (props: InfoPopoverProps) => {
       </Typography>
       {isHovered && (
         <HoverPopover
-          slotProps={{ paper: { className: classes.popoverPaper, } }}
+          slotProps={{ paper: { className: classes.popoverPaper } }}
           {...bindPopover(popupState)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           onMouseLeave={handleOnMouseLeave}
         >
           <Card>
-            <CardHeader title={props.title} titleTypographyProps={{ variant: props.variant || 'h6' }} />
-            <CardContent>
-              {props.content}
-            </CardContent>
+            <CardHeader title={title} titleTypographyProps={{ variant }} />
+            <CardContent>{content}</CardContent>
           </Card>
         </HoverPopover>
       )}

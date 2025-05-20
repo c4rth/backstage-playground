@@ -214,57 +214,49 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
 
   async getMcaBaseTypesCount(): Promise<number> {
     this.logger.debug(`Mca basetypes count`);
-    const baseQuery = this.db<DbBaseTypeRow>('mca_basetypes')
-      .count({ count: '*' });
-    const total = await baseQuery;
+    const total = await this.db<DbBaseTypeRow>('mca_basetypes').count({ count: '*' });
     this.logger.debug(`Mca basetypes count: ${JSON.stringify(total)}`);
     return Number(total[0].count);
   }
 
   async getMcaBaseTypes(offset: number, limit: number, orderBy?: McaBaseTypeOrderByOptions, search?: string): Promise<McaBaseTypeListResult> {
-
     this.logger.debug(`Fetch mca basetypes with offset: ${offset}, limit: ${limit}, orderBy: ${orderBy}, search: ${search}`);
 
     const baseQuery = this.db<DbBaseTypeRow>('mca_basetypes')
       .select('*')
       .offset(offset)
       .limit(limit);
-    const countQuery = this.db<DbMcaRow>('mca_basetypes')
+    const countQuery = this.db<DbBaseTypeRow>('mca_basetypes')
       .count({ count: '*' });
 
+    // Search logic
     if (search) {
-      const searchQuery = [
-        'base_type',
-        'package_name',
-      ].map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
-      baseQuery.and.whereRaw(`(${searchQuery})`, Array(2).fill(`%${search.toLowerCase()}%`));
-      countQuery.and.whereRaw(`(${searchQuery})`, Array(2).fill(`%${search.toLowerCase()}%`));
+      const fields = ['base_type', 'package_name'];
+      const searchQuery = fields.map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
+      const searchValues = Array(fields.length).fill(`%${search.toLowerCase()}%`);
+      baseQuery.and.whereRaw(`(${searchQuery})`, searchValues);
+      countQuery.and.whereRaw(`(${searchQuery})`, searchValues);
     }
 
+    // Order by logic
     if (orderBy) {
       baseQuery.orderBy(mapMcaBaseTypeOrderByField(orderBy.field), orderBy.direction);
     }
 
-    const total = await countQuery;
-    const result = await baseQuery;
+    const [total, result] = await Promise.all([
+      countQuery,
+      baseQuery,
+    ]);
 
-    if (result) {
-      const mcaBaseTypes: McaBaseType[] = result.map((row) => ({
-        baseType: row.base_type,
-        packageName: row.package_name,
-      }));
-      return {
-        items: mcaBaseTypes,
-        offset,
-        limit,
-        totalCount: Number(total[0].count),
-      };
-    }
+    const mcaBaseTypes: McaBaseType[] = (result ?? []).map(row => ({
+      baseType: row.base_type,
+      packageName: row.package_name,
+    }));
     return {
-      items: [],
+      items: mcaBaseTypes,
       offset,
       limit,
-      totalCount: 0,
+      totalCount: Number(total[0].count),
     };
   }
 

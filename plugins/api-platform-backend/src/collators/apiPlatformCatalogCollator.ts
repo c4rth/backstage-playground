@@ -38,20 +38,21 @@ export const apiPlatformCatalogCollatorEntityTransformer: CatalogCollatorEntityT
         const isService = isComponentEntity(entity) && entity.spec?.type === 'service';
         if (isApiEntity(entity) || isService || isSystemEntity(entity)) {
             let type = '';
-            let location = '/api-platform/';
             let kind = '';
+            let location = '/api-platform/';
             if (isApiEntity(entity)) {
                 type = 'api';
-                location += `api/${entity.metadata[ANNOTATION_API_NAME]}?version=${entity.metadata[ANNOTATION_API_VERSION]}`;
                 kind = 'OpenAPI';
+                location += `api/${entity.metadata[ANNOTATION_API_NAME]}?version=${entity.metadata[ANNOTATION_API_VERSION]}`;
             } else if (isService) {
                 type = 'service';
-                location += `service/${entity.metadata[ANNOTATION_SERVICE_NAME]}?version=${entity.metadata[ANNOTATION_SERVICE_VERSION]}&env=${entity.spec.lifecycle}`;
                 kind = 'Service';
+                const lifecycle = (entity as any).spec?.lifecycle || '';
+                location += `service/${entity.metadata[ANNOTATION_SERVICE_NAME]}?version=${entity.metadata[ANNOTATION_SERVICE_VERSION]}&env=${lifecycle}`;
             } else {
                 type = 'system';
-                location += `system/${entity.metadata.name}`;
                 kind = 'System';
+                location += `system/${entity.metadata.name}`;
             }
             return {
                 title: getDocumentTitle(entity),
@@ -59,7 +60,7 @@ export const apiPlatformCatalogCollatorEntityTransformer: CatalogCollatorEntityT
                 componentType: entity.spec?.type?.toString() || 'other',
                 type: `api-platform.${type}`,
                 namespace: entity.metadata.namespace || 'default',
-                kind: kind,
+                kind,
                 lifecycle: isSystemEntity(entity) ? '' : (entity.spec?.lifecycle as string) || '',
                 owner: (entity.spec?.owner as string) || '',
                 apiPlatformLocation: location,

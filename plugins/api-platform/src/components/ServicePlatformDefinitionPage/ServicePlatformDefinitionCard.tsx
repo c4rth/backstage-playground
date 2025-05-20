@@ -3,6 +3,7 @@ import {
     TabbedLayout,
     Link,
 } from '@backstage/core-components';
+import { useMemo } from 'react';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
 import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
@@ -59,34 +60,32 @@ const useStyles = makeStyles(
 );
 
 export const ServicePlatformDefinitionCard = () => {
-
     const { entity } = useEntity<ComponentEntity>();
-
     const classes = useStyles();
 
-    const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
-    const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
+    const platform = useMemo(() => (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString(), [entity]);
+    const imageVersion = useMemo(() => entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString(), [entity]);
     const entityRef = getCompoundEntityRef(entity);
-    const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];
+    const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+
+    const docsButton = (
+        <IconButton
+            aria-label="Documentation"
+            title="TechDocs"
+            disabled={!hasDocs}
+            component={Link}
+            to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+        >
+            <DocsIcon />
+        </IconButton>
+    );
 
     return (
         <TabbedLayout>
             <TabbedLayout.Route path="/" title="Overview">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={6}>
-                        <InfoCard title='About' divider className={classes.gridItemCard} action={
-                            <>
-                                <IconButton
-                                    aria-label="Documentation"
-                                    title="TechDocs"
-                                    disabled={!hasDocs}
-                                    component={Link}
-                                    to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
-                                >
-                                    <DocsIcon />
-                                </IconButton>
-                            </>
-                        }>
+                        <InfoCard title='About' divider className={classes.gridItemCard} action={docsButton}>
                             <Box sx={{ mb: 4 }}>
                                 <Grid container>
                                     <AboutField
@@ -135,18 +134,16 @@ export const ServicePlatformDefinitionCard = () => {
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>
-            {isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity) ?
+            {(isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity)) && (
                 <TabbedLayout.Route path="/ci-cd" title="CI/CD">
                     <EntityAzurePipelinesCard defaultLimit={10} />
                 </TabbedLayout.Route>
-                : null
-            }
-            {isSonarQubeAvailable(entity) ?
+            )}
+            {isSonarQubeAvailable(entity) && (
                 <TabbedLayout.Route path="/sonarqube" title="SonarQube">
                     <EntitySonarQubeContentPage />
                 </TabbedLayout.Route>
-                : null
-            }
+            )}
         </TabbedLayout>
     );
 }

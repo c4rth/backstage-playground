@@ -52,43 +52,42 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
   entities.items.forEach(entity => {
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
-    if (name && version) {
-      const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '-';
-      let def: ServiceDefinition;
-      if (mapServices.has(name)) {
-        def = mapServices.get(name)!;
-      } else {
-        def = {
-          name: name,
-          owner: entity.relations?.filter(rel => rel.type === RELATION_OWNED_BY).at(0)?.targetRef || '',
-          system: entity.spec?.system?.toString() || '-',
-          versions: []
-        };
-      }
-      const defVersions = def.versions.filter((svcDef: ServiceVersionDefinition) => svcDef.version === version);
-      let defVersion: ServiceVersionDefinition;
-      if (defVersions.length > 0) {
-        defVersion = defVersions.at(0)!;
-      } else {
-        defVersion = {
-          version: version,
-          environments: {
-          }
-        };
-        def.versions.push(defVersion);
-      }
-      const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
-      defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
-        imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
-        entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-        platform: platforms,
+    if (!name || !version) return;
+
+    const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '-';
+    let def = mapServices.get(name);
+    if (!def) {
+      def = {
+        name,
+        owner: entity.relations?.find(rel => rel.type === RELATION_OWNED_BY)?.targetRef || '',
+        system: entity.spec?.system?.toString() || '-',
+        versions: []
       };
       mapServices.set(name, def);
     }
+
+    let defVersion = def.versions.find((svcDef: ServiceVersionDefinition) => svcDef.version === version);
+    if (!defVersion) {
+      defVersion = {
+        version,
+        environments: {}
+      };
+      def.versions.push(defVersion);
+    }
+
+    const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
+    defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
+      imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
+      entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+      platform: platforms,
+    };
   });
+
+  // Sort versions numerically
   const sortVersions = (a: { version: string }, b: { version: string }) =>
     a.version.localeCompare(b.version, undefined, { numeric: true });
   mapServices.forEach(def => { def.versions.sort(sortVersions); });
+
   return Array.from(mapServices.values());
 }
 

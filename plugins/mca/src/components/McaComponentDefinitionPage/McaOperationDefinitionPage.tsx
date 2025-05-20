@@ -47,30 +47,27 @@ function getOperationNodes(mcaComponent: any): NodesType {
     };
 }
 
-export const McaOperationDefinitionPage = (props: McaOperationDefinitionPageProps) => {
-    const { mcaComponent } = props;
+export const McaOperationDefinitionPage = ({ mcaComponent }: McaOperationDefinitionPageProps) => {
+  const { operationAnalyze, operation, operationType } = getOperationNodes(mcaComponent);
 
+  if (!operation) {
+    return <ResponseErrorPanel error={new Error('Invalid operation definition: required node not found')} />;
+  }
+  if (!operationType) {
+    return <ResponseErrorPanel error={new Error(`Unknown operation type: ${operationAnalyze.type}`)} />;
+  }
 
-    const { operationAnalyze, operation, operationType } = getOperationNodes(mcaComponent);
-
-    if (!operation) {
-        return <ResponseErrorPanel error={new Error(`Invalid operation definition: required node not found`)} />;
-    }
-    if (!operationType) {
-        return <ResponseErrorPanel error={new Error(`Unknown operation type: ${operationAnalyze.type}`)} />;
-    }
-
-    return (
-        <TabbedLayout>
-            <TabbedLayout.Route path="/" title="Overview">
-                <McaOperationAboutCard operationAnalyze={operationAnalyze} operation={operation} />
-            </TabbedLayout.Route>
-            <TabbedLayout.Route path="/inputfields" title="Input Fields">
-                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType='input' />
-            </TabbedLayout.Route>
-            <TabbedLayout.Route path="/outputfields" title="Output Fields">
-                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType='output' />
-            </TabbedLayout.Route>
-        </TabbedLayout>
-    );
+  return (
+    <TabbedLayout>
+      <TabbedLayout.Route path="/" title="Overview">
+        <McaOperationAboutCard operationAnalyze={operationAnalyze} operation={operation} />
+      </TabbedLayout.Route>
+      <TabbedLayout.Route path="/inputfields" title="Input Fields">
+        <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="input" />
+      </TabbedLayout.Route>
+      <TabbedLayout.Route path="/outputfields" title="Output Fields">
+        <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="output" />
+      </TabbedLayout.Route>
+    </TabbedLayout>
+  );
 }

@@ -15,9 +15,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const ToolkitCard = () => {
-
   const configApi = useApi(configApiRef);
-  const baseUrl = configApi.getString('app.baseUrl')
+  const baseUrl = configApi.getString('app.baseUrl');
   const classes = useStyles();
   const { data, error, isLoading } = useToolkitData(baseUrl) as {
     data: ToolkitLink[] | undefined;
@@ -25,38 +24,25 @@ export const ToolkitCard = () => {
     isLoading: boolean;
   };
 
-  if (isLoading) {
-    return <Progress />;
-  }
-
-  if (error) {
-    return (
-      <ResponseErrorPanel title="Could not fetch data." error={error} />
-    );
-  }
-
-  if (!data) {
-    return (
-      <ResponseErrorPanel title="Could not fetch data." error={Error("Unknown error - no data")} />
-    );
-  }
-
-  return (
-    <HomePageToolkit
-      tools={
-        data.map(link => ({
-          label: link.label,
-          url: link.url,
-          icon: (
-            <img
-              className={classes.img}
-              src={`${baseUrl}/${link.iconUrl}`}
-              alt={link.label}
-            />
-          ),
-        }))
-      }
-    />
+  const renderErrorPanel = (err: Error | string) => (
+    <ResponseErrorPanel title="Could not fetch data." error={typeof err === 'string' ? new Error(err) : err} />
   );
 
+  if (isLoading) return <Progress />;
+  if (error) return renderErrorPanel(error);
+  if (!data) return renderErrorPanel('Unknown error - no data');
+
+  const tools = data.map(link => ({
+    label: link.label,
+    url: link.url,
+    icon: (
+      <img
+        className={classes.img}
+        src={`${baseUrl}/${link.iconUrl}`}
+        alt={link.label}
+      />
+    ),
+  }));
+
+  return <HomePageToolkit tools={tools} />;
 };

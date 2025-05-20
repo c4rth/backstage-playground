@@ -28,20 +28,20 @@ export class McaBaseTypeScheduledTask {
     async runAsync() {
         const listBaseTypesBaseUrl = this.config.getString('mcaComponents.baseTypes.listBaseUrl');
         this.logger.debug(`Scheduled task: get basetypes from ${listBaseTypesBaseUrl}`);
-        await fetch(listBaseTypesBaseUrl).then((response) => {
+        try {
+            const response = await fetch(listBaseTypesBaseUrl);
             if (!response.ok) {
                 throw new Error(`Failed to fetch BaseTypes HTML: ${response.statusText}`);
             }
-            return response.text();
-        }
-        ).then((htmlPage) => {
+            const htmlPage = await response.text();
             this.logger.debug('BaseTypes HTML fetched successfully');
             const $ = cheerio.load(htmlPage);
-            const listItems = $('div.indexContainer li');
-            listItems.each((_index, element) => {
+            $('div.indexContainer li').each((_index, element) => {
                 const baseType = $(element).find('a').text().trim();
                 const url = $(element).find('a').attr('href');
-                const packageName = ($(element).find('a').attr('title') ?? 'not found').replace(/^(class in|interface in)\s*/, '').trim();
+                const packageName = ($(element).find('a').attr('title') ?? 'not found')
+                    .replace(/^(class in|interface in)\s*/, '')
+                    .trim();
                 if (url) {
                     this.mcaComponentsStore.addOrUpdateBaseType({
                         baseType,
@@ -49,10 +49,8 @@ export class McaBaseTypeScheduledTask {
                     });
                 }
             });
-        }
-        ).catch((error) => {
+        } catch (error: any) {
             this.logger.error(`Error fetching BaseTypes HTML: ${error.message}`);
         }
-        );
     }
 }

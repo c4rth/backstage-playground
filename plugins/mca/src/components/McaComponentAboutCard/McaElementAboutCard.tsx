@@ -38,41 +38,26 @@ const useStyles = makeStyles(
     }),
 );
 
-export const McaElementAboutCard = (props: McaElementAboutCardProps) => {
-    const { element } = props;
-
-    const classes = useStyles();
-
-    return (
-        <Card className={classes.gridItemCard}>
-            <CardHeader
-                title='About'
-            />
-            <Divider />
-            <CardContent className={classes.gridItemCardContent}>
-                <Grid container>
-                    <AboutField
-                        label="Package"
-                        gridSizes={{ xs: 12, sm: 6, lg: 6 }} >
-                        <div>
-                            <Typography variant='body2' display='inline' className={classes.value}>{element.package}</Typography>
-                        </div>
-                    </AboutField>
-                    <AboutField
-                        label="Extends"
-                        gridSizes={{ xs: 12, sm: 6, lg: 6 }} >
-                        <div>
-                            <Typography variant='body2' display='inline' className={classes.value}>{element.superClass}</Typography>
-                        </div>
-                    </AboutField>
-                    <Divider />
-                    <AboutField
-                        label="Description"
-                        gridSizes={{ xs: 12, sm: 6, lg: 12 }} >
-                            <MarkdownContent content={element.description} />
-                    </AboutField>
-                </Grid>
-            </CardContent>
-        </Card>
-    );
+export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
+  const classes = useStyles();
+  return (
+    <Card className={classes.gridItemCard}>
+      <CardHeader title="About" />
+      <Divider />
+      <CardContent className={classes.gridItemCardContent}>
+        <Grid container>
+          <AboutField label="Package" gridSizes={{ xs: 12, sm: 6, lg: 6 }}>
+            <Typography variant="body2" display="inline" className={classes.value}>{element.package}</Typography>
+          </AboutField>
+          <AboutField label="Extends" gridSizes={{ xs: 12, sm: 6, lg: 6 }}>
+            <Typography variant="body2" display="inline" className={classes.value}>{element.superClass}</Typography>
+          </AboutField>
+          <Divider />
+          <AboutField label="Description" gridSizes={{ xs: 12, sm: 6, lg: 12 }}>
+            <MarkdownContent content={element.description} />
+          </AboutField>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
 }

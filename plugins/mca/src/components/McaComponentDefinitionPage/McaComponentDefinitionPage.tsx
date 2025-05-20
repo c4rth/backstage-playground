@@ -59,23 +59,18 @@ export const McaComponentDefinitionPage = () => {
   const { name } = useParams();
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [mca, setMca] = useState<McaComponent | undefined>(undefined);
-
+  const [mca, setMca] = useState<McaComponent>();
   const [versions, setVersions] = useState<SelectItem[]>([]);
-  const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
-
+  const [selectedVersion, setSelectedVersion] = useState<string>();
   const isInitialLoad = useRef(true);
 
   useEffect(() => {
-    const resetState = () => {
-      setSelectedVersion(undefined);
-      setMca(undefined);
-      setLoading(true);
-      setError(null);
-    };  
-    resetState();
+    setSelectedVersion(undefined);
+    setMca(undefined);
+    setLoading(true);
+    setError(null);
     getMca(mcaApi, name!).then(component => {
       setVersions([]);
       setMca(component);
@@ -83,64 +78,55 @@ export const McaComponentDefinitionPage = () => {
     }).catch(err => {
       setError(err);
       setLoading(false);
-    }
-    );
+    });
   }, [name, mcaApi]);
 
   useEffect(() => {
     if (!selectedVersion) {
       const mcaVersions = mapMcaVersions(mca);
-      const data = mcaVersions
-        ? mcaVersions.map(mcaVersion => ({ label: mcaVersion.label, value: mcaVersion.value }))
-        : []
+      const data = mcaVersions.map(mcaVersion => ({ label: mcaVersion.label, value: mcaVersion.value }));
       setVersions(data);
-      let selVersion = null;
+      let selVersion: string | undefined;
       if (isInitialLoad.current && queryVersion && data.some(item => item.value === queryVersion)) {
         selVersion = data.find(item => item.value === queryVersion)?.value;
         isInitialLoad.current = false;
       } else if (data.length > 0) {
         selVersion = data[0].value;
       }
-      if (selVersion) {
-        setSelectedVersion(selVersion);
-      }
+      if (selVersion) setSelectedVersion(selVersion);
     }
-  }, [mca, queryVersion, selectedVersion])
+  }, [mca, queryVersion, selectedVersion]);
 
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} MCA Component Explorer`;
 
-  if (error) {
-    return <ResponseErrorPanel error={error} />;
-  }
-
-  if (loading) {
-    return <Progress />
-  }
+  if (error) return <ResponseErrorPanel error={error} />;
+  if (loading) return <Progress />;
 
   return (
     <PageWithHeader
       key={name}
       themeId="apis"
       title={`MCA Component - ${name}`}
-      subtitle={generatedSubtitle}>
+      subtitle={generatedSubtitle}
+    >
       <Content>
         <Box mb={1}>
           <Grid container>
             <Grid item md={6}>
-              <Select onChange={(selected) => { setSelectedVersion(selected.toString()) }} label="Versions" items={versions} selected={selectedVersion} />
+              <Select
+                onChange={selected => setSelectedVersion(selected.toString())}
+                label="Versions"
+                items={versions}
+                selected={selectedVersion}
+              />
             </Grid>
           </Grid>
         </Box>
-
         <Box mb={-3}>
-          {mca ?
-            <McaComponentDefinitionCard mca={mca} version={selectedVersion!} />
-            : <div />
-          }
+          {mca ? <McaComponentDefinitionCard mca={mca} version={selectedVersion!} /> : <div />}
         </Box>
       </Content>
     </PageWithHeader>
   );
-
 };

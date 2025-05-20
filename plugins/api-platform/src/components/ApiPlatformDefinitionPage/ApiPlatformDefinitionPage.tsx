@@ -4,11 +4,10 @@ import {
   Progress,
   ResponseErrorPanel,
   Select,
-  SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
@@ -24,32 +23,29 @@ export const ApiPlatformDefinitionPage = () => {
   const { apiVersions, loading, error } = useGetApiVersions(name);
   const catalogApi = useApi(catalogApiRef);
 
-  const [versions, setVersions] = useState<SelectItem[]>([]);
+  const versions = useMemo(
+    () => apiVersions ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef })) : [],
+    [apiVersions]
+  );
   const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
   const [apiEntity, setApiEntity] = useState<ApiEntity | undefined>(undefined);
-
   const isInitialLoad = useRef(true);
-
   const configApi = useApi(configApiRef);
 
   useEffect(() => {
-    if (!selectedVersion) {
-      const data = apiVersions
-        ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef }))
-        : []
-      setVersions(data);
+    if (!selectedVersion && versions.length > 0) {
       let selVersion = null;
-      if (isInitialLoad.current && queryVersion && data.some(item => item.label === queryVersion)) {
-        selVersion = data.find(item => item.label === queryVersion)?.value;
+      if (isInitialLoad.current && queryVersion && versions.some(item => item.label === queryVersion)) {
+        selVersion = versions.find(item => item.label === queryVersion)?.value;
         isInitialLoad.current = false;
-      } else if (data.length > 0) {
-        selVersion = data[0].value;
+      } else {
+        selVersion = versions[0].value;
       }
       if (selVersion) {
         setSelectedVersion(selVersion);
       }
     }
-  }, [apiVersions, queryVersion, selectedVersion])
+  }, [versions, queryVersion, selectedVersion]);
 
   useEffect(() => {
     if (selectedVersion) {

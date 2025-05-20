@@ -23,51 +23,48 @@ async function getBaseType(
 }
 
 export const McaBaseTypeDefinitionPage = () => {
-    const mcaApi = useApi(mcaComponentsBackendApiRef);
-    const { name } = useParams();
-    const configApi = useApi(configApiRef);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<Error | null>(null);
-    const [baseType, setBaseType] = useState<McaBaseType | undefined>(undefined);
+  const mcaApi = useApi(mcaComponentsBackendApiRef);
+  const { name } = useParams();
+  const configApi = useApi(configApiRef);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [baseType, setBaseType] = useState<McaBaseType>();
 
-    useEffect(() => {
-        getBaseType(mcaApi, name!).then(result => {
-            setBaseType(result);
-            setLoading(false);
-        }).catch(err => {
-            setError(err);
-            setLoading(false);
-        }
-        );
-    }, [name, mcaApi]);
+  useEffect(() => {
+    getBaseType(mcaApi, name!)
+      .then(result => {
+        setBaseType(result);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err);
+        setLoading(false);
+      });
+  }, [name, mcaApi]);
 
-    const baseTypesUrl = configApi.getString('mcaComponents.baseTypes.baseUrl');
+  const baseTypesUrl = configApi.getString('mcaComponents.baseTypes.baseUrl');
 
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
+  if (error) return <ResponseErrorPanel error={error} />;
+  if (loading) return <Progress />;
 
-    if (loading) {
-        return <Progress />
-    }
+  const urlPackage = baseType?.packageName?.replace(/\./g, '/');
+  const urlName = `${baseTypesUrl}/${urlPackage}/${baseType?.baseType}.html`;
+  const url = `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`;
 
-    const urlPackage = baseType?.packageName?.replace(/\./g, '/');
-    const urlName = `${baseTypesUrl}/${urlPackage}/${baseType?.baseType}.html`;
-    const url = `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`;
-
-    return (
-        <PageWithHeader
-            themeId="apis"
-            title={`MCA BaseType - ${name}`}
-            subtitle={urlName}>
-            <IFramePage
-                title="BaseType"
-                iframe={{
-                    src: url,
-                    height: '100%',
-                    width: '100%',
-                }}
-            />
-        </PageWithHeader>
-    );
+  return (
+    <PageWithHeader
+      themeId="apis"
+      title={`MCA BaseType - ${name}`}
+      subtitle={urlName}
+    >
+      <IFramePage
+        title="BaseType"
+        iframe={{
+          src: url,
+          height: '100%',
+          width: '100%',
+        }}
+      />
+    </PageWithHeader>
+  );
 }

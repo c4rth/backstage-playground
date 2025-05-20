@@ -24,28 +24,20 @@ export interface McaComponentDefinitionCardProps {
     version: string;
 }
 
-export const McaComponentDefinitionCard = (props: McaComponentDefinitionCardProps) => {
+export const McaComponentDefinitionCard = ({ mca, version }: McaComponentDefinitionCardProps) => {
+  const { data, loading, error } = useGetMcaComponentDefinition(mca.component, version);
 
-    const { mca, version } = props;
+  if (error) return <ResponseErrorPanel error={error} />;
+  if (loading) return <Progress />;
+  if (!data) return <ResponseErrorPanel error={new Error(`No MCA component definition for '${mca.component}' received`)} />;
 
-    const { data, loading, error } = useGetMcaComponentDefinition(mca.component, version);
+  const mcaComponent = parseXML(data);
 
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
-    if (loading) {
-        return <Progress />
-    }
-    if (!data) {
-        return <ResponseErrorPanel error={new Error(`No MCA component definition for '${mca.component}' received`)} />;
-    }
-
-    const mcaComponent = parseXML(data);
-    
-    if (mca.component.startsWith('Operation')) {
-        return <McaOperationDefinitionPage mcaComponent={mcaComponent} />;
-    } else if (mca.component.startsWith('Element')) {
-        return <McaElementDefinitionPage mcaComponent={mcaComponent} />;
-    }
-    return <ResponseErrorPanel error={new Error(`Unknown MCA component type: ${mca.component}`)} />;
+  if (mca.component.startsWith('Operation')) {
+    return <McaOperationDefinitionPage mcaComponent={mcaComponent} />;
+  }
+  if (mca.component.startsWith('Element')) {
+    return <McaElementDefinitionPage mcaComponent={mcaComponent} />;
+  }
+  return <ResponseErrorPanel error={new Error(`Unknown MCA component type: ${mca.component}`)} />;
 }

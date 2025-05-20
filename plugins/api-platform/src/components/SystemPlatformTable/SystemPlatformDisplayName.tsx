@@ -26,20 +26,17 @@ export type SystemPlatformDisplayNameProps = {
     name: string;
 };
 
-export const SystemPlatformDisplayName = (
-    props: SystemPlatformDisplayNameProps,
-): JSX.Element => {
-
+export const SystemPlatformDisplayName = ({ name }: SystemPlatformDisplayNameProps): JSX.Element => {
     const classes = useStyles();
-    let content = <div>{props.name}</div>;
-    content = (
-        <Box component="span" className={classes.root}>
-            <Box component="span" className={classes.icon}>
-                <CategoryIcon fontSize="inherit" />
-            </Box>
-            {content}
+    const icon = (
+        <Box component="span" className={classes.icon}>
+            <CategoryIcon fontSize="inherit" />
         </Box>
     );
-
-    return content;
+    return (
+        <Box component="span" className={classes.root}>
+            {icon}
+            <span>{name}</span>
+        </Box>
+    );
 };
