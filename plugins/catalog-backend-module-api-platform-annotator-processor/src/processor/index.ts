@@ -1,0 +1,1 @@
+export { ApiPlatformAnnotatorProcessor } from './ApiPlatformAnnotatorProcessor';

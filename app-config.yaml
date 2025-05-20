@@ -199,7 +199,7 @@ search:
       limit: 1000
 catalog:
   disableRelationsCompatibility: true
-  processingInterval: { minutes: 15 }
+  # processingInterval: { minutes: 15 }
   orphanStrategy: delete
   #  import:
   #    entityFilename: catalog-info.yaml

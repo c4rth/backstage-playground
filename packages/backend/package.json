@@ -58,6 +58,7 @@
     "@backstage/plugin-signals-backend": "^0.3.3",
     "@backstage/plugin-techdocs-backend": "^2.0.1",
     "@internal/plugin-api-platform-backend": "workspace:^",
+    "@internal/plugin-catalog-backend-module-api-platform-annotator-processor": "workspace:^",
     "@internal/plugin-mca-backend": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",
     "@internal/plugin-search-backend-module-mca": "workspace:^",
