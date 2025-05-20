@@ -152,6 +152,8 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
       const entities = await catalogClient.getEntities(
         {
           // filter: getFilter(request.search),
+          // offset: offset,
+          // limit: limit,
           filter: {
             kind: ['API'],
           },
@@ -165,8 +167,6 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
             CATALOG_SPEC_SYSTEM,
           ],
           order: getOrder(request.orderBy),
-          offset: offset,
-          limit: limit,
         },
         { token });
       

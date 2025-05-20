@@ -27,7 +27,7 @@ export class ApiPlatformAnnotatorProcessor implements CatalogProcessor {
             if (entity.spec?.type === 'openapi') {
                 const system = entity.metadata['api-project'];
                 if (!entity.spec?.system && system) {
-                    this.logger.info(`Adding spec.system ${system} to entity ${entity.metadata.name}`);
+                    this.logger.debug(`Adding spec.system ${system} to entity ${entity.metadata.name}`);
                     entity.spec.system = system;
                 }
             }
