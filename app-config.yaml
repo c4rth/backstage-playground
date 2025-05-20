@@ -18,17 +18,34 @@ app:
 organization:
   name: Acme
 
+apiPlatform:
+  organization: organization
+  feedName: feedName
+  groupPrefix: c4rth
+  dns: api-platform.carth.xyz
+
 appRegistry:
   baseUrl: &appRegistryUrl http://localhost:8080
-  faetch: &appRegistryFetchUrl http://localhost:8080/actuator
+  fetch: &appRegistryFetchUrl http://localhost:8080/actuator
   version: v2
+
+mcaComponents:
+  serviceBaseUrl: &mcaComponentsServiceUrl http://localhost:8080
+  baseTypes:
+    baseUrl: http://localhost:8080/basetypes
+    listBaseUrl: http://localhost:8080/basetypes/allclasses-frame.html
+    schedule:
+      frequency: PT1H
+      timeout: PT30S
+  operations:
+    csvBaseUrl: http://localhost:8080/mca/alloperations.csv
+    schedule:
+      frequency: PT1H
+      timeout: PT30S
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
-  # information on the format
-  # auth:
-  #   dangerouslyDisableDefaultAuthPolicy: true
   auth:
     #dangerouslyDisableDefaultAuthPolicy: true
     externalAccess:
@@ -38,6 +55,7 @@ backend:
           subject: cicd-system
         accessRestrictions:
           - plugin: api-platform
+          - plugin: mca
 
   baseUrl: http://localhost:7007
   listen:
@@ -93,7 +111,7 @@ permission:
 integrations:
   github:
     - host: github.com
-      token: ${GITHUB_TOKEN}
+      # token: ${GITHUB_TOKEN}
   azure:
     - host: dev.azure.com
       credentials:
@@ -116,6 +134,13 @@ proxy:
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
+    '/operations-sources':
+      target: *mcaComponentsServiceUrl
+      allowedMethods: ['GET']
+      allowedHeaders: ['Accept']
+      # changeOrigin: true
+      # Change to "false" in case of using self hosted cluster with a self-signed certificate
+      secure: false
 
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
@@ -123,7 +148,7 @@ proxy:
 # and an external cloud storage when deploying TechDocs for production use-case.
 # https://backstage.io/docs/features/techdocs/how-to-guides#how-to-migrate-from-techdocs-basic-to-recommended-deployment-approach
 techdocs:
-  builder: "local" # Alternatives - 'external'
+  builder: "external" # Alternatives - 'local', 'external'
   generator:
     runIn: "local" # Alternatives - 'local'
   publisher:
@@ -152,17 +177,29 @@ search:
   collators:
     catalog:
       schedule:
-        frequency: PT1M
+        frequency: PT1H
         timeout: PT15M
         initialDelay: PT5S        
     apis:
       schedule:
-          frequency: PT1M
+          frequency: PT1H
           timeout: PT15M
           initialDelay: PT5S
+    mcaComponents:
+      schedule:
+          frequency: PT1H
+          timeout: PT15M
+          initialDelay: PT5S
+      limit: 1000
+    mcaBaseTypes:
+      schedule:
+          frequency: PT1H
+          timeout: PT15M
+          initialDelay: PT5S
+      limit: 1000
 catalog:
   disableRelationsCompatibility: true
-  processingInterval: { minutes: 15 }
+  # processingInterval: { minutes: 15 }
   orphanStrategy: delete
   #  import:
   #    entityFilename: catalog-info.yaml
@@ -217,7 +254,7 @@ catalog:
           initialDelay: { minutes: 5 }
 
 spectralLinter:
-  openApiRulesetUrl: https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/spectral/.spectral.yaml
+  openApiRulesetUrl: http://localhost:3000/spectral.yaml
 
 # https://github.com/backstage/community-plugins/blob/main/workspaces/sonarqube/plugins/sonarqube-backend/README.md
 sonarqube:
@@ -225,7 +262,6 @@ sonarqube:
   instanceKey: mySonarqube
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
-
   
 devTools:
   externalDependencies:

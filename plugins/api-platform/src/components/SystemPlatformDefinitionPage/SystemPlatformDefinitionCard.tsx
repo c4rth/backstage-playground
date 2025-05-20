@@ -4,7 +4,6 @@ import {
     Link,
 } from '@backstage/core-components';
 import { getCompoundEntityRef } from "@backstage/catalog-model";
-import React from 'react';
 import { Box, Grid, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
@@ -54,27 +53,37 @@ export const SystemPlatformDefinitionCard = (props: { apis: string[], services: 
     const classes = useStyles();
 
     const entityRef = getCompoundEntityRef(entity);
-    const hasDocs = entity.metadata.annotations?.['backstage.io/techdocs-ref'];
+    const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+
+    const docsButton = (
+        <IconButton
+            aria-label="Documentation"
+            title="TechDocs"
+            disabled={!hasDocs}
+            component={Link}
+            to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+        >
+            <DocsIcon />
+        </IconButton>
+    );
 
     return (
         <>
             <TabbedLayout>
-                <TabbedLayout.Route path="/" title="Overview">
+                <TabbedLayout.Route path="/" title="Ownership">
                     <Grid container spacing={3} alignItems="stretch">
                         <Grid item md={6}>
-                            <InfoCard title='About' divider className={classes.gridItemCard} action={
-                                <>
-                                    <IconButton
-                                        aria-label="Documentation"
-                                        title="TechDocs"
-                                        disabled={!hasDocs}
-                                        component={Link}
-                                        to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
-                                    >
-                                        <DocsIcon />
-                                    </IconButton>
-                                </>
-                            }>
+                            <SystemPlatformRelationCard dependency='service' data={services} />
+                        </Grid>
+                        <Grid item md={6} xs={12}>
+                            <SystemPlatformRelationCard dependency='api' data={apis} />
+                        </Grid>
+                    </Grid>
+                </TabbedLayout.Route>
+                <TabbedLayout.Route path="/info" title="Info">
+                    <Grid container spacing={3} alignItems="stretch">
+                        <Grid item md={6}>
+                            <InfoCard title='About' divider className={classes.gridItemCard} action={docsButton}>
                                 <Box sx={{ mb: 4 }}>
                                     <AboutField
                                         label="System reference"
@@ -85,20 +94,10 @@ export const SystemPlatformDefinitionCard = (props: { apis: string[], services: 
                                 <AboutContent entity={entity} />
                             </InfoCard>
                         </Grid>
-                        <Grid item md={6} xs={12}>
-                            <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API', 'component']} direction={Direction.TOP_BOTTOM} />
-                        </Grid>
                     </Grid>
                 </TabbedLayout.Route>
                 <TabbedLayout.Route path="/relations" title="Relations">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={6}>
-                            <SystemPlatformRelationCard dependency='service' data={services} />
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                            <SystemPlatformRelationCard dependency='api' data={apis} />
-                        </Grid>
-                    </Grid>
+                    <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API', 'component']} direction={Direction.TOP_BOTTOM} />
                 </TabbedLayout.Route>
             </TabbedLayout>
         </>

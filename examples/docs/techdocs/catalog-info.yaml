@@ -5,8 +5,9 @@ metadata:
   title: Documented Component
   description: A Service with TechDocs documentation
   annotations:
-    backstage.io/techdocs-ref: dir:.
+    #backstage.io/techdocs-ref: url:https://stblobcarth.blob.core.windows.net/techdocs-storage/team-a/service-x/
+    backstage.io/techdocs-ref: url:https://stblobcarth.blob.core.windows.net/techdocs-storage/default/component/
 spec:
-  type: service
+  type: documentation
   lifecycle: experimental
-  owner: user:guest
+  owner: group:default/team-a.o

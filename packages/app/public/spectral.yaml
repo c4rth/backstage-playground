@@ -1,0 +1,363 @@
+extends: ["spectral:oas"]
+parserOptions:
+  duplicateKeys: warn # error is the default value
+  incompatibleValues: off # error is the default value
+rules:
+  oas3-valid-schema-example: off
+  oas3-valid-media-example: off
+  operation-tag-defined: off
+  path-params: off
+  
+  info-LR04:
+    description: info.version should be semantic versioned following x.y.z format
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info.version"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: string
+          pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+ 
+ # info.contact must be present and non-empty object
+  info-LR05:
+    description: "info.contact must be present and non-empty object"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info"
+    then:
+      field: contact
+      function: truthy
+ 
+ # info.contact.email must be a valid email
+  info-LR06:
+    description: "info.contact.email must be a valid email"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info.contact.email"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[A-Za-z0-9&+_.-]+@[A-Za-z0-9&+_.-]+.[com|org]$"
+  
+ # info.contact.email must be present and non-empty string
+  info-LR08:
+    description: "info.contact.email must be present and non-empty string"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info.contact"
+    then:
+      field: email
+      function: truthy
+ 
+ # info.x-api-type must be present and non-empty string
+  info-LR09:
+    description: "info.x-api-type must be present and non-empty string"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info"
+    then:
+      field: x-api-type
+      function: truthy
+ 
+ # info.x-api-type must be either enterprise, experience or inner
+  info-LR10:
+    description: "info.x-api-type must be either enterprise, experience or inner"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info.x-api-type"
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - "enterprise"
+          - "experience"
+          - "inner"
+ 
+ # info.x-application-code must be present and non-empty string
+  info-LR13:
+    description: "info.x-application-code must be present and non-empty string"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info"
+    then:
+      field: x-application-code
+      function: truthy
+ 
+ # info.x-application-code must be 4 alphanumerical lowercase characters
+  info-LR14:
+    description: "info.x-application-code must be 4 alphanumerical lowercase characters"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.info.x-application-code"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[0-9a-z]{4}$"
+# Response content should be present
+  paths-LR41:
+    description: "Response content should be present"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    given: $.paths.*.*.responses[?(@ && @property.match(/^(400|500)/))]
+    then:
+      field: content
+      function: truthy
+ 
+# 4XX and 5XX response content type should be appplication/problem+json
+  paths-LR40:
+    description: "400 and 500 response content type should be appplication/problem+json"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    given: $.paths.*.*.responses[?(@ && @property.match(/^(400|500)/))]
+    then:
+      field: content.application/problem+json
+      function: truthy
+ 
+ # OperationId must be present and non-empty string
+  paths-LR20:
+    description: "OperationId must be present and non-empty string"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths.*.*"
+    then:
+      field: operationId
+      function: truthy
+ 
+ # Operation description should be present and non-empty string
+  paths-LR21:
+    description: "Operation description should be present and non-empty string"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths.*.*"
+    then:
+      field: description
+      function: truthy
+ 
+# Operation tag must be present and non-empty string
+  paths-LR22:
+    description: "Operation tag must be present and non-empty string"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths.*.*"
+    then:
+      field: tags
+      function: truthy
+ 
+# Operation summary must be present and non-empty string
+#  paths-LR23:
+#    description: "Operation summary must be present and non-empty string"
+#    formats: ["oas3"]
+#    message: "{{description}}"
+#    severity: warn
+#    resolved: false
+#    given: "$.paths.*.*"
+#    then:
+#      field: summary
+#      function: truthy
+ 
+# x-bfunction must be present and non-empty string
+  paths-LR25:
+    description: "x-bfunction must be present and non-empty string"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths.*.*"
+    then:
+      field: x-bfunction
+      function: truthy
+ 
+ # x-bfunction must follow the format: B + 5 digits
+  paths-LR26:
+    description: "x-bfunction must follow the format B followed by 5 digits"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths.*.*.x-bfunction"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^B\d{5}$"
+ 
+# Path and path variables must be formatted in lower kebab-case
+#  paths-LR27:
+#    description: "Path and path variables must be formatted in lower kebab-case"
+#    formats: ["oas3"]
+#    message: "{{description}}"
+#    severity: warn
+#    resolved: false
+#    given: "$.paths.*~"
+#    then:
+#      function: pattern
+#      functionOptions:
+#        match: "^(/({[a-z0-9]+(-[a-z0-9]*)*}|[a-z0-9]*|[a-z0-9]+(-[a-z0-9]*)*))+$"
+ 
+# Request body properties must be lowerCamelCase
+#  paths-LR29:
+#    description: "Request body properties must be lowerCamelCase"
+#    formats: ["oas3"]
+#    message: "{{description}}"
+#    severity: warn
+#    resolved: false
+#    given: "$.paths.*.*.requestBody.content.*.schema.properties.*~"
+#    then:
+#      function: pattern
+#      functionOptions:
+#        match: "^[a-z0-9]+([A-Z0-9][a-z0-9]*)*$"
+ 
+# Response payload properties must be lowerCamelCase
+#  paths-LR30:
+#    description: "Response payload properties must be lowerCamelCase"
+#    formats: ["oas3"]
+#    message: "{{description}}"
+#    severity: warn
+#    resolved: false
+#    given: "$.paths.*.*.responses.*.content.*.schema.properties.*~"
+#    then:
+#      function: pattern
+#      functionOptions:
+#        match: "^\$ref$|_|^[a-z0-9]+([A-Z0-9][a-z0-9]*)*$"
+ 
+# GET methods should only result in response codes 200, 400, 401, 403, 404, 500 or 503
+  paths-LR31:
+    description: "GET methods should only result in response codes 200, 400, 401, 403, 404, 500 or 503"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths..get.responses.*~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(200|204|400|401|403|404|500|503)$"
+ 
+# POST methods should only result in response codes 200, 201, 204, 400, 401, 403, 404 , 500 or 503
+  paths-LR32:
+    description: "POST methods should only result in response codes 200, 201, 204, 400, 401, 403, 404 , 500 or 503"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths..post.responses.*~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(200|201|204|400|401|403|404|500|503)$"
+ 
+# PUT methods should only result in response codes 200, 201, 204, 400, 401, 403, 404 , 500 or 503
+  paths-LR33:
+    description: "PUT methods should only result in response codes 200, 201, 204, 400, 401, 403, 404 , 500 or 503"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths..put.responses.*~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(200|201|204|400|401|403|404|500|503)$"
+ 
+# PATCH methods should only result in response codes 200, 204, 400, 401, 403, 404 or 500
+  paths-LR34:
+    description: "PATCH methods should only result in response codes 200, 204, 400, 401, 403, 404 or 500"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths..patch.responses.*~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(200|204|400|401|403|404|500|503)$"
+ 
+# DELETE methods should only result in response codes 200, 204, 400, 401, 403, 404 or 500
+  paths-LR35:
+    description: "DELETE methods should only result in response codes 200, 204, 400, 401, 403, 404 or 500"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths..patch.responses.*~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(200|204|400|401|403|404|500|503)$"
+ 
+# Path must not end with a trailing slash
+  paths-LR36:
+    description: "Path must not end with a trailing slash"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.paths.*~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "\/$"
+ 
+# At least a servers.*.url must be present and non-empty array
+  servers-LR15:
+    description: "At least a servers.*.url must be present and non-empty array"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.servers..url"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "^$"
+ 
+# servers.*.url must not end with a slash
+  servers-LR16:
+    description: "servers.*.url must not end with a slash"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.servers..url"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "\/$"
+ 
+# servers.*.url must start with http:// or  'https://'
+  servers-LR17:
+    description: "servers.*.url must start with 'http://' or 'https://'"
+    formats: ["oas3"]
+    message: "{{description}}"
+    severity: warn
+    resolved: false
+    given: "$.servers.[*].url"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(http|https)?:\/{2}"

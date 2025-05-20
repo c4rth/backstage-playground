@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
 
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
@@ -25,6 +24,8 @@ import {
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
+import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
+import CodeIcon from '@material-ui/icons/Code';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -59,11 +60,11 @@ const SearchPage = () => {
           <Grid item xs={3}>
             <SearchType.Accordion
               name="Result Type"
-              defaultValue="software-catalog"
+              defaultValue=""
               types={[
                 {
                   value: 'software-catalog',
-                  name: 'Software Catalog',
+                  name: 'Catalog',
                   icon: <CatalogIcon />,
                 },
                 {
@@ -71,10 +72,15 @@ const SearchPage = () => {
                   name: 'Documentation',
                   icon: <DocsIcon />,
                 },
+                {
+                  value: 'mca',
+                  name: 'MCA Components',
+                  icon: <CodeIcon />,
+                },
               ]}
             />
-            <Paper className={classes.filters}>
-              {types.includes('techdocs') && (
+            {types.includes('techdocs') && (
+              <Paper className={classes.filters}>
                 <SearchFilter.Select
                   className={classes.filter}
                   label="Entity"
@@ -94,19 +100,14 @@ const SearchPage = () => {
                     return names;
                   }}
                 />
-              )}
-              <SearchFilter.Select
-                className={classes.filter}
-                label="Kind"
-                name="kind"
-                values={['Component', 'API', 'Template']}
-              />
-            </Paper>
+              </Paper>
+            )}
           </Grid>
           <Grid item xs={9}>
             <SearchPagination />
             <SearchResult>
               <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />
+              <McaComponentSearchResultListItem icon={<CodeIcon />} />
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
             </SearchResult>

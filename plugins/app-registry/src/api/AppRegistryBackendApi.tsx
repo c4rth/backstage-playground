@@ -14,7 +14,7 @@ function getOperationName(endpoint: AppRegistryEndpoint) {
     if (endpoint.cobolName && endpoint.cobolName.length > 0) {
         return endpoint.operationId || endpoint.cobolName;
     }
-    return `${endpoint.method} ${endpoint.realPath}`;
+    return `${endpoint.realPath}`;
 }
 
 function isAbac(endpoint: AppRegistryEndpoint) {
@@ -40,39 +40,33 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
             'x-api-version': this.configApi.getString('appRegistry.version'),
         });
         const response = await this.fetchApi.fetch(url, { headers });
-        if (response.status >= 400 && response.status < 600) {
+        if (!response.ok) {
             throw new Error(`${response.status}: Failed fetching AppRegistry ${await response.text()}`);
         }
         const data = (await response.json()) as AppRegistryEndpoint[];
 
-        const operations: AppRegistryOperation[] = [];
-
-        data.forEach(endpoint => {
+        return data.map(endpoint => {
             const abac = isAbac(endpoint) || false;
-
-            const pdpMapping: AppRegistryOperationPdpMapping[] = [];
+            let pdpMapping: AppRegistryOperationPdpMapping[] | undefined = undefined;
             if (abac) {
-                endpoint.policies?.forEach(policy => {
-                    if (policy && "pdpMapping" in policy) {
-                        policy.pdpMapping?.forEach(mapping => {
-                            pdpMapping.push({
-                                valuePath: mapping.valuePath,
-                                pdpField: mapping.pdpField,
-                            });
-                        });
-                    }
-                });
+                pdpMapping = endpoint.policies?.flatMap(policy =>
+                    policy && 'pdpMapping' in policy && policy.pdpMapping
+                        ? policy.pdpMapping.map(mapping => ({
+                            valuePath: mapping.valuePath,
+                            pdpField: mapping.pdpField,
+                        }))
+                        : []
+                );
+                if (pdpMapping && pdpMapping.length === 0) pdpMapping = undefined;
             }
-
-            const operation: AppRegistryOperation = {
+            return {
+                method: endpoint.method,
                 name: getOperationName(endpoint),
-                abac: abac,
+                abac,
                 bFunction: endpoint.bFunction,
-                pdpMapping: pdpMapping.length > 0 ? pdpMapping : undefined,
+                pdpMapping,
             };
-            operations.push(operation);
         });
-        return operations;
     }
 
 }

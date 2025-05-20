@@ -5,10 +5,11 @@ metadata:
   title: Sample TechDocs
   description: Sample TechDocs
   annotations:
-    backstage.io/techdocs-ref: dir:.
+    #backstage.io/techdocs-ref: dir:.
+    backstage.io/techdocs-ref: url:https://stblobcarth.blob.core.windows.net/techdocs-storage/default/component/
   tags:
     - techdocs
 spec:
   type: documentation
   lifecycle: TST
-  owner: user:guest
+  owner: group:default/team-a.o

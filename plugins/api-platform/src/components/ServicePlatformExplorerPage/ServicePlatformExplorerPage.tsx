@@ -3,19 +3,36 @@ import {
   PageWithHeader,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import React from 'react';
 import { ServicePlatformTable } from '../ServicePlatformTable';
+import { InfoPopUp } from '@internal/plugin-api-platform-react';
+import { Typography } from '@material-ui/core';
 
 export const ServicePlatformExplorerPage = () => {
-
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
+
+  const infoPopUpContent = (
+    <>
+      <Typography variant="body1">
+        This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
+      </Typography>
+      <Typography variant="body2">
+        This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
+      </Typography>
+    </>
+  );
 
   return (
     <PageWithHeader
       themeId="apis"
       title="Services"
-      subtitle={generatedSubtitle}
+      subtitle={
+        <InfoPopUp
+          text={generatedSubtitle}
+          variant="subtitle2"
+          content={infoPopUpContent}
+        />
+      }
       pageTitleOverride="Services"
     >
       <Content>

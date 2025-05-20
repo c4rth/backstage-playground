@@ -112,7 +112,7 @@ backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
 
 // Scaffolder Actions
-backend.add(import('@parfuemerie-douglas/scaffolder-backend-module-azure-repositories'))
+backend.add(import('@internal/scaffolder-backend-module-azure-repositories'))
 backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
 
 // Kubernetes
@@ -127,5 +127,10 @@ backend.add(import('@backstage/plugin-catalog-backend-module-unprocessed'));
 
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
+backend.add(import('@internal/plugin-catalog-backend-module-api-platform-annotator-processor'));
+
+// Mca Components
+backend.add(import('@internal/plugin-mca-backend'));
+backend.add(import('@internal/plugin-search-backend-module-mca'));
 
 backend.start();

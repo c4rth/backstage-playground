@@ -10,10 +10,10 @@ import {
     humanizeEntityRef,
 } from '@backstage/plugin-catalog-react';
 import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
-import React from 'react';
 import { Box } from '@material-ui/core';
 import { useGetSystems } from '../../hooks';
 import { SystemPlatformDisplayName } from './SystemPlatformDisplayName';
+import { useMemo } from 'react';
 
 
 type TableRow = {
@@ -35,6 +35,7 @@ const columns: TableColumn<TableRow>[] = [
         width: '25%',
         field: 'system.name',
         highlight: true,
+        defaultSort: 'asc',
         render: ({ system }) => (
             <Link to={system.name}>
                 <SystemPlatformDisplayName
@@ -63,12 +64,10 @@ const columns: TableColumn<TableRow>[] = [
 
 export const SystemPlatformTable = () => {
     const { items, loading, error } = useGetSystems();
+    const rows = useMemo(() => items?.map(toEntityRow) || [], [items]);
+    const showPagination = rows.length > 20;
 
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
-    const rows = items?.map(toEntityRow) || [];
-    const showPagination = rows.length > 20 || false;
+    if (error) return <ResponseErrorPanel error={error} />;
 
     return (
         <Table<TableRow>
@@ -80,7 +79,8 @@ export const SystemPlatformTable = () => {
                 paging: showPagination,
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
-                
+                draggable: false,    
+                thirdSortClick: false,               
             }}
             title={
                 <Box display="flex" alignItems="center">
@@ -88,7 +88,7 @@ export const SystemPlatformTable = () => {
                     Systems ({items ? items.length : 0})
                 </Box>
             }
-            data={rows ?? []}
+            data={rows}
         />
     );
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
@@ -59,7 +58,7 @@ import {
   isAzurePipelinesAvailable,
 } from '@internal/plugin-azure-devops';
 // Spectral 
-import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-platform';
+import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 // Techdocs
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 

@@ -1,7 +1,6 @@
 import MuiMemoryIcon from '@material-ui/icons/Memory';
 import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 
@@ -27,20 +26,17 @@ export type ServicePlatformDisplayNameProps = {
     text: string;
 };
 
-export const ServicePlatformDisplayName = (
-    props: ServicePlatformDisplayNameProps,
-): JSX.Element => {
-
+export const ServicePlatformDisplayName = ({ text }: ServicePlatformDisplayNameProps): JSX.Element => {
     const classes = useStyles();
-    let content = <div>{props.text}</div>;
-    content = (
-        <Box component="span" className={classes.root}>
-            <Box component="span" className={classes.icon}>
-                <MuiMemoryIcon fontSize="inherit" />
-            </Box>
-            {content}
+    const icon = (
+        <Box component="span" className={classes.icon}>
+            <MuiMemoryIcon fontSize="inherit" />
         </Box>
     );
-
-    return content;
+    return (
+        <Box component="span" className={classes.root}>
+            {icon}
+            <span>{text}</span>
+        </Box>
+    );
 };

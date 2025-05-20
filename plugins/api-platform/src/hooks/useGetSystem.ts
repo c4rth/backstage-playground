@@ -1,26 +1,15 @@
-
 import { apiPlatformBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { SystemDefinition } from '@internal/plugin-api-platform-common';
 
-export function useGetSystem(
-    systemName: string
-): {
-    systemDefinition?: SystemDefinition;
-    loading: boolean;
-    error?: Error;
-} {
+export function useGetSystem(systemName: string) {
+  const api = useApi(apiPlatformBackendApiRef);
 
-    const api = useApi(apiPlatformBackendApiRef);
+  const { value, loading, error } = useAsync(() => api.getSystem(systemName), [api, systemName]);
 
-    const { value, loading, error } = useAsync(() => {
-        return api.getSystem({ systemName: systemName });
-    }, [api]);
-
-    return {
-        systemDefinition: value,
-        loading,
-        error,
-    };
+  return {
+    systemDefinition: value,
+    loading,
+    error,
+  };
 }

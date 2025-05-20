@@ -1,0 +1,71 @@
+{
+  "name": "@internal/plugin-api-docs-spectral-linter",
+  "homepage": "https://github.com/dweber019/backstage-plugins/tree/main/plugins/api-docs-spectral-linter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dweber019/backstage-plugins.git",
+    "directory": "plugins/api-docs-spectral-linter"
+  },
+  "license": "MIT",
+  "version": "0.4.10",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "api-docs-spectral-linter",
+    "pluginPackages": [
+      "@dweber019/backstage-plugin-api-docs-spectral-linter"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.17.1",
+    "@backstage/core-plugin-api": "^1.10.6",
+    "@backstage/plugin-catalog-react": "^1.17.0",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "@stoplight/spectral-core": "1.20.0",
+    "@stoplight/spectral-ruleset-bundler": "1.6.3",
+    "@stoplight/spectral-runtime": "1.1.4",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "react-use": "^17.2.4"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.32.0",
+    "@backstage/dev-utils": "^1.1.9",
+    "@backstage/test-utils": "^1.7.7",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/react": "^18",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}

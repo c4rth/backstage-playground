@@ -4,31 +4,31 @@ import {
     TableColumn,
     Link,
     OverflowTooltip,
+    Progress,
 } from '@backstage/core-components';
-import {
-    getEntityRelations,
-    humanizeEntityRef,
-    EntityRefLinks,
-} from '@backstage/plugin-catalog-react';
-import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
-import React from 'react';
-import { useGetApis } from '../../hooks';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box } from '@material-ui/core';
 import {
     ANNOTATION_API_NAME,
+    ApiDefinitionListOptions,
 } from '@internal/plugin-api-platform-common';
 import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
+import { SystemPlatformDisplayName } from '../SystemPlatformTable';
+import { useApi } from '@backstage/core-plugin-api';
+import { apiPlatformBackendApiRef } from '../../api';
+import { useEffect, useState, useCallback } from 'react';
+import { Query } from '@material-table/core';
+import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 
 type TableRow = {
     id: number,
     api: {
         name: string,
         description: string,
+        system: string,
     },
     resolved: {
         entityRef: string,
-        ownedByRelationsTitle: string,
-        ownedByRelations: CompoundEntityRef[],
     },
 }
 
@@ -37,6 +37,7 @@ const columns: TableColumn<TableRow>[] = [
         title: 'Name',
         width: '25%',
         field: 'api.name',
+        defaultSort: 'asc',
         highlight: true,
         render: ({ api }) => {
             return (
@@ -59,64 +60,127 @@ const columns: TableColumn<TableRow>[] = [
         },
     },
     {
-        title: 'Owner',
-        width: '25%',
-        field: 'resolved.ownedByRelationsTitle',
-        render: ({ resolved }) => (
-            <EntityRefLinks
-                entityRefs={resolved.ownedByRelations}
-                defaultKind="group"
-            />
-        ),
+        title: 'System',
+        width: '10%',
+        field: 'api.system',
+        highlight: true,
+        render: ({ api }) =>
+            api.system === '-' ? (
+                <SystemPlatformDisplayName name={api.system} />
+            ) : (
+                <Link to={`/api-platform/system/${api.system}`}>
+                    <SystemPlatformDisplayName name={api.system} />
+                </Link>
+            ),
     },
 ];
 
+const PAGE_SIZE = 20;
+
+async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>) {
+    const page = query.page || 0;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const result = await apiPlatformApi.listApis({
+        offset: page * pageSize,
+        limit: pageSize,
+        search: query.search,
+        orderBy: query?.orderBy &&
+            ({
+                field: query.orderBy.field,
+                direction: query.orderDirection,
+            } as ApiDefinitionListOptions['orderBy']),
+    });
+    if (result) {
+        return {
+            data: result.items.map(toEntityRow) || [],
+            totalCount: result.totalCount,
+            page: Math.floor(result.offset / result.limit),
+        };
+    }
+    return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+    };
+}
+
+function getCount(apiPlatformApi: ApiPlatformBackendApi) {
+    return apiPlatformApi.getApisCount();
+}
 
 export const ApiPlatformTable = () => {
-    const { items, loading, error } = useGetApis();
+    const apiPlatformApi = useApi(apiPlatformBackendApiRef);
+    const initialSearch = sessionStorage.getItem('apiPlatformTableSearch') || '';
+    const [countRows, setCountRows] = useState<number>(0);
+    const [loadingCount, setLoadingCount] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
 
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
-    const rows = items?.map(toEntityRow) || [];
-    const showPagination = rows.length > 20;
+    // Helper for rendering error/loading
+    const renderPanel = () => {
+        if (loadingCount) return <Progress />;
+        if (error) return <ResponseErrorPanel error={error} />;
+        return null;
+    };
+
+    useEffect(() => {
+        setLoadingCount(true);
+        getCount(apiPlatformApi)
+            .then(count => {
+                setCountRows(count);
+                setLoadingCount(false);
+            })
+            .catch(err => {
+                setError(err);
+                setLoadingCount(false);
+            });
+    }, [apiPlatformApi]);
+
+    const fetchData = useCallback(
+        async (query: Query<TableRow>) => {
+            sessionStorage.setItem('apiPlatformTableSearch', query.search || '');
+            return getData(apiPlatformApi, query);
+        },
+        [apiPlatformApi]
+    );
+
+    const panel = renderPanel();
+    if (panel) return panel;
+
     return (
         <Table<TableRow>
-            isLoading={loading}
+            isLoading={loadingCount}
             columns={columns}
             options={{
                 search: true,
-                paging: showPagination,
                 padding: 'dense',
-                pageSize: 20,
-                showEmptyDataSourceMessage: !loading,
+                pageSize: PAGE_SIZE,
+                pageSizeOptions: [10, PAGE_SIZE, 50],
+                showEmptyDataSourceMessage: !loadingCount,
+                draggable: false,
+                thirdSortClick: false,
+                searchText: initialSearch,
             }}
             title={
                 <Box display="flex" alignItems="center">
                     <Box mr={1} />
-                    APIs ({items ? items.length : 0})
+                    APIs ({countRows})
                 </Box>
             }
-            data={rows}
+            data={fetchData}
         />
     );
 };
 
-
 function toEntityRow(entity: Entity, idx: number) {
-    const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
         id: idx,
         api: {
             name: entity.metadata[ANNOTATION_API_NAME]?.toString() || '?',
             description: entity.metadata.description || '',
+            system: entity.spec?.system?.toString() || '-',
         },
         resolved: {
             entityRef: stringifyEntityRef(entity),
-            ownedByRelationsTitle: ownedByRelations
-                .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
-                .join(', '),
-            ownedByRelations,
         },
     };
 }

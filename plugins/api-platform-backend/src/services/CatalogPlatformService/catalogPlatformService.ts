@@ -1,7 +1,7 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { CatalogPlatformService } from './types';
-import { Entity, getCompoundEntityRef } from "@backstage/catalog-model";
+import { Entity } from "@backstage/catalog-model";
 
 export interface CatalogPlatformServiceOptions {
   logger: LoggerService;

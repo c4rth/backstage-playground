@@ -4,7 +4,6 @@ import {
     TabbedLayout,
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
-import React from 'react';
 import { PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
@@ -12,11 +11,12 @@ import { AboutContent, AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
 import CloudCircleIcon from '@material-ui/icons/CloudCircle';
 import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } from '@internal/plugin-api-platform-common';
+import { OpenApiDefinitionWidget } from '@internal/plugin-api-swagger-docs';
 // Spectral 
-import { EntityApiDocsSpectralLinterCard } from '../EntityApiDocsSpectralLinterContent';
-import { isApiDocsSpectralLinterAvailable } from '../../lib/helper';
+import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
-import { OpenApiDefinitionWidget } from '../OpenApiDefinitionWidget';
+import LanguageIcon from '@material-ui/icons/Language';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -42,17 +42,22 @@ const useStyles = makeStyles(
     }),
 );
 
+
 export const ApiPlatformDefinitionCard = () => {
-
-    const { entity } = useEntity<ApiEntity>();  
-
+    const { entity } = useEntity<ApiEntity>();
     const classes = useStyles();
+    const configApi = useApi(configApiRef);
+
+    const ORGANIZATION = configApi.getString('apiPlatform.organization');
+    const FEED_NAME = configApi.getString('apiPlatform.feedName');
+    const API_PLATFORM_DNS = configApi.getString('apiPlatform.dns');
+    const GROUP_PREFIX = configApi.getString('apiPlatform.groupPrefix');
 
     const project = entity.metadata[ANNOTATION_API_PROJECT];
     const apiVersion = entity.metadata[ANNOTATION_API_VERSION]?.toString().toUpperCase();
-    const groupId = `c4rth.${project}.apis`;
+    const groupId = `${GROUP_PREFIX}.${project}.apis`;
     const artifactId = `${entity.metadata[ANNOTATION_API_NAME]}-openapi`;
-    const artifactUrl = `https://dev.azure.com/organization/${project}/_artifacts/feed/feedName/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`
+    const artifactUrl = `https://dev.azure.com/${ORGANIZATION}/${project}/_artifacts/feed/${FEED_NAME}/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`;
     const artifactText = `${groupId}:${artifactId}:${apiVersion}`;
     const mavenXml = `
 <dependency>
@@ -62,6 +67,7 @@ export const ApiPlatformDefinitionCard = () => {
     <type>yaml</type>
 </dependency>
 `;
+    const href = `https://${API_PLATFORM_DNS}/api-resolved/${project}/${entity.metadata[ANNOTATION_API_NAME]}/${entity.metadata[ANNOTATION_API_VERSION]}`;
     const cardClass = classes.gridItemCard;
 
     return (
@@ -75,12 +81,11 @@ export const ApiPlatformDefinitionCard = () => {
                     language={entity.spec.type}
                 />
             </TabbedLayout.Route>
-            {isApiDocsSpectralLinterAvailable(entity) ?
+            {isApiDocsSpectralLinterAvailable(entity) && (
                 <TabbedLayout.Route path="/linter" title="Linter">
                     <EntityApiDocsSpectralLinterCard />
                 </TabbedLayout.Route>
-                : null
-            }
+            )}
             <TabbedLayout.Route path="/services" title="Services">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={6}>
@@ -117,9 +122,23 @@ export const ApiPlatformDefinitionCard = () => {
                     </Box>
                     <Box sx={{ mt: 5 }}>
                         <AboutField
-                            label="Get this package"
+                            label="Maven Snippet"
                             gridSizes={{ xs: 4 }}>
                             <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
+                        </AboutField>
+                    </Box>
+                    <Box sx={{ mt: 5 }}>
+                        <AboutField
+                            label="API Platform URL"
+                            gridSizes={{ xs: 12 }}>
+                            <Box component="span" className={classes.root}>
+                                <Box component="span" className={classes.icon}>
+                                    <LanguageIcon fontSize="inherit" />
+                                </Box>
+                                <Link to={href} target="_blank" rel="noopener noreferrer" >
+                                    {href}
+                                </Link>
+                            </Box>
                         </AboutField>
                     </Box>
                 </InfoCard>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route } from 'react-router-dom';
 import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
@@ -70,6 +69,8 @@ import { DevToolsPage } from '@backstage/plugin-devtools';
 import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
+import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
+import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
 
 const app = createApp({
   apis,
@@ -127,6 +128,15 @@ const routes = (
       </TechDocsAddons>
     </Route>
     <Route
+      path="/external-docs"
+      element={
+        <TechDocsHome />
+      }
+    />
+    <Route
+      path="/external-docs/:namespace/:kind/:name/*"
+      element={<CustomDocsReaderPage />} />
+    <Route
       path="/create"
       element={
         <RequirePermission permission={taskCreatePermission}>
@@ -163,6 +173,10 @@ const routes = (
     <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
     <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
+    <Route path="/mca/components" element={<McaComponentExplorerPage />} />
+    <Route path="/mca/components/:name" element={<McaComponentDefinitionPage />} />
+    <Route path="/mca/basetypes" element={<McaBaseTypeExplorerPage />} />
+    <Route path="/mca/basetypes/:name" element={<McaBaseTypeDefinitionPage />} />
     <Route path="/devtools"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>

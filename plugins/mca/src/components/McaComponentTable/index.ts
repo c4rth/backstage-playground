@@ -1,0 +1,1 @@
+export { McaComponentTable } from './McaComponentTable';

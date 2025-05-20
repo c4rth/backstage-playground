@@ -1,5 +1,4 @@
 import {
-  configApiRef,
   createApiFactory,
   createComponentExtension,
   createPlugin,
@@ -9,7 +8,6 @@ import {
 } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendClient, apiPlatformBackendApiRef } from './api';
 import { rootRouteRef } from './routes';
-import { linterApiRef, LinterClient } from './api';
 import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
 import { ApiPlatformSearchResultListItemProps } from './components/ApiPlatformSearchResultListItem';
 
@@ -97,61 +95,7 @@ export const ApiPlatformSearchResultListItem: (
       import('./components/ApiPlatformSearchResultListItem').then(
         m => m.ApiPlatformSearchResultListItem,
       ),
-    predicate: result => 
-      result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.')
+    predicate: result => result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.')
   }),
 );
 
-//-------------------------------------------------------------------------------------------------
-
-export const apiDocsSpectralLinterPlugin = createPlugin({
-  id: 'api-docs-spectral-linter',
-  apis: [
-    createApiFactory({
-      api: linterApiRef,
-      deps: {
-        configApi: configApiRef,
-      },
-      factory({ configApi }) {
-        return new LinterClient({ configApi });
-      },
-    }),
-  ],
-  routes: {
-    root: rootRouteRef,
-  },
-});
-
-export const EntityApiDocsSpectralLinterContent =
-  apiDocsSpectralLinterPlugin.provide(
-    createRoutableExtension({
-      name: 'EntityApiDocsSpectralLinterPluginContent',
-      component: () =>
-        import('./components/EntityApiDocsSpectralLinterContent').then(
-          m => m.EntityApiDocsSpectralLinterContent,
-        ),
-      mountPoint: rootRouteRef,
-    }),
-  );
-
-export const EntityApiDocsSpectralLinterCard = apiDocsSpectralLinterPlugin.provide(
-  createComponentExtension({
-    name: 'EntityApiDocsSpectralLinterCard',
-    component: {
-      lazy: () =>
-        import('./components/EntityApiDocsSpectralLinterContent').then(m => m.EntityApiDocsSpectralLinterContent),
-    },
-  }),
-);
-
-//-------------------------------------------------------------------------------------------------
-
-export const ToolkitCard = apiPlatformPlugin.provide(
-  createComponentExtension({
-    name: 'ToolkitCard',
-    component: {
-      lazy: () =>
-        import('./components/ToolkitCard').then(m => m.ToolkitCard),
-    },
-  }),
-);

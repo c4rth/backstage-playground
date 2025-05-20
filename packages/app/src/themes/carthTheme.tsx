@@ -1,7 +1,6 @@
 import { AppTheme } from '@backstage/core-plugin-api';
 import LightIcon from '@material-ui/icons/WbSunny';
 import DarkIcon from '@material-ui/icons/WbSunnyOutlined';
-import React from 'react'; 
 import { PageTheme, UnifiedTheme, UnifiedThemeOptions, UnifiedThemeProvider, createUnifiedTheme, genPageTheme, palettes, shapes } from '@backstage/theme';
 
 const colors = {

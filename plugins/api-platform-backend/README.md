@@ -1,13 +1,14 @@
-# @internal/plugin-api-platform-backend
+# @internal/plugin-catalog-helper-backend
 
 ## APIS
 
 
 | endpoint                                                 | method | type    | description                                            |
 |----------------------------------------------------------|--------|---------|--------------------------------------------------------|
-| /apis                                                    | GET    | inner   | used by api-platform front                             |
-| /apis/:apiName                                           | GET    | inner   | used by api-platform front                             |
-| /apis/:apiName/:apiVersion                               | GET    | inner   | used by api-platform front                             |
+| /apis/count                                              | GET    | inner   | used by api-platform front                             |
+| /apis/definitions                                        | GET    | inner   | used by api-platform front                             |
+| /apis/definitions/:apiName                               | GET    | inner   | used by api-platform front                             |
+| /apis/definitions/:apiName/:apiVersion                   | GET    | inner   | used by api-platform front                             |
 | /services                                                | GET    | inner   | used by api-platform front                             |
 | /services/:serviceName                                   | GET    | inner   | used by api-platform front                             |
 | /systems                                                 | GET    | inner   | used by api-platform front                             |

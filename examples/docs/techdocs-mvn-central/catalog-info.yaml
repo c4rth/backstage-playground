@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: maven-techdocs
+  title: Maven TechDocs
+  description: Maven TechDocs
+  annotations:
+    backstage.io/techdocs-ref: external:https://central.sonatype.com/
+spec:
+  type: documentation
+  lifecycle: TST
+  owner: group:default/team-a.o

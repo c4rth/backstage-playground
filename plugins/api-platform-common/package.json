@@ -16,7 +16,8 @@
     "pluginPackages": [
       "@internal/plugin-api-platform",
       "@internal/plugin-api-platform-backend",
-      "@internal/plugin-api-platform-common"
+      "@internal/plugin-api-platform-common",
+      "@internal/plugin-api-platform-react"
     ]
   },
   "sideEffects": false,
@@ -38,6 +39,6 @@
     "@backstage/plugin-permission-common": "^0.8.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0"
+    "@backstage/cli": "^0.32.0"
   }
 }

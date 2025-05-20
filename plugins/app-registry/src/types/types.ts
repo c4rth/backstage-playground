@@ -8,6 +8,7 @@ export type AppRegistryOperationPdpMapping = {
 };
 
 export type AppRegistryOperation = {
+    method: string;
     name: string;
     abac: boolean;
     bFunction?: string;

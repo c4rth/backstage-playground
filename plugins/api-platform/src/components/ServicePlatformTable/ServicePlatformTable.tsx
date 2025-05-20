@@ -5,17 +5,13 @@ import {
     Table,
     TableColumn,
 } from '@backstage/core-components';
-import {
-    EntityRefLink,
-} from '@backstage/plugin-catalog-react';
-import { parseEntityRef } from '@backstage/catalog-model';
-import React from 'react';
-import { Box, Divider, List, ListItem } from '@material-ui/core';
+import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
-import NotInterestedIcon from '@material-ui/icons/NotInterested';
+import { SystemPlatformDisplayName } from '../SystemPlatformTable';
+import { useMemo } from 'react';
 
 type TableRow = {
     id: number,
@@ -25,7 +21,7 @@ type TableRow = {
 function getColumn(env: string): TableColumn<TableRow> {
     return {
         title: env.toUpperCase(),
-        width: '10%',
+        width: '12%',
         align: 'center',
         cellStyle: { padding: '0px' },
         sorting: false,
@@ -50,19 +46,16 @@ function getColumn(env: string): TableColumn<TableRow> {
                         serviceDefinition.versions.map((version: ServiceVersionDefinition, idx: number) =>
                         (
                             <>
-                                <ListItem key={idx} 
-                                style={{ margin: '2px', display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                <ListItem key={idx}
+                                    style={{ margin: '2px', display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                     {version.environments.hasOwnProperty(env) ?
                                         <ServicePlatformChip
                                             index={idx}
                                             service={version.environments[env as keyof typeof version.environments]}
                                             link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}&env=${env}`} />
-                                        : <ServicePlatformChip
-                                            index={-2}
-                                            icon={<NotInterestedIcon />}
-                                            text='N/A'
-                                            disabled
-                                            link="#" />}
+                                        : <div style={{ pointerEvents: 'none' }}>
+                                            <Typography variant='body1'>-</Typography>
+                                        </div>}
                                 </ListItem>
                                 {idx < serviceDefinition.versions.length - 1 && <Divider />}
                             </>
@@ -80,6 +73,7 @@ const columns: TableColumn<TableRow>[] = [
         width: '25%',
         field: 'serviceDefinition.name',
         highlight: true,
+        defaultSort: 'asc',
         render: ({ serviceDefinition }) => {
             return (
                 <Link to={serviceDefinition.name}>
@@ -105,7 +99,7 @@ const columns: TableColumn<TableRow>[] = [
                                 <ListItem key={idx} style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                     <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
                                 </ListItem>
-                            {idx < serviceDefinition.versions.length - 1 && <Divider />}
+                                {idx < serviceDefinition.versions.length - 1 && <Divider />}
                             </>
                         ))}
                 </List>
@@ -118,28 +112,26 @@ const columns: TableColumn<TableRow>[] = [
     getColumn('ptp'),
     getColumn('prd'),
     {
-        title: 'Owner',
-        width: '25%',
-        field: 'serviceDefinition.owner',
+        title: 'System',
+        width: '10%',
+        highlight: true,
+        field: 'serviceDefinition.system',
         render: ({ serviceDefinition }) => (
-            <EntityRefLink
-                entityRef={parseEntityRef(serviceDefinition.owner)}
-            />
+            <Link to={`/api-platform/system/${serviceDefinition.system}`}>
+                <SystemPlatformDisplayName name={serviceDefinition.system} />
+            </Link>
         ),
     },
 ];
 
 export const ServicePlatformTable = () => {
     const { items, loading, error } = useGetServices();
+    const initialSearch = sessionStorage.getItem('servicePlatformTableSearch') || '';
+    const rows = useMemo(() => (items?.map(toRow) || []), [items]);
+    const showPagination = rows.length > 20;
 
-    if (loading) {
-        return <Progress />;
-    }
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
-    const rows = items?.map(toRow) || [];
-    const showPagination = rows.length > 20 || false;
+    if (loading) return <Progress />;
+    if (error) return <ResponseErrorPanel error={error} />;
 
     return (
         <Table<TableRow>
@@ -150,6 +142,12 @@ export const ServicePlatformTable = () => {
                 paging: showPagination,
                 pageSize: 20,
                 showEmptyDataSourceMessage: !loading,
+                draggable: false,
+                thirdSortClick: false,
+                searchText: initialSearch,
+            }}
+            onSearchChange={search => {
+                sessionStorage.setItem('servicePlatformTableSearch', search);
             }}
             title={
                 <Box display="flex" alignItems="center">

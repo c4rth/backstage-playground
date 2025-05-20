@@ -7,7 +7,8 @@ import { createApiPlatformService } from './ApiPlatformService';
 import { createCatalogPlatformService } from './CatalogPlatformService';
 import { createServicePlatformService } from './ServicePlatformService';
 import { createSystemPlatformService } from './SystemPlatformService';
-import { ServiceInformation } from '@internal/plugin-api-platform-common';
+import { APIDEFINITIONS_FIELDS, ServiceInformation } from '@internal/plugin-api-platform-common';
+import { parseOrderByParam, parseSearchParam } from './ApiPlatformService/utils';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -53,15 +54,23 @@ export async function createRouter(
 
   // Endpoints: /apis
 
-  router.get('/apis', async (_req, res) => {
-    res.json(await apiPlatformService.listApis());
+  router.get('/apis/definitions', async (req, res) => {
+    const offset = parseInt(req.query.offset as string, 10) || 0;
+    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const orderBy = parseOrderByParam(req.query.orderBy, APIDEFINITIONS_FIELDS);
+    const search = parseSearchParam(req.query.search);
+    res.json(await apiPlatformService.listApis({ limit, offset, orderBy, search }));
   });
 
-  router.get('/apis/:apiName', async (req, res) => {
+  router.get('/apis/count', async (_req, res) => {
+    res.json(await apiPlatformService.getApisCount());
+  });
+
+  router.get('/apis/definitions/:apiName', async (req, res) => {
     res.json(await apiPlatformService.getApiVersions({ apiName: req.params.apiName }));
   });
 
-  router.get('/apis/:apiName/:apiVersion', async (req, res) => {
+  router.get('/apis/definitions/:apiName/:apiVersion', async (req, res) => {
     res.json(await apiPlatformService.getApiMatchingVersion({ apiName: req.params.apiName, apiVersion: req.params.apiVersion }));
   });
 
@@ -85,7 +94,6 @@ export async function createRouter(
   });
 
   // Endpoints: /services
-
   router.get('/services', async (_req, res) => {
     res.json(await servicePlatformService.listServices());
   });
@@ -95,29 +103,24 @@ export async function createRouter(
   });
 
   // Exposed endpoints: /services
-
   router.get('/service-informations/:applicationCode/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
+    const { applicationCode, serviceName, serviceVersion, imageVersion } = req.params;
     const info = await servicePlatformService.getServiceInformation({
-      applicationCode: req.params.applicationCode,
-      serviceName: req.params.serviceName,
-      serviceVersion: req.params.serviceVersion,
-      imageVersion: req.params.imageVersion,
+      applicationCode,
+      serviceName,
+      serviceVersion,
+      imageVersion,
     });
-    if (info) {
-      res.json(info);
-    } else {
-      res.status(404).json();
-    }
+    res.status(200).json(info);
   });
 
   router.post('/service-informations', async (req, res) => {
     const serviceInformation: ServiceInformation = req.body;
-    logger.info("POST service-informations", serviceInformation);
-    res.status(201).json(await servicePlatformService.addServiceInformation({ serviceInformation }));
+    const result = await servicePlatformService.addServiceInformation({ serviceInformation });
+    res.status(201).json(result);
   });
 
   // Endpoints: /systems
-
   router.get('/systems', async (_req, res) => {
     res.json(await systemPlatformService.listSystems());
   });
@@ -125,8 +128,6 @@ export async function createRouter(
   router.get('/systems/:systemName', async (req, res) => {
     res.json(await systemPlatformService.getSystem({ systemName: req.params.systemName }));
   });
-
-  //
 
   return router;
 }
