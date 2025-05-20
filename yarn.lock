@@ -15258,6 +15258,7 @@ __metadata:
   version: 1.2.6
   resolution: "aria-hidden@npm:1.2.6"
   dependencies:
+    caniuse-lite: "npm:^1.0.30001718"
     tslib: "npm:^2.0.0"
   checksum: 10/1914e5a36225dccdb29f0b88cc891eeca736cdc5b0c905ab1437b90b28b5286263ed3a221c75b7dc788f25b942367be0044b2ac8ccf073a72e07a50b1d964202
   languageName: node
