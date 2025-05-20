@@ -18,6 +18,12 @@ app:
 organization:
   name: Acme
 
+apiPlatform:
+  organization: organization
+  feedName: feedName
+  groupPrefix: c4rth
+  dns: api-platform.carth.xyz
+
 appRegistry:
   baseUrl: &appRegistryUrl http://localhost:8080
   fetch: &appRegistryFetchUrl http://localhost:8080/actuator

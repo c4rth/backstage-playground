@@ -25,8 +25,8 @@ auth:
           resolvers:
             - resolver: emailMatchingUserEntityProfileEmail
             
-catalog:
-  locations:
+#catalog:
+#  locations:
   # Local example data, file locations are relative to the backend process, typically `packages/backend`
   #- type: file
   #  target: ../../examples/catalog-info.yaml

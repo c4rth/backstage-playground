@@ -75,8 +75,10 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ],
+  "configSchema": "config.d.ts",
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",

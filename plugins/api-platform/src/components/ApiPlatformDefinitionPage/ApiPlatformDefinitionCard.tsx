@@ -16,7 +16,7 @@ import { OpenApiDefinitionWidget } from '@internal/plugin-api-swagger-docs';
 import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
 import LanguageIcon from '@material-ui/icons/Language';
-import { useMemo } from 'react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -42,18 +42,32 @@ const useStyles = makeStyles(
     }),
 );
 
+
 export const ApiPlatformDefinitionCard = () => {
     const { entity } = useEntity<ApiEntity>();
     const classes = useStyles();
+    const configApi = useApi(configApiRef);
+
+    const ORGANIZATION = configApi.getString('apiPlatform.organization');
+    const FEED_NAME = configApi.getString('apiPlatform.feedName');
+    const API_PLATFORM_DNS = configApi.getString('apiPlatform.dns');
+    const GROUP_PREFIX = configApi.getString('apiPlatform.groupPrefix');
 
     const project = entity.metadata[ANNOTATION_API_PROJECT];
-    const apiVersion = useMemo(() => entity.metadata[ANNOTATION_API_VERSION]?.toString().toUpperCase(), [entity]);
-    const groupId = useMemo(() => `c4rth.${project}.apis`, [project]);
-    const artifactId = useMemo(() => `${entity.metadata[ANNOTATION_API_NAME]}-openapi`, [entity]);
-    const artifactUrl = useMemo(() => `https://dev.azure.com/organization/${project}/_artifacts/feed/feedName/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`, [project, groupId, artifactId, apiVersion]);
-    const artifactText = useMemo(() => `${groupId}:${artifactId}:${apiVersion}`, [groupId, artifactId, apiVersion]);
-    const mavenXml = useMemo(() => `\n<dependency>\n    <groupId>${groupId}</groupId>\n    <artifactId>${artifactId}</artifactId>\n    <version>${apiVersion}</version>\n    <type>yaml</type>\n</dependency>\n`, [groupId, artifactId, apiVersion]);
-    const href = useMemo(() => `https://api-platform.example.com/api-resolved/${project}/${entity.metadata[ANNOTATION_API_NAME]}/${entity.metadata[ANNOTATION_API_VERSION]}`, [project, entity]);
+    const apiVersion = entity.metadata[ANNOTATION_API_VERSION]?.toString().toUpperCase();
+    const groupId = `${GROUP_PREFIX}.${project}.apis`;
+    const artifactId = `${entity.metadata[ANNOTATION_API_NAME]}-openapi`;
+    const artifactUrl = `https://dev.azure.com/${ORGANIZATION}/${project}/_artifacts/feed/${FEED_NAME}/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`;
+    const artifactText = `${groupId}:${artifactId}:${apiVersion}`;
+    const mavenXml = `
+<dependency>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${apiVersion}</version>
+    <type>yaml</type>
+</dependency>
+`;
+    const href = `https://${API_PLATFORM_DNS}/api-resolved/${project}/${entity.metadata[ANNOTATION_API_NAME]}/${entity.metadata[ANNOTATION_API_VERSION]}`;
     const cardClass = classes.gridItemCard;
 
     return (
