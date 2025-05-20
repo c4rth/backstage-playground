@@ -65,6 +65,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
         apis: [],
         services: [],
       };
+      logger.info(`SystemPlatformService: getSystem: ${JSON.stringify(entity?.relations)}`);
       if (entity?.relations) {
         for (const rel of entity.relations) {
           const relEntity = await catalogClient.getEntityByRef(rel.targetRef, { token });

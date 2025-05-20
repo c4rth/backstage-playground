@@ -98,7 +98,7 @@ export const ServicePlatformDefinitionPage = () => {
     }
   }, [selectedVersion, selectedEnvironment, catalogApi, mapVersionEnv]);
 
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} XXX Service Explorer`;
+  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
 
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading) return <Progress />;

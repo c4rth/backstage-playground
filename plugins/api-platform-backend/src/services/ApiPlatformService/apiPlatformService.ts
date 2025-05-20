@@ -9,6 +9,7 @@ import {
   CATALOG_KIND,
   CATALOG_METADATA,
   CATALOG_METADATA_API_NAME,
+  CATALOG_METADATA_API_PROJECT,
   CATALOG_METADATA_API_VERSION,
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
@@ -160,6 +161,7 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
             CATALOG_METADATA_DESCRIPTION,
             CATALOG_METADATA_API_NAME,
             CATALOG_METADATA_API_VERSION,
+            CATALOG_METADATA_API_PROJECT,
             CATALOG_SPEC_SYSTEM,
           ],
           order: getOrder(request.orderBy),
@@ -183,7 +185,7 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
           const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString() || '';
           const search = request.search?.toLowerCase() || '';
           const description = entity.metadata.description?.toString() || '';
-          const system = entity.spec?.system?.toString() || '';
+          const system = entity.spec?.system?.toString() || entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '';
           return (
             apiName.toLowerCase().includes(search) ||
             system.toLowerCase().includes(search) ||

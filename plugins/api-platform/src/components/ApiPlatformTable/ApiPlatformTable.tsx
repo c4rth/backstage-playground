@@ -64,11 +64,14 @@ const columns: TableColumn<TableRow>[] = [
         width: '10%',
         field: 'api.system',
         highlight: true,
-        render: ({ api }) => (
-            <Link to={`/api-platform/system/${api.system}`}>
+        render: ({ api }) =>
+            api.system === '-' ? (
                 <SystemPlatformDisplayName name={api.system} />
-            </Link>
-        ),
+            ) : (
+                <Link to={`/api-platform/system/${api.system}`}>
+                    <SystemPlatformDisplayName name={api.system} />
+                </Link>
+            ),
     },
 ];
 
