@@ -1,5 +1,5 @@
 
-import { CompoundEntityRef } from '@backstage/catalog-model/index';
+import { CompoundEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import useAsync from 'react-use/esm/useAsync';

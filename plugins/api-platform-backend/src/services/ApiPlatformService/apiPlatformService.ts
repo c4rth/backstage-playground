@@ -101,21 +101,6 @@ function getOrder(order: ApiDefinitionsOptions | undefined): EntityOrderQuery | 
   return undefined;
 }
 
-/*
-function getFilter(search: string | undefined): EntityFilterQuery {
-  if (search) {
-    const all = `.*${search}.*`;
-    return [
-      { kind: 'API', 'metadata.api-name': all },
-      { kind: 'API', 'metadata.description': all },
-      { kind: 'API', 'spec.system': all },
-    ];
-  }
-  return {
-    kind: 'API',
-  };
-}*/
-
 export async function apiPlatformService(options: ApiPlatformServiceOptions): Promise<ApiPlatformService> {
   const { logger, catalogClient, auth } = options;
   logger.info('Initializing ApiDefinitionService');
@@ -151,9 +136,6 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
       });
       const entities = await catalogClient.getEntities(
         {
-          // filter: getFilter(request.search),
-          // offset: offset,
-          // limit: limit,
           filter: {
             kind: ['API'],
           },
@@ -171,14 +153,6 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
         { token });
       
       const latestEntities = getLatestByApiName(entities);
-      /*
-      return {
-        items: latestEntities,
-        offset,
-        limit,
-        totalCount: Number(latestEntities.length),
-      };
-      */
       let result = latestEntities;
       if (request.search) {
         result = latestEntities.filter(entity => {
