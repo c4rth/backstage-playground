@@ -11,9 +11,20 @@ import { InfoPopUp } from '@internal/plugin-api-platform-react';
 import { useEffect, useMemo, useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 
+const infoPopUpContent = (
+    <>
+      <Typography variant="body1">
+        Explore all MCA components (operations and elements) registered in your Backstage instance. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform.
+      </Typography>
+      <Typography variant="body2">
+        <i>The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks.</i>
+      </Typography>
+    </>
+  );
+
 export const McaComponentExplorerPage = () => {
   const configApi = useApi(configApiRef);
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} MCA Explorer`;
+  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} MCA Components Explorer`;
 
   const types: SelectItem[] = useMemo(
     () => [
@@ -48,16 +59,7 @@ export const McaComponentExplorerPage = () => {
         <InfoPopUp
           text={generatedSubtitle}
           variant="subtitle2"
-          content={
-            <>
-              <Typography variant="body1">
-                This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
-              </Typography>
-              <Typography variant="body2">
-                This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
-              </Typography>
-            </>
-          }
+          content={infoPopUpContent }
         />
       }
       pageTitleOverride="MCA Components"

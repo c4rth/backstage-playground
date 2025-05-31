@@ -14,7 +14,7 @@ import { CardHeader } from '@material-ui/core';
 import { Variant } from '@material-ui/core/styles/createTypography';
 
 export type InfoPopoverProps = PropsWithChildren<{
-  title: string;
+  title?: string;
   variant?: Variant;
   delayTime?: number;
   content?: ReactNode;
@@ -72,7 +72,9 @@ export const InfoPopover = ({
           onMouseLeave={handleOnMouseLeave}
         >
           <Card>
-            <CardHeader title={title} titleTypographyProps={{ variant }} />
+            {title && (
+              <CardHeader title={title} titleTypographyProps={{ variant }} />
+            )}
             <CardContent>{content}</CardContent>
           </Card>
         </HoverPopover>

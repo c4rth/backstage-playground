@@ -24,20 +24,20 @@ const useStyles = makeStyles(
 
 export interface InfoPopUpProps {
     text: string;
+    title?: string;
     variant: Variant;
     content: ReactNode;
 }
 
 export const InfoPopUp = (props: InfoPopUpProps) => {
 
-    const { text, variant, content } = props;
+    const { text, title, variant, content } = props;
     const classes = useStyles();
 
     return (
         <Box display="flex" alignItems="center">
-            <Typography className={classes.subtitle} variant={variant}>{text} </Typography>
-            <InfoPopover title={text}
-                content={content}>
+            <Typography className={classes.subtitle} variant={variant}>{text}</Typography>
+            <InfoPopover title={title} content={content}>
                 <InfoOutlinedIcon className={classes.icon} />
             </InfoPopover>
         </Box>

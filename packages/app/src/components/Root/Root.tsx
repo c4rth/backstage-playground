@@ -28,25 +28,28 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import BuildIcon from '@material-ui/icons/Build';
+import MuiMemoryIcon from '@material-ui/icons/Memory';
+import StreetviewIcon from '@material-ui/icons/Streetview';
+import DeviceHubIcon from '@material-ui/icons/DeviceHub';
+import LabelIcon from '@material-ui/icons/Label';
 // Notifications
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 // Entity Validation
-import BuildIcon from '@material-ui/icons/Build';
 import { useApp } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Api Platform
-import CodeIcon from '@material-ui/icons/Code';
-import MuiMemoryIcon from '@material-ui/icons/Memory';
 import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
 // Search
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
+import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
+// Admin Tools
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { adminToolsPermission } from '@internal/plugin-permissions-common';
-import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -83,7 +86,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
         <SidebarSearchModal resultItemComponents={[
           <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />,
-          <McaComponentSearchResultListItem icon={<CodeIcon />} />,
+          <McaComponentSearchResultListItem icon={<StreetviewIcon />} />,
           <CatalogSearchResultListItem icon={<CatalogIcon />} />,
           <TechDocsSearchResultListItem icon={<DocsIcon />} />
         ]} />
@@ -132,18 +135,17 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               icon={useApp().getSystemIcon('kind:user')}
             />
             <SidebarDivider />
-            <SidebarSubmenuItem icon={CodeIcon} to="api-docs" title="APIs" />
+            <SidebarSubmenuItem icon={useApp().getSystemIcon('kind:api')} to="api-docs" title="APIs" />
             <SidebarSubmenuItem icon={MuiMemoryIcon} to="catalog?filters[kind]=component&filters[type]=service" title="Services" />
-            <SidebarSubmenuItem icon={useApp().getSystemIcon('kind:system')} to="catalog?filters[kind]=system" title="Systems" />
           </SidebarSubmenu>
         </SidebarItem>
         <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
-        <SidebarItem icon={CodeIcon} to="api-platform/api" text="API Platform" />
-        <SidebarItem icon={CodeIcon} text="MCA">
+        <SidebarItem icon={useApp().getSystemIcon('kind:api')!} to="api-platform/api" text="APIs" />
+        <SidebarItem icon={StreetviewIcon} text="MCA" hasSubmenu>
           <SidebarSubmenu title="MCA">
-            <SidebarSubmenuItem icon={CodeIcon} to="mca/components" title="Components" />
-            <SidebarSubmenuItem icon={CodeIcon} to="mca/basetypes" title="BaseTypes" />
+            <SidebarSubmenuItem icon={DeviceHubIcon} to="mca/components" title="Components" />
+            <SidebarSubmenuItem icon={LabelIcon} to="mca/basetypes" title="BaseTypes" />
           </SidebarSubmenu>
         </SidebarItem>
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />

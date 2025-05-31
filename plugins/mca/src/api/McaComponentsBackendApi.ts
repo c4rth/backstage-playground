@@ -39,6 +39,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
   async getMcaComponentsCount(type: McaComponentType): Promise<number> {
     const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/mca/count?type=${type}`);
     const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch MCA components count for type ${type}: ${response.status} ${response.statusText}`);
+    }
     return await response.json();
   }
 
@@ -53,12 +56,18 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     query.set('type', type);
     const url = new URL(`${baseUrl}/mca/components?${query}`);
     const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch MCA components: ${response.status} ${response.statusText}`);
+    }
     return await response.json();
   }
 
   async getMcaComponent(component: string): Promise<McaComponent | undefined> {
     const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/mca/components/${component}`);
     const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch component ${component}: ${response.status} ${response.statusText}`);
+    }
     return await response.json();
   }
 
@@ -68,18 +77,27 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
       `${this.configApi.getString('backend.baseUrl')}/api/proxy/operations-sources/v1/operation-sources/${component}.${extension}/active?env=TST&myCurrentP=${refP}`,
     );
     const response = await this.fetchApi.fetch(url);
-    return response.ok ? response.text() : undefined;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch component definition for ${component}: ${response.status} ${response.statusText}`);
+    }
+    return response.text();
   }
 
   async getMcaVersions(): Promise<McaVersions> {
     const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/mca/versions`);
     const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch MCA versions: ${response.status} ${response.statusText}`);
+    }
     return await response.json();
   }
 
   async getMcaBaseTypesCount(): Promise<number> {
     const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/basetypes/count`);
     const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch MCA base types count: ${response.status} ${response.statusText}`);
+    }
     return await response.json();
   }
 
@@ -93,12 +111,18 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     if (search) query.set('search', search);
     const url = new URL(`${baseUrl}/basetypes/components?${query}`);
     const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch base types: ${response.status} ${response.statusText}`);
+    }
     return await response.json();
   }
 
   async getMcaBaseType(baseType: string): Promise<McaBaseType | undefined> {
     const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/baseTypes/components/${baseType}`);
     const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch base type ${baseType}: ${response.status} ${response.statusText}`);
+    }
     return await response.json();
   }
 
