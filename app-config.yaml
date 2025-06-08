@@ -56,6 +56,7 @@ backend:
         accessRestrictions:
           - plugin: api-platform
           - plugin: mca
+          - plugin: catalog
 
   baseUrl: http://localhost:7007
   listen:
@@ -249,7 +250,7 @@ catalog:
         rules:
           - allow: [User, Group, Domain]
         schedule:
-          frequency: { hours: 6 }
+          frequency: { minutes: 30 }
           timeout: { minutes: 5 }
           initialDelay: { minutes: 5 }
 
