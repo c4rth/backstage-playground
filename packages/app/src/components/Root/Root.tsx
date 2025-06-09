@@ -157,6 +157,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <RequirePermission permission={notGuestPermission} errorPage={<div />} >
           <SidebarItem icon={BuildIcon} text="Tools">
             <SidebarSubmenu title="Tools">
+              <SidebarSubmenuItem icon={BuildIcon} to="tools" title="Dev Tools" />
               <RequirePermission permission={adminToolsPermission} errorPage={<div />} >
                 <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
                 <RequirePermission permission={catalogEntityCreatePermission} errorPage={<div />}>
