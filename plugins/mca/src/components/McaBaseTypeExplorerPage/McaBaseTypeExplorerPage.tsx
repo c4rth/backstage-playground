@@ -10,7 +10,7 @@ import { McaBaseTypeTable } from '../McaBaseTypeTable/McaBaseTypeTable';
 const infoPopUpContent = (
   <>
     <Typography variant="body1">
-      Explore all MCA base type definitions registered in your Backstage instance. This screen provides a searchable and filterable table of base types, including their names and associated packages. Use this view to quickly find, review, and navigate to detailed information about each base type in your platform.
+      Explore all MCA base type definitions registered in Backstage. This screen provides a searchable and filterable table of base types, including their names and associated packages. Use this view to quickly find, review, and navigate to detailed information about each base type in your platform.
     </Typography>
     <Typography variant="body2">
       <i>The MCA BaseType Explorer helps you maintain visibility and control over your organization's base types, making it easy to discover, document, and govern your technical building blocks.</i>

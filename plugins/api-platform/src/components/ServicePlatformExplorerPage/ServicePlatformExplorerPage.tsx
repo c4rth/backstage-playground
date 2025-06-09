@@ -10,7 +10,7 @@ import { Typography } from '@material-ui/core';
 const infoPopUpContent = (
   <>
     <Typography variant="body1">
-      Browse all service definitions registered in your Backstage instance. This screen provides a searchable and filterable table of services, including their names, descriptions, and associated metadata. Use this view to quickly find, review, and navigate to detailed information about each service in your platform.
+      Browse all service definitions registered in Backstage. This screen provides a searchable and filterable table of services, including their names, descriptions, and associated metadata. Use this view to quickly find, review, and navigate to detailed information about each service in your platform.
     </Typography>
     <Typography variant="body2">
       <i>The Service Explorer helps you maintain visibility and control over your service landscape, making it easy to discover, document, and govern your organization's services.</i>

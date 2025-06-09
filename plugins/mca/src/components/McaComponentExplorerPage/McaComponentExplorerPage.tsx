@@ -14,7 +14,7 @@ import { McaComponentType } from '@internal/plugin-mca-common';
 const infoPopUpContent = (
     <>
       <Typography variant="body1">
-        Explore all MCA components (operations and elements) registered in your Backstage instance. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform.
+        Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform.
       </Typography>
       <Typography variant="body2">
         <i>The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks.</i>

@@ -11,14 +11,14 @@ import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
 import { SystemPlatformDisplayName } from '../SystemPlatformTable';
-import { useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 
 type TableRow = {
     id: number,
     serviceDefinition: ServiceDefinition,
 }
 
-function getColumn(env: string): TableColumn<TableRow> {
+function createEnvironmentColumn(env: string): TableColumn<TableRow> {
     return {
         title: env.toUpperCase(),
         width: '12%',
@@ -45,8 +45,8 @@ function getColumn(env: string): TableColumn<TableRow> {
                     {serviceDefinition.versions &&
                         serviceDefinition.versions.map((version: ServiceVersionDefinition, idx: number) =>
                         (
-                            <>
-                                <ListItem key={idx}
+                            <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
+                                <ListItem
                                     style={{ margin: '2px', display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                     {version.environments.hasOwnProperty(env) ?
                                         <ServicePlatformChip
@@ -58,7 +58,7 @@ function getColumn(env: string): TableColumn<TableRow> {
                                         </div>}
                                 </ListItem>
                                 {idx < serviceDefinition.versions.length - 1 && <Divider />}
-                            </>
+                            </Fragment>
                         )
                         )}
                 </List>
@@ -91,26 +91,26 @@ const columns: TableColumn<TableRow>[] = [
         align: 'center',
         cellStyle: { padding: '0px' },
         render: ({ serviceDefinition }) => {
-            return (
+             return (
                 <List style={{ padding: '0px', margin: '0px' }}>
                     {serviceDefinition.versions &&
                         serviceDefinition.versions.map((v: any, idx: number) => (
-                            <>
-                                <ListItem key={idx} style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                            <Fragment key={`${serviceDefinition.name}-${v.version}-${idx}`}>
+                                <ListItem style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                     <ServicePlatformChip index={idx} text={v.version} link={`/api-platform/service/${serviceDefinition.name}?version=${v.version}`} />
                                 </ListItem>
                                 {idx < serviceDefinition.versions.length - 1 && <Divider />}
-                            </>
+                            </Fragment>
                         ))}
                 </List>
             );
         },
     },
-    getColumn('tst'),
-    getColumn('gtu'),
-    getColumn('uat'),
-    getColumn('ptp'),
-    getColumn('prd'),
+    createEnvironmentColumn('tst'),
+    createEnvironmentColumn('gtu'),
+    createEnvironmentColumn('uat'),
+    createEnvironmentColumn('ptp'),
+    createEnvironmentColumn('prd'),
     {
         title: 'System',
         width: '10%',
@@ -130,6 +130,11 @@ export const ServicePlatformTable = () => {
     const rows = useMemo(() => (items?.map(toRow) || []), [items]);
     const showPagination = rows.length > 20;
 
+    const handleSearchChange = useCallback((search: string) => {
+        sessionStorage.setItem('servicePlatformTableSearch', search);
+    }, []);
+
+
     if (loading) return <Progress />;
     if (error) return <ResponseErrorPanel error={error} />;
 
@@ -146,9 +151,7 @@ export const ServicePlatformTable = () => {
                 thirdSortClick: false,
                 searchText: initialSearch,
             }}
-            onSearchChange={search => {
-                sessionStorage.setItem('servicePlatformTableSearch', search);
-            }}
+            onSearchChange={handleSearchChange}
             title={
                 <Box display="flex" alignItems="center">
                     <Box mr={1} />

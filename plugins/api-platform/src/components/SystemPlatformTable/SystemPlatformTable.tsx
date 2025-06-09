@@ -11,9 +11,9 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box } from '@material-ui/core';
-import { useGetSystems } from '../../hooks';
+import { useGetAllSystems, useGetSystemsOwnedByUser } from '../../hooks';
 import { SystemPlatformDisplayName } from './SystemPlatformDisplayName';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 
 type TableRow = {
@@ -29,7 +29,7 @@ type TableRow = {
     },
 }
 
-const columns: TableColumn<TableRow>[] = [
+const STABLE_COLUMNS: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
@@ -62,37 +62,82 @@ const columns: TableColumn<TableRow>[] = [
     },
 ];
 
-export const SystemPlatformTable = () => {
-    const { items, loading, error } = useGetSystems();
-    const rows = useMemo(() => items?.map(toEntityRow) || [], [items]);
-    const showPagination = rows.length > 20;
+const DEFAULT_PAGE_SIZE = 20;
 
-    if (error) return <ResponseErrorPanel error={error} />;
+interface BaseSystemTableProps {
+    title: string;
+    items?: Entity[];
+    loading: boolean;
+    error?: Error;
+}
+
+const BaseSystemTable = ({ title, items, loading, error }: BaseSystemTableProps) => {
+    const initialSearch = sessionStorage.getItem('systemsPlatformTableSearch') || '';
+    const rows = useMemo(() => items?.map(toEntityRow) || [], [items]);
+    const showPagination = rows.length > DEFAULT_PAGE_SIZE;
+    const itemCount = items?.length || 0;
+
+    const handleSearchChange = useCallback((search: string) => {
+        sessionStorage.setItem('systemsPlatformTableSearch', search);
+    }, []);
+
+    const tableTitle = useMemo(() => (
+        <Box display="flex" alignItems="center">
+            <Box mr={1} />
+            {title} ({itemCount})
+        </Box>
+    ), [title, itemCount]);
+
+    if (error) {
+        return <ResponseErrorPanel error={error} />;
+    }
 
     return (
         <Table<TableRow>
             isLoading={loading}
-            columns={columns}
+            columns={STABLE_COLUMNS}
             options={{
                 search: true,
-                padding: 'dense',
+                padding: 'dense' as const,
                 paging: showPagination,
-                pageSize: 20,
+                pageSize: DEFAULT_PAGE_SIZE,
                 showEmptyDataSourceMessage: !loading,
-                draggable: false,    
-                thirdSortClick: false,               
+                draggable: false,
+                thirdSortClick: false,
+                searchText: initialSearch,
             }}
-            title={
-                <Box display="flex" alignItems="center">
-                    <Box mr={1} />
-                    Systems ({items ? items.length : 0})
-                </Box>
-            }
+            title={tableTitle}
+            onSearchChange={handleSearchChange}
             data={rows}
         />
     );
 };
 
+export const OwnedSystemPlatformTable = () => {
+    const { items, loading, error } = useGetSystemsOwnedByUser();
+
+    return (
+        <BaseSystemTable
+            title="Owned Systems"
+            items={items}
+            loading={loading}
+            error={error}
+        />
+    );
+};
+
+export const SystemPlatformTable = () => {
+    const { items, loading, error } = useGetAllSystems();
+
+    return (
+        <BaseSystemTable
+            title="Systems"
+            items={items}
+            loading={loading}
+            error={error}
+        />
+    );
+};
 
 function toEntityRow(entity: Entity, idx: number): TableRow {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);

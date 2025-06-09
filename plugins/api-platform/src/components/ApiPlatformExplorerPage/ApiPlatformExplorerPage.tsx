@@ -10,7 +10,7 @@ import { Typography } from '@material-ui/core';
 const infoPopUpContent = (
   <>
     <Typography variant="body1">
-      Explore all API definitions registered in your Backstage instance. This screen provides a searchable and filterable table of APIs, including their names, descriptions, and associated systems. Use this view to quickly find, review, and navigate to detailed information about each API in your platform.
+      Explore all API definitions registered in Backstage. This screen provides a searchable and filterable table of APIs, including their names, descriptions, and associated systems. Use this view to quickly find, review, and navigate to detailed information about each API in your platform.
     </Typography>
     <Typography variant="body2">
       <i>The API Explorer helps you maintain visibility and control over your API landscape, making it easy to discover, document, and govern your organization's APIs.</i>

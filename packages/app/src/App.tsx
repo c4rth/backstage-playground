@@ -60,6 +60,8 @@ import {
   SystemPlatformExplorerPage,
   SystemPlatformDefinitionPage,
 } from '@internal/plugin-api-platform';
+import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
+import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
 import { adminToolsPermission } from '@internal/plugin-permissions-common';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
@@ -69,9 +71,6 @@ import { DevToolsPage } from '@backstage/plugin-devtools';
 import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
-import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
-import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
-
 const app = createApp({
   apis,
   plugins: Object.values(plugins),

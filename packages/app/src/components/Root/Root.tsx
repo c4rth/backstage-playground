@@ -49,7 +49,7 @@ import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 // Admin Tools
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
-import { adminToolsPermission } from '@internal/plugin-permissions-common';
+import { adminToolsPermission, notGuestPermission } from '@internal/plugin-permissions-common';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -93,52 +93,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
-        {/* Global nav, not org-specific */}
         <SidebarItem icon={HomeIcon} to="/" text="Home" />
-        <SidebarItem icon={HomeIcon} to="catalog" text="Catalog">
-          <SidebarSubmenu title="Catalog">
-            <SidebarSubmenuItem
-              title="Domains"
-              to="catalog?filters[kind]=domain"
-              icon={useApp().getSystemIcon('kind:domain')}
-            />
-            <SidebarSubmenuItem
-              title="Systems"
-              to="catalog?filters[kind]=system"
-              icon={useApp().getSystemIcon('kind:system')}
-            />
-            <SidebarSubmenuItem
-              title="Components"
-              to="catalog?filters[kind]=component"
-              icon={useApp().getSystemIcon('kind:component')}
-            />
-            <SidebarDivider />
-            <SidebarSubmenuItem
-              title="Resources"
-              to="catalog?filters[kind]=resource"
-              icon={useApp().getSystemIcon('kind:resource')}
-            />
-            <SidebarSubmenuItem
-              title="Location"
-              to="catalog?filters[kind]=location"
-              icon={useApp().getSystemIcon('kind:location')}
-            />
-            <SidebarDivider />
-            <SidebarSubmenuItem
-              title="Groups"
-              to="catalog?filters[kind]=group"
-              icon={useApp().getSystemIcon('kind:group')}
-            />
-            <SidebarSubmenuItem
-              title="Users"
-              to="catalog?filters[kind]=user"
-              icon={useApp().getSystemIcon('kind:user')}
-            />
-            <SidebarDivider />
-            <SidebarSubmenuItem icon={useApp().getSystemIcon('kind:api')} to="api-docs" title="APIs" />
-            <SidebarSubmenuItem icon={MuiMemoryIcon} to="catalog?filters[kind]=component&filters[type]=service" title="Services" />
-          </SidebarSubmenu>
-        </SidebarItem>
         <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
         <SidebarItem icon={MuiMemoryIcon} to="api-platform/service" text="Services" />
         <SidebarItem icon={useApp().getSystemIcon('kind:api')!} to="api-platform/api" text="APIs" />
@@ -150,17 +105,63 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         </SidebarItem>
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={LibraryBooks} to="external-docs" text="ExtDocs" />
+
+        <RequirePermission permission={notGuestPermission} errorPage={<div />} >
+          <SidebarItem icon={HomeIcon} to="catalog" text="Catalog">
+            <SidebarSubmenu title="Catalog">
+              <SidebarSubmenuItem
+                title="Domains"
+                to="catalog?filters[kind]=domain"
+                icon={useApp().getSystemIcon('kind:domain')}
+              />
+              <SidebarSubmenuItem
+                title="Systems"
+                to="catalog?filters[kind]=system"
+                icon={useApp().getSystemIcon('kind:system')}
+              />
+              <SidebarSubmenuItem
+                title="Components"
+                to="catalog?filters[kind]=component"
+                icon={useApp().getSystemIcon('kind:component')}
+              />
+              <SidebarDivider />
+              <SidebarSubmenuItem
+                title="Resources"
+                to="catalog?filters[kind]=resource"
+                icon={useApp().getSystemIcon('kind:resource')}
+              />
+              <SidebarSubmenuItem
+                title="Location"
+                to="catalog?filters[kind]=location"
+                icon={useApp().getSystemIcon('kind:location')}
+              />
+              <SidebarDivider />
+              <SidebarSubmenuItem
+                title="Groups"
+                to="catalog?filters[kind]=group"
+                icon={useApp().getSystemIcon('kind:group')}
+              />
+              <SidebarSubmenuItem
+                title="Users"
+                to="catalog?filters[kind]=user"
+                icon={useApp().getSystemIcon('kind:user')}
+              />
+            </SidebarSubmenu>
+          </SidebarItem>
+        </RequirePermission>
         <RequirePermission permission={taskCreatePermission} errorPage={<div />} >
           <SidebarItem
             icon={CreateComponentIcon}
             to="create" text="Scaffolder" />
         </RequirePermission>
-        <RequirePermission permission={adminToolsPermission} errorPage={<div />} >
+        <RequirePermission permission={notGuestPermission} errorPage={<div />} >
           <SidebarItem icon={BuildIcon} text="Tools">
             <SidebarSubmenu title="Tools">
-              <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
-              <RequirePermission permission={catalogEntityCreatePermission} errorPage={<div />}>
-                <SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />
+              <RequirePermission permission={adminToolsPermission} errorPage={<div />} >
+                <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
+                <RequirePermission permission={catalogEntityCreatePermission} errorPage={<div />}>
+                  <SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />
+                </RequirePermission>
               </RequirePermission>
             </SidebarSubmenu>
           </SidebarItem>
@@ -175,10 +176,13 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
         <SidebarItem icon={BuildIcon} to="devtools" text="Admin" />
       </RequirePermission>
-      <NotificationsSidebarItem
-        titleCounterEnabled
-        snackbarEnabled={false}
-      />
+
+      <RequirePermission permission={notGuestPermission} errorPage={<div />} >
+        <NotificationsSidebarItem
+          titleCounterEnabled
+          snackbarEnabled={false}
+        />
+      </RequirePermission>
       <SidebarGroup
         label="Settings"
         icon={<UserSettingsSignInAvatar />}
