@@ -22,7 +22,6 @@ export const Base64Encode = () => {
       setMode={setMode}
       output={output}
       modes={['Encode', 'Decode']}
-      allowFileUpload
       sample={mode === 'Encode' ? 'Hello world!' : 'SGVsbG8gd29ybGQh'}
     />
   );

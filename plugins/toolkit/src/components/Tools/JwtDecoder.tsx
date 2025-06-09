@@ -156,7 +156,7 @@ ${JSON.stringify(jwtPayload, null, 2)}`);
       sample={
         mode === 'Encode' ? JSON.stringify(exampleJSON, null, 4) : exampleJwt
       }
-      rightContent={false}
+      rightContent={undefined}
       extraRightContent={getOutput(output)}
       output={output}
     />

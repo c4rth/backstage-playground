@@ -3,6 +3,7 @@ import { Tool } from "./types";
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
+const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
 
 export const defaultTools: Tool[] = [
     {
@@ -18,5 +19,12 @@ export const defaultTools: Tool[] = [
         category: 'Encode/Decode',
         description: 'Encode and decode JSON Web Tokens',
         aliases: ['jwt'],
+    },
+    {
+        id: 'lorem-ipsum-generate',
+        name: 'Lorem Ipsum',
+        component: <LoremIpsum />,
+        category: 'Generate',
+        description: 'Generate random text for placeholders',
     },
 ];

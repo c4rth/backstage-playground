@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { ContentHeader, Header } from '@backstage/core-components';
-import { Box, CircularProgress, Divider, styled } from '@material-ui/core';
+import { ContentHeader } from '@backstage/core-components';
+import { Box, CircularProgress, styled } from '@material-ui/core';
 import { Tool } from './types';
 
 const StyledToolContainer = styled('div')(({ theme }) => ({

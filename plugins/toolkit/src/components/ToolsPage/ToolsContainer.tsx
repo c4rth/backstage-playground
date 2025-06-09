@@ -1,7 +1,7 @@
-import { Content, ContentHeader } from "@backstage/core-components";
-import { Box, CircularProgress, Grid, List, ListItem } from "@material-ui/core";
+import { Content } from "@backstage/core-components";
+import {  Grid, List, ListItem } from "@material-ui/core";
 import { defaultTools } from "./tools";
-import { Suspense, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { Tool } from "./types";
 import { ToolContainer } from "./ToolContainer";
 
