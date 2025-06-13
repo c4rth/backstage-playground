@@ -3,6 +3,8 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { DefaultEditor } from '../DefaultEditor';
 import { SignJWT } from 'jose';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { MarkdownContent } from '@backstage/core-components';
+import { TextField } from '@material-ui/core';
 
 const BASE64_REGEX =
   /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
@@ -11,7 +13,7 @@ export const JwtDecoder = () => {
   const alertApi = useApi(alertApiRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [mode, setMode] = useState('Encode');
+  const [mode, setMode] = useState('Decode');
 
   const exampleJwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
@@ -88,25 +90,32 @@ export const JwtDecoder = () => {
   useEffect(() => {
     if (mode === 'Decode') {
       let value = input;
-      if (BASE64_REGEX.test(value)) {
-        value = atob(value);
-      }
+      if (value) {
+        if (BASE64_REGEX.test(value)) {
+          value = atob(value);
+        }
 
-      try {
-        const jwtPayload = jwtDecode<JwtPayload>(value);
-        setOutput(`Issued date:
+        try {
+          const jwtPayload = jwtDecode<JwtPayload>(value);
+          setOutput(`**Issued date:**
 ${jwtPayload.iat && new Date(jwtPayload.iat * 1000)}
 
-Expiration date:
+**Expiration date:**
 ${jwtPayload.exp && new Date(jwtPayload.exp * 1000)}
 
-Header:
+**Header:**
+\`\`\`json
 ${JSON.stringify(jwtDecode(input, { header: true }), null, 2)}
-
-Payload:
-${JSON.stringify(jwtPayload, null, 2)}`);
-      } catch (error) {
-        setOutput(`Couldn't decode JWT token: ${error}`);
+\`\`\`
+**Payload:**
+\`\`\`json
+${JSON.stringify(jwtPayload, null, 2)}
+\`\`\``);
+        } catch (error) {
+          setOutput(`Couldn't decode JWT token: ${error}`);
+        }
+      } else {
+        setOutput('_Please provide a JWT token to decode._');
       }
     } else {
       try {
@@ -123,7 +132,7 @@ ${JSON.stringify(jwtPayload, null, 2)}`);
               .setIssuedAt(inputJSON.payload.iat)
               .setIssuer(inputJSON.payload.iss)
               .setExpirationTime(inputJSON.payload.exp)
-              .sign(secret);              
+              .sign(secret);
             setOutput(token);
           })();
         }
@@ -138,13 +147,6 @@ ${JSON.stringify(jwtPayload, null, 2)}`);
     }
   }, [input, mode, headerExists, keyExists, payloadExists]);
 
-  function getOutput(out: string) {
-    return (
-      <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-        {out || 'Output will be displayed here'}
-      </div>
-    );
-  }
 
   return (
     <DefaultEditor
@@ -152,13 +154,25 @@ ${JSON.stringify(jwtPayload, null, 2)}`);
       mode={mode}
       setInput={setInput}
       setMode={setMode}
-      modes={['Encode', 'Decode']}
+      modes={['Decode', 'Encode']}
       sample={
         mode === 'Encode' ? JSON.stringify(exampleJSON, null, 4) : exampleJwt
       }
-      rightContent={undefined}
-      extraRightContent={getOutput(output)}
       output={output}
+      rightContent=
+      {mode === 'Decode' ?
+        <MarkdownContent content={output} dialect="common-mark" />
+        : <TextField
+          id="output"
+          label='Output'
+          value={output || ''}
+          style={{ width: '100%' }}
+          multiline
+          minRows={20}
+          variant="outlined"
+        />
+      }
+
     />
   );
 };

@@ -4,7 +4,7 @@ import { DefaultEditor } from '../DefaultEditor';
 export const Base64Encode = () => {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [mode, setMode] = useState('Encode');
+  const [mode, setMode] = useState('Decode');
 
   useEffect(() => {
     if (mode === 'Encode') {
@@ -21,7 +21,7 @@ export const Base64Encode = () => {
       setInput={setInput}
       setMode={setMode}
       output={output}
-      modes={['Encode', 'Decode']}
+      modes={['Decode','Encode']}
       sample={mode === 'Encode' ? 'Hello world!' : 'SGVsbG8gd29ybGQh'}
     />
   );

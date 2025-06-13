@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { faker } from '@faker-js/faker';
+import { useCallback, useMemo, useState } from 'react';
+import { fa, faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
-import { Box, Button, ButtonGroup, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Button, ButtonGroup, FormControl, Grid, TextField } from '@material-ui/core';
+import { SelectItem, Select, } from '@backstage/core-components';
+import Input from '@material-ui/icons/Input';
 
 const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * max) + min;
@@ -10,11 +12,15 @@ const randomInt = (min: number, max: number) => {
 export const LoremIpsum = () => {
     const [output, setOutput] = useState('');
     const [multiplier, setMultiplier] = useState(1);
+    const [fakerType, setFakerType] = useState('line');
 
-    const generate = (type: string) => {
+    const generate = useCallback((type: string) => {
         let outputs = [];
         switch (type) {
             default:
+            case '':
+                outputs = [''];
+                break;
             case 'line':
                 outputs = faker.lorem.lines(multiplier).split('\n');
                 break;
@@ -117,9 +123,6 @@ export const LoremIpsum = () => {
                     faker.finance.iban({ formatted: true }),
                 );
                 break;
-            case 'song':
-                outputs = [...Array(multiplier)].map(faker.music.songName);
-                break;
             case 'name':
                 outputs = [...Array(multiplier)].map(faker.person.fullName);
                 break;
@@ -128,104 +131,103 @@ export const LoremIpsum = () => {
                 break;
         }
         setOutput(outputs.join('\n'));
-    };
+    }, [multiplier]);
 
-    const GenerateButton = (props: { type: string; title?: string }) => {
-        const title = props.title ? props.title : props.type;
-        return (
-            <Button
-                size="small"
-                variant="outlined"
-                onClick={() => generate(props.type)}
-                color="inherit"
-                style={{
-                    paddingLeft: '16px',
-                    paddingRight: '16px',
-                    borderColor: 'textVerySubtle',
-                    borderRadius: '4px !important',
-                }}
-            >
-                {title.toString()}
-            </Button>
-        );
-    };
+    const multipliers: SelectItem[] = useMemo(
+        () => [
+            { label: '1', value: '1' },
+            { label: '5', value: '5' },
+            { label: '10', value: '10' },
+            { label: '25', value: '25' },
+            { label: '50', value: '50' },
+            { label: '100', value: '100' },
+            { label: '250', value: '250' },
+            { label: '500', value: '500' },
+            { label: '1000', value: '1000' },
+        ],
+        [],
+    );
+
+    const fakerTypes: SelectItem[] = useMemo(
+        () => [
+            { label: 'line', value: 'line' },
+            { label: 'paragraph', value: 'paragraph' },
+            { label: 'slug', value: 'slug' },
+            { label: 'word', value: 'word' },
+            { label: 'hack', value: 'hack' },
+            { label: 'hex', value: 'hex' },
+            { label: 'datetime', value: 'datetime' },
+            { label: 'number', value: 'number' },
+            { label: 'string', value: 'string' },
+            { label: 'uuid', value: 'uuid' },
+            { label: 'IPv4', value: 'ipv4' },
+            { label: 'IPv6', value: 'ipv6' },
+            { label: 'MAC', value: 'mac' },
+            { label: 'imei', value: 'imei' },
+            { label: 'cron', value: 'cron' },
+            { label: 'domain', value: 'domain' },
+            { label: 'password', value: 'password' },
+            { label: 'URL', value: 'url' },
+            { label: 'User agent', value: 'user-agent' },
+            { label: 'emoji', value: 'emoji' },
+            { label: 'address', value: 'address' },
+            { label: 'Name', value: 'name' },
+            { label: 'Job title', value: 'job-title' },
+            { label: 'Product name', value: 'product-name' },
+            { label: 'Product description', value: 'product-description' },
+            { label: 'Catch phrase', value: 'catch-phrase' },
+            { label: 'BIC', value: 'bic' },
+            { label: 'Credit card', value: 'credit-card' },
+            { label: 'IBAN', value: 'iban' },
+        ],
+        [],
+    );
 
     return (
         <FormControl style={{ width: '100%' }}>
-            <Grid container style={{ marginBottom: '5px' }}>
-                <Grid item>
-                    <InputLabel id="multiplier-label">Count</InputLabel>
-                    <Box sx={{ ml: '16px ' }}>
-                        <Select
-                            labelId="multiplier-label"
-                            value={multiplier.toString(10)}
-                            onChange={(e : any) =>
-                                setMultiplier(Number.parseInt(e.target.value as string, 10))
-                            }
-                            variant="standard"
-                        >
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={5}>5</MenuItem>
-                            <MenuItem value={10}>10</MenuItem>
-                            <MenuItem value={25}>25</MenuItem>
-                            <MenuItem value={50}>50</MenuItem>
-                            <MenuItem value={100}>100</MenuItem>
-                            <MenuItem value={250}>250</MenuItem>
-                            <MenuItem value={500}>500</MenuItem>
-                            <MenuItem value={1000}>1000</MenuItem>
-                        </Select>
-                        <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                            <ClearValueButton setValue={setOutput} tooltip="Clear output" />
-                            <CopyToClipboardButton output={output} />
-                        </ButtonGroup>
-                    </Box>
-                    <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                        <GenerateButton type="line" />
-                        <GenerateButton type="paragraph" />
-                        <GenerateButton type="slug" />
-                        <GenerateButton type="word" />
-                        <GenerateButton type="hack" />
-                    </ButtonGroup>
-                    <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                        <GenerateButton type="hex" />
-                        <GenerateButton type="datetime" />
-                        <GenerateButton type="number" />
-                        <GenerateButton type="string" />
-                        <GenerateButton type="uuid" />
-                    </ButtonGroup>
-                    <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                        <GenerateButton type="ipv4" title="IPv4" />
-                        <GenerateButton type="ipv6" title="IPv6" />
-                        <GenerateButton type="mac" title="MAC" />
-                        <GenerateButton type="imei" />
-                        <GenerateButton type="cron" />
-                    </ButtonGroup>
-                    <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                        <GenerateButton type="domain" />
-                        <GenerateButton type="password" />
-                        <GenerateButton type="url" title="URL" />
-                        <GenerateButton type="user-agent" title="User agent" />
-                        <GenerateButton type="emoji" />
-                    </ButtonGroup>
-                    <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                        <GenerateButton type="address" />
-                        <GenerateButton type="name" title="Name" />
-                        <GenerateButton type="job-title" title="Job title" />
-                    </ButtonGroup>
-                    <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                        <GenerateButton type="product-name" title="Product name" />
-                        <GenerateButton
-                            type="product-description"
-                            title="Product description"
-                        />
-                        <GenerateButton type="catch-phrase" title="Catch phrase" />
-                        <GenerateButton type="song" title="Song name" />
-                    </ButtonGroup>
-                    <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                        <GenerateButton type="bic" title="BIC" />
-                        <GenerateButton type="credit-card" title="Credit card" />
-                        <GenerateButton type="iban" title="IBAN" />
-                    </ButtonGroup>
+            <Grid container style={{ marginBottom: '5px', }}>
+                <Grid item md={12}>
+                    <Grid container>
+                        <Grid item md={1}>
+                            <Select
+                                onChange={selected => setMultiplier(Number.parseInt(selected as string, 10))}
+                                label="Count"
+                                selected={multiplier.toString()}
+                                items={multipliers}
+                            />
+                        </Grid>
+                        <Grid item md={2}>
+                            <Select
+                                onChange={selected => setFakerType(selected as string)}
+                                label="Fake Data"
+                                selected={fakerType.toString()}
+                                items={fakerTypes}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item md={6}>
+                            <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
+                                <ClearValueButton setValue={setOutput} tooltip="Clear output" />
+                                <CopyToClipboardButton output={output} />
+                                <Button
+                                    size="small"
+                                    startIcon={<Input />}
+                                    variant="text"
+                                    onClick={() => generate(fakerType)}
+                                    color="inherit"
+                                    style={{
+                                        paddingLeft: '16px',
+                                        paddingRight: '16px',
+                                        borderColor: 'textVerySubtle',
+                                        borderRadius: '4px !important',
+                                    }}
+                                >
+                                    Generate
+                                </Button>
+                            </ButtonGroup>
+                        </Grid>
+                    </Grid>
                 </Grid>
                 <Grid item style={{ width: '100%' }}>
                     <TextField
