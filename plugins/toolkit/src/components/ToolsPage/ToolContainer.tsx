@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import { ContentHeader } from '@backstage/core-components';
 import { Box, CircularProgress, styled } from '@material-ui/core';
 import { Tool } from './types';
 
@@ -33,9 +32,7 @@ export const ToolContainer = (props: ToolContainerProps) => {
                     </Box>
                 }
             >
-                <ContentHeader title={tool.name} description={tool.description}>
-                    {tool.headerButtons}
-                </ContentHeader>
+                {tool.headerButtons}
                 {tool.component}
             </Suspense>
         </StyledToolContainer>

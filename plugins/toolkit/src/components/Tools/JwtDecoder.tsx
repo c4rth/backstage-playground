@@ -3,16 +3,20 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { DefaultEditor } from '../DefaultEditor';
 import { SignJWT } from 'jose';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
-import { MarkdownContent } from '@backstage/core-components';
-import { TextField } from '@material-ui/core';
+import { Box, TextField } from '@material-ui/core';
+import ReactJson from 'react-json-view'
+
 
 const BASE64_REGEX =
   /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+
+
 
 export const JwtDecoder = () => {
   const alertApi = useApi(alertApiRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
+  const [jwt, setJwt] = useState<any | undefined>(undefined);
   const [mode, setMode] = useState('Decode');
 
   const exampleJwt =
@@ -87,7 +91,26 @@ export const JwtDecoder = () => {
     [showError],
   );
 
+
+  const JwtDecodeOutput = (props: { jwt?: any }) => {
+    return (
+      <Box component='fieldset' style={{ width: '100%', height: '99%' }}>
+        <legend>Decoded JWT</legend>
+        {props.jwt ? (
+          <ReactJson name={false} src={props.jwt || {}} />
+        ) : (
+          <Box>No JWT data available</Box>
+        )}
+      </Box>
+    );
+  };
+
   useEffect(() => {
+    setJwt(undefined);
+    if (!input) {
+      setOutput('');
+      return;
+    }
     if (mode === 'Decode') {
       let value = input;
       if (value) {
@@ -97,25 +120,25 @@ export const JwtDecoder = () => {
 
         try {
           const jwtPayload = jwtDecode<JwtPayload>(value);
-          setOutput(`**Issued date:**
+          const jwtHeader = jwtDecode(value, { header: true });
+          setJwt({ header: jwtHeader, payload: jwtPayload });
+          setOutput(`Issued date:
 ${jwtPayload.iat && new Date(jwtPayload.iat * 1000)}
 
-**Expiration date:**
+Expiration date:
 ${jwtPayload.exp && new Date(jwtPayload.exp * 1000)}
 
-**Header:**
-\`\`\`json
-${JSON.stringify(jwtDecode(input, { header: true }), null, 2)}
-\`\`\`
-**Payload:**
-\`\`\`json
+Header:
+${JSON.stringify(jwtHeader, null, 2)}
+
+Payload:
 ${JSON.stringify(jwtPayload, null, 2)}
-\`\`\``);
+`);
         } catch (error) {
           setOutput(`Couldn't decode JWT token: ${error}`);
         }
       } else {
-        setOutput('_Please provide a JWT token to decode._');
+        setOutput('');
       }
     } else {
       try {
@@ -159,9 +182,8 @@ ${JSON.stringify(jwtPayload, null, 2)}
         mode === 'Encode' ? JSON.stringify(exampleJSON, null, 4) : exampleJwt
       }
       output={output}
-      rightContent=
-      {mode === 'Decode' ?
-        <MarkdownContent content={output} dialect="common-mark" />
+      rightContent={mode === 'Decode' ?
+        <JwtDecodeOutput jwt={jwt} />
         : <TextField
           id="output"
           label='Output'

@@ -38,6 +38,7 @@ export const ToolsContainer = () => {
                             <ListItem
                                 selected={selectedTool.id === tool.id}
                                 key={tool.id}
+                                id={tool.id}
                                 onClick={() => handleSelectedChange(tool.id)}
                                 style={{ padding: '0 !important' }}>
                                 <Grid

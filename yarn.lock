@@ -7548,6 +7548,7 @@ __metadata:
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
+    react-json-view: "npm:^1.21.3"
     react-router-dom: "npm:^6.3.0"
     react-use: "npm:^17.6.0"
   peerDependencies:

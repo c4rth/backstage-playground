@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { fa, faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
 import { Button, ButtonGroup, FormControl, Grid, TextField } from '@material-ui/core';
 import { SelectItem, Select, } from '@backstage/core-components';
@@ -188,14 +188,6 @@ export const LoremIpsum = () => {
             <Grid container style={{ marginBottom: '5px', }}>
                 <Grid item md={12}>
                     <Grid container>
-                        <Grid item md={1}>
-                            <Select
-                                onChange={selected => setMultiplier(Number.parseInt(selected as string, 10))}
-                                label="Count"
-                                selected={multiplier.toString()}
-                                items={multipliers}
-                            />
-                        </Grid>
                         <Grid item md={2}>
                             <Select
                                 onChange={selected => setFakerType(selected as string)}
@@ -204,12 +196,18 @@ export const LoremIpsum = () => {
                                 items={fakerTypes}
                             />
                         </Grid>
+                        <Grid item md={1}>
+                            <Select
+                                onChange={selected => setMultiplier(Number.parseInt(selected as string, 10))}
+                                label="Count"
+                                selected={multiplier.toString()}
+                                items={multipliers}
+                            />
+                        </Grid>
                     </Grid>
                     <Grid container>
                         <Grid item md={6}>
                             <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                                <ClearValueButton setValue={setOutput} tooltip="Clear output" />
-                                <CopyToClipboardButton output={output} />
                                 <Button
                                     size="small"
                                     startIcon={<Input />}
@@ -225,6 +223,8 @@ export const LoremIpsum = () => {
                                 >
                                     Generate
                                 </Button>
+                                <ClearValueButton setValue={setOutput} tooltip="Clear output" />
+                                <CopyToClipboardButton output={output} />
                             </ButtonGroup>
                         </Grid>
                     </Grid>

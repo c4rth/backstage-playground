@@ -119,16 +119,23 @@ export const DefaultEditor = (props: Props) => {
                     )}
                     {extraLeftContent}
                 </Grid>
-                <Grid item xs={12} lg={6} style={{ padding: '8px !important', marginTop: '8px' }}>
+                <Grid
+                    item 
+                    xs={12}
+                    lg={6}
+                    style={{ padding: '8px !important' }}>
                     {rightContent ?? (
                         <TextField
                             id="output"
                             label={outputLabel}
                             value={output || ''}
-                            style={{ width: '100%' }}
                             multiline
                             minRows={minRows}
                             variant="outlined"
+                            style={{
+                                width: '100%',
+                                padding: '8px',
+                            }}
                         />
                     )}
                     {extraRightContent}
