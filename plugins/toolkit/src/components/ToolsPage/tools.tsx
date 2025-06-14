@@ -3,6 +3,7 @@ import { Tool } from "./types";
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
+const CronDecoder = lazy(() => import('../Tools/CronDecoder'));
 const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
 
 export const defaultTools: Tool[] = [
@@ -20,6 +21,13 @@ export const defaultTools: Tool[] = [
         component: <Base64Encode />,
         category: 'Encode/Decode',
         description: 'Encode and decode base64 strings',
+    },
+    {
+        id: 'cron-decoder',
+        name: 'Cron Decoder',
+        component: <CronDecoder />,
+        category: 'Decode',
+        description: 'Decode cron expressions',
     },
     {
         id: 'lorem-ipsum-generate',

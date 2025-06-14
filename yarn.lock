@@ -7543,6 +7543,7 @@ __metadata:
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
     "@types/react": "npm:^18"
+    cronstrue: "npm:^2.61.0"
     jose: "npm:^5.2.0"
     jwt-decode: "npm:^4.0.0"
     msw: "npm:^1.0.0"
@@ -17775,6 +17776,15 @@ __metadata:
     "@types/luxon": "npm:~3.4.0"
     luxon: "npm:~3.5.0"
   checksum: 10/0e667d87c9acc162db835439bff2664483f1fcbd471ae30a26c7426c736fa1798d27067cc4d0294d8a27890a1bc6c9deeefe47811cc339f11a8ba8288f51886d
+  languageName: node
+  linkType: hard
+
+"cronstrue@npm:^2.61.0":
+  version: 2.61.0
+  resolution: "cronstrue@npm:2.61.0"
+  bin:
+    cronstrue: bin/cli.js
+  checksum: 10/38333eae2028a266733304311704c85d327a40be8d3652b2c4513ba52d15e04a6ed03166f2aa9cafaad525b3c0a58cdab4cbc884751ca184797b6fb85419f1e5
   languageName: node
   linkType: hard
 
