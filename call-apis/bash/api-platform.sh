@@ -14,6 +14,6 @@ http://localhost:7007/api/catalog/entities?fields=kind,metadata.uid,metadata.nam
 
 curl -v -X POST -H "Authorization: Bearer my-access-token" -H "Content-Type: application/json" --data '{"kind":"API", "target":"https://github.com/c4rth/playground-openapi/blob/main/api/ecommerce/0.0.1/catalog-info.yaml"}' http://localhost:7007/api/api-platform/catalog
 
-curl -v -X GET -H "Authorization: Bearer my-access-token" -H "Content-Type: application/json" http://localhost:7007/api/api-platform/apis/count
+curl -v -X GET -H "Authorization: Bearer my-access-token" http://localhost:7007/api/api-platform/apis/count
 
-curl -v -X GET -H "Authorization: Bearer my-access-token" -H "Content-Type: application/json" http://localhost:7007/api/api-platform/systems
+curl -v -X GET -H "Authorization: Bearer my-access-token" http://localhost:7007/api/api-platform/systems
