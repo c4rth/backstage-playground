@@ -7,20 +7,20 @@ import { ServicePlatformTable } from '../ServicePlatformTable';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
 import { Typography } from '@material-ui/core';
 
+const infoPopUpContent = (
+  <>
+    <Typography variant="body1">
+      Browse all service definitions registered in Backstage. This screen provides a searchable and filterable table of services, including their names, descriptions, and associated metadata. Use this view to quickly find, review, and navigate to detailed information about each service in your platform.
+    </Typography>
+    <Typography variant="body2">
+      <i>The Service Explorer helps you maintain visibility and control over your service landscape, making it easy to discover, document, and govern your organization's services.</i>
+    </Typography>
+  </>
+);
+
 export const ServicePlatformExplorerPage = () => {
   const configApi = useApi(configApiRef);
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
-
-  const infoPopUpContent = (
-    <>
-      <Typography variant="body1">
-        This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
-      </Typography>
-      <Typography variant="body2">
-        This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}. This is a description of the {generatedSubtitle}.
-      </Typography>
-    </>
-  );
 
   return (
     <PageWithHeader

@@ -60,7 +60,9 @@ import {
   SystemPlatformExplorerPage,
   SystemPlatformDefinitionPage,
 } from '@internal/plugin-api-platform';
-import { adminToolsPermission } from '@internal/plugin-permissions-common';
+import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
+import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
+import { adminToolsPermission, notGuestPermission } from '@internal/plugin-permissions-common';
 // Mermaid
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
@@ -69,8 +71,7 @@ import { DevToolsPage } from '@backstage/plugin-devtools';
 import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
-import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
-import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
+import { ToolsPage } from '@internal/plugin-toolkit';
 
 const app = createApp({
   apis,
@@ -177,6 +178,12 @@ const routes = (
     <Route path="/mca/components/:name" element={<McaComponentDefinitionPage />} />
     <Route path="/mca/basetypes" element={<McaBaseTypeExplorerPage />} />
     <Route path="/mca/basetypes/:name" element={<McaBaseTypeDefinitionPage />} />
+    <Route path="/tools" element={
+      <RequirePermission permission={notGuestPermission}>
+        <ToolsPage />
+      </RequirePermission>
+    }
+    />
     <Route path="/devtools"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>

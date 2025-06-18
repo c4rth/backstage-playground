@@ -1,0 +1,249 @@
+import { useCallback, useMemo, useState } from 'react';
+import { faker } from '@faker-js/faker';
+import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
+import { Button, ButtonGroup, FormControl, Grid, TextField } from '@material-ui/core';
+import { SelectItem, Select, } from '@backstage/core-components';
+import Input from '@material-ui/icons/Input';
+
+const randomInt = (min: number, max: number) => {
+    return Math.floor(Math.random() * max) + min;
+};
+
+export const LoremIpsum = () => {
+    const [output, setOutput] = useState('');
+    const [multiplier, setMultiplier] = useState(1);
+    const [fakerType, setFakerType] = useState('line');
+
+    const generate = useCallback((type: string) => {
+        let outputs = [];
+        switch (type) {
+            default:
+            case '':
+                outputs = [''];
+                break;
+            case 'line':
+                outputs = faker.lorem.lines(multiplier).split('\n');
+                break;
+            case 'paragraph':
+                outputs = faker.lorem.paragraphs(multiplier, '\n').split('\n');
+                break;
+            case 'slug':
+                outputs = faker.lorem.slug(multiplier).split('\n');
+                break;
+            case 'word':
+                outputs = faker.lorem.words(multiplier).split('\n');
+                break;
+            case 'hack':
+                outputs = [...Array(multiplier)].map(faker.hacker.phrase);
+                break;
+            case 'hex':
+                outputs = [...Array(multiplier)].map(() =>
+                    faker.string.hexadecimal({
+                        length: randomInt(1, 50),
+                        casing: 'lower',
+                    }),
+                );
+                break;
+            case 'datetime':
+                outputs = [...Array(multiplier)].map(faker.date.anytime);
+                break;
+            case 'number':
+                outputs = [...Array(multiplier)].map(() =>
+                    faker.number.int({ min: 1, max: 100000000000000000 }),
+                );
+                break;
+            case 'string':
+                outputs = [...Array(multiplier)].map(() =>
+                    faker.string.sample(randomInt(10, 100)),
+                );
+                break;
+            case 'uuid':
+                outputs = [...Array(multiplier)].map(faker.string.uuid);
+                break;
+            case 'ipv4':
+                outputs = [...Array(multiplier)].map(faker.internet.ipv4);
+                break;
+            case 'ipv6':
+                outputs = [...Array(multiplier)].map(faker.internet.ipv6);
+                break;
+            case 'mac':
+                outputs = [...Array(multiplier)].map(faker.internet.mac);
+                break;
+            case 'domain':
+                outputs = [...Array(multiplier)].map(faker.internet.domainName);
+                break;
+            case 'password':
+                outputs = [...Array(multiplier)].map(() =>
+                    faker.internet.password({
+                        length: randomInt(10, 100),
+                        memorable: false,
+                    }),
+                );
+                break;
+            case 'url':
+                outputs = [...Array(multiplier)].map(faker.internet.url);
+                break;
+            case 'user-agent':
+                outputs = [...Array(multiplier)].map(faker.internet.userAgent);
+                break;
+            case 'imei':
+                outputs = [...Array(multiplier)].map(faker.phone.imei);
+                break;
+            case 'cron':
+                outputs = [...Array(multiplier)].map(faker.system.cron);
+                break;
+            case 'emoji':
+                outputs = [...Array(multiplier)].map(faker.internet.emoji);
+                break;
+            case 'address':
+                outputs = [...Array(multiplier)].map(
+                    () =>
+                        `${faker.location.streetAddress(
+                            true,
+                        )}, ${faker.location.zipCode()} ${faker.location.city()}, ${faker.location.country()}`,
+                );
+                break;
+            case 'product-name':
+                outputs = [...Array(multiplier)].map(faker.commerce.productName);
+                break;
+            case 'product-description':
+                outputs = [...Array(multiplier)].map(faker.commerce.productDescription);
+                break;
+            case 'catch-phrase':
+                outputs = [...Array(multiplier)].map(faker.company.catchPhrase);
+                break;
+            case 'bic':
+                outputs = [...Array(multiplier)].map(faker.finance.bic);
+                break;
+            case 'credit-card':
+                outputs = [...Array(multiplier)].map(faker.finance.creditCardNumber);
+                break;
+            case 'iban':
+                outputs = [...Array(multiplier)].map(() =>
+                    faker.finance.iban({ formatted: true }),
+                );
+                break;
+            case 'name':
+                outputs = [...Array(multiplier)].map(faker.person.fullName);
+                break;
+            case 'job-title':
+                outputs = [...Array(multiplier)].map(faker.person.jobTitle);
+                break;
+        }
+        setOutput(outputs.join('\n'));
+    }, [multiplier]);
+
+    const multipliers: SelectItem[] = useMemo(
+        () => [
+            { label: '1', value: '1' },
+            { label: '5', value: '5' },
+            { label: '10', value: '10' },
+            { label: '25', value: '25' },
+            { label: '50', value: '50' },
+            { label: '100', value: '100' },
+            { label: '250', value: '250' },
+            { label: '500', value: '500' },
+            { label: '1000', value: '1000' },
+        ],
+        [],
+    );
+
+    const fakerTypes: SelectItem[] = useMemo(
+        () => [
+            { label: 'line', value: 'line' },
+            { label: 'paragraph', value: 'paragraph' },
+            { label: 'slug', value: 'slug' },
+            { label: 'word', value: 'word' },
+            { label: 'hack', value: 'hack' },
+            { label: 'hex', value: 'hex' },
+            { label: 'datetime', value: 'datetime' },
+            { label: 'number', value: 'number' },
+            { label: 'string', value: 'string' },
+            { label: 'uuid', value: 'uuid' },
+            { label: 'IPv4', value: 'ipv4' },
+            { label: 'IPv6', value: 'ipv6' },
+            { label: 'MAC', value: 'mac' },
+            { label: 'imei', value: 'imei' },
+            { label: 'cron', value: 'cron' },
+            { label: 'domain', value: 'domain' },
+            { label: 'password', value: 'password' },
+            { label: 'URL', value: 'url' },
+            { label: 'User agent', value: 'user-agent' },
+            { label: 'emoji', value: 'emoji' },
+            { label: 'address', value: 'address' },
+            { label: 'Name', value: 'name' },
+            { label: 'Job title', value: 'job-title' },
+            { label: 'Product name', value: 'product-name' },
+            { label: 'Product description', value: 'product-description' },
+            { label: 'Catch phrase', value: 'catch-phrase' },
+            { label: 'BIC', value: 'bic' },
+            { label: 'Credit card', value: 'credit-card' },
+            { label: 'IBAN', value: 'iban' },
+        ],
+        [],
+    );
+
+    return (
+        <FormControl style={{ width: '100%' }}>
+            <Grid container style={{ marginBottom: '5px', }}>
+                <Grid item md={12}>
+                    <Grid container>
+                        <Grid item md={2}>
+                            <Select
+                                onChange={selected => setFakerType(selected as string)}
+                                label="Fake Data"
+                                selected={fakerType.toString()}
+                                items={fakerTypes}
+                            />
+                        </Grid>
+                        <Grid item md={1}>
+                            <Select
+                                onChange={selected => setMultiplier(Number.parseInt(selected as string, 10))}
+                                label="Count"
+                                selected={multiplier.toString()}
+                                items={multipliers}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item md={6}>
+                            <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
+                                <Button
+                                    size="small"
+                                    startIcon={<Input />}
+                                    variant="text"
+                                    onClick={() => generate(fakerType)}
+                                    color="inherit"
+                                    style={{
+                                        paddingLeft: '16px',
+                                        paddingRight: '16px',
+                                        borderColor: 'textVerySubtle',
+                                        borderRadius: '4px !important',
+                                    }}
+                                >
+                                    Generate
+                                </Button>
+                                <ClearValueButton setValue={setOutput} tooltip="Clear output" />
+                                <CopyToClipboardButton output={output} />
+                            </ButtonGroup>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item style={{ width: '100%' }}>
+                    <TextField
+                        id="output"
+                        label="Output"
+                        value={output || ''}
+                        style={{ width: '100%' }}
+                        multiline
+                        minRows={20}
+                        maxRows={50}
+                        variant="outlined"
+                    />
+                </Grid>
+            </Grid>
+        </FormControl>
+    );
+};
+
+export default LoremIpsum;

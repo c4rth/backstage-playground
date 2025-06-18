@@ -1,6 +1,7 @@
 import {
   createPlugin,
   createComponentExtension,
+  createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -21,5 +22,16 @@ export const ToolkitCard = toolkitPlugin.provide(
       lazy: () =>
         import('./components/ToolkitCard').then(m => m.ToolkitCard),
     },
+  }),
+);
+
+//-------------------------------------------------------------------------------------------------
+
+export const ToolsPage = toolkitPlugin.provide(
+ createRoutableExtension({
+    name: 'ToolsPage',
+    component: () =>
+      import('./components/ToolsPage').then(m => m.ToolsPage),
+    mountPoint: rootRouteRef,
   }),
 );

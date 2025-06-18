@@ -1,4 +1,4 @@
-export { 
+export {
     ToolkitCard,
-   } from './plugin';
-  
+    ToolsPage,
+} from './plugin';

@@ -1,2 +1,2 @@
-export { SystemPlatformTable } from './SystemPlatformTable';
+export { SystemPlatformTable, OwnedSystemPlatformTable } from './SystemPlatformTable';
 export { SystemPlatformDisplayName } from './SystemPlatformDisplayName';

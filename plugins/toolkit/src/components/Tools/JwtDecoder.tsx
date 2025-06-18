@@ -1,0 +1,202 @@
+import { useCallback, useEffect, useState } from 'react';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { DefaultEditor } from '../DefaultEditor';
+import { SignJWT } from 'jose';
+import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { Box, TextField } from '@material-ui/core';
+import ReactJson from 'react-json-view'
+
+
+const BASE64_REGEX =
+  /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+
+
+
+export const JwtDecoder = () => {
+  const alertApi = useApi(alertApiRef);
+  const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
+  const [jwt, setJwt] = useState<any | undefined>(undefined);
+  const [mode, setMode] = useState('Decode');
+
+  const exampleJwt =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
+  const exampleJSON = {
+    header: {
+      alg: 'HS256',
+      typ: 'JWT',
+    },
+    payload: {
+      sub: 1234567890,
+      iat: 1516239022,
+      iss: 'John Doe',
+      exp: 1516239022,
+    },
+    key: 'exampleSecretKey',
+  };
+
+  const showError = useCallback(
+    (attribute: string) => {
+      const errorMessage = `Couldn't encode JWT token: missing attribute ${attribute}`;
+      setOutput(errorMessage);
+      alertApi.post({
+        message: errorMessage,
+        severity: 'error',
+        display: 'transient',
+      });
+      return false;
+    },
+    [alertApi],
+  );
+
+  const keyExists = useCallback(
+    (json: any) => {
+      if (!('key' in json)) {
+        return showError('key');
+      }
+      return true;
+    },
+    [showError],
+  );
+
+  const payloadExists = useCallback(
+    (json: any) => {
+      if (!('payload' in json)) {
+        return showError('payload');
+      }
+      if (!('iat' in json.payload)) {
+        return showError('payload.iat');
+      }
+      if (!('iss' in json.payload)) {
+        return showError('payload.iss');
+      }
+      if (!('exp' in json.payload)) {
+        return showError('payload.exp');
+      }
+      return true;
+    },
+    [showError],
+  );
+
+  const headerExists = useCallback(
+    (json: any) => {
+      if (!('header' in json)) {
+        return showError('header');
+      }
+      if (!('alg' in json.header)) {
+        return showError('header.alg');
+      }
+      return true;
+    },
+    [showError],
+  );
+
+
+  const JwtDecodeOutput = (props: { jwt?: any }) => {
+    return (
+      <Box component='fieldset' style={{ width: '100%', height: '99%' }}>
+        <legend>Decoded JWT</legend>
+        {props.jwt ? (
+          <ReactJson name={false} src={props.jwt || {}} />
+        ) : (
+          <Box>No JWT data available</Box>
+        )}
+      </Box>
+    );
+  };
+
+  useEffect(() => {
+    setJwt(undefined);
+    if (!input) {
+      setOutput('');
+      return;
+    }
+    if (mode === 'Decode') {
+      let value = input;
+      if (value) {
+        if (BASE64_REGEX.test(value)) {
+          value = atob(value);
+        }
+
+        try {
+          const jwtPayload = jwtDecode<JwtPayload>(value);
+          const jwtHeader = jwtDecode(value, { header: true });
+          setJwt({ header: jwtHeader, payload: jwtPayload });
+          setOutput(`Issued date:
+${jwtPayload.iat && new Date(jwtPayload.iat * 1000)}
+
+Expiration date:
+${jwtPayload.exp && new Date(jwtPayload.exp * 1000)}
+
+Header:
+${JSON.stringify(jwtHeader, null, 2)}
+
+Payload:
+${JSON.stringify(jwtPayload, null, 2)}
+`);
+        } catch (error) {
+          setOutput(`Couldn't decode JWT token: ${error}`);
+        }
+      } else {
+        setOutput('');
+      }
+    } else {
+      try {
+        const inputJSON = JSON.parse(input);
+        if (
+          keyExists(inputJSON) &&
+          payloadExists(inputJSON) &&
+          headerExists(inputJSON)
+        ) {
+          const secret = new TextEncoder().encode(inputJSON.key);
+          (async () => {
+            const token = await new SignJWT(inputJSON.payload)
+              .setProtectedHeader(inputJSON.header)
+              .setIssuedAt(inputJSON.payload.iat)
+              .setIssuer(inputJSON.payload.iss)
+              .setExpirationTime(inputJSON.payload.exp)
+              .sign(secret);
+            setOutput(token);
+          })();
+        }
+
+        if (!('header' in inputJSON)) {
+          const errorMessage = `Couldn't encode JWT token: missing attribute 'header'`;
+          setOutput(errorMessage);
+        }
+      } catch (error) {
+        setOutput(`Couldn't encode JWT token: ${error}`);
+      }
+    }
+  }, [input, mode, headerExists, keyExists, payloadExists]);
+
+
+  return (
+    <DefaultEditor
+      input={input}
+      mode={mode}
+      setInput={setInput}
+      setMode={setMode}
+      modes={['Decode', 'Encode']}
+      sample={
+        mode === 'Encode' ? JSON.stringify(exampleJSON, null, 4) : exampleJwt
+      }
+      output={output}
+      rightContent={mode === 'Decode' ?
+        <JwtDecodeOutput jwt={jwt} />
+        : <TextField
+          id="output"
+          label='Output'
+          value={output || ''}
+          style={{ width: '100%' }}
+          multiline
+          minRows={20}
+          variant="outlined"
+        />
+      }
+
+    />
+  );
+};
+
+export default JwtDecoder;
