@@ -3581,7 +3581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@npm:^0.17.1, @backstage/core-components@npm:^0.17.2, @backstage/core-components@npm:^0.17.3":
+"@backstage/core-components@npm:^0.17.2, @backstage/core-components@npm:^0.17.3":
   version: 0.17.3
   resolution: "@backstage/core-components@npm:0.17.3"
   dependencies:
@@ -3635,7 +3635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@npm:^1.10.6, @backstage/core-plugin-api@npm:^1.10.7, @backstage/core-plugin-api@npm:^1.10.8":
+"@backstage/core-plugin-api@npm:^1.10.7, @backstage/core-plugin-api@npm:^1.10.8":
   version: 1.10.8
   resolution: "@backstage/core-plugin-api@npm:1.10.8"
   dependencies:
@@ -3766,7 +3766,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.10.1, @backstage/frontend-plugin-api@npm:^0.10.2, @backstage/frontend-plugin-api@npm:^0.10.3":
+"@backstage/frontend-plugin-api@npm:^0.10.2, @backstage/frontend-plugin-api@npm:^0.10.3":
   version: 0.10.3
   resolution: "@backstage/frontend-plugin-api@npm:0.10.3"
   dependencies:
@@ -5650,7 +5650,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-techdocs-react@npm:^1.2.16, @backstage/plugin-techdocs-react@npm:^1.3.0":
+"@backstage/plugin-techdocs-react@npm:^1.2.17, @backstage/plugin-techdocs-react@npm:^1.3.0":
   version: 1.3.0
   resolution: "@backstage/plugin-techdocs-react@npm:1.3.0"
   dependencies:
@@ -5799,7 +5799,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/theme@npm:^0.6.5, @backstage/theme@npm:^0.6.6":
+"@backstage/theme@npm:^0.6.6":
   version: 0.6.6
   resolution: "@backstage/theme@npm:0.6.6"
   dependencies:
@@ -7635,7 +7635,7 @@ __metadata:
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
     "@types/react": "npm:^18"
-    backstage-plugin-techdocs-addon-mermaid: "npm:^0.20.0"
+    backstage-plugin-techdocs-addon-mermaid: "npm:^0.21.5"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
@@ -15298,7 +15298,7 @@ __metadata:
     "@testing-library/user-event": "npm:^14.0.0"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:*"
-    backstage-plugin-techdocs-addon-mermaid: "npm:^0.20.0"
+    backstage-plugin-techdocs-addon-mermaid: "npm:^0.21.5"
     cross-env: "npm:^7.0.0"
     history: "npm:^5.0.0"
     react: "npm:^18.2.0"
@@ -16021,15 +16021,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"backstage-plugin-techdocs-addon-mermaid@npm:^0.20.0":
-  version: 0.20.0
-  resolution: "backstage-plugin-techdocs-addon-mermaid@npm:0.20.0"
+"backstage-plugin-techdocs-addon-mermaid@npm:^0.21.5":
+  version: 0.21.5
+  resolution: "backstage-plugin-techdocs-addon-mermaid@npm:0.21.5"
   dependencies:
-    "@backstage/core-components": "npm:^0.17.1"
-    "@backstage/core-plugin-api": "npm:^1.10.6"
-    "@backstage/frontend-plugin-api": "npm:^0.10.1"
-    "@backstage/plugin-techdocs-react": "npm:^1.2.16"
-    "@backstage/theme": "npm:^0.6.5"
+    "@backstage/core-components": "npm:^0.17.2"
+    "@backstage/core-plugin-api": "npm:^1.10.7"
+    "@backstage/frontend-plugin-api": "npm:^0.10.2"
+    "@backstage/plugin-techdocs-react": "npm:^1.2.17"
+    "@backstage/theme": "npm:^0.6.6"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -16039,10 +16039,14 @@ __metadata:
     mermaid: "npm:^11.6.0"
     react-use: "npm:^17.2.4"
   peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
     react-router-dom: ^6.3.0
-  checksum: 10/7c1ef19eb9167e9e4bd4f1b838967fd1bd032b13b170a04e64c25bc515d541f7eeee91789dfd53fddf913c45ace38ddb2ada131bed97483c1ad5c4ee1d9c2848
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/86b2f583464c2004e78a4817047dc569a8822453038c3b47722db8527812b399636bb8a1d9b413c564b8a7d62c6524d6aca1e0770871594ddbf92d0d32cd8c63
   languageName: node
   linkType: hard
 

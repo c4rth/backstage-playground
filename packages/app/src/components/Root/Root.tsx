@@ -105,7 +105,11 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         </SidebarItem>
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={LibraryBooks} to="external-docs" text="ExtDocs" />
-
+        <RequirePermission permission={taskCreatePermission} errorPage={<div />} >
+          <SidebarItem
+            icon={CreateComponentIcon}
+            to="create" text="Scaffolder" />
+        </RequirePermission>
         <RequirePermission permission={notGuestPermission} errorPage={<div />} >
           <SidebarItem icon={HomeIcon} to="catalog" text="Catalog">
             <SidebarSubmenu title="Catalog">
@@ -146,26 +150,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
                 to="catalog?filters[kind]=user"
                 icon={useApp().getSystemIcon('kind:user')}
               />
-            </SidebarSubmenu>
-          </SidebarItem>
-        </RequirePermission>
-        <RequirePermission permission={taskCreatePermission} errorPage={<div />} >
-          <SidebarItem
-            icon={CreateComponentIcon}
-            to="create" text="Scaffolder" />
-        </RequirePermission>
-        <RequirePermission permission={notGuestPermission} errorPage={<div />} >
-          <SidebarItem icon={BuildIcon} text="Tools">
-            <SidebarSubmenu title="Tools">
-              <SidebarSubmenuItem icon={BuildIcon} to="tools" title="Dev Tools" />
               <RequirePermission permission={adminToolsPermission} errorPage={<div />} >
+                <SidebarDivider />
                 <SidebarSubmenuItem icon={BuildIcon} to="entity-validation" title="Entity Validator" />
                 <RequirePermission permission={catalogEntityCreatePermission} errorPage={<div />}>
                   <SidebarSubmenuItem icon={BuildIcon} to="catalog-import" title="Catalog Import" />
                 </RequirePermission>
               </RequirePermission>
             </SidebarSubmenu>
-          </SidebarItem>
+          </SidebarItem>  
+          <SidebarItem icon={BuildIcon} text="DevTools" to="tools" />
         </RequirePermission>
         {/* End global nav */}
         <SidebarScrollWrapper>
