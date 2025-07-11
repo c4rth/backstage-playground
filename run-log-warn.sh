@@ -1,0 +1,1 @@
+export $(cat .env | xargs) && NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" && NODE_ENV=production && LOG_LEVEL=warn yarn start 
