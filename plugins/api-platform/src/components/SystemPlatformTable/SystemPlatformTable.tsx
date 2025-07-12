@@ -48,6 +48,7 @@ const STABLE_COLUMNS: TableColumn<TableRow>[] = [
         title: 'Description',
         width: '50%',
         field: 'description',
+        render: ({ system }) => system.description || '-',
     },
     {
         title: 'Owner',
@@ -71,15 +72,44 @@ interface BaseSystemTableProps {
     error?: Error;
 }
 
+const toEntityRow = (entity: Entity, idx: number): TableRow => {
+    const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
+    return {
+        id: idx,
+        system: {
+            name: entity.metadata.name ?? '?',
+            description: entity.metadata.description ?? '',
+        },
+        resolved: {
+            entityRef: stringifyEntityRef(entity),
+            ownedByRelationsTitle: ownedByRelations
+                .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
+                .join(', '),
+            ownedByRelations,
+        },
+    };
+};
+
 const BaseSystemTable = ({ title, items, loading, error }: BaseSystemTableProps) => {
     const initialSearch = sessionStorage.getItem('systemsPlatformTableSearch') || '';
-    const rows = useMemo(() => items?.map(toEntityRow) || [], [items]);
+    const rows = useMemo(() => items?.map(toEntityRow) ?? [], [items]);
     const showPagination = rows.length > DEFAULT_PAGE_SIZE;
-    const itemCount = items?.length || 0;
+    const itemCount = items?.length ?? 0;
 
     const handleSearchChange = useCallback((search: string) => {
         sessionStorage.setItem('systemsPlatformTableSearch', search);
     }, []);
+
+    const tableOptions = useMemo(() => ({
+        search: true,
+        padding: 'dense' as const,
+        paging: showPagination,
+        pageSize: DEFAULT_PAGE_SIZE,
+        showEmptyDataSourceMessage: !loading,
+        draggable: false,
+        thirdSortClick: false,
+        searchText: initialSearch,
+    }), [showPagination, loading, initialSearch]);
 
     const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">
@@ -96,16 +126,7 @@ const BaseSystemTable = ({ title, items, loading, error }: BaseSystemTableProps)
         <Table<TableRow>
             isLoading={loading}
             columns={STABLE_COLUMNS}
-            options={{
-                search: true,
-                padding: 'dense' as const,
-                paging: showPagination,
-                pageSize: DEFAULT_PAGE_SIZE,
-                showEmptyDataSourceMessage: !loading,
-                draggable: false,
-                thirdSortClick: false,
-                searchText: initialSearch,
-            }}
+            options={tableOptions}
             title={tableTitle}
             onSearchChange={handleSearchChange}
             data={rows}
@@ -138,21 +159,3 @@ export const SystemPlatformTable = () => {
         />
     );
 };
-
-function toEntityRow(entity: Entity, idx: number): TableRow {
-    const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
-    return {
-        id: idx,
-        system: {
-            name: entity.metadata.name?.toString() || '?',
-            description: entity.metadata.description || '',
-        },
-        resolved: {
-            entityRef: stringifyEntityRef(entity),
-            ownedByRelationsTitle: ownedByRelations
-                .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
-                .join(', '),
-            ownedByRelations,
-        },
-    };
-}

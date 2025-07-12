@@ -28,14 +28,9 @@ export type SystemPlatformDisplayNameProps = {
 
 export const SystemPlatformDisplayName = ({ name }: SystemPlatformDisplayNameProps): JSX.Element => {
     const classes = useStyles();
-    const icon = (
-        <Box component="span" className={classes.icon}>
-            <CategoryIcon fontSize="inherit" />
-        </Box>
-    );
     return (
         <Box component="span" className={classes.root}>
-            {icon}
+            <CategoryIcon className={classes.icon} fontSize="inherit" />
             <span>{name}</span>
         </Box>
     );

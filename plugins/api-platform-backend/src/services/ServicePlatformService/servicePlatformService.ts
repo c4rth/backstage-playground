@@ -47,14 +47,16 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
     },
     { token });
 
-  const mapServices: Map<string, ServiceDefinition> = new Map();
+  const mapServices = new Map<string, ServiceDefinition>();
 
-  entities.items.forEach(entity => {
+  for (const entity of entities.items) {
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
-    if (!name || !version) return;
+    if (!name || !version) continue;
 
     const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '-';
+    
+    // Get or create service definition
     let def = mapServices.get(name);
     if (!def) {
       def = {
@@ -66,7 +68,8 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
       mapServices.set(name, def);
     }
 
-    let defVersion = def.versions.find((svcDef: ServiceVersionDefinition) => svcDef.version === version);
+    // Find or create version definition
+    let defVersion = def.versions.find(svcDef => svcDef.version === version);
     if (!defVersion) {
       defVersion = {
         version,
@@ -75,18 +78,21 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
       def.versions.push(defVersion);
     }
 
+    // Add environment info
     const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
     defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
       imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
       entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
       platform: platforms,
     };
-  });
+  }
 
-  // Sort versions numerically
-  const sortVersions = (a: { version: string }, b: { version: string }) =>
-    a.version.localeCompare(b.version, undefined, { numeric: true });
-  mapServices.forEach(def => { def.versions.sort(sortVersions); });
+  // Sort versions once per service
+  for (const def of mapServices.values()) {
+    def.versions.sort((a, b) => 
+      a.version.localeCompare(b.version, undefined, { numeric: true })
+    );
+  }
 
   return Array.from(mapServices.values());
 }

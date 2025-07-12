@@ -33,22 +33,38 @@ export class McaBaseTypeScheduledTask {
             if (!response.ok) {
                 throw new Error(`Failed to fetch BaseTypes HTML: ${response.statusText}`);
             }
+
             const htmlPage = await response.text();
             this.logger.debug('BaseTypes HTML fetched successfully');
+
             const $ = cheerio.load(htmlPage);
+            const baseTypes: Array<{ baseType: string; packageName: string }> = [];
+
+            // Extract all base types first
             $('div.indexContainer li').each((_index, element) => {
-                const baseType = $(element).find('a').text().trim();
-                const url = $(element).find('a').attr('href');
-                const packageName = ($(element).find('a').attr('title') ?? 'not found')
-                    .replace(/^(class in|interface in)\s*/, '')
-                    .trim();
+                const $element = $(element);
+                const $link = $element.find('a');
+                const url = $link.attr('href');
+
                 if (url) {
-                    this.mcaComponentsStore.addOrUpdateBaseType({
-                        baseType,
-                        packageName,
-                    });
+                    const baseType = $link.text().trim();
+                    const packageName = ($link.attr('title') ?? 'not found')
+                        .replace(/^(class in|interface in)\s*/, '')
+                        .trim();
+
+                    baseTypes.push({ baseType, packageName });
                 }
             });
+
+            // Batch update to reduce database calls
+            if (baseTypes.length > 0) {
+                await Promise.all(
+                    baseTypes.map(item =>
+                        this.mcaComponentsStore.addOrUpdateBaseType(item)
+                    )
+                );
+                this.logger.debug(`Processed ${baseTypes.length} base types`);
+            }
         } catch (error: any) {
             this.logger.error(`Error fetching BaseTypes HTML: ${error.message}`);
         }

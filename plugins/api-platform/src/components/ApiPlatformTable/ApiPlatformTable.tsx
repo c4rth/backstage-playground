@@ -16,7 +16,7 @@ import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
 import { SystemPlatformDisplayName } from '../SystemPlatformTable';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 
@@ -32,67 +32,35 @@ type TableRow = {
     },
 }
 
-const columns: TableColumn<TableRow>[] = [
-    {
-        title: 'Name',
-        width: '25%',
-        field: 'api.name',
-        defaultSort: 'asc',
-        highlight: true,
-        render: ({ api }) => {
-            return (
-                <Link to={api.name}>
-                    <ApiPlatformDisplayName
-                        text={api.name}
-                    />
-                </Link>
-            );
-        },
+const toEntityRow = (entity: Entity, idx: number): TableRow => ({
+    id: idx,
+    api: {
+        name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
+        description: entity.metadata.description ?? '',
+        system: entity.spec?.system?.toString() ?? '-',
     },
-    {
-        title: 'Description',
-        field: 'api.description',
-        width: '50%',
-        render: ({ api }) => {
-            return (
-                <OverflowTooltip text={api.description} line={2} />
-            )
-        },
+    resolved: {
+        entityRef: stringifyEntityRef(entity),
     },
-    {
-        title: 'System',
-        width: '10%',
-        field: 'api.system',
-        highlight: true,
-        render: ({ api }) =>
-            api.system === '-' ? (
-                <SystemPlatformDisplayName name={api.system} />
-            ) : (
-                <Link to={`/api-platform/system/${api.system}`}>
-                    <SystemPlatformDisplayName name={api.system} />
-                </Link>
-            ),
-    },
-];
+});
 
 const PAGE_SIZE = 20;
 
 async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>) {
-    const page = query.page || 0;
-    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page ?? 0;
+    const pageSize = query.pageSize ?? PAGE_SIZE;
     const result = await apiPlatformApi.listApis({
         offset: page * pageSize,
         limit: pageSize,
         search: query.search,
-        orderBy: query?.orderBy &&
-            ({
-                field: query.orderBy.field,
-                direction: query.orderDirection,
-            } as ApiDefinitionListOptions['orderBy']),
+        orderBy: query.orderBy ? {
+            field: query.orderBy.field,
+            direction: query.orderDirection,
+        } as ApiDefinitionListOptions['orderBy'] : undefined,
     });
     if (result) {
         return {
-            data: result.items.map(toEntityRow) || [],
+            data: result.items.map(toEntityRow),
             totalCount: result.totalCount,
             page: Math.floor(result.offset / result.limit),
         };
@@ -104,10 +72,6 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
     };
 }
 
-function getCount(apiPlatformApi: ApiPlatformBackendApi) {
-    return apiPlatformApi.getApisCount();
-}
-
 export const ApiPlatformTable = () => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem('apiPlatformTableSearch') || '';
@@ -115,72 +79,99 @@ export const ApiPlatformTable = () => {
     const [loadingCount, setLoadingCount] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
-    // Helper for rendering error/loading
-    const renderPanel = () => {
-        if (loadingCount) return <Progress />;
-        if (error) return <ResponseErrorPanel error={error} />;
-        return null;
-    };
+    const columns: TableColumn<TableRow>[] = useMemo(() => [
+        {
+            title: 'Name',
+            width: '25%',
+            field: 'api.name',
+            defaultSort: 'asc',
+            highlight: true,
+            render: ({ api }) => (
+                <Link to={api.name}>
+                    <ApiPlatformDisplayName text={api.name} />
+                </Link>
+            ),
+        },
+        {
+            title: 'Description',
+            field: 'api.description',
+            width: '50%',
+            render: ({ api }) => (
+                <OverflowTooltip text={api.description} line={2} />
+            ),
+        },
+        {
+            title: 'System',
+            width: '10%',
+            field: 'api.system',
+            highlight: true,
+            render: ({ api }) =>
+                api.system === '-' ? (
+                    <SystemPlatformDisplayName name={api.system} />
+                ) : (
+                    <Link to={`/api-platform/system/${api.system}`}>
+                        <SystemPlatformDisplayName name={api.system} />
+                    </Link>
+                ),
+        },
+    ], []);
+
+    const tableOptions = useMemo(() => ({
+        search: true,
+        padding: 'dense' as const,
+        pageSize: PAGE_SIZE,
+        pageSizeOptions: [10, PAGE_SIZE, 50],
+        showEmptyDataSourceMessage: !loadingCount,
+        draggable: false,
+        thirdSortClick: false,
+        searchText: initialSearch,
+    }), [loadingCount, initialSearch]);
+
+    const tableTitle = useMemo(() => (
+        <Box display="flex" alignItems="center">
+            <Box mr={1} />
+            APIs ({countRows})
+        </Box>
+    ), [countRows]);
+
 
     useEffect(() => {
-        setLoadingCount(true);
-        getCount(apiPlatformApi)
-            .then(count => {
+        const fetchCount = async () => {
+            setLoadingCount(true);
+            setError(null);
+            try {
+                const count = await apiPlatformApi.getApisCount();
                 setCountRows(count);
+            } catch (err) {
+                setError(err as Error);
+            } finally {
                 setLoadingCount(false);
-            })
-            .catch(err => {
-                setError(err);
-                setLoadingCount(false);
-            });
+            }
+        };
+
+        fetchCount();
     }, [apiPlatformApi]);
 
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
-            sessionStorage.setItem('apiPlatformTableSearch', query.search || '');
+            if (query.search !== undefined) {
+                sessionStorage.setItem('apiPlatformTableSearch', query.search);
+            }
             return getData(apiPlatformApi, query);
         },
         [apiPlatformApi]
     );
 
-    const panel = renderPanel();
-    if (panel) return panel;
+    if (loadingCount) return <Progress />;
+    if (error) return <ResponseErrorPanel error={error} />;
 
     return (
         <Table<TableRow>
             isLoading={loadingCount}
             columns={columns}
-            options={{
-                search: true,
-                padding: 'dense',
-                pageSize: PAGE_SIZE,
-                pageSizeOptions: [10, PAGE_SIZE, 50],
-                showEmptyDataSourceMessage: !loadingCount,
-                draggable: false,
-                thirdSortClick: false,
-                searchText: initialSearch,
-            }}
-            title={
-                <Box display="flex" alignItems="center">
-                    <Box mr={1} />
-                    APIs ({countRows})
-                </Box>
-            }
+            options={tableOptions}
+            title={tableTitle}
             data={fetchData}
         />
     );
 };
-
-function toEntityRow(entity: Entity, idx: number) {
-    return {
-        id: idx,
-        api: {
-            name: entity.metadata[ANNOTATION_API_NAME]?.toString() || '?',
-            description: entity.metadata.description || '',
-            system: entity.spec?.system?.toString() || '-',
-        },
-        resolved: {
-            entityRef: stringifyEntityRef(entity),
-        },
-    };
-}

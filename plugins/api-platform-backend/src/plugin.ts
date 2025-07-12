@@ -37,7 +37,7 @@ export const apiPlatformBackendPlugin = createBackendPlugin({
             logger,
             catalogClient,
             database,
-            auth
+            auth,
           }),
         );
         httpRouter.addAuthPolicy({

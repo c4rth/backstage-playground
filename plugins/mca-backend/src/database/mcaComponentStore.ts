@@ -94,46 +94,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   async getMcaComponent(component: string): Promise<McaComponent | undefined> {
     this.logger.debug(`Fetch mca ${component}`);
     const row = await this.db<DbMcaRow>('mca_components')
-      .select('*')
-      .where({ component: component })
-      .first();
-    if (row) {
-      const mca: McaComponent = {
-        component: row.component,
-        prdVersion: row.prd_version,
-        p1Version: row.p1_version,
-        p2Version: row.p2_version,
-        p3Version: row.p3_version,
-        p4Version: row.p4_version,
-        applicationCode: row.application_code,
-        packageName: row.package_name,
-      };
-      return mca;
-    }
-    return undefined;
-  }
-
-  async getMcaComponents(offset: number, limit: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
-
-    this.logger.debug(`Fetch mca components with offset: ${offset}, limit: ${limit}, type: ${type}, orderBy: ${orderBy}, search: ${search}`);
-
-    const baseQuery = this.db<DbMcaRow>('mca_components')
-      .select('*')
-      .offset(offset)
-      .limit(limit);
-    const countQuery = this.db<DbMcaRow>('mca_components')
-      .count({ count: '*' });
-
-    if (type === 'element') {
-      baseQuery.where('type', 'like', 'e');
-      countQuery.where('type', 'like', 'e');
-    } else if (type === 'operation') {
-      baseQuery.where('type', 'like', 'o');
-      countQuery.where('type', 'like', 'o');
-    }
-
-    if (search) {
-      const searchQuery = [
+      .select([
         'component',
         'prd_version',
         'p1_version',
@@ -141,43 +102,104 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
         'p3_version',
         'p4_version',
         'application_code',
-        'package_name',
-      ].map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
-      baseQuery.and.whereRaw(`(${searchQuery})`, Array(8).fill(`%${search.toLowerCase()}%`));
-      countQuery.and.whereRaw(`(${searchQuery})`, Array(8).fill(`%${search.toLowerCase()}%`));
+        'package_name'
+      ])
+      .where({ component })
+      .first();
+
+    if (!row) {
+      return undefined;
     }
+    return {
+      component: row.component,
+      prdVersion: row.prd_version,
+      p1Version: row.p1_version,
+      p2Version: row.p2_version,
+      p3Version: row.p3_version,
+      p4Version: row.p4_version,
+      applicationCode: row.application_code,
+      packageName: row.package_name,
+    };
+  }
+
+  async getMcaComponents(offset: number, limit: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
+
+    this.logger.debug(`Fetch mca components with offset: ${offset}, limit: ${limit}, type: ${type}, orderBy: ${orderBy}, search: ${search}`);
+
+    // Build where conditions once
+    const buildWhereConditions = (query: any) => {
+      if (type === 'element') {
+        query.where('type', 'e');
+      } else if (type === 'operation') {
+        query.where('type', 'o');
+      }
+
+      if (search) {
+        const searchFields = [
+          'component',
+          'prd_version',
+          'p1_version',
+          'p2_version',
+          'p3_version',
+          'p4_version',
+          'application_code',
+          'package_name',
+        ];
+        const searchQuery = searchFields.map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
+        const searchValues = searchFields.map(() => `%${search.toLowerCase()}%`);
+        query.whereRaw(`(${searchQuery})`, searchValues);
+      }
+    };
+
+    const baseQuery = this.db<DbMcaRow>('mca_components')
+      .select([
+        'component',
+        'prd_version',
+        'p1_version',
+        'p2_version',
+        'p3_version',
+        'p4_version',
+        'application_code',
+        'package_name'
+      ])
+      .offset(offset)
+      .limit(limit);
+
+    const countQuery = this.db<DbMcaRow>('mca_components')
+      .count({ count: '*' });
+
+    // Apply conditions to both queries
+    buildWhereConditions(baseQuery);
+    buildWhereConditions(countQuery);
 
     if (orderBy) {
       baseQuery.orderBy(mapMcaComponentOrderByField(orderBy.field), orderBy.direction);
     }
+
     this.logger.debug(`Mca components query: ${baseQuery.toQuery()}`);
 
-    const total = await countQuery;
-    const result = await baseQuery;
+    // Execute queries in parallel
+    const [total, result] = await Promise.all([
+      countQuery,
+      baseQuery,
+    ]);
 
-    if (result) {
-      const mcaComponents: McaComponent[] = result.map((row) => ({
-        component: row.component,
-        prdVersion: row.prd_version,
-        p1Version: row.p1_version,
-        p2Version: row.p2_version,
-        p3Version: row.p3_version,
-        p4Version: row.p4_version,
-        applicationCode: row.application_code,
-        packageName: row.package_name,
-      }));
-      return {
-        items: mcaComponents,
-        offset,
-        limit,
-        totalCount: Number(total[0].count),
-      };
-    }
+    const mcaComponents: McaComponent[] = (result ?? []).map((row) => ({
+      component: row.component,
+      prdVersion: row.prd_version,
+      p1Version: row.p1_version,
+      p2Version: row.p2_version,
+      p3Version: row.p3_version,
+      p4Version: row.p4_version,
+      applicationCode: row.application_code,
+      packageName: row.package_name,
+    }));
+
     return {
-      items: [],
+      items: mcaComponents,
       offset,
       limit,
-      totalCount: 0,
+      totalCount: Number(total[0].count),
     };
   }
 

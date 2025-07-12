@@ -8,9 +8,9 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { SystemPlatformTable, OwnedSystemPlatformTable } from '../SystemPlatformTable';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-const infoPopUpContent = (
+const INFO_POPUP_CONTENT = (
   <>
     <Typography variant="body1">
       View all system definitions registered in Backstage. This screen provides a searchable and filterable table of systems, including their names, descriptions, and related metadata. Use this view to quickly find, review, and navigate to detailed information about each system in your platform.
@@ -21,37 +21,53 @@ const infoPopUpContent = (
   </>
 );
 
+const SYSTEM_TYPES: SelectItem[] = [
+  { label: 'All systems', value: 'all' },
+  { label: 'Owned systems', value: 'owned' },
+];
+const STORAGE_KEY = 'systemsExplorerPageType';
+const DEFAULT_TYPE = 'all';
+
 export const SystemPlatformExplorerPage = () => {
   const configApi = useApi(configApiRef);
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Team Explorer`;
 
-  const types: SelectItem[] = useMemo(
-    () => [
-      { label: 'All systems', value: 'all' },
-      { label: 'Owned systems', value: 'owned' },
-    ],
-    [],
-  );
-  const [selectedType, setSelectedType] = useState<string>(
-    sessionStorage.getItem('systemsExplorerPageType') || 'all',
+  const generatedSubtitle = useMemo(() =>
+    `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Team Explorer`,
+    [configApi]
   );
 
-  const handleSelectChange = (selected: string) => {
-    sessionStorage.setItem('systemsExplorerPageType', selected);
+  const [selectedType, setSelectedType] = useState<string>(() =>
+    sessionStorage.getItem(STORAGE_KEY) || DEFAULT_TYPE
+  );
+
+  const handleSelectChange = useCallback((selected: string) => {
+    sessionStorage.setItem(STORAGE_KEY, selected);
     setSelectedType(selected);
-  };
+  }, []);
+
+  const subtitleComponent = useMemo(() => (
+    <InfoPopUp
+      text={generatedSubtitle}
+      variant="subtitle2"
+      content={INFO_POPUP_CONTENT}
+    />
+  ), [generatedSubtitle]);
+
+  const renderTable = useMemo(() => {
+    switch (selectedType) {
+      case 'owned':
+        return <OwnedSystemPlatformTable />;
+      case 'all':
+      default:
+        return <SystemPlatformTable />;
+    }
+  }, [selectedType]);
 
   return (
     <PageWithHeader
       themeId="systems"
       title="Systems"
-      subtitle={
-        <InfoPopUp
-          text={generatedSubtitle}
-          variant="subtitle2"
-          content={infoPopUpContent}
-        />
-      }
+      subtitle={subtitleComponent}
       pageTitleOverride="Systems"
     >
       <Content>
@@ -61,18 +77,13 @@ export const SystemPlatformExplorerPage = () => {
               <Select
                 onChange={selected => handleSelectChange(selected.toString())}
                 label="Type"
-                items={types}
+                items={SYSTEM_TYPES}
                 selected={selectedType}
               />
             </Grid>
           </Grid>
         </Box>
-        {selectedType === 'all' && (
-          <SystemPlatformTable />
-        )}
-        {selectedType === 'owned' && (
-          <OwnedSystemPlatformTable />
-        )}
+        {renderTable}
       </Content>
     </PageWithHeader>
   );
