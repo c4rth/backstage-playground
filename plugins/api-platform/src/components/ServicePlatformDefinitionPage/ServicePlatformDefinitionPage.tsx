@@ -46,14 +46,12 @@ export const ServicePlatformDefinitionPage = () => {
   const catalogApi = useApi(catalogApiRef);
   const configApi = useApi(configApiRef);
 
-  // Memoize parsed version/environment map and version list
   const mapVersionEnv = useMemo(() => parseServiceDefinition(serviceDefinition), [serviceDefinition]);
   const versions = useMemo(() =>
     serviceDefinition?.versions?.map(v => ({ label: v.version, value: v.version })) || [],
     [serviceDefinition]
   );
 
-  // Set selected version on load or when serviceDefinition changes
   useEffect(() => {
     if (!selectedVersion && versions.length > 0) {
       let selVersion = null;
@@ -66,14 +64,12 @@ export const ServicePlatformDefinitionPage = () => {
     }
   }, [versions, queryVersion, selectedVersion]);
 
-  // Memoize environments for selected version
   const environments = useMemo(() => {
     if (!selectedVersion) return [];
     const selectedSvc = mapVersionEnv.get(selectedVersion);
     return selectedSvc ? Array.from(selectedSvc.keys()).map(s => ({ label: s, value: s })) : [];
   }, [selectedVersion, mapVersionEnv]);
 
-  // Set selected environment on load or when version changes
   useEffect(() => {
     if (selectedVersion && !selectedEnvironment && environments.length > 0) {
       let selEnv = null;
@@ -87,7 +83,6 @@ export const ServicePlatformDefinitionPage = () => {
     }
   }, [selectedVersion, environments, queryEnv, selectedEnvironment]);
 
-  // Fetch service entity when version or environment changes
   useEffect(() => {
     if (selectedVersion && selectedEnvironment) {
       const selectSvcEnv = mapVersionEnv.get(selectedVersion)?.get(selectedEnvironment);

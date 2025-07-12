@@ -28,14 +28,9 @@ export type ServicePlatformDisplayNameProps = {
 
 export const ServicePlatformDisplayName = ({ text }: ServicePlatformDisplayNameProps): JSX.Element => {
     const classes = useStyles();
-    const icon = (
-        <Box component="span" className={classes.icon}>
-            <MuiMemoryIcon fontSize="inherit" />
-        </Box>
-    );
     return (
         <Box component="span" className={classes.root}>
-            {icon}
+            <MuiMemoryIcon className={classes.icon} fontSize="inherit" />
             <span>{text}</span>
         </Box>
     );
