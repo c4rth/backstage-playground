@@ -9,19 +9,42 @@ import { ComponentEntity } from "@backstage/catalog-model";
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
-// import { Box, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, Typography } from '@material-ui/core';
 import { Box, IconButton, Typography } from '@material-ui/core';
 import { AppRegistryOperation } from '../../types';
 import MapIcon from '@material-ui/icons/Map';
-// import CloseIcon from '@material-ui/icons/Close';
 import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow } from '@material-ui/core';
 import { InfoPopover } from '@internal/plugin-api-platform-react';
+import { memo, useMemo } from 'react';
 
 type TableRow = {
   id: number,
   operation: AppRegistryOperation,
-  open: boolean,
 }
+
+const PdpMappingTable = memo<{ mapping: { valuePath: string; pdpField: string; }[] }>(({ mapping }) => (
+  <MuiTable size="small">
+    <MuiTableHead>
+      <MuiTableRow>
+        <MuiTableCell>
+          <Typography variant="button">Value Path</Typography>
+        </MuiTableCell>
+        <MuiTableCell>
+          <Typography variant="button">PDP Field</Typography>
+        </MuiTableCell>
+      </MuiTableRow>
+    </MuiTableHead>
+    <MuiTableBody>
+      {mapping.map((row, index) => (
+        <MuiTableRow key={`${row.valuePath}-${row.pdpField}-${index}`}>
+          <MuiTableCell component="th" scope="row">
+            {row.valuePath}
+          </MuiTableCell>
+          <MuiTableCell>{row.pdpField}</MuiTableCell>
+        </MuiTableRow>
+      ))}
+    </MuiTableBody>
+  </MuiTable>
+));
 
 const columns: TableColumn<TableRow>[] = [
   {
@@ -62,32 +85,9 @@ const columns: TableColumn<TableRow>[] = [
         <InfoPopover
           title="PDP Mapping"
           variant="h6"
-          content={
-            <MuiTable size="small">
-              <MuiTableHead>
-                <MuiTableRow>
-                  <MuiTableCell>
-                    <Typography variant="button">Value Path</Typography>
-                  </MuiTableCell>
-                  <MuiTableCell>
-                    <Typography variant="button">PDP Field</Typography>
-                  </MuiTableCell>
-                </MuiTableRow>
-              </MuiTableHead>
-              <MuiTableBody>
-                {operation.pdpMapping.map((row, index) => (
-                  <MuiTableRow key={index}>
-                    <MuiTableCell component="th" scope="row">
-                      {row.valuePath}
-                    </MuiTableCell>
-                    <MuiTableCell>{row.pdpField}</MuiTableCell>
-                  </MuiTableRow>
-                ))}
-              </MuiTableBody>
-            </MuiTable>
-          }
+          content={<PdpMappingTable mapping={operation.pdpMapping} />}
         >
-          <IconButton size="small">
+          <IconButton size="small" aria-label="View PDP mapping">
             <MapIcon />
           </IconButton>
         </InfoPopover>
@@ -95,47 +95,63 @@ const columns: TableColumn<TableRow>[] = [
   },
 ];
 
-function toTableRow(operation: AppRegistryOperation, idx: number): TableRow {
-  return {
-    id: idx,
-    operation,
-    open: true,
-  };
-}
+const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => ({
+  id: idx,
+  operation,
+});
 
-export const AppRegistryPage = () => {
+export const AppRegistryPage = memo(() => {
   const { entity } = useEntity<ComponentEntity>();
-  const appCode = entity.spec.system;
-  const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
-  const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
-  const environment = entity.spec?.lifecycle.toUpperCase();
-  const { data, loading, error } = useGetOperations(appCode, appName, appVersion, environment);
+const entityData = useMemo(() => {
+    const appCode = entity.spec.system;
+    const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
+    const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
+    const environment = entity.spec?.lifecycle?.toUpperCase();
+
+    return {
+      appCode,
+      appName,
+      appVersion,
+      environment,
+    };
+  }, [entity]);
+
+  const { data, loading, error } = useGetOperations(
+    entityData.appCode, 
+    entityData.appName, 
+    entityData.appVersion, 
+    entityData.environment
+  );
+
+  const rows = useMemo(() => data?.map(toTableRow) ?? [], [data]);
+
+    const tableOptions = useMemo(() => ({
+    search: true,
+    padding: 'dense' as const,
+    paging: false,
+    showEmptyDataSourceMessage: !loading,
+    draggable: false,
+    thirdSortClick: false,
+  }), [loading]);
+
+    const tableTitle = useMemo(() => (
+    <Box display="flex" alignItems="center">
+      <Box mr={1} />
+      Operations ({rows.length})
+    </Box>
+  ), [rows.length]);
 
   if (error) {
     return <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />;
   }
 
-  const rows = data?.map(toTableRow) || [];
-
-  return (
+    return (
     <Table<TableRow>
       isLoading={loading}
       columns={columns}
-      options={{
-        search: true,
-        padding: 'dense',
-        paging: false,
-        showEmptyDataSourceMessage: !loading,
-        draggable: false,
-        thirdSortClick: false,
-      }}
-      title={
-        <Box display="flex" alignItems="center">
-          <Box mr={1} />
-          Operations ({rows.length})
-        </Box>
-      }
+      options={tableOptions}
+      title={tableTitle}
       data={rows}
     />
   );
-};
+});

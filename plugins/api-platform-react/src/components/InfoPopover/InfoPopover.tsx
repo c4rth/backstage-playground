@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
+import { memo, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import HoverPopover from 'material-ui-popup-state/HoverPopover';
 import {
   bindHover,
@@ -25,60 +25,75 @@ const useStyles = makeStyles(() => {
     popoverPaper: {
       width: '30em',
     },
+    triggerContainer: {
+      display: 'inline',
+    },
   };
 });
 
-export const InfoPopover = ({
+export const InfoPopover = memo<InfoPopoverProps>(({
   children,
   delayTime = 500,
   title,
   variant = 'h6',
   content,
-}: InfoPopoverProps) => {
+}) => {
   const classes = useStyles();
+  const [isHovered, setIsHovered] = useState(false);
+
   const popupState = usePopupState({
     variant: 'popover',
-    popupId: 'entity-peek-ahead',
+    popupId: 'info-popover',
   });
-  const [isHovered, setIsHovered] = useState(false);
 
   const debouncedHandleMouseEnter = useMemo(
     () => debounce(() => setIsHovered(true), delayTime),
     [delayTime],
   );
 
-  const handleOnMouseLeave = () => {
+  const handleOnMouseLeave = useCallback(() => {
     setIsHovered(false);
     debouncedHandleMouseEnter.cancel();
-  };
+  }, [debouncedHandleMouseEnter]);
+
+  const popoverProps = useMemo(() => ({
+    slotProps: { paper: { className: classes.popoverPaper } },
+    ...bindPopover(popupState),
+    anchorOrigin: { vertical: 'bottom' as const, horizontal: 'center' as const },
+    transformOrigin: { vertical: 'top' as const, horizontal: 'center' as const },
+    onMouseLeave: handleOnMouseLeave,
+  }), [classes.popoverPaper, popupState, handleOnMouseLeave]);
+
+  const triggerProps = useMemo(() => ({
+    component: "span" as const,
+    className: classes.triggerContainer,
+    onMouseEnter: debouncedHandleMouseEnter,
+    ...bindHover(popupState),
+    'data-testid': 'trigger',
+  }), [classes.triggerContainer, debouncedHandleMouseEnter, popupState]);
+
+  const cardHeaderProps = useMemo(() => ({
+    title,
+    titleTypographyProps: { variant },
+  }), [title, variant]);
+
+  if (!content && !title) {
+    return <>{children}</>;
+  }
 
   return (
     <>
-      <Typography component="span" onMouseEnter={debouncedHandleMouseEnter}>
-        <Typography
-          component="span"
-          data-testid="trigger"
-          {...bindHover(popupState)}
-        >
-          {children}
-        </Typography>
+      <Typography {...triggerProps}>
+        {children}
       </Typography>
       {isHovered && (
-        <HoverPopover
-          slotProps={{ paper: { className: classes.popoverPaper } }}
-          {...bindPopover(popupState)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-          onMouseLeave={handleOnMouseLeave}
-        >
+        <HoverPopover {...popoverProps}>
           <Card>
-            {title && (
-              <CardHeader title={title} titleTypographyProps={{ variant }} />
-            )}
-            <CardContent>{content}</CardContent>
+            {title && <CardHeader {...cardHeaderProps} />}
+            {content && <CardContent>{content}</CardContent>}
           </Card>
         </HoverPopover>
       )}
     </>
   );
-};
+});

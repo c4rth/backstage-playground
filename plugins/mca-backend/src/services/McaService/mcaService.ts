@@ -12,6 +12,12 @@ export interface McaServiceOptions {
   config: Config;
 }
 
+const DEFAULT_MCA_VERSIONS: McaVersions = {
+  p1Version: 'P+1',
+  p2Version: 'P+2',
+  p3Version: 'P+3',
+  p4Version: 'P+4',
+};
 
 export async function mcaService(options: McaServiceOptions): Promise<McaService> {
   const { logger, mcaComponentsStore, scheduler, config } = options;
@@ -46,11 +52,8 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
 
   return {
     async getMcaComponentsCount(request: { type: McaComponentType }): Promise<number> {
-      const res = await mcaComponentsStore.getMcaComponentsCount(request.type);
-      if (res) {
-        return res;
-      }
-      return 0;
+      const count = await mcaComponentsStore.getMcaComponentsCount(request.type);
+      return count ?? 0;
     },
 
     async listMcaComponents(request: McaComponentListRequest): Promise<McaComponentListResult> {
@@ -64,12 +67,8 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
     },
 
     async getMcaVersions(): Promise<McaVersions> {
-      return (await mcaComponentsStore.getMcaVersions()) || {
-        p1Version: 'P+1',
-        p2Version: 'P+2',
-        p3Version: 'P+3',
-        p4Version: 'P+4',
-      };
+      const versions = await mcaComponentsStore.getMcaVersions();
+        return versions ?? DEFAULT_MCA_VERSIONS;
     },
 
     async listMcaBaseTypes(request: McaBaseTypeListRequest): Promise<McaBaseTypeListResult> {
@@ -79,7 +78,7 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
     },
 
     async getMcaBaseTypesCount(): Promise<number> {
-      return (await mcaComponentsStore.getMcaBaseTypesCount()) || 0;
+      return (await mcaComponentsStore.getMcaBaseTypesCount()) ?? 0;
     },
 
     async getMcaBaseType(request: { baseType: string }): Promise<McaBaseType | undefined> {
