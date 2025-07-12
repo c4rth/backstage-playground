@@ -24,7 +24,10 @@ export const ApiPlatformDefinitionPage = () => {
   const catalogApi = useApi(catalogApiRef);
 
   const versions = useMemo(
-    () => apiVersions ? apiVersions.map(apiVersion => ({ label: apiVersion.version, value: apiVersion.entityRef })) : [],
+    () => apiVersions?.map(apiVersion => ({ 
+      label: apiVersion.version, 
+      value: apiVersion.entityRef 
+    })) ?? [],
     [apiVersions]
   );
   const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
@@ -54,7 +57,10 @@ export const ApiPlatformDefinitionPage = () => {
     }
   }, [selectedVersion, catalogApi]);
 
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`;
+  const generatedSubtitle = useMemo(() =>
+    `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`,
+    [configApi]
+  );
 
   if (error) {
     return <ResponseErrorPanel error={error} />;

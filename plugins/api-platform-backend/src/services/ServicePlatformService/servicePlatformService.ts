@@ -11,7 +11,6 @@ import {
   CATALOG_SPEC_SYSTEM,
   ServiceDefinition,
   ServiceInformation,
-  ServiceVersionDefinition
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
 import { ApiPlatformStore } from '../../database/apiPlatformStore';

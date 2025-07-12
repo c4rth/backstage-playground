@@ -27,15 +27,10 @@ export type ApiPlatformDisplayNameProps = {
 };
 
 export const ApiPlatformDisplayName = ({ text }: ApiPlatformDisplayNameProps): JSX.Element => {
-    const classes = useStyles();
-    const icon = (
-        <Box component="span" className={classes.icon}>
-            <ExtensionIcon fontSize="inherit" />
-        </Box>
-    );
+    const classes = useStyles();    
     return (
         <Box component="span" className={classes.root}>
-            {icon}
+            <ExtensionIcon className={classes.icon} fontSize="inherit" />
             <span>{text}</span>
         </Box>
     );

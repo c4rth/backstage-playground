@@ -17,6 +17,7 @@ import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } fro
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
 import LanguageIcon from '@material-ui/icons/Language';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { memo, useMemo } from 'react';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -42,46 +43,79 @@ const useStyles = makeStyles(
     }),
 );
 
+const IconWithText = memo<{ icon: React.ReactNode; child: React.ReactNode; classes: any }>(
+    ({ icon, child, classes }) => (
+        <Box component="span" className={classes.root}>
+            <Box component="span" className={classes.icon}>
+                {icon}
+            </Box>
+            {child}
+        </Box>
+    )
+);
 
 export const ApiPlatformDefinitionCard = () => {
     const { entity } = useEntity<ApiEntity>();
     const classes = useStyles();
     const configApi = useApi(configApiRef);
 
-    const ORGANIZATION = configApi.getString('apiPlatform.organization');
-    const FEED_NAME = configApi.getString('apiPlatform.feedName');
-    const API_PLATFORM_DNS = configApi.getString('apiPlatform.dns');
-    const GROUP_PREFIX = configApi.getString('apiPlatform.groupPrefix');
+    const config = useMemo(() => ({
+        organization: configApi.getString('apiPlatform.organization'),
+        feedName: configApi.getString('apiPlatform.feedName'),
+        apiPlatformDns: configApi.getString('apiPlatform.dns'),
+        groupPrefix: configApi.getString('apiPlatform.groupPrefix'),
+    }), [configApi]);
 
-    const project = entity.metadata[ANNOTATION_API_PROJECT];
-    const apiVersion = entity.metadata[ANNOTATION_API_VERSION]?.toString().toUpperCase();
-    const groupId = `${GROUP_PREFIX}.${project}.apis`;
-    const artifactId = `${entity.metadata[ANNOTATION_API_NAME]}-openapi`;
-    const artifactUrl = `https://dev.azure.com/${ORGANIZATION}/${project}/_artifacts/feed/${FEED_NAME}/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`;
-    const artifactText = `${groupId}:${artifactId}:${apiVersion}`;
-    const mavenXml = `
+    const apiData = useMemo(() => {
+        const project = entity.metadata[ANNOTATION_API_PROJECT];
+        const apiName = entity.metadata[ANNOTATION_API_NAME];
+        const apiVersion = entity.metadata[ANNOTATION_API_VERSION]?.toString().toUpperCase();
+        const groupId = `${config.groupPrefix}.${project}.apis`;
+        const artifactId = `${apiName}-openapi`;
+
+        return {
+            project,
+            apiName,
+            apiVersion,
+            groupId,
+            artifactId,
+            artifactUrl: `https://dev.azure.com/${config.organization}/${project}/_artifacts/feed/${config.feedName}/maven/${groupId}%2F${artifactId}/overview/${apiVersion}`,
+            artifactText: `${groupId}:${artifactId}:${apiVersion}`,
+            platformUrl: `https://${config.apiPlatformDns}/api-resolved/${project}/${apiName}/${entity.metadata[ANNOTATION_API_VERSION]}`,
+        };
+    }, [entity.metadata, config]);
+
+    const mavenXml = useMemo(() => `
 <dependency>
-    <groupId>${groupId}</groupId>
-    <artifactId>${artifactId}</artifactId>
-    <version>${apiVersion}</version>
+    <groupId>${apiData.groupId}</groupId>
+    <artifactId>${apiData.artifactId}</artifactId>
+    <version>${apiData.apiVersion}</version>
     <type>yaml</type>
 </dependency>
-`;
-    const href = `https://${API_PLATFORM_DNS}/api-resolved/${project}/${entity.metadata[ANNOTATION_API_NAME]}/${entity.metadata[ANNOTATION_API_VERSION]}`;
-    const cardClass = classes.gridItemCard;
+`, [apiData.groupId, apiData.artifactId, apiData.apiVersion]);
+
+    const apiSpec = useMemo(() => ({
+        definition: entity.spec.definition.toString(),
+        language: entity.spec.type,
+    }), [entity.spec.definition, entity.spec.type]);
+
+    const isLinterAvailable = useMemo(() =>
+        isApiDocsSpectralLinterAvailable(entity),
+        [entity]
+    );
 
     return (
         <TabbedLayout>
             <TabbedLayout.Route path="/" title="OpenApi">
-                <OpenApiDefinitionWidget definition={entity.spec.definition.toString()} />
+                <OpenApiDefinitionWidget definition={apiSpec.definition} />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/raw" title="Raw">
                 <PlainApiDefinitionWidget
-                    definition={entity.spec.definition}
-                    language={entity.spec.type}
+                    definition={apiSpec.definition}
+                    language={apiSpec.language}
                 />
             </TabbedLayout.Route>
-            {isApiDocsSpectralLinterAvailable(entity) && (
+            {isLinterAvailable && (
                 <TabbedLayout.Route path="/linter" title="Linter">
                     <EntityApiDocsSpectralLinterCard />
                 </TabbedLayout.Route>
@@ -97,7 +131,7 @@ export const ApiPlatformDefinitionCard = () => {
                 </Grid>
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/info" title="Info">
-                <InfoCard title='About' divider className={cardClass}>
+                <InfoCard title='About' divider className={classes.gridItemCard}>
                     <Box sx={{ mb: 4 }}>
                         <AboutField
                             label="API reference"
@@ -110,13 +144,12 @@ export const ApiPlatformDefinitionCard = () => {
                         <AboutField
                             label="Azure Artifact"
                             gridSizes={{ xs: 12 }} >
-                            <Link to={artifactUrl} target="_blank" rel="noopener noreferrer" >
-                                <Box component="span" className={classes.root}>
-                                    <Box component="span" className={classes.icon}>
-                                        <CloudCircleIcon fontSize="inherit" />
-                                    </Box>
-                                    {artifactText}
-                                </Box>
+                            <Link to={apiData.artifactUrl} target="_blank" rel="noopener noreferrer">
+                                <IconWithText
+                                    icon={<CloudCircleIcon fontSize="inherit" />}
+                                    child={<>{apiData.artifactText}</>}
+                                    classes={classes}
+                                />
                             </Link>
                         </AboutField>
                     </Box>
@@ -128,17 +161,16 @@ export const ApiPlatformDefinitionCard = () => {
                         </AboutField>
                     </Box>
                     <Box sx={{ mt: 5 }}>
-                        <AboutField
-                            label="API Platform URL"
-                            gridSizes={{ xs: 12 }}>
-                            <Box component="span" className={classes.root}>
-                                <Box component="span" className={classes.icon}>
-                                    <LanguageIcon fontSize="inherit" />
-                                </Box>
-                                <Link to={href} target="_blank" rel="noopener noreferrer" >
-                                    {href}
-                                </Link>
-                            </Box>
+                        <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
+                            <IconWithText
+                                icon={<LanguageIcon fontSize="inherit" />}
+                                child={
+                                    <Link to={apiData.platformUrl} target="_blank" rel="noopener noreferrer">
+                                        {apiData.platformUrl}
+                                    </Link>
+                                }
+                                classes={classes}
+                            />
                         </AboutField>
                     </Box>
                 </InfoCard>

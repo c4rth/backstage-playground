@@ -9,7 +9,7 @@ import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
 import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
-import { ServiceDefinition, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { SystemPlatformDisplayName } from '../SystemPlatformTable';
 import { Fragment, useCallback, useMemo } from 'react';
 

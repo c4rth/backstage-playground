@@ -1,5 +1,5 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
-import { useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
@@ -44,78 +44,87 @@ const serviceColumns: TableColumn<TableRow>[] = [
     },
 ];
 
-const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency: 'provider' | 'consumer') => {
+const toRow = (entity: Entity, idx: number): TableRow => ({
+    id: idx,
+    data: {
+        name: entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
+        version: entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '?',
+        environment: entity.spec?.lifecycle?.toString().toUpperCase() ?? '?',
+    },
+});
 
-    const type = dependency === 'consumer' ? RELATION_API_CONSUMED_BY : RELATION_API_PROVIDED_BY;
-    const filteredRelations = entity.relations?.filter((relation) => relation.type === type) || [];
-    const filteredNames = filteredRelations.map((relation) => parseEntityRef(relation.targetRef).name);
-    if (filteredNames.length === 0) {
+const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency: 'provider' | 'consumer') => {
+    const relationType = dependency === 'consumer' ? RELATION_API_CONSUMED_BY : RELATION_API_PROVIDED_BY;
+    const relations = entity.relations?.filter(relation => relation.type === relationType) ?? [];
+    
+    if (relations.length === 0) {
         return [];
     }
-    const response = await catalogApi.getEntities({
-        fields: [
-            CATALOG_METADATA_SERVICE_NAME,
-            CATALOG_METADATA_SERVICE_VERSION,
-            CATALOG_SPEC_LIFECYCLE,
-        ],
-        filter: {
-            kind: ['Component'],
-            'spec.type': ['service'],
-            'metadata.name': filteredNames
-        },
-    });
-    return response.items;
+
+    const targetNames = relations.map(relation => parseEntityRef(relation.targetRef).name);
+    
+    try {
+        const response = await catalogApi.getEntities({
+            fields: [
+                CATALOG_METADATA_SERVICE_NAME,
+                CATALOG_METADATA_SERVICE_VERSION,
+                CATALOG_SPEC_LIFECYCLE,
+            ],
+            filter: {
+                kind: ['Component'],
+                'spec.type': ['service'],
+                'metadata.name': targetNames,
+            },
+        });
+        
+        return response.items;
+    } catch (error) {
+        throw error;
+    }
 };
 
-export const ApiPlatformRelationCard = (props: { dependency: 'provider' | 'consumer' }) => {
-    const { dependency } = props;
+interface ApiPlatformRelationCardProps {
+    dependency: 'provider' | 'consumer';
+}
+
+export const ApiPlatformRelationCard = memo<ApiPlatformRelationCardProps>(({ dependency }) => {
     const { entity } = useEntity();
     const catalogApi = useApi(catalogApiRef);
-
-    const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
-
-    const fetchAsync = useCallback(() => fetchEntities(catalogApi, entity, dependency), [catalogApi, entity, dependency]);
-    const {
-        value: entities,
-        loading,
-        error,
-    } = useAsync(fetchAsync, [fetchAsync]);
-
-    const rows = useMemo(() => entities?.map(toRow) || [], [entities]);
+    const title = useMemo(() => 
+        dependency === 'consumer' ? 'Consumers' : 'Providers', 
+        [dependency]
+    );
+    const fetchAsync = useCallback(
+        () => fetchEntities(catalogApi, entity, dependency),
+        [catalogApi, entity, dependency]
+    );
+    const { value: entities, loading, error } = useAsync(fetchAsync, [fetchAsync]);
+    const rows = useMemo(() => entities?.map(toRow) ?? [], [entities]);
+    const tableOptions = useMemo(() => ({
+        search: true,
+        padding: 'dense' as const,
+        paging: false,
+        draggable: false,
+        thirdSortClick: false,
+    }), []);
+    const tableTitle = useMemo(() => (
+        <Box display="flex" alignItems="center">
+            <Box mr={1} />
+            {title} ({rows.length})
+        </Box>
+    ), [title, rows.length]);
 
     if (error) {
-        return <ResponseErrorPanel title="Error" error={error} />;
+        return <ResponseErrorPanel title={`Error loading ${title.toLowerCase()}`} error={error} />;
     }
 
     return (
         <Table<TableRow>
             isLoading={loading}
             columns={serviceColumns}
-            options={{
-                search: true,
-                padding: 'dense',
-                paging: false,
-                draggable: false,   
-                thirdSortClick: false,           
-            }}
-            title={
-                <Box display="flex" alignItems="center">
-                    <Box mr={1} />
-                    {title} ({rows.length})
-                </Box>
-            }
+            options={tableOptions}
+            title={tableTitle}
             data={rows}
         />
     );
-}
-
-function toRow(entity: Entity, idx: number) {
-    return {
-        id: idx,
-        data: {
-            name: entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() || '?',
-            version: entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString() || '?',
-            environment: entity.spec?.lifecycle?.toString().toUpperCase() || '?',
-        }
-    };
-}
+});
