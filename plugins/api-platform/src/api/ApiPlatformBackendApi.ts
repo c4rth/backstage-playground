@@ -26,71 +26,124 @@ export interface ApiPlatformBackendApi {
 export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
+  private baseUrlCache: string | null = null;
+  private baseUrlPromise: Promise<string> | null = null;
 
   constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
   }
 
+  private async getBaseUrl(): Promise<string> {
+    if (this.baseUrlCache) {
+      return this.baseUrlCache;
+    }
+
+    if (this.baseUrlPromise) {
+      return this.baseUrlPromise;
+    }
+
+    this.baseUrlPromise = this.discoveryApi.getBaseUrl('api-platform');
+    this.baseUrlCache = await this.baseUrlPromise;
+    this.baseUrlPromise = null;
+
+    return this.baseUrlCache;
+  }
+
+  private async fetchJson<T>(path: string, searchParams?: URLSearchParams): Promise<T> {
+    try {
+      const baseUrl = await this.getBaseUrl();
+      const url = new URL(`${baseUrl}${path}`);
+      
+      if (searchParams) {
+        url.search = searchParams.toString();
+      }
+
+      const response = await this.fetchApi.fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private buildSearchParams(params: Record<string, string | number | undefined>): URLSearchParams {
+    const searchParams = new URLSearchParams();
+    
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        searchParams.set(key, String(value));
+      }
+    });
+
+    return searchParams;
+  }
+
   async getApisCount(): Promise<number> {
-    const url = new URL(
-      `${await this.discoveryApi.getBaseUrl('api-platform')}/apis/count`
-    );
-    const response = await this.fetchApi.fetch(url);
-    return await response.json();
+    return this.fetchJson<number>('/apis/count');
   }
 
   async listApis(options: ApiDefinitionListOptions): Promise<ApiDefinitionListResult> {
     const { offset, limit, orderBy, search } = options;
-    const baseUrl = await this.discoveryApi.getBaseUrl('api-platform');
-    const query = new URLSearchParams();
-    if (typeof offset === 'number') query.set('offset', String(offset));
-    if (typeof limit === 'number') query.set('limit', String(limit));
-    if (orderBy) query.set('orderBy', `${orderBy.field}=${orderBy.direction}`);
-    if (search) query.set('search', search);
-    const url = new URL(`${baseUrl}/apis/definitions?${query}`);
-    const response = await this.fetchApi.fetch(url);
-    return await response.json();
+    
+    const params: Record<string, string | number | undefined> = {
+      offset,
+      limit,
+      search,
+    };
+
+    if (orderBy) {
+      params.orderBy = `${orderBy.field}=${orderBy.direction}`;
+    }
+
+    const searchParams = this.buildSearchParams(params);
+    return this.fetchJson<ApiDefinitionListResult>('/apis/definitions', searchParams);
   }
 
   async getApiVersions(apiName: string): Promise<ApiVersionDefinition[]> {
-    const url = new URL(
-      `${await this.discoveryApi.getBaseUrl('api-platform')}/apis/definitions/${apiName}`
-    );
-    const response = await this.fetchApi.fetch(url);
-    return (await response.json()).map((version: ApiVersionDefinition) => ({ ...version }));
+    if (!apiName?.trim()) {
+      throw new Error('API name is required');
+    }
+
+    const encodedApiName = encodeURIComponent(apiName);
+    const versions = await this.fetchJson<ApiVersionDefinition[]>(`/apis/definitions/${encodedApiName}`);
+    
+    return Array.isArray(versions) ? versions : [];
   }
 
-  async listServices(): Promise<{ items: ServiceDefinition[] }> {
-    const url = new URL(
-      `${await this.discoveryApi.getBaseUrl('api-platform')}/services`
-    );
-    const response = await this.fetchApi.fetch(url);
-    return await response.json();
+   async listServices(): Promise<{ items: ServiceDefinition[] }> {
+    return this.fetchJson<{ items: ServiceDefinition[] }>('/services');
   }
 
   async getServiceVersions(serviceName: string): Promise<ServiceDefinition> {
-    const url = new URL(
-      `${await this.discoveryApi.getBaseUrl('api-platform')}/services/${serviceName}`
-    );
-    const response = await this.fetchApi.fetch(url);
-    return await response.json();
+    if (!serviceName?.trim()) {
+      throw new Error('Service name is required');
+    }
+
+    const encodedServiceName = encodeURIComponent(serviceName);
+    return this.fetchJson<ServiceDefinition>(`/services/${encodedServiceName}`);
   }
 
   async listSystems(): Promise<{ items: Entity[] }> {
-    const url = new URL(
-      `${await this.discoveryApi.getBaseUrl('api-platform')}/systems`
-    );
-    const response = await this.fetchApi.fetch(url);
-    return await response.json();
+    return this.fetchJson<{ items: Entity[] }>('/systems');
   }
 
   async getSystem(systemName: string): Promise<SystemDefinition> {
-    const url = new URL(
-      `${await this.discoveryApi.getBaseUrl('api-platform')}/systems/${systemName}`
-    );
-    const response = await this.fetchApi.fetch(url);
-    return await response.json();
+    if (!systemName?.trim()) {
+      throw new Error('System name is required');
+    }
+
+    const encodedSystemName = encodeURIComponent(systemName);
+    return this.fetchJson<SystemDefinition>(`/systems/${encodedSystemName}`);
+  }
+
+  clearCache(): void {
+    this.baseUrlCache = null;
+    this.baseUrlPromise = null;
   }
 
 }

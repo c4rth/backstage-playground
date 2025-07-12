@@ -16,6 +16,7 @@ import {
     EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
 import { SystemPlatformRelationCard } from './SystemPlatformRelationCard';
+import { memo, useMemo } from 'react';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -46,60 +47,80 @@ const useStyles = makeStyles(
     }),
 );
 
-export const SystemPlatformDefinitionCard = (props: { apis: string[], services: string[] }) => {
-    const { entity } = useEntity();
-    const { apis, services } = props;
+interface SystemPlatformDefinitionCardProps {
+    apis: string[];
+    services: string[];
+}
 
+export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardProps>(({ apis, services }) => {
+    const { entity } = useEntity();
     const classes = useStyles();
 
-    const entityRef = getCompoundEntityRef(entity);
-    const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+    const entityData = useMemo(() => {
+        const entityRef = getCompoundEntityRef(entity);
+        const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
 
-    const docsButton = (
+        return {
+            entityRef,
+            hasDocs,
+        };
+    }, [entity]);
+
+    const docsButton = useMemo(() => (
         <IconButton
             aria-label="Documentation"
             title="TechDocs"
-            disabled={!hasDocs}
+            disabled={!entityData.hasDocs}
             component={Link}
-            to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+            to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}
         >
             <DocsIcon />
         </IconButton>
-    );
+    ), [entityData.hasDocs, entityData.entityRef]);
+
+    const aboutField = useMemo(() => (
+        <Box sx={{ mb: 4 }}>
+            <AboutField
+                label="System reference"
+                gridSizes={{ xs: 12 }}
+            >
+                <EntityRefLink entityRef={entity} />
+            </AboutField>
+        </Box>
+    ), [entity]);
 
     return (
-        <>
-            <TabbedLayout>
-                <TabbedLayout.Route path="/" title="Ownership">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={6}>
-                            <SystemPlatformRelationCard dependency='service' data={services} />
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                            <SystemPlatformRelationCard dependency='api' data={apis} />
-                        </Grid>
+        <TabbedLayout>
+            <TabbedLayout.Route path="/" title="Ownership">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={6}>
+                        <SystemPlatformRelationCard dependency="service" data={services} />
                     </Grid>
-                </TabbedLayout.Route>
-                <TabbedLayout.Route path="/info" title="Info">
-                    <Grid container spacing={3} alignItems="stretch">
-                        <Grid item md={6}>
-                            <InfoCard title='About' divider className={classes.gridItemCard} action={docsButton}>
-                                <Box sx={{ mb: 4 }}>
-                                    <AboutField
-                                        label="System reference"
-                                        gridSizes={{ xs: 12 }} >
-                                        <EntityRefLink entityRef={entity!} />
-                                    </AboutField>
-                                </Box>
-                                <AboutContent entity={entity} />
-                            </InfoCard>
-                        </Grid>
+                    <Grid item md={6} xs={12}>
+                        <SystemPlatformRelationCard dependency="api" data={apis} />
                     </Grid>
-                </TabbedLayout.Route>
-                <TabbedLayout.Route path="/relations" title="Relations">
-                    <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API', 'component']} direction={Direction.TOP_BOTTOM} />
-                </TabbedLayout.Route>
-            </TabbedLayout>
-        </>
+                </Grid>
+            </TabbedLayout.Route>
+
+            <TabbedLayout.Route path="/info" title="Info">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={6}>
+                        <InfoCard
+                            title="About"
+                            divider
+                            className={classes.gridItemCard}
+                            action={docsButton}
+                        >
+                            {aboutField}
+                            <AboutContent entity={entity} />
+                        </InfoCard>
+                    </Grid>
+                </Grid>
+            </TabbedLayout.Route>
+
+            <TabbedLayout.Route path="/relations" title="Relations">
+                <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API', 'component']} direction={Direction.TOP_BOTTOM} />
+            </TabbedLayout.Route>
+        </TabbedLayout>
     );
-}
+});
