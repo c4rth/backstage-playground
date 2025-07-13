@@ -19,7 +19,6 @@ export const apis: AnyApiFactory[] = [
     },
     factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
   }),
-  // ScmAuth.createDefaultApiFactory(),
   createApiFactory({
     api: scmAuthApiRef,
     deps: {
