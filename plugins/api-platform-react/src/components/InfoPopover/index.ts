@@ -1,1 +1,1 @@
-export { InfoPopover } from './InfoPopover';
+export { InfoPopOver } from './InfoPopOver';

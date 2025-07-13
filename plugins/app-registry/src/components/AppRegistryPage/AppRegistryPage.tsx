@@ -13,7 +13,7 @@ import { Box, IconButton, Typography } from '@material-ui/core';
 import { AppRegistryOperation } from '../../types';
 import MapIcon from '@material-ui/icons/Map';
 import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow } from '@material-ui/core';
-import { InfoPopover } from '@internal/plugin-api-platform-react';
+import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { memo, useMemo } from 'react';
 
 type TableRow = {
@@ -82,7 +82,7 @@ const columns: TableColumn<TableRow>[] = [
     field: 'id',
     render: ({ operation }) =>
       operation.pdpMapping ? (
-        <InfoPopover
+        <InfoPopOver
           title="PDP Mapping"
           variant="h6"
           content={<PdpMappingTable mapping={operation.pdpMapping} />}
@@ -90,7 +90,7 @@ const columns: TableColumn<TableRow>[] = [
           <IconButton size="small" aria-label="View PDP mapping">
             <MapIcon />
           </IconButton>
-        </InfoPopover>
+        </InfoPopOver>
       ) : null,
   },
 ];
@@ -100,7 +100,7 @@ const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => (
   operation,
 });
 
-export const AppRegistryPage = memo(() => {
+export const AppRegistryPage = () => {
   const { entity } = useEntity<ComponentEntity>();
 const entityData = useMemo(() => {
     const appCode = entity.spec.system;
@@ -154,4 +154,4 @@ const entityData = useMemo(() => {
       data={rows}
     />
   );
-});
+}

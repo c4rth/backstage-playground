@@ -1,8 +1,8 @@
-import { memo, ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Variant } from '@material-ui/core/styles/createTypography';
-import { InfoPopover } from '@internal/plugin-api-platform-react';
+import { InfoPopOver } from '@internal/plugin-api-platform-react';
 
 const useStyles = makeStyles(
     theme => ({
@@ -34,7 +34,9 @@ export interface InfoPopUpProps {
     content: ReactNode;
 }
 
-export const InfoPopUp = memo<InfoPopUpProps>(({ text, title, variant, content }) => {
+export const InfoPopUp = (props: InfoPopUpProps) => {
+
+    const { text, title, variant, content } = props;
     const classes = useStyles();
 
     const typographyProps = useMemo(() => ({
@@ -59,9 +61,9 @@ export const InfoPopUp = memo<InfoPopUpProps>(({ text, title, variant, content }
             <Typography {...typographyProps}>
                 {text}
             </Typography>
-            <InfoPopover {...popoverProps}>
+            <InfoPopOver {...popoverProps}>
                 <InfoOutlinedIcon {...iconProps} />
-            </InfoPopover>
+            </InfoPopOver>
         </Box>
     );
-});
+}

@@ -29,101 +29,169 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
   private readonly configApi: ConfigApi;
+  private baseUrlCache: string | null = null;
+  private baseUrlPromise: Promise<string> | null = null;
+  private backendBaseUrl: string;
 
   constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi; configApi: ConfigApi, }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
     this.configApi = options.configApi;
+    this.backendBaseUrl = this.configApi.getString('backend.baseUrl');
+  }
+
+  private async getMcaBaseUrl(): Promise<string> {
+    if (this.baseUrlCache) {
+      return this.baseUrlCache;
+    }
+    if (this.baseUrlPromise) {
+      return this.baseUrlPromise;
+    }
+    this.baseUrlPromise = this.discoveryApi.getBaseUrl('mca');
+    this.baseUrlCache = await this.baseUrlPromise;
+    this.baseUrlPromise = null;
+
+    return this.baseUrlCache;
+  }
+
+  private buildQueryParams(params: Record<string, string | number | undefined>): URLSearchParams {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        searchParams.set(key, String(value));
+      }
+    });
+
+    return searchParams;
+  }
+
+  private async fetchJson<T>(url: URL): Promise<T> {
+    try {
+      const response = await this.fetchApi.fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async fetchText(url: URL): Promise<string> {
+    try {
+      const response = await this.fetchApi.fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return await response.text();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getMcaComponentsCount(type: McaComponentType): Promise<number> {
-    const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/mca/count?type=${type}`);
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch MCA components count for type ${type}: ${response.status} ${response.statusText}`);
-    }
-    return await response.json();
+    const baseUrl = await this.getMcaBaseUrl();
+    const searchParams = this.buildQueryParams({ type });
+    const url = new URL(`${baseUrl}/mca/count`);
+    url.search = searchParams.toString();
+
+    return this.fetchJson<number>(url);
   }
 
   async listMcaComponents(options: McaComponentListOptions): Promise<McaComponentListResult> {
     const { offset, limit, orderBy, search, type } = options;
-    const baseUrl = await this.discoveryApi.getBaseUrl('mca');
-    const query = new URLSearchParams();
-    if (typeof offset === 'number') query.set('offset', String(offset));
-    if (typeof limit === 'number') query.set('limit', String(limit));
-    if (orderBy) query.set('orderBy', `${orderBy.field}=${orderBy.direction}`);
-    if (search) query.set('search', search);
-    query.set('type', type);
-    const url = new URL(`${baseUrl}/mca/components?${query}`);
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch MCA components: ${response.status} ${response.statusText}`);
+    const baseUrl = await this.getMcaBaseUrl();
+    const params: Record<string, string | number | undefined> = {
+      type,
+      offset,
+      limit,
+      search: search?.trim(),
+    };
+
+    if (orderBy) {
+      params.orderBy = `${orderBy.field}=${orderBy.direction}`;
     }
-    return await response.json();
+
+    const searchParams = this.buildQueryParams(params);
+    const url = new URL(`${baseUrl}/mca/components`);
+    url.search = searchParams.toString();
+
+    return this.fetchJson<McaComponentListResult>(url);
   }
 
   async getMcaComponent(component: string): Promise<McaComponent | undefined> {
-    const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/mca/components/${component}`);
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch component ${component}: ${response.status} ${response.statusText}`);
-    }
-    return await response.json();
+    const baseUrl = await this.getMcaBaseUrl();
+    const encodedComponent = encodeURIComponent(component.trim());
+    const url = new URL(`${baseUrl}/mca/components/${encodedComponent}`);
+    
+    return this.fetchJson<McaComponent>(url);
   }
 
   async getMcaComponentDefinition(component: string, refP: string): Promise<string | undefined> {
     const extension = component.startsWith('Operation') ? 'osml' : 'esml';
-    const url = new URL(
-      `${this.configApi.getString('backend.baseUrl')}/api/proxy/operations-sources/v1/operation-sources/${component}.${extension}/active?env=TST&myCurrentP=${refP}`,
-    );
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch component definition for ${component}: ${response.status} ${response.statusText}`);
-    }
-    return response.text();
+    const encodedComponent = encodeURIComponent(component.trim());
+    const encodedRefP = encodeURIComponent(refP.trim());
+    
+    const searchParams = this.buildQueryParams({
+      env: 'TST',
+      myCurrentP: encodedRefP,
+    });
+    
+    const url = new URL(`${this.backendBaseUrl}/api/proxy/operations-sources/v1/operation-sources/${encodedComponent}.${extension}/active`);
+    url.search = searchParams.toString();
+    
+    return this.fetchText(url);
   }
 
   async getMcaVersions(): Promise<McaVersions> {
-    const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/mca/versions`);
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch MCA versions: ${response.status} ${response.statusText}`);
-    }
-    return await response.json();
+    const baseUrl = await this.getMcaBaseUrl();
+    const url = new URL(`${baseUrl}/mca/versions`);
+    
+    return this.fetchJson<McaVersions>(url);
   }
 
   async getMcaBaseTypesCount(): Promise<number> {
-    const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/basetypes/count`);
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch MCA base types count: ${response.status} ${response.statusText}`);
-    }
-    return await response.json();
+    const baseUrl = await this.getMcaBaseUrl();
+    const url = new URL(`${baseUrl}/basetypes/count`);
+    
+    return this.fetchJson<number>(url);
   }
 
   async listMcaBaseTypes(options: McaBaseTypeListOptions): Promise<McaBaseTypeListResult> {
     const { offset, limit, orderBy, search } = options;
-    const baseUrl = await this.discoveryApi.getBaseUrl('mca');
-    const query = new URLSearchParams();
-    if (typeof offset === 'number') query.set('offset', String(offset));
-    if (typeof limit === 'number') query.set('limit', String(limit));
-    if (orderBy) query.set('orderBy', `${orderBy.field}=${orderBy.direction}`);
-    if (search) query.set('search', search);
-    const url = new URL(`${baseUrl}/basetypes/components?${query}`);
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch base types: ${response.status} ${response.statusText}`);
+    
+    const baseUrl = await this.getMcaBaseUrl();
+    const params: Record<string, string | number | undefined> = {
+      offset,
+      limit,
+      search: search?.trim(),
+    };
+
+    if (orderBy) {
+      params.orderBy = `${orderBy.field}=${orderBy.direction}`;
     }
-    return await response.json();
+
+    const searchParams = this.buildQueryParams(params);
+    const url = new URL(`${baseUrl}/basetypes/components`);
+    url.search = searchParams.toString();
+    
+    return this.fetchJson<McaBaseTypeListResult>(url);
   }
 
-  async getMcaBaseType(baseType: string): Promise<McaBaseType | undefined> {
-    const url = new URL(`${await this.discoveryApi.getBaseUrl('mca')}/baseTypes/components/${baseType}`);
-    const response = await this.fetchApi.fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch base type ${baseType}: ${response.status} ${response.statusText}`);
-    }
-    return await response.json();
+  async getMcaBaseType(baseType: string): Promise<McaBaseType | undefined> {    
+    const baseUrl = await this.getMcaBaseUrl();
+    const encodedBaseType = encodeURIComponent(baseType.trim());
+    const url = new URL(`${baseUrl}/baseTypes/components/${encodedBaseType}`);
+    
+    return this.fetchJson<McaBaseType>(url);
+  }
+  
+  clearCache(): void {
+    this.baseUrlCache = null;
+    this.baseUrlPromise = null;
   }
 
 }

@@ -1,43 +1,70 @@
 import {
-    Progress,
-    ResponseErrorPanel,
+  Progress,
+  ResponseErrorPanel,
 } from '@backstage/core-components';
 import { McaComponent } from '@internal/plugin-mca-common';
 import { useGetMcaComponentDefinition } from '../../hooks';
 import { XMLParser } from 'fast-xml-parser';
 import { McaOperationDefinitionPage } from './McaOperationDefinitionPage';
 import { McaElementDefinitionPage } from './McaElementDefinitionPage';
+import { useMemo, memo } from 'react';
+
+const xmlParserConfig = {
+  ignoreAttributes: false,
+  attributeNamePrefix: '',
+  allowBooleanAttributes: true,
+  trimValues: true,
+};
+
+const xmlParser = new XMLParser(xmlParserConfig);
 
 function parseXML(data: string) {
-    const parser = new XMLParser({
-        ignoreAttributes: false,
-        attributeNamePrefix: '',
-        allowBooleanAttributes: true,
-        trimValues: true,
-    });
+  return xmlParser.parse(data);
+}
 
-    return parser.parse(data);
+function getComponentType(componentName: string): 'operation' | 'element' | 'unknown' {
+  if (!componentName?.trim()) {
+    return 'unknown';
+  }
+  if (componentName.startsWith('Operation')) {
+    return 'operation';
+  }
+  if (componentName.startsWith('Element')) {
+    return 'element';
+  }
+  return 'unknown';
 }
 
 export interface McaComponentDefinitionCardProps {
-    mca: McaComponent;
-    version: string;
+  mca: McaComponent;
+  version: string;
 }
 
-export const McaComponentDefinitionCard = ({ mca, version }: McaComponentDefinitionCardProps) => {
+export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(({ mca, version }) => {
   const { data, loading, error } = useGetMcaComponentDefinition(mca.component, version);
+
+  const componentType = useMemo(() =>
+    getComponentType(mca.component),
+    [mca.component]
+  );
+  const mcaComponent = useMemo(() => {
+    if (!data) return null;
+    return parseXML(data);
+  }, [data]);
+  const componentProps = useMemo(() => ({
+    mcaComponent,
+  }), [mcaComponent]);
 
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading) return <Progress />;
   if (!data) return <ResponseErrorPanel error={new Error(`No MCA component definition for '${mca.component}' received`)} />;
 
-  const mcaComponent = parseXML(data);
-
-  if (mca.component.startsWith('Operation')) {
-    return <McaOperationDefinitionPage mcaComponent={mcaComponent} />;
+  switch (componentType) {
+    case 'operation':
+      return <McaOperationDefinitionPage {...componentProps} />;
+    case 'element':
+      return <McaElementDefinitionPage {...componentProps} />;
+    default:
+      return <ResponseErrorPanel error={new Error(`Unknown MCA component type: ${mca.component}`)} />;
   }
-  if (mca.component.startsWith('Element')) {
-    return <McaElementDefinitionPage mcaComponent={mcaComponent} />;
-  }
-  return <ResponseErrorPanel error={new Error(`Unknown MCA component type: ${mca.component}`)} />;
-}
+});

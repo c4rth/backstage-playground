@@ -1,34 +1,43 @@
 import {
-    PageWithHeader,
-    Progress,
-    ResponseErrorPanel,
+  PageWithHeader,
+  Progress,
+  ResponseErrorPanel,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { IFramePage } from '@internal/plugin-iframe';
 import { useParams } from 'react-router-dom';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
 
 async function getBaseType(
-    mcaApi: McaComponentsBackendApi,
-    name: string,
+  mcaApi: McaComponentsBackendApi,
+  name: string,
 ): Promise<McaBaseType> {
-    const mca = await mcaApi.getMcaBaseType(name);
-    if (!mca) {
-        throw new Error(`MCA basetype ${name} not found`);
-    }
-    return mca;
+  const mca = await mcaApi.getMcaBaseType(name);
+  if (!mca) {
+    throw new Error(`MCA basetype ${name} not found`);
+  }
+  return mca;
 }
 
 export const McaBaseTypeDefinitionPage = () => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
-  const { name } = useParams();
   const configApi = useApi(configApiRef);
+  const { name } = useParams();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [baseType, setBaseType] = useState<McaBaseType>();
+
+  const baseTypesUrl = useMemo(() => {
+    try {
+      return configApi.getString('mcaComponents.baseTypes.baseUrl');
+    } catch (configError) {
+      return '';
+    }
+  }, [configApi]);
 
   useEffect(() => {
     getBaseType(mcaApi, name!)
@@ -42,29 +51,57 @@ export const McaBaseTypeDefinitionPage = () => {
       });
   }, [name, mcaApi]);
 
-  const baseTypesUrl = configApi.getString('mcaComponents.baseTypes.baseUrl');
+  const urls = useMemo(() => {
+    if (!baseType || !baseTypesUrl) {
+      return {
+        constructedUrl: '',
+        fallbackUrl: `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`,
+      };
+    }
+
+    // TODO 
+    // const packageUrl = baseType.packageName?.replace(/\./g, '/') || '';
+    // const constructedUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
+    const constructedUrl = `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`; 
+
+    return {
+      constructedUrl,
+      fallbackUrl: `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`,
+    };
+  }, [baseType, baseTypesUrl]);
+
+  const pageProps = useMemo(() => ({
+    title: `MCA BaseType - ${name || 'Unknown'}`,
+    subtitle: urls.constructedUrl || 'Loading...',
+  }), [name, urls.constructedUrl]);
+
+  const iframeProps = useMemo(() => ({
+    title: "BaseType",
+    iframe: {
+      src: urls.constructedUrl || urls.fallbackUrl,
+      height: '100%' as const,
+      width: '100%' as const,
+    },
+  }), [urls.constructedUrl, urls.fallbackUrl]);
 
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading) return <Progress />;
-
-  const urlPackage = baseType?.packageName?.replace(/\./g, '/');
-  const urlName = `${baseTypesUrl}/${urlPackage}/${baseType?.baseType}.html`;
-  const url = `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`;
+  if (!baseTypesUrl) {
+    return (
+      <ResponseErrorPanel
+        error={new Error('Base types URL not configured. Please check mcaComponents.baseTypes.baseUrl in app-config.yaml')}
+      />
+    );
+  }
 
   return (
     <PageWithHeader
+      key={name} // Force re-render when name changes
       themeId="apis"
-      title={`MCA BaseType - ${name}`}
-      subtitle={urlName}
+      title={pageProps.title}
+      subtitle={pageProps.subtitle}
     >
-      <IFramePage
-        title="BaseType"
-        iframe={{
-          src: url,
-          height: '100%',
-          width: '100%',
-        }}
-      />
+      <IFramePage {...iframeProps} />
     </PageWithHeader>
   );
 }

@@ -1,9 +1,10 @@
 import { Table, TableColumn, Link, StatusOK, StatusAborted } from "@backstage/core-components";
 import { Box } from "@material-ui/core";
+import { memo, useMemo } from "react";
 
 export interface McaOperationFieldsCardProps {
   operation: any;
-  operationType: "atomic" | "list";
+  operationType: "atomic" | "list" | undefined;
   fieldType: "input" | "output";
 }
 
@@ -16,33 +17,50 @@ type TableRow = {
   mandatory: boolean;
 };
 
-const getClassName = (row: TableRow) => {
-  const { className, elementType } = row;
-  if (className?.startsWith("dexia.gemk.operationlayer.client.")) {
-    const classShort = className.split(".").pop();
-    const element = elementType?.split(".").pop();
-    return (
-      <div>
-        {classShort} of {element && (
-          <Link to={`/mca/components/${element}`}><b>{element}</b></Link>
-        )}
-      </div>
-    );
-  }
-  if (className?.startsWith("dexia.opmk.operation")) {
-    const element = className.split(".").pop();
-    return (
-      <Link to={`/mca/components/${element}`}><b>{element}</b></Link>
-    );
-  }
-  if (className?.startsWith("dexia.opmk.basetypes")) {
-    const element = className.split(".").pop();
-    return (
-      <Link to={`/mca/basetypes/${element}`}><b>{element}</b></Link>
-    );
-  }
-  return <div>{className}</div>;
-};
+const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
+  const content = useMemo(() => {
+    const { className, elementType } = row;
+    
+    if (!className) return <div>{className}</div>;
+    
+    if (className.startsWith("dexia.gemk.operationlayer.client.")) {
+      const classShort = className.split(".").pop();
+      const element = elementType?.split(".").pop();
+      
+      return (
+        <div>
+          {classShort} of {element && (
+            <Link to={`/mca/components/${element}`}>
+              <b>{element}</b>
+            </Link>
+          )}
+        </div>
+      );
+    }
+    
+    if (className.startsWith("dexia.opmk.operation")) {
+      const element = className.split(".").pop();
+      return (
+        <Link to={`/mca/components/${element}`}>
+          <b>{element}</b>
+        </Link>
+      );
+    }
+    
+    if (className.startsWith("dexia.opmk.basetypes")) {
+      const element = className.split(".").pop();
+      return (
+        <Link to={`/mca/basetypes/${element}`}>
+          <b>{element}</b>
+        </Link>
+      );
+    }
+    
+    return <div>{className}</div>;
+  }, [row]);
+  
+  return content;
+});
 
 const inputColumns: TableColumn<TableRow>[] = [
   {
@@ -59,7 +77,7 @@ const inputColumns: TableColumn<TableRow>[] = [
     searchable: true,
     customFilterAndSearch: (query, row) =>
       `${row.className} ${row.elementType}`.toLowerCase().includes(query.toLowerCase()),
-    render: getClassName,
+    render: (rowData) => <ClassNameRenderer row={rowData} />,
   },
   {
     title: "Description",
@@ -90,7 +108,7 @@ const outputColumns: TableColumn<TableRow>[] = [
     searchable: true,
     customFilterAndSearch: (query, row) =>
       `${row.className} ${row.elementType}`.toLowerCase().includes(query.toLowerCase()),
-    render: getClassName,
+    render: (rowData) => <ClassNameRenderer row={rowData} />,
   },
   {
     title: "Description",
@@ -101,34 +119,7 @@ const outputColumns: TableColumn<TableRow>[] = [
   },
 ];
 
-export const McaOperationFieldsCard = ({ operation, fieldType }: McaOperationFieldsCardProps) => {
-  const inputFieldRows = toInputTableRows(operation.inputFields.FieldInput);
-  const outputFieldRows = toOutputTableRows(operation.outputFields.field);
 
-  const columns = fieldType === "input" ? inputColumns : outputColumns;
-  const data = fieldType === "input" ? inputFieldRows : outputFieldRows;
-  const title = (
-    <Box display="flex" alignItems="center">
-      <Box mr={1} />
-      {fieldType === "input" ? "Input Fields" : "Output Fields"}
-    </Box>
-  );
-
-  return (
-    <Table<TableRow>
-      columns={columns}
-      options={{
-        search: true,
-        padding: "dense",
-        paging: false,
-        draggable: false,
-        thirdSortClick: false,
-      }}
-      title={title}
-      data={data}
-    />
-  );
-};
 
 function toInputTableRows(fields: any): TableRow[] {
   if (!fields) return [];
@@ -177,3 +168,45 @@ function toOutputTableRows(fields: any): TableRow[] {
     },
   ];
 }
+
+export const McaOperationFieldsCard = memo<McaOperationFieldsCardProps>(({ 
+  operation, 
+  fieldType 
+}) => {
+  const fieldRows = useMemo(() => {
+    if (fieldType === "input") {
+      return toInputTableRows(operation?.inputFields?.FieldInput);
+    }
+    return toOutputTableRows(operation?.outputFields?.field);
+  }, [operation, fieldType]);
+
+  const columns = useMemo(() => 
+    fieldType === "input" ? inputColumns : outputColumns, 
+    [fieldType]
+  );
+
+  const tableOptions = useMemo(() => ({
+    search: true,
+    padding: "dense" as const,
+    paging: false,
+    draggable: false,
+    thirdSortClick: false,
+    showEmptyDataSourceMessage: true,
+  }), []);
+
+  const tableTitle = useMemo(() => (
+    <Box display="flex" alignItems="center">
+      <Box mr={1} />
+      {fieldType === "input" ? "Input Fields" : "Output Fields"} ({fieldRows.length})
+    </Box>
+  ), [fieldType, fieldRows.length]);
+
+  return (
+    <Table<TableRow>
+      columns={columns}
+      options={tableOptions}
+      title={tableTitle}
+      data={fieldRows}
+    />
+  );
+});

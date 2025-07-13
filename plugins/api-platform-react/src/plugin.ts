@@ -12,12 +12,12 @@ export const apiPlatformReactPlugin = createPlugin({
   },
 });
 
-export const InfoPopover = apiPlatformReactPlugin.provide(
+export const InfoPopOver = apiPlatformReactPlugin.provide(
   createComponentExtension({
-    name: 'InfoPopover',
+    name: 'InfoPopOver',
     component: {
       lazy: () =>
-        import('./components/InfoPopover').then(m => m.InfoPopover),
+        import('./components/InfoPopOver').then(m => m.InfoPopOver),
     },
   }),
 );
@@ -31,4 +31,3 @@ export const InfoPopUp = apiPlatformReactPlugin.provide(
     },
   }),
 );
-

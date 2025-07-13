@@ -9,9 +9,9 @@ import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react'
 import { useGetSystem } from '../../hooks';
 import { Box } from '@material-ui/core';
 import { SystemPlatformDefinitionCard } from './SystemPlatformDefinitionCard';
-import { useMemo, memo } from 'react';
+import { useMemo } from 'react';
 
-export const SystemPlatformDefinitionPage = memo(() => {
+export const SystemPlatformDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
   const { systemDefinition, loading, error } = useGetSystem(name);
   const configApi = useApi(configApiRef);
@@ -59,4 +59,4 @@ export const SystemPlatformDefinitionPage = memo(() => {
       </Content>
     </PageWithHeader>
   );
-});
+};

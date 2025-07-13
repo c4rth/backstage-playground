@@ -1,4 +1,4 @@
-import { memo, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import HoverPopover from 'material-ui-popup-state/HoverPopover';
 import {
   bindHover,
@@ -31,13 +31,9 @@ const useStyles = makeStyles(() => {
   };
 });
 
-export const InfoPopover = memo<InfoPopoverProps>(({
-  children,
-  delayTime = 500,
-  title,
-  variant = 'h6',
-  content,
-}) => {
+export const InfoPopOver = (props: InfoPopoverProps) => {
+
+  const { children, delayTime = 500, title, variant = 'h6', content } = props;
   const classes = useStyles();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -96,4 +92,4 @@ export const InfoPopover = memo<InfoPopoverProps>(({
       )}
     </>
   );
-});
+}

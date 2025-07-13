@@ -4,10 +4,11 @@ import {
   Progress,
   ResponseErrorPanel,
   Select,
+  SelectedItems,
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-common';
@@ -20,33 +21,29 @@ type McaComponentVersion = {
   value: string;
 };
 
-function mapMcaVersions(mca: McaComponent | undefined): McaComponentVersion[] {
+const mapMcaVersions = (mca: McaComponent | undefined): McaComponentVersion[] => {
   if (!mca) {
     return [];
   }
-  const versions: McaComponentVersion[] = [];
-  if (mca.p4Version) {
-    versions.push({ label: mca.p4Version, value: mca.p4Version });
-  }
-  if (mca.p3Version) {
-    versions.push({ label: mca.p3Version, value: mca.p3Version });
-  }
-  if (mca.p2Version) {
-    versions.push({ label: mca.p2Version, value: mca.p2Version });
-  }
-  if (mca.p1Version) {
-    versions.push({ label: mca.p1Version, value: mca.p1Version });
-  }
-  if (mca.prdVersion) {
-    versions.push({ label: `${mca.prdVersion} (PRD)`, value: mca.prdVersion });
-  }
-  return versions;
+
+  // Create version entries in priority order
+  const versionEntries = [
+    { version: mca.p4Version, suffix: '' },
+    { version: mca.p3Version, suffix: '' },
+    { version: mca.p2Version, suffix: '' },
+    { version: mca.p1Version, suffix: '' },
+    { version: mca.prdVersion, suffix: ' (PRD)' },
+  ];
+
+  return versionEntries
+    .filter(({ version }) => version) // Filter out falsy versions
+    .map(({ version, suffix }) => ({
+      label: `${version}${suffix}`,
+      value: version!,
+    }));
 }
 
-async function getMca(
-  mcaApi: McaComponentsBackendApi,
-  name: string,
-): Promise<McaComponent> {
+async function getMca(mcaApi: McaComponentsBackendApi, name: string,): Promise<McaComponent> {
   const mca = await mcaApi.getMcaComponent(name);
   if (!mca) {
     throw new Error(`MCA component ${name} not found`);
@@ -56,15 +53,40 @@ async function getMca(
 
 export const McaComponentDefinitionPage = () => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
+  const configApi = useApi(configApiRef);
   const { name } = useParams();
   const [searchParams] = useSearchParams();
-  const queryVersion = searchParams.get('version');
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [mca, setMca] = useState<McaComponent>();
-  const [versions, setVersions] = useState<SelectItem[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<string>();
   const isInitialLoad = useRef(true);
+
+
+  const [versions, setVersions] = useState<SelectItem[]>([]);
+
+  const queryVersion = useMemo(() =>
+    searchParams.get('version'),
+    [searchParams]
+  );
+  const organizationName = useMemo(() =>
+    configApi.getOptionalString('organization.name') ?? 'Backstage',
+    [configApi]
+  );
+  const subtitle = useMemo(() =>
+    `${organizationName} MCA Component Explorer`,
+    [organizationName]
+  );
+
+  const selectProps = useMemo(() => ({
+    onChange: (selected: SelectedItems) => {
+      setSelectedVersion(selected.toString())
+    },
+    label: "Versions",
+    items: versions,
+    selected: selectedVersion,
+  }), [versions, selectedVersion]);
 
   useEffect(() => {
     setSelectedVersion(undefined);
@@ -97,9 +119,6 @@ export const McaComponentDefinitionPage = () => {
     }
   }, [mca, queryVersion, selectedVersion]);
 
-  const configApi = useApi(configApiRef);
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} MCA Component Explorer`;
-
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading) return <Progress />;
 
@@ -108,18 +127,13 @@ export const McaComponentDefinitionPage = () => {
       key={name}
       themeId="apis"
       title={`MCA Component - ${name}`}
-      subtitle={generatedSubtitle}
+      subtitle={subtitle}
     >
       <Content>
         <Box mb={1}>
           <Grid container>
             <Grid item md={6}>
-              <Select
-                onChange={selected => setSelectedVersion(selected.toString())}
-                label="Versions"
-                items={versions}
-                selected={selectedVersion}
-              />
+              <Select {...selectProps} />
             </Grid>
           </Grid>
         </Box>

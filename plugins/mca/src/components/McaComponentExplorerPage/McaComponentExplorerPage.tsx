@@ -8,60 +8,77 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { McaComponentTable } from '../McaComponentTable';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 
-const infoPopUpContent = (
-    <>
-      <Typography variant="body1">
-        Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform.
-      </Typography>
-      <Typography variant="body2">
-        <i>The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks.</i>
-      </Typography>
-    </>
-  );
+const STORAGE_KEY = 'mcaComponentExplorerPageType';
+const DEFAULT_TYPE = 'operation';
+
+const InfoPopUpContent = memo(() => (
+  <>
+    <Typography variant="body1">
+      Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform.
+    </Typography>
+    <Typography variant="body2">
+      <i>The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks.</i>
+    </Typography>
+  </>
+));
+
+const componentTypes: SelectItem[] = [
+  { label: 'Operations', value: 'operation' },
+  { label: 'Elements', value: 'element' },
+  { label: 'All components', value: 'all' },
+];
+
+function getInitialType(): McaComponentType {
+  const storedType = sessionStorage.getItem(STORAGE_KEY);
+  return (storedType as McaComponentType) || DEFAULT_TYPE;
+}
+
+function normalizeComponentType(type: string): McaComponentType {
+  const validTypes = ['operation', 'element', 'all'] as const;
+  return validTypes.includes(type as McaComponentType) 
+    ? (type as McaComponentType) 
+    : DEFAULT_TYPE;
+}
 
 export const McaComponentExplorerPage = () => {
   const configApi = useApi(configApiRef);
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} MCA Components Explorer`;
-
-  const types: SelectItem[] = useMemo(
-    () => [
-      { label: 'Operations', value: 'operation' },
-      { label: 'Elements', value: 'element' },
-      { label: 'All components', value: 'all' },
-    ],
-    [],
-  );
-  const [selectedStringType, setSelectedStringType] = useState<string>(
-    sessionStorage.getItem('mcaComponentExplorerPageType') || 'operation',
-  );
-  const [selectedType, setSelectedType] = useState<McaComponentType>(
-    (sessionStorage.getItem('mcaComponentExplorerPageType') || 'operation') as McaComponentType,
+  
+  const organizationName = useMemo(() => 
+    configApi.getOptionalString('organization.name') ?? 'Backstage',
+    [configApi]
   );
 
-  useEffect(() => {
-    const selected = types.find(item => item.value === selectedStringType);
-    if (selected) setSelectedType(selected.value as McaComponentType);
-  }, [selectedStringType, types]);
+  const subtitle = useMemo(() => 
+    `${organizationName} MCA Components Explorer`,
+    [organizationName]
+  );
 
-  const handleSelectChange = (selected: string) => {
-    sessionStorage.setItem('mcaComponentExplorerPageType', selected);
-    setSelectedStringType(selected);
-  };
+  const [selectedType, setSelectedType] = useState<McaComponentType>(() => 
+    getInitialType()
+  );
+
+  const handleSelectChange = useCallback((selected: string) => {
+    const normalizedType = normalizeComponentType(selected);
+    sessionStorage.setItem(STORAGE_KEY, normalizedType);
+    setSelectedType(normalizedType);
+  }, []);
+
+  const subtitleComponent = useMemo(() => (
+    <InfoPopUp
+      text={subtitle}
+      variant="subtitle2"
+      content={<InfoPopUpContent />}
+    />
+  ), [subtitle]);
 
   return (
     <PageWithHeader
       themeId="apis"
       title="MCA Components"
-      subtitle={
-        <InfoPopUp
-          text={generatedSubtitle}
-          variant="subtitle2"
-          content={infoPopUpContent }
-        />
-      }
+      subtitle={subtitleComponent}
       pageTitleOverride="MCA Components"
     >
       <Content>
@@ -71,8 +88,8 @@ export const McaComponentExplorerPage = () => {
               <Select
                 onChange={selected => handleSelectChange(selected.toString())}
                 label="Type"
-                items={types}
-                selected={selectedStringType}
+                items={componentTypes}
+                selected={selectedType}
               />
             </Grid>
           </Grid>
@@ -81,4 +98,4 @@ export const McaComponentExplorerPage = () => {
       </Content>
     </PageWithHeader>
   );
-};
+}

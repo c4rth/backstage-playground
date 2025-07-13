@@ -1,6 +1,8 @@
 import { ResponseErrorPanel, TabbedLayout } from "@backstage/core-components";
 import { McaOperationAboutCard } from "../McaComponentAboutCard";
 import { McaOperationFieldsCard } from "../McaComponentFieldsCard";
+import { memo, useMemo } from "react";
+import { McaOperationMethodsCard } from "../McaComponentMethodsCard";
 
 export interface McaOperationDefinitionPageProps {
     mcaComponent: any;
@@ -47,27 +49,66 @@ function getOperationNodes(mcaComponent: any): NodesType {
     };
 }
 
-export const McaOperationDefinitionPage = ({ mcaComponent }: McaOperationDefinitionPageProps) => {
-  const { operationAnalyze, operation, operationType } = getOperationNodes(mcaComponent);
+export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(({ mcaComponent }) => {
+    const operationNodes = useMemo(() =>
+        getOperationNodes(mcaComponent),
+        [mcaComponent]
+    );
 
-  if (!operation) {
-    return <ResponseErrorPanel error={new Error('Invalid operation definition: required node not found')} />;
-  }
-  if (!operationType) {
-    return <ResponseErrorPanel error={new Error(`Unknown operation type: ${operationAnalyze.type}`)} />;
-  }
+    const { operationAnalyze, operation, operationType } = operationNodes;
 
-  return (
-    <TabbedLayout>
-      <TabbedLayout.Route path="/" title="Overview">
-        <McaOperationAboutCard operationAnalyze={operationAnalyze} operation={operation} />
-      </TabbedLayout.Route>
-      <TabbedLayout.Route path="/inputfields" title="Input Fields">
-        <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="input" />
-      </TabbedLayout.Route>
-      <TabbedLayout.Route path="/outputfields" title="Output Fields">
-        <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="output" />
-      </TabbedLayout.Route>
-    </TabbedLayout>
-  );
-}
+    const errorState = useMemo(() => {
+        if (!operationAnalyze) {
+            return new Error('Invalid operation definition: operation analysis not found');
+        }
+        if (!operation) {
+            return new Error('Invalid operation definition: required node not found');
+        }
+        if (!operationType) {
+            return new Error(`Unknown operation type: ${operationAnalyze?.type || 'undefined'}`);
+        }
+        return null;
+    }, [operationAnalyze, operation, operationType]);
+
+    const overviewProps = useMemo(() => ({
+        operationAnalyze,
+        operation,
+    }), [operationAnalyze, operation]);
+
+    const inputFieldsProps = useMemo(() => ({
+        operation,
+        operationType,
+        fieldType: 'input' as const,
+    }), [operation, operationType]);
+
+    const outputFieldsProps = useMemo(() => ({
+        operation,
+        operationType,
+        fieldType: 'output' as const,
+    }), [operation, operationType]);
+
+    const methodsCardProps = useMemo(() => ({
+        operation,
+    }), [operation]);
+
+    if (errorState) {
+        return <ResponseErrorPanel error={errorState} />;
+    }
+
+    return (
+        <TabbedLayout>
+            <TabbedLayout.Route path="/" title="Overview">
+                <McaOperationAboutCard {...overviewProps} />
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/inputfields" title="Input Fields">
+                <McaOperationFieldsCard {...inputFieldsProps} />
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/outputfields" title="Output Fields">
+                <McaOperationFieldsCard {...outputFieldsProps} />
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/methods" title="Methods">
+                <McaOperationMethodsCard {...methodsCardProps} />
+            </TabbedLayout.Route>
+        </TabbedLayout>
+    );
+});
