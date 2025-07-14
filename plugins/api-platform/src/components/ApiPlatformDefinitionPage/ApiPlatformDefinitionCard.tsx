@@ -96,8 +96,8 @@ export const ApiPlatformDefinitionCard = () => {
 
     const apiSpec = useMemo(() => ({
         definition: entity.spec.definition.toString(),
-        language: entity.spec.type,
-    }), [entity.spec.definition, entity.spec.type]);
+        language: 'yaml',
+    }), [entity.spec.definition]);
 
     const isLinterAvailable = useMemo(() =>
         isApiDocsSpectralLinterAvailable(entity),

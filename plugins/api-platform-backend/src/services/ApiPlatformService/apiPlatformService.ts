@@ -1,5 +1,5 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
-import { ApiDefinitionsListRequest, ApiPlatformService } from './types';
+import { ApiDefinitionsListRequest, ApiDefinitionsOptions, ApiPlatformService } from './types';
 import {
   ANNOTATION_API_NAME,
   ANNOTATION_API_PROJECT,
@@ -14,7 +14,7 @@ import {
   CATALOG_METADATA_NAME,
   CATALOG_SPEC_SYSTEM
 } from '@internal/plugin-api-platform-common';
-import { CatalogApi, GetEntitiesResponse } from '@backstage/catalog-client';
+import { CatalogApi, EntityOrderQuery, GetEntitiesResponse } from '@backstage/catalog-client';
 import * as semver from 'semver';
 import { Entity } from '@backstage/catalog-model';
 
@@ -64,6 +64,28 @@ function getLatestByApiName(input: GetEntitiesResponse): Entity[] {
     }
   }
   return Array.from(latest.values(), ({ entity }) => entity);
+}
+
+function getOrder(order: ApiDefinitionsOptions | undefined): EntityOrderQuery | undefined {
+  if (!order) return undefined;
+  let field = "";
+  switch (order?.field) {
+    case 'api.name':
+      field = CATALOG_METADATA_API_NAME;
+      break;
+    case 'api.description':
+      field = CATALOG_METADATA_DESCRIPTION;
+      break;
+    case 'api.system':
+      field = CATALOG_SPEC_SYSTEM;
+      break;
+    default:
+      field = CATALOG_METADATA_API_NAME;
+  }
+  return {
+    field: field,
+    order: order.direction,
+  };
 }
 
 export interface ApiPlatformServiceOptions {
@@ -123,6 +145,7 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
             CATALOG_METADATA_API_VERSION,
             CATALOG_SPEC_SYSTEM,
           ],
+          order: getOrder(request.orderBy),
         },
         { token });
 
