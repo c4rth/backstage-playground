@@ -1,7 +1,5 @@
-ARG imagename=node:20-bookworm-slim@sha256:f44fa8d6d0ef15fe252459ac5d3d178362231a7948d7d07e147bae891006e2e5
-
 # Stage 1 - Create yarn install skeleton layer
-FROM ${imagename} AS packages
+FROM node:22-bookworm-slim AS packages
 
 WORKDIR /app
 COPY backstage.json package.json yarn.lock ./
@@ -10,11 +8,13 @@ COPY .yarnrc.yml ./
 
 COPY packages packages
 COPY plugins plugins
+COPY node-headers node-headers
 
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
 
 # Stage 2 - Install dependencies and build packages
-FROM ${imagename} AS build
+FROM node:22-bookworm-slim AS build
+ARG ENVIRONMENT_CONFIG
 
 # Set Python interpreter for `node-gyp` to use
 ENV PYTHON=/usr/bin/python3
@@ -36,7 +36,7 @@ COPY --from=packages --chown=node:node /app/.yarnrc.yml  ./
 COPY --from=packages --chown=node:node /app/backstage.json  ./
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
-    yarn install --immutable
+    sh -c 'npm_config_tarball=/app/node-headers/node-v22.17.0-headers.tar.gz yarn install || (echo "yarn install failed"; find /tmp -type f -name build.log | while read f; do echo "-- $f --"; cat "$f"; done; exit 1)'
 
 COPY --chown=node:node . .
 
@@ -48,7 +48,7 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
     && tar xzf packages/backend/dist/bundle.tar.gz -C packages/backend/dist/bundle
 
 # Stage 3 - Build the actual backend image and install production dependencies
-FROM ${imagename} 
+FROM node:22-bookworm-slim
 
 # Set Python interpreter for `node-gyp` to use
 ENV PYTHON=/usr/bin/python3
@@ -87,15 +87,19 @@ COPY --from=build --chown=node:node /app/.yarn ./.yarn
 COPY --from=build --chown=node:node /app/.yarnrc.yml  ./
 COPY --from=build --chown=node:node /app/backstage.json  ./
 COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/packages/backend/dist/skeleton/ ./
+COPY --from=build --chown=node:node /app/node-headers/ ./node-headers
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
-    yarn workspaces focus --all --production
+    npm_config_tarball=/app/node-headers/node-v22.17.0-headers.tar.gz yarn workspaces focus --all --production
 
 # Copy the built packages from the build stage
 COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
 
 # Copy any other files that we need at runtime
 COPY --chown=node:node app-config.yaml app-config.*.yaml ./
+
+# Copy the instrumentation.js needed to expose the OpenTelemetry data
+# COPY --chown=node:node packages/backend/src/instrumentation.js ./
 
 # Heroku will assign the port dynamically; the default value here will be overridden by what Heroku passes in
 # For local development the default will be used
@@ -106,7 +110,5 @@ ENV NODE_ENV=production
 # Also disables node snapshot for Node 20 to work with the Scaffolder
 ENV NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot"
 
-# Default is 'heroku', for local testing pass in 'local'
-ENV ENVIRONMENT_CONFIG=${ENVIRONMENT_CONFIG}
-
+#CMD ["sh", "-c", "node --require ./instrumentation.js packages/backend --config app-config.yaml --config app-config.${ENVIRONMENT_CONFIG}.yaml"]
 CMD ["sh", "-c", "node packages/backend --config app-config.yaml --config app-config.${ENVIRONMENT_CONFIG}.yaml"]
