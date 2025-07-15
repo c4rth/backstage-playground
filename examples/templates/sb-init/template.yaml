@@ -8,7 +8,7 @@ metadata:
 spec:
   owner: user:guest
   type: service
-  
+
   # These parameters are used to generate the input form in the frontend, and are
   # used to gather input data for the execution of the template.
   parameters:
@@ -32,7 +32,7 @@ spec:
         defl:
           title: DEFL
           type: string
-          description: What is your application DEFL?
+          description: What is your application AppCode ?
           default: "defl"
           pattern: "^[a-z][a-z0-9]{3}$"
         type:
