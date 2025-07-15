@@ -29,6 +29,15 @@ spec:
         - defl
         - type
       properties:
+        repoUrl:
+          title: Repository URL
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                azure: []
         defl:
           title: DEFL
           type: string
@@ -165,14 +174,14 @@ spec:
 
     - action: debug:log
       id: message
-      name: Message
+      name: Message1
       input:
         message: ${{ parameters.put('realOwner', parameters.owner.split('/')[1].split('.')[0]) }}
 
 
     - action: debug:log
       id: message
-      name: Message
+      name: Message2
       input:
         message: ${{ parameters.realOwner }}
 
