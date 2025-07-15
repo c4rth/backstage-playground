@@ -15,6 +15,7 @@ spec:
     - definitions: {}
       title: "General Information"
       ui:order:
+        - repoUrl
         - defl
         - type
         - name
