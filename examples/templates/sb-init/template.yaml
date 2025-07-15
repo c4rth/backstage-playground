@@ -195,22 +195,15 @@ spec:
       input:
         listWorkspace: true
 
-#    - action: debug:wait
-#      id: wait-1min
-#      name: Waiting for 1 minutes
-#      input:
-#        minutes: 1
-
-
 #     This step publishes the contents of the working directory to GitHub.
-     - id: publish
-       name: Publish
-       if: ${{ parameters.createRepo }}
-       action: publish:github
-       input:
-         allowedHosts: ['github.com']
-         description: This is ${{ parameters.name }}
-         repoUrl: ${{ parameters.repoUrl }}
+    - id: publish
+      name: Publish
+      if: ${{ parameters.createRepo }}
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
         
 
   # Outputs are displayed to the user after a successful execution of the template.
