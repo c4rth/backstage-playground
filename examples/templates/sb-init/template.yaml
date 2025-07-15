@@ -178,7 +178,7 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: ./content
+        url: https://github.com/c4rth/backstage-playground/tree/feature/templates/examples/templates/sb-init/content
         values:
           owner: ${{ parameters.owner }}
           name: ${{ parameters.name }}
@@ -199,9 +199,9 @@ spec:
     - id: publish
       name: Publish
       if: ${{ parameters.createRepo }}
-      action: publish:github
+      action: publish:azure
       input:
-        allowedHosts: ['github.com']
+        allowedHosts: ['dev.azure.com']
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
         
