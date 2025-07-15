@@ -35,6 +35,8 @@ spec:
           type: string
           ui:field: RepoUrlPicker
           ui:options:
+            allowedHosts:
+              - dev.azure.com
             requestUserCredentials:
               secretsKey: USER_OAUTH_TOKEN
               additionalScopes:
