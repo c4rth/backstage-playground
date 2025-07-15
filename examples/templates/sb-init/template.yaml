@@ -189,11 +189,11 @@ spec:
           api_choice: ${{ parameters.api_choice }}
           flyway_choice: ${{ parameters.flyway_choice }}
     
-    - action: debug:log
-      id: write-workspace-directory
-      name: List the workspace directory
-      input:
-        listWorkspace: true
+#    - action: debug:log
+#      id: write-workspace-directory
+#      name: List the workspace directory
+#      input:
+#        listWorkspace: true
 
 #    - action: debug:wait
 #      id: wait-1min
