@@ -12,11 +12,46 @@ spec:
   # These parameters are used to generate the input form in the frontend, and are
   # used to gather input data for the execution of the template.
   parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Project name
+          type: string
+          description: Choose a unique project name.
+          ui:field: EntityNamePicker
+          ui:autofocus: true
+        owner:
+          title: Owner
+          type: string
+          description: Select an owner for the Backstage component.
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+    - title: Choose a location
+      description: >-
+        Organization is an Azure DevOps organization. Owner is an Azure DevOps project.
+        Repository is the name of the repository Backstage will create for you.
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - dev.azure.com  
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                azure: []
     - definitions: {}
       title: "General Information"
       ui:order:
-        - repoUrl
-        - defl
         - type
         - name
         - k8s_application_name
@@ -27,26 +62,8 @@ spec:
         - application_api_version
         - flyway_choice
       required:
-        - defl
         - type
       properties:
-        repoUrl:
-          title: Repository URL
-          type: string
-          ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - dev.azure.com
-            requestUserCredentials:
-              secretsKey: USER_OAUTH_TOKEN
-              additionalScopes:
-                azure: []
-        defl:
-          title: DEFL
-          type: string
-          description: What is your application AppCode ?
-          default: "defl"
-          pattern: "^[a-z][a-z0-9]{3}$"
         type:
           title: Type
           type: string
