@@ -28,6 +28,7 @@ export class McaBaseTypeScheduledTask {
     async runAsync() {
         const listBaseTypesBaseUrl = this.config.getString('mcaComponents.baseTypes.listBaseUrl');
         this.logger.debug(`Scheduled task: get basetypes from ${listBaseTypesBaseUrl}`);
+
         try {
             const response = await fetch(listBaseTypesBaseUrl);
             if (!response.ok) {
@@ -68,5 +69,6 @@ export class McaBaseTypeScheduledTask {
         } catch (error: any) {
             this.logger.error(`Error fetching BaseTypes HTML: ${error.message}`);
         }
+
     }
 }
