@@ -44,9 +44,6 @@ import { HomePage } from './components/home/HomePage';
 import { providers } from './identityProviders';
 // Plugins
 import * as plugins from './plugins';
-// Notifications
-import { SignalsDisplay } from '@backstage/plugin-signals';
-import { NotificationsPage } from '@backstage/plugin-notifications';
 // Auto-logout
 import { AutoLogout } from '@backstage/core-components';
 // Entity Validation
@@ -159,7 +156,6 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route path="/notifications" element={<NotificationsPage />} />
     <Route
       path="/entity-validation"
       element={
@@ -202,7 +198,6 @@ const routes = (
 export default app.createRoot(
   <>
     <AlertDisplay />
-    <SignalsDisplay />
     <OAuthRequestDialog />
     <AutoLogout />
     <AppRouter>

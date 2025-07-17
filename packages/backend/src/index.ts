@@ -104,8 +104,8 @@ backend.add(createBackendModule({
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // notifications plugin
-backend.add(import('@backstage/plugin-signals-backend'));
-backend.add(import('@backstage/plugin-notifications-backend'));
+// backend.add(import('@backstage/plugin-signals-backend'));
+// backend.add(import('@backstage/plugin-notifications-backend'));
 
 // Azure DevOps
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));

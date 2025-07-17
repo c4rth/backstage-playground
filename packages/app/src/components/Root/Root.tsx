@@ -33,8 +33,6 @@ import MuiMemoryIcon from '@material-ui/icons/Memory';
 import StreetviewIcon from '@material-ui/icons/Streetview';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import LabelIcon from '@material-ui/icons/Label';
-// Notifications
-import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 // Entity Validation
 import { useApp } from '@backstage/core-plugin-api';
 // Permission on menu
@@ -172,12 +170,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={BuildIcon} to="devtools" text="Admin" />
       </RequirePermission>
 
-      <RequirePermission permission={notGuestPermission} errorPage={<div />} >
-        <NotificationsSidebarItem
-          titleCounterEnabled
-          snackbarEnabled={false}
-        />
-      </RequirePermission>
       <SidebarGroup
         label="Settings"
         icon={<UserSettingsSignInAvatar />}
