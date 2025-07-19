@@ -110,9 +110,6 @@ permission:
   #     - qeta
 
 integrations:
-  github:
-    - host: github.com
-      # token: ${GITHUB_TOKEN}
   azure:
     - host: dev.azure.com
       credentials:
@@ -219,11 +216,6 @@ catalog:
           User,
         ]
   providers:
-    backstageOpenapi:
-        plugins:
-          - catalog
-          - search
-          - api
     microsoftGraphOrg:
       default:
         target: https://graph.microsoft.com/v1.0
