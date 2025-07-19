@@ -187,7 +187,6 @@ search:
       fragmentDelimiter: ' ... ' # Delimiter string used to concatenate fragments. Defaults to " ... ".
   collators:
     catalog:
-<<<<<<< HEAD
       filter: 
         kind: ['component', 'system', 'api', 'template']
       batchSize: 5
@@ -200,14 +199,6 @@ search:
           frequency: PT5M
           timeout: PT15M
           initialDelay: PT5S
-=======
-      filter:
-        kind: ['component', 'api', 'system', 'template']
-      schedule:
-        frequency: PT1M # PT1H
-        timeout: PT15M
-        initialDelay: PT5S   
->>>>>>> f6f1dac (api-platform search + k8s)
     mcaComponents:
       schedule:
           frequency: PT5M
