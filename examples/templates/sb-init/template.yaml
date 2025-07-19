@@ -3,7 +3,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: spring-boot-init-template
-  title: Spring Boot Init Template 2
+  title: Spring Boot Init Template 3
   description: Scaffold a new Spring Boot project
 spec:
   owner: user:guest
