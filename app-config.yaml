@@ -197,6 +197,7 @@ search:
       limit: 1000
 catalog:
   disableRelationsCompatibility: true
+  # processingInterval: false
   # processingInterval: { minutes: 15 }
   orphanStrategy: delete
   #  import:
