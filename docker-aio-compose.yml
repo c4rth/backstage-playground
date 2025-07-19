@@ -14,7 +14,7 @@ services:
   backstage:
     #hostname: localhost
     env_file: 
-      - path: ./.env
+      - path: "./.env"
         required: true
     image: carth-backstage:0.0.1
     ports:
