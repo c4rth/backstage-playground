@@ -50,6 +50,9 @@ $entries = @(
     @{ kind = "Component"; target = "service/service-product/2/UAT" }
 )
 
+$backstageUrl = "http://localhost:7007" # local
+#$backstageUrl = "http://localhost" # k8s
+
 foreach ($entry in $entries) {
     $body = @{
         kind = $entry.kind
@@ -57,7 +60,7 @@ foreach ($entry in $entries) {
     } | ConvertTo-Json -Depth 3
 
     try {
-        $response = Invoke-RestMethod -Uri "http://localhost:7007/api/api-platform/catalog" `
+        $response = Invoke-RestMethod -Uri "$($backstageUrl)/api/api-platform/catalog" `
                                       -Method Post `
                                       -Headers $headers `
                                       -Body $body `

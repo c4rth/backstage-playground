@@ -82,7 +82,7 @@ backend:
       port: 5432
       user: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
-    # client: better-sqlite3
+    # client: better-sqlite37
     # connection: ":memory:"
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
   reading:
@@ -174,15 +174,12 @@ search:
       fragmentDelimiter: ' ... ' # Delimiter string used to concatenate fragments. Defaults to " ... ".
   collators:
     catalog:
+      filter:
+        kind: ['component', 'api', 'system', 'template']
       schedule:
-        frequency: PT1H
+        frequency: PT1M # PT1H
         timeout: PT15M
-        initialDelay: PT5S        
-    apis:
-      schedule:
-          frequency: PT1H
-          timeout: PT15M
-          initialDelay: PT5S
+        initialDelay: PT5S   
     mcaComponents:
       schedule:
           frequency: PT1H

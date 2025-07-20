@@ -14,7 +14,7 @@ import { McaBaseTypesCollatorFactory } from './collators/McaBaseTypesCollatorFac
  */
 export const searchModuleMcaComponentsCollator = createBackendModule({
   pluginId: 'search',
-  moduleId: 'mca',
+  moduleId: 'mca-collator',
   register(reg) {
     reg.registerInit({
       deps: {

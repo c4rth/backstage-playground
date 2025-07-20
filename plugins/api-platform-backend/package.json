@@ -37,7 +37,6 @@
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-backend": "^2.1.0",
     "@backstage/plugin-catalog-node": "^1.17.1",
-    "@backstage/plugin-search-backend-module-catalog": "^0.3.5",
     "@internal/plugin-api-platform-common": "workspace:^",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
