@@ -5,6 +5,7 @@ import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
 
+console.log(JSON.stringify(process.env, null, 2));
 
 const backend = createBackend();
 
@@ -93,7 +94,7 @@ backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-dev
 backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
 
 // Kubernetes
-backend.add(import('@backstage/plugin-kubernetes-backend'));
+// backend.add(import('@backstage/plugin-kubernetes-backend'));
 
 // SonarQube
 backend.add(import('@backstage-community/plugin-sonarqube-backend'));

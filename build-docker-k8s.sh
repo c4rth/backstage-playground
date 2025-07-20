@@ -1,0 +1,1 @@
+docker image build . -f Dockerfile-k8s --tag carth-backstage:0.0.1 --progress=plain
