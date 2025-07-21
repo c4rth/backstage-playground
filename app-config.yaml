@@ -211,6 +211,7 @@ search:
           timeout: PT15M
           initialDelay: PT5S
       limit: 1000
+      
 catalog:
   disableRelationsCompatibility: true
   # processingInterval: false

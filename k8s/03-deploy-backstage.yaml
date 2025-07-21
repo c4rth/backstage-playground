@@ -7,7 +7,6 @@ data:
   app-config.k8s.yaml: |
     app:
       baseUrl: http://localhost
-
     backend:
       baseUrl: http://localhost
       listen:
