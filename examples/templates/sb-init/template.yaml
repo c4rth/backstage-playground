@@ -204,6 +204,7 @@ spec:
         allowedHosts: ['dev.azure.com']
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
         
 
   # Outputs are displayed to the user after a successful execution of the template.
