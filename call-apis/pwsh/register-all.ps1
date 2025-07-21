@@ -47,13 +47,18 @@ $entries = @(
     @{ kind = "Component"; target = "service/service-product/1/GTU" },
     @{ kind = "Component"; target = "service/service-product/2/TST" },
     @{ kind = "Component"; target = "service/service-product/2/GTU" },
-    @{ kind = "Component"; target = "service/service-product/2/UAT" }
+    @{ kind = "Component"; target = "service/service-product/2/UAT" },
+    # TechDocs
+    @{ kind = "Component"; target = "https://github.com/c4rth/playground-techdocs/blob/main/sample001" }
 )
 
-$backstageUrl = "http://localhost:7007" # local
-#$backstageUrl = "http://localhost" # k8s
+#$backstageUrl = "http://localhost:7007" # local
+$backstageUrl = "http://localhost" # k8s
 
 foreach ($entry in $entries) {
+    if ($entry.target.StartsWith("http")) {
+        $baseUrl = ""
+    }
     $body = @{
         kind = $entry.kind
         target = "$($baseUrl)$($entry.target)$($suffix)"
