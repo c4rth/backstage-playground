@@ -4,16 +4,6 @@ import { createBackendModule, coreServices } from '@backstage/backend-plugin-api
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
-import { catalogCollatorExtensionPoint } from '@backstage/plugin-search-backend-module-catalog';
-import { apiPlatformCatalogCollatorEntityTransformer } from '@internal/plugin-api-platform-backend';
-// TechDocs
-// import {
-//  DocsBuildStrategy,
-//  techdocsBuildsExtensionPoint,
-// techdocsGeneratorExtensionPoint,
-// techdocsPreparerExtensionPoint,
-// TechdocsGenerator,
-// } from '@backstage/plugin-techdocs-node';
 
 
 const backend = createBackend();
@@ -87,21 +77,9 @@ backend.add(import('@backstage/plugin-search-backend-module-pg'));
 
 // search collators
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
-backend.add(createBackendModule({
-  pluginId: 'search',
-  moduleId: 'api-platform-catalog-collator-extension',
-  register(env) {
-    env.registerInit({
-      deps: {
-        entityTransformer: catalogCollatorExtensionPoint,
-      },
-      async init({ entityTransformer }) {
-        entityTransformer.setEntityTransformer(apiPlatformCatalogCollatorEntityTransformer);
-      }
-    });
-  },
-}));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
+backend.add(import('@internal/plugin-search-backend-module-api-platform'));
+backend.add(import('@internal/plugin-search-backend-module-mca'));
 
 // notifications plugin
 // backend.add(import('@backstage/plugin-signals-backend'));
@@ -126,10 +104,9 @@ backend.add(import('@backstage/plugin-catalog-backend-module-unprocessed'));
 
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
-backend.add(import('@internal/plugin-catalog-backend-module-api-platform-annotator-processor'));
+// backend.add(import('@internal/plugin-catalog-backend-module-api-platform-annotator-processor'));
 
 // Mca Components
 backend.add(import('@internal/plugin-mca-backend'));
-backend.add(import('@internal/plugin-search-backend-module-mca'));
 
 backend.start();

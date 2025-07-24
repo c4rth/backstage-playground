@@ -58,6 +58,7 @@
     "@internal/plugin-catalog-backend-module-api-platform-annotator-processor": "workspace:^",
     "@internal/plugin-mca-backend": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",
+    "@internal/plugin-search-backend-module-api-platform": "workspace:^",
     "@internal/plugin-search-backend-module-mca": "workspace:^",
     "app": "0.0.0",
     "node-gyp": "^10.0.0",

@@ -177,8 +177,11 @@ search:
       fragmentDelimiter: ' ... ' # Delimiter string used to concatenate fragments. Defaults to " ... ".
   collators:
     catalog:
+      filter: 
+        kind: ['component', 'system', 'api', 'template']
+      batchSize: 5
       schedule:
-        frequency: PT5M
+        frequency: PT1M
         timeout: PT15M
         initialDelay: PT5S        
     apis:

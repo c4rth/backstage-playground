@@ -34,6 +34,7 @@ export const searchModuleMcaComponentsCollator = createBackendModule({
         auth,
         indexRegistry,
       }) {
+        logger.info('Initializing MCA search collators');
         const defaultSchedule = {
           frequency: { minutes: 10 },
           timeout: { minutes: 15 },
