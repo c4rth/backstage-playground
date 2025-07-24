@@ -8,6 +8,7 @@ import {
     ANNOTATION_SERVICE_PLATFORM,
     ANNOTATION_SERVICE_VERSION
 } from '@internal/plugin-api-platform-common';
+import { parse } from 'yaml';
 
 type EntityType = 'api' | 'service' | 'system';
 
@@ -33,8 +34,16 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
         if (!apiName || !apiVersion) {
             return null; // Skip entities with missing required annotations
         }
-        const description = entity.metadata.description || '';
-        const definition = entity.spec?.definition || ''; // .slice(0, 500) || '';
+        const description = entity.metadata.description ?? '';
+        let definition = '';
+        if (entity.spec?.definition) {
+            try {
+                const openApi = parse(entity.spec.definition);
+                definition = openApi?.info?.description ?? 'NO DESCRIPTION';
+            } catch (error) {
+                //                
+            }
+        }
 
         return {
             type: 'api',
@@ -42,7 +51,7 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
             title: `${apiName} ${apiVersion}`,
             text: `Description: ${description} - Definition: ${definition}`,
             location: `${BASE_LOCATION}api/${apiName}?version=${apiVersion}`,
-            lifecycle: (entity.spec?.lifecycle as string) || '',
+            lifecycle: (entity.spec?.lifecycle as string) ?? '',
         };
     }
 
@@ -60,15 +69,15 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
     if (isComponentEntity(entity) && entity.spec?.type === 'service') {
         const serviceName = entity.metadata[ANNOTATION_SERVICE_NAME];
         const serviceVersion = entity.metadata[ANNOTATION_SERVICE_VERSION];
-        const lifecycle = entity.spec?.lifecycle as string || '';
+        const lifecycle = entity.spec?.lifecycle as string ?? '';
 
         if (!serviceName || !serviceVersion) {
             return null; // Skip entities with missing required annotations
         }
 
-        const description = entity.metadata.description || '';
-        const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION] || 'n/a';
-        const platform = entity.metadata[ANNOTATION_SERVICE_PLATFORM] || DEFAULT_PLATFORM;
+        const description = entity.metadata.description ?? '';
+        const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION] ?? 'n/a';
+        const platform = entity.metadata[ANNOTATION_SERVICE_PLATFORM] ?? DEFAULT_PLATFORM;
 
         return {
             type: 'service',
@@ -95,12 +104,12 @@ export const apiPlatformCatalogCollatorEntityTransformer: CatalogCollatorEntityT
             return {
                 title: entityInfo.title,
                 text: entityInfo.text,
-                componentType: entity.spec?.type?.toString() || 'other',
+                componentType: entity.spec?.type?.toString() ?? 'other',
                 type: `api-platform.${entityInfo.type}`,
-                namespace: entity.metadata.namespace || DEFAULT_NAMESPACE,
+                namespace: entity.metadata.namespace ?? DEFAULT_NAMESPACE,
                 kind: entityInfo.kind,
                 lifecycle: entityInfo.lifecycle,
-                owner: (entity.spec?.owner as string) || '',
+                owner: (entity.spec?.owner as string) ?? '',
                 apiPlatformLocation: entityInfo.location,
             };
         } catch (error) {
