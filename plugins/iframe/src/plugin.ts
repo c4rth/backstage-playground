@@ -20,7 +20,8 @@ import {
   createRouteRef,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
-import { homePlugin, createCardExtension } from '@backstage/plugin-home';
+import { homePlugin } from '@backstage/plugin-home';
+import { createCardExtension } from '@backstage/plugin-home-react';
 
 export const rootRouteRef = createRouteRef({
   id: 'iframe',

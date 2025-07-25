@@ -26,7 +26,7 @@ export type ApiPlatformDisplayNameProps = {
     text: string;
 };
 
-export const ApiPlatformDisplayName = ({ text }: ApiPlatformDisplayNameProps): JSX.Element => {
+export const ApiPlatformDisplayName = ({ text }: ApiPlatformDisplayNameProps): React.JSX.Element => {
     const classes = useStyles();    
     return (
         <Box component="span" className={classes.root}>

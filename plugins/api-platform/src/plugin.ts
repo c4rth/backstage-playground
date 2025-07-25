@@ -88,7 +88,7 @@ export const SystemPlatformDefinitionPage = apiPlatformPlugin.provide(
 
 export const ApiPlatformSearchResultListItem: (
   props: SearchResultListItemExtensionProps<ApiPlatformSearchResultListItemProps>,
-) => JSX.Element | null = apiPlatformPlugin.provide(
+) => React.JSX.Element | null = apiPlatformPlugin.provide(
   createSearchResultListItemExtension({
     name: 'ApiPlatformSearchResultListItem',
     component: () =>

@@ -26,7 +26,7 @@ export type ServicePlatformDisplayNameProps = {
     text: string;
 };
 
-export const ServicePlatformDisplayName = ({ text }: ServicePlatformDisplayNameProps): JSX.Element => {
+export const ServicePlatformDisplayName = ({ text }: ServicePlatformDisplayNameProps): React.JSX.Element => {
     const classes = useStyles();
     return (
         <Box component="span" className={classes.root}>

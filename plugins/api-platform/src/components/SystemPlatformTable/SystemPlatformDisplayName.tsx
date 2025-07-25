@@ -26,7 +26,7 @@ export type SystemPlatformDisplayNameProps = {
     name: string;
 };
 
-export const SystemPlatformDisplayName = ({ name }: SystemPlatformDisplayNameProps): JSX.Element => {
+export const SystemPlatformDisplayName = ({ name }: SystemPlatformDisplayNameProps): React.JSX.Element => {
     const classes = useStyles();
     return (
         <Box component="span" className={classes.root}>

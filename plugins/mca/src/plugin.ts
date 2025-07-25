@@ -45,7 +45,7 @@ export const McaComponentDefinitionPage = mcaComponentPlugin.provide(
 
 export const McaComponentSearchResultListItem: (
   props: SearchResultListItemExtensionProps<McaComponentSearchResultListItemProps>,
-) => JSX.Element | null = mcaComponentPlugin.provide(
+) => React.JSX.Element | null = mcaComponentPlugin.provide(
   createSearchResultListItemExtension({
     name: 'McaComponentSearchResultListItem',
     component: () =>

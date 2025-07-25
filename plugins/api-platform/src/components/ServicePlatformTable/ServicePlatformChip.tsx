@@ -9,7 +9,7 @@ import PlatformCloudIcon from '../icons/PlatformCloudIcon';
 
 export type ServicePlatformChipProps = {
     index: number;
-    icon?: JSX.Element;
+    icon?: React.JSX.Element;
     text?: string;
     link: string;
     service?: ServiceEnvironmentDefinition;
