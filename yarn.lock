@@ -2847,17 +2847,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-entity-validation@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@backstage-community/plugin-entity-validation@npm:0.9.0"
+"@backstage-community/plugin-entity-validation@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@backstage-community/plugin-entity-validation@npm:0.10.0"
   dependencies:
-    "@backstage/catalog-client": "npm:^1.10.1"
-    "@backstage/catalog-model": "npm:^1.7.4"
-    "@backstage/core-components": "npm:^0.17.3"
-    "@backstage/core-plugin-api": "npm:^1.10.8"
+    "@backstage/catalog-client": "npm:^1.10.2"
+    "@backstage/catalog-model": "npm:^1.7.5"
+    "@backstage/core-components": "npm:^0.17.4"
+    "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/plugin-catalog-common": "npm:^1.1.4"
-    "@backstage/plugin-catalog-react": "npm:^1.19.0"
+    "@backstage/plugin-catalog-common": "npm:^1.1.5"
+    "@backstage/plugin-catalog-react": "npm:^1.19.1"
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
     "@codemirror/view": "npm:^6.0.0"
@@ -2874,13 +2874,13 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/0344db5547e5487ab369bd2ccbfd451e492a1f7e421a8894e7bad93fbfbd40af42d4e6a2376adfd472e080a0e26008de55a0f5af1538b531252cb8990b978fae
+  checksum: 10/222da4b5cd4a38843fa1d19fb4a8ad6f64314a44bf4a85fa385ededb170142e8db88c17d33ba224ea505aaa4bbeb7d61f5a74f2c9743eea5d8ae47f14fa61a8c
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:0.11.0"
+"@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:0.11.1"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.4.0"
     "@backstage/config": "npm:^1.3.2"
@@ -2889,7 +2889,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": "npm:^0.9.0"
     azure-devops-node-api: "npm:^14.1.0"
     yaml: "npm:^2.6.0"
-  checksum: 10/f2ab18aa821bc9bf6940c752c611caa10cfffdffb03ceb185ef7be921294fb9b13b8187c2363a9a919b713ee0e61321076ae0d6c50f940271b74ee946a0e1c2a
+  checksum: 10/0816e184c007071e3e186ba23f4bcdd8b16cfd99c744eb692e62e7b6542237645202aebeff2c319a80f966db2052e53d27c87db998a22c956793a54a0b756c28
   languageName: node
   linkType: hard
 
@@ -2947,9 +2947,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-sonarqube@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "@backstage-community/plugin-sonarqube@npm:0.15.0"
+"@backstage-community/plugin-sonarqube@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@backstage-community/plugin-sonarqube@npm:0.16.0"
   dependencies:
     "@backstage-community/plugin-sonarqube-react": "npm:^0.8.0"
     "@backstage/catalog-model": "npm:^1.7.4"
@@ -2971,7 +2971,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/67786ab6b6e8f1fc4b0b00d8f5507e154b31f000ed6b3f3f9fbeef824b8b8f3831ef2d3bfb00da689eb30fac367f7ce3395453bf93fd6f18bf25ca2c8660aa6a
+  checksum: 10/11a199f671e78a155872cb48b65429b346bd05e1355772da00619bf509f0c2f663d5a213939de197c93ee1c6c95a1925a240af1db8b70b1b260c3da7cd62fb2d
   languageName: node
   linkType: hard
 
@@ -3261,7 +3261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@npm:^1.10.1, @backstage/catalog-client@npm:^1.10.2, @backstage/catalog-client@npm:^1.9.1":
+"@backstage/catalog-client@npm:^1.10.2, @backstage/catalog-client@npm:^1.9.1":
   version: 1.10.2
   resolution: "@backstage/catalog-client@npm:1.10.2"
   dependencies:
@@ -7007,7 +7007,6 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/dev-utils": "npm:^1.1.12"
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -7018,7 +7017,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"
@@ -7075,7 +7074,6 @@ __metadata:
     "@backstage/core-app-api": "npm:^1.18.0"
     "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/dev-utils": "npm:^1.1.12"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:^4.0.0-alpha.61"
@@ -7085,7 +7083,7 @@ __metadata:
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
     "@types/lodash": "npm:^4.14.151"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
     lodash: "npm:^4.17.21"
     material-ui-popup-state: "npm:^5.3.3"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -7103,7 +7101,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/plugin-api-platform@workspace:plugins/api-platform"
   dependencies:
-    "@backstage-community/plugin-sonarqube": "npm:^0.15.0"
+    "@backstage-community/plugin-sonarqube": "npm:^0.16.0"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.8.0"
     "@backstage/catalog-client": "npm:^1.10.2"
     "@backstage/catalog-model": "npm:^1.7.5"
@@ -7121,8 +7119,8 @@ __metadata:
     "@backstage/plugin-techdocs": "npm:^1.13.2"
     "@backstage/plugin-techdocs-module-addons-contrib": "npm:^1.1.26"
     "@backstage/plugin-techdocs-react": "npm:^1.3.1"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
+    "@date-io/core": "npm:^1.3.13"
     "@internal/plugin-api-docs-spectral-linter": "workspace:^"
     "@internal/plugin-api-platform-common": "workspace:^"
     "@internal/plugin-api-platform-react": "workspace:^"
@@ -7137,7 +7135,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"
@@ -7159,7 +7157,6 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/dev-utils": "npm:^1.1.12"
     "@backstage/plugin-home": "npm:^0.8.10"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.11.3"
@@ -7168,7 +7165,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
     "@types/swagger-ui-react": "npm:^4.18.0"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -7192,7 +7189,6 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/dev-utils": "npm:^1.1.12"
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
     "@internal/plugin-api-platform-common": "workspace:^"
     "@internal/plugin-api-platform-react": "workspace:^"
@@ -7203,7 +7199,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
@@ -7234,7 +7230,7 @@ __metadata:
     "@material-ui/icons": "npm:^4.9.1"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^15.0.0"
+    "@testing-library/react": "npm:^16.0.0"
     "@types/humanize-duration": "npm:^3.18.1"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
@@ -7275,13 +7271,14 @@ __metadata:
     "@backstage/dev-utils": "npm:^1.1.12"
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
     "@backstage/plugin-home": "npm:^0.8.10"
-    "@backstage/test-utils": "npm:^1.7.10"
+    "@backstage/plugin-home-react": "npm:^0.1.28"
     "@material-ui/core": "npm:^4.12.2"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     msw: "npm:^1.0.1"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
@@ -7311,7 +7308,6 @@ __metadata:
     "@testing-library/dom": "npm:^10.0.0"
     "@types/express": "npm:^4.17.6"
     "@types/jest": "npm:^29.5.11"
-    "@types/react": "npm:^18"
     "@types/supertest": "npm:^2.0.12"
     cheerio: "npm:^1.0.0"
     csv-parser: "npm:^3.2.0"
@@ -7346,8 +7342,8 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
     "@backstage/plugin-search-common": "npm:^1.2.19"
     "@backstage/plugin-search-react": "npm:^1.9.2"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
+    "@date-io/core": "npm:^1.3.13"
     "@internal/plugin-api-platform-react": "workspace:^"
     "@internal/plugin-iframe": "workspace:^"
     "@internal/plugin-mca-common": "workspace:^"
@@ -7359,7 +7355,8 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     fast-xml-parser: "npm:^5.0.7"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -7394,11 +7391,9 @@ __metadata:
     "@backstage/plugin-search-backend-module-catalog": "npm:^0.3.6"
     "@backstage/plugin-search-backend-node": "npm:^1.3.13"
     "@backstage/plugin-search-common": "npm:^1.2.19"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@internal/plugin-api-platform-common": "workspace:^"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/react": "npm:^16.0.0"
-    "@types/react": "npm:^18"
     msw: "npm:^1.0.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
@@ -7416,11 +7411,9 @@ __metadata:
     "@backstage/cli": "npm:^0.33.1"
     "@backstage/plugin-search-backend-node": "npm:^1.3.13"
     "@backstage/plugin-search-common": "npm:^1.2.19"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@internal/plugin-mca-common": "workspace:^"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/react": "npm:^16.0.0"
-    "@types/react": "npm:^18"
     msw: "npm:^1.0.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
@@ -7443,7 +7436,6 @@ __metadata:
     "@backstage/plugin-techdocs": "npm:^1.13.2"
     "@backstage/plugin-techdocs-module-addons-contrib": "npm:^1.1.26"
     "@backstage/plugin-techdocs-react": "npm:^1.3.1"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
     "@internal/plugin-iframe": "workspace:^"
     "@material-ui/core": "npm:^4.12.2"
@@ -7453,7 +7445,8 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     backstage-plugin-techdocs-addon-mermaid: "npm:^0.22.0"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -7475,7 +7468,6 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/dev-utils": "npm:^1.1.12"
     "@backstage/plugin-home": "npm:^0.8.10"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
     "@faker-js/faker": "npm:^9.9.0"
     "@material-ui/core": "npm:^4.12.2"
@@ -7485,7 +7477,8 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     cronstrue: "npm:^2.61.0"
     jose: "npm:^5.2.0"
     jwt-decode: "npm:^4.0.0"
@@ -12822,24 +12815,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^15.0.0":
-  version: 15.0.7
-  resolution: "@testing-library/react@npm:15.0.7"
-  dependencies:
-    "@babel/runtime": "npm:^7.12.5"
-    "@testing-library/dom": "npm:^10.0.0"
-    "@types/react-dom": "npm:^18.0.0"
-  peerDependencies:
-    "@types/react": ^18.0.0
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/a9342ad09b019b0f99688fb50265899bc93adfe23c22aa6743fd920635b43fdc66877e66d95f240923aa6f7d3aa360837f5b053fb363a31975788974dff7bc93
-  languageName: node
-  linkType: hard
-
 "@testing-library/react@npm:^16.0.0":
   version: 16.3.0
   resolution: "@testing-library/react@npm:16.3.0"
@@ -15111,9 +15086,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@backstage-community/plugin-entity-validation": "npm:^0.9.0"
+    "@backstage-community/plugin-entity-validation": "npm:^0.10.0"
     "@backstage-community/plugin-shortcuts": "npm:^0.10.0"
-    "@backstage-community/plugin-sonarqube": "npm:^0.15.0"
+    "@backstage-community/plugin-sonarqube": "npm:^0.16.0"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.8.0"
     "@backstage/app-defaults": "npm:^1.6.4"
     "@backstage/catalog-client": "npm:^1.10.2"
@@ -15143,7 +15118,6 @@ __metadata:
     "@backstage/plugin-techdocs-module-addons-contrib": "npm:^1.1.26"
     "@backstage/plugin-techdocs-react": "npm:^1.3.1"
     "@backstage/plugin-user-settings": "npm:^0.8.24"
-    "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
     "@internal/plugin-api-docs-spectral-linter": "workspace:^"
     "@internal/plugin-api-platform": "workspace:^"
@@ -15163,7 +15137,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
-    "@types/react": "npm:^18"
+    "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     backstage-plugin-techdocs-addon-mermaid: "npm:^0.22.0"
     cross-env: "npm:^7.0.0"
@@ -15823,7 +15797,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-azure-devops-backend": "npm:^0.18.0"
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "npm:^0.9.0"
-    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "npm:^0.11.0"
+    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "npm:^0.11.1"
     "@backstage-community/plugin-sonarqube-backend": "npm:^0.10.0"
     "@backstage/backend-defaults": "npm:^0.11.1"
     "@backstage/backend-plugin-api": "npm:^1.4.1"
