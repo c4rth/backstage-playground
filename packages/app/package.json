@@ -9,8 +9,8 @@
   "dependencies": {
     "@backstage-community/plugin-entity-validation": "^0.10.0",
     "@backstage-community/plugin-shortcuts": "^0.10.0",
-    "@backstage-community/plugin-sonarqube": "^0.16.0",
-    "@backstage-community/plugin-sonarqube-react": "^0.8.0",
+    "@backstage-community/plugin-sonarqube": "^0.16.1",
+    "@backstage-community/plugin-sonarqube-react": "^0.8.1",
     "@backstage/app-defaults": "^1.6.4",
     "@backstage/catalog-client": "^1.10.2",
     "@backstage/catalog-model": "^1.7.5",
