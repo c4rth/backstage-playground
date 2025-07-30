@@ -1,19 +1,17 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_CONSUMES_API, RELATION_PROVIDES_API } from "@backstage/catalog-model";
-import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
 import { ANNOTATION_API_NAME, ANNOTATION_API_VERSION, CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, } from "@internal/plugin-api-platform-common";
 
 type TableRow = {
-    id: number,
-    data: {
-        name: string,
-        version: string,
-    },
+    id: number;
+    name: string;
+    version: string;
 }
 
 const serviceColumns: TableColumn<TableRow>[] = [
@@ -23,56 +21,45 @@ const serviceColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ data }: any) => {
+        render: ({ name, version }: TableRow) => {
+            if (version === 'local') {
+                return <ServicePlatformDisplayName text={name} />;
+            }
             return (
-                <Link to={`/api-platform/api/${data.name}?version=${data.version}`}>
-                    <ServicePlatformDisplayName
-                        text={`${data.name}`}
-                    />
+                <Link to={`/api-platform/api/${name}?version=${version}`}>
+                    <ServicePlatformDisplayName text={name} />
                 </Link>
             );
         },
     }, {
         title: 'Version',
         width: '40%',
-        field: 'data.version',
+        field: 'version',
     },
 ];
 
 const toRow = (entity: Entity, idx: number): TableRow => ({
     id: idx,
-    data: {
-        name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
-        version: entity.metadata[ANNOTATION_API_VERSION]?.toString() ?? '?',
-    },
+    name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
+    version: entity.metadata[ANNOTATION_API_VERSION]?.toString() ?? '?',
 });
 
-const fetchEntities = async (catalogApi: CatalogApi, serviceEntity: Entity, dependency: 'provided' | 'consumed') => {
-    const relationType = dependency === 'consumed' ? RELATION_CONSUMES_API : RELATION_PROVIDES_API;
-    const relations = serviceEntity.relations?.filter(relation => relation.type === relationType) ?? [];
+const createLocalEntity = (name: string): Entity => ({
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'API',
+    metadata: {
+        name,
+        [ANNOTATION_API_NAME]: name,
+        [ANNOTATION_API_VERSION]: 'local',
+    },
+} as Entity);
 
-    if (relations.length === 0) {
-        return [];
-    }
-
-    const targetNames = relations.map(relation => parseEntityRef(relation.targetRef).name);
-
-    try {
-        const response = await catalogApi.getEntities({
-            fields: [
-                CATALOG_METADATA_API_NAME,
-                CATALOG_METADATA_API_VERSION,
-            ],
-            filter: {
-                kind: ['API'],
-                'metadata.name': targetNames,
-            },
-        });
-
-        return response.items;
-    } catch (error) {
-        throw error;
-    }
+const tableOptions = {
+    search: true,
+    padding: 'dense' as const,
+    paging: false,
+    draggable: false,
+    thirdSortClick: false,
 };
 
 interface ServicePlatformRelationCardProps {
@@ -83,28 +70,46 @@ export const ServicePlatformRelationCard = memo<ServicePlatformRelationCardProps
     const { entity } = useEntity();
     const catalogApi = useApi(catalogApiRef);
 
-    const title = useMemo(() =>
-        dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs',
-        [dependency]
-    );
+    const { value: entities = [], loading, error } = useAsync(async () => {
+        const relationType = dependency === 'consumed' ? RELATION_CONSUMES_API : RELATION_PROVIDES_API;
+        const allRelations = entity.relations?.filter(r => r.type === relationType) ?? [];
+        
+        if (allRelations.length === 0) return [];
 
-    const fetchAsync = useCallback(
-        () => fetchEntities(catalogApi, entity, dependency),
-        [catalogApi, entity, dependency]
-    );
-    const { value: entities, loading, error } = useAsync(fetchAsync, [fetchAsync]);
+        const defaultRelations = allRelations.filter(r => r.targetRef.startsWith('api:default/'));
+        const localRelations = allRelations.filter(r => r.targetRef.startsWith('api:local/'));
 
-    const rows = useMemo(() => entities?.map(toRow) || [], [entities]);
+        const relatedEntities: Entity[] = [];
 
-    const tableOptions = useMemo(() => ({
-        search: true,
-        padding: 'dense' as const,
-        paging: false,
-        draggable: false,
-        thirdSortClick: false,
-    }), []);
+        if (defaultRelations.length > 0) {
+            const targetNames = defaultRelations.map(r => parseEntityRef(r.targetRef).name);
+            try {
+                const response = await catalogApi.getEntities({
+                    fields: [CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION],
+                    filter: {
+                        kind: ['API'],
+                        'metadata.name': targetNames,
+                    },
+                });
+                relatedEntities.push(...response.items);
+            } catch (fetchError) {
+                // Continue with local entities even if default fetch fails
+            }
+        }
 
-        const tableTitle = useMemo(() => (
+        localRelations.forEach(r => {
+            const name = parseEntityRef(r.targetRef).name;
+            relatedEntities.push(createLocalEntity(name));
+        });
+
+        return relatedEntities;
+    }, [entity, dependency, catalogApi]);
+
+    const title = dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs';
+    const rows = useMemo(() => entities.map(toRow), [entities]);
+    
+
+    const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">
             <Box mr={1} />
             {title} ({rows.length})
