@@ -70,13 +70,13 @@ function getOrder(order: ApiDefinitionsOptions | undefined): EntityOrderQuery | 
   if (!order) return undefined;
   let field = "";
   switch (order?.field) {
-    case 'api.name':
+    case 'name':
       field = CATALOG_METADATA_API_NAME;
       break;
-    case 'api.description':
+    case 'description':
       field = CATALOG_METADATA_DESCRIPTION;
       break;
-    case 'api.system':
+    case 'system':
       field = CATALOG_SPEC_SYSTEM;
       break;
     default:

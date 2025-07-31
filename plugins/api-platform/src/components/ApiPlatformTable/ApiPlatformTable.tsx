@@ -64,49 +64,49 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
     };
 }
 
+const columns: TableColumn<TableRow>[] = [
+    {
+        title: 'Name',
+        width: '25%',
+        field: 'name',
+        defaultSort: 'asc',
+        highlight: true,
+        render: ({ name }: TableRow) => (
+            <Link to={name}>
+                <ApiPlatformDisplayName text={name} />
+            </Link>
+        ),
+    },
+    {
+        title: 'Description',
+        field: 'description',
+        width: '50%',
+        render: ({ description }: TableRow) => (
+            <OverflowTooltip text={description} line={2} />
+        ),
+    },
+    {
+        title: 'System',
+        width: '10%',
+        field: 'system',
+        highlight: true,
+        render: ({ system }: TableRow) =>
+            system === '-' ? (
+                <SystemPlatformDisplayName name={system} />
+            ) : (
+                <Link to={`/api-platform/system/${system}`}>
+                    <SystemPlatformDisplayName name={system} />
+                </Link>
+            ),
+    },
+];
+
 export const ApiPlatformTable = () => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem('apiPlatformTableSearch') || '';
     const [countRows, setCountRows] = useState<number>(0);
     const [loadingCount, setLoadingCount] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
-
-    const columns: TableColumn<TableRow>[] = useMemo(() => [
-        {
-            title: 'Name',
-            width: '25%',
-            field: 'name',
-            defaultSort: 'asc',
-            highlight: true,
-            render: ({ name }: TableRow) => (
-                <Link to={name}>
-                    <ApiPlatformDisplayName text={name} />
-                </Link>
-            ),
-        },
-        {
-            title: 'Description',
-            field: 'description',
-            width: '50%',
-            render: ({ description }: TableRow) => (
-                <OverflowTooltip text={description} line={2} />
-            ),
-        },
-        {
-            title: 'System',
-            width: '10%',
-            field: 'system',
-            highlight: true,
-            render: ({ system }: TableRow) =>
-                system === '-' ? (
-                    <SystemPlatformDisplayName name={system} />
-                ) : (
-                    <Link to={`/api-platform/system/${system}`}>
-                        <SystemPlatformDisplayName name={system} />
-                    </Link>
-                ),
-        },
-    ], []);
 
     const tableOptions = useMemo(() => ({
         search: true,

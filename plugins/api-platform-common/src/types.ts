@@ -53,14 +53,14 @@ export type ServiceInformation = {
 
 
 export type ApiDefinitionsListFields =
-  | 'api.name'
-  | 'api.description'
-  | 'api.system';
+  | 'name'
+  | 'description'
+  | 'system';
 
 export const APIDEFINITIONS_FIELDS = [
-  'api.name',
-  'api.description',
-  'api.system'] as const;
+  'name',
+  'description',
+  'system'] as const;
 
 export type ApiDefinitionListOptions = {
   offset?: number;
