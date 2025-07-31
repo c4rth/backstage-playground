@@ -23,45 +23,41 @@ import BackstageIcon from './BackstageIcon';
 
 type TableRow = {
     id: number,
-    doc: {
-        name: string,
-        title: string,
-        description: string,
-        isExternal: boolean,
-        link: string,
-    },
-    resolved: {
-        entityRef: string,
-        ownedByRelationsTitle: string,
-        ownedByRelations: CompoundEntityRef[],
-    },
+    name: string,
+    title: string,
+    description: string,
+    isExternal: boolean,
+    link: string,
+    entityRef: string,
+    ownedByRelationsTitle: string,
+    ownedByRelations: CompoundEntityRef[],
 }
 
 const columns: TableColumn<TableRow>[] = [
     {
         title: 'Document',
         width: '25%',
-        field: 'doc.title',
+        field: 'title',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ doc }) => (
-            <Link to={doc.link}>
-                {doc.title}
+        render: ({ title, link }: TableRow) => (
+            <Link to={link}>
+                {title}
             </Link>
         ),
     },
     {
         title: 'Description',
         width: '50%',
-        field: 'doc.description',
+        field: 'description',
     },
     {
         title: 'Owner',
         width: '20%',
-        field: 'resolved.ownedByRelationsTitle',
-        render: ({ resolved }) => (
+        field: 'ownedByRelationsTitle',
+        render: ({ ownedByRelations }: TableRow) => (
             <EntityRefLinks
-                entityRefs={resolved.ownedByRelations}
+                entityRefs={ownedByRelations}
                 defaultKind="group"
             />
         ),
@@ -69,10 +65,10 @@ const columns: TableColumn<TableRow>[] = [
     {
         title: 'Type',
         width: '5%',
-        field: 'doc.isExternal',
-        render: ({ doc }) => (
+        field: 'isExternal',
+        render: ({ isExternal }: TableRow) => (
             <span>
-                {doc.isExternal ?
+                {isExternal ?
                     <LanguageIcon />
                     : <BackstageIcon />
                 }
@@ -141,19 +137,15 @@ function toEntityRow(entity: Entity, idx: number): TableRow {
     const url = `${entity.metadata.namespace}/${entity.kind.toLocaleLowerCase()}/${entity.metadata.name}`;
     return {
         id: idx,
-        doc: {
-            name: entity.metadata.name?.toString() || '?',
-            title: entity.metadata.title?.toString() || '?',
-            description: entity.metadata.description || '',
-            isExternal: isExternal,
-            link: url,
-        },
-        resolved: {
-            entityRef: stringifyEntityRef(entity),
-            ownedByRelationsTitle: ownedByRelations
-                .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
-                .join(', '),
-            ownedByRelations,
-        },
+        name: entity.metadata.name?.toString() || '?',
+        title: entity.metadata.title?.toString() || '?',
+        description: entity.metadata.description || '',
+        isExternal: isExternal,
+        link: url,
+        entityRef: stringifyEntityRef(entity),
+        ownedByRelationsTitle: ownedByRelations
+            .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
+            .join(', '),
+        ownedByRelations,
     };
 }

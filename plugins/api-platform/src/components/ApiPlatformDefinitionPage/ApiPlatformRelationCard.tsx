@@ -10,11 +10,9 @@ import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION, CATALOG_METADATA_S
 
 type TableRow = {
     id: number,
-    data: {
-        name: string,
-        version: string,
-        environment: string,
-    },
+    name: string,
+    version: string,
+    environment: string,
 }
 
 const serviceColumns: TableColumn<TableRow>[] = [
@@ -24,11 +22,11 @@ const serviceColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ data }: any) => {
+        render: ({ name, version, environment }: TableRow) => {
             return (
-                <Link to={`/api-platform/service/${data.name}?version=${data.version}&env=${data.environment}`}>
+                <Link to={`/api-platform/service/${name}?version=${version}&env=${environment}`}>
                     <ServicePlatformDisplayName
-                        text={data.name}
+                        text={name}
                     />
                 </Link>
             );
@@ -36,33 +34,31 @@ const serviceColumns: TableColumn<TableRow>[] = [
     }, {
         title: 'Version',
         width: '25%',
-        field: 'data.version',
+        field: 'version',
     }, {
         title: 'Environment',
         width: '25%',
-        field: 'data.environment',
+        field: 'environment',
     },
 ];
 
 const toRow = (entity: Entity, idx: number): TableRow => ({
     id: idx,
-    data: {
-        name: entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
-        version: entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '?',
-        environment: entity.spec?.lifecycle?.toString().toUpperCase() ?? '?',
-    },
+    name: entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
+    version: entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '?',
+    environment: entity.spec?.lifecycle?.toString().toUpperCase() ?? '?',
 });
 
 const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency: 'provider' | 'consumer') => {
     const relationType = dependency === 'consumer' ? RELATION_API_CONSUMED_BY : RELATION_API_PROVIDED_BY;
     const relations = entity.relations?.filter(relation => relation.type === relationType) ?? [];
-    
+
     if (relations.length === 0) {
         return [];
     }
 
     const targetNames = relations.map(relation => parseEntityRef(relation.targetRef).name);
-    
+
     try {
         const response = await catalogApi.getEntities({
             fields: [
@@ -76,7 +72,7 @@ const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency:
                 'metadata.name': targetNames,
             },
         });
-        
+
         return response.items;
     } catch (error) {
         throw error;
@@ -90,8 +86,8 @@ interface ApiPlatformRelationCardProps {
 export const ApiPlatformRelationCard = memo<ApiPlatformRelationCardProps>(({ dependency }) => {
     const { entity } = useEntity();
     const catalogApi = useApi(catalogApiRef);
-    const title = useMemo(() => 
-        dependency === 'consumer' ? 'Consumers' : 'Providers', 
+    const title = useMemo(() =>
+        dependency === 'consumer' ? 'Consumers' : 'Providers',
         [dependency]
     );
     const fetchAsync = useCallback(

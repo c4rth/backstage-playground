@@ -22,26 +22,18 @@ import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 
 type TableRow = {
     id: number,
-    api: {
-        name: string,
-        description: string,
-        system: string,
-    },
-    resolved: {
-        entityRef: string,
-    },
+    name: string,
+    description: string,
+    system: string,
+    entityRef: string,
 }
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => ({
     id: idx,
-    api: {
-        name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
-        description: entity.metadata.description ?? '',
-        system: entity.spec?.system?.toString() ?? '-',
-    },
-    resolved: {
-        entityRef: stringifyEntityRef(entity),
-    },
+    name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
+    description: entity.metadata.description ?? '',
+    system: entity.spec?.system?.toString() ?? '-',
+    entityRef: stringifyEntityRef(entity),
 });
 
 const PAGE_SIZE = 20;
@@ -83,34 +75,34 @@ export const ApiPlatformTable = () => {
         {
             title: 'Name',
             width: '25%',
-            field: 'api.name',
+            field: 'name',
             defaultSort: 'asc',
             highlight: true,
-            render: ({ api }) => (
-                <Link to={api.name}>
-                    <ApiPlatformDisplayName text={api.name} />
+            render: ({ name }: TableRow) => (
+                <Link to={name}>
+                    <ApiPlatformDisplayName text={name} />
                 </Link>
             ),
         },
         {
             title: 'Description',
-            field: 'api.description',
+            field: 'description',
             width: '50%',
-            render: ({ api }) => (
-                <OverflowTooltip text={api.description} line={2} />
+            render: ({ description }: TableRow) => (
+                <OverflowTooltip text={description} line={2} />
             ),
         },
         {
             title: 'System',
             width: '10%',
-            field: 'api.system',
+            field: 'system',
             highlight: true,
-            render: ({ api }) =>
-                api.system === '-' ? (
-                    <SystemPlatformDisplayName name={api.system} />
+            render: ({ system }: TableRow) =>
+                system === '-' ? (
+                    <SystemPlatformDisplayName name={system} />
                 ) : (
-                    <Link to={`/api-platform/system/${api.system}`}>
-                        <SystemPlatformDisplayName name={api.system} />
+                    <Link to={`/api-platform/system/${system}`}>
+                        <SystemPlatformDisplayName name={system} />
                     </Link>
                 ),
         },

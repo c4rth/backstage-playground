@@ -18,28 +18,24 @@ import { useCallback, useMemo } from 'react';
 
 type TableRow = {
     id: number,
-    system: {
-        name: string,
-        description: string,
-    },
-    resolved: {
-        entityRef: string,
-        ownedByRelationsTitle: string,
-        ownedByRelations: CompoundEntityRef[],
-    },
+    name: string,
+    description: string,
+    entityRef: string,
+    ownedByRelationsTitle: string,
+    ownedByRelations: CompoundEntityRef[],
 }
 
 const STABLE_COLUMNS: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
-        field: 'system.name',
+        field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ system }) => (
-            <Link to={system.name}>
+        render: ({ name }: TableRow) => (
+            <Link to={name}>
                 <SystemPlatformDisplayName
-                    name={system.name}
+                    name={name}
                 />
             </Link>
         ),
@@ -48,15 +44,15 @@ const STABLE_COLUMNS: TableColumn<TableRow>[] = [
         title: 'Description',
         width: '50%',
         field: 'description',
-        render: ({ system }) => system.description || '-',
+        render: ({ description }: TableRow) => description || '-',
     },
     {
         title: 'Owner',
         width: '25%',
-        field: 'resolved.ownedByRelationsTitle',
-        render: ({ resolved }) => (
+        field: 'ownedByRelationsTitle',
+        render: ({ ownedByRelations }: TableRow) => (
             <EntityRefLinks
-                entityRefs={resolved.ownedByRelations}
+                entityRefs={ownedByRelations}
                 defaultKind="group"
             />
         ),
@@ -76,17 +72,13 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
         id: idx,
-        system: {
-            name: entity.metadata.name ?? '?',
-            description: entity.metadata.description ?? '',
-        },
-        resolved: {
-            entityRef: stringifyEntityRef(entity),
-            ownedByRelationsTitle: ownedByRelations
-                .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
-                .join(', '),
-            ownedByRelations,
-        },
+        name: entity.metadata.name ?? '?',
+        description: entity.metadata.description ?? '',
+        entityRef: stringifyEntityRef(entity),
+        ownedByRelationsTitle: ownedByRelations
+            .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
+            .join(', '),
+        ownedByRelations,
     };
 };
 

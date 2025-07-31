@@ -6,9 +6,7 @@ import { memo, useMemo } from 'react';
 
 type TableRow = {
     id: number,
-    data: {
-        name: string,
-    },
+    name: string,
 }
 
 const apiColumns: TableColumn<TableRow>[] = [
@@ -18,11 +16,11 @@ const apiColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ data }: any) => {
+        render: ({ name }: TableRow) => {
             return (
-                <Link to={`/api-platform/api/${data.name}`}>
+                <Link to={`/api-platform/api/${name}`}>
                     <ApiPlatformDisplayName
-                        text={data.name}
+                        text={name}
                     />
                 </Link>
             );
@@ -37,11 +35,11 @@ const serviceColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ data }: any) => {
+        render: ({ name }: TableRow) => {
             return (
-                <Link to={`/api-platform/service/${data.name}`}>
+                <Link to={`/api-platform/service/${name}`}>
                     <ServicePlatformDisplayName
-                        text={data.name}
+                        text={name}
                     />
                 </Link>
             );
@@ -53,9 +51,7 @@ const DEFAULT_PAGE_SIZE = 20;
 
 const toRow = (item: string, idx: number): TableRow => ({
     id: idx,
-    data: {
-        name: item,
-    },
+    name: item,
 });
 
 interface SystemPlatformRelationCardProps {
