@@ -9,6 +9,7 @@ import { createServicePlatformService } from './ServicePlatformService';
 import { createSystemPlatformService } from './SystemPlatformService';
 import { APIDEFINITIONS_FIELDS, ServiceInformation } from '@internal/plugin-api-platform-common';
 import { parseOrderByParam, parseSearchParam } from './ApiPlatformService/utils';
+import { RelationType } from './ApiPlatformService/types';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -74,6 +75,15 @@ export async function createRouter(
     res.json(await apiPlatformService.getApiMatchingVersion({ apiName: req.params.apiName, apiVersion: req.params.apiVersion }));
   });
 
+  router.get('/apis/relations/:apiName', async (req, res) => {
+    const relationTypeParam = req.query.relationType;
+    let relationType: RelationType = 'provider';
+    if (relationTypeParam === "provider" || relationTypeParam === "consumer") {
+      relationType = relationTypeParam as RelationType;
+    }
+    res.json(await apiPlatformService.getApiRelations({ apiName: req.params.apiName, relationType }));
+  });
+
   // Endpoints: /catalog
 
   router.post('/catalog', async (req, res) => {
@@ -102,7 +112,7 @@ export async function createRouter(
     res.json(await servicePlatformService.getServiceVersions({ serviceName: req.params.serviceName }));
   });
 
-  // Exposed endpoints: /services
+  // Exposed endpoints: /services-informations
   router.get('/service-informations/:applicationCode/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
     const { applicationCode, serviceName, serviceVersion, imageVersion } = req.params;
     const info = await servicePlatformService.getServiceInformation({

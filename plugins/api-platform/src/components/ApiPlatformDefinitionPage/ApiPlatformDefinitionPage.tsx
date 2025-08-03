@@ -1,6 +1,7 @@
 import {
   Content,
-  PageWithHeader,
+  Header,
+  Page,
   Progress,
   ResponseErrorPanel,
   Select,
@@ -14,6 +15,8 @@ import { ApiEntity } from '@backstage/catalog-model';
 import { ApiPlatformDefinitionCard } from './ApiPlatformDefinitionCard';
 import { Box } from '@material-ui/core';
 import { useSearchParams } from 'react-router-dom';
+import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
+import { EntityContextMenu } from '../common/ComponentHeaderContextMenu';
 
 export const ApiPlatformDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
@@ -24,9 +27,9 @@ export const ApiPlatformDefinitionPage = () => {
   const catalogApi = useApi(catalogApiRef);
 
   const versions = useMemo(
-    () => apiVersions?.map(apiVersion => ({ 
-      label: apiVersion.version, 
-      value: apiVersion.entityRef 
+    () => apiVersions?.map(apiVersion => ({
+      label: apiVersion.version,
+      value: apiVersion.entityRef
     })) ?? [],
     [apiVersions]
   );
@@ -71,15 +74,20 @@ export const ApiPlatformDefinitionPage = () => {
   }
 
   return (
-    <PageWithHeader
-      themeId="apis"
-      title={`API - ${name}`}
-      subtitle={generatedSubtitle}>
+    <Page
+      themeId="apis">
+      <Header
+        title={`API - ${name}`}
+        subtitle={generatedSubtitle}>
+        <ComponentHeaderLabels entity={apiEntity ?? { metadata: { name, title: name } } as ApiEntity} />
+        <EntityContextMenu />
+      </Header>
+
       <Content>
         <Box mb={1}>
-          <Select onChange={(selected) => { 
-            setSelectedVersion(selected.toString()) ;
-            }} label="Versions" items={versions} selected={selectedVersion} />
+          <Select onChange={(selected) => {
+            setSelectedVersion(selected.toString());
+          }} label="Versions" items={versions} selected={selectedVersion} />
         </Box>
         <Box mb={-3}>
           {apiEntity ?
@@ -90,6 +98,6 @@ export const ApiPlatformDefinitionPage = () => {
           }
         </Box>
       </Content>
-    </PageWithHeader>
+    </Page>
   );
 };

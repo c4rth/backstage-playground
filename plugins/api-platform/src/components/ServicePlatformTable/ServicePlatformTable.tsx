@@ -7,11 +7,10 @@ import {
 } from '@backstage/core-components';
 import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { useGetServices } from '../../hooks';
-import { ServicePlatformDisplayName } from './ServicePlatformDisplayName';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { SystemPlatformDisplayName } from '../SystemPlatformTable';
 import { Fragment, useCallback, useMemo } from 'react';
+import { ComponentDisplayName } from '../common';
 
 type TableRow = {
     id: number,
@@ -90,7 +89,7 @@ export const ServicePlatformTable = () => {
             defaultSort: 'asc',
             render: ({ serviceDefinition }) => (
                 <Link to={serviceDefinition.name}>
-                    <ServicePlatformDisplayName text={serviceDefinition.name} />
+                    <ComponentDisplayName text={serviceDefinition.name} type="service" />
                 </Link>
             ),
         },
@@ -130,7 +129,7 @@ export const ServicePlatformTable = () => {
             field: 'serviceDefinition.system',
             render: ({ serviceDefinition }) => (
                 <Link to={`/api-platform/system/${serviceDefinition.system}`}>
-                    <SystemPlatformDisplayName name={serviceDefinition.system} />
+                    <ComponentDisplayName text={serviceDefinition.system} type="system" />
                 </Link>
             ),
         },

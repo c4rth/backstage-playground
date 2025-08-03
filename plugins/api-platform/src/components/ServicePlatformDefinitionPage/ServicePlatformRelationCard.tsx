@@ -1,12 +1,12 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
 import { memo, useMemo } from 'react';
-import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_CONSUMES_API, RELATION_PROVIDES_API } from "@backstage/catalog-model";
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
 import { ANNOTATION_API_NAME, ANNOTATION_API_VERSION, CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, } from "@internal/plugin-api-platform-common";
+import { ComponentDisplayName } from "../common";
 
 type TableRow = {
     id: number;
@@ -23,11 +23,11 @@ const serviceColumns: TableColumn<TableRow>[] = [
         defaultSort: 'asc',
         render: ({ name, version }: TableRow) => {
             if (version === 'local') {
-                return <ServicePlatformDisplayName text={name} />;
+                return <ComponentDisplayName text={name} type="api" />;
             }
             return (
                 <Link to={`/api-platform/api/${name}?version=${version}`}>
-                    <ServicePlatformDisplayName text={name} />
+                    <ComponentDisplayName text={name} type="api" />
                 </Link>
             );
         },
@@ -73,7 +73,7 @@ export const ServicePlatformRelationCard = memo<ServicePlatformRelationCardProps
     const { value: entities = [], loading, error } = useAsync(async () => {
         const relationType = dependency === 'consumed' ? RELATION_CONSUMES_API : RELATION_PROVIDES_API;
         const allRelations = entity.relations?.filter(r => r.type === relationType) ?? [];
-        
+
         if (allRelations.length === 0) return [];
 
         const defaultRelations = allRelations.filter(r => r.targetRef.startsWith('api:default/'));
@@ -107,7 +107,7 @@ export const ServicePlatformRelationCard = memo<ServicePlatformRelationCardProps
 
     const title = dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs';
     const rows = useMemo(() => entities.map(toRow), [entities]);
-    
+
 
     const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">

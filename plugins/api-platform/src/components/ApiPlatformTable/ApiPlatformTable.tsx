@@ -12,13 +12,12 @@ import {
     ANNOTATION_API_NAME,
     ApiDefinitionListOptions,
 } from '@internal/plugin-api-platform-common';
-import { ApiPlatformDisplayName } from './ApiPlatformDisplayName';
-import { SystemPlatformDisplayName } from '../SystemPlatformTable';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
+import { ComponentDisplayName } from '../common';
 
 type TableRow = {
     id: number,
@@ -73,7 +72,7 @@ const columns: TableColumn<TableRow>[] = [
         highlight: true,
         render: ({ name }: TableRow) => (
             <Link to={name}>
-                <ApiPlatformDisplayName text={name} />
+                <ComponentDisplayName text={name} type='api'/>
             </Link>
         ),
     },
@@ -92,10 +91,10 @@ const columns: TableColumn<TableRow>[] = [
         highlight: true,
         render: ({ system }: TableRow) =>
             system === '-' ? (
-                <SystemPlatformDisplayName name={system} />
+                <ComponentDisplayName text={system} type='system' />
             ) : (
                 <Link to={`/api-platform/system/${system}`}>
-                    <SystemPlatformDisplayName name={system} />
+                    <ComponentDisplayName text={system} type='system' />
                 </Link>
             ),
     },

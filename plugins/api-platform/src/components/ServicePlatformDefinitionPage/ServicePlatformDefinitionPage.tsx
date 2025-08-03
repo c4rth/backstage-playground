@@ -1,6 +1,7 @@
 import {
   Content,
-  PageWithHeader,
+  Header,
+  Page,
   Progress,
   ResponseErrorPanel,
   Select,
@@ -14,6 +15,8 @@ import { ComponentEntity } from '@backstage/catalog-model';
 import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
+import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
+import { EntityContextMenu } from '../common/ComponentHeaderContextMenu';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>
 
@@ -99,10 +102,14 @@ export const ServicePlatformDefinitionPage = () => {
   if (loading) return <Progress />;
 
   return (
-    <PageWithHeader
-      themeId="services"
+    <Page
+      themeId="services">
+      <Header
       title={`Service - ${name}`}
       subtitle={generatedSubtitle}>
+        <ComponentHeaderLabels entity={serviceEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
+        <EntityContextMenu />
+      </Header>
       <Content>
         <Box mb={1}>
           <Grid container>
@@ -122,6 +129,6 @@ export const ServicePlatformDefinitionPage = () => {
           ) : <div />}
         </Box>
       </Content>
-    </PageWithHeader>
+    </Page>
   );
 };

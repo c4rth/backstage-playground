@@ -6,6 +6,17 @@ export type ApiVersionDefinition = {
   project: string;
 };
 
+export type ApiRelationServiceDefinition = {
+  entityRef: string;
+  version: string;
+  lifecycle: string;
+};
+
+export type ApiRelationDefinition = {
+  apiVersion: string;
+  services: ApiRelationServiceDefinition[];
+};
+
 export type ServiceEnvironmentDefinition = {
   imageVersion: string;
   entityRef: string;

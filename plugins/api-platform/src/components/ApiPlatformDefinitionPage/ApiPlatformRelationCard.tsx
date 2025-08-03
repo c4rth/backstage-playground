@@ -1,12 +1,12 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
 import { memo, useCallback, useMemo } from 'react';
-import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
 import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION, CATALOG_METADATA_SERVICE_NAME, CATALOG_METADATA_SERVICE_VERSION, CATALOG_SPEC_LIFECYCLE } from "@internal/plugin-api-platform-common";
+import { ComponentDisplayName } from "../common";
 
 type TableRow = {
     id: number,
@@ -25,9 +25,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
         render: ({ name, version, environment }: TableRow) => {
             return (
                 <Link to={`/api-platform/service/${name}?version=${version}&env=${environment}`}>
-                    <ServicePlatformDisplayName
-                        text={name}
-                    />
+                    <ComponentDisplayName text={name} type="service" />
                 </Link>
             );
         },
@@ -79,6 +77,14 @@ const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency:
     }
 };
 
+const tableOptions = {
+    search: true,
+    padding: 'dense' as const,
+    paging: false,
+    draggable: false,
+    thirdSortClick: false,
+};
+
 interface ApiPlatformRelationCardProps {
     dependency: 'provider' | 'consumer';
 }
@@ -96,13 +102,6 @@ export const ApiPlatformRelationCard = memo<ApiPlatformRelationCardProps>(({ dep
     );
     const { value: entities, loading, error } = useAsync(fetchAsync, [fetchAsync]);
     const rows = useMemo(() => entities?.map(toRow) ?? [], [entities]);
-    const tableOptions = useMemo(() => ({
-        search: true,
-        padding: 'dense' as const,
-        paging: false,
-        draggable: false,
-        thirdSortClick: false,
-    }), []);
     const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">
             <Box mr={1} />

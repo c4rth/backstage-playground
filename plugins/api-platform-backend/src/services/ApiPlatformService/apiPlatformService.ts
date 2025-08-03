@@ -5,6 +5,7 @@ import {
   ANNOTATION_API_PROJECT,
   ANNOTATION_API_VERSION,
   ApiDefinitionListResult,
+  ApiRelationDefinition,
   ApiVersionDefinition,
   CATALOG_KIND,
   CATALOG_METADATA,
@@ -12,6 +13,7 @@ import {
   CATALOG_METADATA_API_VERSION,
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
+  CATALOG_RELATIONS,
   CATALOG_SPEC_SYSTEM
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityOrderQuery, GetEntitiesResponse } from '@backstage/catalog-client';
@@ -181,6 +183,44 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
     async getApiMatchingVersion(request: { apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {
       const apiVersions = await innerGetApiVersions(catalogClient, auth, request.apiName);
       return apiVersions.find(apiDef => apiDef.version.startsWith(request.apiVersion));
+    },
+
+     async getApiRelations(request: { apiName: string, relationType: 'provider' | 'consumer' }): Promise<ApiRelationDefinition[]> {
+      const { token } = await auth.getPluginRequestToken({
+        onBehalfOf: await auth.getOwnServiceCredentials(),
+        targetPluginId: 'catalog',
+      });
+      const entities = await catalogClient.getEntities(
+        {
+          filter: {
+            kind: ['API'],
+            'metadata.api-name': request.apiName,
+          },
+          fields: [
+            CATALOG_METADATA_NAME,
+            CATALOG_METADATA_API_NAME,
+            CATALOG_METADATA_API_VERSION,
+            CATALOG_RELATIONS,
+          ],
+        },
+        { token }
+      );
+
+      const relations: ApiRelationDefinition[] = [];
+      for (const entity of entities.items) {
+        const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString();
+        const apiVersion = entity.metadata[ANNOTATION_API_VERSION]?.toString();
+        if (!apiName || !apiVersion) continue;
+        relations.push({
+          apiVersion,
+          services: entity.relations?.map(relation => ({
+            entityRef: relation.targetRef,
+            version: apiVersion,
+            lifecycle: relation.type,
+          })) || [],
+        });
+      }
+      return relations;
     },
 
   };

@@ -12,8 +12,8 @@ import {
 import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box } from '@material-ui/core';
 import { useGetAllSystems, useGetSystemsOwnedByUser } from '../../hooks';
-import { SystemPlatformDisplayName } from './SystemPlatformDisplayName';
 import { useCallback, useMemo } from 'react';
+import { ComponentDisplayName } from '../common';
 
 
 type TableRow = {
@@ -34,9 +34,7 @@ const STABLE_COLUMNS: TableColumn<TableRow>[] = [
         defaultSort: 'asc',
         render: ({ name }: TableRow) => (
             <Link to={name}>
-                <SystemPlatformDisplayName
-                    name={name}
-                />
+                <ComponentDisplayName text={name} type='system' />
             </Link>
         ),
     },

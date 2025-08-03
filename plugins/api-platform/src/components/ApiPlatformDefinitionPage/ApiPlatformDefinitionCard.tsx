@@ -18,6 +18,7 @@ import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
 import LanguageIcon from '@material-ui/icons/Language';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { memo, useMemo } from 'react';
+import { ApiPlatformAllRelationsCard } from './ApiPlatformAllRelationsCard';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -121,14 +122,28 @@ export const ApiPlatformDefinitionCard = () => {
                 </TabbedLayout.Route>
             )}
             <TabbedLayout.Route path="/services" title="Services">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={6}>
-                        <ApiPlatformRelationCard dependency='provider' />
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                        <ApiPlatformRelationCard dependency='consumer' />
-                    </Grid>
-                </Grid>
+                <TabbedLayout>
+                    <TabbedLayout.Route path="/services/this" title={`${apiData.apiVersion}`}>
+                        <Grid container spacing={3} alignItems="stretch">
+                            <Grid item md={6}>
+                                <ApiPlatformRelationCard dependency='provider' />
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                                <ApiPlatformRelationCard dependency='consumer' />
+                            </Grid>
+                        </Grid>
+                    </TabbedLayout.Route>
+                    <TabbedLayout.Route path="/services/all" title="All versions">
+                        <Grid container spacing={3} alignItems="stretch">
+                            <Grid item md={6}>
+                                <ApiPlatformAllRelationsCard dependency='provider' />
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                                <ApiPlatformAllRelationsCard dependency='consumer' />
+                            </Grid>
+                        </Grid>
+                    </TabbedLayout.Route>
+                </TabbedLayout>
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/info" title="Info">
                 <InfoCard title='About' divider className={classes.gridItemCard}>

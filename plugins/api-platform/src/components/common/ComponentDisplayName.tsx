@@ -1,3 +1,5 @@
+import ExtensionIcon from '@material-ui/icons/Extension';
+import CategoryIcon from '@material-ui/icons/Category';
 import MuiMemoryIcon from '@material-ui/icons/Memory';
 import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
@@ -22,16 +24,25 @@ const useStyles = makeStyles(
     { name: 'CatalogReactEntityDisplayName' },
 );
 
-export type ServicePlatformDisplayNameProps = {
+export type ComponentDisplayNameProps = {
     text: string;
+    type: 'api' | 'system' | 'service';
 };
 
-export const ServicePlatformDisplayName = ({ text }: ServicePlatformDisplayNameProps): React.JSX.Element => {
+export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps): React.JSX.Element => {
     const classes = useStyles();
     return (
         <Box component="span" className={classes.root}>
-            <MuiMemoryIcon className={classes.icon} fontSize="inherit" />
-            <span>{text}</span>
+            {type === 'api' && (
+                <ExtensionIcon className={classes.icon} fontSize="inherit" />
+            )}
+            {type === 'system' && (
+                <CategoryIcon className={classes.icon} fontSize="inherit" />
+            )}
+            {type === 'service' && (
+                <MuiMemoryIcon className={classes.icon} fontSize="inherit" />
+            )}
+            {text}
         </Box>
     );
 };

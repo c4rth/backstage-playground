@@ -1,8 +1,7 @@
 import { Link, Table, TableColumn } from "@backstage/core-components";
-import { ApiPlatformDisplayName } from "../ApiPlatformTable";
-import { ServicePlatformDisplayName } from "../ServicePlatformTable/ServicePlatformDisplayName";
 import { Box } from "@material-ui/core";
 import { memo, useMemo } from 'react';
+import { ComponentDisplayName } from "../common";
 
 type TableRow = {
     id: number,
@@ -19,9 +18,7 @@ const apiColumns: TableColumn<TableRow>[] = [
         render: ({ name }: TableRow) => {
             return (
                 <Link to={`/api-platform/api/${name}`}>
-                    <ApiPlatformDisplayName
-                        text={name}
-                    />
+                    <ComponentDisplayName type="api" text={name} />
                 </Link>
             );
         },
@@ -38,8 +35,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
         render: ({ name }: TableRow) => {
             return (
                 <Link to={`/api-platform/service/${name}`}>
-                    <ServicePlatformDisplayName
-                        text={name}
+                    <ComponentDisplayName type="service" text={name}
                     />
                 </Link>
             );

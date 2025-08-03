@@ -1,4 +1,4 @@
-import { ApiDefinitionListResult, ApiDefinitionsListFields, ApiVersionDefinition } from "@internal/plugin-api-platform-common";
+import { ApiDefinitionListResult, ApiDefinitionsListFields, ApiRelationDefinition, ApiVersionDefinition } from "@internal/plugin-api-platform-common";
 
 export type ApiDefinitionsOptions = {
   field: ApiDefinitionsListFields;
@@ -12,6 +12,8 @@ export type ApiDefinitionsListRequest = {
   search?: string,
 };
 
+export type RelationType = 'provider' | 'consumer';
+
 export interface ApiPlatformService {
 
   getApisCount(): Promise<number>;
@@ -21,4 +23,7 @@ export interface ApiPlatformService {
   getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]>;
 
   getApiMatchingVersion(request: { apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined>;
+
+  getApiRelations(request: { apiName: string, relationType: RelationType }): Promise<ApiRelationDefinition[]>;
+
 }
