@@ -41,6 +41,7 @@
     "@backstage/plugin-catalog": "^1.31.1",
     "@backstage/plugin-catalog-graph": "^0.4.21",
     "@backstage/plugin-catalog-react": "^1.19.1",
+    "@backstage/plugin-org": "^0.6.41",
     "@backstage/plugin-search-common": "^1.2.19",
     "@backstage/plugin-search-react": "^1.9.2",
     "@backstage/plugin-techdocs": "^1.13.2",

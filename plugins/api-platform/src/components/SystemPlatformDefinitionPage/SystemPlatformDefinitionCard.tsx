@@ -5,18 +5,17 @@ import {
 } from '@backstage/core-components';
 import { getCompoundEntityRef } from "@backstage/catalog-model";
 import { Box, Grid, IconButton, makeStyles, Theme } from '@material-ui/core';
-import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
     AboutField,
     AboutContent,
 } from '@backstage/plugin-catalog';
 import DocsIcon from '@material-ui/icons/Description';
-import {
-    Direction,
-    EntityCatalogGraphCard,
-} from '@backstage/plugin-catalog-graph';
 import { SystemPlatformRelationCard } from './SystemPlatformRelationCard';
 import { memo, useMemo } from 'react';
+import { EntityMembersListCard } from '@backstage/plugin-org';
+import { useApi } from '@backstage/core-plugin-api';
+import useAsync from 'react-use/esm/useAsync';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -53,6 +52,7 @@ interface SystemPlatformDefinitionCardProps {
 }
 
 export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardProps>(({ apis, services }) => {
+    const catalogApi = useApi(catalogApiRef);
     const { entity } = useEntity();
     const classes = useStyles();
 
@@ -65,6 +65,16 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
             hasDocs,
         };
     }, [entity]);
+
+    const ownedByGroup = useAsync(async () => {
+        const ownedBy = entity.relations?.find(
+            rel => rel.type === 'ownedBy' && rel.targetRef.toLowerCase().startsWith('group')
+        );
+        if (ownedBy) {
+            return await catalogApi.getEntityByRef(ownedBy.targetRef);
+        }
+        return undefined;
+    }, [entity, catalogApi]);
 
     const docsButton = useMemo(() => (
         <IconButton
@@ -102,6 +112,12 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
                 </Grid>
             </TabbedLayout.Route>
 
+            <TabbedLayout.Route path="/members" title="Members">
+                <EntityProvider entity={ownedByGroup.value}>
+                    <EntityMembersListCard/>
+                </EntityProvider>
+            </TabbedLayout.Route>
+
             <TabbedLayout.Route path="/info" title="Info">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={6}>
@@ -118,9 +134,6 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
                 </Grid>
             </TabbedLayout.Route>
 
-            <TabbedLayout.Route path="/relations" title="Relations">
-                <EntityCatalogGraphCard variant="gridItem" height={400} kinds={['API', 'component']} direction={Direction.TOP_BOTTOM} />
-            </TabbedLayout.Route>
         </TabbedLayout>
     );
 });

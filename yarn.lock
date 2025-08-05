@@ -7087,6 +7087,7 @@ __metadata:
     "@backstage/plugin-catalog": "npm:^1.31.1"
     "@backstage/plugin-catalog-graph": "npm:^0.4.21"
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
+    "@backstage/plugin-org": "npm:^0.6.41"
     "@backstage/plugin-search-common": "npm:^1.2.19"
     "@backstage/plugin-search-react": "npm:^1.9.2"
     "@backstage/plugin-techdocs": "npm:^1.13.2"

@@ -16,7 +16,7 @@ import { ApiPlatformDefinitionCard } from './ApiPlatformDefinitionCard';
 import { Box } from '@material-ui/core';
 import { useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
-import { EntityContextMenu } from '../common/ComponentHeaderContextMenu';
+import { ComponentHeaderContextMenu } from '../common/ComponentHeaderContextMenu';
 
 export const ApiPlatformDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
@@ -80,7 +80,7 @@ export const ApiPlatformDefinitionPage = () => {
         title={`API - ${name}`}
         subtitle={generatedSubtitle}>
         <ComponentHeaderLabels entity={apiEntity ?? { metadata: { name, title: name } } as ApiEntity} />
-        <EntityContextMenu />
+        <ComponentHeaderContextMenu />
       </Header>
 
       <Content>

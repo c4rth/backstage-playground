@@ -16,7 +16,7 @@ import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
-import { EntityContextMenu } from '../common/ComponentHeaderContextMenu';
+import { ComponentHeaderContextMenu } from '../common/ComponentHeaderContextMenu';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>
 
@@ -108,7 +108,7 @@ export const ServicePlatformDefinitionPage = () => {
       title={`Service - ${name}`}
       subtitle={generatedSubtitle}>
         <ComponentHeaderLabels entity={serviceEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
-        <EntityContextMenu />
+        <ComponentHeaderContextMenu />
       </Header>
       <Content>
         <Box mb={1}>
