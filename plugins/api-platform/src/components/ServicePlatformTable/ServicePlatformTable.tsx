@@ -53,7 +53,7 @@ function createEnvironmentColumn(env: string): TableColumn<TableRow> {
                                     <ServicePlatformChip
                                         index={idx}
                                         service={version.environments[env as keyof typeof version.environments]}
-                                        link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}&env=${env}`}
+                                        link={`/api-platform/service/${serviceDefinition.serviceName}?system=${serviceDefinition.system}&version=${version.version}&env=${env}`}
                                     />
                                 ) : (
                                     <div style={emptyStateStyle}>
@@ -88,8 +88,8 @@ export const ServicePlatformTable = () => {
             highlight: true,
             defaultSort: 'asc',
             render: ({ serviceDefinition }) => (
-                <Link to={serviceDefinition.name}>
-                    <ComponentDisplayName text={serviceDefinition.name} type="service" />
+                <Link to={`/api-platform/service/${serviceDefinition.serviceName}?system=${serviceDefinition.system}`}>
+                    <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
                 </Link>
             ),
         },
@@ -108,7 +108,7 @@ export const ServicePlatformTable = () => {
                                 <ServicePlatformChip
                                     index={idx}
                                     text={version.version}
-                                    link={`/api-platform/service/${serviceDefinition.name}?version=${version.version}`}
+                                    link={`/api-platform/service/${serviceDefinition.serviceName}?system=${serviceDefinition.system}&version=${version.version}`}
                                 />
                             </ListItem>
                             {idx < serviceDefinition.versions.length - 1 && <Divider />}

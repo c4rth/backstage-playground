@@ -6,7 +6,7 @@ export interface ServicePlatformService {
  
   listServices(): Promise<{ items: ServiceDefinition[] }>;
  
-  getServiceVersions(request: { serviceName: string }): Promise<ServiceDefinition>;
+  getServiceVersions(request: { applicationCode: string, serviceName: string }): Promise<ServiceDefinition>;
  
   // api-management service
  

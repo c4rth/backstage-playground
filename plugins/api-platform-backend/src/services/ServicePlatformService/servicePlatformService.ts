@@ -50,21 +50,24 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
 
   for (const entity of entities.items) {
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
+    const system = entity.spec?.system?.toString();
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
     if (!name || !version) continue;
 
     const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '-';
-    
+
     // Get or create service definition
-    let def = mapServices.get(name);
+    const mapKey = `${system}-${name}`;
+    let def = mapServices.get(mapKey);
     if (!def) {
       def = {
-        name,
+        name: mapKey,
+        serviceName: name,
         owner: entity.relations?.find(rel => rel.type === RELATION_OWNED_BY)?.targetRef || '',
         system: entity.spec?.system?.toString() || '-',
         versions: []
       };
-      mapServices.set(name, def);
+      mapServices.set(mapKey, def);
     }
 
     // Find or create version definition
@@ -88,7 +91,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
 
   // Sort versions once per service
   for (const def of mapServices.values()) {
-    def.versions.sort((a, b) => 
+    def.versions.sort((a, b) =>
       a.version.localeCompare(b.version, undefined, { numeric: true })
     );
   }
@@ -115,10 +118,10 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
       return { items: services };
     },
 
-    async getServiceVersions(request: { serviceName: string }): Promise<ServiceDefinition> {
-      const { serviceName } = request;
+    async getServiceVersions(request: { applicationCode: string, serviceName: string }): Promise<ServiceDefinition> {
+      const { applicationCode, serviceName } = request;
       const services = await innerGetServices(catalogClient, auth, serviceName);
-      return services[0];
+      return services.filter(svc => svc.system === `${applicationCode}`)[0];
     },
 
     async getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {

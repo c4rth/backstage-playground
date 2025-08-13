@@ -15,7 +15,7 @@ export interface ApiPlatformBackendApi {
 
   listServices(): Promise<{ items: ServiceDefinition[] }>;
 
-  getServiceVersions(serviceName: string): Promise<(ServiceDefinition)>;
+  getServiceVersions(system: string, serviceName: string): Promise<(ServiceDefinition)>;
 
   listSystems(): Promise<{ items: Entity[] }>;
 
@@ -119,13 +119,14 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return this.fetchJson<{ items: ServiceDefinition[] }>('/services');
   }
 
-  async getServiceVersions(serviceName: string): Promise<ServiceDefinition> {
-    if (!serviceName?.trim()) {
-      throw new Error('Service name is required');
+  async getServiceVersions(system: string,serviceName: string): Promise<ServiceDefinition> {
+    if (!system?.trim() || !serviceName?.trim()) {
+      throw new Error('System and ervice name are required');
     }
 
+    const encodedSystemName = encodeURIComponent(system);
     const encodedServiceName = encodeURIComponent(serviceName);
-    return this.fetchJson<ServiceDefinition>(`/services/${encodedServiceName}`);
+    return this.fetchJson<ServiceDefinition>(`/services/${encodedSystemName}/${encodedServiceName}`);
   }
 
   async listSystems(): Promise<{ items: Entity[] }> {

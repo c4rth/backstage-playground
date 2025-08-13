@@ -108,8 +108,9 @@ export async function createRouter(
     res.json(await servicePlatformService.listServices());
   });
 
-  router.get('/services/:serviceName', async (req, res) => {
-    res.json(await servicePlatformService.getServiceVersions({ serviceName: req.params.serviceName }));
+  router.get('/services/:applicationCode/:serviceName', async (req, res) => {
+    const { applicationCode, serviceName } = req.params;
+    res.json(await servicePlatformService.getServiceVersions({ applicationCode, serviceName }));
   });
 
   // Exposed endpoints: /services-informations
