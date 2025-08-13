@@ -47,11 +47,12 @@ const useStyles = makeStyles(
 );
 
 interface SystemPlatformDefinitionCardProps {
+    system: string;
     apis: string[];
     services: string[];
 }
 
-export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardProps>(({ apis, services }) => {
+export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardProps>(({ system, apis, services }) => {
     const catalogApi = useApi(catalogApiRef);
     const { entity } = useEntity();
     const classes = useStyles();
@@ -104,10 +105,10 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
             <TabbedLayout.Route path="/" title="Ownership">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={6}>
-                        <SystemPlatformRelationCard dependency="service" data={services} />
+                        <SystemPlatformRelationCard system={system} dependency="service" data={services} />
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <SystemPlatformRelationCard dependency="api" data={apis} />
+                        <SystemPlatformRelationCard system={system} dependency="api" data={apis} />
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>

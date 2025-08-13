@@ -30,12 +30,13 @@ export const SystemPlatformDefinitionPage = () => {
     return (
       <EntityProvider entity={systemDefinition.entity}>
         <SystemPlatformDefinitionCard
+          system={name}
           apis={systemDefinition.apis}
           services={systemDefinition.services}
         />
       </EntityProvider>
     );
-  }, [systemDefinition]);
+  }, [systemDefinition, name]);
 
 
   if (error) {

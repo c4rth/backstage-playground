@@ -6,6 +6,7 @@ import { ComponentDisplayName } from "../common";
 type TableRow = {
     id: number,
     name: string,
+    system: string,
 }
 
 const apiColumns: TableColumn<TableRow>[] = [
@@ -32,9 +33,9 @@ const serviceColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ name }: TableRow) => {
+        render: ({ name, system }: TableRow) => {
             return (
-                <Link to={`/api-platform/service/${name}`}>
+                <Link to={`/api-platform/service/${system}/${name}`}>
                     <ComponentDisplayName type="service" text={name}
                     />
                 </Link>
@@ -45,17 +46,19 @@ const serviceColumns: TableColumn<TableRow>[] = [
 
 const DEFAULT_PAGE_SIZE = 20;
 
-const toRow = (item: string, idx: number): TableRow => ({
+const toRow = (item: string, idx: number, system: string): TableRow => ({
     id: idx,
     name: item,
+    system: system,
 });
 
 interface SystemPlatformRelationCardProps {
+    system: string;
     dependency: 'api' | 'service';
     data: string[];
 }
 
-export const SystemPlatformRelationCard = memo<SystemPlatformRelationCardProps>(({ dependency, data }) => {
+export const SystemPlatformRelationCard = memo<SystemPlatformRelationCardProps>(({ system, dependency, data }) => {
 
     const computedValues = useMemo(() => {
         const isApi = dependency === 'api';
@@ -66,7 +69,7 @@ export const SystemPlatformRelationCard = memo<SystemPlatformRelationCardProps>(
         };
     }, [dependency]);
 
-    const rows = useMemo(() => data.map(toRow), [data]);
+    const rows = useMemo(() => data.map((item, idx) => toRow(item, idx, system)), [data, system]);
     const showPagination = useMemo(() => rows.length > DEFAULT_PAGE_SIZE, [rows.length]);
 
     const tableOptions = useMemo(() => ({
