@@ -5,11 +5,12 @@ import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED
 import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
-import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION, CATALOG_METADATA_SERVICE_NAME, CATALOG_METADATA_SERVICE_VERSION, CATALOG_SPEC_LIFECYCLE } from "@internal/plugin-api-platform-common";
+import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION, CATALOG_METADATA_SERVICE_NAME, CATALOG_METADATA_SERVICE_VERSION, CATALOG_SPEC_LIFECYCLE, CATALOG_SPEC_SYSTEM } from "@internal/plugin-api-platform-common";
 import { ComponentDisplayName } from "../common";
 
 type TableRow = {
     id: number,
+    system: string,
     name: string,
     version: string,
     environment: string,
@@ -22,9 +23,9 @@ const serviceColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ name, version, environment }: TableRow) => {
+        render: ({ system, name, version, environment }: TableRow) => {
             return (
-                <Link to={`/api-platform/service/${name}?version=${version}&env=${environment}`}>
+                <Link to={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}>
                     <ComponentDisplayName text={name} type="service" />
                 </Link>
             );
@@ -42,6 +43,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
 
 const toRow = (entity: Entity, idx: number): TableRow => ({
     id: idx,
+    system: entity.spec?.system?.toString() ?? '?',
     name: entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
     version: entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '?',
     environment: entity.spec?.lifecycle?.toString().toUpperCase() ?? '?',
@@ -62,6 +64,7 @@ const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency:
             fields: [
                 CATALOG_METADATA_SERVICE_NAME,
                 CATALOG_METADATA_SERVICE_VERSION,
+                CATALOG_SPEC_SYSTEM,
                 CATALOG_SPEC_LIFECYCLE,
             ],
             filter: {

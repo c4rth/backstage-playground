@@ -167,7 +167,7 @@ const routes = (
     <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
     <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
     <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />
-    <Route path="/api-platform/service/:name" element={<ServicePlatformDefinitionPage />} />
+    <Route path="/api-platform/service/:system/:name" element={<ServicePlatformDefinitionPage />} />
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
     <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
     <Route path="/mca/components" element={<McaComponentExplorerPage />} />

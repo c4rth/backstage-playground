@@ -37,12 +37,11 @@ function parseServiceDefinition(svcDef: ServiceDefinition | undefined): MapVersi
 }
 
 export const ServicePlatformDefinitionPage = () => {
-  const { name } = useParams();
+  const { system, name } = useParams();
   const [searchParams] = useSearchParams();
-  const querySystem = searchParams.get('system');
   const queryVersion = searchParams.get('version');
   const queryEnv = searchParams.get('env');
-  const { item: serviceDefinition, loading, error } = useGetServiceVersions(querySystem!, name!);
+  const { item: serviceDefinition, loading, error } = useGetServiceVersions(system!, name!);
   const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
   const [selectedEnvironment, setSelectedEnvironment] = useState<string | undefined>(undefined);
   const [serviceEntity, setServiceEntity] = useState<ComponentEntity | undefined>(undefined);

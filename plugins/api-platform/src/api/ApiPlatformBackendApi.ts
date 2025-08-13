@@ -54,13 +54,13 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     try {
       const baseUrl = await this.getBaseUrl();
       const url = new URL(`${baseUrl}${path}`);
-      
+
       if (searchParams) {
         url.search = searchParams.toString();
       }
 
       const response = await this.fetchApi.fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -73,7 +73,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   private buildSearchParams(params: Record<string, string | number | undefined>): URLSearchParams {
     const searchParams = new URLSearchParams();
-    
+
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         searchParams.set(key, String(value));
@@ -89,7 +89,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   async listApis(options: ApiDefinitionListOptions): Promise<ApiDefinitionListResult> {
     const { offset, limit, orderBy, search } = options;
-    
+
     const params: Record<string, string | number | undefined> = {
       offset,
       limit,
@@ -111,17 +111,17 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
     const encodedApiName = encodeURIComponent(apiName);
     const versions = await this.fetchJson<ApiVersionDefinition[]>(`/apis/definitions/${encodedApiName}`);
-    
+
     return Array.isArray(versions) ? versions : [];
   }
 
-   async listServices(): Promise<{ items: ServiceDefinition[] }> {
+  async listServices(): Promise<{ items: ServiceDefinition[] }> {
     return this.fetchJson<{ items: ServiceDefinition[] }>('/services');
   }
 
-  async getServiceVersions(system: string,serviceName: string): Promise<ServiceDefinition> {
+  async getServiceVersions(system: string, serviceName: string): Promise<ServiceDefinition> {
     if (!system?.trim() || !serviceName?.trim()) {
-      throw new Error('System and ervice name are required');
+      throw new Error(`System and service name are required : '${system}' '${serviceName}'`);
     }
 
     const encodedSystemName = encodeURIComponent(system);

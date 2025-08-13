@@ -53,7 +53,7 @@ function createEnvironmentColumn(env: string): TableColumn<TableRow> {
                                     <ServicePlatformChip
                                         index={idx}
                                         service={version.environments[env as keyof typeof version.environments]}
-                                        link={`/api-platform/service/${serviceDefinition.serviceName}?system=${serviceDefinition.system}&version=${version.version}&env=${env}`}
+                                        link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
                                     />
                                 ) : (
                                     <div style={emptyStateStyle}>
@@ -84,11 +84,11 @@ export const ServicePlatformTable = () => {
         {
             title: 'Name',
             width: '25%',
-            field: 'serviceDefinition.name',
+            field: 'serviceDefinition.serviceName',
             highlight: true,
             defaultSort: 'asc',
             render: ({ serviceDefinition }) => (
-                <Link to={`/api-platform/service/${serviceDefinition.serviceName}?system=${serviceDefinition.system}`}>
+                <Link to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}>
                     <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
                 </Link>
             ),
@@ -108,7 +108,7 @@ export const ServicePlatformTable = () => {
                                 <ServicePlatformChip
                                     index={idx}
                                     text={version.version}
-                                    link={`/api-platform/service/${serviceDefinition.serviceName}?system=${serviceDefinition.system}&version=${version.version}`}
+                                    link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
                                 />
                             </ListItem>
                             {idx < serviceDefinition.versions.length - 1 && <Divider />}
