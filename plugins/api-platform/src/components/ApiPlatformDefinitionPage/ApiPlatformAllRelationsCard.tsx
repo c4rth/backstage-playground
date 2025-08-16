@@ -5,14 +5,14 @@ import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED
 import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
-import { 
-    ANNOTATION_API_NAME, 
-    ANNOTATION_API_VERSION, 
-    ANNOTATION_SERVICE_NAME, 
-    ANNOTATION_SERVICE_VERSION, 
-    CATALOG_METADATA_SERVICE_NAME, 
-    CATALOG_METADATA_SERVICE_VERSION, 
-    CATALOG_SPEC_LIFECYCLE 
+import {
+    ANNOTATION_API_NAME,
+    ANNOTATION_API_VERSION,
+    ANNOTATION_SERVICE_NAME,
+    ANNOTATION_SERVICE_VERSION,
+    CATALOG_METADATA_SERVICE_NAME,
+    CATALOG_METADATA_SERVICE_VERSION,
+    CATALOG_SPEC_LIFECYCLE
 } from "@internal/plugin-api-platform-common";
 import { useGetApiVersions } from "../../hooks";
 import semver from 'semver';
@@ -81,8 +81,8 @@ const toRow = (service: Entity & { apiVersion: string }, idx: number): TableRow 
 });
 
 const fetchEntities = async (
-    catalogApi: CatalogApi, 
-    entity: Entity, 
+    catalogApi: CatalogApi,
+    entity: Entity,
     dependency: 'provider' | 'consumer'
 ): Promise<Entity[]> => {
     const relationType = dependency === 'consumer' ? RELATION_API_CONSUMED_BY : RELATION_API_PROVIDED_BY;
@@ -126,8 +126,13 @@ export const ApiPlatformAllRelationsCard = memo<ApiPlatformAllRelationsCardProps
     const { entity } = useEntity();
     const catalogApi = useApi(catalogApiRef);
 
-    const apiName = useMemo(() => 
-        entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '', 
+    const system = useMemo(() =>
+        entity.spec?.system?.toString() ?? '',
+        [entity.spec]
+    );
+
+    const apiName = useMemo(() =>
+        entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '',
         [entity.metadata]
     );
 
@@ -136,7 +141,7 @@ export const ApiPlatformAllRelationsCard = memo<ApiPlatformAllRelationsCardProps
         [dependency]
     );
 
-    const { apiVersions, loading: versionsLoading, error: versionsError } = useGetApiVersions(apiName);
+    const { apiVersions, loading: versionsLoading, error: versionsError } = useGetApiVersions(system, apiName);
 
     const { value: allServices = [], loading: servicesLoading, error: servicesError } = useAsync(async () => {
         if (!apiVersions?.length || !apiName) return [];

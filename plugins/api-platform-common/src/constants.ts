@@ -27,3 +27,5 @@ export const CATALOG_SPEC_TYPE = "spec.type";
 export const CATALOG_RELATIONS = "relations";
 export const CATALOG_KIND = "kind";
 
+export const API_NO_SYSTEM = "NOSYSTEM";
+

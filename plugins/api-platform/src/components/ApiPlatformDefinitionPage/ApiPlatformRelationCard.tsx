@@ -30,15 +30,33 @@ const serviceColumns: TableColumn<TableRow>[] = [
                 </Link>
             );
         },
-    }, {
+    }, 
+    {
         title: 'Version',
-        width: '25%',
+        width: '20%',
         field: 'version',
-    }, {
+    }, 
+    {
         title: 'Environment',
-        width: '25%',
+        width: '15%',
         field: 'environment',
     },
+    {
+        title: 'System',
+        width: '15%',
+        highlight: true,
+        field: 'system',
+        render: ({ system }: TableRow) => {
+            if (system === "-") {
+                return <ComponentDisplayName text={system} type="system" />;
+            }
+            return (
+                <Link to={`/api-platform/system/${system}`} >
+                    <ComponentDisplayName text={system} type="system" />
+                </Link >
+            );
+        },
+    }
 ];
 
 const toRow = (entity: Entity, idx: number): TableRow => ({

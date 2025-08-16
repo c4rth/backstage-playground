@@ -11,7 +11,7 @@ export interface ApiPlatformBackendApi {
 
   getApisCount(): Promise<number>;
 
-  getApiVersions(apiName: string): Promise<(ApiVersionDefinition[])>;
+  getApiVersions(appCode: string, apiName: string): Promise<(ApiVersionDefinition[])>;
 
   listServices(): Promise<{ items: ServiceDefinition[] }>;
 
@@ -104,14 +104,10 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return this.fetchJson<ApiDefinitionListResult>('/apis/definitions', searchParams);
   }
 
-  async getApiVersions(apiName: string): Promise<ApiVersionDefinition[]> {
-    if (!apiName?.trim()) {
-      throw new Error('API name is required');
-    }
-
-    const encodedApiName = encodeURIComponent(apiName);
-    const versions = await this.fetchJson<ApiVersionDefinition[]>(`/apis/definitions/${encodedApiName}`);
-
+  async getApiVersions(appCode: string, apiName: string): Promise<ApiVersionDefinition[]> {
+    if (!apiName?.trim()) throw new Error('API name is required');
+    const path = `/apis/definitions/${encodeURIComponent(appCode)}/${encodeURIComponent(apiName)}`;
+    const versions = await this.fetchJson<ApiVersionDefinition[]>(path);
     return Array.isArray(versions) ? versions : [];
   }
 

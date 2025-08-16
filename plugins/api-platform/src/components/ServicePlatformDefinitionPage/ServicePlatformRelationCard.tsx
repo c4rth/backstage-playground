@@ -5,43 +5,62 @@ import { Entity, parseEntityRef, RELATION_CONSUMES_API, RELATION_PROVIDES_API } 
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
-import { ANNOTATION_API_NAME, ANNOTATION_API_VERSION, CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, } from "@internal/plugin-api-platform-common";
+import { ANNOTATION_API_NAME, ANNOTATION_API_VERSION, CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, CATALOG_SPEC_SYSTEM, } from "@internal/plugin-api-platform-common";
 import { ComponentDisplayName } from "../common";
 
 type TableRow = {
     id: number;
     name: string;
     version: string;
+    system: string
 }
 
 const serviceColumns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
-        width: '60%',
+        width: '50%',
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ name, version }: TableRow) => {
+        render: ({ system, name, version }: TableRow) => {
             if (version === 'local') {
                 return <ComponentDisplayName text={name} type="api" />;
             }
             return (
-                <Link to={`/api-platform/api/${name}?version=${version}`}>
+                <Link to={`/api-platform/api/${system}/${name}?version=${version}`}>
                     <ComponentDisplayName text={name} type="api" />
                 </Link>
             );
         },
-    }, {
+    },
+    {
         title: 'Version',
-        width: '40%',
+        width: '35%',
         field: 'version',
     },
+    {
+        title: 'System',
+        width: '15%',
+        highlight: true,
+        field: 'system',
+        render: ({ system }: TableRow) => {
+            if (system === "-") {
+                return <ComponentDisplayName text={system} type="system" />;
+            }
+            return (
+                <Link to={`/api-platform/system/${system}`} >
+                    <ComponentDisplayName text={system} type="system" />
+                </Link >
+            );
+        },
+    }
 ];
 
 const toRow = (entity: Entity, idx: number): TableRow => ({
     id: idx,
     name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
     version: entity.metadata[ANNOTATION_API_VERSION]?.toString() ?? '?',
+    system: entity.spec?.system?.toString() ?? '-',
 });
 
 const createLocalEntity = (name: string): Entity => ({
@@ -85,7 +104,7 @@ export const ServicePlatformRelationCard = memo<ServicePlatformRelationCardProps
             const targetNames = defaultRelations.map(r => parseEntityRef(r.targetRef).name);
             try {
                 const response = await catalogApi.getEntities({
-                    fields: [CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION],
+                    fields: [CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, CATALOG_SPEC_SYSTEM],
                     filter: {
                         kind: ['API'],
                         'metadata.name': targetNames,

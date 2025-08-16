@@ -16,9 +16,9 @@ const apiColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ name }: TableRow) => {
+        render: ({ name, system }: TableRow) => {
             return (
-                <Link to={`/api-platform/api/${name}`}>
+                <Link to={`/api-platform/api/${system}/${name}`}>
                     <ComponentDisplayName type="api" text={name} />
                 </Link>
             );

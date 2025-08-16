@@ -20,10 +20,10 @@ export interface ApiPlatformService {
 
   listApis(request: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult>;
 
-  getApiVersions(request: { apiName: string }): Promise<ApiVersionDefinition[]>;
+  getApiVersions(request: { applicationCode: string, apiName: string }): Promise<ApiVersionDefinition[]>;
 
-  getApiMatchingVersion(request: { apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined>;
+  getApiMatchingVersion(request: { applicationCode: string, apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined>;
 
-  getApiRelations(request: { apiName: string, relationType: RelationType }): Promise<ApiRelationDefinition[]>;
+  getApiRelations(request: { applicationCode: string, apiName: string, relationType: RelationType }): Promise<ApiRelationDefinition[]>;
 
 }

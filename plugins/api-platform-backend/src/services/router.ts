@@ -67,21 +67,24 @@ export async function createRouter(
     res.json(await apiPlatformService.getApisCount());
   });
 
-  router.get('/apis/definitions/:apiName', async (req, res) => {
-    res.json(await apiPlatformService.getApiVersions({ apiName: req.params.apiName }));
+  router.get('/apis/definitions/:applicationCode/:apiName', async (req, res) => {
+    const { applicationCode, apiName } = req.params;
+    res.json(await apiPlatformService.getApiVersions({ applicationCode, apiName }));
   });
 
-  router.get('/apis/definitions/:apiName/:apiVersion', async (req, res) => {
-    res.json(await apiPlatformService.getApiMatchingVersion({ apiName: req.params.apiName, apiVersion: req.params.apiVersion }));
+  router.get('/apis/definitions/:applicationCode/:apiName/:apiVersion', async (req, res) => {
+    const { applicationCode, apiName, apiVersion } = req.params;
+    res.json(await apiPlatformService.getApiMatchingVersion({ applicationCode, apiName, apiVersion }));
   });
 
-  router.get('/apis/relations/:apiName', async (req, res) => {
+  router.get('/apis/relations/:applicationCode/:apiName', async (req, res) => {
+    const { applicationCode, apiName } = req.params;
     const relationTypeParam = req.query.relationType;
     let relationType: RelationType = 'provider';
     if (relationTypeParam === "provider" || relationTypeParam === "consumer") {
       relationType = relationTypeParam as RelationType;
     }
-    res.json(await apiPlatformService.getApiRelations({ apiName: req.params.apiName, relationType }));
+    res.json(await apiPlatformService.getApiRelations({ applicationCode, apiName, relationType }));
   });
 
   // Endpoints: /catalog

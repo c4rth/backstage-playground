@@ -42,6 +42,16 @@ export const ApiPlatformDefinitionPage = apiPlatformPlugin.provide(
   }),
 );
 
+export const ApiPlatformRedirectToNoSystem = apiPlatformPlugin.provide(
+  createComponentExtension({
+    name: 'ApiPlatformRedirectToNoSystem',
+    component: {
+      lazy: () =>
+        import('./components/ApiPlatformDefinitionPage').then(m => m.ApiPlatformRedirectToNoSystem),
+    },
+  }),
+);
+
 //-------------------------------------------------------------------------------------------------
 
 export const ServicePlatformExplorerPage = apiPlatformPlugin.provide(

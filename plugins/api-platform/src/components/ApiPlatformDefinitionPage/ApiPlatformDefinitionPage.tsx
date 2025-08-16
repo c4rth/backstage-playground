@@ -6,24 +6,25 @@ import {
   ResponseErrorPanel,
   Select,
 } from '@backstage/core-components';
-import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
-import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
 import { ApiPlatformDefinitionCard } from './ApiPlatformDefinitionCard';
 import { Box } from '@material-ui/core';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
 import { ComponentHeaderContextMenu } from '../common/ComponentHeaderContextMenu';
+import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
 
 export const ApiPlatformDefinitionPage = () => {
-  const { name } = useRouteRefParams(entityRouteRef);
+  const { system, name } = useParams();
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
 
-  const { apiVersions, loading, error } = useGetApiVersions(name);
+  const { apiVersions, loading, error } = useGetApiVersions(system ?? API_NO_SYSTEM, name!);
   const catalogApi = useApi(catalogApiRef);
 
   const versions = useMemo(

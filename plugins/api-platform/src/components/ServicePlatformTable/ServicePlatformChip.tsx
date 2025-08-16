@@ -3,9 +3,9 @@ import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
-import PlatformAllIcon from '../icons/PlatformAllIcon';
-import PlatformOnpremIcon from '../icons/PlatformOnpremIcon';
-import PlatformCloudIcon from '../icons/PlatformCloudIcon';
+import ComputerIcon from '@material-ui/icons/Computer';
+import CloudIcon from '@material-ui/icons/Cloud';
+import LanguageIcon from '@material-ui/icons/Language';
 
 export type ServicePlatformChipProps = {
     index: number;
@@ -30,9 +30,9 @@ const useStyles = makeStyles<Theme, ServicePlatformChipProps>(
 );
 
 const PlatformIcons = {
-    all: <PlatformAllIcon />,
-    onprem: <PlatformOnpremIcon />,
-    cloud: <PlatformCloudIcon />,
+    all: <LanguageIcon />,
+    onprem: <ComputerIcon />,
+    cloud: <CloudIcon />,
 } as const;
 
 export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {

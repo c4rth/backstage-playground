@@ -70,8 +70,8 @@ const columns: TableColumn<TableRow>[] = [
         field: 'name',
         defaultSort: 'asc',
         highlight: true,
-        render: ({ name }: TableRow) => (
-            <Link to={name}>
+        render: ({ system, name }: TableRow) => (
+            <Link to={`/api-platform/api/${system}/${name}`}>
                 <ComponentDisplayName text={name} type='api'/>
             </Link>
         ),

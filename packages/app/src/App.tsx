@@ -51,6 +51,7 @@ import { EntityValidationPage } from '@backstage-community/plugin-entity-validat
 // API platform
 import {
   ApiPlatformDefinitionPage,
+  ApiPlatformRedirectToNoSystem,
   ApiPlatformExplorerPage,
   ServicePlatformExplorerPage,
   ServicePlatformDefinitionPage,
@@ -165,7 +166,9 @@ const routes = (
       }
     />
     <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
-    <Route path="/api-platform/api/:name" element={<ApiPlatformDefinitionPage />} />
+    {/* For compatibility with old URLs */}
+    <Route path="/api-platform/api/:name" element={<ApiPlatformRedirectToNoSystem />} />
+    <Route path="/api-platform/api/:system/:name" element={<ApiPlatformDefinitionPage />} />
     <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />
     <Route path="/api-platform/service/:system/:name" element={<ServicePlatformDefinitionPage />} />
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
