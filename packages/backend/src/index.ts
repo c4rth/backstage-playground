@@ -109,4 +109,7 @@ backend.add(import('@internal/plugin-api-platform-backend'));
 // Mca Components
 backend.add(import('@internal/plugin-mca-backend'));
 
+// MCP
+backend.add(import('@backstage/plugin-mcp-actions-backend'));
+
 backend.start();

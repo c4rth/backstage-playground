@@ -57,6 +57,13 @@ backend:
           - plugin: api-platform
           - plugin: mca
           - plugin: catalog
+      - type: static
+        options:
+          token: 'mcp-token'
+          subject: mcp-clients
+        accessRestrictions:
+          - plugin: mcp-actions
+          - plugin: catalog
 
   baseUrl: http://localhost:7007
   listen:
@@ -92,6 +99,9 @@ backend:
   #cache:
   #  store: redis
   #  connection: redis://default:${REDIS_PASSWORD}@127.0.0.1:6379
+  actions:
+    pluginSources:
+      - catalog
 
 permission:
   enabled: true
