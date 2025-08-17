@@ -19,6 +19,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { memo, useMemo } from 'react';
 import { ApiPlatformAllRelationsCard } from './ApiPlatformAllRelationsCard';
+import { ComponentAboutContent } from '../common/ComponentAboutContent';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -149,12 +150,12 @@ export const ApiPlatformDefinitionCard = () => {
                 <InfoCard title='About' divider className={classes.gridItemCard}>
                     <Box sx={{ mb: 4 }}>
                         <AboutField
-                            label="API reference"
+                            label="Catalog reference"
                             gridSizes={{ xs: 12 }} >
                             <EntityRefLink entityRef={entity!} />
                         </AboutField>
                     </Box>
-                    <AboutContent entity={entity} />
+                    <ComponentAboutContent entity={entity} />
                     <Box sx={{ mt: 5 }}>
                         <AboutField
                             label="Azure Artifact"

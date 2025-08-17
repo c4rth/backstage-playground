@@ -29,6 +29,7 @@ import {
 } from '@internal/plugin-azure-devops';
 // App Registry
 import { AppRegistryPage } from '@internal/plugin-app-registry';
+import { ComponentAboutContent } from '../common/ComponentAboutContent';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -135,7 +136,7 @@ export const ServicePlatformDefinitionCard = memo(() => {
                             action={docsButton}
                         >
                             {aboutFields}
-                            <AboutContent entity={entity} />
+                            <ComponentAboutContent entity={entity} />
                         </InfoCard>
                     </Grid>
                     <Grid item md={6} xs={12}>

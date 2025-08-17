@@ -16,6 +16,7 @@ import { memo, useMemo } from 'react';
 import { EntityMembersListCard } from '@backstage/plugin-org';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
+import { ComponentAboutContent } from '../common/ComponentAboutContent';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -129,7 +130,7 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
                             action={docsButton}
                         >
                             {aboutField}
-                            <AboutContent entity={entity} />
+                            <ComponentAboutContent entity={entity} />
                         </InfoCard>
                     </Grid>
                 </Grid>
