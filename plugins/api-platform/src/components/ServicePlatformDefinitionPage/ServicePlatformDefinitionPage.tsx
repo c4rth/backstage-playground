@@ -84,6 +84,11 @@ export const ServicePlatformDefinitionPage = () => {
       }
       if (selEnv) setSelectedEnvironment(selEnv);
     }
+    else {
+      if (!environments.some(item => item.value === selectedEnvironment)) {
+        setSelectedEnvironment(environments[0]?.value);
+      }
+    }
   }, [selectedVersion, environments, queryEnv, selectedEnvironment]);
 
   useEffect(() => {
@@ -105,8 +110,8 @@ export const ServicePlatformDefinitionPage = () => {
     <Page
       themeId="services">
       <Header
-      title={`Service - ${name}`}
-      subtitle={generatedSubtitle}>
+        title={`Service - ${name}`}
+        subtitle={generatedSubtitle}>
         <ComponentHeaderLabels entity={serviceEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
         <ComponentHeaderContextMenu />
       </Header>

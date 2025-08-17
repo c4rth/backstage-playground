@@ -12,7 +12,8 @@ import {
     ANNOTATION_SERVICE_VERSION,
     CATALOG_METADATA_SERVICE_NAME,
     CATALOG_METADATA_SERVICE_VERSION,
-    CATALOG_SPEC_LIFECYCLE
+    CATALOG_SPEC_LIFECYCLE,
+    CATALOG_SPEC_SYSTEM
 } from "@internal/plugin-api-platform-common";
 import { useGetApiVersions } from "../../hooks";
 import semver from 'semver';
@@ -24,6 +25,7 @@ type TableRow = {
     readonly svcName: string;
     readonly svcVersion: string;
     readonly svcEnvironment: string;
+    readonly svcSystem: string;
 };
 
 const serviceColumns: TableColumn<TableRow>[] = [
@@ -32,8 +34,8 @@ const serviceColumns: TableColumn<TableRow>[] = [
         width: '50%',
         field: 'svcName',
         highlight: true,
-        render: ({ svcName, svcVersion, svcEnvironment }: TableRow) => (
-            <Link to={`/api-platform/service/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}>
+        render: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
+            <Link to={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}>
                 <ComponentDisplayName text={svcName} type='service' />
             </Link>
         ),
@@ -67,17 +69,34 @@ const serviceColumns: TableColumn<TableRow>[] = [
     },
     {
         title: 'Environment',
-        width: '20%',
+        width: '10%',
         field: 'svcEnvironment',
     },
+    {
+        title: 'System',
+        width: '10%',
+        highlight: true,
+        field: 'system',
+        render: ({ svcSystem }: TableRow) => {
+            if (svcSystem === "-") {
+                return <ComponentDisplayName text={svcSystem} type="system" />;
+            }
+            return (
+                <Link to={`/api-platform/system/${svcSystem}`} >
+                    <ComponentDisplayName text={svcSystem} type="system" />
+                </Link >
+            );
+        },
+    }
 ];
 
 const toRow = (service: Entity & { apiVersion: string }, idx: number): TableRow => ({
     id: idx,
     apiVersion: service.apiVersion || '?',
-    svcName: service.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
-    svcVersion: service.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '?',
-    svcEnvironment: service.spec?.lifecycle?.toString().toUpperCase() ?? '?',
+    svcName: service.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '-',
+    svcVersion: service.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '-',
+    svcEnvironment: service.spec?.lifecycle?.toString().toUpperCase() ?? '-',
+    svcSystem: service.spec?.system?.toString() ?? '-',
 });
 
 const fetchEntities = async (
@@ -99,6 +118,7 @@ const fetchEntities = async (
             CATALOG_METADATA_SERVICE_NAME,
             CATALOG_METADATA_SERVICE_VERSION,
             CATALOG_SPEC_LIFECYCLE,
+            CATALOG_SPEC_SYSTEM,
         ],
         filter: {
             kind: ['Component'],
