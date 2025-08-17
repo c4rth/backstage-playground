@@ -6,10 +6,7 @@ import {
 import { getCompoundEntityRef } from "@backstage/catalog-model";
 import { Box, Grid, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
-import {
-    AboutField,
-    AboutContent,
-} from '@backstage/plugin-catalog';
+import { AboutField, } from '@backstage/plugin-catalog';
 import DocsIcon from '@material-ui/icons/Description';
 import { SystemPlatformRelationCard } from './SystemPlatformRelationCard';
 import { memo, useMemo } from 'react';
@@ -116,7 +113,7 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
 
             <TabbedLayout.Route path="/members" title="Members">
                 <EntityProvider entity={ownedByGroup.value}>
-                    <EntityMembersListCard/>
+                    <EntityMembersListCard />
                 </EntityProvider>
             </TabbedLayout.Route>
 

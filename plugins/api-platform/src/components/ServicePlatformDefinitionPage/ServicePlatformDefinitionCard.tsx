@@ -9,7 +9,6 @@ import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
     AboutField,
-    AboutContent,
 } from '@backstage/plugin-catalog';
 import DocsIcon from '@material-ui/icons/Description';
 import {

@@ -7,7 +7,7 @@ import { ApiEntity } from "@backstage/catalog-model"
 import { PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
-import { AboutContent, AboutField } from '@backstage/plugin-catalog';
+import { AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
 import CloudCircleIcon from '@material-ui/icons/CloudCircle';
 import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } from '@internal/plugin-api-platform-common';
