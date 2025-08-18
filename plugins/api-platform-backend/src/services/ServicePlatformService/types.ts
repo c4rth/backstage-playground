@@ -6,11 +6,11 @@ export interface ServicePlatformService {
  
   listServices(): Promise<{ items: ServiceDefinition[] }>;
  
-  getServiceVersions(request: { applicationCode: string, serviceName: string }): Promise<ServiceDefinition>;
+  getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition>;
  
   // api-management service
  
-  getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined>;
+  getServiceInformation(request: { system: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined>;
  
   addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string>;
 }

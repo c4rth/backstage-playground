@@ -6,7 +6,7 @@ export const appRegistryBackendApiRef = createApiRef<AppRegistryBackendApi>({
 });
 
 export interface AppRegistryBackendApi {
-    getOperations(appCode: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryOperation[]>;
+    getOperations(system: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryOperation[]>;
 }
 
 function getOperationName(endpoint: AppRegistryEndpoint): string {
@@ -47,9 +47,9 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
         this.apiVersion = this.configApi.getString('appRegistry.version');
     }
 
-    private buildQueryParams(appCode: string, appName: string, appVersion: string, environment: string): URLSearchParams {
+    private buildQueryParams(system: string, appName: string, appVersion: string, environment: string): URLSearchParams {
         const params = new URLSearchParams();
-        params.set('application-code', appCode);
+        params.set('application-code', system);
         params.set('service-name', appName);
         params.set('major-version', appVersion);
         params.set('environment', environment);
@@ -76,13 +76,13 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
         };
     }
 
-    async getOperations(appCode: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryOperation[]> {
-        if (!appCode?.trim() || !appName?.trim() || !appVersion?.trim() || !environment?.trim()) {
-            throw new Error('All parameters (appCode, appName, appVersion, environment) are required');
+    async getOperations(system: string, appName: string, appVersion: string, environment: string): Promise<AppRegistryOperation[]> {
+        if (!system?.trim() || !appName?.trim() || !appVersion?.trim() || !environment?.trim()) {
+            throw new Error('All parameters (system, appName, appVersion, environment) are required');
         }
 
         try {
-            const queryParams = this.buildQueryParams(appCode, appName, appVersion, environment);
+            const queryParams = this.buildQueryParams(system, appName, appVersion, environment);
             const url = new URL(`${this.baseUrl}/api/proxy/app-registry/endpoints`);
             url.search = queryParams.toString();
 
@@ -130,7 +130,7 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
             return data.map(endpoint => this.transformEndpointToOperation(endpoint));
 
         } catch (error) {
-            const errorMessage = `Failed to get operations for app ${appCode}/${appName}@${appVersion} in ${environment}`;
+            const errorMessage = `Failed to get operations for app ${system}/${appName}@${appVersion} in ${environment}`;
 
             if (error instanceof Error) {
                 throw new Error(`${errorMessage}: ${error.message}`);

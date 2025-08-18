@@ -67,24 +67,24 @@ export async function createRouter(
     res.json(await apiPlatformService.getApisCount());
   });
 
-  router.get('/apis/definitions/:applicationCode/:apiName', async (req, res) => {
-    const { applicationCode, apiName } = req.params;
-    res.json(await apiPlatformService.getApiVersions({ applicationCode, apiName }));
+  router.get('/apis/definitions/:system/:apiName', async (req, res) => {
+    const { system, apiName } = req.params;
+    res.json(await apiPlatformService.getApiVersions({ system, apiName }));
   });
 
-  router.get('/apis/definitions/:applicationCode/:apiName/:apiVersion', async (req, res) => {
-    const { applicationCode, apiName, apiVersion } = req.params;
-    res.json(await apiPlatformService.getApiMatchingVersion({ applicationCode, apiName, apiVersion }));
+  router.get('/apis/definitions/:system/:apiName/:apiVersion', async (req, res) => {
+    const { system, apiName, apiVersion } = req.params;
+    res.json(await apiPlatformService.getApiMatchingVersion({ system, apiName, apiVersion }));
   });
 
-  router.get('/apis/relations/:applicationCode/:apiName', async (req, res) => {
-    const { applicationCode, apiName } = req.params;
+  router.get('/apis/relations/:system/:apiName', async (req, res) => {
+    const { system, apiName } = req.params;
     const relationTypeParam = req.query.relationType;
     let relationType: RelationType = 'provider';
     if (relationTypeParam === "provider" || relationTypeParam === "consumer") {
       relationType = relationTypeParam as RelationType;
     }
-    res.json(await apiPlatformService.getApiRelations({ applicationCode, apiName, relationType }));
+    res.json(await apiPlatformService.getApiRelations({ system, apiName, relationType }));
   });
 
   // Endpoints: /catalog
@@ -111,16 +111,16 @@ export async function createRouter(
     res.json(await servicePlatformService.listServices());
   });
 
-  router.get('/services/:applicationCode/:serviceName', async (req, res) => {
-    const { applicationCode, serviceName } = req.params;
-    res.json(await servicePlatformService.getServiceVersions({ applicationCode, serviceName }));
+  router.get('/services/:system/:serviceName', async (req, res) => {
+    const { system, serviceName } = req.params;
+    res.json(await servicePlatformService.getServiceVersions({ system, serviceName }));
   });
 
   // Exposed endpoints: /services-informations
-  router.get('/service-informations/:applicationCode/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
-    const { applicationCode, serviceName, serviceVersion, imageVersion } = req.params;
+  router.get('/service-informations/:system/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
+    const { system, serviceName, serviceVersion, imageVersion } = req.params;
     const info = await servicePlatformService.getServiceInformation({
-      applicationCode,
+      system,
       serviceName,
       serviceVersion,
       imageVersion,

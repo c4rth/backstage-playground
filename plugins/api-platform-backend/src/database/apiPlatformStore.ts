@@ -10,7 +10,7 @@ import { DbServicesRow } from './tables';
 export interface ApiPlatformStore {
 
   storeServiceInformation(serviceInformation: ServiceInformation): Promise<void>;
-  getServiceInformation(applicationCode: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined>;
+  getServiceInformation(system: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined>;
 
 }
 
@@ -49,7 +49,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
     this.logger.debug(`Add service ${JSON.stringify(serviceInformation)}`);
     await this.db('services').insert({
-      applicationCode: serviceInformation.applicationCode,
+      system: serviceInformation.system,
       service: serviceInformation.serviceName,
       version: serviceInformation.serviceVersion,
       imageVersion: serviceInformation.imageVersion,
@@ -61,16 +61,16 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   }
 
   async getServiceInformation(
-    applicationCode: string,
+    system: string,
     service: string,
     version: string,
     imageVersion: string
   ): Promise<ServiceInformation | undefined> {
-    this.logger.debug(`Fetch service ${applicationCode}-${service}-${version}-${imageVersion}`);
+    this.logger.debug(`Fetch service ${system}-${service}-${version}-${imageVersion}`);
     const result = await this.db<DbServicesRow>('services')
       .select('*')
       .where({
-        applicationCode,
+        applicationCode: system,
         service,
         version,
         imageVersion,
@@ -79,7 +79,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
     this.logger.debug(`Result: ${JSON.stringify(result)}`);
     if (!result) return undefined;
     return {
-      applicationCode: result.applicationCode,
+      system: result.applicationCode,
       serviceName: result.service,
       serviceVersion: result.version,
       imageVersion: result.imageVersion,

@@ -3,7 +3,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 
 export function useGetOperations(
-  appCode?: string,
+  system?: string,
   appName?: string,
   appVersion?: string,
   environment?: string,
@@ -11,9 +11,9 @@ export function useGetOperations(
   const api = useApi(appRegistryBackendApiRef);
 
   const { value, loading, error } = useAsync(() => {
-    if (!appCode || !appName || !appVersion || !environment) return Promise.resolve(undefined);
-    return api.getOperations(appCode, appName, appVersion, environment);
-  }, [api, appCode, appName, appVersion, environment]);
+    if (!system || !appName || !appVersion || !environment) return Promise.resolve(undefined);
+    return api.getOperations(system, appName, appVersion, environment);
+  }, [api, system, appName, appVersion, environment]);
 
   return {
     data: value,

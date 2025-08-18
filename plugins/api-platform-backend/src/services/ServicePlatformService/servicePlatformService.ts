@@ -118,20 +118,20 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
       return { items: services };
     },
 
-    async getServiceVersions(request: { applicationCode: string, serviceName: string }): Promise<ServiceDefinition> {
-      const { applicationCode, serviceName } = request;
+    async getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition> {
+      const { system, serviceName } = request;
       const services = await innerGetServices(catalogClient, auth, serviceName);
-      return services.filter(svc => svc.system === `${applicationCode}`)[0];
+      return services.filter(svc => svc.system === `${system}`)[0];
     },
 
-    async getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
-      const { applicationCode, serviceName, serviceVersion, imageVersion } = request;
-      const res = await apiPlatformStore.getServiceInformation(applicationCode, serviceName, serviceVersion, imageVersion);
+    async getServiceInformation(request: { system: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
+      const { system, serviceName, serviceVersion, imageVersion } = request;
+      const res = await apiPlatformStore.getServiceInformation(system, serviceName, serviceVersion, imageVersion);
       if (res) {
         return res;
       }
       return {
-        applicationCode: applicationCode,
+        system: system,
         serviceName: serviceName,
         serviceVersion: serviceVersion,
         imageVersion: imageVersion,

@@ -106,7 +106,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /apis/definitions/{appCode}/{apiName}:
+  /apis/definitions/{system}/{apiName}:
     get:
       summary: Get API versions
       description: Retrieve all versions of a specific API
@@ -114,7 +114,7 @@ paths:
       tags:
         - APIs
       parameters:
-        - name: appCode
+        - name: system
           in: path
           required: true
           description: Code of the application
@@ -148,7 +148,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /apis/definitions/{appCode}/{apiName}/{apiVersion}:
+  /apis/definitions/{system}/{apiName}/{apiVersion}:
     get:
       summary: Get specific API version
       description: Retrieve a specific version of an API
@@ -156,7 +156,7 @@ paths:
       tags:
         - APIs
       parameters:
-        - name: appCode
+        - name: system
           in: path
           required: true
           description: Code of the application
@@ -322,7 +322,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /service-informations/{applicationCode}/{serviceName}/{serviceVersion}/{imageVersion}:
+  /service-informations/{system}/{serviceName}/{serviceVersion}/{imageVersion}:
     get:
       summary: Get service information
       description: Retrieve detailed information about a specific service version
@@ -330,7 +330,7 @@ paths:
       tags:
         - Service Information
       parameters:
-        - name: applicationCode
+        - name: system
           in: path
           required: true
           description: Application code
@@ -593,7 +593,7 @@ components:
     ServiceInformation:
       type: object
       properties:
-        applicationCode:
+        system:
           type: string
           description: Application code
         serviceName:
@@ -627,7 +627,7 @@ components:
           type: object
           additionalProperties: true
       required:
-        - applicationCode
+        - system
         - serviceName
         - serviceVersion
         - imageVersion

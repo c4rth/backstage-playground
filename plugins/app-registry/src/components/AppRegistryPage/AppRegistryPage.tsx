@@ -103,13 +103,13 @@ const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => (
 export const AppRegistryPage = () => {
   const { entity } = useEntity<ComponentEntity>();
 const entityData = useMemo(() => {
-    const appCode = entity.spec.system;
+    const system = entity.spec.system;
     const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
     const environment = entity.spec?.lifecycle?.toUpperCase();
 
     return {
-      appCode,
+      system,
       appName,
       appVersion,
       environment,
@@ -117,7 +117,7 @@ const entityData = useMemo(() => {
   }, [entity]);
 
   const { data, loading, error } = useGetOperations(
-    entityData.appCode, 
+    entityData.system, 
     entityData.appName, 
     entityData.appVersion, 
     entityData.environment

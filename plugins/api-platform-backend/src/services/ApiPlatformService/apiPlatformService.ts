@@ -21,8 +21,8 @@ import { CatalogApi, EntityFilterQuery, EntityOrderQuery, GetEntitiesResponse } 
 import * as semver from 'semver';
 import { Entity } from '@backstage/catalog-model';
 
-function getFilter(apiName: string, appCode: string): EntityFilterQuery {
-  if (appCode === API_NO_SYSTEM) {
+function getFilter(apiName: string, system: string): EntityFilterQuery {
+  if (system === API_NO_SYSTEM) {
     return {
       kind: ['API'],
       'metadata.api-name': apiName, // use string, constant does not work here
@@ -31,18 +31,18 @@ function getFilter(apiName: string, appCode: string): EntityFilterQuery {
   return {
     kind: ['API'],
     'metadata.api-name': apiName, // use string, constant does not work here
-    'spec.system': appCode
+    'spec.system': system
   };
 }
 
-async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService, appCode: string, apiName: string): Promise<ApiVersionDefinition[]> {
+async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService, system: string, apiName: string): Promise<ApiVersionDefinition[]> {
   const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
     targetPluginId: 'catalog',
   });
   const entities = await catalogClient.getEntities(
     {
-      filter: getFilter(apiName, appCode),
+      filter: getFilter(apiName, system),
       fields: [CATALOG_METADATA],
     },
     { token }
@@ -191,16 +191,16 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
       };
     },
 
-    async getApiVersions(request: { applicationCode: string, apiName: string }): Promise<ApiVersionDefinition[]> {
-      return innerGetApiVersions(catalogClient, auth, request.applicationCode, request.apiName);
+    async getApiVersions(request: { system: string, apiName: string }): Promise<ApiVersionDefinition[]> {
+      return innerGetApiVersions(catalogClient, auth, request.system, request.apiName);
     },
 
-    async getApiMatchingVersion(request: { applicationCode: string, apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {
-      const apiVersions = await innerGetApiVersions(catalogClient, auth, request.applicationCode, request.apiName);
+    async getApiMatchingVersion(request: { system: string, apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {
+      const apiVersions = await innerGetApiVersions(catalogClient, auth, request.system, request.apiName);
       return apiVersions.find(apiDef => apiDef.version.startsWith(request.apiVersion));
     },
 
-    async getApiRelations(request: { applicationCode: string, apiName: string, relationType: 'provider' | 'consumer' }): Promise<ApiRelationDefinition[]> {
+    async getApiRelations(request: { system: string, apiName: string, relationType: 'provider' | 'consumer' }): Promise<ApiRelationDefinition[]> {
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
@@ -210,7 +210,7 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
           filter: {
             kind: ['API'],
             'metadata.api-name': request.apiName,
-            'spec.system': request.applicationCode
+            'spec.system': request.system
           },
           fields: [
             CATALOG_METADATA_NAME,
