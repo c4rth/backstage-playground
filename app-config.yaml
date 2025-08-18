@@ -102,6 +102,7 @@ backend:
   actions:
     pluginSources:
       - catalog
+      - api-platform
 
 permission:
   enabled: true

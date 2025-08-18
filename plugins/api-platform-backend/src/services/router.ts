@@ -10,18 +10,21 @@ import { createSystemPlatformService } from './SystemPlatformService';
 import { APIDEFINITIONS_FIELDS, ServiceInformation } from '@internal/plugin-api-platform-common';
 import { parseOrderByParam, parseSearchParam } from './ApiPlatformService/utils';
 import { RelationType } from './ApiPlatformService/types';
+import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
+import { createApiPlatformActions } from '../actions/createApiPlatformActions';
 
 export interface RouterOptions {
   logger: LoggerService;
   catalogClient: CatalogApi;
   database: DatabaseService;
   auth: AuthService;
+  actionsRegistry: ActionsRegistryService;
 }
 
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, catalogClient, database, auth } = options;
+  const { logger, catalogClient, database, auth, actionsRegistry } = options;
   const router = Router();
 
   const apiPlatformStore = await DatabaseApiPlatformStore.create({
@@ -142,6 +145,9 @@ export async function createRouter(
   router.get('/systems/:systemName', async (req, res) => {
     res.json(await systemPlatformService.getSystem({ systemName: req.params.systemName }));
   });
+
+
+  createApiPlatformActions({ actionsRegistry, apiPlatformService });
 
   return router;
 }
