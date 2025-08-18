@@ -30,6 +30,7 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
     if (isApiEntity(entity)) {
         const apiName = entity.metadata[ANNOTATION_API_NAME];
         const apiVersion = entity.metadata[ANNOTATION_API_VERSION];
+        const system = entity.spec?.system as string ?? '';
 
         if (!apiName || !apiVersion) {
             return null; // Skip entities with missing required annotations
@@ -50,7 +51,7 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
             kind: 'OpenAPI',
             title: `${apiName} ${apiVersion}`,
             text: `Description: ${description} - Definition: ${definition}`,
-            location: `${BASE_LOCATION}api/${apiName}?version=${apiVersion}`,
+            location: `${BASE_LOCATION}api/${system}/${apiName}?version=${apiVersion}`,
             lifecycle: (entity.spec?.lifecycle as string) ?? '',
         };
     }
@@ -70,6 +71,7 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
         const serviceName = entity.metadata[ANNOTATION_SERVICE_NAME];
         const serviceVersion = entity.metadata[ANNOTATION_SERVICE_VERSION];
         const lifecycle = entity.spec?.lifecycle as string ?? '';
+        const system = entity.spec?.system as string ?? '';
 
         if (!serviceName || !serviceVersion) {
             return null; // Skip entities with missing required annotations
@@ -84,7 +86,7 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
             kind: 'Service',
             title: `${serviceName} v${serviceVersion} in ${lifecycle}`,
             text: `${description} - Version: ${imageVersion} - Platform: ${platform}`,
-            location: `${BASE_LOCATION}service/${serviceName}?version=${serviceVersion}&env=${lifecycle}`,
+            location: `${BASE_LOCATION}service/${system}/${serviceName}?version=${serviceVersion}&env=${lifecycle}`,
             lifecycle,
         };
     }

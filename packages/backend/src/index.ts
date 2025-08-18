@@ -5,8 +5,6 @@ import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
 
-console.log(JSON.stringify(process.env, null, 2));
-
 const backend = createBackend();
 
 backend.add(import('@backstage/plugin-app-backend'));
