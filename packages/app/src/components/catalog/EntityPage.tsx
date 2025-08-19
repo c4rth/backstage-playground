@@ -53,10 +53,10 @@ import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqub
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 // Azure Devops
 import {
-  EntityAzurePipelinesCard,
-  isAzureDevOpsAvailable,
+  EntityAzurePipelinesContent,
   isAzurePipelinesAvailable,
-} from '@internal/plugin-azure-devops';
+  isAzureDevOpsAvailable,
+} from '@backstage-community/plugin-azure-devops';
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 // Techdocs
@@ -75,11 +75,11 @@ const cicdContent = (
   // You can for example enforce that all components of type 'service' should use GitHubActions
   <EntitySwitch>
 
-    <EntitySwitch.Case if={isAzureDevOpsAvailable}>
-      <EntityAzurePipelinesCard defaultLimit={25} />
+   <EntitySwitch.Case if={isAzureDevOpsAvailable}>
+        <EntityAzurePipelinesContent defaultLimit={25} />
     </EntitySwitch.Case>
-    <EntitySwitch.Case if={isAzurePipelinesAvailable}>
-      <EntityAzurePipelinesCard defaultLimit={25} />
+   <EntitySwitch.Case if={isAzurePipelinesAvailable}>
+        <EntityAzurePipelinesContent defaultLimit={25} />
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>

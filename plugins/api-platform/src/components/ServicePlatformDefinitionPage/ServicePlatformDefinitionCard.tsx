@@ -20,12 +20,6 @@ import { ANNOTATION_IMAGE_VERSION, ANNOTATION_SERVICE_PLATFORM } from '@internal
 import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 import { ServicePlatformRelationCard } from './ServicePlatformRelationCard';
-// Azure DevOps
-import {
-    EntityAzurePipelinesCard,
-    isAzureDevOpsAvailable,
-    isAzurePipelinesAvailable,
-} from '@internal/plugin-azure-devops';
 // App Registry
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
@@ -78,7 +72,6 @@ export const ServicePlatformDefinitionCard = memo(() => {
     }, [entity]);
 
     const availabilityChecks = useMemo(() => ({
-        azureDevOps: isAzureDevOpsAvailable(entity) || isAzurePipelinesAvailable(entity),
         sonarQube: isSonarQubeAvailable(entity),
     }), [entity]);
 
@@ -168,13 +161,7 @@ export const ServicePlatformDefinitionCard = memo(() => {
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>
-            
-            {availabilityChecks.azureDevOps && (
-                <TabbedLayout.Route path="/ci-cd" title="CI/CD">
-                    <EntityAzurePipelinesCard defaultLimit={10} />
-                </TabbedLayout.Route>
-            )}
-            
+                        
             {availabilityChecks.sonarQube && (
                 <TabbedLayout.Route path="/sonarqube" title="SonarQube">
                     <EntitySonarQubeContentPage />
