@@ -40,7 +40,7 @@
     "@backstage/plugin-devtools-backend": "^0.5.8",
     "@backstage/plugin-devtools-common": "^0.1.17",
     "@backstage/plugin-events-backend": "^0.5.5",
-    "@backstage/plugin-kubernetes-backend": "^0.20.0",
+    "@backstage/plugin-kubernetes-backend": "^0.20.1",
     "@backstage/plugin-mcp-actions-backend": "^0.1.2",
     "@backstage/plugin-permission-backend": "^0.7.3",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.11",
