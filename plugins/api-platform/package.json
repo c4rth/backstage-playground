@@ -40,7 +40,7 @@
     "@backstage/plugin-api-docs": "^0.12.10",
     "@backstage/plugin-catalog": "^1.31.2",
     "@backstage/plugin-catalog-graph": "^0.4.22",
-    "@backstage/plugin-catalog-react": "^1.20.0",
+    "@backstage/plugin-catalog-react": "^1.20.1",
     "@backstage/plugin-org": "^0.6.42",
     "@backstage/plugin-search-common": "^1.2.19",
     "@backstage/plugin-search-react": "^1.9.3",

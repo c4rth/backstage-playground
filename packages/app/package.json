@@ -25,7 +25,7 @@
     "@backstage/plugin-catalog-common": "^1.1.5",
     "@backstage/plugin-catalog-graph": "^0.4.22",
     "@backstage/plugin-catalog-import": "^0.13.4",
-    "@backstage/plugin-catalog-react": "^1.20.0",
+    "@backstage/plugin-catalog-react": "^1.20.1",
     "@backstage/plugin-catalog-unprocessed-entities": "^0.2.20",
     "@backstage/plugin-devtools": "^0.1.30",
     "@backstage/plugin-devtools-common": "^0.1.17",
