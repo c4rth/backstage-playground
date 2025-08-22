@@ -6581,9 +6581,12 @@ __metadata:
     "@backstage/plugin-scaffolder": "npm:^1.34.0"
     "@backstage/plugin-scaffolder-react": "npm:^1.19.0"
     "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/lab": "npm:4.0.0-alpha.61"
     "@types/react": "npm:*"
+    "@types/react-window": "npm:^1"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-use: "npm:^17.6.0"
+    react-window: "npm:^1.8.11"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -13107,6 +13110,15 @@ __metadata:
   peerDependencies:
     "@types/react": "*"
   checksum: 10/ea14bc84f529a3887f9954b753843820ac8a3c49fcdfec7840657ecc6a8800aad98afdbe4b973eb96c7252286bde38476fcf64b1c09527354a9a9366e516d9a2
+  languageName: node
+  linkType: hard
+
+"@types/react-window@npm:^1":
+  version: 1.8.8
+  resolution: "@types/react-window@npm:1.8.8"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10/79b70b7c33161efb14bf69115792843de8e038594136a8373cfbbcc4066c49fd611dd2d3592a9a81d19d21c075bf14e5e73a64f4d9ad32e45d4d5493f5f53918
   languageName: node
   linkType: hard
 
@@ -28993,7 +29005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-window@npm:^1.8.10, react-window@npm:^1.8.6":
+"react-window@npm:^1.8.10, react-window@npm:^1.8.11, react-window@npm:^1.8.6":
   version: 1.8.11
   resolution: "react-window@npm:1.8.11"
   dependencies:

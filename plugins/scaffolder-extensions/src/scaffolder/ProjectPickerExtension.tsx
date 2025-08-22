@@ -14,11 +14,9 @@ import {
 import { NotFoundError } from '@backstage/errors';
 import useAsync from 'react-use/esm/useAsync';
 import { useState } from 'react';
-import Select from '@material-ui/core/Select';
 import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
     const {
@@ -70,32 +68,27 @@ const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
         setProjects(result);
     });
 
-    const updateChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-        const proj = String(event.target.value);
-        setSelectedProject(proj);
-        onChange(proj);
-    };
-
     return (
         <ScaffolderField
             rawErrors={rawErrors}
             rawDescription={description}
             required={required}
             errors={errors}>
-            <FormControl required={required} fullWidth>
-                <InputLabel id="project-select-label">{title ?? 'Project'}</InputLabel>
-                <Select
-                    labelId="project-select-label"
-                    onChange={updateChange}
-                    value={selectedProject}
-                >
-                    {projects.map(item => (
-                        <MenuItem key={item} value={item}>
-                            {item}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+            <Autocomplete
+                value={selectedProject}
+                options={projects}
+                autoSelect
+                renderInput={params => (<TextField
+                    {...params}
+                    margin="dense"
+                    required={required}
+                    label={title} />
+                )}
+                onChange={(_, newValue) => {
+                    setSelectedProject(newValue ?? undefined);
+                    onChange(newValue ?? undefined);
+                }}
+            />
         </ScaffolderField>
     );
 };
