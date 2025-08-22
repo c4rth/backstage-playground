@@ -14,9 +14,11 @@ import {
 import { NotFoundError } from '@backstage/errors';
 import useAsync from 'react-use/esm/useAsync';
 import { useState } from 'react';
+import Select from '@material-ui/core/Select';
+import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
+import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import { Select, SelectedItems, SelectItem } from '@backstage/core-components';
+import InputLabel from '@material-ui/core/InputLabel';
 
 const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
     const {
@@ -24,13 +26,12 @@ const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
         required,
         schema: { title, description },
         rawErrors,
-        formData,
+        errors,
     } = props;
 
-    const [projects, setProjects] = useState<SelectItem[]>([]);
+    const [projects, setProjects] = useState<string[]>([]);
 
     const [selectedProject, setSelectedProject] = useState<undefined | string>(undefined);
-
 
     const identityApi = useApi(identityApiRef);
     const catalogApi = useApi(catalogApiRef);
@@ -63,36 +64,39 @@ const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
                     })
             )
         );
-        const result: SelectItem[] = uniqueNames
-            .sort()
-            .map(name => ({ value: name, label: name }));
+        const result: string[] = uniqueNames
+            .sort();
 
         setProjects(result);
     });
 
-    const updateChange = (
-        values: SelectedItems | null,
-    ) => {
-        const proj = String(Array.isArray(values) ? values[0] : values) ?? undefined;
+    const updateChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+        const proj = String(event.target.value);
         setSelectedProject(proj);
         onChange(proj);
     };
 
     return (
-        <FormControl
-            id="project-picker"
-            margin='normal'
+        <ScaffolderField
+            rawErrors={rawErrors}
+            rawDescription={description}
             required={required}
-            error={rawErrors?.length > 0 && !formData}>
-            <Select
-                native
-                label={title ?? 'Project'}
-                onChange={updateChange}
-                selected={selectedProject}
-                items={projects}
-            />
-            <FormHelperText>{description}</FormHelperText>
-        </FormControl>
+            errors={errors}>
+            <FormControl required={required} fullWidth>
+                <InputLabel id="project-select-label">{title ?? 'Project'}</InputLabel>
+                <Select
+                    labelId="project-select-label"
+                    onChange={updateChange}
+                    value={selectedProject}
+                >
+                    {projects.map(item => (
+                        <MenuItem key={item} value={item}>
+                            {item}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </ScaffolderField>
     );
 };
 
