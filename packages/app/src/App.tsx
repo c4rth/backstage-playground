@@ -9,7 +9,6 @@ import {
   CatalogImportPage,
   catalogImportPlugin,
 } from '@backstage/plugin-catalog-import';
-import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { orgPlugin } from '@backstage/plugin-org';
 import { SearchPage } from '@backstage/plugin-search';
 import {
@@ -35,6 +34,9 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
+// Scaffolder
+import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
+import { ScaffolderFieldExtensions } from '@backstage/plugin-scaffolder-react';
 // Theme
 import { carthThemes } from './themes/carthTheme';
 // Home
@@ -70,6 +72,7 @@ import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
 import { ToolsPage } from '@internal/plugin-toolkit';
+import { ProjectPickerFieldExtension } from '@internal/plugin-scaffolder-extensions';
 
 const app = createApp({
   apis,
@@ -139,7 +142,11 @@ const routes = (
       path="/create"
       element={
         <RequirePermission permission={taskCreatePermission}>
-          <ScaffolderPage />
+          <ScaffolderPage>
+            <ScaffolderFieldExtensions>
+              <ProjectPickerFieldExtension />
+            </ScaffolderFieldExtensions>
+          </ScaffolderPage>
         </RequirePermission>
       }
     />
