@@ -57,8 +57,9 @@ const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
                 items
                     .map(item => {
                         // Extract ABCD from 'prd.10.gemz.ABCD.ado.x'
-                        const parts = item.metadata.name.split('.');
-                        return parts.length >= 4 ? parts[3] : item.metadata.name;
+                        // const parts = item.metadata.name.split('.');
+                        // return parts.length >= 4 ? parts[3] : item.metadata.name;
+                        return item.metadata.name;
                     })
             )
         );
