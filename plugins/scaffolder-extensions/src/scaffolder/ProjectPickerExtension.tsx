@@ -52,7 +52,20 @@ const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
             fields: ['metadata.name'],
         });
 
-        const result = items.map(item => ({ value: item.metadata.name, label: item.metadata.name }));
+        const uniqueNames = Array.from(
+            new Set(
+                items
+                    .map(item => {
+                        // Extract ABCD from 'prd.10.gemz.ABCD.ado.x'
+                        const parts = item.metadata.name.split('.');
+                        return parts.length >= 4 ? parts[3] : item.metadata.name;
+                    })
+            )
+        );
+        const result: SelectItem[] = uniqueNames
+            .sort()
+            .map(name => ({ value: name, label: name }));
+
         setProjects(result);
     });
 
