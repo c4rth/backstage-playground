@@ -13,6 +13,7 @@ import {
 import { Config } from '@backstage/config';
 import { adminToolsPermission } from '@internal/plugin-permissions-common';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+import { templateManagementPermission } from '@backstage/plugin-scaffolder-common/alpha';
 
 
 export class MyPermissionPolicy implements PermissionPolicy {
@@ -43,7 +44,7 @@ export class MyPermissionPolicy implements PermissionPolicy {
           : AuthorizeResult.DENY,
       };
     }
-
+    
     // SuperUsers: allow all if in adminGroups
     const isSuperUser =
       this.superUserGroups.length !== 0 &&
@@ -58,6 +59,7 @@ export class MyPermissionPolicy implements PermissionPolicy {
       catalogEntityDeletePermission,
       adminToolsPermission,
       devToolsAdministerPermission,
+      templateManagementPermission,
     ];
     if (denyPermissions.some(perm => isPermission(request.permission, perm))) {
       return { result: AuthorizeResult.DENY };
