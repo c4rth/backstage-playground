@@ -54,7 +54,7 @@ export type SystemDefinition = {
 };
 
 export type ServiceInformation = {
-  system: string;
+  applicationCode: string;
   serviceName: string;
   serviceVersion: string;
   imageVersion: string;

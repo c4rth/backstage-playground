@@ -49,7 +49,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
     this.logger.debug(`Add service ${JSON.stringify(serviceInformation)}`);
     await this.db('services').insert({
-      system: serviceInformation.system,
+      applicationCode: serviceInformation.applicationCode,
       service: serviceInformation.serviceName,
       version: serviceInformation.serviceVersion,
       imageVersion: serviceInformation.imageVersion,
@@ -79,7 +79,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
     this.logger.debug(`Result: ${JSON.stringify(result)}`);
     if (!result) return undefined;
     return {
-      system: result.applicationCode,
+      applicationCode: result.applicationCode,
       serviceName: result.service,
       serviceVersion: result.version,
       imageVersion: result.imageVersion,

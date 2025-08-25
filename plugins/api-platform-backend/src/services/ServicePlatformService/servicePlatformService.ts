@@ -124,14 +124,14 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
       return services.filter(svc => svc.system === `${system}`)[0];
     },
 
-    async getServiceInformation(request: { system: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
-      const { system, serviceName, serviceVersion, imageVersion } = request;
-      const res = await apiPlatformStore.getServiceInformation(system, serviceName, serviceVersion, imageVersion);
+    async getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
+      const { applicationCode, serviceName, serviceVersion, imageVersion } = request;
+      const res = await apiPlatformStore.getServiceInformation(applicationCode, serviceName, serviceVersion, imageVersion);
       if (res) {
         return res;
       }
       return {
-        system: system,
+        applicationCode: applicationCode,
         serviceName: serviceName,
         serviceVersion: serviceVersion,
         imageVersion: imageVersion,
