@@ -6,14 +6,19 @@ import {
     TableColumn,
 } from '@backstage/core-components';
 import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
-import { useGetServices } from '../../hooks';
 import { ServicePlatformChip } from './ServicePlatformChip';
-import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { Fragment, useCallback, useMemo } from 'react';
+import { ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName } from '../common';
+import { useApi } from '@backstage/core-plugin-api';
+import { apiPlatformBackendApiRef } from '../../api';
+import { Query } from '@material-table/core';
+import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 
 type TableRow = {
     id: number,
+    name: string,
+    system: string,
     serviceDefinition: ServiceDefinition,
 }
 
@@ -72,102 +77,157 @@ function createEnvironmentColumn(env: string): TableColumn<TableRow> {
 
 const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => ({
     id: idx,
+    name: serviceDefinition.name,
+    system: serviceDefinition.system,
     serviceDefinition,
 });
 
+const columns: TableColumn<TableRow>[] = [
+    {
+        title: 'Name',
+        width: '25%',
+        field: 'name',
+        highlight: true,
+        defaultSort: 'asc',
+        render: ({ serviceDefinition }) => (
+            <Link to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}>
+                <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
+            </Link>
+        ),
+    },
+    {
+        title: 'Versions',
+        width: '5%',
+        field: 'version',
+        sorting: false,
+        align: 'center',
+        cellStyle: { padding: '0px' },
+        render: ({ serviceDefinition }) => (
+            <List style={listStyle}>
+                {serviceDefinition.versions?.map((version, idx) => (
+                    <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
+                        <ListItem style={listItemStyle}>
+                            <ServicePlatformChip
+                                index={idx}
+                                text={version.version}
+                                link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
+                            />
+                        </ListItem>
+                        {idx < serviceDefinition.versions.length - 1 && <Divider />}
+                    </Fragment>
+                ))}
+            </List>
+        ),
+    },
+    createEnvironmentColumn('tst'),
+    createEnvironmentColumn('gtu'),
+    createEnvironmentColumn('uat'),
+    createEnvironmentColumn('ptp'),
+    createEnvironmentColumn('prd'),
+    {
+        title: 'System',
+        width: '10%',
+        highlight: true,
+        field: 'system',
+        render: ({ serviceDefinition }) => (
+            <Link to={`/api-platform/system/${serviceDefinition.system}`}>
+                <ComponentDisplayName text={serviceDefinition.system} type="system" />
+            </Link>
+        ),
+    },
+];
+
+const PAGE_SIZE = 20;
+
+async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>) {
+    const page = query.page ?? 0;
+    const pageSize = query.pageSize ?? PAGE_SIZE;
+    const result = await apiPlatformApi.listServices({
+        offset: page * pageSize,
+        limit: pageSize,
+        search: query.search,
+        orderBy: query.orderBy ? {
+            field: query.orderBy.field,
+            direction: query.orderDirection,
+        } as ServiceDefinitionsListRequest['orderBy'] : undefined,
+    });
+    if (result) {
+        return {
+            data: result.items.map(toRow),
+            totalCount: result.totalCount,
+            page: Math.floor(result.offset / result.limit),
+        };
+    }
+    return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+    };
+}
+
 export const ServicePlatformTable = () => {
-    const { items, loading, error } = useGetServices();
+    const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem('servicePlatformTableSearch') ?? '';
+    const [countRows, setCountRows] = useState<number>(0);
+    const [loadingCount, setLoadingCount] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const tableOptions = useMemo(() => ({
+        search: true,
+        padding: 'dense' as const,
+        pageSize: PAGE_SIZE,
+        pageSizeOptions: [10, PAGE_SIZE, 50],
+        showEmptyDataSourceMessage: !loadingCount,
+        draggable: false,
+        thirdSortClick: false,
+        searchText: initialSearch,
+    }), [loadingCount, initialSearch]);
 
 
-    const columns: TableColumn<TableRow>[] = useMemo(() => [
-        {
-            title: 'Name',
-            width: '25%',
-            field: 'serviceDefinition.serviceName',
-            highlight: true,
-            defaultSort: 'asc',
-            render: ({ serviceDefinition }) => (
-                <Link to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}>
-                    <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
-                </Link>
-            ),
+    const tableTitle = useMemo(() => (
+        <Box display="flex" alignItems="center">
+            <Box mr={1} />
+            Services ({countRows})
+        </Box>
+    ), [countRows]);
+
+    useEffect(() => {
+        const fetchCount = async () => {
+            setLoadingCount(true);
+            setError(null);
+            try {
+                const count = await apiPlatformApi.getServicesCount();
+                setCountRows(count);
+            } catch (err) {
+                setError(err as Error);
+            } finally {
+                setLoadingCount(false);
+            }
+        };
+        fetchCount();
+    }, [apiPlatformApi]);
+
+    const fetchData = useCallback(
+        async (query: Query<TableRow>) => {
+            if (query.search !== undefined) {
+                sessionStorage.setItem('servicePlatformTableSearch', query.search);
+            }
+            return getData(apiPlatformApi, query);
         },
-        {
-            title: 'Versions',
-            width: '5%',
-            field: 'version',
-            sorting: false,
-            align: 'center',
-            cellStyle: { padding: '0px' },
-            render: ({ serviceDefinition }) => (
-                <List style={listStyle}>
-                    {serviceDefinition.versions?.map((version, idx) => (
-                        <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
-                            <ListItem style={listItemStyle}>
-                                <ServicePlatformChip
-                                    index={idx}
-                                    text={version.version}
-                                    link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
-                                />
-                            </ListItem>
-                            {idx < serviceDefinition.versions.length - 1 && <Divider />}
-                        </Fragment>
-                    ))}
-                </List>
-            ),
-        },
-        createEnvironmentColumn('tst'),
-        createEnvironmentColumn('gtu'),
-        createEnvironmentColumn('uat'),
-        createEnvironmentColumn('ptp'),
-        createEnvironmentColumn('prd'),
-        {
-            title: 'System',
-            width: '10%',
-            highlight: true,
-            field: 'serviceDefinition.system',
-            render: ({ serviceDefinition }) => (
-                <Link to={`/api-platform/system/${serviceDefinition.system}`}>
-                    <ComponentDisplayName text={serviceDefinition.system} type="system" />
-                </Link>
-            ),
-        },
-    ], []);
-
-    const rows = useMemo(() => (items?.map(toRow) ?? []), [items]);
-    const showPagination = rows.length > 20;
-    const itemsCount = items?.length ?? 0;
-
-    const handleSearchChange = useCallback((search: string) => {
-        sessionStorage.setItem('servicePlatformTableSearch', search);
-    }, []);
+        [apiPlatformApi]
+    );
 
 
-    if (loading) return <Progress />;
+    if (loadingCount) return <Progress />;
     if (error) return <ResponseErrorPanel error={error} />;
 
     return (
         <Table<TableRow>
+            isLoading={loadingCount}
             columns={columns}
-            options={{
-                search: true,
-                padding: 'dense',
-                paging: showPagination,
-                pageSize: 20,
-                showEmptyDataSourceMessage: !loading,
-                draggable: false,
-                thirdSortClick: false,
-                searchText: initialSearch,
-            }}
-            onSearchChange={handleSearchChange}
-            title={
-                <Box display="flex" alignItems="center">
-                    <Box mr={1} />
-                    Services ({itemsCount})
-                </Box>
-            }
-            data={rows}
+            options={tableOptions}
+            title={tableTitle}
+            data={fetchData}
         />
     );
 };

@@ -6,7 +6,6 @@ import {
   ANNOTATION_API_NAME,
   ANNOTATION_SERVICE_NAME,
   CATALOG_KIND,
-  CATALOG_METADATA,
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
   CATALOG_RELATIONS,
@@ -26,6 +25,25 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
   logger.info('Initializing SystemPlatformService');
 
   return {
+
+    async getSystemsCount(): Promise<number> {
+          const { token } = await auth.getPluginRequestToken({
+            onBehalfOf: await auth.getOwnServiceCredentials(),
+            targetPluginId: 'catalog',
+          });
+          const entities = await catalogClient.getEntities(
+            {
+              filter: {
+                kind: ['System'],
+              },
+              fields: [
+                CATALOG_METADATA_NAME,
+              ],
+            },
+            { token });
+          return entities.items.length;
+    },
+
     async listSystems(): Promise<{ items: Entity[] }> {
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
@@ -38,7 +56,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
           },
           fields: [
             CATALOG_KIND,
-            CATALOG_METADATA,
+            CATALOG_METADATA_NAME,
             CATALOG_RELATIONS
           ],
         },

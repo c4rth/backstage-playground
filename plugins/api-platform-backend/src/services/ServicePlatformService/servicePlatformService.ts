@@ -5,11 +5,19 @@ import {
   ANNOTATION_SERVICE_NAME,
   ANNOTATION_SERVICE_PLATFORM,
   ANNOTATION_SERVICE_VERSION,
-  CATALOG_METADATA,
+  CATALOG_METADATA_IMAGE_VERSION,
+  CATALOG_METADATA_NAME,
+  CATALOG_METADATA_NAMESPACE,
+  CATALOG_METADATA_SERVICE_NAME,
+  CATALOG_METADATA_SERVICE_PLATFORM,
+  CATALOG_METADATA_SERVICE_VERSION,
   CATALOG_RELATIONS,
   CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_SYSTEM,
   ServiceDefinition,
+  ServiceDefinitionListResult,
+  ServiceDefinitionsListRequest,
+  ServiceDefinitionsOptions,
   ServiceInformation,
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
@@ -30,7 +38,23 @@ function getFilter(serviceName?: string): EntityFilterQuery {
   };
 }
 
-async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, serviceName: string | undefined): Promise<ServiceDefinition[]> {
+function getOrder(order: ServiceDefinitionsOptions | undefined): { field1: "name" | "system"; field2: "name" | "system"; order: 'asc' | 'desc'; } | undefined {
+  if (!order) return undefined;
+  if (order?.field === 'system') {
+    return {
+      field1: "system",
+      field2: "name",
+      order: order.direction,
+    };
+  }
+  return {
+    field1: "name",
+    field2: "system",
+    order: order.direction,
+  };
+}
+
+async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, orderBy: ServiceDefinitionsOptions | undefined, serviceName: string | undefined): Promise<ServiceDefinition[]> {
   const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
     targetPluginId: 'catalog',
@@ -39,22 +63,32 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
     {
       filter: getFilter(serviceName),
       fields: [
-        CATALOG_METADATA,
+        CATALOG_METADATA_NAME,
+        CATALOG_METADATA_NAMESPACE,
+        CATALOG_METADATA_SERVICE_NAME,
+        CATALOG_METADATA_SERVICE_PLATFORM,
+        CATALOG_METADATA_SERVICE_VERSION,
+        CATALOG_METADATA_IMAGE_VERSION,
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_LIFECYCLE,
-        CATALOG_RELATIONS],
+        CATALOG_RELATIONS,
+      ],
     },
     { token });
 
   const mapServices = new Map<string, ServiceDefinition>();
 
   for (const entity of entities.items) {
-    const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
-    const system = entity.spec?.system?.toString();
-    const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
-    if (!name || !version) continue;
 
-    const lifecycle = entity.spec?.lifecycle?.toString().toLowerCase() || '-';
+    if (!entity.metadata || !entity.spec) 
+      continue;
+    const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
+    const system = entity.spec.system?.toString();
+    const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
+    if (!name || !version)
+      continue;
+
+    const lifecycle = entity.spec.lifecycle?.toString().toLowerCase() || '-';
 
     // Get or create service definition
     const mapKey = `${system}-${name}`;
@@ -96,7 +130,34 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, se
     );
   }
 
-  return Array.from(mapServices.values());
+  const svcDefs = Array.from(mapServices.values());
+
+  // Sort by order
+  if (orderBy) {
+    const order = getOrder(orderBy);
+    if (order) {
+      svcDefs.sort((a, b) => {
+        const aValue1 = a[order.field1];
+        const bValue1 = b[order.field1];
+        if (aValue1 < bValue1) 
+          return order.order === 'asc' ? -1 : 1;
+        if (aValue1 > bValue1) 
+          return order.order === 'asc' ? 1 : -1;
+
+        // If main field is equal, sort by secondary field
+        const aValue2 = a[order.field2];
+        const bValue2 = b[order.field2];
+        if (aValue2 < bValue2)
+          return order.order === 'asc' ? -1 : 1;
+        if (aValue2 > bValue2)
+          return order.order === 'asc' ? 1 : -1;
+
+        return 0;
+      });
+    }
+  }
+
+  return svcDefs;
 }
 
 export interface ServicePlatformServiceOptions {
@@ -113,14 +174,61 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
 
   return {
 
-    async listServices(): Promise<{ items: ServiceDefinition[] }> {
-      const services = await innerGetServices(catalogClient, auth, undefined);
-      return { items: services };
+    async getServicesCount(): Promise<number> {
+      const { token } = await auth.getPluginRequestToken({
+        onBehalfOf: await auth.getOwnServiceCredentials(),
+        targetPluginId: 'catalog',
+      });
+      const entities = await catalogClient.getEntities(
+        {
+          filter: getFilter(undefined),
+          fields: [
+            CATALOG_SPEC_SYSTEM,
+            CATALOG_METADATA_SERVICE_NAME,
+          ],
+        },
+        { token });
+
+      const uniqueNames = new Set<string>();
+      for (const entity of entities.items) {
+        if (entity.metadata) {
+          const svcName = `${entity.spec?.system?.toString()}-${entity.metadata[ANNOTATION_SERVICE_NAME]?.toString()}`;
+          if (svcName) {
+            uniqueNames.add(svcName);
+          }
+        }
+      }
+
+      return uniqueNames.size;
+    },
+
+    async listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
+      const services = await innerGetServices(catalogClient, auth, request.orderBy, undefined);
+
+      let result = services;
+      const search = request.search?.toLowerCase();
+      if (search) {
+        result = services.filter(svc => {
+          return (
+            svc.name.toLowerCase().includes(search) ||
+            svc.system.toLowerCase().includes(search)
+          );
+        });
+      }
+
+      const offset = request.offset ?? 0;
+      const limit = request.limit ?? 20;
+      return {
+        items: result.slice(offset, offset + limit),
+        offset,
+        limit,
+        totalCount: result.length,
+      };
     },
 
     async getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition> {
       const { system, serviceName } = request;
-      const services = await innerGetServices(catalogClient, auth, serviceName);
+      const services = await innerGetServices(catalogClient, auth, undefined, serviceName);
       return services.filter(svc => svc.system === `${system}`)[0];
     },
 

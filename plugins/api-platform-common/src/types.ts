@@ -1,5 +1,7 @@
 import { Entity } from "@backstage/catalog-model";
 
+// API 
+
 export type ApiVersionDefinition = {
   entityRef: string;
   version: string;
@@ -16,6 +18,37 @@ export type ApiRelationDefinition = {
   apiVersion: string;
   services: ApiRelationServiceDefinition[];
 };
+
+export type ApiDefinitionsListFields =
+  | 'name'
+  | 'description'
+  | 'system';
+
+export const APIDEFINITIONS_FIELDS = [
+  'name',
+  'description',
+  'system'] as const;
+
+export type ApiDefinitionListResult = {
+  items: Entity[];
+  offset: number;
+  limit: number;
+  totalCount: number;
+};
+
+export type ApiDefinitionsOptions = {
+  field: ApiDefinitionsListFields;
+  direction: 'asc' | 'desc';
+};
+
+export type ApiDefinitionsListRequest = {
+  offset?: number,
+  limit?: number,
+  orderBy?: ApiDefinitionsOptions,
+  search?: string,
+};
+
+// Services
 
 export type ServiceEnvironmentDefinition = {
   imageVersion: string;
@@ -42,15 +75,16 @@ export type ServiceDefinition = {
   versions: ServiceVersionDefinition[];
 };
 
+export type ServiceDefinitionListResult = {
+  items: ServiceDefinition[];
+  offset: number;
+  limit: number;
+  totalCount: number;
+};
+
 export type ServiceApisDefinition = {
   consumedApis?: string[];
   providedApis?: string[];
-};
-
-export type SystemDefinition = {
-  entity: Entity;
-  apis: string[];
-  services: string[];
 };
 
 export type ServiceInformation = {
@@ -63,30 +97,30 @@ export type ServiceInformation = {
   apiDependencies: ServiceApisDefinition;
 };
 
-
-export type ApiDefinitionsListFields =
-  | 'name'
-  | 'description'
-  | 'system';
-
-export const APIDEFINITIONS_FIELDS = [
+export const SERVICEDEFINITIONS_FIELDS = [
   'name',
-  'description',
   'system'] as const;
 
-export type ApiDefinitionListOptions = {
-  offset?: number;
-  limit?: number;
-  orderBy?: {
-    field: ApiDefinitionsListFields;
-    direction: 'asc' | 'desc';
-  };
-  search?: string;
+export type ServiceDefinitionsListFields =
+  | 'name'
+  | 'system';
+
+export type ServiceDefinitionsOptions = {
+  field: ServiceDefinitionsListFields;
+  direction: 'asc' | 'desc';
 };
 
-export type ApiDefinitionListResult = {
-  items: Entity[];
-  offset: number;
-  limit: number;
-  totalCount: number;
+export type ServiceDefinitionsListRequest = {
+  offset?: number,
+  limit?: number,
+  orderBy?: ServiceDefinitionsOptions,
+  search?: string,
+};
+
+// Systems
+
+export type SystemDefinition = {
+  entity: Entity;
+  apis: string[];
+  services: string[];
 };

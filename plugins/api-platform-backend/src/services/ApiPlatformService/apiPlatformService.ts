@@ -1,5 +1,5 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
-import { ApiDefinitionsListRequest, ApiDefinitionsOptions, ApiPlatformService } from './types';
+import { ApiPlatformService } from './types';
 import {
   ANNOTATION_API_NAME,
   ANNOTATION_API_PROJECT,
@@ -15,7 +15,9 @@ import {
   CATALOG_METADATA_NAME,
   CATALOG_RELATIONS,
   CATALOG_SPEC_SYSTEM,
-  API_NO_SYSTEM
+  API_NO_SYSTEM,
+  ApiDefinitionsOptions,
+  ApiDefinitionsListRequest
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery, EntityOrderQuery, GetEntitiesResponse } from '@backstage/catalog-client';
 import * as semver from 'semver';

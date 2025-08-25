@@ -21,6 +21,7 @@ import { ComponentHeaderContextMenu } from '../common/ComponentHeaderContextMenu
 type MapVersionEnvironment = Map<string, Map<string, string>>
 
 function parseServiceDefinition(svcDef: ServiceDefinition | undefined): MapVersionEnvironment {
+
   const mapVersion = new Map<string, Map<string, string>>();
   const envKeys: Array<'tst' | 'gtu' | 'uat' | 'ptp' | 'prd'> = ['tst', 'gtu', 'uat', 'ptp', 'prd'];
   svcDef?.versions.forEach(version => {
@@ -50,6 +51,7 @@ export const ServicePlatformDefinitionPage = () => {
   const configApi = useApi(configApiRef);
 
   const mapVersionEnv = useMemo(() => parseServiceDefinition(serviceDefinition), [serviceDefinition]);
+
   const versions = useMemo(() =>
     serviceDefinition?.versions?.map(v => ({ label: v.version, value: v.version })) || [],
     [serviceDefinition]

@@ -1,16 +1,9 @@
-import { ApiDefinitionListResult, ApiDefinitionsListFields, ApiRelationDefinition, ApiVersionDefinition } from "@internal/plugin-api-platform-common";
-
-export type ApiDefinitionsOptions = {
-  field: ApiDefinitionsListFields;
-  direction: 'asc' | 'desc';
-};
-
-export type ApiDefinitionsListRequest = {
-  offset?: number,
-  limit?: number,
-  orderBy?: ApiDefinitionsOptions,
-  search?: string,
-};
+import { 
+  ApiDefinitionListResult, 
+  ApiDefinitionsListRequest, 
+  ApiRelationDefinition, 
+  ApiVersionDefinition 
+} from "@internal/plugin-api-platform-common";
 
 export type RelationType = 'provider' | 'consumer';
 

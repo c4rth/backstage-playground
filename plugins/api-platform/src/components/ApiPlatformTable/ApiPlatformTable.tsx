@@ -10,7 +10,7 @@ import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box } from '@material-ui/core';
 import {
     ANNOTATION_API_NAME,
-    ApiDefinitionListOptions,
+    ApiDefinitionsListRequest,
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
@@ -47,7 +47,7 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
         orderBy: query.orderBy ? {
             field: query.orderBy.field,
             direction: query.orderDirection,
-        } as ApiDefinitionListOptions['orderBy'] : undefined,
+        } as ApiDefinitionsListRequest['orderBy'] : undefined,
     });
     if (result) {
         return {
@@ -135,7 +135,7 @@ export const ApiPlatformTable = () => {
                 setCountRows(count);
             } catch (err) {
                 setError(err as Error);
-            } finally {
+            } finally { 
                 setLoadingCount(false);
             }
         };

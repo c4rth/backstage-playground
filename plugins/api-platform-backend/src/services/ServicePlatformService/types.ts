@@ -1,16 +1,25 @@
-import { ServiceDefinition, ServiceInformation } from "@internal/plugin-api-platform-common";
- 
+import { 
+  ServiceDefinition, 
+  ServiceDefinitionListResult, 
+  ServiceDefinitionsListRequest, 
+  ServiceInformation 
+} from "@internal/plugin-api-platform-common";
+
+
+
 export interface ServicePlatformService {
- 
+
   // api-platform frontend
- 
-  listServices(): Promise<{ items: ServiceDefinition[] }>;
- 
+
+  getServicesCount(): Promise<number>;
+
+  listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult>;
+
   getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition>;
- 
+
   // api-management service
- 
+
   getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined>;
- 
+
   addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string>;
 }

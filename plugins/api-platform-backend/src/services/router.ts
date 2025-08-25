@@ -7,7 +7,7 @@ import { createApiPlatformService } from './ApiPlatformService';
 import { createCatalogPlatformService } from './CatalogPlatformService';
 import { createServicePlatformService } from './ServicePlatformService';
 import { createSystemPlatformService } from './SystemPlatformService';
-import { APIDEFINITIONS_FIELDS, ServiceInformation } from '@internal/plugin-api-platform-common';
+import { APIDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation } from '@internal/plugin-api-platform-common';
 import { parseOrderByParam, parseSearchParam } from './ApiPlatformService/utils';
 import { RelationType } from './ApiPlatformService/types';
 
@@ -107,11 +107,20 @@ export async function createRouter(
   });
 
   // Endpoints: /services
-  router.get('/services', async (_req, res) => {
-    res.json(await servicePlatformService.listServices());
+
+  router.get('/services/count', async (_req, res) => {
+    res.json(await servicePlatformService.getServicesCount());
   });
 
-  router.get('/services/:system/:serviceName', async (req, res) => {
+  router.get('/services/definitions', async (req, res) => {
+    const offset = parseInt(req.query.offset as string, 10) || 0;
+    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const orderBy = parseOrderByParam(req.query.orderBy, SERVICEDEFINITIONS_FIELDS);
+    const search = parseSearchParam(req.query.search);
+    res.json(await servicePlatformService.listServices({ limit, offset, orderBy, search }));
+  });
+
+  router.get('/services/definitions/:system/:serviceName', async (req, res) => {
     const { system, serviceName } = req.params;
     res.json(await servicePlatformService.getServiceVersions({ system, serviceName }));
   });
@@ -135,11 +144,16 @@ export async function createRouter(
   });
 
   // Endpoints: /systems
-  router.get('/systems', async (_req, res) => {
+  router.get('/systems/definitions', async (_req, res) => {
     res.json(await systemPlatformService.listSystems());
   });
 
-  router.get('/systems/:systemName', async (req, res) => {
+  router.get('/systems/count', async (_req, res) => {
+    res.json(await systemPlatformService.getSystemsCount());
+  });
+
+
+  router.get('/systems/definitions/:systemName', async (req, res) => {
     res.json(await systemPlatformService.getSystem({ systemName: req.params.systemName }));
   });
 
