@@ -2,7 +2,7 @@ app:
   title: Carth Backstage App
   baseUrl: http://localhost:3000
   support:
-    url: https://github.com/backstage/backstage/issues # Used by common ErrorPage
+    url: https://github.com/c4rth # Used by common ErrorPage
     items: # Used by common SupportButton component
       - title: Mail
         icon: email
@@ -109,7 +109,8 @@ permission:
   rbac:
     admin:
       superUsers:
-        - group:default/team-a.c
+        #- group:default/team-a.c
+        - group:default/team-x.c
   # rbac:
   #   pluginsWithPermission:
   #     - catalog

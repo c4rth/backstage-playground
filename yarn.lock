@@ -1927,13 +1927,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-shortcuts@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "@backstage-community/plugin-shortcuts@npm:0.10.0"
+"@backstage-community/plugin-shortcuts@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@backstage-community/plugin-shortcuts@npm:0.11.0"
   dependencies:
-    "@backstage/core-components": "npm:^0.17.3"
-    "@backstage/core-plugin-api": "npm:^1.10.8"
-    "@backstage/theme": "npm:^0.6.6"
+    "@backstage/core-components": "npm:^0.17.4"
+    "@backstage/core-plugin-api": "npm:^1.10.9"
+    "@backstage/theme": "npm:^0.6.7"
     "@backstage/types": "npm:^1.2.1"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
@@ -1946,7 +1946,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/df9442d9cea6bf9615b3ba1ca20fdb47bcabf2e23729a52763d66e306a3e4bd673ac4f70615c056bdefeeca3cd92e74767eadcc9e1890156cc649f689c6893be
+  checksum: 10/7af6a2e0958b9e05b9f1d4ea063aafce7dc88472da6d7bfaff2b19867608cd723c07f06c8bbade633e61eeb01b8f94d8a5cbabe4c433aa69511ec24bb070da25
   languageName: node
   linkType: hard
 
@@ -14116,7 +14116,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-azure-devops": "npm:^0.18.0"
     "@backstage-community/plugin-entity-validation": "npm:^0.10.0"
-    "@backstage-community/plugin-shortcuts": "npm:^0.10.0"
+    "@backstage-community/plugin-shortcuts": "npm:^0.11.0"
     "@backstage-community/plugin-sonarqube": "npm:^0.17.0"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.9.0"
     "@backstage/app-defaults": "npm:^1.6.5"
