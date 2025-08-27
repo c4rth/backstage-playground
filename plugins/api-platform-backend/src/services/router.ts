@@ -1,14 +1,14 @@
 import express from 'express';
 import Router from 'express-promise-router';
 import { DatabaseApiPlatformStore } from '../database/apiPlatformStore';
-import { AuthService, DatabaseService, LoggerService } from '@backstage/backend-plugin-api';
+import { AuthService, DatabaseService, HttpAuthService, LoggerService, UserInfoService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { createApiPlatformService } from './ApiPlatformService';
 import { createCatalogPlatformService } from './CatalogPlatformService';
 import { createServicePlatformService } from './ServicePlatformService';
 import { createSystemPlatformService } from './SystemPlatformService';
-import { APIDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation } from '@internal/plugin-api-platform-common';
-import { parseOrderByParam, parseSearchParam } from './ApiPlatformService/utils';
+import { APIDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation, SYSTEMDEFINITIONS_FIELDS } from '@internal/plugin-api-platform-common';
+import { parseOrderByParam, parseSearchParam, parseTypeParam } from './ApiPlatformService/utils';
 import { RelationType } from './ApiPlatformService/types';
 
 export interface RouterOptions {
@@ -16,12 +16,14 @@ export interface RouterOptions {
   catalogClient: CatalogApi;
   database: DatabaseService;
   auth: AuthService;
+  httpAuth: HttpAuthService;
+  userInfo: UserInfoService;
 }
 
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, catalogClient, database, auth } = options;
+  const { logger, catalogClient, database, auth, httpAuth, userInfo } = options;
   const router = Router();
 
   const apiPlatformStore = await DatabaseApiPlatformStore.create({
@@ -48,7 +50,7 @@ export async function createRouter(
   const systemPlatformService = await createSystemPlatformService({
     logger,
     catalogClient,
-    auth
+    auth,
   });
 
   router.use(express.json());
@@ -144,17 +146,35 @@ export async function createRouter(
   });
 
   // Endpoints: /systems
-  router.get('/systems/definitions', async (_req, res) => {
-    res.json(await systemPlatformService.listSystems());
+  router.get('/systems/definitions', async (req, res) => {
+    const offset = parseInt(req.query.offset as string, 10) || 0;
+    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const orderBy = parseOrderByParam(req.query.orderBy, SYSTEMDEFINITIONS_FIELDS);
+    const search = parseSearchParam(req.query.search);
+    const type = parseTypeParam(req.query.type) || "all";
+    let userEntityRef = undefined;
+    if (type === "owned") {
+      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const user = await userInfo.getUserInfo(credentials);
+      userEntityRef = user.userEntityRef;
+    }
+    res.json(await systemPlatformService.listSystems({ limit, offset, orderBy, search, type, userEntityRef }));
   });
 
-  router.get('/systems/count', async (_req, res) => {
-    res.json(await systemPlatformService.getSystemsCount());
+  router.get('/systems/count', async (req, res) => {
+    const type = parseTypeParam(req.query.type) || "all";
+    let userEntityRef = undefined;
+    if (type === "owned") {
+      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const user = await userInfo.getUserInfo(credentials);
+      userEntityRef = user.userEntityRef;
+    }
+    res.json(await systemPlatformService.getSystemsCount(type, userEntityRef));
   });
 
 
   router.get('/systems/definitions/:systemName', async (req, res) => {
-    res.json(await systemPlatformService.getSystem({ systemName: req.params.systemName }));
+    res.json(await systemPlatformService.getSystem(req.params.systemName));
   });
 
   return router;

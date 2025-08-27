@@ -22,3 +22,10 @@ export const parseSearchParam = (str: unknown): string | undefined => {
   if (typeof str !== 'string') throw new InputError('invalid search query, must be a string');
   return str;
 };
+
+export const parseTypeParam = (str: unknown): 'all' | 'owned' | undefined => {
+  if (str === undefined) return undefined;
+  if (typeof str !== 'string') throw new InputError('invalid type query, must be a string');
+  if (!['all', 'owned'].includes(str)) throw new InputError("invalid type query, must be 'all' or 'owned'");
+  return str as 'all' | 'owned';
+};

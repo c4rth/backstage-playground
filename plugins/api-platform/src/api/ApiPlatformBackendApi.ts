@@ -1,5 +1,4 @@
 import { createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
-import { Entity } from "@backstage/catalog-model";
 import {
   ApiDefinitionsListRequest,
   ApiDefinitionListResult,
@@ -7,7 +6,10 @@ import {
   ServiceDefinition,
   ServiceDefinitionsListRequest,
   ServiceDefinitionListResult,
-  SystemDefinition
+  SystemDefinition,
+  SystemDefinitionListResult,
+  SystemDefinitionsListRequest,
+  SystemDefinitionType
 } from "@internal/plugin-api-platform-common";
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
@@ -27,7 +29,9 @@ export interface ApiPlatformBackendApi {
 
   getServiceVersions(system: string, serviceName: string): Promise<(ServiceDefinition)>;
 
-  listSystems(): Promise<{ items: Entity[] }>;
+  getSystemsCount(type: SystemDefinitionType): Promise<number>;
+
+  listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult>;
 
   getSystem(systemName: string): Promise<(SystemDefinition)>;
 
@@ -93,6 +97,13 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return searchParams;
   }
 
+  clearCache(): void {
+    this.baseUrlCache = null;
+    this.baseUrlPromise = null;
+  }
+
+  // APIs
+
   async getApisCount(): Promise<number> {
     return this.fetchJson<number>('/apis/count');
   }
@@ -120,6 +131,8 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     const versions = await this.fetchJson<ApiVersionDefinition[]>(path);
     return Array.isArray(versions) ? versions : [];
   }
+
+  // Services
 
   async getServicesCount(): Promise<number> {
     return this.fetchJson<number>('/services/count');
@@ -151,12 +164,27 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return this.fetchJson<ServiceDefinition>(`/services/definitions/${encodedSystemName}/${encodedServiceName}`);
   }
 
-  async getSystemsCount(): Promise<number> {
-    return this.fetchJson<number>('/systems/count');
+  // Systems
+
+  async getSystemsCount(type: SystemDefinitionType): Promise<number> {
+    return this.fetchJson<number>('/systems/count', this.buildSearchParams({ type }));
   }
 
-  async listSystems(): Promise<{ items: Entity[] }> {
-    return this.fetchJson<{ items: Entity[] }>('/systems/definitions');
+  async listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult> {
+    const { offset, limit, orderBy, search, type } = options;
+
+    const params: Record<string, string | number | undefined> = {
+      offset,
+      limit,
+      search,
+      type,
+    };
+
+    if (orderBy) {
+      params.orderBy = `${orderBy.field}=${orderBy.direction}`;
+    }
+    const searchParams = this.buildSearchParams(params);
+    return this.fetchJson<SystemDefinitionListResult>('/systems/definitions', searchParams);
   }
 
   async getSystem(systemName: string): Promise<SystemDefinition> {
@@ -166,11 +194,6 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
     const encodedSystemName = encodeURIComponent(systemName);
     return this.fetchJson<SystemDefinition>(`/systems/definitions/${encodedSystemName}`);
-  }
-
-  clearCache(): void {
-    this.baseUrlCache = null;
-    this.baseUrlPromise = null;
   }
 
 }

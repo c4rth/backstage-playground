@@ -1,11 +1,11 @@
-import { SystemDefinition } from "@internal/plugin-api-platform-common";
+import { SystemDefinition, SystemDefinitionListResult, SystemDefinitionsListRequest, SystemDefinitionType } from "@internal/plugin-api-platform-common";
 
 export interface SystemPlatformService {
 
-  getSystemsCount(): Promise<number>;
+  getSystemsCount(type: SystemDefinitionType, userEntityRef: string | undefined): Promise<number>;
 
-  listSystems(): Promise<{ items: any[] }>;
+  listSystems(request: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult>;
 
-  getSystem(request: { systemName: string }): Promise<SystemDefinition>;
+  getSystem(systemName: string): Promise<SystemDefinition>;
   
 }

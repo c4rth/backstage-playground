@@ -109,8 +109,8 @@ permission:
   rbac:
     admin:
       superUsers:
-        #- group:default/team-a.c
-        - group:default/team-x.c
+        - group:default/team-a.c
+        #- group:default/team-x.c
   # rbac:
   #   pluginsWithPermission:
   #     - catalog

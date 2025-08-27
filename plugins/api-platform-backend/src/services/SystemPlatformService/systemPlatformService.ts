@@ -1,21 +1,64 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
-import { CatalogApi } from '@backstage/catalog-client';
+import { CatalogApi, EntityOrderQuery } from '@backstage/catalog-client';
 import { SystemPlatformService } from './types';
-import { Entity, RELATION_OWNED_BY } from '@backstage/catalog-model';
+import { RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   ANNOTATION_API_NAME,
   ANNOTATION_SERVICE_NAME,
   CATALOG_KIND,
+  CATALOG_METADATA,
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
   CATALOG_RELATIONS,
-  SystemDefinition
+  CATALOG_SPEC_OWNER,
+  SystemDefinition,
+  SystemDefinitionListResult,
+  SystemDefinitionsListRequest,
+  SystemDefinitionsOptions,
+  SystemDefinitionType
 } from '@internal/plugin-api-platform-common';
 
 export interface CatalogPlatformServiceOptions {
   logger: LoggerService;
   catalogClient: CatalogApi;
   auth: AuthService;
+}
+
+async function getUserGroups(catalogClient: CatalogApi, auth: AuthService, userEntityRef: string): Promise<string[]> {
+  const { token } = await auth.getPluginRequestToken({
+    onBehalfOf: await auth.getOwnServiceCredentials(),
+    targetPluginId: 'catalog',
+  });
+  const entities = await catalogClient.getEntities(
+    {
+      filter: [
+        {
+          kind: 'group',
+          'relations.hasMember': userEntityRef,
+        },
+      ],
+      fields: [
+        CATALOG_METADATA,
+        CATALOG_KIND,
+      ],
+    },
+    { token });
+  return entities.items.map(group => stringifyEntityRef(group));
+}
+
+function getOrder(order: SystemDefinitionsOptions | undefined): EntityOrderQuery | undefined {
+  if (!order) return undefined;
+  let field = "";
+  const fieldMap: Record<string, string> = {
+    name: CATALOG_METADATA_NAME,
+    description: CATALOG_METADATA_DESCRIPTION,
+    owner: CATALOG_SPEC_OWNER,
+  };
+  field = fieldMap[order.field as keyof typeof fieldMap] ?? CATALOG_METADATA_NAME;
+  return {
+    field: field,
+    order: order.direction,
+  };
 }
 
 export async function systemPlatformService(options: CatalogPlatformServiceOptions): Promise<SystemPlatformService> {
@@ -25,26 +68,39 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
   logger.info('Initializing SystemPlatformService');
 
   return {
+    async getSystemsCount(type: SystemDefinitionType, userEntityRef: string | undefined): Promise<number> {
+      const { token } = await auth.getPluginRequestToken({
+        onBehalfOf: await auth.getOwnServiceCredentials(),
+        targetPluginId: 'catalog',
+      });
+      const allSystems = await catalogClient.getEntities(
+        {
+          filter: {
+            kind: ['System'],
+          },
+          fields: [
+            CATALOG_METADATA_NAME,
+            CATALOG_RELATIONS,
+          ],
+        },
+        { token }
+      );
 
-    async getSystemsCount(): Promise<number> {
-          const { token } = await auth.getPluginRequestToken({
-            onBehalfOf: await auth.getOwnServiceCredentials(),
-            targetPluginId: 'catalog',
-          });
-          const entities = await catalogClient.getEntities(
-            {
-              filter: {
-                kind: ['System'],
-              },
-              fields: [
-                CATALOG_METADATA_NAME,
-              ],
-            },
-            { token });
-          return entities.items.length;
+      if (type === 'all') {
+        return allSystems.items.length;
+      }
+
+      const userGroupRefs = await getUserGroups(catalogClient, auth, userEntityRef!!);
+      const ownedSystems = allSystems.items.filter(system => {
+        const ownedByRelations = system.relations?.filter(rel => rel.type === RELATION_OWNED_BY) || [];
+        return ownedByRelations.some(relation =>
+          userGroupRefs.includes(relation.targetRef)
+        );
+      });
+      return ownedSystems.length;
     },
 
-    async listSystems(): Promise<{ items: Entity[] }> {
+    async listSystems(request: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult> {
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
@@ -59,12 +115,12 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
             CATALOG_METADATA_NAME,
             CATALOG_RELATIONS
           ],
+          order: getOrder(request.orderBy),
         },
         { token }
       );
-      const filteredEntities = entities.items.map(entity => {
+      const allSystems = entities.items.map(entity => {
         const ownedByRelations = entity.relations?.filter(r => r.type === RELATION_OWNED_BY);
-
         return {
           apiVersion: entity.apiVersion,
           kind: entity.kind,
@@ -73,17 +129,36 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
         };
       });
 
-      return { items: filteredEntities };
+      let filteredSystems = allSystems;
+      if (request.type === 'owned') {
+        const userGroupRefs = await getUserGroups(catalogClient, auth, request.userEntityRef!!);
+        const ownedSystems = allSystems.filter(system => {
+          const ownedByRelations = system.relations?.filter(rel => rel.type === RELATION_OWNED_BY) || [];
+          return ownedByRelations.some(relation =>
+            userGroupRefs.includes(relation.targetRef)
+          );
+        });
+        filteredSystems = ownedSystems;
+      }
+
+      const offset = request.offset ?? 0;
+      const limit = request.limit ?? 20;
+      return {
+        items: filteredSystems.slice(offset, offset + limit),
+        offset,
+        limit,
+        totalCount: filteredSystems.length,
+      };
     },
 
-    async getSystem(request: { systemName: string }): Promise<SystemDefinition> {
+    async getSystem(systemName: string): Promise<SystemDefinition> {
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
       });
       const entities = await catalogClient.getEntities(
         {
-          filter: { kind: ['System'], 'metadata.name': request.systemName },
+          filter: { kind: ['System'], 'metadata.name': systemName },
           fields: [CATALOG_KIND, CATALOG_METADATA_NAME, CATALOG_METADATA_DESCRIPTION, CATALOG_RELATIONS],
         },
         { token }

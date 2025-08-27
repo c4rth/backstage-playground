@@ -1,5 +1,6 @@
 import {
     Link,
+    Progress,
     ResponseErrorPanel,
     Table,
     TableColumn,
@@ -11,9 +12,12 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box } from '@material-ui/core';
-import { useGetAllSystems, useGetSystemsOwnedByUser } from '../../hooks';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName } from '../common';
+import { useApi } from '@backstage/core-plugin-api';
+import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
+import { Query } from '@material-table/core';
+import { SystemDefinitionsListRequest, SystemDefinitionType } from '@internal/plugin-api-platform-common';
 
 
 type TableRow = {
@@ -21,11 +25,11 @@ type TableRow = {
     name: string,
     description: string,
     entityRef: string,
-    ownedByRelationsTitle: string,
+    owner: string,
     ownedByRelations: CompoundEntityRef[],
 }
 
-const STABLE_COLUMNS: TableColumn<TableRow>[] = [
+const columns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
@@ -47,7 +51,7 @@ const STABLE_COLUMNS: TableColumn<TableRow>[] = [
     {
         title: 'Owner',
         width: '25%',
-        field: 'ownedByRelationsTitle',
+        field: 'owner',
         render: ({ ownedByRelations }: TableRow) => (
             <EntityRefLinks
                 entityRefs={ownedByRelations}
@@ -57,13 +61,10 @@ const STABLE_COLUMNS: TableColumn<TableRow>[] = [
     },
 ];
 
-const DEFAULT_PAGE_SIZE = 20;
+const PAGE_SIZE = 20;
 
 interface BaseSystemTableProps {
-    title: string;
-    items?: Entity[];
-    loading: boolean;
-    error?: Error;
+    type: 'all' | 'owned';
 }
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => {
@@ -73,79 +74,121 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => {
         name: entity.metadata.name ?? '?',
         description: entity.metadata.description ?? '',
         entityRef: stringifyEntityRef(entity),
-        ownedByRelationsTitle: ownedByRelations
+        owner: ownedByRelations
             .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
             .join(', '),
         ownedByRelations,
     };
 };
 
-const BaseSystemTable = ({ title, items, loading, error }: BaseSystemTableProps) => {
-    const initialSearch = sessionStorage.getItem('systemsPlatformTableSearch') || '';
-    const rows = useMemo(() => items?.map(toEntityRow) ?? [], [items]);
-    const showPagination = rows.length > DEFAULT_PAGE_SIZE;
-    const itemCount = items?.length ?? 0;
+async function getData(apiPlatformApi: ApiPlatformBackendApi, type: SystemDefinitionType, query: Query<TableRow>) {
+    const page = query.page ?? 0;
+    const pageSize = query.pageSize ?? PAGE_SIZE;
+    const result = await apiPlatformApi.listSystems({
+        offset: page * pageSize,
+        limit: pageSize,
+        search: query.search,
+        orderBy: query.orderBy ? {
+            field: query.orderBy.field,
+            direction: query.orderDirection,
+        } as SystemDefinitionsListRequest['orderBy'] : undefined,
+        type,
+    });
+    if (result) {
+        return {
+            data: result.items.map(toEntityRow),
+            totalCount: result.totalCount,
+            page: Math.floor(result.offset / result.limit),
+        };
+    }
+    return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+    };
+}
 
-    const handleSearchChange = useCallback((search: string) => {
-        sessionStorage.setItem('systemsPlatformTableSearch', search);
-    }, []);
+const BaseSystemTable = ({ type }: BaseSystemTableProps) => {
+    const apiPlatformApi = useApi(apiPlatformBackendApiRef);
+    const initialSearch = sessionStorage.getItem('systemsPlatformTableSearch') ?? '';
+    const [countRows, setCountRows] = useState<number>(0);
+    const [loadingCount, setLoadingCount] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
 
     const tableOptions = useMemo(() => ({
         search: true,
         padding: 'dense' as const,
-        paging: showPagination,
-        pageSize: DEFAULT_PAGE_SIZE,
-        showEmptyDataSourceMessage: !loading,
+        pageSize: PAGE_SIZE,
+        pageSizeOptions: [10, PAGE_SIZE, 50],
+        showEmptyDataSourceMessage: !loadingCount,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,
-    }), [showPagination, loading, initialSearch]);
+    }), [loadingCount, initialSearch]);
 
     const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">
             <Box mr={1} />
-            {title} ({itemCount})
+            {type === 'owned' ? 'Owned Systems' : 'All Systems'} ({countRows})
         </Box>
-    ), [title, itemCount]);
+    ), [type, countRows]);
+
+    useEffect(() => {
+        const fetchCount = async () => {
+            setLoadingCount(true);
+            setError(null);
+            try {
+                const count = await apiPlatformApi.getSystemsCount(type);
+                setCountRows(count);
+            } catch (err) {
+                setError(err as Error);
+            } finally {
+                setLoadingCount(false);
+            }
+        };
+        fetchCount();
+    }, [type, apiPlatformApi]);
+
+    const fetchData = useCallback(
+        async (query: Query<TableRow>) => {
+            if (query.search !== undefined) {
+                sessionStorage.setItem('systemsPlatformTableSearch', query.search);
+            }
+            return getData(apiPlatformApi, type, query);
+        },
+        [apiPlatformApi, type]
+    );
 
     if (error) {
         return <ResponseErrorPanel error={error} />;
     }
 
+    if (loadingCount) return <Progress />;
+    if (error) return <ResponseErrorPanel error={error} />;
+
     return (
         <Table<TableRow>
-            isLoading={loading}
-            columns={STABLE_COLUMNS}
+            isLoading={loadingCount}
+            columns={columns}
             options={tableOptions}
             title={tableTitle}
-            onSearchChange={handleSearchChange}
-            data={rows}
+            data={fetchData}
         />
     );
 };
 
 export const OwnedSystemPlatformTable = () => {
-    const { items, loading, error } = useGetSystemsOwnedByUser();
-
     return (
         <BaseSystemTable
-            title="Owned Systems"
-            items={items}
-            loading={loading}
-            error={error}
+            type="owned"
         />
     );
 };
 
 export const SystemPlatformTable = () => {
-    const { items, loading, error } = useGetAllSystems();
-
     return (
         <BaseSystemTable
-            title="Systems"
-            items={items}
-            loading={loading}
-            error={error}
+            type="all"
         />
     );
 };

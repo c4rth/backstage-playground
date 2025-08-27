@@ -18,15 +18,19 @@ export const apiPlatformBackendPlugin = createBackendPlugin({
         logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
         discovery: coreServices.discovery,
+        userInfo: coreServices.userInfo,
         auth: coreServices.auth,
+        httpAuth: coreServices.httpAuth,
         database: coreServices.database,
       },
       async init({
         logger,
         httpRouter,
-        discovery,
+        discovery,        
         auth,
+        httpAuth,
         database,
+        userInfo,
       }) {
         const catalogClient = new CatalogClient({
           discoveryApi: discovery,
@@ -38,6 +42,8 @@ export const apiPlatformBackendPlugin = createBackendPlugin({
             catalogClient,
             database,
             auth,
+            httpAuth,
+            userInfo,
           }),
         );
         httpRouter.addAuthPolicy({

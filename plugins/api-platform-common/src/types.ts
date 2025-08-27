@@ -124,3 +124,37 @@ export type SystemDefinition = {
   apis: string[];
   services: string[];
 };
+
+export const SYSTEMDEFINITIONS_FIELDS = [
+  'name',
+  'description',
+  'owner'] as const;
+
+export type SystemDefinitionsListFields =
+  | 'name'
+  | 'description'
+  | 'owner';
+
+export type SystemDefinitionsOptions = {
+  field: SystemDefinitionsListFields;
+  direction: 'asc' | 'desc';
+};
+
+export type SystemDefinitionType = 'all' | 'owned';
+
+export type SystemDefinitionsListRequest = {
+  offset?: number,
+  limit?: number,
+  orderBy?: SystemDefinitionsOptions,
+  search?: string,
+  type: SystemDefinitionType;
+  userEntityRef?: string | undefined;
+};
+
+export type SystemDefinitionListResult = {
+  items: Entity[];
+  offset: number;
+  limit: number;
+  totalCount: number;
+};
+

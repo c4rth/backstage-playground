@@ -28,10 +28,6 @@ export class MyPermissionPolicy implements PermissionPolicy {
     this.superUserGroups = this.config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
   }
 
-  // guest: allow catalog.read, deny others
-  // superUsers groups: allow all
-  // others: deny catalog.create + catalog.delete, allow others
-
   async handle(
     request: PolicyQuery,
     user?: BackstageIdentityResponse,
