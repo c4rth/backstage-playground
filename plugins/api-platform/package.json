@@ -31,8 +31,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-sonarqube": "^0.17.0",
-    "@backstage-community/plugin-sonarqube-react": "^0.9.0",
+    "@backstage-community/plugin-sonarqube": "^0.18.0",
+    "@backstage-community/plugin-sonarqube-react": "^0.10.0",
     "@backstage/catalog-client": "^1.11.0",
     "@backstage/catalog-model": "^1.7.5",
     "@backstage/core-components": "^0.17.5",
