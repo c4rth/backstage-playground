@@ -63,9 +63,10 @@ import {
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
 import { adminToolsPermission, notGuestPermission } from '@internal/plugin-permissions-common';
-// Mermaid
+// TechDocs
 import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
+import { DrawIo } from '@internal/plugin-techdocs-addon-drawio';
 // DevTools
 import { DevToolsPage } from '@backstage/plugin-devtools';
 import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
@@ -127,6 +128,7 @@ const routes = (
       element={<TechDocsReaderPage />}>
       <TechDocsAddons>
         <Mermaid />
+        <DrawIo />
       </TechDocsAddons>
     </Route>
     <Route

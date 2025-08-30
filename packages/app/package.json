@@ -52,6 +52,7 @@
     "@internal/plugin-permissions-common": "workspace:^",
     "@internal/plugin-scaffolder-extensions": "workspace:^",
     "@internal/plugin-techdocs": "workspace:^",
+    "@internal/plugin-techdocs-addon-drawio": "workspace:^",
     "@internal/plugin-toolkit": "workspace:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.11.3",

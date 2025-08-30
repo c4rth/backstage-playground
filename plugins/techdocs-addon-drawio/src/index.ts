@@ -1,0 +1,1 @@
+export { DrawIo, techdocsAddonDrawIoPlugin } from "./plugin";
