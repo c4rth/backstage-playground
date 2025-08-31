@@ -8,11 +8,11 @@ describe('App', () => {
       APP_CONFIG: [
         {
           data: {
-            app: { title: 'Test' },
-            backend: { baseUrl: 'http://localhost:7007' },
-            techdocs: {
-              storageUrl: 'http://localhost:7007/api/techdocs/static/docs',
+            app: {
+              title: 'Test',
+              support: { url: 'http://localhost:7007/support' },
             },
+            backend: { baseUrl: 'http://localhost:7007' },
           },
           context: 'test',
         },
@@ -20,7 +20,7 @@ describe('App', () => {
     };
 
     const rendered = render(<App />);
-
+    
     await waitFor(() => {
       expect(rendered.baseElement).toBeInTheDocument();
     });
