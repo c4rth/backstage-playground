@@ -1,7 +1,6 @@
 import { scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import {
     createScaffolderFieldExtension,
-    FieldExtensionComponentProps,
 } from '@backstage/plugin-scaffolder-react';
 import {
     errorApiRef,
@@ -17,23 +16,26 @@ import { useState } from 'react';
 import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import useDebounce from 'react-use/esm/useDebounce';
+import { useTemplateSecrets } from '@backstage/plugin-scaffolder-react';
+import { scmAuthApiRef } from '@backstage/integration-react';
+import { ProjectPickerFieldSchema } from './schemas';
 
-const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
-    const {
-        onChange,
-        required,
-        schema: { title, description },
-        rawErrors,
-        errors,
-    } = props;
+export { ProjectPickerSchema } from './schemas';
+
+const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
+    const { uiSchema, onChange, rawErrors, errors, schema, required, } = props;
 
     const [projects, setProjects] = useState<string[]>([]);
-
     const [selectedProject, setSelectedProject] = useState<undefined | string>(undefined);
+    const { secrets, setSecrets } = useTemplateSecrets();
 
     const identityApi = useApi(identityApiRef);
     const catalogApi = useApi(catalogApiRef);
     const errorApi = useApi(errorApiRef);
+    const scmAuthApi = useApi(scmAuthApiRef);
+
+    const { requestUserCredentials } = uiSchema?.['ui:options'] ?? {};
 
     useAsync(async () => {
         const { userEntityRef } = await identityApi.getBackstageIdentity();
@@ -68,10 +70,38 @@ const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
         setProjects(result);
     });
 
+
+    useDebounce(
+        async () => {
+            if (!requestUserCredentials) {
+                return;
+            }
+            if (secrets[requestUserCredentials.secretsKey]) {
+                return;
+            }
+            const { token } = await scmAuthApi.getCredentials({
+                url: `https://dev.azure.com/`,
+                additionalScope: {
+                    repoWrite: true,
+                    customScopes: { azure: [] },
+                },
+            });
+            setSecrets({ [requestUserCredentials.secretsKey]: token });
+        },
+        500,
+        [projects],
+    );
+
+    let authStatus = 'No authentication required';
+    if (requestUserCredentials) {
+        authStatus = secrets[requestUserCredentials.secretsKey] ? 'Authenticated' : 'Authenticating...';
+    }
+    const rawDescription = `${uiSchema['ui:description'] ?? schema.description} (${authStatus})`;
+
     return (
         <ScaffolderField
             rawErrors={rawErrors}
-            rawDescription={description}
+            rawDescription={rawDescription}
             required={required}
             errors={errors}>
             <Autocomplete
@@ -82,7 +112,7 @@ const ProjectPicker = (props: FieldExtensionComponentProps<string>) => {
                     {...params}
                     margin="dense"
                     required={required}
-                    label={title} />
+                    label={uiSchema['ui:title'] ?? schema.title} />
                 )}
                 onChange={(_, newValue) => {
                     setSelectedProject(newValue ?? undefined);
