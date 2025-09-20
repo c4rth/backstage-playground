@@ -11,6 +11,7 @@ import { Box } from '@material-ui/core';
 import {
     ANNOTATION_API_NAME,
     ApiDefinitionsListRequest,
+    OwnershipType,
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
@@ -37,7 +38,7 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 
 const PAGE_SIZE = 20;
 
-async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>) {
+async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>, ownership: OwnershipType) {
     const page = query.page ?? 0;
     const pageSize = query.pageSize ?? PAGE_SIZE;
     const result = await apiPlatformApi.listApis({
@@ -48,6 +49,7 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
             field: query.orderBy.field,
             direction: query.orderDirection,
         } as ApiDefinitionsListRequest['orderBy'] : undefined,
+        ownership: ownership,
     });
     if (result) {
         return {
@@ -100,7 +102,11 @@ const columns: TableColumn<TableRow>[] = [
     },
 ];
 
-export const ApiPlatformTable = () => {
+interface ApiPlatformTableProps {
+    ownership: 'all' | 'owned';
+}
+    
+export const ApiPlatformTable = ({ ownership }: ApiPlatformTableProps) => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem('apiPlatformTableSearch') || '';
     const [countRows, setCountRows] = useState<number>(0);
@@ -121,9 +127,9 @@ export const ApiPlatformTable = () => {
     const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">
             <Box mr={1} />
-            APIs ({countRows})
+            {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
         </Box>
-    ), [countRows]);
+    ), [countRows, ownership]);
 
 
     useEffect(() => {
@@ -131,7 +137,7 @@ export const ApiPlatformTable = () => {
             setLoadingCount(true);
             setError(null);
             try {
-                const count = await apiPlatformApi.getApisCount();
+                const count = await apiPlatformApi.getApisCount(ownership);
                 setCountRows(count);
             } catch (err) {
                 setError(err as Error);
@@ -141,16 +147,16 @@ export const ApiPlatformTable = () => {
         };
 
         fetchCount();
-    }, [apiPlatformApi]);
+    }, [apiPlatformApi, ownership]);
 
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
             if (query.search !== undefined) {
                 sessionStorage.setItem('apiPlatformTableSearch', query.search);
             }
-            return getData(apiPlatformApi, query);
+            return getData(apiPlatformApi, query, ownership);
         },
-        [apiPlatformApi]
+        [apiPlatformApi, ownership]
     );
 
     if (loadingCount) return <Progress />;

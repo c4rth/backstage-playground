@@ -7,7 +7,7 @@ const colors = {
     rubyRed: '#C30045',
     darkCrimson: '#74002A',
     roseRed: '#E34E79',
-    paleRose: '#F3CCDA',
+    paleRose: '#74002A',
     slateGray: '#51626F',
     charcoalBlue: '#2F3D47',
     white: '#ffffff',
@@ -67,7 +67,7 @@ function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], primary:
     });
 }
  
-const lightPageTheme = genPageTheme({ colors: [colors.rubyRed, colors.paleRose], shape: shapes.round });
+const lightPageTheme = genPageTheme({ colors: [colors.rubyRed, colors.rubyRed], shape: shapes.round });
 const darkPageTheme = genPageTheme({ colors: [colors.darkCrimson, colors.rubyRed], shape: shapes.round });
  
 export const carthThemes: AppTheme[] = [

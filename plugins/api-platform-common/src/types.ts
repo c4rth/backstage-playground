@@ -46,6 +46,8 @@ export type ApiDefinitionsListRequest = {
   limit?: number,
   orderBy?: ApiDefinitionsOptions,
   search?: string,
+  ownership: OwnershipType;
+  userEntityRef?: string | undefined;
 };
 
 // Services
@@ -115,6 +117,8 @@ export type ServiceDefinitionsListRequest = {
   limit?: number,
   orderBy?: ServiceDefinitionsOptions,
   search?: string,
+  ownership: OwnershipType;
+  userEntityRef?: string | undefined;
 };
 
 // Systems
@@ -140,14 +144,14 @@ export type SystemDefinitionsOptions = {
   direction: 'asc' | 'desc';
 };
 
-export type SystemDefinitionType = 'all' | 'owned';
+export type OwnershipType = 'all' | 'owned';
 
 export type SystemDefinitionsListRequest = {
-  offset?: number,
-  limit?: number,
-  orderBy?: SystemDefinitionsOptions,
-  search?: string,
-  type: SystemDefinitionType;
+  offset?: number;
+  limit?: number;
+  orderBy?: SystemDefinitionsOptions;
+  search?: string;
+  ownership: OwnershipType;
   userEntityRef?: string | undefined;
 };
 

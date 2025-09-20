@@ -1,4 +1,5 @@
 import { 
+  OwnershipType,
   ServiceDefinition, 
   ServiceDefinitionListResult, 
   ServiceDefinitionsListRequest, 
@@ -10,8 +11,8 @@ import {
 export interface ServicePlatformService {
 
   // api-platform frontend
-
-  getServicesCount(): Promise<number>;
+  
+  getServicesCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number>;
 
   listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult>;
 

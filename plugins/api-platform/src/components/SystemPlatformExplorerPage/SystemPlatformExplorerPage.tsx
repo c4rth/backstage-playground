@@ -1,14 +1,13 @@
 import {
   Content,
   PageWithHeader,
-  SelectItem,
-  Select,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { SystemPlatformTable, OwnedSystemPlatformTable } from '../SystemPlatformTable';
+import { SystemPlatformTable } from '../SystemPlatformTable';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { ComponentOwnership } from '../common';
 
 const INFO_POPUP_CONTENT = (
   <>
@@ -21,12 +20,7 @@ const INFO_POPUP_CONTENT = (
   </>
 );
 
-const SYSTEM_TYPES: SelectItem[] = [
-  { label: 'All systems', value: 'all' },
-  { label: 'Owned systems', value: 'owned' },
-];
-const STORAGE_KEY = 'systemsExplorerPageType';
-const DEFAULT_TYPE = 'all';
+const STORAGE_KEY = 'systemsExplorerPageOwner';
 
 export const SystemPlatformExplorerPage = () => {
   const configApi = useApi(configApiRef);
@@ -36,14 +30,9 @@ export const SystemPlatformExplorerPage = () => {
     [configApi]
   );
 
-  const [selectedType, setSelectedType] = useState<string>(() =>
-    sessionStorage.getItem(STORAGE_KEY) || DEFAULT_TYPE
-  );
-
-  const handleSelectChange = useCallback((selected: string) => {
-    sessionStorage.setItem(STORAGE_KEY, selected);
-    setSelectedType(selected);
-  }, []);
+  const [selectedType, setSelectedType] = useState<'all' | 'owned'>(
+        () => (sessionStorage.getItem(STORAGE_KEY) === 'owned' ? 'owned' : 'all')
+    );
 
   const subtitleComponent = useMemo(() => (
     <InfoPopUp
@@ -52,16 +41,6 @@ export const SystemPlatformExplorerPage = () => {
       content={INFO_POPUP_CONTENT}
     />
   ), [generatedSubtitle]);
-
-  const renderTable = useMemo(() => {
-    switch (selectedType) {
-      case 'owned':
-        return <OwnedSystemPlatformTable />;
-      case 'all':
-      default:
-        return <SystemPlatformTable />;
-    }
-  }, [selectedType]);
 
   return (
     <PageWithHeader
@@ -74,16 +53,15 @@ export const SystemPlatformExplorerPage = () => {
         <Box mb={1}>
           <Grid container>
             <Grid item md={6}>
-              <Select
-                onChange={selected => handleSelectChange(selected.toString())}
-                label="Type"
-                items={SYSTEM_TYPES}
-                selected={selectedType}
+              <ComponentOwnership
+                storageKey={STORAGE_KEY}
+                suffix="Systems"
+                handleOwnershipChange={setSelectedType}
               />
             </Grid>
           </Grid>
         </Box>
-        {renderTable}
+        <SystemPlatformTable ownership={selectedType} />
       </Content>
     </PageWithHeader>
   );

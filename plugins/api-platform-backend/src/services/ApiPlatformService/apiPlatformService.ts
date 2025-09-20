@@ -17,11 +17,14 @@ import {
   CATALOG_SPEC_SYSTEM,
   API_NO_SYSTEM,
   ApiDefinitionsOptions,
-  ApiDefinitionsListRequest
+  ApiDefinitionsListRequest,
+  OwnershipType,
+  CATALOG_SPEC_OWNER
 } from '@internal/plugin-api-platform-common';
-import { CatalogApi, EntityFilterQuery, EntityOrderQuery, GetEntitiesResponse } from '@backstage/catalog-client';
+import { CatalogApi, EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
 import { Entity } from '@backstage/catalog-model';
+import { getUserGroups } from '../common/utils';
 
 function getFilter(apiName: string, system: string): EntityFilterQuery {
   if (system === API_NO_SYSTEM) {
@@ -60,10 +63,10 @@ async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService,
     .sort((a, b) => semver.rcompare(a.version, b.version));
 }
 
-function getLatestByApiName(input: GetEntitiesResponse): Entity[] {
+function getLatestByApiName(entities: Entity[]): Entity[] {
   const latest = new Map<string, { entity: Entity, version: semver.SemVer }>();
 
-  for (const item of input.items) {
+  for (const item of entities) {
     const apiName = item.metadata[ANNOTATION_API_NAME]?.toString();
     const system = item.spec?.system?.toString();
     if (!apiName || !system) continue;
@@ -118,24 +121,34 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
 
   return {
 
-    async getApisCount(): Promise<number> {
+    async getApisCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
       });
-      const entities = await catalogClient.getEntities(
+      let allEntities = await catalogClient.getEntities(
         {
           filter: {
             kind: ['API'],
           },
           fields: [
             CATALOG_METADATA_API_NAME,
-            CATALOG_SPEC_SYSTEM
+            CATALOG_SPEC_SYSTEM,
+            CATALOG_SPEC_OWNER,
           ],
         },
-        { token });
+        { token }).then(res => res.items);
+
+      if (ownership === 'owned' && userEntityRef) {
+        const userGroupRefs = await getUserGroups(catalogClient, auth, userEntityRef!!);
+        allEntities = allEntities.filter(entity => {
+          const owner = entity.spec?.owner?.toString() || '';
+          return userGroupRefs.includes(owner);
+        });
+      }
+
       const uniqueApiNames = new Set<string>();
-      for (const entity of entities.items) {
+      for (const entity of allEntities) {
         const apiName = `${entity.spec?.system?.toString()}-${entity.metadata[ANNOTATION_API_NAME]?.toString()}`;
         if (apiName) {
           uniqueApiNames.add(apiName);
@@ -151,7 +164,7 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
         targetPluginId: 'catalog',
       });
 
-      const entities = await catalogClient.getEntities(
+      let allEntities = await catalogClient.getEntities(
         {
           filter: {
             kind: ['API'],
@@ -163,16 +176,24 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
             CATALOG_METADATA_API_NAME,
             CATALOG_METADATA_API_VERSION,
             CATALOG_SPEC_SYSTEM,
+            CATALOG_SPEC_OWNER,
           ],
           order: getOrder(request.orderBy),
         },
-        { token });
+        { token }).then(res => res.items);
+        
+      if (request.ownership === 'owned' && request.userEntityRef) {
+        const userGroupRefs = await getUserGroups(catalogClient, auth, request.userEntityRef!!);
+        allEntities = allEntities.filter(entity => {          
+          const owner = entity.spec?.owner?.toString() || '';
+          return userGroupRefs.includes(owner);
+        });
+      }
 
-      const latestEntities = getLatestByApiName(entities);
-      let result = latestEntities;
+      let latestEntities = getLatestByApiName(allEntities);
       const search = request.search?.toLowerCase();
       if (search) {
-        result = latestEntities.filter(entity => {
+        latestEntities = latestEntities.filter(entity => {
           const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString() || '';
           const description = entity.metadata.description?.toString() || '';
           const system = entity.spec?.system?.toString() || entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '';
@@ -186,10 +207,10 @@ export async function apiPlatformService(options: ApiPlatformServiceOptions): Pr
       const offset = request.offset ?? 0;
       const limit = request.limit ?? 20;
       return {
-        items: result.slice(offset, offset + limit),
+        items: latestEntities.slice(offset, offset + limit),
         offset,
         limit,
-        totalCount: result.length,
+        totalCount: latestEntities.length,
       };
     },
 

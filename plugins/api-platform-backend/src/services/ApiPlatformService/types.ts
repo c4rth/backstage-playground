@@ -1,15 +1,16 @@
-import { 
-  ApiDefinitionListResult, 
-  ApiDefinitionsListRequest, 
-  ApiRelationDefinition, 
-  ApiVersionDefinition 
+import {
+  ApiDefinitionListResult,
+  ApiDefinitionsListRequest,
+  ApiRelationDefinition,
+  ApiVersionDefinition,
+  OwnershipType
 } from "@internal/plugin-api-platform-common";
 
 export type RelationType = 'provider' | 'consumer';
 
 export interface ApiPlatformService {
 
-  getApisCount(): Promise<number>;
+  getApisCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number>;
 
   listApis(request: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult>;
 

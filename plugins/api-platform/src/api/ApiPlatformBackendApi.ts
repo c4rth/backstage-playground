@@ -9,7 +9,7 @@ import {
   SystemDefinition,
   SystemDefinitionListResult,
   SystemDefinitionsListRequest,
-  SystemDefinitionType
+  OwnershipType
 } from "@internal/plugin-api-platform-common";
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
@@ -19,17 +19,17 @@ export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
 export interface ApiPlatformBackendApi {
   listApis(options: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult>;
 
-  getApisCount(): Promise<number>;
+  getApisCount(ownership: OwnershipType): Promise<number>;
 
   getApiVersions(system: string, apiName: string): Promise<(ApiVersionDefinition[])>;
 
-  getServicesCount(): Promise<number>;
+  getServicesCount(ownership: OwnershipType): Promise<number>;
 
   listServices(options: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult>;
 
   getServiceVersions(system: string, serviceName: string): Promise<(ServiceDefinition)>;
 
-  getSystemsCount(type: SystemDefinitionType): Promise<number>;
+  getSystemsCount(ownership: OwnershipType): Promise<number>;
 
   listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult>;
 
@@ -104,17 +104,18 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // APIs
 
-  async getApisCount(): Promise<number> {
-    return this.fetchJson<number>('/apis/count');
+  async getApisCount(ownership: OwnershipType): Promise<number> {
+    return this.fetchJson<number>('/apis/count', this.buildSearchParams({ ownership }));
   }
 
   async listApis(options: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult> {
-    const { offset, limit, orderBy, search } = options;
+    const { offset, limit, orderBy, search, ownership } = options;
 
     const params: Record<string, string | number | undefined> = {
       offset,
       limit,
       search,
+      ownership,
     };
 
     if (orderBy) {
@@ -134,23 +135,25 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // Services
 
-  async getServicesCount(): Promise<number> {
-    return this.fetchJson<number>('/services/count');
+  async getServicesCount(ownership: OwnershipType): Promise<number> {
+    return this.fetchJson<number>('/services/count', this.buildSearchParams({ ownership }));
   }
 
   async listServices(options: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
-    const { offset, limit, orderBy, search } = options;
+    const { offset, limit, orderBy, search, ownership } = options;
 
     const params: Record<string, string | number | undefined> = {
       offset,
       limit,
       search,
+      ownership,
     };
 
     if (orderBy) {
       params.orderBy = `${orderBy.field}=${orderBy.direction}`;
     }
     const searchParams = this.buildSearchParams(params);
+
     return this.fetchJson<ServiceDefinitionListResult>('/services/definitions', searchParams);
   }
 
@@ -166,18 +169,18 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // Systems
 
-  async getSystemsCount(type: SystemDefinitionType): Promise<number> {
-    return this.fetchJson<number>('/systems/count', this.buildSearchParams({ type }));
+  async getSystemsCount(ownership: OwnershipType): Promise<number> {
+    return this.fetchJson<number>('/systems/count', this.buildSearchParams({ ownership }));
   }
 
   async listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult> {
-    const { offset, limit, orderBy, search, type } = options;
+    const { offset, limit, orderBy, search, ownership } = options;
 
     const params: Record<string, string | number | undefined> = {
       offset,
       limit,
       search,
-      type,
+      ownership,
     };
 
     if (orderBy) {

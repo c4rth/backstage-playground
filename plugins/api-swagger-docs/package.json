@@ -24,7 +24,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.0",
+    "@backstage/core-components": "^0.18.1",
     "@backstage/core-plugin-api": "^1.11.0",
     "@backstage/plugin-home": "^0.8.12",
     "@backstage/theme": "^0.6.8",

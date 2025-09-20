@@ -11,9 +11,10 @@ import {
   CATALOG_METADATA_SERVICE_NAME,
   CATALOG_METADATA_SERVICE_PLATFORM,
   CATALOG_METADATA_SERVICE_VERSION,
-  CATALOG_RELATIONS,
   CATALOG_SPEC_LIFECYCLE,
+  CATALOG_SPEC_OWNER,
   CATALOG_SPEC_SYSTEM,
+  OwnershipType,
   ServiceDefinition,
   ServiceDefinitionListResult,
   ServiceDefinitionsListRequest,
@@ -22,7 +23,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
 import { ApiPlatformStore } from '../../database/apiPlatformStore';
-import { RELATION_OWNED_BY } from '@backstage/catalog-model';
+import { getUserGroups } from '../common/utils';
 
 function getFilter(serviceName?: string): EntityFilterQuery {
   if (serviceName) {
@@ -71,7 +72,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
         CATALOG_METADATA_IMAGE_VERSION,
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_LIFECYCLE,
-        CATALOG_RELATIONS,
+        CATALOG_SPEC_OWNER,
       ],
     },
     { token });
@@ -80,7 +81,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
 
   for (const entity of entities.items) {
 
-    if (!entity.metadata || !entity.spec) 
+    if (!entity.metadata || !entity.spec)
       continue;
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const system = entity.spec.system?.toString();
@@ -97,7 +98,7 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
       def = {
         name: mapKey,
         serviceName: name,
-        owner: entity.relations?.find(rel => rel.type === RELATION_OWNED_BY)?.targetRef || '',
+        owner: entity.spec.owner?.toString() || '',
         system: entity.spec?.system?.toString() || '-',
         versions: []
       };
@@ -139,9 +140,9 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
       svcDefs.sort((a, b) => {
         const aValue1 = a[order.field1];
         const bValue1 = b[order.field1];
-        if (aValue1 < bValue1) 
+        if (aValue1 < bValue1)
           return order.order === 'asc' ? -1 : 1;
-        if (aValue1 > bValue1) 
+        if (aValue1 > bValue1)
           return order.order === 'asc' ? 1 : -1;
 
         // If main field is equal, sort by secondary field
@@ -174,23 +175,32 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
 
   return {
 
-    async getServicesCount(): Promise<number> {
+    async getServicesCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
       });
-      const entities = await catalogClient.getEntities(
+      let allEntities = await catalogClient.getEntities(
         {
           filter: getFilter(undefined),
           fields: [
             CATALOG_SPEC_SYSTEM,
             CATALOG_METADATA_SERVICE_NAME,
+            CATALOG_SPEC_OWNER,
           ],
         },
-        { token });
+        { token }).then(res => res.items);
+
+      if (ownership === 'owned' && userEntityRef) {
+        const userGroupRefs = await getUserGroups(catalogClient, auth, userEntityRef!!);
+        allEntities = allEntities.filter(entity => {          
+          const owner = entity.spec?.owner?.toString() || '';
+          return userGroupRefs.includes(owner);
+        });
+      }
 
       const uniqueNames = new Set<string>();
-      for (const entity of entities.items) {
+      for (const entity of allEntities) {
         if (entity.metadata) {
           const svcName = `${entity.spec?.system?.toString()}-${entity.metadata[ANNOTATION_SERVICE_NAME]?.toString()}`;
           if (svcName) {
@@ -206,6 +216,14 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
       const services = await innerGetServices(catalogClient, auth, request.orderBy, undefined);
 
       let result = services;
+      if (request.ownership === 'owned') {
+        const userGroupRefs = await getUserGroups(catalogClient, auth, request.userEntityRef!!);
+        const ownedServices = result.filter(service => {
+          userGroupRefs.includes(service.owner);
+        });
+        result = ownedServices;
+      }
+
       const search = request.search?.toLowerCase();
       if (search) {
         result = services.filter(svc => {

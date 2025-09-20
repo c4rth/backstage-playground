@@ -5,8 +5,9 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformTable } from '../ApiPlatformTable';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
-import { Typography } from '@material-ui/core';
-import { useMemo } from 'react';
+import { Box, Grid, Typography } from '@material-ui/core';
+import { useMemo, useState } from 'react';
+import { ComponentOwnership } from '../common';
 
 const INFO_POPUP_CONTENT = (
   <>
@@ -19,8 +20,16 @@ const INFO_POPUP_CONTENT = (
   </>
 );
 
+const STORAGE_KEY = 'apisExplorerPageOwner';
+
 export const ApiPlatformExplorerPage = () => {
   const configApi = useApi(configApiRef);
+
+
+  const [selectedType, setSelectedType] = useState<'all' | 'owned'>(
+    () => (sessionStorage.getItem(STORAGE_KEY) === 'owned' ? 'owned' : 'all')
+  );
+
   const generatedSubtitle = useMemo(() =>
     `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`,
     [configApi]
@@ -42,7 +51,18 @@ export const ApiPlatformExplorerPage = () => {
       pageTitleOverride="APIs"
     >
       <Content>
-        <ApiPlatformTable />
+        <Box mb={1}>
+          <Grid container>
+            <Grid item md={6}>
+              <ComponentOwnership
+                storageKey={STORAGE_KEY}
+                suffix="APIs"
+                handleOwnershipChange={setSelectedType}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+        <ApiPlatformTable ownership={selectedType} />
       </Content>
     </PageWithHeader>
   );

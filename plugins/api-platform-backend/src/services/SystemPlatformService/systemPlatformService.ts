@@ -1,12 +1,10 @@
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogApi, EntityOrderQuery } from '@backstage/catalog-client';
 import { SystemPlatformService } from './types';
-import { RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   ANNOTATION_API_NAME,
   ANNOTATION_SERVICE_NAME,
   CATALOG_KIND,
-  CATALOG_METADATA,
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
   CATALOG_RELATIONS,
@@ -15,35 +13,14 @@ import {
   SystemDefinitionListResult,
   SystemDefinitionsListRequest,
   SystemDefinitionsOptions,
-  SystemDefinitionType
+  OwnershipType
 } from '@internal/plugin-api-platform-common';
+import { getUserGroups } from '../common/utils';
 
 export interface CatalogPlatformServiceOptions {
   logger: LoggerService;
   catalogClient: CatalogApi;
   auth: AuthService;
-}
-
-async function getUserGroups(catalogClient: CatalogApi, auth: AuthService, userEntityRef: string): Promise<string[]> {
-  const { token } = await auth.getPluginRequestToken({
-    onBehalfOf: await auth.getOwnServiceCredentials(),
-    targetPluginId: 'catalog',
-  });
-  const entities = await catalogClient.getEntities(
-    {
-      filter: [
-        {
-          kind: 'group',
-          'relations.hasMember': userEntityRef,
-        },
-      ],
-      fields: [
-        CATALOG_METADATA,
-        CATALOG_KIND,
-      ],
-    },
-    { token });
-  return entities.items.map(group => stringifyEntityRef(group));
 }
 
 function getOrder(order: SystemDefinitionsOptions | undefined): EntityOrderQuery | undefined {
@@ -68,7 +45,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
   logger.info('Initializing SystemPlatformService');
 
   return {
-    async getSystemsCount(type: SystemDefinitionType, userEntityRef: string | undefined): Promise<number> {
+    async getSystemsCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: await auth.getOwnServiceCredentials(),
         targetPluginId: 'catalog',
@@ -80,22 +57,26 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
           },
           fields: [
             CATALOG_METADATA_NAME,
-            CATALOG_RELATIONS,
+            CATALOG_SPEC_OWNER,
           ],
         },
         { token }
       );
 
-      if (type === 'all') {
+      if (ownership === 'all') {
         return allSystems.items.length;
       }
 
       const userGroupRefs = await getUserGroups(catalogClient, auth, userEntityRef!!);
-      const ownedSystems = allSystems.items.filter(system => {
-        const ownedByRelations = system.relations?.filter(rel => rel.type === RELATION_OWNED_BY) || [];
-        return ownedByRelations.some(relation =>
-          userGroupRefs.includes(relation.targetRef)
-        );
+      const ownedSystems = allSystems.items.filter(system => {        
+          const owner = system.spec?.owner?.toString() || '';
+
+          logger.debug('************************************');
+          logger.debug(`System: ${system.metadata.name}, Owner: ${owner}`);
+          logger.debug(`User Groups: ${userGroupRefs.join(', ')}`);
+          logger.debug('************************************');
+          
+          return userGroupRefs.includes(owner);
       });
       return ownedSystems.length;
     },
@@ -113,30 +94,26 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
           fields: [
             CATALOG_KIND,
             CATALOG_METADATA_NAME,
-            CATALOG_RELATIONS
+            CATALOG_SPEC_OWNER,
           ],
           order: getOrder(request.orderBy),
         },
         { token }
       );
       const allSystems = entities.items.map(entity => {
-        const ownedByRelations = entity.relations?.filter(r => r.type === RELATION_OWNED_BY);
         return {
           apiVersion: entity.apiVersion,
           kind: entity.kind,
           metadata: entity.metadata,
-          relations: ownedByRelations || [],
+          owner: entity.spec?.owner?.toString() || '',
         };
       });
 
       let filteredSystems = allSystems;
-      if (request.type === 'owned') {
+      if (request.ownership === 'owned') {
         const userGroupRefs = await getUserGroups(catalogClient, auth, request.userEntityRef!!);
-        const ownedSystems = allSystems.filter(system => {
-          const ownedByRelations = system.relations?.filter(rel => rel.type === RELATION_OWNED_BY) || [];
-          return ownedByRelations.some(relation =>
-            userGroupRefs.includes(relation.targetRef)
-          );
+        const ownedSystems = allSystems.filter(system => {          
+          return userGroupRefs.includes(system.owner);
         });
         filteredSystems = ownedSystems;
       }

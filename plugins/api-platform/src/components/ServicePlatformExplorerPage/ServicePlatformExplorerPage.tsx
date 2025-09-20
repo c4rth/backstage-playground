@@ -5,8 +5,9 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ServicePlatformTable } from '../ServicePlatformTable';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
-import { Typography } from '@material-ui/core';
-import { useMemo } from 'react';
+import { Box, Grid, Typography } from '@material-ui/core';
+import { useMemo, useState } from 'react';
+import { ComponentOwnership } from '../common';
 
 const INFO_POPUP_CONTENT = (
   <>
@@ -19,20 +20,27 @@ const INFO_POPUP_CONTENT = (
   </>
 );
 
+const STORAGE_KEY = 'servicesExplorerPageOwner';
+
 export const ServicePlatformExplorerPage = () => {
   const configApi = useApi(configApiRef);
+
+  const [selectedType, setSelectedType] = useState<'all' | 'owned'>(
+    () => (sessionStorage.getItem(STORAGE_KEY) === 'owned' ? 'owned' : 'all')
+  );
+
   const generatedSubtitle = useMemo(() =>
     `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`,
     [configApi]
   );
 
-    const subtitleComponent = useMemo(() => (
-      <InfoPopUp
-        text={generatedSubtitle}
-        variant="subtitle2"
-        content={INFO_POPUP_CONTENT}
-      />
-    ), [generatedSubtitle]);
+  const subtitleComponent = useMemo(() => (
+    <InfoPopUp
+      text={generatedSubtitle}
+      variant="subtitle2"
+      content={INFO_POPUP_CONTENT}
+    />
+  ), [generatedSubtitle]);
 
   return (
     <PageWithHeader
@@ -42,7 +50,18 @@ export const ServicePlatformExplorerPage = () => {
       pageTitleOverride="Services"
     >
       <Content>
-        <ServicePlatformTable />
+        <Box mb={1}>
+          <Grid container>
+            <Grid item md={6}>
+              <ComponentOwnership
+                storageKey={STORAGE_KEY}
+                suffix="Services"
+                handleOwnershipChange={setSelectedType}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+        <ServicePlatformTable ownership={selectedType} />
       </Content>
     </PageWithHeader>
   );

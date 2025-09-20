@@ -17,8 +17,7 @@ import { ComponentDisplayName } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
 import { Query } from '@material-table/core';
-import { SystemDefinitionsListRequest, SystemDefinitionType } from '@internal/plugin-api-platform-common';
-
+import { SystemDefinitionsListRequest, OwnershipType } from '@internal/plugin-api-platform-common';
 
 type TableRow = {
     id: number,
@@ -63,10 +62,6 @@ const columns: TableColumn<TableRow>[] = [
 
 const PAGE_SIZE = 20;
 
-interface BaseSystemTableProps {
-    type: 'all' | 'owned';
-}
-
 const toEntityRow = (entity: Entity, idx: number): TableRow => {
     const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
@@ -81,7 +76,7 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => {
     };
 };
 
-async function getData(apiPlatformApi: ApiPlatformBackendApi, type: SystemDefinitionType, query: Query<TableRow>) {
+async function getData(apiPlatformApi: ApiPlatformBackendApi, ownership: OwnershipType, query: Query<TableRow>) {
     const page = query.page ?? 0;
     const pageSize = query.pageSize ?? PAGE_SIZE;
     const result = await apiPlatformApi.listSystems({
@@ -92,7 +87,7 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, type: SystemDefini
             field: query.orderBy.field,
             direction: query.orderDirection,
         } as SystemDefinitionsListRequest['orderBy'] : undefined,
-        type,
+        ownership: ownership,
     });
     if (result) {
         return {
@@ -108,7 +103,11 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, type: SystemDefini
     };
 }
 
-const BaseSystemTable = ({ type }: BaseSystemTableProps) => {
+interface SystemPlatformTableProps {
+    ownership: 'all' | 'owned';
+}
+
+export const SystemPlatformTable = ({ ownership }: SystemPlatformTableProps) => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem('systemsPlatformTableSearch') ?? '';
     const [countRows, setCountRows] = useState<number>(0);
@@ -129,16 +128,16 @@ const BaseSystemTable = ({ type }: BaseSystemTableProps) => {
     const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">
             <Box mr={1} />
-            {type === 'owned' ? 'Owned Systems' : 'All Systems'} ({countRows})
+            {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
         </Box>
-    ), [type, countRows]);
+    ), [ownership, countRows]);
 
     useEffect(() => {
         const fetchCount = async () => {
             setLoadingCount(true);
             setError(null);
             try {
-                const count = await apiPlatformApi.getSystemsCount(type);
+                const count = await apiPlatformApi.getSystemsCount(ownership);
                 setCountRows(count);
             } catch (err) {
                 setError(err as Error);
@@ -147,16 +146,16 @@ const BaseSystemTable = ({ type }: BaseSystemTableProps) => {
             }
         };
         fetchCount();
-    }, [type, apiPlatformApi]);
+    }, [ownership, apiPlatformApi]);
 
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
             if (query.search !== undefined) {
                 sessionStorage.setItem('systemsPlatformTableSearch', query.search);
             }
-            return getData(apiPlatformApi, type, query);
+            return getData(apiPlatformApi, ownership, query);
         },
-        [apiPlatformApi, type]
+        [apiPlatformApi, ownership]
     );
 
     if (error) {
@@ -173,22 +172,6 @@ const BaseSystemTable = ({ type }: BaseSystemTableProps) => {
             options={tableOptions}
             title={tableTitle}
             data={fetchData}
-        />
-    );
-};
-
-export const OwnedSystemPlatformTable = () => {
-    return (
-        <BaseSystemTable
-            type="owned"
-        />
-    );
-};
-
-export const SystemPlatformTable = () => {
-    return (
-        <BaseSystemTable
-            type="all"
         />
     );
 };

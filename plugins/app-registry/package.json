@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-components": "^0.18.0",
+    "@backstage/core-components": "^0.18.1",
     "@backstage/core-plugin-api": "^1.11.0",
-    "@backstage/plugin-catalog-react": "^1.21.0",
+    "@backstage/plugin-catalog-react": "^1.21.1",
     "@backstage/theme": "^0.6.8",
     "@internal/plugin-api-platform-common": "workspace:^",
     "@internal/plugin-api-platform-react": "workspace:^",

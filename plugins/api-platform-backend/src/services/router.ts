@@ -11,6 +11,16 @@ import { APIDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation, S
 import { parseOrderByParam, parseSearchParam, parseTypeParam } from './ApiPlatformService/utils';
 import { RelationType } from './ApiPlatformService/types';
 
+async function getUserEntityRef(ownership: string, httpAuth: HttpAuthService, req: any, userInfo: UserInfoService) {
+  let userEntityRef = undefined;
+  if (ownership === "owned") {
+    const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+    const user = await userInfo.getUserInfo(credentials);
+    userEntityRef = user.userEntityRef;
+  }
+  return userEntityRef;
+}
+
 export interface RouterOptions {
   logger: LoggerService;
   catalogClient: CatalogApi;
@@ -62,11 +72,15 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, APIDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    res.json(await apiPlatformService.listApis({ limit, offset, orderBy, search }));
+    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
+    res.json(await apiPlatformService.listApis({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
-  router.get('/apis/count', async (_req, res) => {
-    res.json(await apiPlatformService.getApisCount());
+  router.get('/apis/count', async (req, res) => {
+    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
+    res.json(await apiPlatformService.getApisCount(ownership, userEntityRef));
   });
 
   router.get('/apis/definitions/:system/:apiName', async (req, res) => {
@@ -110,8 +124,10 @@ export async function createRouter(
 
   // Endpoints: /services
 
-  router.get('/services/count', async (_req, res) => {
-    res.json(await servicePlatformService.getServicesCount());
+  router.get('/services/count', async (req, res) => {
+    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
+    res.json(await servicePlatformService.getServicesCount(ownership, userEntityRef));
   });
 
   router.get('/services/definitions', async (req, res) => {
@@ -119,7 +135,9 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, SERVICEDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    res.json(await servicePlatformService.listServices({ limit, offset, orderBy, search }));
+    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
+    res.json(await servicePlatformService.listServices({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
   router.get('/services/definitions/:system/:serviceName', async (req, res) => {
@@ -151,25 +169,15 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, SYSTEMDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const type = parseTypeParam(req.query.type) || "all";
-    let userEntityRef = undefined;
-    if (type === "owned") {
-      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
-      const user = await userInfo.getUserInfo(credentials);
-      userEntityRef = user.userEntityRef;
-    }
-    res.json(await systemPlatformService.listSystems({ limit, offset, orderBy, search, type, userEntityRef }));
+    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
+    res.json(await systemPlatformService.listSystems({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
   router.get('/systems/count', async (req, res) => {
-    const type = parseTypeParam(req.query.type) || "all";
-    let userEntityRef = undefined;
-    if (type === "owned") {
-      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
-      const user = await userInfo.getUserInfo(credentials);
-      userEntityRef = user.userEntityRef;
-    }
-    res.json(await systemPlatformService.getSystemsCount(type, userEntityRef));
+    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
+    res.json(await systemPlatformService.getSystemsCount(ownership, userEntityRef));
   });
 
 
@@ -179,3 +187,4 @@ export async function createRouter(
 
   return router;
 }
+

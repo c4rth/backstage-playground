@@ -7,7 +7,7 @@ import {
 } from '@backstage/core-components';
 import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { ServicePlatformChip } from './ServicePlatformChip';
-import { ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
+import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
@@ -139,9 +139,10 @@ const columns: TableColumn<TableRow>[] = [
 
 const PAGE_SIZE = 20;
 
-async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>) {
+async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>, ownership: OwnershipType) {
     const page = query.page ?? 0;
     const pageSize = query.pageSize ?? PAGE_SIZE;
+    
     const result = await apiPlatformApi.listServices({
         offset: page * pageSize,
         limit: pageSize,
@@ -150,6 +151,7 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
             field: query.orderBy.field,
             direction: query.orderDirection,
         } as ServiceDefinitionsListRequest['orderBy'] : undefined,
+        ownership: ownership,
     });
     if (result) {
         return {
@@ -165,7 +167,11 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
     };
 }
 
-export const ServicePlatformTable = () => {
+interface ServicePlatformTableProps {
+    ownership: 'all' | 'owned';
+}
+
+export const ServicePlatformTable = ({ ownership }: ServicePlatformTableProps) => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem('servicePlatformTableSearch') ?? '';
     const [countRows, setCountRows] = useState<number>(0);
@@ -187,16 +193,16 @@ export const ServicePlatformTable = () => {
     const tableTitle = useMemo(() => (
         <Box display="flex" alignItems="center">
             <Box mr={1} />
-            Services ({countRows})
+            {ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})
         </Box>
-    ), [countRows]);
+    ), [countRows, ownership]);
 
     useEffect(() => {
         const fetchCount = async () => {
             setLoadingCount(true);
             setError(null);
             try {
-                const count = await apiPlatformApi.getServicesCount();
+                const count = await apiPlatformApi.getServicesCount(ownership);
                 setCountRows(count);
             } catch (err) {
                 setError(err as Error);
@@ -205,18 +211,17 @@ export const ServicePlatformTable = () => {
             }
         };
         fetchCount();
-    }, [apiPlatformApi]);
+    }, [apiPlatformApi, ownership]);
 
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
             if (query.search !== undefined) {
                 sessionStorage.setItem('servicePlatformTableSearch', query.search);
             }
-            return getData(apiPlatformApi, query);
+            return getData(apiPlatformApi, query, ownership);
         },
-        [apiPlatformApi]
+        [apiPlatformApi, ownership]
     );
-
 
     if (loadingCount) return <Progress />;
     if (error) return <ResponseErrorPanel error={error} />;

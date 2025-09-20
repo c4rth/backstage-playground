@@ -16,7 +16,6 @@ import { ApiPlatformDefinitionCard } from './ApiPlatformDefinitionCard';
 import { Box } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
-import { ComponentHeaderContextMenu } from '../common/ComponentHeaderContextMenu';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
 
 export const ApiPlatformDefinitionPage = () => {
@@ -81,7 +80,6 @@ export const ApiPlatformDefinitionPage = () => {
         title={`API - ${name}`}
         subtitle={generatedSubtitle}>
         <ComponentHeaderLabels entity={apiEntity ?? { metadata: { name, title: name } } as ApiEntity} />
-        <ComponentHeaderContextMenu />
       </Header>
 
       <Content>
