@@ -7,10 +7,8 @@ import {
 } from '@backstage/core-components';
 import {
     EntityRefLinks,
-    getEntityRelations,
-    humanizeEntityRef,
 } from '@backstage/plugin-catalog-react';
-import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box } from '@material-ui/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName } from '../common';
@@ -25,7 +23,6 @@ type TableRow = {
     description: string,
     entityRef: string,
     owner: string,
-    ownedByRelations: CompoundEntityRef[],
 }
 
 const columns: TableColumn<TableRow>[] = [
@@ -51,9 +48,9 @@ const columns: TableColumn<TableRow>[] = [
         title: 'Owner',
         width: '25%',
         field: 'owner',
-        render: ({ ownedByRelations }: TableRow) => (
+        render: ({ owner }: TableRow) => (
             <EntityRefLinks
-                entityRefs={ownedByRelations}
+                entityRefs={[owner]}
                 defaultKind="group"
             />
         ),
@@ -63,16 +60,12 @@ const columns: TableColumn<TableRow>[] = [
 const PAGE_SIZE = 20;
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => {
-    const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
     return {
         id: idx,
         name: entity.metadata.name ?? '?',
         description: entity.metadata.description ?? '',
         entityRef: stringifyEntityRef(entity),
-        owner: ownedByRelations
-            .map(r => humanizeEntityRef(r, { defaultKind: 'group' }))
-            .join(', '),
-        ownedByRelations,
+        owner: entity.spec?.owner?.toString() ?? '-',
     };
 };
 

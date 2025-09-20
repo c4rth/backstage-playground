@@ -69,13 +69,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
 
       const userGroupRefs = await getUserGroups(catalogClient, auth, userEntityRef!!);
       const ownedSystems = allSystems.items.filter(system => {        
-          const owner = system.spec?.owner?.toString() || '';
-
-          logger.debug('************************************');
-          logger.debug(`System: ${system.metadata.name}, Owner: ${owner}`);
-          logger.debug(`User Groups: ${userGroupRefs.join(', ')}`);
-          logger.debug('************************************');
-          
+          const owner = system.spec?.owner?.toString() || '';          
           return userGroupRefs.includes(owner);
       });
       return ownedSystems.length;
@@ -105,7 +99,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
           apiVersion: entity.apiVersion,
           kind: entity.kind,
           metadata: entity.metadata,
-          owner: entity.spec?.owner?.toString() || '',
+          spec: entity.spec,
         };
       });
 
@@ -113,7 +107,7 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
       if (request.ownership === 'owned') {
         const userGroupRefs = await getUserGroups(catalogClient, auth, request.userEntityRef!!);
         const ownedSystems = allSystems.filter(system => {          
-          return userGroupRefs.includes(system.owner);
+          return userGroupRefs.includes(system.spec?.owner?.toString() || '');
         });
         filteredSystems = ownedSystems;
       }

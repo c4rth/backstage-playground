@@ -193,7 +193,7 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
 
       if (ownership === 'owned' && userEntityRef) {
         const userGroupRefs = await getUserGroups(catalogClient, auth, userEntityRef!!);
-        allEntities = allEntities.filter(entity => {          
+        allEntities = allEntities.filter(entity => {
           const owner = entity.spec?.owner?.toString() || '';
           return userGroupRefs.includes(owner);
         });
@@ -213,20 +213,17 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
     },
 
     async listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
-      const services = await innerGetServices(catalogClient, auth, request.orderBy, undefined);
-
-      let result = services;
+      let services = await innerGetServices(catalogClient, auth, request.orderBy, undefined);
       if (request.ownership === 'owned') {
         const userGroupRefs = await getUserGroups(catalogClient, auth, request.userEntityRef!!);
-        const ownedServices = result.filter(service => {
-          userGroupRefs.includes(service.owner);
+        services = services.filter(service => {
+          return userGroupRefs.includes(service.owner);
         });
-        result = ownedServices;
       }
 
       const search = request.search?.toLowerCase();
       if (search) {
-        result = services.filter(svc => {
+        services = services.filter(svc => {
           return (
             svc.name.toLowerCase().includes(search) ||
             svc.system.toLowerCase().includes(search)
@@ -237,10 +234,10 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
       const offset = request.offset ?? 0;
       const limit = request.limit ?? 20;
       return {
-        items: result.slice(offset, offset + limit),
+        items: services.slice(offset, offset + limit),
         offset,
         limit,
-        totalCount: result.length,
+        totalCount: services.length,
       };
     },
 
