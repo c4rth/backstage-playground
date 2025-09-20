@@ -5,24 +5,20 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { McaComponentTable } from '../McaComponentTable';
-import { InfoPopUp } from '@internal/plugin-api-platform-react';
+import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
 
-const InfoPopUpContent = memo(() => (
-  <>
-    <Typography variant="body1">
-      Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform.
-    </Typography>
-    <Typography variant="body2">
-      <i>The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks.</i>
-    </Typography>
-  </>
+const POPUP_CONTENT = memo(() => (
+  <InfoPopUpContent
+    text1="Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform."
+    text2="The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks."
+  />
 ));
 
 const componentTypes: SelectItem[] = [
@@ -38,25 +34,25 @@ function getInitialType(): McaComponentType {
 
 function normalizeComponentType(type: string): McaComponentType {
   const validTypes = ['operation', 'element', 'all'] as const;
-  return validTypes.includes(type as McaComponentType) 
-    ? (type as McaComponentType) 
+  return validTypes.includes(type as McaComponentType)
+    ? (type as McaComponentType)
     : DEFAULT_TYPE;
 }
 
 export const McaComponentExplorerPage = () => {
   const configApi = useApi(configApiRef);
-  
-  const organizationName = useMemo(() => 
+
+  const organizationName = useMemo(() =>
     configApi.getOptionalString('organization.name') ?? 'Backstage',
     [configApi]
   );
 
-  const subtitle = useMemo(() => 
+  const subtitle = useMemo(() =>
     `${organizationName} MCA Components Explorer`,
     [organizationName]
   );
 
-  const [selectedType, setSelectedType] = useState<McaComponentType>(() => 
+  const [selectedType, setSelectedType] = useState<McaComponentType>(() =>
     getInitialType()
   );
 
@@ -70,7 +66,7 @@ export const McaComponentExplorerPage = () => {
     <InfoPopUp
       text={subtitle}
       variant="subtitle2"
-      content={<InfoPopUpContent />}
+      content={<POPUP_CONTENT />}
     />
   ), [subtitle]);
 

@@ -67,3 +67,18 @@ export const InfoPopUp = (props: InfoPopUpProps) => {
         </Box>
     );
 }
+
+export interface InfoPopUpContentProps {
+    text1: string;
+    text2?: string;
+}
+
+export const InfoPopUpContent = (props: InfoPopUpContentProps) => {
+    const { text1, text2 } = props;
+    return (
+        <Box>
+            <Typography variant="body1">{text1}</Typography>
+            {text2 && <Typography variant="body2"><i>{text2}</i></Typography>}
+        </Box>
+    );
+};

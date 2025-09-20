@@ -11,7 +11,7 @@ import {
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box } from '@material-ui/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
 import { Query } from '@material-table/core';
@@ -97,15 +97,22 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, ownership: Ownersh
 }
 
 interface SystemPlatformTableProps {
-    ownership: 'all' | 'owned';
+
 }
 
-export const SystemPlatformTable = ({ ownership }: SystemPlatformTableProps) => {
+const STORAGE_OWNERSHIP_KEY = 'systemsTablePageOwner';
+const STORAGE_SEARCH_KEY = 'systemsTablePageSearch';
+
+export const SystemPlatformTable = ({ }: SystemPlatformTableProps) => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-    const initialSearch = sessionStorage.getItem('systemsPlatformTableSearch') ?? '';
+    const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
     const [countRows, setCountRows] = useState<number>(0);
     const [loadingCount, setLoadingCount] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
+
+    const [ownership, setOwnership] = useState<OwnershipType>(
+        () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+    );
 
     const tableOptions = useMemo(() => ({
         search: true,
@@ -122,6 +129,8 @@ export const SystemPlatformTable = ({ ownership }: SystemPlatformTableProps) => 
         <Box display="flex" alignItems="center">
             <Box mr={1} />
             {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
+            <Box ml={2} />
+            <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
         </Box>
     ), [ownership, countRows]);
 
@@ -144,7 +153,7 @@ export const SystemPlatformTable = ({ ownership }: SystemPlatformTableProps) => 
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
             if (query.search !== undefined) {
-                sessionStorage.setItem('systemsPlatformTableSearch', query.search);
+                sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
             }
             return getData(apiPlatformApi, ownership, query);
         },

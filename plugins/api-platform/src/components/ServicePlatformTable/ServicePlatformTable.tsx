@@ -9,7 +9,7 @@ import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { Query } from '@material-table/core';
@@ -142,7 +142,7 @@ const PAGE_SIZE = 20;
 async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>, ownership: OwnershipType) {
     const page = query.page ?? 0;
     const pageSize = query.pageSize ?? PAGE_SIZE;
-    
+
     const result = await apiPlatformApi.listServices({
         offset: page * pageSize,
         limit: pageSize,
@@ -168,15 +168,20 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
 }
 
 interface ServicePlatformTableProps {
-    ownership: 'all' | 'owned';
 }
 
-export const ServicePlatformTable = ({ ownership }: ServicePlatformTableProps) => {
+const STORAGE_OWNERSHIP_KEY = 'servicesTablePageOwner';
+const STORAGE_SEARCH_KEY = 'servicesTablePageSearch';
+
+export const ServicePlatformTable = ({ }: ServicePlatformTableProps) => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-    const initialSearch = sessionStorage.getItem('servicePlatformTableSearch') ?? '';
+    const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
     const [countRows, setCountRows] = useState<number>(0);
     const [loadingCount, setLoadingCount] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
+    const [ownership, setOwnership] = useState<OwnershipType>(
+        () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+    );
 
     const tableOptions = useMemo(() => ({
         search: true,
@@ -194,6 +199,8 @@ export const ServicePlatformTable = ({ ownership }: ServicePlatformTableProps) =
         <Box display="flex" alignItems="center">
             <Box mr={1} />
             {ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})
+            <Box ml={2} />
+            <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
         </Box>
     ), [countRows, ownership]);
 
@@ -216,7 +223,7 @@ export const ServicePlatformTable = ({ ownership }: ServicePlatformTableProps) =
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
             if (query.search !== undefined) {
-                sessionStorage.setItem('servicePlatformTableSearch', query.search);
+                sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
             }
             return getData(apiPlatformApi, query, ownership);
         },

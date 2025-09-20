@@ -18,7 +18,7 @@ import { apiPlatformBackendApiRef } from '../../api';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName, ComponentOwnership } from '../common';
 
 type TableRow = {
     id: number,
@@ -74,7 +74,7 @@ const columns: TableColumn<TableRow>[] = [
         highlight: true,
         render: ({ system, name }: TableRow) => (
             <Link to={`/api-platform/api/${system}/${name}`}>
-                <ComponentDisplayName text={name} type='api'/>
+                <ComponentDisplayName text={name} type='api' />
             </Link>
         ),
     },
@@ -103,15 +103,21 @@ const columns: TableColumn<TableRow>[] = [
 ];
 
 interface ApiPlatformTableProps {
-    ownership: 'all' | 'owned';
 }
-    
-export const ApiPlatformTable = ({ ownership }: ApiPlatformTableProps) => {
+
+const STORAGE_OWNERSHIP_KEY = 'apisTablePageOwner';
+const STORAGE_SEARCH_KEY = 'apisTablePageSearch';
+
+export const ApiPlatformTable = ({ }: ApiPlatformTableProps) => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-    const initialSearch = sessionStorage.getItem('apiPlatformTableSearch') || '';
+    const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
     const [countRows, setCountRows] = useState<number>(0);
     const [loadingCount, setLoadingCount] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
+
+    const [ownership, setOwnership] = useState<OwnershipType>(
+        () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+    );
 
     const tableOptions = useMemo(() => ({
         search: true,
@@ -125,10 +131,12 @@ export const ApiPlatformTable = ({ ownership }: ApiPlatformTableProps) => {
     }), [loadingCount, initialSearch]);
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
-            {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
-        </Box>
+            <Box display="flex" alignItems="center">
+                <Box mr={1} />
+                {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
+                <Box ml={2} />
+                <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
+            </Box>
     ), [countRows, ownership]);
 
 
@@ -141,7 +149,7 @@ export const ApiPlatformTable = ({ ownership }: ApiPlatformTableProps) => {
                 setCountRows(count);
             } catch (err) {
                 setError(err as Error);
-            } finally { 
+            } finally {
                 setLoadingCount(false);
             }
         };
@@ -152,7 +160,7 @@ export const ApiPlatformTable = ({ ownership }: ApiPlatformTableProps) => {
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
             if (query.search !== undefined) {
-                sessionStorage.setItem('apiPlatformTableSearch', query.search);
+                sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
             }
             return getData(apiPlatformApi, query, ownership);
         },

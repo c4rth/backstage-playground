@@ -1,14 +1,11 @@
-import {
-    SelectItem,
-    Select,
-} from '@backstage/core-components';
 import { OwnershipType } from '@internal/plugin-api-platform-common';
-import { useCallback, useMemo, useState } from 'react';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { useCallback, useState } from 'react';
 
 
 interface ComponentOwnershipProps {
     storageKey: string;
-    suffix: string;
+    suffix?: string;
     handleOwnershipChange: (selected: OwnershipType) => void;
 }
 
@@ -30,21 +27,11 @@ export const ComponentOwnership = ({ storageKey, suffix, handleOwnershipChange }
         [storageKey, handleOwnershipChange, selectedType]
     );
 
-    const items = useMemo<SelectItem[]>(
-        () => [
-            { label: `All ${suffix}`, value: 'all' },
-            { label: `Owned ${suffix}`, value: 'owned' },
-        ],
-        [suffix]
-    );
-
     return (
-        <Select
-            onChange={selected => handleSelectChange(selected.toString())}
-            label="Ownership"
-            items={items}
-            selected={selectedType}
-        />
+        <ToggleButtonGroup color='secondary' exclusive value={selectedType} onChange={(_, value) => handleSelectChange(value ?? 'all')}>
+            <ToggleButton value="all">All {suffix}</ToggleButton>
+            <ToggleButton value="owned">Owned {suffix}</ToggleButton>
+        </ToggleButtonGroup>
     );
 
 }
