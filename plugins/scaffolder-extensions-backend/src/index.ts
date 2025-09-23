@@ -1,0 +1,1 @@
+export { scaffolderCustomModule as default } from './module';

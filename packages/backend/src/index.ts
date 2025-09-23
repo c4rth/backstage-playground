@@ -91,6 +91,7 @@ backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-dev
 // Scaffolder Actions
 backend.add(import('@backstage/plugin-scaffolder-backend-module-azure'));
 backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
+backend.add(import('@internal/plugin-scaffolder-extensions-backend'));
 
 // Kubernetes
 // backend.add(import('@backstage/plugin-kubernetes-backend'));
