@@ -1981,9 +1981,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-sonarqube@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "@backstage-community/plugin-sonarqube@npm:0.18.0"
+"@backstage-community/plugin-sonarqube@npm:^0.18.1":
+  version: 0.18.1
+  resolution: "@backstage-community/plugin-sonarqube@npm:0.18.1"
   dependencies:
     "@backstage-community/plugin-sonarqube-react": "npm:^0.10.0"
     "@backstage/catalog-model": "npm:^1.7.5"
@@ -2005,7 +2005,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/d4c2ff38de65b385ab2af809a286fcd2ab5c6ba641928c11b7037c106c118a371c36eff6da0e7a6b35169e9725594666964b66b30ac0297a0373831a1c8c5d71
+  checksum: 10/c40a591f9929a37b3b77bc9722c215602d06ee4658adf7f2730ef870875645d3372a99ffe35fbd616399d5e551616d6c147a760f530a79040c1177c4d6dd000b
   languageName: node
   linkType: hard
 
@@ -6281,7 +6281,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/plugin-api-platform@workspace:plugins/api-platform"
   dependencies:
-    "@backstage-community/plugin-sonarqube": "npm:^0.18.0"
+    "@backstage-community/plugin-sonarqube": "npm:^0.18.1"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.10.0"
     "@backstage/catalog-client": "npm:^1.12.0"
     "@backstage/catalog-model": "npm:^1.7.5"
@@ -14136,7 +14136,7 @@ __metadata:
     "@backstage-community/plugin-azure-devops": "npm:^0.19.0"
     "@backstage-community/plugin-entity-validation": "npm:^0.11.0"
     "@backstage-community/plugin-shortcuts": "npm:^0.12.0"
-    "@backstage-community/plugin-sonarqube": "npm:^0.18.0"
+    "@backstage-community/plugin-sonarqube": "npm:^0.18.1"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.10.0"
     "@backstage/app-defaults": "npm:^1.7.0"
     "@backstage/catalog-client": "npm:^1.12.0"
