@@ -17,7 +17,7 @@ const id = 'debugx:log';
  *
  * @public
  */
-export function createDebugXLogAction() {
+export const createDebugXLogAction = () => {
   return createTemplateAction({
     id,
     description:
@@ -38,6 +38,7 @@ export function createDebugXLogAction() {
     },
     supportsDryRun: true,
     async handler(ctx) {
+
       ctx.logger.info(JSON.stringify(ctx.input, null, 2));
 
       ctx.logger.info(`This is the workspace path: ${ctx.workspacePath}`);

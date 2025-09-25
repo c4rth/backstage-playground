@@ -6,6 +6,16 @@ backend:
     connection:
       host: 127.0.0.1
 
+  logger:
+    meta:
+      env: prod
+    level: warn
+    overrides:
+      - matchers:
+          plugin: scaffolder
+        level: info
+
+
 auth:
   autologout:
     enabled: true
