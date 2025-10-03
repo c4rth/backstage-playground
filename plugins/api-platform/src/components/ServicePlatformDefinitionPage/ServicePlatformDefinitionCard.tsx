@@ -28,6 +28,7 @@ import { ComponentAboutContent } from '../common/ComponentAboutContent';
 // Azure DevOps
 import { CustomAzureGitTagsContent, CustomAzurePipelinesContent } from '@internal/plugin-azure-devops';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -61,6 +62,7 @@ const useStyles = makeStyles(
 export const ServicePlatformDefinitionCard = memo(() => {
     const { entity } = useEntity<ComponentEntity>();
     const classes = useStyles();
+    const configApi = useApi(configApiRef);
 
     const entityData = useMemo(() => {
         const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
@@ -69,7 +71,7 @@ export const ServicePlatformDefinitionCard = memo(() => {
         const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
         const { project, repo } = getAnnotationValuesFromEntity(entity);
         const lifecycle = entity.spec.lifecycle;
-        const repositoryUrl = `https://dev.azure.com/thierrycarels0265/${project}/_git/${repo}?version=GT${lifecycle}`;
+        const repositoryUrl = `https://${configApi.getString('azureDevOps.host')}/${configApi.getString('azureDevOps.organization')}/${project}/_git/${repo}?version=GT${lifecycle}`;
         const repository = `${project}/${repo}`;
 
         return {
@@ -80,7 +82,7 @@ export const ServicePlatformDefinitionCard = memo(() => {
             repositoryUrl,
             repository,
         };
-    }, [entity]);
+    }, [entity, configApi]);
 
     const availabilityChecks = useMemo(() => ({
         sonarQube: isSonarQubeAvailable(entity),

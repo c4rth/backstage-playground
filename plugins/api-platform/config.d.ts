@@ -1,20 +1,14 @@
 export interface Config {
-  apiPlatform?: {
+  azureDevOps?: {
     /**
+     * The hostname of the given Azure instance
     * @visibility frontend
-    */
-    organization?: string;
+     */
+    host: string;
     /**
+     * The organization of the given Azure instance
     * @visibility frontend
-    */
-    feedName?: string;
-    /**
-    * @visibility frontend
-    */
-    groupPrefix?: string;
-    /**
-    * @visibility frontend
-    */
-    dns?: string;
+     */
+    organization: string;
   };
 }
