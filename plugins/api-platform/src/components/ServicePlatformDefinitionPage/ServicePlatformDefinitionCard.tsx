@@ -6,7 +6,7 @@ import {
 import { memo, useMemo } from 'react';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
 import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
-import { AsyncEntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
     AboutField,
 } from '@backstage/plugin-catalog';
@@ -19,11 +19,15 @@ import { ANNOTATION_IMAGE_VERSION, ANNOTATION_SERVICE_PLATFORM } from '@internal
 // SonarQube
 import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
+// Api Platform
 import { ServicePlatformRelationCard } from './ServicePlatformRelationCard';
+import { ComponentDisplayName } from '../common';
 // App Registry
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
-import { CustomAzureGitTagsContent, CustomAzurePipelinesContent } from '@internal/plugin-azure-devops/src/plugin';
+// Azure DevOps
+import { CustomAzureGitTagsContent, CustomAzurePipelinesContent } from '@internal/plugin-azure-devops';
+import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -63,12 +67,18 @@ export const ServicePlatformDefinitionCard = memo(() => {
         const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
         const entityRef = getCompoundEntityRef(entity);
         const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+        const { project, repo } = getAnnotationValuesFromEntity(entity);
+        const lifecycle = entity.spec.lifecycle;
+        const repositoryUrl = `https://dev.azure.com/thierrycarels0265/${project}/_git/${repo}?version=GT${lifecycle}`;
+        const repository = `${project}/${repo}`;
 
         return {
             platform,
             imageVersion,
             entityRef,
             hasDocs,
+            repositoryUrl,
+            repository,
         };
     }, [entity]);
 
@@ -93,29 +103,39 @@ export const ServicePlatformDefinitionCard = memo(() => {
             <Grid container>
                 <AboutField
                     label="Service reference"
-                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-                >
+                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
                     <EntityRefLink entityRef={entity} />
                 </AboutField>
                 <AboutField
                     label="Platform"
-                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-                >
+                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
                     <Typography variant="body2" display="inline" className={classes.value}>
                         {entityData.platform}
                     </Typography>
                 </AboutField>
                 <AboutField
                     label="Image version"
-                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-                >
+                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
                     <Typography variant="body2" display="inline" className={classes.value}>
                         {entityData.imageVersion || 'N/A'}
                     </Typography>
                 </AboutField>
+                <AboutField
+                    label="Repository"
+                    gridSizes={{ xs: 12, sm: 6, lg: 12 }}>
+                    {entityData.repository ? (
+                        <Link to={entityData.repositoryUrl}>
+                            <ComponentDisplayName text={entityData.repository} type='azdo' />
+                        </Link>
+                    ) : (
+                        <Typography variant="body2" display="inline" className={classes.value}>
+                            -
+                        </Typography>
+                    )}
+                </AboutField>
             </Grid>
         </Box>
-    ), [entity, entityData.platform, entityData.imageVersion, classes.value]);
+    ), [entity, entityData, classes.value]);
 
     return (
         <TabbedLayout>
@@ -167,6 +187,14 @@ export const ServicePlatformDefinitionCard = memo(() => {
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={12}>
                         <CustomAzurePipelinesContent defaultLimit={5} />
+                    </Grid>
+                </Grid>
+            </TabbedLayout.Route>
+
+            <TabbedLayout.Route path="/gittags" title="Git Tags">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={12}>
+                        <CustomAzureGitTagsContent />
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>

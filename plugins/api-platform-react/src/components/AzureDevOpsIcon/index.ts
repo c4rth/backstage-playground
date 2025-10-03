@@ -1,0 +1,1 @@
+export { AzureDevOpsIcon } from './AzureDevOpsIcon';

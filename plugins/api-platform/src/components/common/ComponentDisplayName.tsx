@@ -3,6 +3,7 @@ import CategoryIcon from '@material-ui/icons/Category';
 import MuiMemoryIcon from '@material-ui/icons/Memory';
 import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
+import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 
@@ -26,7 +27,7 @@ const useStyles = makeStyles(
 
 export type ComponentDisplayNameProps = {
     text: string;
-    type: 'api' | 'system' | 'service';
+    type: 'api' | 'system' | 'service' | 'azdo';
 };
 
 export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps): React.JSX.Element => {
@@ -41,6 +42,9 @@ export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps):
             )}
             {type === 'service' && (
                 <MuiMemoryIcon className={classes.icon} fontSize="inherit" />
+            )}
+            {type === 'azdo' && (
+                <AzureDevOpsIcon className={classes.icon} fontSize="inherit" />
             )}
             {text}
         </Box>
