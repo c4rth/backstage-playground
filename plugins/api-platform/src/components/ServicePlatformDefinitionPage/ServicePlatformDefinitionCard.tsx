@@ -6,7 +6,7 @@ import {
 import { memo, useMemo } from 'react';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
 import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
-import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import { AsyncEntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
     AboutField,
 } from '@backstage/plugin-catalog';
@@ -23,6 +23,7 @@ import { ServicePlatformRelationCard } from './ServicePlatformRelationCard';
 // App Registry
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
+import { CustomAzureGitTagsContent, CustomAzurePipelinesContent } from '@internal/plugin-azure-devops/src/plugin';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -62,7 +63,7 @@ export const ServicePlatformDefinitionCard = memo(() => {
         const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
         const entityRef = getCompoundEntityRef(entity);
         const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
-        
+
         return {
             platform,
             imageVersion,
@@ -121,10 +122,10 @@ export const ServicePlatformDefinitionCard = memo(() => {
             <TabbedLayout.Route path="/" title="Overview">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={6}>
-                        <InfoCard 
-                            title="About" 
-                            divider 
-                            className={classes.gridItemCard} 
+                        <InfoCard
+                            title="About"
+                            divider
+                            className={classes.gridItemCard}
                             action={docsButton}
                         >
                             {aboutFields}
@@ -132,17 +133,17 @@ export const ServicePlatformDefinitionCard = memo(() => {
                         </InfoCard>
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <EntityCatalogGraphCard 
-                            variant="gridItem" 
-                            height={400} 
-                            kinds={['API']} 
-                            direction={Direction.TOP_BOTTOM} 
-                            unidirectional 
+                        <EntityCatalogGraphCard
+                            variant="gridItem"
+                            height={400}
+                            kinds={['API']}
+                            direction={Direction.TOP_BOTTOM}
+                            unidirectional
                         />
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>
-            
+
             <TabbedLayout.Route path="/api" title="API">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={6}>
@@ -153,7 +154,7 @@ export const ServicePlatformDefinitionCard = memo(() => {
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>
-            
+
             <TabbedLayout.Route path="/appreg" title="App Registry">
                 <Grid container spacing={3} alignItems="stretch">
                     <Grid item md={12}>
@@ -161,7 +162,15 @@ export const ServicePlatformDefinitionCard = memo(() => {
                     </Grid>
                 </Grid>
             </TabbedLayout.Route>
-                        
+
+            <TabbedLayout.Route path="/cicd" title="CI/CD">
+                <Grid container spacing={3} alignItems="stretch">
+                    <Grid item md={12}>
+                        <CustomAzurePipelinesContent defaultLimit={5} />
+                    </Grid>
+                </Grid>
+            </TabbedLayout.Route>
+
             {availabilityChecks.sonarQube && (
                 <TabbedLayout.Route path="/sonarqube" title="SonarQube">
                     <EntitySonarQubeContentPage />
