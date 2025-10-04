@@ -261,7 +261,7 @@ catalog:
         schedule:
           frequency: { minutes: 30 }
           timeout: { minutes: 5 }
-          initialDelay: { minutes: 5 }
+          initialDelay: { seconds: 30 }
 
 spectralLinter:
   openApiRulesetUrl: http://localhost:3000/spectral.yaml

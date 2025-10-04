@@ -122,18 +122,6 @@ export const JwtDecoder = () => {
           const jwtPayload = jwtDecode<JwtPayload>(value);
           const jwtHeader = jwtDecode(value, { header: true });
           setJwt({ header: jwtHeader, payload: jwtPayload });
-          setOutput(`Issued date:
-${jwtPayload.iat && new Date(jwtPayload.iat * 1000)}
-
-Expiration date:
-${jwtPayload.exp && new Date(jwtPayload.exp * 1000)}
-
-Header:
-${JSON.stringify(jwtHeader, null, 2)}
-
-Payload:
-${JSON.stringify(jwtPayload, null, 2)}
-`);
         } catch (error) {
           setOutput(`Couldn't decode JWT token: ${error}`);
         }

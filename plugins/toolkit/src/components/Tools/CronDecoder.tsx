@@ -25,7 +25,6 @@ export const CronDecoder = () => {
       input={input}
       setInput={setInput}
       output={output}
-      modes={['Decode']}
       sample='0 0/10 * 1/1 * ? *'
     />
   );

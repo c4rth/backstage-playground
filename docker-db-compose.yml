@@ -5,9 +5,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=backstage
-      - PGDATA=/var/lib/postgresql/data
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     container_name: postgres-db
@@ -43,4 +42,4 @@ services:
   #     - ./opa-policies:/policies
 
 volumes:
-  pgdata: {}
+  postgres_data: {}

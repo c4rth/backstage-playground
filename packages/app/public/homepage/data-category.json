@@ -1,0 +1,83 @@
+{
+  "Cloud": [
+    {
+      "label": "Azure Portal",
+      "url": "https://portal.azure.com/",
+      "iconUrl": "/homepage/icons/Azure.svg"
+    },
+    {
+      "label": "Azure DevOps",
+      "url": "https://dev.azure.com/acme-AzureCloud/",
+      "iconUrl": "/homepage/icons/AzureDevops.svg"
+    }
+  ],
+  "CI/CD & Deployment": [
+    {
+      "label": "Jenkins",
+      "url": "https://jenkins-devops.acme.net/",
+      "iconUrl": "/homepage/icons/Jenkins.svg"
+    },
+    {
+      "label": "UCD",
+      "url": "https://ucd-devops.acme.net/",
+      "iconUrl": "/homepage/icons/UrbanCodeDeploy.svg"
+    }
+  ],
+  "Version Control & Artifacts": [
+    {
+      "label": "BitBucket",
+      "url": "https://bitbucket-devops.acme.net/",
+      "iconUrl": "/homepage/icons/BitBucket.svg"
+    },
+    {
+      "label": "Nexus",
+      "url": "https://nexushome.nexus-devops.acme.net/",
+      "iconUrl": "/homepage/icons/Nexus.svg"
+    }
+  ],
+  "Monitoring & Observability": [
+    {
+      "label": "Grafana",
+      "url": "https://acme.grafana.azure.com/",
+      "iconUrl": "/homepage/icons/Grafana.svg"
+    }
+  ],
+  "Quality & Security": [
+    {
+      "label": "SonarQube",
+      "url": "https://sonarqube-devops.acme.net/",
+      "iconUrl": "/homepage/icons/SonarQube.svg"
+    },
+    {
+      "label": "Checkmarx",
+      "url": "https://myapps.acme.be/home/acme_checkmarx_1/0oa3gmjq77b5HSkaj416/aln3gpjbvWDUxcSrY416",
+      "iconUrl": "/homepage/icons/Checkmarx.svg"
+    }
+  ],
+  "Collaboration": [
+    {
+      "label": "Jira",
+      "url": "https://jira.acme.net:8443/",
+      "iconUrl": "/homepage/icons/Jira.svg"
+    },
+    {
+      "label": "Confluence",
+      "url": "https://confluence.acme.net:8443/",
+      "iconUrl": "/homepage/icons/Confluence.svg"
+    }
+  ],
+  "ITSM": [
+    {
+      "label": "Service Now",
+      "url": "https://acmeprd.service-now.com/esc",
+      "iconUrl": "/homepage/icons/ServiceNow.svg"
+    }
+  ],
+  "AI & Innovation": [
+    {
+      "label": "acme AI",
+      "url": "https://acme-ai.acme.net/",
+      "iconUrl": "/homepage/icons/mistral.svg"
+    }
+  ]
+}

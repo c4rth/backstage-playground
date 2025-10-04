@@ -3,6 +3,7 @@ import { Tool } from "./types";
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
+const CertificateDecoder = lazy(() => import('../Tools/CertificateDecoder'));
 const CronDecoder = lazy(() => import('../Tools/CronDecoder'));
 const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
 
@@ -21,6 +22,13 @@ export const defaultTools: Tool[] = [
         component: <Base64Encode />,
         category: 'Encode/Decode',
         description: 'Encode and decode base64 strings',
+    },
+    {
+        id: 'certificate-decoder',
+        name: 'Certificate Decoder',
+        component: <CertificateDecoder />,
+        category: 'Decode',
+        description: 'Decode PEM certificate',
     },
     {
         id: 'cron-decoder',

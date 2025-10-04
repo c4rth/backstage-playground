@@ -83,7 +83,7 @@ export const DefaultEditor = (props: Props) => {
                     </Grid>
                 )}
                 <Grid item style={{ padding: '16px' }}>
-                    <ButtonGroup size="small">
+                    <ButtonGroup size="small" color="secondary">
                         <ClearValueButton setValue={setInput} />
                         <PasteFromClipboardButton setInput={setInput} />
                         {output && <CopyToClipboardButton output={output} />}

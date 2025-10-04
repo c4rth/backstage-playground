@@ -20,7 +20,17 @@ export const ToolkitCard = toolkitPlugin.provide(
     name: 'ToolkitCard',
     component: {
       lazy: () =>
-        import('./components/ToolkitCard').then(m => m.ToolkitCard),
+        import('./components/ToolkitCard/ToolkitCard').then(m => m.ToolkitCard),
+    },
+  }),
+);
+
+export const ToolkitCategoryCard = toolkitPlugin.provide(
+  createComponentExtension({
+    name: 'ToolkitCategoryCard',
+    component: {
+      lazy: () =>
+        import('./components/ToolkitCard/ToolkitCategoryCard').then(m => m.ToolkitCategoryCard),
     },
   }),
 );
