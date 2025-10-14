@@ -23,7 +23,7 @@ pAqEAuV4DNoxQKKWmhVv+J0ptMWD25Pnpxeq5sXzghfJnslJlQND
 -----END CERTIFICATE-----
 `;
 
-export function parsePemCertificate(input: string): { cert: Certificate; der: ArrayBuffer } {
+export function parsePemCertificates(input: string): Array<{ cert: Certificate; der: ArrayBuffer }> {
   let pemText = input.trim();
 
   // Case 1: PEM text directly
@@ -42,23 +42,34 @@ export function parsePemCertificate(input: string): { cert: Certificate; der: Ar
     }
   }
 
-  // Extract body from PEM
-  const base64Body = pemText
-    .replace(/-----BEGIN CERTIFICATE-----/, "")
-    .replace(/-----END CERTIFICATE-----/, "")
-    .replace(/\s+/g, "");
+  // Extract all certificates from PEM text
+  const certRegex = /-----BEGIN CERTIFICATE-----([\s\S]*?)-----END CERTIFICATE-----/g;
+  const matches = Array.from(pemText.matchAll(certRegex));
 
-  // Convert Base64 → DER
-  const der = Uint8Array.from(atob(base64Body), c => c.charCodeAt(0));
-
-  // Parse ASN.1
-  const asn1 = asn1js.fromBER(der.buffer);
-  if (asn1.offset === -1) {
-    throw new Error("Failed to parse certificate");
+  if (matches.length === 0) {
+    throw new Error("No certificates found in input");
   }
 
-  const cert = new Certificate({ schema: asn1.result });
-  return { cert, der: der.buffer };
+  const results: Array<{ cert: Certificate; der: ArrayBuffer }> = [];
+
+  for (const match of matches) {
+    // Extract body from PEM
+    const base64Body = match[1].replace(/\s+/g, "");
+
+    // Convert Base64 → DER
+    const der = Uint8Array.from(atob(base64Body), c => c.charCodeAt(0));
+
+    // Parse ASN.1
+    const asn1 = asn1js.fromBER(der.buffer);
+    if (asn1.offset === -1) {
+      throw new Error("Failed to parse certificate");
+    }
+
+    const cert = new Certificate({ schema: asn1.result });
+    results.push({ cert, der: der.buffer });
+  }
+
+  return results;
 }
 
 const oidMap: Record<string, string> = {
@@ -117,20 +128,33 @@ export const CertificateDecoder = () => {
         return;
       }
       try {
-        const { cert, der } = parsePemCertificate(input);
-        const sha256 = await computeFingerprint(der, "SHA-256");
+        const certificates = parsePemCertificates(input);
         
-        setInfo({
-          subject: formatName(cert.subject.typesAndValues),
-          issuer: formatName(cert.issuer.typesAndValues),
-          notBefore: cert.notBefore.value.toString(),
-          notAfter: cert.notAfter.value.toString(),
-          serialNumber: cert.serialNumber.valueBlock.toString(),
-          version: cert.version,
-          "SHA-256 Fingerprint": {
-            certificate: sha256,
-          }
-        });
+        // Process all certificates
+        const certInfos = await Promise.all(
+          certificates.map(async ({ cert, der }, index) => {
+            const sha256 = await computeFingerprint(der, "SHA-256");
+            
+            return {
+              [`Certificate ${index + 1}`]: {
+                subject: formatName(cert.subject.typesAndValues),
+                issuer: formatName(cert.issuer.typesAndValues),
+                notBefore: cert.notBefore.value.toString(),
+                notAfter: cert.notAfter.value.toString(),
+                serialNumber: cert.serialNumber.valueBlock.toString(),
+                version: cert.version,
+                "SHA-256 Fingerprint": sha256,
+              }
+            };
+          })
+        );
+
+        // If single certificate, show it directly; otherwise show array
+        if (certInfos.length === 1) {
+          setInfo(certInfos[0]['Certificate 1']);
+        } else {
+          setInfo(Object.assign({}, ...certInfos));
+        }
       } catch (error) {
         setInfo(
           { message: `Couldn't decode certificate: ${error}` });
