@@ -9,7 +9,7 @@ import { useCatalogEntity } from '../../hooks';
 import { extractUrl, isExternalUrl } from '../../lib/helper';
 import { rootDocsRouteRef } from '../../routes';
 import { TechDocsReaderPage, TechDocsReaderPageContent, } from '@backstage/plugin-techdocs';
-import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
+import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 
 export type CustomDocsReaderPageProps = {
     entityRef?: CompoundEntityRef;

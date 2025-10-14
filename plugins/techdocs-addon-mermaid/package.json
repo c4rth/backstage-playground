@@ -1,0 +1,106 @@
+{
+  "name": "@internal/plugin-techdocs-addon-mermaid",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
+    "registry": "https://registry.npmjs.org"
+  },
+  "backstage": {
+    "role": "frontend-plugin-module",
+    "pluginId": "techdocs",
+    "pluginPackage": "@backstage/plugin-techdocs"
+  },
+  "keywords": [
+    "backstage",
+    "techdocs",
+    "mermaid"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/core-components": "^0.18.1",
+    "@backstage/core-plugin-api": "^1.11.0",
+    "@backstage/frontend-plugin-api": "^0.12.0",
+    "@backstage/plugin-techdocs-react": "^1.3.3",
+    "@backstage/theme": "^0.6.8",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "d3": "^7.9.0",
+    "d3-selection": "^3.0.0",
+    "d3-zoom": "^3.0.0",
+    "mermaid": "^11.6.0",
+    "react-use": "^17.2.4"
+  },
+  "peerDependencies": {
+    "@types/react": "^17.0.0 || ^18.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.34.3",
+    "@backstage/core-app-api": "^1.19.0",
+    "@backstage/dev-utils": "^1.1.14",
+    "@backstage/plugin-techdocs-addons-test-utils": "^1.1.0",
+    "@backstage/test-utils": "^1.7.11",
+    "@date-io/core": "^1.3.13",
+    "@svgr/core": "^6.0.0",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/d3": "^7.4.3",
+    "@types/jest": "*",
+    "@types/node": "*",
+    "@types/react": "^18.3.12",
+    "cross-fetch": "^3.1.5",
+    "msw": "^1.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.3.0",
+    "typescript": "~5.6.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johanneswuerbach/backstage-plugin-techdocs-addon-mermaid",
+    "directory": "."
+  },
+  "packageManager": "yarn@4.8.1"
+}

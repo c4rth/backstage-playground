@@ -60,7 +60,7 @@ import {
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 // Techdocs
-import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
+import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 
 const techdocsContent = (
   <EntityTechdocsContent>
