@@ -25,11 +25,11 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.4.3",
-    "@backstage/plugin-catalog-react": "^1.21.1",
-    "@backstage/plugin-scaffolder": "^1.34.1",
-    "@backstage/plugin-scaffolder-node": "^0.11.1",
-    "@backstage/plugin-scaffolder-react": "^1.19.1",
+    "@backstage/backend-plugin-api": "^1.4.4",
+    "@backstage/plugin-catalog-react": "^1.21.2",
+    "@backstage/plugin-scaffolder": "^1.34.2",
+    "@backstage/plugin-scaffolder-node": "^0.12.0",
+    "@backstage/plugin-scaffolder-react": "^1.19.2",
     "fs-extra": "^11.2.0",
     "react-use": "^17.6.0",
     "yaml": "^2.8.1"
