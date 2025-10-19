@@ -74,6 +74,7 @@ import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common'
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
 import { ToolsPage } from '@internal/plugin-toolkit';
 import { ProjectPickerFieldExtension } from '@internal/plugin-scaffolder-extensions';
+import { BuiThemerPage } from '@backstage/plugin-mui-to-bui';
 
 const app = createApp({
   apis,
@@ -192,6 +193,7 @@ const routes = (
       </RequirePermission>
     }
     />
+    <Route path="/mui-to-bui" element={<BuiThemerPage />} />
     <Route path="/devtools"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>
