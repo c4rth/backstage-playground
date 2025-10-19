@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import { RiInformationLine } from '@remixicon/react';
 import { Variant } from '@material-ui/core/styles/createTypography';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
 
@@ -62,7 +62,7 @@ export const InfoPopUp = (props: InfoPopUpProps) => {
                 {text}
             </Typography>
             <InfoPopOver {...popoverProps}>
-                <InfoOutlinedIcon {...iconProps} />
+                <RiInformationLine {...iconProps} />
             </InfoPopOver>
         </Box>
     );

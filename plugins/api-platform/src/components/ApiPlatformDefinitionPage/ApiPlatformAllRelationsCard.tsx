@@ -1,6 +1,5 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
 import { memo, useMemo } from 'react';
-import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
 import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
@@ -18,6 +17,7 @@ import {
 import { useGetApiVersions } from "../../hooks";
 import semver from 'semver';
 import { ComponentDisplayName } from "../common";
+import { Flex } from '@backstage/ui';
 
 type TableRow = {
     readonly id: number;
@@ -193,10 +193,9 @@ export const ApiPlatformAllRelationsCard = memo<ApiPlatformAllRelationsCardProps
     const rows = useMemo(() => allServices.map(toRow), [allServices]);
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align="center" mr='1'>
             {title} ({rows.length})
-        </Box>
+        </Flex>
     ), [title, rows.length]);
 
     const loading = versionsLoading || servicesLoading;

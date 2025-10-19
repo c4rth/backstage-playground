@@ -7,7 +7,6 @@ import {
     Progress,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box } from '@material-ui/core';
 import {
     ANNOTATION_API_NAME,
     ApiDefinitionsListRequest,
@@ -19,6 +18,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
+import { Flex } from '@backstage/ui';
 
 type TableRow = {
     id: number,
@@ -131,12 +131,10 @@ export const ApiPlatformTable = ({ }: ApiPlatformTableProps) => {
     }), [loadingCount, initialSearch]);
 
     const tableTitle = useMemo(() => (
-            <Box display="flex" alignItems="center">
-                <Box mr={1} />
-                {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
-                <Box ml={2} />
-                <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
-            </Box>
+        <Flex align="center">
+            {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
+            <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
+        </Flex>
     ), [countRows, ownership]);
 
 

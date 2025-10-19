@@ -1,6 +1,8 @@
 import { HeaderLabel, Link } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
 import { ComponentDisplayName } from '.';
+
+// TODO-MUI
 import { makeStyles } from '@material-ui/core';
 
 type EntityLabelsProps = {

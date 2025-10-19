@@ -9,13 +9,13 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
-import { Box, Grid } from '@material-ui/core';
 import { ServicePlatformDefinitionCard } from './ServicePlatformDefinitionCard';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
+import { Box, Grid } from '@backstage/ui';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>
 
@@ -116,17 +116,17 @@ export const ServicePlatformDefinitionPage = () => {
         <ComponentHeaderLabels entity={serviceEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
       </Header>
       <Content>
-        <Box mb={1}>
-          <Grid container>
-            <Grid item md={6}>
+        <Box mb='1'>
+          <Grid.Root columns='12'>
+            <Grid.Item colSpan='6'>
               <Select onChange={selected => setSelectedVersion(selected.toString())} label="Versions" items={versions} selected={selectedVersion} />
-            </Grid>
-            <Grid item md={6}>
+            </Grid.Item>
+            <Grid.Item colSpan='6'>
               <Select onChange={selected => setSelectedEnvironment(selected.toString())} label="Environments" items={environments} selected={selectedEnvironment} />
-            </Grid>
-          </Grid>
+            </Grid.Item>
+          </Grid.Root>
         </Box>
-        <Box mb={-3}>
+        <Box mb='-3'>
           {serviceEntity ? (
             <EntityProvider entity={serviceEntity}>
               <ServicePlatformDefinitionCard />

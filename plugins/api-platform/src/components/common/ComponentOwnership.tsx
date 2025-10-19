@@ -1,15 +1,14 @@
+import { Tag, TagGroup } from '@backstage/ui';
 import { OwnershipType } from '@internal/plugin-api-platform-common';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { useCallback, useState } from 'react';
 
 
 interface ComponentOwnershipProps {
     storageKey: string;
-    suffix?: string;
     handleOwnershipChange: (selected: OwnershipType) => void;
 }
 
-export const ComponentOwnership = ({ storageKey, suffix, handleOwnershipChange }: ComponentOwnershipProps) => {
+export const ComponentOwnership = ({ storageKey, handleOwnershipChange }: ComponentOwnershipProps) => {
 
     const [selectedType, setSelectedType] = useState<OwnershipType>(
         () => (sessionStorage.getItem(storageKey) === 'owned' ? 'owned' : 'all')
@@ -28,10 +27,21 @@ export const ComponentOwnership = ({ storageKey, suffix, handleOwnershipChange }
     );
 
     return (
-        <ToggleButtonGroup color='secondary' exclusive value={selectedType} onChange={(_, value) => handleSelectChange(value ?? 'all')}>
-            <ToggleButton value="all">All {suffix}</ToggleButton>
-            <ToggleButton value="owned">Owned {suffix}</ToggleButton>
-        </ToggleButtonGroup>
+        <TagGroup
+            selectionMode='single'
+            selectedKeys={[selectedType]}
+            onSelectionChange={(keys) => {
+                const selected = Array.from(keys)[0] ?? 'all';
+                handleSelectChange(selected.toString());
+            }}>
+            <Tag size="medium" id='all'>
+                All
+            </Tag>
+            <Tag size="medium" id='owned'>
+                Owned
+            </Tag>
+        </TagGroup>
+
     );
 
 }

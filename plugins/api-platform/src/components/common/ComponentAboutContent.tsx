@@ -7,17 +7,13 @@ import {
   EntityRefLinks,
   getEntityRelations,
 } from '@backstage/plugin-catalog-react';
-import Chip from '@material-ui/core/Chip';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 import { MarkdownContent } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
+import { Grid } from '@backstage/ui'
 
-const useStyles = makeStyles({
-  description: {
-    wordBreak: 'break-word',
-  },
-});
+// TODO-MUI
+import Chip from '@material-ui/core/Chip';
+
 
 /**
  * Props for {@link ComponentAboutContent}.
@@ -32,7 +28,6 @@ export interface ComponentAboutContentProps {
 /** @public */
 export function ComponentAboutContent(props: ComponentAboutContentProps) {
   const { entity } = props;
-  const classes = useStyles();
 
   const isSystem = entity.kind.toLocaleLowerCase('en-US') === 'system';
   const isResource = entity.kind.toLocaleLowerCase('en-US') === 'resource';
@@ -58,72 +53,80 @@ export function ComponentAboutContent(props: ComponentAboutContentProps) {
   const ownedByRelations = getEntityRelations(entity, RELATION_OWNED_BY);
 
   return (
-    <Grid container>
-      <AboutField
-        label='description'
-        gridSizes={{ xs: 12 }}
-      >
-        <MarkdownContent
-          className={classes.description}
-          content={
-            entity?.metadata?.description ||
-            'No Description'
-          }
-        />
-      </AboutField>
-      <AboutField
-        label='owner'
-        value='No Owner'
-        className={classes.description}
-        gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-      >
-        {ownedByRelations.length > 0 && (
-          <EntityRefLinks entityRefs={ownedByRelations} defaultKind="group" />
-        )}
-      </AboutField>
-      {(isSystem || partOfDomainRelations.length > 0) && (
+    <Grid.Root columns='12'>
+      <Grid.Item colSpan='12'>
         <AboutField
-          label='domain'
-          value='No Domain'
-          gridSizes={{ xs: 12, sm: 6, lg: 4 }}
+          label='description'
         >
-          {partOfDomainRelations.length > 0 && (
-            <EntityRefLinks
-              entityRefs={partOfDomainRelations}
-              defaultKind="domain"
-            />
+          <MarkdownContent            
+            content={
+              entity?.metadata?.description ||
+              'No Description'
+            }
+          />
+        </AboutField>
+      </Grid.Item>
+
+      <Grid.Item colSpan='4'>
+        <AboutField
+          label='owner'
+          value='No Owner'
+        >
+          {ownedByRelations.length > 0 && (
+            <EntityRefLinks entityRefs={ownedByRelations} defaultKind="group" />
           )}
         </AboutField>
+      </Grid.Item>
+
+      {(isSystem || partOfDomainRelations.length > 0) && (
+        <Grid.Item colSpan='4'>
+          <AboutField
+            label='domain'
+            value='No Domain'
+          >
+            {partOfDomainRelations.length > 0 && (
+              <EntityRefLinks
+                entityRefs={partOfDomainRelations}
+                defaultKind="domain"
+              />
+            )}
+          </AboutField>
+        </Grid.Item>
       )}
+
       {(isAPI ||
         isComponent ||
         isResource ||
         partOfSystemRelations.length > 0) && (
-        <AboutField
-          label='System'
-          value='No System'
-          gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-        >
-          {partOfSystemRelations.length > 0 && (
-            <EntityRefLinks
-              entityRefs={partOfSystemRelations}
-              defaultKind="system"
-            />
-          )}
-        </AboutField>
-      )}
+          <Grid.Item colSpan='4'>
+            <AboutField
+              label='System'
+              value='No System'
+            >
+              {partOfSystemRelations.length > 0 && (
+                <EntityRefLinks
+                  entityRefs={partOfSystemRelations}
+                  defaultKind="system"
+                />
+              )}
+            </AboutField>
+          </Grid.Item>
+        )}
+
       {isComponent && partOfComponentRelations.length > 0 && (
-        <AboutField
-          label='Parent Component'
-          value='No Parent Component'
-          gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-        >
-          <EntityRefLinks
-            entityRefs={partOfComponentRelations}
-            defaultKind="component"
-          />
-        </AboutField>
+        <Grid.Item colSpan='4'>
+          <AboutField
+            label='Parent Component'
+            value='No Parent Component'
+          >
+            <EntityRefLinks
+              entityRefs={partOfComponentRelations}
+              defaultKind="component"
+            />
+          </AboutField>
+        </Grid.Item>
       )}
+
       {(isAPI ||
         isComponent ||
         isResource ||
@@ -131,30 +134,36 @@ export function ComponentAboutContent(props: ComponentAboutContentProps) {
         isGroup ||
         isLocation ||
         typeof entity?.spec?.type === 'string') && (
-        <AboutField
-          label='Type'
-          value={entity?.spec?.type as string}
-          gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-        />
-      )}
+          <Grid.Item colSpan='4'>
+            <AboutField
+              label='Type'
+              value={entity?.spec?.type as string}
+            />
+          </Grid.Item>
+        )}
+
       {(isAPI ||
         isComponent ||
         typeof entity?.spec?.lifecycle === 'string') && (
+          <Grid.Item colSpan='4'>
+            <AboutField
+              label='Lifecycle'
+              value={entity?.spec?.lifecycle as string}
+            />
+          </Grid.Item>
+        )}
+
+      <Grid.Item colSpan='4'>
         <AboutField
-          label='Lifecycle'
-          value={entity?.spec?.lifecycle as string}
-          gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-        />
-      )}
-      <AboutField
-        label='Tags'
-        value='No Tags'
-        gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-      >
-        {(entity?.metadata?.tags || []).map(tag => (
-          <Chip key={tag} size="small" label={tag} />
-        ))}
-      </AboutField>
-    </Grid>
+          label='Tags'
+          value='No Tags'
+        >
+          {(entity?.metadata?.tags || []).map(tag => (
+            <Chip key={tag} size="small" label={tag} />
+          ))}
+        </AboutField>
+      </Grid.Item>
+
+    </Grid.Root >
   );
 }

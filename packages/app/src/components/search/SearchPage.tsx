@@ -25,7 +25,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
-import CodeIcon from '@material-ui/icons/Code';
+import { RiCodeFill } from '@remixicon/react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -75,7 +75,7 @@ const SearchPage = () => {
                 {
                   value: 'mca',
                   name: 'MCA Components',
-                  icon: <CodeIcon />,
+                  icon: <RiCodeFill />,
                 },
               ]}
             />
@@ -107,7 +107,7 @@ const SearchPage = () => {
             <SearchPagination />
             <SearchResult>
               <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />
-              <McaComponentSearchResultListItem icon={<CodeIcon />} />
+              <McaComponentSearchResultListItem icon={<RiCodeFill />} />
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
             </SearchResult>

@@ -11,7 +11,7 @@ import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
 import { Box, IconButton, Typography } from '@material-ui/core';
 import { AppRegistryOperation } from '../../types';
-import MapIcon from '@material-ui/icons/Map';
+import { RiMap2Line } from '@remixicon/react';
 import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow } from '@material-ui/core';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { memo, useMemo } from 'react';
@@ -88,7 +88,7 @@ const columns: TableColumn<TableRow>[] = [
           content={<PdpMappingTable mapping={operation.pdpMapping} />}
         >
           <IconButton size="small" aria-label="View PDP mapping">
-            <MapIcon />
+            <RiMap2Line />
           </IconButton>
         </InfoPopOver>
       ) : null,

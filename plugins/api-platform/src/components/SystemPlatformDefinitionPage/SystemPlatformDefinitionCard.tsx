@@ -7,13 +7,13 @@ import { getCompoundEntityRef } from "@backstage/catalog-model";
 import { Box, Grid, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import { AboutField, } from '@backstage/plugin-catalog';
-import DocsIcon from '@material-ui/icons/Description';
 import { SystemPlatformRelationCard } from './SystemPlatformRelationCard';
 import { memo, useMemo } from 'react';
 import { EntityMembersListCard } from '@backstage/plugin-org';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
+import { RiFileFill } from '@remixicon/react';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -83,7 +83,7 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
             component={Link}
             to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}
         >
-            <DocsIcon />
+            <RiFileFill />
         </IconButton>
     ), [entityData.hasDocs, entityData.entityRef]);
 

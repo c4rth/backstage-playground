@@ -24,6 +24,12 @@ import {
 } from '@backstage/core-components';
 import useAsync from 'react-use/lib/useAsync';
 import { ApiEntity } from '@backstage/catalog-model';
+import { useApi } from '@backstage/core-plugin-api';
+import { linterApiRef } from '../../api';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { RiArrowUpSLine, RiArrowDownSLine } from '@remixicon/react';
+
+// TODO-MUI
 import {
   Grid,
   IconButton,
@@ -31,12 +37,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import { useApi } from '@backstage/core-plugin-api';
-import { linterApiRef } from '../../api';
-import { useEntity } from '@backstage/plugin-catalog-react';
 
 const useStyles = makeStyles(() => ({
   alertButton: {
@@ -131,9 +132,9 @@ export const EntityApiDocsSpectralLinterCard = () => {
                       className={classes.alertButton}
                     >
                       {`alert${idx}` === expanded ? (
-                        <ExpandLessIcon />
+                        <RiArrowUpSLine />
                       ) : (
-                        <ExpandMoreIcon />
+                        <RiArrowDownSLine />
                       )}
                     </IconButton>
                   </AlertTitle>

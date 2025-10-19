@@ -3,9 +3,12 @@ import {
   IndexableDocument,
   ResultHighlight,
 } from '@backstage/plugin-search-common';
-import { Box, Chip, ListItemIcon, ListItemText, makeStyles, Typography } from '@material-ui/core';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Link } from '@backstage/core-components';
+import { Box, Text } from '@backstage/ui';
+
+// TODO-MUI
+import { Chip, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(
   {
@@ -77,16 +80,15 @@ export function ApiPlatformSearchResultListItem(
             </Link>
           }
           secondary={
-            <Typography
-              component="span"
+            <Text
               style={{
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: props.lineClamp,
                 overflow: 'hidden',
               }}
-              color="textSecondary"
-              variant="body2"
+              color="secondary"
+              variant="body-medium"
             >
               {highlight?.fields.text ? (
                 <HighlightedSearchResultText
@@ -97,7 +99,7 @@ export function ApiPlatformSearchResultListItem(
               ) : (
                 result.text
               )}
-            </Typography>
+            </Text>
           }
         />
         {renderChips(result)}

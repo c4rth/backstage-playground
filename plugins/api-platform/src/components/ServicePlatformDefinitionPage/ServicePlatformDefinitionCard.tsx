@@ -5,12 +5,10 @@ import {
 } from '@backstage/core-components';
 import { memo, useMemo } from 'react';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
-import { Box, Grid, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
     AboutField,
 } from '@backstage/plugin-catalog';
-import DocsIcon from '@material-ui/icons/Description';
 import {
     Direction,
     EntityCatalogGraphCard,
@@ -29,32 +27,20 @@ import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { CustomAzureGitTagsContent, CustomAzurePipelinesContent } from '@internal/plugin-azure-devops';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
+import { RiFileFill } from '@remixicon/react';
+
+// TODO-MUI
+import { makeStyles } from '@material-ui/core';
+
 
 const useStyles = makeStyles(
-    (theme: Theme) => ({
+    () => ({
         gridItemCard: {
             display: 'flex',
             flexDirection: 'column',
             height: 'calc(100% - 10px)', // for pages without content header
             marginBottom: '10px',
-        },
-        infoCardHeader: {
-            padding: '16px',
-        },
-        value: {
-            fontWeight: 'bold',
-            overflow: 'hidden',
-            lineHeight: '24px',
-            wordBreak: 'break-word',
-        },
-        label: {
-            color: theme.palette.text.secondary,
-            textTransform: 'uppercase',
-            fontSize: '10px',
-            fontWeight: 'bold',
-            letterSpacing: 0.5,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
         },
     }),
 );
@@ -88,73 +74,92 @@ export const ServicePlatformDefinitionCard = memo(() => {
         sonarQube: isSonarQubeAvailable(entity),
     }), [entity]);
 
+    /*
+    <IconButton
+                aria-label="Documentation"
+                title="TechDocs"
+                disabled={!entityData.hasDocs}
+                component={Link}
+                to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}
+            >
+                <DocsIcon />
+            </IconButton>*/
+
+    // TODO-MUI
     const docsButton = useMemo(() => (
-        <IconButton
-            aria-label="Documentation"
-            title="TechDocs"
-            disabled={!entityData.hasDocs}
-            component={Link}
-            to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}
+        <ButtonIcon
+            icon={<RiFileFill />}
+            isDisabled={!entityData.hasDocs}
+            size='medium'
+            variant='tertiary'
+            onClick={(_) => alert('Hello')}
         >
-            <DocsIcon />
-        </IconButton>
+            <Link to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`} />
+        </ButtonIcon>
     ), [entityData.hasDocs, entityData.entityRef]);
 
     const aboutFields = useMemo(() => (
-        <Box sx={{ mb: 4 }}>
-            <Grid container>
-                <AboutField
-                    label="Service reference"
-                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
-                    <EntityRefLink entityRef={entity} />
-                </AboutField>
-                <AboutField
-                    label="Platform"
-                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
-                    <Typography variant="body2" display="inline" className={classes.value}>
-                        {entityData.platform}
-                    </Typography>
-                </AboutField>
-                <AboutField
-                    label="Image version"
-                    gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
-                    <Typography variant="body2" display="inline" className={classes.value}>
-                        {entityData.imageVersion || 'N/A'}
-                    </Typography>
-                </AboutField>
-                <AboutField
-                    label="Repository"
-                    gridSizes={{ xs: 12, sm: 6, lg: 12 }}>
-                    {entityData.repository ? (
-                        <Link to={entityData.repositoryUrl}>
-                            <ComponentDisplayName text={entityData.repository} type='azdo' />
-                        </Link>
-                    ) : (
-                        <Typography variant="body2" display="inline" className={classes.value}>
-                            -
-                        </Typography>
-                    )}
-                </AboutField>
-            </Grid>
+        <Box>
+            <Grid.Root columns='12'>
+                <Grid.Item colSpan='4'>
+                    <AboutField
+                        label="Service reference">
+                        <EntityRefLink entityRef={entity} />
+                    </AboutField>
+                </Grid.Item>
+
+                <Grid.Item colSpan='4'>
+                    <AboutField
+                        label="Platform">
+                        <Text variant='body-medium'>
+                            {entityData.platform}
+                        </Text>
+                    </AboutField>
+                </Grid.Item>
+
+                <Grid.Item colSpan='4'>
+                    <AboutField
+                        label="Image version">
+                        <Text variant='body-medium'>
+                            {entityData.imageVersion || 'N/A'}
+                        </Text>
+                    </AboutField>
+                </Grid.Item>
+
+                <Grid.Item colSpan='12'>
+                    <AboutField
+                        label="Repository">
+                        {entityData.repository ? (
+                            <Link to={entityData.repositoryUrl}>
+                                <ComponentDisplayName text={entityData.repository} type='azdo' />
+                            </Link>
+                        ) : (
+                            <Text variant='body-medium'>
+                                -
+                            </Text>
+                        )}
+                    </AboutField>
+                </Grid.Item>
+            </Grid.Root>
         </Box>
-    ), [entity, entityData, classes.value]);
+    ), [entity, entityData]);
 
     return (
         <TabbedLayout>
             <TabbedLayout.Route path="/" title="Overview">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={6}>
+                <Grid.Root columns='12'>
+                    <Grid.Item colSpan='6'>
                         <InfoCard
                             title="About"
                             divider
                             className={classes.gridItemCard}
-                            action={docsButton}
-                        >
+                            action={docsButton}>
                             {aboutFields}
+                            <Box mt='6' />
                             <ComponentAboutContent entity={entity} />
                         </InfoCard>
-                    </Grid>
-                    <Grid item md={6} xs={12}>
+                    </Grid.Item>
+                    <Grid.Item colSpan='6'>
                         <EntityCatalogGraphCard
                             variant="gridItem"
                             height={400}
@@ -162,50 +167,40 @@ export const ServicePlatformDefinitionCard = memo(() => {
                             direction={Direction.TOP_BOTTOM}
                             unidirectional
                         />
-                    </Grid>
-                </Grid>
+                    </Grid.Item>
+                </Grid.Root>
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/api" title="API">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={6}>
+                <Grid.Root columns='12'>
+                    <Grid.Item colSpan='6'>
                         <ServicePlatformRelationCard dependency="provided" />
-                    </Grid>
-                    <Grid item md={6} xs={12}>
+                    </Grid.Item>
+                    <Grid.Item colSpan='6'>
                         <ServicePlatformRelationCard dependency="consumed" />
-                    </Grid>
-                </Grid>
+                    </Grid.Item>
+                </Grid.Root>
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/appreg" title="App Registry">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={12}>
-                        <AppRegistryPage />
-                    </Grid>
-                </Grid>
+                <AppRegistryPage />
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/cicd" title="CI/CD">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={12}>
-                        <CustomAzurePipelinesContent defaultLimit={5} />
-                    </Grid>
-                </Grid>
+                <CustomAzurePipelinesContent defaultLimit={5} />
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/gittags" title="Git Tags">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={12}>
-                        <CustomAzureGitTagsContent />
-                    </Grid>
-                </Grid>
+                <CustomAzureGitTagsContent />
             </TabbedLayout.Route>
 
-            {availabilityChecks.sonarQube && (
-                <TabbedLayout.Route path="/sonarqube" title="SonarQube">
-                    <EntitySonarQubeContentPage />
-                </TabbedLayout.Route>
-            )}
-        </TabbedLayout>
+            {
+                availabilityChecks.sonarQube && (
+                    <TabbedLayout.Route path="/sonarqube" title="SonarQube">
+                        <EntitySonarQubeContentPage />
+                    </TabbedLayout.Route>
+                )
+            }
+        </TabbedLayout >
     );
 });

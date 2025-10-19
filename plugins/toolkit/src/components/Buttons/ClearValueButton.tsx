@@ -1,6 +1,6 @@
 
 import { Button, Tooltip } from '@material-ui/core';
-import Clear from '@material-ui/icons/Clear';
+import { RiCloseCircleLine } from '@remixicon/react';
 
 type Props = {
   setValue: (input: string) => void;
@@ -15,7 +15,7 @@ export const ClearValueButton = (props: Props) => {
     >
       <Button
         size="small"
-        startIcon={<Clear />}
+        startIcon={<RiCloseCircleLine />}
         onClick={() => props.setValue('')}
         variant="text"
         color="inherit"

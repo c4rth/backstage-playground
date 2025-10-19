@@ -1,28 +1,23 @@
-import ExtensionIcon from '@material-ui/icons/Extension';
-import CategoryIcon from '@material-ui/icons/Category';
-import MuiMemoryIcon from '@material-ui/icons/Memory';
-import Box from '@material-ui/core/Box';
-import { Theme, makeStyles } from '@material-ui/core/styles';
 import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
+import { Box, Text } from '@backstage/ui';
+import { RiPuzzleFill, RiShapesFill, RiCpuLine  } from '@remixicon/react'
+
+// TODO-MUI
+import { Theme, makeStyles } from '@material-ui/core/styles';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
-        root: {
-            display: 'inline-flex',
-            alignItems: 'center',
-            textDecoration: 'inherit',
-        },
         icon: {
             marginRight: theme.spacing(0.5),
             color: theme.palette.text.secondary,
             '& svg': {
                 verticalAlign: 'middle',
             },
+            size: '12px',
         },
     }),
-    { name: 'CatalogReactEntityDisplayName' },
 );
 
 export type ComponentDisplayNameProps = {
@@ -33,20 +28,26 @@ export type ComponentDisplayNameProps = {
 export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps): React.JSX.Element => {
     const classes = useStyles();
     return (
-        <Box component="span" className={classes.root}>
+        <Box style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            textDecoration: 'inherit',
+        }}>
             {type === 'api' && (
-                <ExtensionIcon className={classes.icon} fontSize="inherit" />
+                <RiPuzzleFill className={classes.icon} fontSize="inherit" size='16px'/>
             )}
             {type === 'system' && (
-                <CategoryIcon className={classes.icon} fontSize="inherit" />
+                <RiShapesFill className={classes.icon} fontSize="inherit" size='16px'/>
             )}
             {type === 'service' && (
-                <MuiMemoryIcon className={classes.icon} fontSize="inherit" />
+                <RiCpuLine className={classes.icon} fontSize="inherit" size='16px'/>
             )}
             {type === 'azdo' && (
                 <AzureDevOpsIcon className={classes.icon} fontSize="inherit" />
             )}
-            {text}
+            <Text weight='bold' style={{ color: '#C30045' }}>
+                {text}
+            </Text>
         </Box>
     );
 };

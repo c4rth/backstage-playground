@@ -1,12 +1,12 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
 import { memo, useCallback, useMemo } from 'react';
-import { Box } from "@material-ui/core";
 import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
 import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION, CATALOG_METADATA_SERVICE_NAME, CATALOG_METADATA_SERVICE_VERSION, CATALOG_SPEC_LIFECYCLE, CATALOG_SPEC_SYSTEM } from "@internal/plugin-api-platform-common";
 import { ComponentDisplayName } from "../common";
+import { Flex } from '@backstage/ui';
 
 type TableRow = {
     id: number,
@@ -124,10 +124,9 @@ export const ApiPlatformRelationCard = memo<ApiPlatformRelationCardProps>(({ dep
     const { value: entities, loading, error } = useAsync(fetchAsync, [fetchAsync]);
     const rows = useMemo(() => entities?.map(toRow) ?? [], [entities]);
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align="center" mr='1'>
             {title} ({rows.length})
-        </Box>
+        </Flex>
     ), [title, rows.length]);
 
     if (error) {

@@ -1,5 +1,11 @@
+import { SyntheticEvent, useEffect, useState } from 'react';
+import { IconComponent } from '@backstage/core-plugin-api';
+import { useApi, alertApiRef } from '@backstage/core-plugin-api';
+import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
+import { RiFileCopyFill, RiBug2Fill, RiMore2Fill  } from '@remixicon/react'
+
+// TODO-MUI
 import Divider from '@material-ui/core/Divider';
-import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
 import IconButton from '@material-ui/core/IconButton';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -8,12 +14,6 @@ import MenuList from '@material-ui/core/MenuList';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Theme, makeStyles } from '@material-ui/core/styles';
-import BugReportIcon from '@material-ui/icons/BugReport';
-import MoreVert from '@material-ui/icons/MoreVert';
-import { SyntheticEvent, useEffect, useState } from 'react';
-import { IconComponent } from '@backstage/core-plugin-api';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
 
 /** @public */
 export type EntityContextMenuClassKey = 'button';
@@ -102,7 +102,7 @@ export function ComponentHeaderContextMenu(props: ComponentHeaderContextMenuProp
           className={classes.button}
           id="long-menu"
         >
-          <MoreVert />
+          <RiMore2Fill />
         </IconButton>
       </Tooltip>
       <Popover
@@ -126,7 +126,7 @@ export function ComponentHeaderContextMenu(props: ComponentHeaderContextMenuProp
                 }}
               >
                 <ListItemIcon>
-                  <BugReportIcon fontSize="small" />
+                  <RiBug2Fill fontSize="small" />
                 </ListItemIcon>
                 <ListItemText
                   primary='entityContextMenu.inspectMenuTitle'
@@ -139,7 +139,7 @@ export function ComponentHeaderContextMenu(props: ComponentHeaderContextMenuProp
                 }}
               >
                 <ListItemIcon>
-                  <FileCopyTwoToneIcon fontSize="small" />
+                  <RiFileCopyFill fontSize="small" />
                 </ListItemIcon>
                 <ListItemText
                   primary='entityContextMenu.copyURLMenuTitle'

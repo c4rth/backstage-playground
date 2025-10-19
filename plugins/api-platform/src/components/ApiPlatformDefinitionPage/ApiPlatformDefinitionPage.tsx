@@ -13,10 +13,10 @@ import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
 import { ApiPlatformDefinitionCard } from './ApiPlatformDefinitionCard';
-import { Box } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
+import { Box } from '@backstage/ui';
 
 export const ApiPlatformDefinitionPage = () => {
   const { system, name } = useParams();
@@ -83,12 +83,12 @@ export const ApiPlatformDefinitionPage = () => {
       </Header>
 
       <Content>
-        <Box mb={1}>
+        <Box mb='1'>
           <Select onChange={(selected) => {
             setSelectedVersion(selected.toString());
           }} label="Versions" items={versions} selected={selectedVersion} />
         </Box>
-        <Box mb={-3}>
+        <Box mb='-3'>
           {apiEntity ?
             <EntityProvider entity={apiEntity}>
               <ApiPlatformDefinitionCard />

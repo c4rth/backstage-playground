@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
 import { Button, ButtonGroup, FormControl, Grid, TextField } from '@material-ui/core';
 import { SelectItem, Select, } from '@backstage/core-components';
-import Input from '@material-ui/icons/Input';
+import { RiEditBoxLine } from '@remixicon/react';
 
 const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * max) + min;
@@ -211,7 +211,7 @@ export const LoremIpsum = () => {
                             <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
                                 <Button
                                     size="small"
-                                    startIcon={<Input />}
+                                    startIcon={<RiEditBoxLine />}
                                     variant="text"
                                     onClick={() => generate(fakerType)}
                                     color="inherit"

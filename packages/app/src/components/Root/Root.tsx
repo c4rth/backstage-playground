@@ -1,8 +1,5 @@
 import { PropsWithChildren } from 'react';
 import { makeStyles } from '@material-ui/core';
-import HomeIcon from '@material-ui/icons/Home';
-import LibraryBooks from '@material-ui/icons/LibraryBooks';
-import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
 import {
@@ -26,6 +23,9 @@ import {
   CatalogIcon,
   DocsIcon,
 } from '@backstage/core-components';
+import HomeIcon from '@material-ui/icons/Home';
+import LibraryBooks from '@material-ui/icons/LibraryBooks';
+import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import BuildIcon from '@material-ui/icons/Build';

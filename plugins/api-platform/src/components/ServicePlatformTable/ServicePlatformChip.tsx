@@ -1,11 +1,13 @@
 import { memo, useCallback, useMemo } from 'react';
-import { Chip, Tooltip, Typography } from '@material-ui/core';
-import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
-import ComputerIcon from '@material-ui/icons/Computer';
-import CloudIcon from '@material-ui/icons/Cloud';
-import LanguageIcon from '@material-ui/icons/Language';
+import { RiCloudLine, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
+import { Text } from '@backstage/ui';
+
+// TODO-MUI 
+// + color tooltip
+import { Chip, Tooltip } from '@material-ui/core';
+import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 
 export type ServicePlatformChipProps = {
     index: number;
@@ -19,9 +21,9 @@ export type ServicePlatformChipProps = {
 const useStyles = makeStyles<Theme, ServicePlatformChipProps>(
     (theme: Theme) => ({
         badge: {
-            backgroundColor: (props: ServicePlatformChipProps) => 
+            backgroundColor: (props: ServicePlatformChipProps) =>
                 alpha(theme.palette.primary.light, (props.index + 1) / 10),
-        },
+        }, 
         chipContainer: {
             padding: '0px',
             margin: '0px',
@@ -30,9 +32,9 @@ const useStyles = makeStyles<Theme, ServicePlatformChipProps>(
 );
 
 const PlatformIcons = {
-    all: <LanguageIcon />,
-    onprem: <ComputerIcon />,
-    cloud: <CloudIcon />,
+    all: <RiGlobalLine />,
+    onprem: <RiHomeOfficeLine />,
+    cloud: <RiCloudLine />,
 } as const;
 
 export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
@@ -41,11 +43,11 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
     // Memoize platform icon selection
     const platformIcon = useMemo(() => {
         if (!props.service?.platform) return PlatformIcons.cloud;
-        
+
         const platform = props.service.platform;
         const hasCloud = platform.includes('cloud');
         const hasOnprem = platform.includes('onprem');
-        
+
         if (hasCloud && hasOnprem) return PlatformIcons.all;
         if (hasOnprem) return PlatformIcons.onprem;
         return PlatformIcons.cloud;
@@ -54,16 +56,16 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
     // Memoize tooltip content
     const tooltipContent = useMemo(() => {
         if (!props.service) return null;
-        
+
         return (
             <>
-                <Typography variant='caption'>
+                <Text variant='body-medium'>
                     Platform: <b>{props.service.platform}</b>
-                </Typography>
+                </Text>
                 <br />
-                <Typography variant='caption'>
+                <Text variant='body-medium'>
                     Version: <b>{props.service.imageVersion}</b>
-                </Typography>
+                </Text>
                 <br />
             </>
         );
@@ -84,7 +86,7 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
     const chipComponent = useMemo(() => {
         const label = props.text || props.service?.imageVersion || '?';
         const icon = props.text ? props.icon : platformIcon;
-        
+
         return (
             <Chip
                 key={label}
@@ -114,7 +116,7 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
     const finalComponent = useMemo(() => {
         if (tooltipContent) {
             return (
-                <Tooltip placement='bottom' arrow title={tooltipContent}>
+                <Tooltip placement='bottom' arrow title={tooltipContent} style={{ backgroundColor: '#FF0000' }}>
                     {chipComponent}
                 </Tooltip>
             );

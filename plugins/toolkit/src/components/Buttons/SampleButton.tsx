@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@material-ui/core';
-import Input from '@material-ui/icons/Input';
+import { RiEditBoxLine } from '@remixicon/react';
 
 type Props = {
   sample: string;
@@ -11,7 +11,7 @@ export const SampleButton = (props: Props) => {
     <Tooltip arrow title='Input sample'>
       <Button
         size="small"
-        startIcon={<Input />}
+        startIcon={<RiEditBoxLine />}
         onClick={() => props.setInput(props.sample)}
         variant="text"
         color="inherit"

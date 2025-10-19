@@ -1,6 +1,5 @@
 import { AppTheme } from '@backstage/core-plugin-api';
-import LightIcon from '@material-ui/icons/WbSunny';
-import DarkIcon from '@material-ui/icons/WbSunnyOutlined';
+import { RiSunFill, RiMoonLine } from '@remixicon/react';
 import { PageTheme, UnifiedTheme, UnifiedThemeOptions, UnifiedThemeProvider, createUnifiedTheme, genPageTheme, palettes, shapes } from '@backstage/theme';
 
 const colors = {
@@ -75,14 +74,14 @@ export const carthThemes: AppTheme[] = [
         id: 'light-theme',
         title: 'Light Theme',
         variant: 'light',
-        icon: <LightIcon />,
+        icon: <RiSunFill />,
         Provider: ({ children }) => <UnifiedThemeProvider theme={createCustomBaseTheme(palettes.light, colors.rubyRed, colors.slateGray, lightPageTheme)} children={children} />,
     },
     {
         id: 'dark-theme',
         title: 'Dark Theme',
         variant: 'dark',
-        icon: <DarkIcon />,
+        icon: <RiMoonLine />,
         Provider: ({ children }) => <UnifiedThemeProvider theme={createCustomBaseTheme(palettes.dark, colors.roseRed, colors.slateGray, darkPageTheme)} children={children} />,
     },
 ];

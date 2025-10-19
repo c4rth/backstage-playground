@@ -5,15 +5,18 @@ import {
     Table,
     TableColumn,
 } from '@backstage/core-components';
-import { Box, Divider, List, ListItem, Typography } from '@material-ui/core';
 import { ServicePlatformChip } from './ServicePlatformChip';
 import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
-import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
+import { Box, Flex, Text } from '@backstage/ui';
+
+// TODO-MUI
+import { Query } from '@material-table/core';
+import { Divider, List, ListItem } from '@material-ui/core';
 
 type TableRow = {
     id: number,
@@ -62,7 +65,7 @@ function createEnvironmentColumn(env: string): TableColumn<TableRow> {
                                     />
                                 ) : (
                                     <div style={emptyStateStyle}>
-                                        <Typography variant='body1'>-</Typography>
+                                        <Text variant='body-medium'>-</Text>
                                     </div>
                                 )}
                             </ListItem>
@@ -196,12 +199,12 @@ export const ServicePlatformTable = ({ }: ServicePlatformTableProps) => {
 
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align="center">
+            <Box mr='1' />
             {ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})
-            <Box ml={2} />
+            <Box ml='2' />
             <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
-        </Box>
+        </Flex>
     ), [countRows, ownership]);
 
     useEffect(() => {

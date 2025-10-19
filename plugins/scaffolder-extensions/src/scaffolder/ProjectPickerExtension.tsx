@@ -14,19 +14,21 @@ import { NotFoundError } from '@backstage/errors';
 import useAsync from 'react-use/esm/useAsync';
 import { useState } from 'react';
 import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import useDebounce from 'react-use/esm/useDebounce';
 import { useTemplateSecrets } from '@backstage/plugin-scaffolder-react';
 import { scmAuthApiRef } from '@backstage/integration-react';
 import { ProjectPickerFieldSchema } from './schemas';
+import { Select } from '@backstage/ui';
 
 export { ProjectPickerSchema } from './schemas';
 
 const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
     const { uiSchema, onChange, rawErrors, errors, schema, required, } = props;
 
-    const [projects, setProjects] = useState<string[]>([]);
+    const [projects, setProjects] = useState<Array<{
+        value: string;
+        label: string;
+    }>>([]);
     const [selectedProject, setSelectedProject] = useState<undefined | string>(undefined);
     const { secrets, setSecrets } = useTemplateSecrets();
 
@@ -64,8 +66,12 @@ const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
                     })
             )
         );
-        const result: string[] = uniqueNames
-            .sort();
+        const result: Array<{
+        value: string;
+        label: string;
+    }> = uniqueNames
+            .sort()
+            .map(name => ({ value: name, label: name }));
 
         setProjects(result);
     });
@@ -104,19 +110,14 @@ const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
             rawDescription={rawDescription}
             required={required}
             errors={errors}>
-            <Autocomplete
+            <Select
                 value={selectedProject}
                 options={projects}
-                autoSelect
-                renderInput={params => (<TextField
-                    {...params}
-                    margin="dense"
-                    required={required}
-                    label={uiSchema['ui:title'] ?? schema.title} />
-                )}
-                onChange={(_, newValue) => {
-                    setSelectedProject(newValue ?? undefined);
-                    onChange(newValue ?? undefined);
+                label={uiSchema['ui:title'] ?? schema.title}
+                onChange={(value) => {
+                    const newValue = value?.toString() ?? undefined;
+                    setSelectedProject(newValue);
+                    onChange(newValue);
                 }}
             />
         </ScaffolderField>

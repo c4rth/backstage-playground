@@ -1,6 +1,6 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
 import { memo, useMemo } from 'react';
-import { Box } from "@material-ui/core";
+import { Flex } from "@backstage/ui";
 import { Entity, parseEntityRef, RELATION_CONSUMES_API, RELATION_PROVIDES_API } from "@backstage/catalog-model";
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
@@ -129,10 +129,9 @@ export const ServicePlatformRelationCard = memo<ServicePlatformRelationCardProps
 
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align="center" mr='1'>
             {title} ({rows.length})
-        </Box>
+        </Flex>
     ), [title, rows.length]);
 
     if (error) {

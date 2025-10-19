@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@material-ui/core';
-import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
+import { RiClipboardFill } from '@remixicon/react';
 
 type Props = {
   setInput: (input: string) => void;
@@ -22,7 +22,7 @@ export const PasteFromClipboardButton = (props: Props) => {
     >
       <Button
         size="small"
-        startIcon={<AssignmentReturnedIcon />}
+        startIcon={<RiClipboardFill />}
         onClick={pasteFromClipboard}
         variant="text"
         color="inherit"

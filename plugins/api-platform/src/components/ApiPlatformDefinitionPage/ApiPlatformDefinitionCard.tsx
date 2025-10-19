@@ -5,21 +5,24 @@ import {
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
 import { PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
-import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import { Link } from 'react-router-dom';
-import CloudCircleIcon from '@material-ui/icons/CloudCircle';
 import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } from '@internal/plugin-api-platform-common';
 import { OpenApiDefinitionWidget } from '@internal/plugin-api-swagger-docs';
 // Spectral 
 import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
-import LanguageIcon from '@material-ui/icons/Language';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { memo, useMemo } from 'react';
 import { ApiPlatformAllRelationsCard } from './ApiPlatformAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
+import { Box, Grid } from '@backstage/ui';
+import { RiCloudLine, RiGlobalLine } from '@remixicon/react';
+
+// TODO-MUI
+import { makeStyles, Theme } from '@material-ui/core';
+
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -44,11 +47,10 @@ const useStyles = makeStyles(
         },
     }),
 );
-
 const IconWithText = memo<{ icon: React.ReactNode; child: React.ReactNode; classes: any }>(
     ({ icon, child, classes }) => (
-        <Box component="span" className={classes.root}>
-            <Box component="span" className={classes.icon}>
+        <Box as="span" className={classes.root}>
+            <Box as="span" className={classes.icon}>
                 {icon}
             </Box>
             {child}
@@ -125,30 +127,34 @@ export const ApiPlatformDefinitionCard = () => {
             <TabbedLayout.Route path="/services" title="Services">
                 <TabbedLayout>
                     <TabbedLayout.Route path="/services/this" title={`${apiData.apiVersion}`}>
-                        <Grid container spacing={3} alignItems="stretch">
-                            <Grid item md={6}>
+                        <Grid.Root style={{
+                            alignItems: 'stretch',
+                        }}>
+                            <Grid.Item colSpan='6'>
                                 <ApiPlatformRelationCard dependency='provider' />
-                            </Grid>
-                            <Grid item md={6} xs={12}>
+                            </Grid.Item>
+                            <Grid.Item colSpan='6'>
                                 <ApiPlatformRelationCard dependency='consumer' />
-                            </Grid>
-                        </Grid>
+                            </Grid.Item>
+                        </Grid.Root>
                     </TabbedLayout.Route>
                     <TabbedLayout.Route path="/services/all" title="All versions">
-                        <Grid container spacing={3} alignItems="stretch">
-                            <Grid item md={6}>
+                        <Grid.Root style={{
+                            alignItems: 'stretch',
+                        }}>
+                            <Grid.Item colSpan='6'>
                                 <ApiPlatformAllRelationsCard dependency='provider' />
-                            </Grid>
-                            <Grid item md={6} xs={12}>
+                            </Grid.Item>
+                            <Grid.Item colSpan='6'>
                                 <ApiPlatformAllRelationsCard dependency='consumer' />
-                            </Grid>
-                        </Grid>
+                            </Grid.Item>
+                        </Grid.Root>
                     </TabbedLayout.Route>
                 </TabbedLayout>
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/info" title="Info">
-                <InfoCard title='About' divider className={classes.gridItemCard}>
-                    <Box sx={{ mb: 4 }}>
+                <InfoCard title='About' divider /* className={classes.gridItemCard} */>
+                    <Box mb='4'>
                         <AboutField
                             label="Catalog reference"
                             gridSizes={{ xs: 12 }} >
@@ -156,30 +162,30 @@ export const ApiPlatformDefinitionCard = () => {
                         </AboutField>
                     </Box>
                     <ComponentAboutContent entity={entity} />
-                    <Box sx={{ mt: 5 }}>
+                    <Box mt='5'>
                         <AboutField
                             label="Azure Artifact"
                             gridSizes={{ xs: 12 }} >
                             <Link to={apiData.artifactUrl} target="_blank" rel="noopener noreferrer">
                                 <IconWithText
-                                    icon={<CloudCircleIcon fontSize="inherit" />}
+                                    icon={<RiCloudLine size={16} />}
                                     child={<>{apiData.artifactText}</>}
                                     classes={classes}
                                 />
                             </Link>
                         </AboutField>
                     </Box>
-                    <Box sx={{ mt: 5 }}>
+                    <Box mt='5'>
                         <AboutField
                             label="Maven Snippet"
                             gridSizes={{ xs: 4 }}>
                             <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
                         </AboutField>
                     </Box>
-                    <Box sx={{ mt: 5 }}>
+                    <Box mt='5'>
                         <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
                             <IconWithText
-                                icon={<LanguageIcon fontSize="inherit" />}
+                                icon={<RiGlobalLine size={16} />}
                                 child={
                                     <Link to={apiData.platformUrl} target="_blank" rel="noopener noreferrer">
                                         {apiData.platformUrl}

@@ -1,6 +1,6 @@
 import { Button, Tooltip } from '@material-ui/core';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
-import FileCopy from '@material-ui/icons/FileCopy';
+import { RiClipboardLine } from '@remixicon/react';
 
 type Props = {
   output: string | number;
@@ -31,7 +31,7 @@ export const CopyToClipboardButton = (props: Props) => {
     >
       <Button
         size="small"
-        startIcon={<FileCopy />}
+        startIcon={<RiClipboardLine />}
         onClick={copyToClipboard}
         variant="text"
         color="inherit"
