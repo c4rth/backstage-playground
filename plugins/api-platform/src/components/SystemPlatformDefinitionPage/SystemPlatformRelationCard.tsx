@@ -1,5 +1,5 @@
 import { Link, Table, TableColumn } from "@backstage/core-components";
-import { Box } from "@material-ui/core";
+import { Box, Flex } from "@backstage/ui";
 import { memo, useMemo } from 'react';
 import { ComponentDisplayName } from "../common";
 
@@ -82,10 +82,10 @@ export const SystemPlatformRelationCard = memo<SystemPlatformRelationCardProps>(
     }), [showPagination]);
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align='center'>
+            <Box mr='1' />
             {computedValues.title} ({rows.length})
-        </Box>
+        </Flex>
     ), [computedValues.title, rows.length]);
 
     return (

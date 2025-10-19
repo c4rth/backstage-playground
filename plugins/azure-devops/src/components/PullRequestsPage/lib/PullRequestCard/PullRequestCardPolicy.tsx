@@ -22,9 +22,7 @@ import {
 import { styled, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import CancelIcon from '@material-ui/icons/Cancel';
-import GroupWorkIcon from '@material-ui/icons/GroupWork';
-import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import { RiCloseCircleFill, RiGroup2Fill, RiTimeFill } from '@remixicon/react';
 
 const PolicyRequiredIcon = withStyles(
   theme => ({
@@ -33,7 +31,7 @@ const PolicyRequiredIcon = withStyles(
     },
   }),
   { name: 'PolicyRequiredIcon' },
-)(WatchLaterIcon);
+)(RiTimeFill);
 
 const PolicyIssueIcon = withStyles(
   theme => ({
@@ -42,7 +40,7 @@ const PolicyIssueIcon = withStyles(
     },
   }),
   { name: 'PolicyIssueIcon' },
-)(CancelIcon);
+)(RiCloseCircleFill);
 
 const PolicyInProgressIcon = withStyles(
   theme => ({
@@ -51,7 +49,7 @@ const PolicyInProgressIcon = withStyles(
     },
   }),
   { name: 'PolicyInProgressIcon' },
-)(GroupWorkIcon);
+)(RiGroup2Fill);
 
 function getPolicyIcon(policy: Policy): React.JSX.Element | null {
   switch (policy.type) {

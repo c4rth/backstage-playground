@@ -1,9 +1,12 @@
 import { Content } from "@backstage/core-components";
-import {  Grid, List, ListItem } from "@material-ui/core";
 import { defaultTools } from "./tools";
 import { useCallback, useState } from "react";
 import { Tool } from "./types";
 import { ToolContainer } from "./ToolContainer";
+import { Grid } from "@backstage/ui";
+
+// TODO-MUI
+import { List, ListItem } from "@material-ui/core";
 
 export const ToolsContainer = () => {
 
@@ -17,17 +20,9 @@ export const ToolsContainer = () => {
 
     return (
         <Content noPadding>
-            <Grid
-                container
-                spacing={2}
-                direction="row"
-                style={{ margin: 0, width: '100%', padding: 0, height: '100%' }}
-            >
-                <Grid
-                    item
-                    xs={4}
-                    md={3}
-                    lg={2}
+            <Grid.Root style={{ width: '100%', height: '100%'}}>
+                <Grid.Item
+                    colSpan='2'
                     style={{
                         borderRight: '1px solid #FF0000',
                         padding: '0 !important',
@@ -41,25 +36,22 @@ export const ToolsContainer = () => {
                                 id={tool.id}
                                 onClick={() => handleSelectedChange(tool.id)}
                                 style={{ padding: '0 !important' }}>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    alignItems="center"
+                                <Grid.Root
                                     style={{ padding: '8px', cursor: 'pointer' }}>
-                                    <Grid item xs>
+                                    <Grid.Item>
                                         <strong>{tool.name}</strong>
                                         <div>{tool.description}</div>
-                                    </Grid>
-                                </Grid>
+                                    </Grid.Item>
+                                </Grid.Root>
                             </ListItem>
                         ))}
                     </List>
-                </Grid>
+                </Grid.Item>
 
-                <Grid item xs={8} md={9} lg={10} style={{ padding: 0 }}>
+                <Grid.Item colSpan='10' style={{ padding: 0 }}>
                     <ToolContainer tool={selectedTool} />
-                </Grid>
-            </Grid>
+                </Grid.Item>
+            </Grid.Root>
         </Content >
     );
 }

@@ -17,7 +17,7 @@ import { Box } from '@material-ui/core';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { isExternalUrl } from '../../lib/helper';
-import LanguageIcon from '@material-ui/icons/Language';
+import { RiGlobalLine } from '@remixicon/react';
 import BackstageIcon from './BackstageIcon';
 
 
@@ -69,7 +69,7 @@ const columns: TableColumn<TableRow>[] = [
         render: ({ isExternal }: TableRow) => (
             <span>
                 {isExternal ?
-                    <LanguageIcon />
+                    <RiGlobalLine />
                     : <BackstageIcon />
                 }
             </span>

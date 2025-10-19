@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import DoneAllIcon from '@material-ui/icons/DoneAll';
+import { RiCheckDoubleFill } from '@remixicon/react';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -27,5 +27,5 @@ const useStyles = makeStyles(theme => ({
 
 export const AutoCompleteIcon = (props: { hasAutoComplete: boolean }) => {
   const classes = useStyles(props);
-  return <DoneAllIcon className={classes.root} />;
+  return <RiCheckDoubleFill className={classes.root} />;
 };

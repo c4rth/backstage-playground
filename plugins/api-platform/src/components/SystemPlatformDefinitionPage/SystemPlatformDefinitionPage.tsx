@@ -7,7 +7,7 @@ import {
 import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { EntityProvider, entityRouteRef } from '@backstage/plugin-catalog-react';
 import { useGetSystem } from '../../hooks';
-import { Box } from '@material-ui/core';
+import { Box } from '@backstage/ui';
 import { SystemPlatformDefinitionCard } from './SystemPlatformDefinitionCard';
 import { useMemo } from 'react';
 
@@ -54,7 +54,7 @@ export const SystemPlatformDefinitionPage = () => {
       subtitle={generatedSubtitle}
     >
       <Content>
-        <Box mb={-3}>
+        <Box mb='-3'>
           {content}
         </Box>
       </Content>

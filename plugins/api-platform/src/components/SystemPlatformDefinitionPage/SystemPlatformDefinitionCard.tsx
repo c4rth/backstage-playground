@@ -4,7 +4,6 @@ import {
     Link,
 } from '@backstage/core-components';
 import { getCompoundEntityRef } from "@backstage/catalog-model";
-import { Box, Grid, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import { AboutField, } from '@backstage/plugin-catalog';
 import { SystemPlatformRelationCard } from './SystemPlatformRelationCard';
@@ -14,6 +13,10 @@ import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
+import { Box, Grid, ButtonIcon } from '@backstage/ui';
+
+// TODO-MUI
+import { makeStyles, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -75,20 +78,21 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
         return undefined;
     }, [entity, catalogApi]);
 
+    // TODO-MUI
     const docsButton = useMemo(() => (
-        <IconButton
-            aria-label="Documentation"
-            title="TechDocs"
-            disabled={!entityData.hasDocs}
-            component={Link}
-            to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}
+         <ButtonIcon
+            icon={<RiFileFill />}
+            isDisabled={!entityData.hasDocs}
+            size='medium'
+            variant='tertiary'
+            onClick={(_) => alert('Hello')}
         >
-            <RiFileFill />
-        </IconButton>
+            <Link to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`} />
+        </ButtonIcon>
     ), [entityData.hasDocs, entityData.entityRef]);
 
     const aboutField = useMemo(() => (
-        <Box sx={{ mb: 4 }}>
+        <Box mb='4'>
             <AboutField
                 label="System reference"
                 gridSizes={{ xs: 12 }}
@@ -101,14 +105,14 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
     return (
         <TabbedLayout>
             <TabbedLayout.Route path="/" title="Ownership">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={6}>
+                <Grid.Root columns='12'>
+                    <Grid.Item colSpan='6'>
                         <SystemPlatformRelationCard system={system} dependency="service" data={services} />
-                    </Grid>
-                    <Grid item md={6} xs={12}>
+                    </Grid.Item>
+                    <Grid.Item colSpan='6'>
                         <SystemPlatformRelationCard system={system} dependency="api" data={apis} />
-                    </Grid>
-                </Grid>
+                    </Grid.Item>
+                </Grid.Root>
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/members" title="Members">
@@ -118,8 +122,8 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/info" title="Info">
-                <Grid container spacing={3} alignItems="stretch">
-                    <Grid item md={6}>
+                <Grid.Root columns='12'>
+                    <Grid.Item colSpan='6'>
                         <InfoCard
                             title="About"
                             divider
@@ -129,8 +133,8 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
                             {aboutField}
                             <ComponentAboutContent entity={entity} />
                         </InfoCard>
-                    </Grid>
-                </Grid>
+                    </Grid.Item>
+                </Grid.Root>
             </TabbedLayout.Route>
 
         </TabbedLayout>

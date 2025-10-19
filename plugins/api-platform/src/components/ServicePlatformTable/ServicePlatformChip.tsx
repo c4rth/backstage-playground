@@ -5,7 +5,6 @@ import { RiCloudLine, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { Text } from '@backstage/ui';
 
 // TODO-MUI 
-// + color tooltip
 import { Chip, Tooltip } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -59,11 +58,11 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
 
         return (
             <>
-                <Text variant='body-medium'>
+                <Text variant='body-medium' color="textSecondary">
                     Platform: <b>{props.service.platform}</b>
                 </Text>
                 <br />
-                <Text variant='body-medium'>
+                <Text variant='body-medium' color="textSecondary">
                     Version: <b>{props.service.imageVersion}</b>
                 </Text>
                 <br />

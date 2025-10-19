@@ -23,6 +23,8 @@ import {
   CatalogIcon,
   DocsIcon,
 } from '@backstage/core-components';
+
+// TODO-MUI
 import HomeIcon from '@material-ui/icons/Home';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
@@ -33,6 +35,8 @@ import MuiMemoryIcon from '@material-ui/icons/Memory';
 import StreetviewIcon from '@material-ui/icons/Streetview';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import LabelIcon from '@material-ui/icons/Label';
+
+
 // Entity Validation
 import { useApp } from '@backstage/core-plugin-api';
 // Permission on menu

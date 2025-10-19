@@ -9,7 +9,7 @@ import {
     EntityRefLinks,
 } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box } from '@material-ui/core';
+import { Box, Flex } from '@backstage/ui';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
@@ -126,12 +126,12 @@ export const SystemPlatformTable = ({ }: SystemPlatformTableProps) => {
     }), [loadingCount, initialSearch]);
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align='center'>
+            <Box mr='1' />
             {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
-            <Box ml={2} />
+            <Box ml='2' />
             <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
-        </Box>
+        </Flex>
     ), [ownership, countRows]);
 
     useEffect(() => {
