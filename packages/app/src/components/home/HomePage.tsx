@@ -49,7 +49,7 @@ export const HomePage = () => {
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <HomePageTopVisited />
-                            </Grid>
+                            </Grid> 
                         </Grid>
                     </Grid>
                 </Content>

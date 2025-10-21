@@ -1,4 +1,5 @@
-import { Tag, TagGroup } from '@backstage/ui';
+import { Box } from '@backstage/ui';
+import { Chip } from '@material-ui/core';
 import { OwnershipType } from '@internal/plugin-api-platform-common';
 import { useCallback, useState } from 'react';
 
@@ -27,20 +28,20 @@ export const ComponentOwnership = ({ storageKey, handleOwnershipChange }: Compon
     );
 
     return (
-        <TagGroup
-            selectionMode='single'
-            selectedKeys={[selectedType]}
-            onSelectionChange={(keys) => {
-                const selected = Array.from(keys)[0] ?? 'all';
-                handleSelectChange(selected.toString());
-            }}>
-            <Tag size="medium" id='all'>
-                All
-            </Tag>
-            <Tag size="medium" id='owned'>
-                Owned
-            </Tag>
-        </TagGroup>
+        <Box display='flex'>
+            <Chip
+                label="Owned"
+                color={selectedType === 'owned' ? 'primary' : 'default'}
+                style={{ marginRight: '8px', marginTop: '6px', cursor: 'pointer' }}
+                onClick={() => handleSelectChange('owned')}
+            />
+            <Chip
+                label="&nbsp;All"
+                color={selectedType === 'all' ? 'primary' : 'default'}
+                onClick={() => handleSelectChange('all')}
+                style={{ marginTop: '6px', cursor: 'pointer' }}
+            />
+        </Box>
 
     );
 

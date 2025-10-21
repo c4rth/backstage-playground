@@ -26,7 +26,6 @@
     "@backstage/core-plugin-api": "^1.11.1",
     "@backstage/ui": "^0.8.1",
     "@material-ui/core": "^4.12.2",
-    "@mui/material": "^6.4.4",
     "@remixicon/react": "^4.6.0",
     "lodash": "^4.17.21",
     "material-ui-popup-state": "^5.3.3",

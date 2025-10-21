@@ -1,13 +1,11 @@
 import { memo, useCallback, useMemo } from 'react';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
-import { RiCloudLine, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
-import { Text } from '@backstage/ui';
-
-import { Chip } from '@internal/plugin-api-platform-react';
+import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
+import { Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 
 // TODO-MUI 
-import { Tooltip } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 
 export type ServicePlatformChipProps = {
@@ -35,7 +33,7 @@ const useStyles = makeStyles<Theme, ServicePlatformChipProps>(
 const PlatformIcons = {
     all: <RiGlobalLine />,
     onprem: <RiHomeOfficeLine />,
-    cloud: <RiCloudLine />,
+    cloud: <RiCloudFill />,
 } as const;
 
 export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
@@ -60,11 +58,11 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
 
         return (
             <>
-                <Text variant='body-small' color="secondary">
+                <Text variant='body-medium' color="secondary">
                     Platform: <b>{props.service.platform}</b>
                 </Text>
                 <br />
-                <Text variant='body-small' color="secondary">
+                <Text variant='body-medium' color="secondary">
                     Version: <b>{props.service.imageVersion}</b>
                 </Text>
                 <br />
@@ -87,10 +85,8 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
     const chipComponent = useMemo(() => {
         const label = props.text || props.service?.imageVersion || '?';
         const icon = props.text ? props.icon : platformIcon;
-        const color = alpha('#C30045', (props.index + 1) / 10);
 
-/*
-
+        return (
             <Chip
                 key={label}
                 label={label}
@@ -103,21 +99,15 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
                 icon={icon}
                 style={chipStyle}
             />
-            */
-
-        return (
-            <Chip head={false} backgroundColor={color}>
-                {icon} <span style={{ marginLeft: '4px' }}><Text variant='body-x-small'>{label}</Text></span>
-            </Chip>
         );
     }, [
         props.text,
-        props.service,
-        props.index,
-        props.disabled,
+        props.service?.imageVersion,
+        props.icon,
         platformIcon,
-        handleClick,
         classes.badge,
+        props.disabled,
+        handleClick,
         chipStyle,
     ]);
 
@@ -125,9 +115,12 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
     const finalComponent = useMemo(() => {
         if (tooltipContent) {
             return (
-                <Tooltip placement='bottom' arrow title={tooltipContent} style={{ backgroundColor: '#FF0000' }}>
-                    {chipComponent}
-                </Tooltip>
+                <TooltipTrigger closeDelay={0} delay={0}>
+                    <Text>Hello</Text>
+                    <Tooltip>
+                        {tooltipContent}
+                    </Tooltip>
+                </TooltipTrigger>
             );
         }
         return chipComponent;

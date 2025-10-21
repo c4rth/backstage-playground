@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { DefaultEditor } from '../DefaultEditor';
-import { SignJWT } from 'jose';
+import { SignJWT, createRemoteJWKSet, jwtVerify } from 'jose';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { Box, TextField } from '@material-ui/core';
 import ReactJson from 'react-json-view'
@@ -18,6 +18,8 @@ export const JwtDecoder = () => {
   const [output, setOutput] = useState('');
   const [jwt, setJwt] = useState<any | undefined>(undefined);
   const [mode, setMode] = useState('Decode');
+  const [signatureVerified, setSignatureVerified] = useState<boolean | null>(null);
+  const [verificationError, setVerificationError] = useState<string>('');
 
   const exampleJwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
@@ -92,12 +94,34 @@ export const JwtDecoder = () => {
   );
 
 
-  const JwtDecodeOutput = (props: { jwt?: any }) => {
+  const JwtDecodeOutput = (props: { jwt?: any; signatureVerified?: boolean | null; verificationError?: string }) => {
     return (
       <Box component='fieldset' style={{ width: '100%', height: '99%' }}>
         <legend>Decoded JWT</legend>
         {props.jwt ? (
-          <ReactJson name={false} src={props.jwt || {}} />
+          <>
+            {props.signatureVerified !== null && (
+              <Box mb={2} p={1} style={{ 
+                backgroundColor: props.signatureVerified ? '#4caf50' : '#f44336', 
+                color: 'white',
+                borderRadius: '4px',
+                textAlign: 'center'
+              }}>
+                Signature: {props.signatureVerified ? '✓ Verified' : `✗ Invalid${props.verificationError ? ` - ${props.verificationError}` : ''}`}
+              </Box>
+            )}
+            {props.signatureVerified === null && (
+              <Box mb={2} p={1} style={{ 
+                backgroundColor: '#2196f3', 
+                color: 'white',
+                borderRadius: '4px',
+                textAlign: 'center'
+              }}>
+                Signature: Verification not performed
+              </Box>
+            )}
+            <ReactJson name={false} src={props.jwt || {}} />
+          </>
         ) : (
           <Box>No JWT data available</Box>
         )}
@@ -107,6 +131,8 @@ export const JwtDecoder = () => {
 
   useEffect(() => {
     setJwt(undefined);
+    setSignatureVerified(null);
+    setVerificationError('');
     if (!input) {
       setOutput('');
       return;
@@ -122,6 +148,39 @@ export const JwtDecoder = () => {
           const jwtPayload = jwtDecode<JwtPayload>(value);
           const jwtHeader = jwtDecode(value, { header: true });
           setJwt({ header: jwtHeader, payload: jwtPayload });
+
+          // Verify signature using Azure AD public keys
+          (async () => {
+            try {
+              // Determine the Azure AD JWKS endpoint based on the issuer
+              const issuer = jwtPayload.iss;
+              let jwksUri = '';
+              
+              if (issuer?.includes('login.microsoftonline.com')) {
+                // Azure AD v2.0
+                const tenantId = issuer.split('/')[3];
+                jwksUri = `https://login.microsoftonline.com/${tenantId}/discovery/v2.0/keys`;
+              } else if (issuer?.includes('sts.windows.net')) {
+                // Azure AD v1.0
+                const tenantId = issuer.split('/')[3];
+                jwksUri = `https://login.microsoftonline.com/${tenantId}/discovery/keys?appid=00000000-0000-0000-0000-000000000000`;
+              } else {
+                setVerificationError('Unknown issuer - cannot verify signature');
+                return;
+              }
+
+              const JWKS = createRemoteJWKSet(new URL(jwksUri));
+              // Verify signature only, skip all claim validations (exp, nbf, iat, etc.)
+              await jwtVerify(value, JWKS, {
+                clockTolerance: Infinity, // Ignore all time-based checks
+              });
+              setSignatureVerified(true);
+            } catch (error) {
+              setSignatureVerified(false);
+              const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+              setVerificationError(errorMessage);
+            }
+          })();
         } catch (error) {
           setOutput(`Couldn't decode JWT token: ${error}`);
         }
@@ -171,7 +230,7 @@ export const JwtDecoder = () => {
       }
       output={output}
       rightContent={mode === 'Decode' ?
-        <JwtDecodeOutput jwt={jwt} />
+        <JwtDecodeOutput jwt={jwt} signatureVerified={signatureVerified} verificationError={verificationError} />
         : <TextField
           id="output"
           label='Output'
