@@ -1,11 +1,10 @@
-import { memo, useCallback, useMemo } from 'react';
+import { Fragment, memo, useCallback, useMemo } from 'react';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
-import { Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 
 // TODO-MUI 
-import { Chip } from '@material-ui/core';
+import { Tooltip, Chip } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 
 export type ServicePlatformChipProps = {
@@ -22,7 +21,7 @@ const useStyles = makeStyles<Theme, ServicePlatformChipProps>(
         badge: {
             backgroundColor: (props: ServicePlatformChipProps) =>
                 alpha(theme.palette.primary.light, (props.index + 1) / 10),
-        }, 
+        },
         chipContainer: {
             padding: '0px',
             margin: '0px',
@@ -57,16 +56,12 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
         if (!props.service) return null;
 
         return (
-            <>
-                <Text variant='body-medium' color="secondary">
-                    Platform: <b>{props.service.platform}</b>
-                </Text>
+            <Fragment>
+                Platform: <b>{props.service.platform}</b>
                 <br />
-                <Text variant='body-medium' color="secondary">
-                    Version: <b>{props.service.imageVersion}</b>
-                </Text>
+                Version: <b>{props.service.imageVersion}</b>
                 <br />
-            </>
+            </Fragment>
         );
     }, [props.service]);
 
@@ -102,12 +97,12 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
         );
     }, [
         props.text,
-        props.service?.imageVersion,
+        props.service,
         props.icon,
-        platformIcon,
-        classes.badge,
         props.disabled,
+        platformIcon,
         handleClick,
+        classes.badge,
         chipStyle,
     ]);
 
@@ -115,12 +110,9 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
     const finalComponent = useMemo(() => {
         if (tooltipContent) {
             return (
-                <TooltipTrigger closeDelay={0} delay={0}>
-                    <Text>Hello</Text>
-                    <Tooltip>
-                        {tooltipContent}
-                    </Tooltip>
-                </TooltipTrigger>
+                <Tooltip placement='bottom' arrow title={tooltipContent}>
+                    {chipComponent}
+                </Tooltip>
             );
         }
         return chipComponent;
