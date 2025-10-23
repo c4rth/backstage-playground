@@ -1,5 +1,5 @@
-import { Button, Tooltip } from '@material-ui/core';
 import { RiEditBoxLine } from '@remixicon/react';
+import { Button, TooltipTrigger, Tooltip} from '@backstage/ui';
 
 type Props = {
   sample: string;
@@ -7,17 +7,18 @@ type Props = {
 };
 
 export const SampleButton = (props: Props) => {
+
   return (
-    <Tooltip arrow title='Input sample'>
+    <TooltipTrigger>
       <Button
-        size="small"
-        startIcon={<RiEditBoxLine />}
+        size='medium'
+        iconStart={<RiEditBoxLine />}
         onClick={() => props.setInput(props.sample)}
-        variant="text"
-        color="inherit"
+        variant='tertiary'
       >
         Sample
       </Button>
-    </Tooltip>
+      <Tooltip placement='bottom'>Copy sample to input</Tooltip>
+    </TooltipTrigger>
   );
 };

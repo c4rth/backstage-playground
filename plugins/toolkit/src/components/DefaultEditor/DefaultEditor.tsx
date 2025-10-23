@@ -5,7 +5,8 @@ import {
     PasteFromClipboardButton,
     SampleButton,
 } from '../Buttons';
-import { Button, ButtonGroup, Grid, TextField } from '@material-ui/core';
+import { Chip, TextField } from '@material-ui/core';
+import { Box, Flex, Grid } from '@backstage/ui';
 
 type Props = {
     input: string;
@@ -48,57 +49,31 @@ export const DefaultEditor = (props: Props) => {
 
     return (
         <>
-            <Grid container spacing={4} style={{ marginBottom: '5px' }}>
-                {modes && modes.length > 0 && (
-                    <Grid item style={{ paddingLeft: '16px', paddingTop: '32px !important' }}>
-                        <ButtonGroup
-                            size="small"
-                            disableElevation
-                            variant="contained"
-                            aria-label="Disabled elevation buttons"
-                            style={{ marginBottom: '1rem' }}
-                            color="inherit"
-                        >
+            <Flex mb='4'>
+                <Box>
+                    {modes && modes.length > 0 && (
+                        <>
                             {modes.map(m => (
-                                <Button
-                                    size="small"
+                                <Chip
                                     key={m}
+                                    label={m}
                                     onClick={() => setMode && setMode(m)}
-                                    variant={mode === m ? 'contained' : 'outlined'}
-                                    color="inherit"
-                                    style={{
-                                        ...(mode === m && {
-                                            color: '#000000',
-                                            backgroundColor: '#E0E0E0',
-                                        }),
-                                        ...(mode !== m && {
-                                            borderColor: '#E0E0E0',
-                                        }),
-                                    }}
-                                >
-                                    {m}
-                                </Button>
+                                    color={mode === m ? 'primary' : 'default'}
+                                />
                             ))}
-                        </ButtonGroup>
-                    </Grid>
-                )}
-                <Grid item style={{ padding: '16px' }}>
-                    <ButtonGroup size="small" color="secondary">
-                        <ClearValueButton setValue={setInput} />
-                        <PasteFromClipboardButton setInput={setInput} />
-                        {output && <CopyToClipboardButton output={output} />}
-                        {sample && <SampleButton setInput={setInput} sample={sample} />}
-                    </ButtonGroup>
-                </Grid>
+                        </>
+                    )}
+                    <ClearValueButton setValue={setInput} />
+                    <PasteFromClipboardButton setInput={setInput} />
+                    {output && <CopyToClipboardButton output={output} />}
+                    {sample && <SampleButton setInput={setInput} sample={sample} />}
+                </Box>
                 {additionalTools && additionalTools.length > 0 && (
-                    <Grid item>{additionalTools.map(tool => tool)}</Grid>
+                    <Grid.Item>{additionalTools.map(tool => tool)}</Grid.Item>
                 )}
-            </Grid>
-            <Grid container>
-                <Grid
-                    item
-                    xs={12}
-                    lg={6}
+            </Flex>
+            <Grid.Root>
+                <Grid.Item
                     style={{ paddingTop: '8px !important', paddingLeft: '8px !important' }}
                 >
                     {leftContent ?? (
@@ -118,11 +93,8 @@ export const DefaultEditor = (props: Props) => {
                         />
                     )}
                     {extraLeftContent}
-                </Grid>
-                <Grid
-                    item 
-                    xs={12}
-                    lg={6}
+                </Grid.Item>
+                <Grid.Item
                     style={{ padding: '8px !important' }}>
                     {rightContent ?? (
                         <TextField
@@ -139,8 +111,8 @@ export const DefaultEditor = (props: Props) => {
                         />
                     )}
                     {extraRightContent}
-                </Grid>
-            </Grid>
+                </Grid.Item>
+            </Grid.Root>
         </>
     );
 };

@@ -25,16 +25,6 @@ export const ToolkitCard = toolkitPlugin.provide(
   }),
 );
 
-export const ToolkitCategoryCard = toolkitPlugin.provide(
-  createComponentExtension({
-    name: 'ToolkitCategoryCard',
-    component: {
-      lazy: () =>
-        import('./components/ToolkitCard/ToolkitCategoryCard').then(m => m.ToolkitCategoryCard),
-    },
-  }),
-);
-
 //-------------------------------------------------------------------------------------------------
 
 export const ToolsPage = toolkitPlugin.provide(

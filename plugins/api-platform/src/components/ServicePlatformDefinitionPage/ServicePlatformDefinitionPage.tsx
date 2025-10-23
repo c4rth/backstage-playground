@@ -2,8 +2,6 @@ import {
   Content,
   Header,
   Page,
-  Progress,
-  ResponseErrorPanel,
   Select,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
@@ -11,7 +9,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
 import { ServicePlatformDefinitionCard } from './ServicePlatformDefinitionCard';
 import { ComponentEntity } from '@backstage/catalog-model';
-import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
+import { AsyncEntityProvider, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
@@ -104,36 +102,33 @@ export const ServicePlatformDefinitionPage = () => {
 
   const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
 
-  if (error) return <ResponseErrorPanel error={error} />;
-  if (loading) return <Progress />;
-
   return (
-    <Page
-      themeId="services">
-      <Header
-        title={`Service - ${name}`}
-        subtitle={generatedSubtitle}>
-        <ComponentHeaderLabels entity={serviceEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
-      </Header>
-      <Content>
-        <Box mb='1'>
-          <Grid.Root columns='12'>
-            <Grid.Item colSpan='6'>
-              <Select onChange={selected => setSelectedVersion(selected.toString())} label="Versions" items={versions} selected={selectedVersion} />
-            </Grid.Item>
-            <Grid.Item colSpan='6'>
-              <Select onChange={selected => setSelectedEnvironment(selected.toString())} label="Environments" items={environments} selected={selectedEnvironment} />
-            </Grid.Item>
-          </Grid.Root>
-        </Box>
-        <Box mb='-3'>
-          {serviceEntity ? (
-            <EntityProvider entity={serviceEntity}>
+    <AsyncEntityProvider loading={loading} error={error} entity={serviceEntity}>
+      <Page
+        themeId="services">
+        <Header
+          title={`Service - ${name}`}
+          subtitle={generatedSubtitle}>
+          <ComponentHeaderLabels entity={serviceEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
+        </Header>
+        <Content>
+          <Box mb='1'>
+            <Grid.Root columns='12'>
+              <Grid.Item colSpan='6'>
+                <Select onChange={selected => setSelectedVersion(selected.toString())} label="Versions" items={versions} selected={selectedVersion} />
+              </Grid.Item>
+              <Grid.Item colSpan='6'>
+                <Select onChange={selected => setSelectedEnvironment(selected.toString())} label="Environments" items={environments} selected={selectedEnvironment} />
+              </Grid.Item>
+            </Grid.Root>
+          </Box>
+          <Box mb='-3'>
+            {serviceEntity ? (
               <ServicePlatformDefinitionCard />
-            </EntityProvider>
-          ) : <div />}
-        </Box>
-      </Content>
-    </Page>
+            ) : <div />}
+          </Box>
+        </Content>
+      </Page>
+    </AsyncEntityProvider>
   );
 };

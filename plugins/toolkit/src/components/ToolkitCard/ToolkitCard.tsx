@@ -1,23 +1,15 @@
 import {
   HomePageToolkit,
 } from '@backstage/plugin-home';
-import { makeStyles } from '@material-ui/core';
 import { useToolkitData } from '../../hooks/useToolkitData';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ToolkitLink } from '../../types/types';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 
-const useStyles = makeStyles(() => ({
-  img: {
-    height: '38px',
-    width: 'auto',
-  },
-}));
 
 export const ToolkitCard = () => {
   const configApi = useApi(configApiRef);
   const baseUrl = configApi.getString('app.baseUrl');
-  const classes = useStyles();
   const { data, error, isLoading } = useToolkitData(baseUrl) as {
     data: ToolkitLink[] | undefined;
     error: Error | undefined;
@@ -37,9 +29,12 @@ export const ToolkitCard = () => {
     url: link.url,
     icon: (
       <img
-        className={classes.img}
         src={`${baseUrl}/${link.iconUrl}`}
         alt={link.label}
+        style={{
+          height: '38px',
+          width: 'auto',
+        }}
       />
     ),
   }));

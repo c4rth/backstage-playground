@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DefaultEditor } from '../DefaultEditor';
-import { Box } from '@material-ui/core';
+import { Box } from '@backstage/ui';
 import * as asn1js from "asn1js";
 import { AttributeTypeAndValue, Certificate } from "pkijs";
 import ReactJson from 'react-json-view';
@@ -110,7 +110,7 @@ export const CertificateDecoder = () => {
 
   const CertificateDecodeOutput = (props: { info?: any }) => {
     return (
-      <Box component='fieldset' style={{ width: '100%', height: '99%' }}>
+      <Box style={{ width: '100%', height: '99%' }}>
         <legend>Decoded Certificate</legend>
         {props.info ? (
           <ReactJson name={false} src={props.info || {}} />

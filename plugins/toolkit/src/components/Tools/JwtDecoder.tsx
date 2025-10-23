@@ -3,14 +3,12 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { DefaultEditor } from '../DefaultEditor';
 import { SignJWT, createRemoteJWKSet, jwtVerify } from 'jose';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
-import { Box, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import ReactJson from 'react-json-view'
-
+import { Box } from '@backstage/ui';
 
 const BASE64_REGEX =
   /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-
-
 
 export const JwtDecoder = () => {
   const alertApi = useApi(alertApiRef);
@@ -96,12 +94,12 @@ export const JwtDecoder = () => {
 
   const JwtDecodeOutput = (props: { jwt?: any; signatureVerified?: boolean | null; verificationError?: string }) => {
     return (
-      <Box component='fieldset' style={{ width: '100%', height: '99%' }}>
+      <Box style={{ width: '100%', height: '99%' }}>
         <legend>Decoded JWT</legend>
         {props.jwt ? (
           <>
             {props.signatureVerified !== null && (
-              <Box mb={2} p={1} style={{ 
+              <Box mb='2' p='1' style={{ 
                 backgroundColor: props.signatureVerified ? '#4caf50' : '#f44336', 
                 color: 'white',
                 borderRadius: '4px',
@@ -111,7 +109,7 @@ export const JwtDecoder = () => {
               </Box>
             )}
             {props.signatureVerified === null && (
-              <Box mb={2} p={1} style={{ 
+              <Box mb='2' p='1' style={{ 
                 backgroundColor: '#2196f3', 
                 color: 'white',
                 borderRadius: '4px',

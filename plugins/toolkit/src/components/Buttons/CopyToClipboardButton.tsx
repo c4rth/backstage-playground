@@ -1,6 +1,6 @@
-import { Button, Tooltip } from '@material-ui/core';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { RiClipboardLine } from '@remixicon/react';
+import { Button, TooltipTrigger, Tooltip} from '@backstage/ui';
 
 type Props = {
   output: string | number;
@@ -25,19 +25,15 @@ export const CopyToClipboardButton = (props: Props) => {
   };
 
   return (
-    <Tooltip
-      arrow
-      title={props.title ?? 'Copy output to clipboard'}
-    >
+    <TooltipTrigger>
       <Button
-        size="small"
-        startIcon={<RiClipboardLine />}
+        iconStart={<RiClipboardLine />}
         onClick={copyToClipboard}
-        variant="text"
-        color="inherit"
+        variant='tertiary'
       >
         Copy
       </Button>
-    </Tooltip>
+      <Tooltip placement='bottom'>{props.title || 'Copy to clipboard'}</Tooltip>
+    </TooltipTrigger>
   );
 };

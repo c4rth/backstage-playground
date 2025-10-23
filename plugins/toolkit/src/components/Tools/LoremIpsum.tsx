@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
-import { Button, ButtonGroup, FormControl, Grid, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { SelectItem, Select, } from '@backstage/core-components';
 import { RiEditBoxLine } from '@remixicon/react';
+import { Button, Flex, Grid } from '@backstage/ui';
 
 const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * max) + min;
@@ -185,65 +186,57 @@ export const LoremIpsum = () => {
     );
 
     return (
-        <FormControl style={{ width: '100%' }}>
-            <Grid container style={{ marginBottom: '5px', }}>
-                <Grid item md={12}>
-                    <Grid container>
-                        <Grid item md={2}>
-                            <Select
-                                onChange={selected => setFakerType(selected as string)}
-                                label="Fake Data"
-                                selected={fakerType.toString()}
-                                items={fakerTypes}
-                            />
-                        </Grid>
-                        <Grid item md={1}>
-                            <Select
-                                onChange={selected => setMultiplier(Number.parseInt(selected as string, 10))}
-                                label="Count"
-                                selected={multiplier.toString()}
-                                items={multipliers}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item md={6}>
-                            <ButtonGroup style={{ marginLeft: 2, marginBottom: 2 }}>
-                                <Button
-                                    size="small"
-                                    startIcon={<RiEditBoxLine />}
-                                    variant="text"
-                                    onClick={() => generate(fakerType)}
-                                    color="inherit"
-                                    style={{
-                                        paddingLeft: '16px',
-                                        paddingRight: '16px',
-                                        borderColor: 'textVerySubtle',
-                                        borderRadius: '4px !important',
-                                    }}
-                                >
-                                    Generate
-                                </Button>
-                                <ClearValueButton setValue={setOutput} tooltip="Clear output" />
-                                <CopyToClipboardButton output={output} />
-                            </ButtonGroup>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item style={{ width: '100%' }}>
-                    <TextField
-                        id="output"
-                        label="Output"
-                        value={output || ''}
-                        style={{ width: '100%' }}
-                        multiline
-                        minRows={20}
-                        maxRows={50}
-                        variant="outlined"
-                    />
-                </Grid>
-            </Grid>
-        </FormControl>
+        <Flex direction="column" gap="large">
+            <Grid.Item>
+                <Grid.Root columns='12' style={{ marginBottom: 10, alignContent: 'center' }}>
+                    <Grid.Item colSpan='2'>
+                        <Select
+                            onChange={selected => setFakerType(selected as string)}
+                            label="Fake Data"
+                            selected={fakerType.toString()}
+                            items={fakerTypes}
+                        />
+                    </Grid.Item>
+                    <Grid.Item colSpan='1'>
+                        <Select
+                            onChange={selected => setMultiplier(Number.parseInt(selected as string, 10))}
+                            label="Count"
+                            selected={multiplier.toString()}
+                            items={multipliers}
+                        />
+                    </Grid.Item>
+                    <Grid.Item colSpan='5' style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Button
+                            iconStart={<RiEditBoxLine />}
+                            onClick={() => generate(fakerType)}
+                            variant="tertiary"
+                            style={{
+                                paddingLeft: '16px',
+                                paddingRight: '16px',
+                                borderColor: 'textVerySubtle',
+                                borderRadius: '4px !important',
+                            }}
+                        >
+                            Generate
+                        </Button>
+                        <ClearValueButton setValue={setOutput} tooltip="Clear output" />
+                        <CopyToClipboardButton output={output} />
+                    </Grid.Item>
+                </Grid.Root>
+            </Grid.Item>
+            <Grid.Item style={{ width: '100%' }}>
+                <TextField
+                    id="output"
+                    label="Output"
+                    value={output || ''}
+                    style={{ width: '100%' }}
+                    multiline
+                    minRows={20}
+                    maxRows={50}
+                    variant="outlined"
+                />
+            </Grid.Item>
+        </Flex>
     );
 };
 

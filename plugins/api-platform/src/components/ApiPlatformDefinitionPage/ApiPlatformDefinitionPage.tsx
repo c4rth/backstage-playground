@@ -2,12 +2,10 @@ import {
   Content,
   Header,
   Page,
-  Progress,
-  ResponseErrorPanel,
   Select,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
@@ -65,38 +63,30 @@ export const ApiPlatformDefinitionPage = () => {
     [configApi]
   );
 
-  if (error) {
-    return <ResponseErrorPanel error={error} />;
-  }
-
-  if (loading) {
-    return <Progress />
-  }
-
   return (
-    <Page
-      themeId="apis">
-      <Header
-        title={`API - ${name}`}
-        subtitle={generatedSubtitle}>
-        <ComponentHeaderLabels entity={apiEntity ?? { metadata: { name, title: name } } as ApiEntity} />
-      </Header>
+    <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
+      <Page
+        themeId="apis">
+        <Header
+          title={`API - ${name}`}
+          subtitle={generatedSubtitle}>
+          <ComponentHeaderLabels entity={apiEntity ?? { metadata: { name, title: name } } as ApiEntity} />
+        </Header>
 
-      <Content>
-        <Box mb='1'>
-          <Select onChange={(selected) => {
-            setSelectedVersion(selected.toString());
-          }} label="Versions" items={versions} selected={selectedVersion} />
-        </Box>
-        <Box mb='-3'>
-          {apiEntity ?
-            <EntityProvider entity={apiEntity}>
-              <ApiPlatformDefinitionCard />
-            </EntityProvider>
-            : <div />
-          }
-        </Box>
-      </Content>
-    </Page>
+        <Content>
+          <Box mb='1'>
+            <Select onChange={(selected) => {
+              setSelectedVersion(selected.toString());
+            }} label="Versions" items={versions} selected={selectedVersion} />
+          </Box>
+          <Box mb='-3'>
+            {apiEntity ?
+                <ApiPlatformDefinitionCard />
+              : <div />
+            }
+          </Box>
+        </Content>
+      </Page>
+    </AsyncEntityProvider>
   );
 };
