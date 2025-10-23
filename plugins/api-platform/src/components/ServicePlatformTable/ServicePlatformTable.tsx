@@ -19,64 +19,25 @@ import { Query } from '@material-table/core';
 import { Divider, List, ListItem } from '@material-ui/core';
 
 type TableRow = {
-    id: number,
-    name: string,
-    system: string,
-    serviceDefinition: ServiceDefinition,
-}
-
-const listStyle = { padding: '0px', margin: '0px' };
-const listItemStyle = {
-    margin: '2px',
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center" as const
+    id: number;
+    name: string;
+    system: string;
+    serviceDefinition: ServiceDefinition;
 };
-const emptyStateStyle = { pointerEvents: 'none' as const };
 
-function createEnvironmentColumn(env: string): TableColumn<TableRow> {
-    return {
-        title: env.toUpperCase(),
-        width: '12%',
-        align: 'center',
-        cellStyle: { padding: '0px' },
-        sorting: false,
-        searchable: true,
-        customFilterAndSearch: (query, row) => {
-            if (!row.serviceDefinition?.versions) return false;
-            const lowerQuery = query.toLowerCase();
-            return row.serviceDefinition.versions.some(version => {
-                const envData = version.environments[env as keyof typeof version.environments];
-                return envData?.imageVersion.toLowerCase().includes(lowerQuery);
-            });
-        },
-        render: ({ serviceDefinition }) => {
-            return (
-                <List style={listStyle}>
-                    {serviceDefinition.versions?.map((version, idx) => (
-                        <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
-                            <ListItem style={listItemStyle}>
-                                {env in version.environments ? (
-                                    <ServicePlatformChip
-                                        index={idx}
-                                        service={version.environments[env as keyof typeof version.environments]}
-                                        link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
-                                    />
-                                ) : (
-                                    <div style={emptyStateStyle}>
-                                        <Text variant='body-medium'>-</Text>
-                                    </div>
-                                )}
-                            </ListItem>
-                            {idx < serviceDefinition.versions.length - 1 && <Divider />}
-                        </Fragment>
-                    ))}
-                </List>
-            );
-        },
-    };
-}
+const PAGE_SIZE = 20;
+const STORAGE_OWNERSHIP_KEY = 'servicesTablePageOwner';
+const STORAGE_SEARCH_KEY = 'servicesTablePageSearch';
+
+const LIST_STYLE = { padding: 0, margin: 0 };
+const LIST_ITEM_STYLE = {
+    margin: 2,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center' as const,
+};
+const EMPTY_STATE_STYLE = { pointerEvents: 'none' as const };
 
 const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => ({
     id: idx,
@@ -85,7 +46,49 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
     serviceDefinition,
 });
 
-const columns: TableColumn<TableRow>[] = [
+const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
+    <List style={LIST_STYLE}>
+        {serviceDefinition.versions?.map((version, idx) => (
+            <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
+                <ListItem style={LIST_ITEM_STYLE}>{renderItem(version, idx)}</ListItem>
+                {idx < serviceDefinition.versions.length - 1 && <Divider />}
+            </Fragment>
+        ))}
+    </List>
+);
+
+const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
+    title: env.toUpperCase(),
+    width: '12%',
+    align: 'center',
+    cellStyle: { padding: 0 },
+    sorting: false,
+    searchable: true,
+    customFilterAndSearch: (query, row) => {
+        if (!row.serviceDefinition?.versions) return false;
+        const lowerQuery = query.toLowerCase();
+        return row.serviceDefinition.versions.some(version => {
+            const envData = version.environments[env as keyof typeof version.environments];
+            return envData?.imageVersion.toLowerCase().includes(lowerQuery);
+        });
+    },
+    render: ({ serviceDefinition }) =>
+        renderVersionList(serviceDefinition, (version, idx) =>
+            env in version.environments ? (
+                <ServicePlatformChip
+                    index={idx}
+                    service={version.environments[env as keyof typeof version.environments]}
+                    link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
+                />
+            ) : (
+                <div style={EMPTY_STATE_STYLE}>
+                    <Text variant="body-medium">-</Text>
+                </div>
+            )
+        ),
+});
+
+const COLUMNS: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
@@ -104,23 +107,15 @@ const columns: TableColumn<TableRow>[] = [
         field: 'version',
         sorting: false,
         align: 'center',
-        cellStyle: { padding: '0px' },
-        render: ({ serviceDefinition }) => (
-            <List style={listStyle}>
-                {serviceDefinition.versions?.map((version, idx) => (
-                    <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
-                        <ListItem style={listItemStyle}>
-                            <ServicePlatformChip
-                                index={idx}
-                                text={version.version}
-                                link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
-                            />
-                        </ListItem>
-                        {idx < serviceDefinition.versions.length - 1 && <Divider />}
-                    </Fragment>
-                ))}
-            </List>
-        ),
+        cellStyle: { padding: 0 },
+        render: ({ serviceDefinition }) =>
+            renderVersionList(serviceDefinition, (version, idx) => (
+                <ServicePlatformChip
+                    index={idx}
+                    text={version.version}
+                    link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
+                />
+            )),
     },
     createEnvironmentColumn('tst'),
     createEnvironmentColumn('gtu'),
@@ -140,9 +135,11 @@ const columns: TableColumn<TableRow>[] = [
     },
 ];
 
-const PAGE_SIZE = 20;
-
-async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>, ownership: OwnershipType) {
+const getData = async (
+    apiPlatformApi: ApiPlatformBackendApi,
+    query: Query<TableRow>,
+    ownership: OwnershipType
+) => {
     const page = query.page ?? 0;
     const pageSize = query.pageSize ?? PAGE_SIZE;
 
@@ -150,77 +147,92 @@ async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<Table
         offset: page * pageSize,
         limit: pageSize,
         search: query.search,
-        orderBy: query.orderBy ? {
-            field: query.orderBy.field,
-            direction: query.orderDirection,
-        } as ServiceDefinitionsListRequest['orderBy'] : undefined,
-        ownership: ownership,
+        orderBy: query.orderBy
+            ? {
+                  field: query.orderBy.field,
+                  direction: query.orderDirection,
+              } as ServiceDefinitionsListRequest['orderBy']
+            : undefined,
+        ownership,
     });
-    if (result) {
-        return {
-            data: result.items.map(toRow),
-            totalCount: result.totalCount,
-            page: Math.floor(result.offset / result.limit),
-        };
-    }
-    return {
-        data: [],
-        totalCount: 0,
-        page: 0,
-    };
-}
 
-interface ServicePlatformTableProps {
-}
+    return result
+        ? {
+              data: result.items.map(toRow),
+              totalCount: result.totalCount,
+              page: Math.floor(result.offset / result.limit),
+          }
+        : {
+              data: [],
+              totalCount: 0,
+              page: 0,
+          };
+};
 
-const STORAGE_OWNERSHIP_KEY = 'servicesTablePageOwner';
-const STORAGE_SEARCH_KEY = 'servicesTablePageSearch';
-
-export const ServicePlatformTable = ({ }: ServicePlatformTableProps) => {
+export const ServicePlatformTable = () => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-    const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
-    const [countRows, setCountRows] = useState<number>(0);
-    const [loadingCount, setLoadingCount] = useState<boolean>(false);
+    const [countRows, setCountRows] = useState(0);
+    const [loadingCount, setLoadingCount] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [ownership, setOwnership] = useState<OwnershipType>(
         () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
     );
 
-    const tableOptions = useMemo(() => ({
-        search: true,
-        padding: 'dense' as const,
-        pageSize: PAGE_SIZE,
-        pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: !loadingCount,
-        draggable: false,
-        thirdSortClick: false,
-        searchText: initialSearch,
-    }), [loadingCount, initialSearch]);
+    const initialSearch = useMemo(() => sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '', []);
 
+    const tableOptions = useMemo(
+        () => ({
+            search: true,
+            padding: 'dense' as const,
+            pageSize: PAGE_SIZE,
+            pageSizeOptions: [10, PAGE_SIZE, 50],
+            showEmptyDataSourceMessage: !loadingCount,
+            draggable: false,
+            thirdSortClick: false,
+            searchText: initialSearch,
+        }),
+        [loadingCount, initialSearch]
+    );
 
-    const tableTitle = useMemo(() => (
-        <Flex align="center">
-            <Box mr='1' />
-            {ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})
-            <Box ml='2' />
-            <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
-        </Flex>
-    ), [countRows, ownership]);
+    const tableTitle = useMemo(
+        () => (
+            <Flex align="center">
+                <Box mr="1" />
+                {ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})
+                <Box ml="2" />
+                <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
+            </Flex>
+        ),
+        [countRows, ownership]
+    );
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchCount = async () => {
             setLoadingCount(true);
             setError(null);
             try {
                 const count = await apiPlatformApi.getServicesCount(ownership);
-                setCountRows(count);
+                if (isMounted) {
+                    setCountRows(count);
+                }
             } catch (err) {
-                setError(err as Error);
+                if (isMounted) {
+                    setError(err as Error);
+                }
             } finally {
-                setLoadingCount(false);
+                if (isMounted) {
+                    setLoadingCount(false);
+                }
             }
         };
+
         fetchCount();
+
+        return () => {
+            isMounted = false;
+        };
     }, [apiPlatformApi, ownership]);
 
     const fetchData = useCallback(
@@ -239,7 +251,7 @@ export const ServicePlatformTable = ({ }: ServicePlatformTableProps) => {
     return (
         <Table<TableRow>
             isLoading={loadingCount}
-            columns={columns}
+            columns={COLUMNS}
             options={tableOptions}
             title={tableTitle}
             data={fetchData}
