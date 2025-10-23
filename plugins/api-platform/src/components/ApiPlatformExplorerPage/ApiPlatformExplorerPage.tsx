@@ -1,38 +1,36 @@
-import {
-  Content,
-  PageWithHeader,
-} from '@backstage/core-components';
+import { Content, PageWithHeader } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformTable } from '../ApiPlatformTable';
-import { InfoPopUp } from '@internal/plugin-api-platform-react';
+import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { useMemo } from 'react';
-import { InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { getStringForKey } from '../common';
+
+const INFO_POPUP_CONTENT = (
+  <InfoPopUpContent
+    text1={getStringForKey('ApiPlatformExplorerPage.text1')}
+    text2={getStringForKey('ApiPlatformExplorerPage.text2')}
+  />
+);
 
 export const ApiPlatformExplorerPage = () => {
   const configApi = useApi(configApiRef);
 
-  const generatedSubtitle = useMemo(() =>
-    `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`,
-    [configApi]
-  );
-
-  const subtitleComponent = useMemo(() => (
-    <InfoPopUp
-      text={generatedSubtitle}
-      variant="subtitle2"
-      content={<InfoPopUpContent
-        text1={getStringForKey("ApiPlatformExplorerPage.text1")}
-        text2={getStringForKey("ApiPlatformExplorerPage.text2")}
-      />}
-    />
-  ), [generatedSubtitle]);
+  const subtitle = useMemo(() => {
+    const orgName = configApi.getOptionalString('organization.name') ?? 'Backstage';
+    return (
+      <InfoPopUp
+        text={`${orgName} API Explorer`}
+        variant="subtitle2"
+        content={INFO_POPUP_CONTENT}
+      />
+    );
+  }, [configApi]);
 
   return (
     <PageWithHeader
       themeId="apis"
       title="APIs"
-      subtitle={subtitleComponent}
+      subtitle={subtitle}
       pageTitleOverride="APIs"
     >
       <Content>

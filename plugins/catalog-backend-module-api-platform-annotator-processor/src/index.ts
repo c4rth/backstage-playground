@@ -1,1 +1,0 @@
-export { catalogModuleApiPlatformAnnotatorProcessor as default } from './module';

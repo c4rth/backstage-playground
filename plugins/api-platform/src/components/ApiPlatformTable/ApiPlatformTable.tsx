@@ -21,12 +21,16 @@ import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
-    id: number,
-    name: string,
-    description: string,
-    system: string,
-    entityRef: string,
-}
+    id: number;
+    name: string;
+    description: string;
+    system: string;
+    entityRef: string;
+};
+
+const PAGE_SIZE = 20;
+const STORAGE_OWNERSHIP_KEY = 'apisTablePageOwner';
+const STORAGE_SEARCH_KEY = 'apisTablePageSearch';
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => ({
     id: idx,
@@ -36,36 +40,40 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
     entityRef: stringifyEntityRef(entity),
 });
 
-const PAGE_SIZE = 20;
-
-async function getData(apiPlatformApi: ApiPlatformBackendApi, query: Query<TableRow>, ownership: OwnershipType) {
+const getData = async (
+    apiPlatformApi: ApiPlatformBackendApi,
+    query: Query<TableRow>,
+    ownership: OwnershipType
+) => {
     const page = query.page ?? 0;
     const pageSize = query.pageSize ?? PAGE_SIZE;
     const result = await apiPlatformApi.listApis({
         offset: page * pageSize,
         limit: pageSize,
         search: query.search,
-        orderBy: query.orderBy ? {
-            field: query.orderBy.field,
-            direction: query.orderDirection,
-        } as ApiDefinitionsListRequest['orderBy'] : undefined,
-        ownership: ownership,
+        orderBy: query.orderBy
+            ? {
+                  field: query.orderBy.field,
+                  direction: query.orderDirection,
+              } as ApiDefinitionsListRequest['orderBy']
+            : undefined,
+        ownership,
     });
-    if (result) {
-        return {
-            data: result.items.map(toEntityRow),
-            totalCount: result.totalCount,
-            page: Math.floor(result.offset / result.limit),
-        };
-    }
-    return {
-        data: [],
-        totalCount: 0,
-        page: 0,
-    };
-}
 
-const columns: TableColumn<TableRow>[] = [
+    return result
+        ? {
+              data: result.items.map(toEntityRow),
+              totalCount: result.totalCount,
+              page: Math.floor(result.offset / result.limit),
+          }
+        : {
+              data: [],
+              totalCount: 0,
+              page: 0,
+          };
+};
+
+const COLUMNS: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
@@ -74,7 +82,7 @@ const columns: TableColumn<TableRow>[] = [
         highlight: true,
         render: ({ system, name }: TableRow) => (
             <Link to={`/api-platform/api/${system}/${name}`}>
-                <ComponentDisplayName text={name} type='api' />
+                <ComponentDisplayName text={name} type="api" />
             </Link>
         ),
     },
@@ -82,9 +90,7 @@ const columns: TableColumn<TableRow>[] = [
         title: 'Description',
         field: 'description',
         width: '50%',
-        render: ({ description }: TableRow) => (
-            <OverflowTooltip text={description} line={2} />
-        ),
+        render: ({ description }: TableRow) => <OverflowTooltip text={description} line={2} />,
     },
     {
         title: 'System',
@@ -93,66 +99,77 @@ const columns: TableColumn<TableRow>[] = [
         highlight: true,
         render: ({ system }: TableRow) =>
             system === '-' ? (
-                <ComponentDisplayName text={system} type='system' />
+                <ComponentDisplayName text={system} type="system" />
             ) : (
                 <Link to={`/api-platform/system/${system}`}>
-                    <ComponentDisplayName text={system} type='system' />
+                    <ComponentDisplayName text={system} type="system" />
                 </Link>
             ),
     },
 ];
 
-interface ApiPlatformTableProps {
-}
-
-const STORAGE_OWNERSHIP_KEY = 'apisTablePageOwner';
-const STORAGE_SEARCH_KEY = 'apisTablePageSearch';
-
-export const ApiPlatformTable = ({ }: ApiPlatformTableProps) => {
+export const ApiPlatformTable = () => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-    const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
-    const [countRows, setCountRows] = useState<number>(0);
-    const [loadingCount, setLoadingCount] = useState<boolean>(false);
+    const [countRows, setCountRows] = useState(0);
+    const [loadingCount, setLoadingCount] = useState(false);
     const [error, setError] = useState<Error | null>(null);
-
     const [ownership, setOwnership] = useState<OwnershipType>(
         () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
     );
 
-    const tableOptions = useMemo(() => ({
-        search: true,
-        padding: 'dense' as const,
-        pageSize: PAGE_SIZE,
-        pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: !loadingCount,
-        draggable: false,
-        thirdSortClick: false,
-        searchText: initialSearch,
-    }), [loadingCount, initialSearch]);
+    const initialSearch = useMemo(() => sessionStorage.getItem(STORAGE_SEARCH_KEY) || '', []);
 
-    const tableTitle = useMemo(() => (
-        <Flex align="center">
-            {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
-            <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
-        </Flex>
-    ), [countRows, ownership]);
+    const tableOptions = useMemo(
+        () => ({
+            search: true,
+            padding: 'dense' as const,
+            pageSize: PAGE_SIZE,
+            pageSizeOptions: [10, PAGE_SIZE, 50],
+            showEmptyDataSourceMessage: !loadingCount,
+            draggable: false,
+            thirdSortClick: false,
+            searchText: initialSearch,
+        }),
+        [loadingCount, initialSearch]
+    );
 
+    const tableTitle = useMemo(
+        () => (
+            <Flex align="center">
+                {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
+                <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
+            </Flex>
+        ),
+        [countRows, ownership]
+    );
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchCount = async () => {
             setLoadingCount(true);
             setError(null);
             try {
                 const count = await apiPlatformApi.getApisCount(ownership);
-                setCountRows(count);
+                if (isMounted) {
+                    setCountRows(count);
+                }
             } catch (err) {
-                setError(err as Error);
+                if (isMounted) {
+                    setError(err as Error);
+                }
             } finally {
-                setLoadingCount(false);
+                if (isMounted) {
+                    setLoadingCount(false);
+                }
             }
         };
 
         fetchCount();
+
+        return () => {
+            isMounted = false;
+        };
     }, [apiPlatformApi, ownership]);
 
     const fetchData = useCallback(
@@ -171,7 +188,7 @@ export const ApiPlatformTable = ({ }: ApiPlatformTableProps) => {
     return (
         <Table<TableRow>
             isLoading={loadingCount}
-            columns={columns}
+            columns={COLUMNS}
             options={tableOptions}
             title={tableTitle}
             data={fetchData}

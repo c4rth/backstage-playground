@@ -65,24 +65,20 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   }
 
   private async fetchJson<T>(path: string, searchParams?: URLSearchParams): Promise<T> {
-    try {
-      const baseUrl = await this.getBaseUrl();
-      const url = new URL(`${baseUrl}${path}`);
+    const baseUrl = await this.getBaseUrl();
+    const url = new URL(`${baseUrl}${path}`);
 
-      if (searchParams) {
-        url.search = searchParams.toString();
-      }
-
-      const response = await this.fetchApi.fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      throw error;
+    if (searchParams) {
+      url.search = searchParams.toString();
     }
+
+    const response = await this.fetchApi.fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
   }
 
   private buildSearchParams(params: Record<string, string | number | undefined>): URLSearchParams {
@@ -97,6 +93,26 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return searchParams;
   }
 
+  private buildOrderByParam(orderBy?: { field: string; direction: string }): string | undefined {
+    return orderBy ? `${orderBy.field}=${orderBy.direction}` : undefined;
+  }
+
+  private buildListParams(
+    options: { offset?: number; limit?: number; search?: string; ownership?: OwnershipType; orderBy?: { field: string; direction: string } }
+  ): URLSearchParams {
+    const { offset, limit, search, ownership, orderBy } = options;
+
+    const params: Record<string, string | number | undefined> = {
+      offset,
+      limit,
+      search,
+      ownership,
+      orderBy: this.buildOrderByParam(orderBy),
+    };
+
+    return this.buildSearchParams(params);
+  }
+
   clearCache(): void {
     this.baseUrlCache = null;
     this.baseUrlPromise = null;
@@ -109,20 +125,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   }
 
   async listApis(options: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult> {
-    const { offset, limit, orderBy, search, ownership } = options;
-
-    const params: Record<string, string | number | undefined> = {
-      offset,
-      limit,
-      search,
-      ownership,
-    };
-
-    if (orderBy) {
-      params.orderBy = `${orderBy.field}=${orderBy.direction}`;
-    }
-
-    const searchParams = this.buildSearchParams(params);
+    const searchParams = this.buildListParams(options);
     return this.fetchJson<ApiDefinitionListResult>('/apis/definitions', searchParams);
   }
 
@@ -140,20 +143,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   }
 
   async listServices(options: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
-    const { offset, limit, orderBy, search, ownership } = options;
-
-    const params: Record<string, string | number | undefined> = {
-      offset,
-      limit,
-      search,
-      ownership,
-    };
-
-    if (orderBy) {
-      params.orderBy = `${orderBy.field}=${orderBy.direction}`;
-    }
-    const searchParams = this.buildSearchParams(params);
-
+    const searchParams = this.buildListParams(options);
     return this.fetchJson<ServiceDefinitionListResult>('/services/definitions', searchParams);
   }
 
@@ -174,19 +164,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   }
 
   async listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult> {
-    const { offset, limit, orderBy, search, ownership } = options;
-
-    const params: Record<string, string | number | undefined> = {
-      offset,
-      limit,
-      search,
-      ownership,
-    };
-
-    if (orderBy) {
-      params.orderBy = `${orderBy.field}=${orderBy.direction}`;
-    }
-    const searchParams = this.buildSearchParams(params);
+    const searchParams = this.buildListParams(options);
     return this.fetchJson<SystemDefinitionListResult>('/systems/definitions', searchParams);
   }
 

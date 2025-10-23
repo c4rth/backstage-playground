@@ -105,7 +105,6 @@ backend.add(import('@backstage/plugin-catalog-backend-module-unprocessed'));
 
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
-// backend.add(import('@internal/plugin-catalog-backend-module-api-platform-annotator-processor'));
 
 // Mca Components
 backend.add(import('@internal/plugin-mca-backend'));

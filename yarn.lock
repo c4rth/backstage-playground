@@ -6413,19 +6413,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@internal/plugin-catalog-backend-module-api-platform-annotator-processor@workspace:^, @internal/plugin-catalog-backend-module-api-platform-annotator-processor@workspace:plugins/catalog-backend-module-api-platform-annotator-processor":
-  version: 0.0.0-use.local
-  resolution: "@internal/plugin-catalog-backend-module-api-platform-annotator-processor@workspace:plugins/catalog-backend-module-api-platform-annotator-processor"
-  dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.4.4"
-    "@backstage/backend-test-utils": "npm:^1.9.1"
-    "@backstage/catalog-model": "npm:^1.7.5"
-    "@backstage/cli": "npm:^0.34.4"
-    "@backstage/plugin-catalog-common": "npm:^1.1.6"
-    "@backstage/plugin-catalog-node": "npm:^1.19.1"
-  languageName: unknown
-  linkType: soft
-
 "@internal/plugin-iframe@workspace:^, @internal/plugin-iframe@workspace:plugins/iframe":
   version: 0.0.0-use.local
   resolution: "@internal/plugin-iframe@workspace:plugins/iframe"
@@ -16729,7 +16716,6 @@ __metadata:
     "@backstage/plugin-search-backend-node": "npm:^1.3.16"
     "@backstage/plugin-techdocs-backend": "npm:^2.1.1"
     "@internal/plugin-api-platform-backend": "workspace:^"
-    "@internal/plugin-catalog-backend-module-api-platform-annotator-processor": "workspace:^"
     "@internal/plugin-mca-backend": "workspace:^"
     "@internal/plugin-permissions-common": "workspace:^"
     "@internal/plugin-scaffolder-extensions-backend": "workspace:^"

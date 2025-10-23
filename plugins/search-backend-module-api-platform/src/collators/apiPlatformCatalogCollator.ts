@@ -25,70 +25,83 @@ const BASE_LOCATION = '/api-platform/';
 const DEFAULT_PLATFORM = 'cloud';
 const DEFAULT_NAMESPACE = 'default';
 
+const parseApiDefinition = (definition: string): string => {
+    try {
+        const openApi = parse(definition);
+        return openApi?.info?.description ?? 'NO DESCRIPTION';
+    } catch {
+        return '';
+    }
+};
+
+const getApiInfo = (entity: Entity): EntityInfo | null => {
+    const apiName = entity.metadata[ANNOTATION_API_NAME];
+    const apiVersion = entity.metadata[ANNOTATION_API_VERSION];
+    const system = (entity.spec?.system as string) ?? '';
+
+    if (!apiName || !apiVersion) {
+        return null;
+    }
+
+    const description = entity.metadata.description ?? '';
+    const definition = entity.spec?.definition && typeof entity.spec.definition === 'string' 
+        ? parseApiDefinition(entity.spec.definition) 
+        : '';
+
+    return {
+        type: 'api',
+        kind: 'OpenAPI',
+        title: `${apiName} ${apiVersion}`,
+        text: `Description: ${description} - Definition: ${definition}`,
+        location: `${BASE_LOCATION}api/${system}/${apiName}?version=${apiVersion}`,
+        lifecycle: (entity.spec?.lifecycle as string) ?? '',
+    };
+};
+
+const getSystemInfo = (entity: Entity): EntityInfo => ({
+    type: 'system',
+    kind: 'System',
+    title: `System ${entity.metadata.name}`,
+    text: `System: ${entity.metadata.name}`,
+    location: `${BASE_LOCATION}system/${entity.metadata.name}`,
+    lifecycle: '',
+});
+
+const getServiceInfo = (entity: Entity): EntityInfo | null => {
+    const serviceName = entity.metadata[ANNOTATION_SERVICE_NAME];
+    const serviceVersion = entity.metadata[ANNOTATION_SERVICE_VERSION];
+    const lifecycle = (entity.spec?.lifecycle as string) ?? '';
+    const system = (entity.spec?.system as string) ?? '';
+
+    if (!serviceName || !serviceVersion) {
+        return null;
+    }
+
+    const description = entity.metadata.description ?? '';
+    const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION] ?? 'n/a';
+    const platform = entity.metadata[ANNOTATION_SERVICE_PLATFORM] ?? DEFAULT_PLATFORM;
+
+    return {
+        type: 'service',
+        kind: 'Service',
+        title: `${serviceName} v${serviceVersion} in ${lifecycle}`,
+        text: `${description} - Version: ${imageVersion} - Platform: ${platform}`,
+        location: `${BASE_LOCATION}service/${system}/${serviceName}?version=${serviceVersion}&env=${lifecycle}`,
+        lifecycle,
+    };
+};
+
 const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
-
     if (isApiEntity(entity)) {
-        const apiName = entity.metadata[ANNOTATION_API_NAME];
-        const apiVersion = entity.metadata[ANNOTATION_API_VERSION];
-        const system = entity.spec?.system as string ?? '';
-
-        if (!apiName || !apiVersion) {
-            return null; // Skip entities with missing required annotations
-        }
-        const description = entity.metadata.description ?? '';
-        let definition = '';
-        if (entity.spec?.definition) {
-            try {
-                const openApi = parse(entity.spec.definition);
-                definition = openApi?.info?.description ?? 'NO DESCRIPTION';
-            } catch (error) {
-                //                
-            }
-        }
-
-        return {
-            type: 'api',
-            kind: 'OpenAPI',
-            title: `${apiName} ${apiVersion}`,
-            text: `Description: ${description} - Definition: ${definition}`,
-            location: `${BASE_LOCATION}api/${system}/${apiName}?version=${apiVersion}`,
-            lifecycle: (entity.spec?.lifecycle as string) ?? '',
-        };
+        return getApiInfo(entity);
     }
 
     if (isSystemEntity(entity)) {
-        return {
-            type: 'system',
-            kind: 'System',
-            title: `System ${entity.metadata.name}`,
-            text: `System: ${entity.metadata.name}`,
-            location: `${BASE_LOCATION}system/${entity.metadata.name}`,
-            lifecycle: '',
-        };
+        return getSystemInfo(entity);
     }
 
     if (isComponentEntity(entity) && entity.spec?.type === 'service') {
-        const serviceName = entity.metadata[ANNOTATION_SERVICE_NAME];
-        const serviceVersion = entity.metadata[ANNOTATION_SERVICE_VERSION];
-        const lifecycle = entity.spec?.lifecycle as string ?? '';
-        const system = entity.spec?.system as string ?? '';
-
-        if (!serviceName || !serviceVersion) {
-            return null; // Skip entities with missing required annotations
-        }
-
-        const description = entity.metadata.description ?? '';
-        const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION] ?? 'n/a';
-        const platform = entity.metadata[ANNOTATION_SERVICE_PLATFORM] ?? DEFAULT_PLATFORM;
-
-        return {
-            type: 'service',
-            kind: 'Service',
-            title: `${serviceName} v${serviceVersion} in ${lifecycle}`,
-            text: `${description} - Version: ${imageVersion} - Platform: ${platform}`,
-            location: `${BASE_LOCATION}service/${system}/${serviceName}?version=${serviceVersion}&env=${lifecycle}`,
-            lifecycle,
-        };
+        return getServiceInfo(entity);
     }
 
     return null;
