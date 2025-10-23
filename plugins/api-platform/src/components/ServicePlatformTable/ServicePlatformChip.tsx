@@ -1,9 +1,7 @@
-import { Fragment, memo, useCallback, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
-
-// TODO-MUI 
 import { Tooltip, Chip } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -16,111 +14,88 @@ export type ServicePlatformChipProps = {
     disabled?: boolean;
 };
 
-const useStyles = makeStyles<Theme, ServicePlatformChipProps>(
+const useStyles = makeStyles<Theme, { index: number }>(
     (theme: Theme) => ({
         badge: {
-            backgroundColor: (props: ServicePlatformChipProps) =>
+            backgroundColor: (props) =>
                 alpha(theme.palette.primary.light, (props.index + 1) / 10),
         },
         chipContainer: {
-            padding: '0px',
-            margin: '0px',
+            padding: 0,
+            margin: 0,
         },
     }),
 );
 
-const PlatformIcons = {
+const PLATFORM_ICONS = {
     all: <RiGlobalLine />,
     onprem: <RiHomeOfficeLine />,
     cloud: <RiCloudFill />,
 } as const;
 
-export const ServicePlatformChip = memo<ServicePlatformChipProps>((props) => {
-    const classes = useStyles(props);
+const getPlatformIcon = (platform?: string): React.JSX.Element => {
+    if (!platform) return PLATFORM_ICONS.cloud;
+    
+    const hasCloud = platform.includes('cloud');
+    const hasOnprem = platform.includes('onprem');
 
-    // Memoize platform icon selection
-    const platformIcon = useMemo(() => {
-        if (!props.service?.platform) return PlatformIcons.cloud;
+    if (hasCloud && hasOnprem) return PLATFORM_ICONS.all;
+    if (hasOnprem) return PLATFORM_ICONS.onprem;
+    return PLATFORM_ICONS.cloud;
+};
 
-        const platform = props.service.platform;
-        const hasCloud = platform.includes('cloud');
-        const hasOnprem = platform.includes('onprem');
+export const ServicePlatformChip = memo<ServicePlatformChipProps>(({
+    index,
+    icon,
+    text,
+    link,
+    service,
+    disabled = false,
+}) => {
+    const classes = useStyles({ index });
 
-        if (hasCloud && hasOnprem) return PlatformIcons.all;
-        if (hasOnprem) return PlatformIcons.onprem;
-        return PlatformIcons.cloud;
-    }, [props.service?.platform]);
-
-    // Memoize tooltip content
-    const tooltipContent = useMemo(() => {
-        if (!props.service) return null;
-
-        return (
-            <Fragment>
-                Platform: <b>{props.service.platform}</b>
+    const { chipIcon, chipLabel, tooltipContent } = useMemo(() => {
+        const platformIcon = getPlatformIcon(service?.platform);
+        const label = text || service?.imageVersion || '?';
+        const chipIconValue = text ? icon : platformIcon;
+        
+        const tooltip = service ? (
+            <h3>
+                Platform: <b>{service.platform}</b>
                 <br />
-                Version: <b>{props.service.imageVersion}</b>
-                <br />
-            </Fragment>
-        );
-    }, [props.service]);
+                Version: <b>{service.imageVersion}</b>
+            </h3>
+        ) : null;
 
-    // Memoize chip styles
-    const chipStyle = useMemo(() => ({
-        padding: tooltipContent ? '5px' : '0px',
-        margin: '0px',
-    }), [tooltipContent]);
+        return {
+            chipIcon: chipIconValue,
+            chipLabel: label,
+            tooltipContent: tooltip,
+        };
+    }, [service, text, icon]);
 
-    // Optimize click handler (remove unused functionality)
-    const handleClick = useCallback(() => {
-        // Add actual click logic here if needed
-    }, []);
+    const chip = (
+        <Chip
+            label={chipLabel}
+            size="small"
+            variant="outlined"
+            className={classes.badge}
+            clickable={!disabled}
+            disabled={disabled}
+            icon={chipIcon}
+            style={{ padding: tooltipContent ? 5 : 0, margin: 0 }}
+        />
+    );
 
-    // Memoize chip component
-    const chipComponent = useMemo(() => {
-        const label = props.text || props.service?.imageVersion || '?';
-        const icon = props.text ? props.icon : platformIcon;
-
-        return (
-            <Chip
-                key={label}
-                label={label}
-                size="small"
-                variant="outlined"
-                className={classes.badge}
-                clickable={!props.disabled}
-                disabled={props.disabled}
-                onClick={handleClick}
-                icon={icon}
-                style={chipStyle}
-            />
-        );
-    }, [
-        props.text,
-        props.service,
-        props.icon,
-        props.disabled,
-        platformIcon,
-        handleClick,
-        classes.badge,
-        chipStyle,
-    ]);
-
-    // Memoize final component
-    const finalComponent = useMemo(() => {
-        if (tooltipContent) {
-            return (
-                <Tooltip placement='bottom' arrow title={tooltipContent}>
-                    {chipComponent}
-                </Tooltip>
-            );
-        }
-        return chipComponent;
-    }, [tooltipContent, chipComponent]);
+    const content = tooltipContent ? (
+        <Tooltip placement="bottom" arrow title={tooltipContent}>
+            {chip}
+        </Tooltip>
+    ) : chip;
 
     return (
-        <Link to={props.link} className={classes.chipContainer}>
-            {finalComponent}
+        <Link to={link} className={classes.chipContainer}>
+            {content}
         </Link>
     );
 });
