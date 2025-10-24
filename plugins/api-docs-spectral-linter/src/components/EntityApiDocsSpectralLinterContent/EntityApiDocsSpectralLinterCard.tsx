@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
 import {
   CodeSnippet,
   InfoCard,
@@ -27,24 +26,8 @@ import { ApiEntity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { linterApiRef } from '../../api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { RiArrowUpSLine, RiArrowDownSLine } from '@remixicon/react';
-
-// TODO-MUI
-import {
-  Grid,
-  IconButton,
-  Link,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
-
-const useStyles = makeStyles(() => ({
-  alertButton: {
-    padding: '0',
-    marginLeft: '5px',
-  },
-}));
+import { Grid, Text } from '@backstage/ui';
+import { Link } from "@backstage/core-components";
 
 /**
  * Component for browsing API docs spectral linter on an entity page.
@@ -52,17 +35,11 @@ const useStyles = makeStyles(() => ({
  */
 export const EntityApiDocsSpectralLinterCard = () => {
   const { entity } = useEntity<ApiEntity>();
-  const classes = useStyles();
-  const [expanded, setExpanded] = useState<string | false>(false);
   const linterApi = useApi(linterApiRef);
 
   const { value, loading, error } = useAsync(async () => {
     return linterApi.lint({ entity: (entity as ApiEntity) });
   }, [entity]);
-
-  const handleChange = (alert: string) => () => {
-    setExpanded(expanded === alert ? false : alert);
-  };
 
   const getSeverity = (severity: number) => {
     switch (severity) {
@@ -102,7 +79,7 @@ export const EntityApiDocsSpectralLinterCard = () => {
       title="Spectral Linter"
       subheader={
         value?.rulesetUrl && (
-          <Link href={value?.rulesetUrl} target="_blank">
+          <Link to={value?.rulesetUrl} target="_blank">
             Rule set used
           </Link>
         )
@@ -118,27 +95,12 @@ export const EntityApiDocsSpectralLinterCard = () => {
         !error &&
         (value?.data?.length ? (
           value.data.map((ruleResult, idx) => (
-            <Grid key={idx} container spacing={2}>
-              <Grid item xs={12}>
-                <Alert
+            <Grid.Root key={idx} columns='12'>
+              <Grid.Item colSpan='12' style={{ marginBottom: '12px'}}>
+                <WarningPanel
+                  title={`${ruleResult.message} (${ruleResult.code})`}
                   severity={getSeverity(ruleResult.severity)}
-                  variant="outlined"
-                >
-                  <AlertTitle>
-                    {ruleResult.message} ({ruleResult.code})
-                    <IconButton
-                      aria-label="expand"
-                      onClick={handleChange(`alert${idx}`)}
-                      className={classes.alertButton}
-                    >
-                      {`alert${idx}` === expanded ? (
-                        <RiArrowUpSLine />
-                      ) : (
-                        <RiArrowDownSLine />
-                      )}
-                    </IconButton>
-                  </AlertTitle>
-                  {`alert${idx}` === expanded && (
+                  message={
                     <InfoCard deepLink={
                       ruleResult.ruleDocumentationUrl ?
                         {
@@ -163,13 +125,13 @@ export const EntityApiDocsSpectralLinterCard = () => {
                         }}
                       />
                     </InfoCard>
-                  )}
-                </Alert>
-              </Grid>
-            </Grid>
+                  }
+                />
+              </Grid.Item>
+            </Grid.Root>
           ))
         ) : (
-          <Typography>No linting errors found...</Typography>
+          <Text>No linting errors found...</Text>
         ))}
     </InfoCard>
   );

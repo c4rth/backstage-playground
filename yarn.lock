@@ -1903,9 +1903,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:^0.16.0":
-  version: 0.16.0
-  resolution: "@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:0.16.0"
+"@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:^0.16.1":
+  version: 0.16.1
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-azure-devops@npm:0.16.1"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.4.4"
     "@backstage/config": "npm:^1.3.5"
@@ -1914,7 +1914,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": "npm:^0.12.0"
     azure-devops-node-api: "npm:^14.1.0"
     yaml: "npm:^2.6.0"
-  checksum: 10/d0f484551e3ce960ee7336f0d487521a37e3be2493b0e2c5367cbfbd92193a748e2ca761f1a13d46f8c7cd600b5b863f6b30ffcd142c88c014b50f6bed8abc6d
+  checksum: 10/5e616c21406ae207d5093dd5672b52932622006380763731b649b7d742b388803afa006d05072c368b163679699da6aa8c1025bc768de95a0e88da70707145ee
   languageName: node
   linkType: hard
 
@@ -6240,8 +6240,6 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.11.1"
     "@backstage/dev-utils": "npm:^1.1.16"
     "@backstage/plugin-catalog-react": "npm:^1.21.2"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/lab": "npm:4.0.0-alpha.61"
     "@remixicon/react": "npm:^4.6.0"
     "@stoplight/spectral-core": "npm:1.20.0"
     "@stoplight/spectral-ruleset-bundler": "npm:1.6.3"
@@ -16742,7 +16740,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-azure-devops-backend": "npm:^0.22.0"
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "npm:^0.13.0"
-    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "npm:^0.16.0"
+    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "npm:^0.16.1"
     "@backstage-community/plugin-sonarqube-backend": "npm:^0.14.0"
     "@backstage/backend-defaults": "npm:^0.13.0"
     "@backstage/backend-plugin-api": "npm:^1.4.4"
