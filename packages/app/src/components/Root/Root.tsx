@@ -24,7 +24,7 @@ import {
   DocsIcon,
 } from '@backstage/core-components';
 
-import { 
+import {
   RiMenuFill,
   RiMenuSearchLine,
   RiHome2Fill,
@@ -38,7 +38,7 @@ import {
   RiCircleLine,
   RiTriangleLine,
   RiFolderAddLine,
-  } from '@remixicon/react';
+} from '@remixicon/react';
 
 
 // Entity Validation
@@ -89,8 +89,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
   <SidebarPage>
     <Sidebar>
       <SidebarLogo />
-      <SidebarGroup label="Search" icon={<RiMenuSearchLine />} to="/search">
-        <SidebarSearchModal resultItemComponents={[
+      <SidebarGroup to="/search">
+        <SidebarSearchModal icon={RiMenuSearchLine as IconComponent} resultItemComponents={[
           <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />,
           <McaComponentSearchResultListItem icon={<RiStackLine />} />,
           <CatalogSearchResultListItem icon={<CatalogIcon />} />,
@@ -164,7 +164,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
                 </RequirePermission>
               </RequirePermission>
             </SidebarSubmenu>
-          </SidebarItem>  
+          </SidebarItem>
           <SidebarItem icon={RiWrenchFill as IconComponent} text="DevTools" to="tools" />
         </RequirePermission>
         {/* End global nav */}
