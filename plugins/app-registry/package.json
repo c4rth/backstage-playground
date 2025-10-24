@@ -29,7 +29,7 @@
     "@backstage/core-plugin-api": "^1.11.1",
     "@backstage/plugin-catalog-react": "^1.21.2",
     "@backstage/theme": "^0.7.0",
-    "@backstage/ui": "^0.8.1",
+    "@backstage/ui": "^0.8.2",
     "@internal/plugin-api-platform-common": "workspace:^",
     "@internal/plugin-api-platform-react": "workspace:^",
     "@material-ui/core": "^4.12.2",
