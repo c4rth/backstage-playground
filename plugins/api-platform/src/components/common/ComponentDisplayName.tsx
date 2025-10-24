@@ -1,23 +1,26 @@
-import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
-import { Box, Text } from '@backstage/ui';
-import { RiPuzzleFill, RiShapesFill, RiCpuLine  } from '@remixicon/react'
-
-// TODO-MUI
+import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
+import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
+import { RiPuzzleFill, RiShapesFill, RiCpuLine  } from '@remixicon/react'
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
+        root: {
+            display: 'inline-flex',
+            alignItems: 'center',
+            textDecoration: 'inherit',
+        },
         icon: {
             marginRight: theme.spacing(0.5),
             color: theme.palette.text.secondary,
             '& svg': {
                 verticalAlign: 'middle',
             },
-            size: '12px',
         },
     }),
+    { name: 'CatalogReactEntityDisplayName' },
 );
 
 export type ComponentDisplayNameProps = {
@@ -28,11 +31,7 @@ export type ComponentDisplayNameProps = {
 export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps): React.JSX.Element => {
     const classes = useStyles();
     return (
-        <Box style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            textDecoration: 'inherit',
-        }}>
+        <Box component="span" className={classes.root}>
             {type === 'api' && (
                 <RiPuzzleFill className={classes.icon} fontSize="inherit" size='16px'/>
             )}
@@ -45,9 +44,7 @@ export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps):
             {type === 'azdo' && (
                 <AzureDevOpsIcon className={classes.icon} fontSize="inherit" />
             )}
-            <Text weight='bold' style={{ textDecoration: 'inherit' }}>
-                {text}
-            </Text>
+            {text}
         </Box>
     );
 };
