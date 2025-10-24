@@ -33,7 +33,6 @@
     "@backstage/plugin-scaffolder": "^1.34.2",
     "@backstage/plugin-scaffolder-react": "^1.19.2",
     "@backstage/ui": "^0.8.1",
-    "@material-ui/core": "^4.12.4",
     "react-use": "^17.6.0",
     "react-window": "^1.8.11"
   },

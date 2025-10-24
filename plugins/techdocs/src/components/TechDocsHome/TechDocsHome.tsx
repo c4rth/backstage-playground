@@ -3,6 +3,8 @@ import { TechDocsTable } from "../TechDocsTable";
 
 export const TechDocsHome = () => {
   return (
+
+<>
     <PageWithHeader
       themeId="documentation"
       title="Documentation"    >
@@ -10,5 +12,7 @@ export const TechDocsHome = () => {
         <TechDocsTable />
       </Content>
     </PageWithHeader>
+
+    </>
   );
 };

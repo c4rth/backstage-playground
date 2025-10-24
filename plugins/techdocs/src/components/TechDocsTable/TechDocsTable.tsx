@@ -13,12 +13,12 @@ import {
     humanizeEntityRef,
 } from '@backstage/plugin-catalog-react';
 import { CompoundEntityRef, Entity, RELATION_OWNED_BY, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box } from '@material-ui/core';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { isExternalUrl } from '../../lib/helper';
 import { RiGlobalLine } from '@remixicon/react';
-import BackstageIcon from './BackstageIcon';
+import { BackstageIcon } from './BackstageIcon';
+import { Box } from '@backstage/ui';
 
 
 type TableRow = {
@@ -120,8 +120,8 @@ export const TechDocsTable = () => {
                 draggable: false,
             }}
             title={
-                <Box display="flex" alignItems="center">
-                    <Box mr={1} />
+                <Box display="flex" style={{ alignItems: "center" }}>
+                    <Box mr='1' />
                     All ({items ? items.length : 0})
                 </Box>
             }

@@ -1,11 +1,11 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Text } from '@backstage/ui';
 
 export const ErrorComponent = ({ errorMessage }: { errorMessage: string }) => {
   return (
-    <Grid container>
-      <Grid item xs={8}>
-        <Typography>{errorMessage}</Typography>
-      </Grid>
-    </Grid>
+    <Grid.Root>
+      <Grid.Item>
+        <Text color='danger'>{errorMessage}</Text>
+      </Grid.Item>
+    </Grid.Root>
   );
 };

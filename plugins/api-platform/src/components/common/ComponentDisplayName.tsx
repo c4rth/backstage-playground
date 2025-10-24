@@ -45,7 +45,7 @@ export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps):
             {type === 'azdo' && (
                 <AzureDevOpsIcon className={classes.icon} fontSize="inherit" />
             )}
-            <Text weight='bold' style={{ color: '#C30045' }}>
+            <Text weight='bold' style={{ textDecoration: 'inherit' }}>
                 {text}
             </Text>
         </Box>
