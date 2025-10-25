@@ -1,7 +1,7 @@
 import Box from '@material-ui/core/Box';
 import { Theme, makeStyles } from '@material-ui/core/styles';
 import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
-import { RiPuzzleFill, RiShapesFill, RiCpuLine  } from '@remixicon/react'
+import { RiPuzzleFill, RiShapesFill, RiCpuLine, RiGlobalLine } from '@remixicon/react'
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles(
 
 export type ComponentDisplayNameProps = {
     text: string;
-    type: 'api' | 'system' | 'service' | 'azdo';
+    type: 'api' | 'system' | 'service' | 'azdo' | 'url';
 };
 
 export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps): React.JSX.Element => {
@@ -42,7 +42,10 @@ export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps):
                 <RiCpuLine className={classes.icon} fontSize="inherit" size='16px'/>
             )}
             {type === 'azdo' && (
-                <AzureDevOpsIcon className={classes.icon} fontSize="inherit" />
+                <AzureDevOpsIcon className={classes.icon} fontSize="inherit" size='16px'/>
+            )}
+            {type === 'url' && (
+                <RiGlobalLine className={classes.icon} fontSize="inherit" size='16px'/>
             )}
             {text}
         </Box>

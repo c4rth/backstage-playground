@@ -2,65 +2,27 @@ import {
     CodeSnippet,
     InfoCard,
     TabbedLayout,
+    Link,
 } from '@backstage/core-components';
 import { ApiEntity } from "@backstage/catalog-model"
 import { PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
-import { Link } from 'react-router-dom';
 import { ANNOTATION_API_NAME, ANNOTATION_API_PROJECT, ANNOTATION_API_VERSION } from '@internal/plugin-api-platform-common';
 import { OpenApiDefinitionWidget } from '@internal/plugin-api-swagger-docs';
 // Spectral 
 import { EntityApiDocsSpectralLinterCard, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import { ApiPlatformRelationCard } from './ApiPlatformRelationCard';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { memo, useMemo } from 'react';
+import { useMemo } from 'react';
 import { ApiPlatformAllRelationsCard } from './ApiPlatformAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { Box, Grid } from '@backstage/ui';
-import { RiCloudLine, RiGlobalLine } from '@remixicon/react';
+import { ComponentDisplayName } from '../common';
 
-// TODO-MUI
-import { makeStyles, Theme } from '@material-ui/core';
-
-
-const useStyles = makeStyles(
-    (theme: Theme) => ({
-        root: {
-            display: 'inline-flex',
-            alignItems: 'center',
-            textDecoration: 'inherit',
-            color: theme.palette.navigation.indicator
-        },
-        icon: {
-            marginRight: theme.spacing(0.5),
-            color: theme.palette.text.secondary,
-            '& svg': {
-                verticalAlign: 'middle',
-            },
-        },
-        gridItemCard: {
-            display: 'flex',
-            flexDirection: 'column',
-            height: 'calc(100% - 10px)', // for pages without content header
-            marginBottom: '10px',
-        },
-    }),
-);
-const IconWithText = memo<{ icon: React.ReactNode; child: React.ReactNode; classes: any }>(
-    ({ icon, child, classes }) => (
-        <Box as="span" className={classes.root}>
-            <Box as="span" className={classes.icon}>
-                {icon}
-            </Box>
-            {child}
-        </Box>
-    )
-);
 
 export const ApiPlatformDefinitionCard = () => {
     const { entity } = useEntity<ApiEntity>();
-    const classes = useStyles();
     const configApi = useApi(configApiRef);
 
     const config = useMemo(() => ({
@@ -153,7 +115,7 @@ export const ApiPlatformDefinitionCard = () => {
                 </TabbedLayout>
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/info" title="Info">
-                <InfoCard title='About' divider /* className={classes.gridItemCard} */>
+                <InfoCard title='About' divider>
                     <Box mb='4'>
                         <AboutField
                             label="Catalog reference"
@@ -167,11 +129,7 @@ export const ApiPlatformDefinitionCard = () => {
                             label="Azure Artifact"
                             gridSizes={{ xs: 12 }} >
                             <Link to={apiData.artifactUrl} target="_blank" rel="noopener noreferrer">
-                                <IconWithText
-                                    icon={<RiCloudLine size={16} />}
-                                    child={<>{apiData.artifactText}</>}
-                                    classes={classes}
-                                />
+                                <ComponentDisplayName text={apiData.artifactText} type='azdo' />
                             </Link>
                         </AboutField>
                     </Box>
@@ -184,15 +142,9 @@ export const ApiPlatformDefinitionCard = () => {
                     </Box>
                     <Box mt='5'>
                         <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
-                            <IconWithText
-                                icon={<RiGlobalLine size={16} />}
-                                child={
-                                    <Link to={apiData.platformUrl} target="_blank" rel="noopener noreferrer">
-                                        {apiData.platformUrl}
-                                    </Link>
-                                }
-                                classes={classes}
-                            />
+                            <Link to={apiData.platformUrl} target="_blank" rel="noopener noreferrer">
+                                <ComponentDisplayName text={apiData.platformUrl} type='url' />
+                            </Link>
                         </AboutField>
                     </Box>
                 </InfoCard>

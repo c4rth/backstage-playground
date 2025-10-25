@@ -1,5 +1,4 @@
-import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
-
+import { Grid, Card, CardBody } from '@backstage/ui'
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import {
   catalogApiRef,
@@ -27,23 +26,7 @@ import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 import { RiCodeFill } from '@remixicon/react';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  bar: {
-    padding: theme.spacing(1, 0),
-  },
-  filters: {
-    padding: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  },
-  filter: {
-    '& + &': {
-      marginTop: theme.spacing(2.5),
-    },
-  },
-}));
-
 const SearchPage = () => {
-  const classes = useStyles();
   const { types } = useSearch();
   const catalogApi = useApi(catalogApiRef);
 
@@ -51,13 +34,15 @@ const SearchPage = () => {
     <Page themeId="home">
       <Header title="Search" />
       <Content>
-        <Grid container direction="row">
-          <Grid item xs={12}>
-            <Paper className={classes.bar}>
-              <SearchBar />
-            </Paper>
-          </Grid>
-          <Grid item xs={3}>
+        <Grid.Root columns='12' >
+          <Grid.Item colSpan='12'>
+            <Card >
+              <CardBody>
+                <SearchBar />
+              </CardBody>
+            </Card>
+          </Grid.Item>
+          <Grid.Item colSpan='3'>
             <SearchType.Accordion
               name="Result Type"
               defaultValue=""
@@ -80,30 +65,31 @@ const SearchPage = () => {
               ]}
             />
             {types.includes('techdocs') && (
-              <Paper className={classes.filters}>
-                <SearchFilter.Select
-                  className={classes.filter}
-                  label="Entity"
-                  name="name"
-                  values={async () => {
-                    // Return a list of entities which are documented.
-                    const { items } = await catalogApi.getEntities({
-                      fields: ['metadata.name'],
-                      filter: {
-                        'metadata.annotations.backstage.io/techdocs-ref':
-                          CATALOG_FILTER_EXISTS,
-                      },
-                    });
+              <Card style={{ marginTop: '16px' }}>
+                <CardBody>
+                  <SearchFilter.Select
+                    label="Entity"
+                    name="name"
+                    values={async () => {
+                      // Return a list of entities which are documented.
+                      const { items } = await catalogApi.getEntities({
+                        fields: ['metadata.name'],
+                        filter: {
+                          'metadata.annotations.backstage.io/techdocs-ref':
+                            CATALOG_FILTER_EXISTS,
+                        },
+                      });
 
-                    const names = items.map(entity => entity.metadata.name);
-                    names.sort();
-                    return names;
-                  }}
-                />
-              </Paper>
+                      const names = items.map(entity => entity.metadata.name);
+                      names.sort();
+                      return names;
+                    }}
+                  />
+                </CardBody>
+              </Card>
             )}
-          </Grid>
-          <Grid item xs={9}>
+          </Grid.Item>
+          <Grid.Item colSpan='9'>
             <SearchPagination />
             <SearchResult>
               <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />
@@ -111,8 +97,8 @@ const SearchPage = () => {
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
             </SearchResult>
-          </Grid>
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </Content>
     </Page>
   );
