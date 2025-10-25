@@ -24,6 +24,8 @@ import { ComponentDisplayName } from '../common';
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 // Azure DevOps
+import { AzureDevOpsPipelinePage, AzureDevOpsGitTagsPage } from '@internal/plugin-azure-devops';
+//
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
@@ -182,6 +184,14 @@ export const ServicePlatformDefinitionCard = memo(() => {
 
             <TabbedLayout.Route path="/appreg" title="App Registry">
                 <AppRegistryPage />
+            </TabbedLayout.Route>
+            
+            <TabbedLayout.Route path="/ci-cd" title="CI/CD">
+                <AzureDevOpsPipelinePage />
+            </TabbedLayout.Route>
+
+            <TabbedLayout.Route path="/gittags" title="Git Tags">
+                <AzureDevOpsGitTagsPage />
             </TabbedLayout.Route>
 
             {

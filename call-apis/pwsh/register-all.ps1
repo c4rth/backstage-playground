@@ -52,8 +52,8 @@ $entries = @(
     @{ kind = "Component"; target = "https://github.com/c4rth/playground-techdocs/blob/main/sample001" }
 )
 
-#$backstageUrl = "http://localhost:7007" # local
-$backstageUrl = "http://localhost" # k8s
+$backstageUrl = "http://localhost:7007" # local
+#$backstageUrl = "http://localhost" # k8s
 
 foreach ($entry in $entries) {
     if ($entry.target.StartsWith("http")) {
