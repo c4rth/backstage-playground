@@ -7,7 +7,7 @@ import {
   fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendClient, apiPlatformBackendApiRef } from './api';
-import { rootRouteRef } from './routes';
+import { apiPlatformRouteRef } from './routes';
 import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
 import { ApiPlatformSearchResultListItemProps } from './components/ApiPlatformSearchResultListItem';
 
@@ -28,7 +28,7 @@ export const ApiPlatformExplorerPage = apiPlatformPlugin.provide(
     name: 'ApiPlatformExplorerPage',
     component: () =>
       import('./components/ApiPlatformExplorerPage').then(m => m.ApiPlatformExplorerPage),
-    mountPoint: rootRouteRef,
+    mountPoint: apiPlatformRouteRef,
   }),
 );
 
@@ -59,7 +59,7 @@ export const ServicePlatformExplorerPage = apiPlatformPlugin.provide(
     name: 'ServicePlatformExplorerPage',
     component: () =>
       import('./components/ServicePlatformExplorerPage').then(m => m.ServicePlatformExplorerPage),
-    mountPoint: rootRouteRef,
+    mountPoint: apiPlatformRouteRef,
   }),
 );
 
@@ -80,7 +80,7 @@ export const SystemPlatformExplorerPage = apiPlatformPlugin.provide(
     name: 'SystemPlatformExplorerPage',
     component: () =>
       import('./components/SystemPlatformExplorerPage').then(m => m.SystemPlatformExplorerPage),
-    mountPoint: rootRouteRef,
+    mountPoint: apiPlatformRouteRef,
   }),
 );
 

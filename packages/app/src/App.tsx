@@ -73,7 +73,9 @@ import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
 import { ToolsPage } from '@internal/plugin-toolkit';
+// Scaffolder Extensions
 import { ProjectPickerFieldExtension } from '@internal/plugin-scaffolder-extensions';
+// Mui-to-Bui
 import { BuiThemerPage } from '@backstage/plugin-mui-to-bui';
 
 const app = createApp({
