@@ -24,7 +24,6 @@ import { ComponentDisplayName } from '../common';
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 // Azure DevOps
-import { CustomAzureGitTagsContent, CustomAzurePipelinesContent } from '@internal/plugin-azure-devops';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
@@ -87,15 +86,14 @@ export const ServicePlatformDefinitionCard = memo(() => {
 
     // TODO-MUI
     const docsButton = useMemo(() => (
-        <ButtonIcon
-            icon={<RiFileFill />}
-            isDisabled={!entityData.hasDocs}
-            size='medium'
-            variant='tertiary'
-            onClick={(_) => alert('Hello')}
-        >
-            <Link to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`} />
-        </ButtonIcon>
+        <Link to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}>
+            <ButtonIcon
+                icon={<RiFileFill />}
+                isDisabled={!entityData.hasDocs}
+                size='medium'
+                variant='tertiary'
+            />
+        </Link>
     ), [entityData.hasDocs, entityData.entityRef]);
 
     const aboutFields = useMemo(() => (
@@ -184,14 +182,6 @@ export const ServicePlatformDefinitionCard = memo(() => {
 
             <TabbedLayout.Route path="/appreg" title="App Registry">
                 <AppRegistryPage />
-            </TabbedLayout.Route>
-
-            <TabbedLayout.Route path="/cicd" title="CI/CD">
-                <CustomAzurePipelinesContent defaultLimit={5} />
-            </TabbedLayout.Route>
-
-            <TabbedLayout.Route path="/gittags" title="Git Tags">
-                <CustomAzureGitTagsContent />
             </TabbedLayout.Route>
 
             {

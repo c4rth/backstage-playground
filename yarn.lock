@@ -1854,6 +1854,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-azure-devops@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "@backstage-community/plugin-azure-devops@npm:0.21.0"
+  dependencies:
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.16.0"
+    "@backstage/catalog-model": "npm:^1.7.5"
+    "@backstage/core-compat-api": "npm:^0.5.3"
+    "@backstage/core-components": "npm:^0.18.2"
+    "@backstage/core-plugin-api": "npm:^1.11.1"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/frontend-plugin-api": "npm:^0.12.1"
+    "@backstage/plugin-catalog-react": "npm:^1.21.2"
+    "@backstage/plugin-permission-react": "npm:^0.4.37"
+    "@material-ui/core": "npm:^4.12.2"
+    "@material-ui/icons": "npm:^4.9.1"
+    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    humanize-duration: "npm:^3.27.0"
+    luxon: "npm:^3.0.0"
+    react-use: "npm:^17.2.4"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  checksum: 10/a3bbed6051fcab625ce1110335562a8af48aadfacba955047386d148e4cbe19da337232f5077559bfe2d34282bb18917da1ece1a85458bba11f9af248c4bb50c
+  languageName: node
+  linkType: hard
+
 "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@npm:^0.13.0":
   version: 0.13.0
   resolution: "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@npm:0.13.0"
@@ -6331,6 +6358,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/plugin-api-platform@workspace:plugins/api-platform"
   dependencies:
+    "@backstage-community/plugin-azure-devops": "npm:^0.21.0"
     "@backstage-community/plugin-azure-devops-common": "npm:^0.16.0"
     "@backstage-community/plugin-sonarqube": "npm:^0.20.0"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.12.0"
@@ -6359,7 +6387,6 @@ __metadata:
     "@internal/plugin-api-platform-react": "workspace:^"
     "@internal/plugin-api-swagger-docs": "workspace:^"
     "@internal/plugin-app-registry": "workspace:^"
-    "@internal/plugin-azure-devops": "workspace:^"
     "@material-table/core": "npm:3.2.5"
     "@material-ui/core": "npm:^4.12.2"
     "@remixicon/react": "npm:^4.6.0"
@@ -6436,41 +6463,6 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"
     react-use: "npm:^17.2.4"
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  languageName: unknown
-  linkType: soft
-
-"@internal/plugin-azure-devops@workspace:^, @internal/plugin-azure-devops@workspace:plugins/azure-devops":
-  version: 0.0.0-use.local
-  resolution: "@internal/plugin-azure-devops@workspace:plugins/azure-devops"
-  dependencies:
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.16.0"
-    "@backstage/catalog-model": "npm:^1.7.5"
-    "@backstage/cli": "npm:^0.34.4"
-    "@backstage/core-compat-api": "npm:^0.5.3"
-    "@backstage/core-components": "npm:^0.18.2"
-    "@backstage/core-plugin-api": "npm:^1.11.1"
-    "@backstage/dev-utils": "npm:^1.1.16"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/frontend-plugin-api": "npm:^0.12.1"
-    "@backstage/plugin-catalog-react": "npm:^1.21.2"
-    "@backstage/plugin-permission-react": "npm:^0.4.37"
-    "@backstage/test-utils": "npm:^1.7.12"
-    "@material-ui/core": "npm:^4.12.2"
-    "@remixicon/react": "npm:^4.6.0"
-    "@testing-library/dom": "npm:^10.0.0"
-    "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^15.0.0"
-    "@types/humanize-duration": "npm:^3.18.1"
-    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    "@types/react-dom": "npm:^18.2.19"
-    humanize-duration: "npm:^3.27.0"
-    luxon: "npm:^3.0.0"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
-    react-use: "npm:^17.6.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
   languageName: unknown
@@ -6799,7 +6791,6 @@ __metadata:
     "@backstage/plugin-home": "npm:^0.8.13"
     "@backstage/theme": "npm:^0.7.0"
     "@backstage/ui": "npm:^0.8.2"
-    "@base-ui-components/react": "npm:1.0.0-alpha.7"
     "@faker-js/faker": "npm:^10.1.0"
     "@material-ui/core": "npm:^4.12.2"
     "@remixicon/react": "npm:^4.6.0"
@@ -13921,24 +13912,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^15.0.0":
-  version: 15.0.7
-  resolution: "@testing-library/react@npm:15.0.7"
-  dependencies:
-    "@babel/runtime": "npm:^7.12.5"
-    "@testing-library/dom": "npm:^10.0.0"
-    "@types/react-dom": "npm:^18.0.0"
-  peerDependencies:
-    "@types/react": ^18.0.0
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/a9342ad09b019b0f99688fb50265899bc93adfe23c22aa6743fd920635b43fdc66877e66d95f240923aa6f7d3aa360837f5b053fb363a31975788974dff7bc93
-  languageName: node
-  linkType: hard
-
 "@testing-library/react@npm:^16.0.0":
   version: 16.3.0
   resolution: "@testing-library/react@npm:16.3.0"
@@ -14698,13 +14671,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/a054ac8f5301acfcfdcec3a775f52dc371180bbe60037906534312f10cceb3799b4a16e46c56c22f9925d078e11dcda1723c38f1ddd124be8169a4cccca69c8c
-  languageName: node
-  linkType: hard
-
-"@types/humanize-duration@npm:^3.18.1":
-  version: 3.27.4
-  resolution: "@types/humanize-duration@npm:3.27.4"
-  checksum: 10/aa7fa41af839021c846a1728d2f097b7885f80acbc5050623a9804d23fd8fee19d2654eaae331f000a4e551b88d99cd0b5f6cc97aa99f869b9205f6248066827
   languageName: node
   linkType: hard
 
@@ -16058,6 +16024,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
+    "@backstage-community/plugin-azure-devops": "npm:^0.21.0"
     "@backstage-community/plugin-entity-validation": "npm:^0.13.0"
     "@backstage-community/plugin-shortcuts": "npm:^0.14.0"
     "@backstage-community/plugin-sonarqube": "npm:^0.20.0"
@@ -16099,7 +16066,6 @@ __metadata:
     "@internal/plugin-api-platform": "workspace:^"
     "@internal/plugin-api-platform-common": "workspace:^"
     "@internal/plugin-app-registry": "workspace:^"
-    "@internal/plugin-azure-devops": "workspace:^"
     "@internal/plugin-mca": "workspace:^"
     "@internal/plugin-mca-common": "workspace:^"
     "@internal/plugin-permissions-common": "workspace:^"
@@ -30802,7 +30768,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react-dom@npm:^18.2.0, react-dom@npm:^18.3.1":
+"react-dom@npm:^18.2.0, react-dom@npm:^18.3.1":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -31132,7 +31098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.0.0-beta.0 || ^6.3.0, react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:^6.3.0":
   version: 6.30.1
   resolution: "react-router-dom@npm:6.30.1"
   dependencies:

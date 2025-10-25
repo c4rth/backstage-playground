@@ -7,6 +7,7 @@
     "role": "frontend"
   },
   "dependencies": {
+    "@backstage-community/plugin-azure-devops": "^0.21.0",
     "@backstage-community/plugin-entity-validation": "^0.13.0",
     "@backstage-community/plugin-shortcuts": "^0.14.0",
     "@backstage-community/plugin-sonarqube": "^0.20.0",
@@ -48,7 +49,6 @@
     "@internal/plugin-api-platform": "workspace:^",
     "@internal/plugin-api-platform-common": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
-    "@internal/plugin-azure-devops": "workspace:^",
     "@internal/plugin-mca": "workspace:^",
     "@internal/plugin-mca-common": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",

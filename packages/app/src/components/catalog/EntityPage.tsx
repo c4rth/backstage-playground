@@ -56,7 +56,7 @@ import {
   EntityAzurePipelinesContent,
   isAzurePipelinesAvailable,
   isAzureDevOpsAvailable,
-} from '@internal/plugin-azure-devops';
+} from '@backstage-community/plugin-azure-devops';
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 // Techdocs
