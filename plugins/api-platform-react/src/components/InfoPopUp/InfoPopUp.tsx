@@ -1,55 +1,18 @@
 import { ReactNode, useMemo } from 'react';
-import { Box, makeStyles, Typography } from '@material-ui/core';
 import { RiInformationLine } from '@remixicon/react';
-import { Variant } from '@material-ui/core/styles/createTypography';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
-
-const useStyles = makeStyles(
-    theme => ({
-        container: {
-            display: 'flex',
-            alignItems: 'center',
-        },
-        subtitle: {
-            color: theme.page.fontColor,
-            opacity: 0.8,
-            marginTop: theme.spacing(1),
-            maxWidth: '75ch',
-        },
-        icon: {
-            color: theme.page.fontColor,
-            marginTop: theme.spacing(1),
-            marginLeft: theme.spacing(1),
-            opacity: 0.8,
-            fontSize: '1.2rem',
-            cursor: 'help',
-        },
-    }),
-);
+import { Box, Flex, Text, TextVariants } from '@backstage/ui';
 
 export interface InfoPopUpProps {
     text: string;
     title?: string;
-    variant: Variant;
+    variant?: TextVariants;
     content: ReactNode;
 }
 
 export const InfoPopUp = (props: InfoPopUpProps) => {
 
-    const { text, title, variant, content } = props;
-    const classes = useStyles();
-
-    const typographyProps = useMemo(() => ({
-        className: classes.subtitle,
-        variant,
-        component: 'span' as const,
-    }), [classes.subtitle, variant]);
-
-    const iconProps = useMemo(() => ({
-        className: classes.icon,
-        'aria-label': 'More information',
-        fontSize: 'inherit' as const,
-    }), [classes.icon]);
+    const { text, title, variant = 'body-medium', content } = props;
 
     const popoverProps = useMemo(() => ({
         title,
@@ -57,14 +20,14 @@ export const InfoPopUp = (props: InfoPopUpProps) => {
     }), [title, content]);
 
     return (
-        <Box className={classes.container}>
-            <Typography {...typographyProps}>
-                {text}
-            </Typography>
+        <Flex align='center' mt='2' gap='xs'>
+            <Box as="span">
+                <Text variant={variant} style={{ color: "var(--bui-fg-solid)" }}>{text}</Text>
+            </Box>
             <InfoPopOver {...popoverProps}>
-                <RiInformationLine {...iconProps} />
+                <RiInformationLine style={{ color: "var(--bui-fg-solid)" }} aria-label="More information" />
             </InfoPopOver>
-        </Box>
+        </Flex>
     );
 }
 
@@ -77,8 +40,15 @@ export const InfoPopUpContent = (props: InfoPopUpContentProps) => {
     const { text1, text2 } = props;
     return (
         <Box>
-            <Typography variant="body1">{text1}</Typography>
-            {text2 && <Typography variant="body2"><i>{text2}</i></Typography>}
+            <Text variant="body-large">{text1}</Text>
+            {text2 && (
+                <>
+                    <br />
+                    <Box mt='1'>
+                        <Text variant="body-medium"><i>{text2}</i></Text>
+                    </Box>
+                </>
+            )}
         </Box>
     );
 };

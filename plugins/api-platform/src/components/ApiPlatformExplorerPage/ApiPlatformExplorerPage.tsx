@@ -20,7 +20,6 @@ export const ApiPlatformExplorerPage = () => {
     return (
       <InfoPopUp
         text={`${orgName} API Explorer`}
-        variant="subtitle2"
         content={INFO_POPUP_CONTENT}
       />
     );

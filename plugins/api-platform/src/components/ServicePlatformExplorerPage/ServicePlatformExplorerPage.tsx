@@ -20,7 +20,6 @@ export const ServicePlatformExplorerPage = () => {
     return (
       <InfoPopUp
         text={`${orgName} Service Explorer`}
-        variant="subtitle2"
         content={INFO_POPUP_CONTENT}
       />
     );

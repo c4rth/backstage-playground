@@ -33,10 +33,10 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-components": "^0.18.2",
-    "@backstage/core-plugin-api": "^1.11.1",
-    "@backstage/plugin-catalog-react": "^1.21.2",
+    "@backstage/catalog-model": "^1.7.6",
+    "@backstage/core-components": "^0.18.3",
+    "@backstage/core-plugin-api": "^1.12.0",
+    "@backstage/plugin-catalog-react": "^1.21.3",
     "@remixicon/react": "^4.6.0",
     "@stoplight/spectral-core": "1.20.0",
     "@stoplight/spectral-ruleset-bundler": "1.6.3",
@@ -46,8 +46,8 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.4",
-    "@backstage/dev-utils": "^1.1.16",
+    "@backstage/cli": "^0.34.5",
+    "@backstage/dev-utils": "^1.1.17",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",

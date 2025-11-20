@@ -5,9 +5,16 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { SystemPlatformTable } from '../SystemPlatformTable';
 import { InfoPopUp } from '@internal/plugin-api-platform-react';
-import { useMemo, } from 'react';
+import { memo, useMemo, } from 'react';
 import { InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { getStringForKey } from '../common';
+
+const POPUP_CONTENT = memo(() => (
+    <InfoPopUpContent       
+        text1={getStringForKey("SystemPlatformExplorerPage.text1")}
+        text2={getStringForKey("SystemPlatformExplorerPage.text2")}
+    />
+));
 
 export const SystemPlatformExplorerPage = () => {
   const configApi = useApi(configApiRef);
@@ -20,11 +27,7 @@ export const SystemPlatformExplorerPage = () => {
   const subtitleComponent = useMemo(() => (
     <InfoPopUp
       text={generatedSubtitle}
-      variant="subtitle2"
-      content={<InfoPopUpContent
-        text1={getStringForKey("SystemPlatformExplorerPage.text1")}
-        text2={getStringForKey("SystemPlatformExplorerPage.text2")}
-      />}
+      content={<POPUP_CONTENT />}
     />
   ), [generatedSubtitle]);
 

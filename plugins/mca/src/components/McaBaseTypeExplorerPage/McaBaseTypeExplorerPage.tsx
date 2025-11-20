@@ -29,7 +29,6 @@ export const McaBaseTypeExplorerPage = () => {
     const subtitleComponent = useMemo(() => (
         <InfoPopUp
             text={subtitle}
-            variant="subtitle2"
             content={<POPUP_CONTENT />}
         />
     ), [subtitle]);
