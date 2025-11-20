@@ -2,8 +2,9 @@ import { memo, useMemo } from 'react';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
-import { Tooltip, Chip } from '@material-ui/core';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
+import { Chip } from '@internal/plugin-api-platform-react';
+import { Text, TooltipTrigger, Tooltip, Grid } from '@backstage/ui';
 
 export type ServicePlatformChipProps = {
     index: number;
@@ -35,7 +36,7 @@ const PLATFORM_ICONS = {
 
 const getPlatformIcon = (platform?: string): React.JSX.Element => {
     if (!platform) return PLATFORM_ICONS.cloud;
-    
+
     const hasCloud = platform.includes('cloud');
     const hasOnprem = platform.includes('onprem');
 
@@ -58,13 +59,13 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>(({
         const platformIcon = getPlatformIcon(service?.platform);
         const label = text || service?.imageVersion || '?';
         const chipIconValue = text ? icon : platformIcon;
-        
+
         const tooltip = service ? (
-            <h3>
-                Platform: <b>{service.platform}</b>
-                <br />
-                Version: <b>{service.imageVersion}</b>
-            </h3>
+            <>
+            <Text>Platform: <b>{service.platform}</b></Text>
+            <br/>
+            <Text>Version: <b>{service.imageVersion}</b></Text>
+            </>
         ) : null;
 
         return {
@@ -88,9 +89,12 @@ export const ServicePlatformChip = memo<ServicePlatformChipProps>(({
     );
 
     const content = tooltipContent ? (
-        <Tooltip placement="bottom" arrow title={tooltipContent}>
+        <TooltipTrigger trigger='hover' delay={250}>
             {chip}
-        </Tooltip>
+            <Tooltip placement="bottom">
+                {tooltipContent}
+            </Tooltip>
+        </TooltipTrigger>
     ) : chip;
 
     return (

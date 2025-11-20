@@ -5,8 +5,9 @@ import {
     PasteFromClipboardButton,
     SampleButton,
 } from '../Buttons';
-import { Chip, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { Box, Flex, Grid } from '@backstage/ui';
+import { Chip } from '@internal/plugin-api-platform-react';
 
 type Props = {
     input: string;
@@ -49,7 +50,7 @@ export const DefaultEditor = (props: Props) => {
 
     return (
         <>
-            <Flex mb='4'>
+            <Flex mb='4' align='center' style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                     {modes && modes.length > 0 && (
                         <>
@@ -59,6 +60,7 @@ export const DefaultEditor = (props: Props) => {
                                     label={m}
                                     onClick={() => setMode && setMode(m)}
                                     color={mode === m ? 'primary' : 'default'}
+                                    style={{ marginRight: '1rem'}}
                                 />
                             ))}
                         </>

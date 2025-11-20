@@ -1,6 +1,6 @@
 import { Box } from '@backstage/ui';
-import { Chip } from '@material-ui/core';
 import { OwnershipType } from '@internal/plugin-api-platform-common';
+import { Chip } from '@internal/plugin-api-platform-react';
 import { useCallback, useState } from 'react';
 
 

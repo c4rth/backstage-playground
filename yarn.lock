@@ -6758,6 +6758,7 @@ __metadata:
     "@backstage/theme": "npm:^0.7.0"
     "@backstage/ui": "npm:^0.9.0"
     "@faker-js/faker": "npm:^10.1.0"
+    "@internal/plugin-api-platform-react": "workspace:^"
     "@material-ui/core": "npm:^4.12.2"
     "@remixicon/react": "npm:^4.6.0"
     "@testing-library/dom": "npm:^10.0.0"
