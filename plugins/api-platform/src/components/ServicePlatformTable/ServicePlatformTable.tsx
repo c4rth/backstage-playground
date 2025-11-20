@@ -13,10 +13,10 @@ import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { Box, Flex, Text } from '@backstage/ui';
+import { ListBox, ListBoxItem } from 'react-aria-components';
 
 // TODO-MUI
 import { Query } from '@material-table/core';
-import { Divider, List, ListItem } from '@material-ui/core';
 
 type TableRow = {
     id: number;
@@ -29,13 +29,12 @@ const PAGE_SIZE = 20;
 const STORAGE_OWNERSHIP_KEY = 'servicesTablePageOwner';
 const STORAGE_SEARCH_KEY = 'servicesTablePageSearch';
 
-const LIST_STYLE = { padding: 0, margin: 0 };
 const LIST_ITEM_STYLE = {
     margin: 2,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center' as const,
+    minHeight: '2.5rem',
 };
 const EMPTY_STATE_STYLE = { pointerEvents: 'none' as const };
 
@@ -47,14 +46,13 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
 });
 
 const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
-    <List style={LIST_STYLE}>
+    <ListBox>
         {serviceDefinition.versions?.map((version, idx) => (
             <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
-                <ListItem style={LIST_ITEM_STYLE}>{renderItem(version, idx)}</ListItem>
-                {idx < serviceDefinition.versions.length - 1 && <Divider />}
+                <ListBoxItem style={LIST_ITEM_STYLE}>{renderItem(version, idx)}</ListBoxItem>
             </Fragment>
         ))}
-    </List>
+    </ListBox>
 );
 
 const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
@@ -149,24 +147,24 @@ const getData = async (
         search: query.search,
         orderBy: query.orderBy
             ? {
-                  field: query.orderBy.field,
-                  direction: query.orderDirection,
-              } as ServiceDefinitionsListRequest['orderBy']
+                field: query.orderBy.field,
+                direction: query.orderDirection,
+            } as ServiceDefinitionsListRequest['orderBy']
             : undefined,
         ownership,
     });
 
     return result
         ? {
-              data: result.items.map(toRow),
-              totalCount: result.totalCount,
-              page: Math.floor(result.offset / result.limit),
-          }
+            data: result.items.map(toRow),
+            totalCount: result.totalCount,
+            page: Math.floor(result.offset / result.limit),
+        }
         : {
-              data: [],
-              totalCount: 0,
-              page: 0,
-          };
+            data: [],
+            totalCount: 0,
+            page: 0,
+        };
 };
 
 export const ServicePlatformTable = () => {

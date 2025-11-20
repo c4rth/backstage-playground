@@ -9,17 +9,8 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { MarkdownContent } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
-import { Grid } from '@backstage/ui'
+import { Grid, Tag, TagGroup } from '@backstage/ui'
 
-// TODO-MUI
-import Chip from '@material-ui/core/Chip';
-
-
-/**
- * Props for {@link ComponentAboutContent}.
- *
- * @public
- */
 export interface ComponentAboutContentProps {
   entity: Entity;
 }
@@ -58,7 +49,7 @@ export function ComponentAboutContent(props: ComponentAboutContentProps) {
         <AboutField
           label='description'
         >
-          <MarkdownContent            
+          <MarkdownContent
             content={
               entity?.metadata?.description ||
               'No Description'
@@ -158,9 +149,11 @@ export function ComponentAboutContent(props: ComponentAboutContentProps) {
           label='Tags'
           value='No Tags'
         >
-          {(entity?.metadata?.tags || []).map(tag => (
-            <Chip key={tag} size="small" label={tag} />
-          ))}
+          <TagGroup>
+            {(entity?.metadata?.tags || []).map(tag => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </TagGroup>
         </AboutField>
       </Grid.Item>
 

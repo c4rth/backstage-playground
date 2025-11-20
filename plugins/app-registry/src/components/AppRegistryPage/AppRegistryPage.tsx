@@ -1,7 +1,5 @@
 import {
   ResponseErrorPanel,
-  StatusOK,
-  StatusPending,
   Table,
   TableColumn,
 } from '@backstage/core-components';
@@ -9,12 +7,14 @@ import { ComponentEntity } from "@backstage/catalog-model";
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
-import { Box, IconButton, Typography } from '@material-ui/core';
 import { AppRegistryOperation } from '../../types';
-import { RiMap2Line } from '@remixicon/react';
-import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow } from '@material-ui/core';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { memo, useMemo } from 'react';
+import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
+import { ButtonIcon, Flex, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
+
+// TODO-MUI
+import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow } from '@material-ui/core';
 
 type TableRow = {
   id: number,
@@ -26,10 +26,10 @@ const PdpMappingTable = memo<{ mapping: { valuePath: string; pdpField: string; }
     <MuiTableHead>
       <MuiTableRow>
         <MuiTableCell>
-          <Typography variant="button">Value Path</Typography>
+          <Text>Value Path</Text>
         </MuiTableCell>
         <MuiTableCell>
-          <Typography variant="button">PDP Field</Typography>
+          <Text>PDP Field</Text>
         </MuiTableCell>
       </MuiTableRow>
     </MuiTableHead>
@@ -52,7 +52,7 @@ const columns: TableColumn<TableRow>[] = [
     width: '5%',
     field: 'operation.method',
     render: ({ operation }) => (
-      <Typography variant="body2">{operation.method}</Typography>
+      <Text>{operation.method}</Text>
     ),
   },
   {
@@ -62,37 +62,46 @@ const columns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ operation }) => (
-      <Typography variant="body2">{operation.name}</Typography>
+      <Text>{operation.name}</Text>
     ),
   },
   {
     title: 'ABAC',
     field: 'operation.abac',
     width: '5%',
-    render: ({ operation }) => (operation.abac ? <StatusOK /> : <StatusPending />),
+    render: ({ operation }) => {
+      if (operation.pdpMapping) {
+        return (
+          <InfoPopOver
+            title="PDP Mapping"
+            variant="h6"
+            delayTime={250}
+            content={<PdpMappingTable mapping={operation.pdpMapping} />}>
+            <RiAddCircleFill color='primary' />
+          </InfoPopOver>
+        );
+      }
+      if (operation.abac) {
+        return (
+          <TooltipTrigger delay={250}>
+            <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent'}} icon={<RiCheckboxCircleFill color='primary'/>} />            
+            <Tooltip placement='bottom'>No PDP mapping</Tooltip>
+          </TooltipTrigger>
+        );
+      }
+      return (
+        <TooltipTrigger delay={250}>
+            <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent'}} icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />} />          
+          <Tooltip placement='bottom'>No ABAC</Tooltip>
+        </TooltipTrigger>
+      );
+    }
   },
   {
     title: 'B-Function',
     width: '10%',
     field: 'operation.bFunction',
-  },
-  {
-    title: 'PDP Mapping',
-    width: '10%',
-    field: 'id',
-    render: ({ operation }) =>
-      operation.pdpMapping ? (
-        <InfoPopOver
-          title="PDP Mapping"
-          variant="h6"
-          content={<PdpMappingTable mapping={operation.pdpMapping} />}
-        >
-          <IconButton size="small" aria-label="View PDP mapping">
-            <RiMap2Line />
-          </IconButton>
-        </InfoPopOver>
-      ) : null,
-  },
+  }
 ];
 
 const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => ({
@@ -102,7 +111,7 @@ const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => (
 
 export const AppRegistryPage = () => {
   const { entity } = useEntity<ComponentEntity>();
-const entityData = useMemo(() => {
+  const entityData = useMemo(() => {
     const system = entity.spec.system;
     const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
@@ -117,15 +126,15 @@ const entityData = useMemo(() => {
   }, [entity]);
 
   const { data, loading, error } = useGetOperations(
-    entityData.system, 
-    entityData.appName, 
-    entityData.appVersion, 
+    entityData.system,
+    entityData.appName,
+    entityData.appVersion,
     entityData.environment
   );
 
   const rows = useMemo(() => data?.map(toTableRow) ?? [], [data]);
 
-    const tableOptions = useMemo(() => ({
+  const tableOptions = useMemo(() => ({
     search: true,
     padding: 'dense' as const,
     paging: false,
@@ -134,18 +143,17 @@ const entityData = useMemo(() => {
     thirdSortClick: false,
   }), [loading]);
 
-    const tableTitle = useMemo(() => (
-    <Box display="flex" alignItems="center">
-      <Box mr={1} />
+  const tableTitle = useMemo(() => (
+    <Flex align="center">
       Operations ({rows.length})
-    </Box>
+    </Flex>
   ), [rows.length]);
 
   if (error) {
     return <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />;
   }
 
-    return (
+  return (
     <Table<TableRow>
       isLoading={loading}
       columns={columns}

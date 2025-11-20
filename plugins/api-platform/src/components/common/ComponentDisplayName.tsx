@@ -1,53 +1,39 @@
-import Box from '@material-ui/core/Box';
-import { Theme, makeStyles } from '@material-ui/core/styles';
 import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
 import { RiPuzzleFill, RiShapesFill, RiCpuLine, RiGlobalLine } from '@remixicon/react'
+import { Flex } from '@backstage/ui';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
-
-const useStyles = makeStyles(
-    (theme: Theme) => ({
-        root: {
-            display: 'inline-flex',
-            alignItems: 'center',
-            textDecoration: 'inherit',
-        },
-        icon: {
-            marginRight: theme.spacing(0.5),
-            color: theme.palette.text.secondary,
-            '& svg': {
-                verticalAlign: 'middle',
-            },
-        },
-    }),
-    { name: 'CatalogReactEntityDisplayName' },
-);
 
 export type ComponentDisplayNameProps = {
     text: string;
     type: 'api' | 'system' | 'service' | 'azdo' | 'url';
 };
 
+const ICON_STYLE: React.CSSProperties = {
+  marginRight: '0.25rem',
+  color: 'var(--bui-fg-secondary)',
+  fontSize: 'inherit',
+};
+
 export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps): React.JSX.Element => {
-    const classes = useStyles();
     return (
-        <Box component="span" className={classes.root}>
+        <Flex style={{ alignItems: 'center', textDecoration: 'inheri'}} gap='xs'>
             {type === 'api' && (
-                <RiPuzzleFill className={classes.icon} fontSize="inherit" size='16px'/>
+                <RiPuzzleFill style={ICON_STYLE} fontSize="inherit" size='16px'/>
             )}
             {type === 'system' && (
-                <RiShapesFill className={classes.icon} fontSize="inherit" size='16px'/>
+                <RiShapesFill style={ICON_STYLE} fontSize="inherit" size='16px'/>
             )}
             {type === 'service' && (
-                <RiCpuLine className={classes.icon} fontSize="inherit" size='16px'/>
+                <RiCpuLine style={ICON_STYLE} fontSize="inherit" size='16px'/>
             )}
             {type === 'azdo' && (
-                <AzureDevOpsIcon className={classes.icon} fontSize="inherit" size='16px'/>
+                <AzureDevOpsIcon style={ICON_STYLE} fontSize="inherit" size='16px'/>
             )}
             {type === 'url' && (
-                <RiGlobalLine className={classes.icon} fontSize="inherit" size='16px'/>
+                <RiGlobalLine style={ICON_STYLE} fontSize="inherit" size='16px'/>
             )}
             {text}
-        </Box>
+        </Flex>
     );
 };

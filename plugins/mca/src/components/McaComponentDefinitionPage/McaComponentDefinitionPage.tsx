@@ -9,12 +9,13 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-common';
 import { McaComponentDefinitionCard } from './McaComponentDefinitionCard';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
+import { Grid } from '@backstage/ui';
 
 type McaComponentVersion = {
   label: string;
@@ -131,11 +132,11 @@ export const McaComponentDefinitionPage = () => {
     >
       <Content>
         <Box mb={1}>
-          <Grid container>
-            <Grid item md={6}>
+          <Grid.Root columns='2'>
+            <Grid.Item>
               <Select {...selectProps} />
-            </Grid>
-          </Grid>
+            </Grid.Item>
+          </Grid.Root>
         </Box>
         <Box mb={-3}>
           {mca ? <McaComponentDefinitionCard mca={mca} version={selectedVersion!} /> : <div />}

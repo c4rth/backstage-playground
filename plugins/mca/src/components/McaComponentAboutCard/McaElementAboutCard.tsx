@@ -1,6 +1,7 @@
 import { MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
-import { Card, CardContent, CardHeader, Divider, Grid, makeStyles, Theme, Typography } from "@material-ui/core";
+import { Grid } from "@backstage/ui";
+import { Card, CardContent, CardHeader, Divider, makeStyles, Theme, Typography } from "@material-ui/core";
 import { useMemo, memo } from 'react';
 
 export interface McaElementAboutCardProps {
@@ -85,7 +86,7 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
       <CardHeader title="About" />
       <Divider />
       <CardContent className={classes.gridItemCardContent}>
-        <Grid container>
+        <Grid.Root columns='1'>
           {fieldConfigs.map((config) => (
             <FieldDisplay
               key={config.label}
@@ -99,7 +100,7 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
           <AboutField label="Description" gridSizes={descriptionGridSizes}>
             <MarkdownContent content={fieldValues.description} />
           </AboutField>
-        </Grid>
+        </Grid.Root>
       </CardContent>
     </Card>
   );

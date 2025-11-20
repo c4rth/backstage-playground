@@ -1,4 +1,3 @@
-import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
   EntityConsumedApisCard,
@@ -61,6 +60,7 @@ import {
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 // Techdocs
 import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
+import { Button, Grid, Link } from '@backstage/ui';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -75,11 +75,11 @@ const cicdContent = (
   // You can for example enforce that all components of type 'service' should use GitHubActions
   <EntitySwitch>
 
-   <EntitySwitch.Case if={isAzureDevOpsAvailable}>
-        <EntityAzurePipelinesContent defaultLimit={25} />
+    <EntitySwitch.Case if={isAzureDevOpsAvailable}>
+      <EntityAzurePipelinesContent defaultLimit={25} />
     </EntitySwitch.Case>
-   <EntitySwitch.Case if={isAzurePipelinesAvailable}>
-        <EntityAzurePipelinesContent defaultLimit={25} />
+    <EntitySwitch.Case if={isAzurePipelinesAvailable}>
+      <EntityAzurePipelinesContent defaultLimit={25} />
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>
@@ -89,11 +89,10 @@ const cicdContent = (
         description="You need to add an annotation to your component if you want to enable CI/CD for it. You can read more about annotations in Backstage by clicking the button below."
         action={
           <Button
-            variant="contained"
-            color="primary"
-            href="https://backstage.io/docs/features/software-catalog/well-known-annotations"
-          >
-            Read more
+            variant="primary">
+            <Link target="_blank" rel="noopener noreferrer" href="https://backstage.io/docs/features/software-catalog/well-known-annotations">
+              Read more
+            </Link>
           </Button>
         }
       />
@@ -105,45 +104,49 @@ const entityWarningContent = (
   <>
     <EntitySwitch>
       <EntitySwitch.Case if={isOrphan}>
-        <Grid item xs={12}>
+        <Grid.Root columns='1'>
+          <Grid.Item>
           <EntityOrphanWarning />
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </EntitySwitch.Case>
     </EntitySwitch>
 
     <EntitySwitch>
       <EntitySwitch.Case if={hasRelationWarnings}>
-        <Grid item xs={12}>
+        <Grid.Root columns='1'>
+          <Grid.Item>
           <EntityRelationWarning />
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </EntitySwitch.Case>
     </EntitySwitch>
 
     <EntitySwitch>
       <EntitySwitch.Case if={hasCatalogProcessingErrors}>
-        <Grid item xs={12}>
-          <EntityProcessingErrorsPanel />
-        </Grid>
+        <Grid.Root columns='1'>
+          <Grid.Item>
+            <EntityProcessingErrorsPanel />
+          </Grid.Item>
+        </Grid.Root>
       </EntitySwitch.Case>
     </EntitySwitch>
   </>
 );
 
 const overviewContent = (
-  <Grid container spacing={3} alignItems="stretch">
+  <Grid.Root columns='2'>
     {entityWarningContent}
-    <Grid item md={6}>
+    <Grid.Item>
       <EntityAboutCard variant="gridItem" />
-    </Grid>
-    <Grid item md={6} xs={12}>
+    </Grid.Item>
+    <Grid.Item>
       <EntityCatalogGraphCard variant="gridItem" height={400} />
-    </Grid>
-
-    <Grid item md={8} xs={12}>
+    </Grid.Item>
+    <Grid.Item>
       <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true }} />
-    </Grid>
-  </Grid>
-  
+    </Grid.Item>
+  </Grid.Root>
 );
 
 const serviceEntityPage = (
@@ -157,25 +160,25 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
+      <Grid.Root columns='2'>
+        <Grid.Item>
           <EntityProvidedApisCard />
-        </Grid>
-        <Grid item md={6}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityConsumedApisCard />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
+      <Grid.Root columns='2'>
+        <Grid.Item>
           <EntityDependsOnComponentsCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityDependsOnResourcesCard variant="gridItem" />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/docs" title="Docs">
@@ -199,14 +202,14 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
+      <Grid.Root columns='2'>
+        <Grid.Item>
           <EntityDependsOnComponentsCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityDependsOnResourcesCard variant="gridItem" />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/docs" title="Docs">
@@ -251,31 +254,31 @@ const componentPage = (
 const apiPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
+      <Grid.Root columns='2'>
         {entityWarningContent}
-        <Grid item md={6}>
+        <Grid.Item>
           <EntityAboutCard />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
-        </Grid>
-        <Grid container item md={12}>
-          <Grid item md={6}>
+        </Grid.Item>
+        <Grid.Root columns='2'>
+          <Grid.Item>
             <EntityProvidingComponentsCard />
-          </Grid>
-          <Grid item md={6}>
+          </Grid.Item>
+          <Grid.Item>
             <EntityConsumingComponentsCard />
-          </Grid>
-        </Grid>
-      </Grid>
+          </Grid.Item>
+        </Grid.Root>
+      </Grid.Root>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/definition" title="Definition">
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid.Root columns='1'>
+        <Grid.Item>
           <EntityApiDefinitionCard />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
 
     <EntityLayout.Route if={isApiDocsSpectralLinterAvailable} path="/linter" title="Linter">
@@ -287,34 +290,35 @@ const apiPage = (
 const userPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
+      <Grid.Root columns='2'>
         {entityWarningContent}
-        <Grid item xs={12} md={6}>
+        <Grid.Item>
           <EntityUserProfileCard variant="gridItem" />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityOwnershipCard variant="gridItem" />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
   </EntityLayout>
 );
 
+
 const groupPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
+      <Grid.Root columns='1'>
         {entityWarningContent}
-        <Grid item xs={12} md={6}>
+        <Grid.Item>
           <EntityGroupProfileCard variant="gridItem" />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityOwnershipCard variant="gridItem" />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityMembersListCard />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -322,15 +326,15 @@ const groupPage = (
 const systemPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3} alignItems="stretch">
+      <Grid.Root columns='2'>
         {entityWarningContent}
-        <Grid item md={6}>
+        <Grid.Item>
           <EntityAboutCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
     <EntityLayout.Route path="/components" title="Components">
       <EntityHasComponentsCard variant="gridItem"
@@ -375,18 +379,18 @@ const systemPage = (
 const domainPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3} alignItems="stretch">
+      <Grid.Root columns='2'>
         {entityWarningContent}
-        <Grid item md={6}>
+        <Grid.Item>
           <EntityAboutCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityCatalogGraphCard variant="gridItem" height={400} />
-        </Grid>
-        <Grid item md={6}>
+        </Grid.Item>
+        <Grid.Item>
           <EntityHasSystemsCard variant="gridItem" />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
   </EntityLayout>
 );

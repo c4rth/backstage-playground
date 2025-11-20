@@ -1,6 +1,7 @@
 import { CopyTextButton, MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
-import { Card, CardContent, CardHeader, Divider, Grid, GridSize, makeStyles, Theme, Typography } from "@material-ui/core";
+import { Grid } from "@backstage/ui";
+import { Card, CardContent, CardHeader, Divider, makeStyles, Theme, Typography } from "@material-ui/core";
 import { useMemo, memo } from 'react';
 
 const useStyles = makeStyles(
@@ -39,17 +40,16 @@ const FieldDisplay = memo<{
     label: string;
     value: string | undefined;
     className: string;
-    xs?: boolean | GridSize | undefined;
     showCopyButton?: boolean;
-}>(({ label, value, className, xs = 6, showCopyButton = false }) => (
-    <Grid item xs={xs}>
+}>(({ label, value, className, showCopyButton = false }) => (
+    <Grid.Item>
         <AboutField label={label}>
             <Typography variant='body2' display='inline' className={className}>
                 {value || '-'}
             </Typography>
             {showCopyButton && value && <CopyTextButton text={value} />}
         </AboutField>
-    </Grid>
+    </Grid.Item>
 ));
 
 function getDecodedURI(url: string | undefined): string {
@@ -116,23 +116,22 @@ export const McaOperationAboutCard = memo<McaOperationAboutCardProps>(({ operati
             <CardHeader title="About" />
             <Divider />
             <CardContent className={classes.gridItemCardContent}>
-                <Grid container>
+                <Grid.Root columns='1'>
                     {fieldConfigs.map((config) => (
                         <FieldDisplay
                             key={config.label}
                             label={config.label}
                             value={config.value}
                             className={classes.value}
-                            xs={config.xs as GridSize}
                             showCopyButton={config.showCopyButton}
                         />
                     ))}
-                    <Grid item xs={12}>
+                    <Grid.Item>
                         <AboutField label="Description">
                             <MarkdownContent content={fieldValues.description || ''} />
                         </AboutField>
-                    </Grid>
-                </Grid>
+                    </Grid.Item>
+                </Grid.Root>
             </CardContent>
         </Card>
     );

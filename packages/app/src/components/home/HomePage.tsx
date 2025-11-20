@@ -34,7 +34,11 @@ export const HomePage = () => {
                     <Grid.Root columns='12'>
                         <Grid.Item colSpan='12' style={{ margin: '16px' }}>
                             <HomePageSearchBar
-                                InputProps={{ classes: { root: classes.searchBarInput, notchedOutline: classes.searchBarOutline } }}
+                                InputProps={{ classes: 
+                                    { 
+                                        root: classes.searchBarInput, 
+                                        notchedOutline: classes.searchBarOutline 
+                                    } }}
                                 placeholder="Search"
                             />
                         </Grid.Item>

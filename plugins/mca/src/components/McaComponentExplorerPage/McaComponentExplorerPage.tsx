@@ -5,11 +5,12 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Box, Grid } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { McaComponentTable } from '../McaComponentTable';
 import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
+import { Grid } from '@backstage/ui';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
@@ -78,16 +79,16 @@ export const McaComponentExplorerPage = () => {
     >
       <Content>
         <Box mb={1}>
-          <Grid container>
-            <Grid item md={6}>
+          <Grid.Root columns='2'>
+            <Grid.Item>
               <Select
                 onChange={selected => handleSelectChange(selected.toString())}
                 label="Type"
                 items={componentTypes}
                 selected={selectedType}
               />
-            </Grid>
-          </Grid>
+            </Grid.Item>
+          </Grid.Root>
         </Box>
         <McaComponentTable type={selectedType} />
       </Content>
