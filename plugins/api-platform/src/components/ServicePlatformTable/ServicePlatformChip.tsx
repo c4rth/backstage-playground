@@ -4,7 +4,7 @@ import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { Text, TooltipTrigger, Tooltip, Grid } from '@backstage/ui';
+import { Text, TooltipTrigger, Tooltip } from '@backstage/ui';
 
 export type ServicePlatformChipProps = {
     index: number;

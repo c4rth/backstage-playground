@@ -1,5 +1,5 @@
 import { InfoCard, Table, TableColumn } from '@backstage/core-components';
-import { Box, Typography } from '@material-ui/core';
+import { Flex, Box, Text } from '@backstage/ui';
 import { useMemo, memo } from 'react';
 
 export interface McaElementMethodsCardProps {
@@ -19,7 +19,7 @@ const columns: TableColumn<MethodRow>[] = [
         defaultSort: 'asc',
         highlight: true,
         render: ({ name }) => (
-            <Typography variant="body2">{name}</Typography>
+            <Text variant='body-medium'>{name}</Text>
         ),
     },
 ];
@@ -63,19 +63,18 @@ export const McaElementMethodsCard = memo<McaElementMethodsCardProps>(({ element
     }), []);
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align="center">
             Implemented Methods ({methods.length})
-        </Box>
+        </Flex>
     ), [methods.length]);
 
     if (methods.length === 0) {
         return (
             <InfoCard title="Implemented Methods">
-                <Box p={2}>
-                    <Typography variant="body2" color="textSecondary">
+                <Box p='2'>
+                    <Text variant='body-medium' color="secondary">
                         No implemented methods found for this element.
-                    </Typography>
+                    </Text>
                 </Box>
             </InfoCard>
         );

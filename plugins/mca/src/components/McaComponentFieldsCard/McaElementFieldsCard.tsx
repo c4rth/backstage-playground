@@ -1,5 +1,5 @@
 import { Table, TableColumn, Link, StatusOK, StatusAborted } from "@backstage/core-components";
-import { Box } from "@material-ui/core";
+import { Flex } from "@backstage/ui";
 import { memo, useMemo } from "react";
 
 export interface McaElementFieldsCardProps {
@@ -94,10 +94,9 @@ export const McaElementFieldsCard = memo<McaElementFieldsCardProps>(({ element }
     }), []);
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align="center">
             Fields ({rows.length})
-        </Box>
+        </Flex>
     ), [rows.length]);
 
     return (

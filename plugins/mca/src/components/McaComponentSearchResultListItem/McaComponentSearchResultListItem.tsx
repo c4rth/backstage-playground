@@ -3,18 +3,14 @@ import {
   IndexableDocument,
   ResultHighlight,
 } from '@backstage/plugin-search-common';
-import { Box, Chip, ListItemIcon, ListItemText, makeStyles, Typography } from '@material-ui/core';
+import { ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Link } from '@backstage/core-components';
+import { Box, Text, Flex } from '@backstage/ui';
+import { Chip } from '@internal/plugin-api-platform-react';
 
 const useStyles = makeStyles(
   {
-    item: {
-      display: 'flex',
-    },
-    flexContainer: {
-      flexWrap: 'wrap',
-    },
     itemText: {
       width: '100%',
       wordBreak: 'break-all',
@@ -44,13 +40,13 @@ export function McaComponentSearchResultListItem(
   if (!result) return null;
 
   return (
-    <div className={classes.item}>
+    <Flex>
       {props.icon && (
         <ListItemIcon>
           {typeof props.icon === 'function' ? props.icon(result) : props.icon}
         </ListItemIcon>
       )}
-      <div className={classes.flexContainer}>
+      <Flex style={{ flexWrap: 'wrap'}}>
         <ListItemText
           className={classes.itemText}
           primaryTypographyProps={{ variant: 'h6' }}
@@ -68,16 +64,15 @@ export function McaComponentSearchResultListItem(
             </Link>
           }
           secondary={
-            <Typography
-              component="span"
+            <Text
               style={{
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: props.lineClamp,
                 overflow: 'hidden',
               }}
-              color="textSecondary"
-              variant="body2"
+              color="secondary"
+              variant='body-medium'
             >
               {highlight?.fields.text ? (
                 <HighlightedSearchResultText
@@ -88,15 +83,15 @@ export function McaComponentSearchResultListItem(
               ) : (
                 result.text
               )}
-            </Typography>
+            </Text>
           }
         />
         <Box>
-          {result.applicationCode && <Chip label={`Application Code: ${result.applicationCode}`} size="small" />}
-          {result.prdVersion && <Chip label={`PRD: ${result.prdVersion}`} size="small" />}
+          {result.applicationCode && <Chip label={`Application Code: ${result.applicationCode}`} size="small" style={{ marginRight: '0.5rem' }} />}
+          {result.prdVersion && <Chip label={`PRD: ${result.prdVersion}`} size="small" style={{ marginRight: '0.5rem' }} />}
           {result.otherVersions && result.otherVersions.length > 0 && <Chip label={`Other versions: ${result.otherVersions}`} size="small" />}
         </Box>
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 };

@@ -193,7 +193,7 @@ export const ApiPlatformAllRelationsCard = memo<ApiPlatformAllRelationsCardProps
     const rows = useMemo(() => allServices.map(toRow), [allServices]);
 
     const tableTitle = useMemo(() => (
-        <Flex align="center" mr='1'>
+        <Flex align="center">
             {title} ({rows.length})
         </Flex>
     ), [title, rows.length]);

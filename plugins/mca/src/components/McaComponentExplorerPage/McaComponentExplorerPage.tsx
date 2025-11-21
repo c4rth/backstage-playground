@@ -5,12 +5,11 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Box } from '@material-ui/core';
 import { McaComponentTable } from '../McaComponentTable';
 import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Grid } from '@backstage/ui';
+import { Box, Grid } from '@backstage/ui';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
@@ -78,7 +77,7 @@ export const McaComponentExplorerPage = () => {
       pageTitleOverride="MCA Components"
     >
       <Content>
-        <Box mb={1}>
+        <Box mb='1'>
           <Grid.Root columns='2'>
             <Grid.Item>
               <Select

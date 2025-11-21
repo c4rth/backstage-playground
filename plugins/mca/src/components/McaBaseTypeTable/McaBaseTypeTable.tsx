@@ -5,7 +5,6 @@ import {
   Link,
   Progress,
 } from '@backstage/core-components';
-import { Box } from '@material-ui/core';
 import {
   McaBaseType,
   McaBaseTypeListOptions,
@@ -15,6 +14,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { Query } from '@material-table/core';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState, useMemo, useCallback, memo } from 'react';
+import { Flex } from '@backstage/ui';
 
 type TableRow = {
   id: number,
@@ -23,23 +23,23 @@ type TableRow = {
 }
 
 const columns: TableColumn<TableRow>[] = [
-    {
-        title: 'Name',
-        width: '50%',
-        field: 'baseType',
-        defaultSort: 'asc',
-        highlight: true,
-        render: (row) => (
-            <Link to={`/mca/basetypes/${row.baseType}`}>
-                {row.baseType}
-            </Link>
-        ),
-    },
-    {
-        title: 'Package',
-        width: '50%',
-        field: 'packageName',
-    },
+  {
+    title: 'Name',
+    width: '50%',
+    field: 'baseType',
+    defaultSort: 'asc',
+    highlight: true,
+    render: (row) => (
+      <Link to={`/mca/basetypes/${row.baseType}`}>
+        {row.baseType}
+      </Link>
+    ),
+  },
+  {
+    title: 'Package',
+    width: '50%',
+    field: 'packageName',
+  },
 ];
 
 const PAGE_SIZE = 20;
@@ -128,10 +128,9 @@ export const McaBaseTypeTable = memo(() => {
     searchText: initialSearch,
   }), [loadingCount, initialSearch]);
   const tableTitle = useMemo(() => (
-    <Box display="flex" alignItems="center">
-      <Box mr={1} />
+    <Flex align="center">
       BaseTypes ({countRows})
-    </Box>
+    </Flex>
   ), [countRows]);
 
 

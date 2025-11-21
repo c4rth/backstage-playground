@@ -6532,6 +6532,7 @@ __metadata:
     fast-xml-parser: "npm:^5.3.0"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-aria-components: "npm:^1.13.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"
     react-use: "npm:^17.2.4"

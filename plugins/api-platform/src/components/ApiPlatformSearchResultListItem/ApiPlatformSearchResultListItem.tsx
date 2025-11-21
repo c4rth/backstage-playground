@@ -6,9 +6,10 @@ import {
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Link } from '@backstage/core-components';
 import { Box, Text } from '@backstage/ui';
+import { Chip } from '@internal/plugin-api-platform-react';
 
 // TODO-MUI
-import { Chip, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
+import { ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(
   {
@@ -38,9 +39,9 @@ export interface ApiPlatformSearchResultListItemProps {
 function renderChips(result: any) {
   return (
     <Box>
-      {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" />}
-      {result.type && <Chip label={`Type: ${result.type}`} size="small" />}
-      {result.lifecycle && <Chip label={`lifecycle: ${result.lifecycle}`} size="small" />}
+      {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" style={{ marginRight: '0.5rem' }} />}
+      {result.type && <Chip label={`Type: ${result.type}`} size="small" style={{ marginRight: '0.5rem' }} />}
+      {result.lifecycle && <Chip label={`lifecycle: ${result.lifecycle}`} size="small" style={{ marginRight: '0.5rem' }} />}
       {result.owner && <Chip label={`Owner: ${result.owner}`} size="small" />}
     </Box>
   );

@@ -1,7 +1,8 @@
 import { MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
-import { Grid } from "@backstage/ui";
-import { Card, CardContent, CardHeader, Divider, makeStyles, Theme, Typography } from "@material-ui/core";
+import { Card, CardBody, CardHeader, Grid, Text } from "@backstage/ui";
+import { Divider } from "@internal/plugin-api-platform-react";
+import { makeStyles, Theme } from "@material-ui/core";
 import { useMemo, memo } from 'react';
 
 export interface McaElementAboutCardProps {
@@ -46,10 +47,10 @@ const FieldDisplay = memo<{
   className: string;
   gridSizes?: { xs?: number; sm?: number; lg?: number };
 }>(({ label, value, className, gridSizes = { xs: 12, sm: 6, lg: 6 } }) => (
-  <AboutField label={label} gridSizes={gridSizes}>
-    <Typography variant="body2" display="inline" className={className}>
+  <AboutField label={label} gridSizes={gridSizes}>    
+    <Text variant="body-medium" className={className} style={{ display: 'inline'}}>
       {value || '-'}
-    </Typography>
+    </Text>
   </AboutField>
 ));
 
@@ -83,9 +84,9 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
 
   return (
     <Card className={classes.gridItemCard}>
-      <CardHeader title="About" />
+      <CardHeader style={{ margin: '0.5rem' }}><Text variant='title-small'><b>About</b></Text></CardHeader>
       <Divider />
-      <CardContent className={classes.gridItemCardContent}>
+      <CardBody className={classes.gridItemCardContent} style={{ margin: '0.5rem' }}>
         <Grid.Root columns='1'>
           {fieldConfigs.map((config) => (
             <FieldDisplay
@@ -96,12 +97,11 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
               gridSizes={config.gridSizes}
             />
           ))}
-          <Divider />
           <AboutField label="Description" gridSizes={descriptionGridSizes}>
             <MarkdownContent content={fieldValues.description} />
           </AboutField>
         </Grid.Root>
-      </CardContent>
+      </CardBody>
     </Card>
   );
 }

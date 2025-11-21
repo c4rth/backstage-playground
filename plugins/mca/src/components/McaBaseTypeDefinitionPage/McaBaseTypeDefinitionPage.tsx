@@ -59,10 +59,8 @@ export const McaBaseTypeDefinitionPage = () => {
       };
     }
 
-    // TODO 
-    // const packageUrl = baseType.packageName?.replace(/\./g, '/') || '';
-    // const constructedUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
-    const constructedUrl = `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`; 
+    const packageUrl = baseType.packageName?.replace(/\./g, '/') || '';
+    const constructedUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
 
     return {
       constructedUrl,

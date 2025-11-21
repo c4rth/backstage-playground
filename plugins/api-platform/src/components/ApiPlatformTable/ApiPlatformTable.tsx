@@ -18,7 +18,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
-import { Flex } from '@backstage/ui';
+import { Box, Flex } from '@backstage/ui';
 
 type TableRow = {
     id: number;
@@ -136,7 +136,9 @@ export const ApiPlatformTable = () => {
     const tableTitle = useMemo(
         () => (
             <Flex align="center">
+                <Box mr="1" />
                 {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
+                <Box ml="2" />
                 <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
             </Flex>
         ),

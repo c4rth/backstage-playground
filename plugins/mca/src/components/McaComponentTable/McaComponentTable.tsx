@@ -5,7 +5,6 @@ import {
     Link,
     Progress,
 } from '@backstage/core-components';
-import { Box } from '@material-ui/core';
 import {
     McaComponent,
     McaComponentListOptions,
@@ -17,6 +16,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { Query } from '@material-table/core';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { Flex } from '@backstage/ui';
 
 type TableRow = {
     id: number,
@@ -194,10 +194,9 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
     }), [loadingVersions, loadingCount, initialSearch]);
 
     const tableTitle = useMemo(() => (
-        <Box display="flex" alignItems="center">
-            <Box mr={1} />
+        <Flex align="center">
             {getTitle(selectedType)} ({countRows})
-        </Box>
+        </Flex>
     ), [selectedType, countRows]);
 
     const dataFetcher = useCallback(async (query: Query<TableRow>) => {

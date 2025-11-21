@@ -83,7 +83,6 @@ export const SystemPlatformRelationCard = memo<SystemPlatformRelationCardProps>(
 
     const tableTitle = useMemo(() => (
         <Flex align='center'>
-            <Box mr='1' />
             {computedValues.title} ({rows.length})
         </Flex>
     ), [computedValues.title, rows.length]);

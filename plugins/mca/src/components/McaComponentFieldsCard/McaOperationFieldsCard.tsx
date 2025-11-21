@@ -1,5 +1,5 @@
 import { Table, TableColumn, Link, StatusOK, StatusAborted } from "@backstage/core-components";
-import { Box } from "@material-ui/core";
+import { Flex } from "@backstage/ui";
 import { memo, useMemo } from "react";
 
 export interface McaOperationFieldsCardProps {
@@ -20,13 +20,13 @@ type TableRow = {
 const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
   const content = useMemo(() => {
     const { className, elementType } = row;
-    
+
     if (!className) return <div>{className}</div>;
-    
+
     if (className.startsWith("dexia.gemk.operationlayer.client.")) {
       const classShort = className.split(".").pop();
       const element = elementType?.split(".").pop();
-      
+
       return (
         <div>
           {classShort} of {element && (
@@ -37,7 +37,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
         </div>
       );
     }
-    
+
     if (className.startsWith("dexia.opmk.operation")) {
       const element = className.split(".").pop();
       return (
@@ -46,7 +46,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
         </Link>
       );
     }
-    
+
     if (className.startsWith("dexia.opmk.basetypes")) {
       const element = className.split(".").pop();
       return (
@@ -55,10 +55,10 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
         </Link>
       );
     }
-    
+
     return <div>{className}</div>;
   }, [row]);
-  
+
   return content;
 });
 
@@ -169,9 +169,9 @@ function toOutputTableRows(fields: any): TableRow[] {
   ];
 }
 
-export const McaOperationFieldsCard = memo<McaOperationFieldsCardProps>(({ 
-  operation, 
-  fieldType 
+export const McaOperationFieldsCard = memo<McaOperationFieldsCardProps>(({
+  operation,
+  fieldType
 }) => {
   const fieldRows = useMemo(() => {
     if (fieldType === "input") {
@@ -180,8 +180,8 @@ export const McaOperationFieldsCard = memo<McaOperationFieldsCardProps>(({
     return toOutputTableRows(operation?.outputFields?.field);
   }, [operation, fieldType]);
 
-  const columns = useMemo(() => 
-    fieldType === "input" ? inputColumns : outputColumns, 
+  const columns = useMemo(() =>
+    fieldType === "input" ? inputColumns : outputColumns,
     [fieldType]
   );
 
@@ -195,10 +195,9 @@ export const McaOperationFieldsCard = memo<McaOperationFieldsCardProps>(({
   }), []);
 
   const tableTitle = useMemo(() => (
-    <Box display="flex" alignItems="center">
-      <Box mr={1} />
+    <Flex align='center'>
       {fieldType === "input" ? "Input Fields" : "Output Fields"} ({fieldRows.length})
-    </Box>
+    </Flex>
   ), [fieldType, fieldRows.length]);
 
   return (

@@ -124,7 +124,7 @@ export const ApiPlatformRelationCard = memo<ApiPlatformRelationCardProps>(({ dep
     const { value: entities, loading, error } = useAsync(fetchAsync, [fetchAsync]);
     const rows = useMemo(() => entities?.map(toRow) ?? [], [entities]);
     const tableTitle = useMemo(() => (
-        <Flex align="center" mr='1'>
+        <Flex align="center">
             {title} ({rows.length})
         </Flex>
     ), [title, rows.length]);

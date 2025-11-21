@@ -1,8 +1,9 @@
 import { CopyTextButton, MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
-import { Grid } from "@backstage/ui";
-import { Card, CardContent, CardHeader, Divider, makeStyles, Theme, Typography } from "@material-ui/core";
+import { Card, CardBody, CardHeader, Grid, Text } from "@backstage/ui";
+import { makeStyles, Theme } from "@material-ui/core";
 import { useMemo, memo } from 'react';
+import { Divider } from "@internal/plugin-api-platform-react";
 
 const useStyles = makeStyles(
     (theme: Theme) => ({
@@ -44,9 +45,9 @@ const FieldDisplay = memo<{
 }>(({ label, value, className, showCopyButton = false }) => (
     <Grid.Item>
         <AboutField label={label}>
-            <Typography variant='body2' display='inline' className={className}>
+            <Text variant="body-medium" className={className} style={{ display: 'inline' }}>
                 {value || '-'}
-            </Typography>
+            </Text>
             {showCopyButton && value && <CopyTextButton text={value} />}
         </AboutField>
     </Grid.Item>
@@ -90,32 +91,32 @@ export const McaOperationAboutCard = memo<McaOperationAboutCardProps>(({ operati
         { label: "Flow Controller", value: fieldValues.flowControllerName, xs: 6 },
         { label: "BS", value: fieldValues.bsName, xs: 6 },
         { label: "B-Function", value: fieldValues.bfunction, xs: 12 },
-        { 
-            label: "FIC", 
-            value: fieldValues.ficLocation, 
-            xs: 12, 
-            showCopyButton: Boolean(operationAnalyze?.ficLocation) 
+        {
+            label: "FIC",
+            value: fieldValues.ficLocation,
+            xs: 12,
+            showCopyButton: Boolean(operationAnalyze?.ficLocation)
         },
-        { 
-            label: "TIC", 
-            value: fieldValues.ticLocation, 
-            xs: 12, 
-            showCopyButton: Boolean(operationAnalyze?.ticLocation) 
+        {
+            label: "TIC",
+            value: fieldValues.ticLocation,
+            xs: 12,
+            showCopyButton: Boolean(operationAnalyze?.ticLocation)
         },
-        { 
-            label: "CIC", 
-            value: fieldValues.cicLocation, 
-            xs: 12, 
-            showCopyButton: Boolean(operationAnalyze?.cicLocation) 
+        {
+            label: "CIC",
+            value: fieldValues.cicLocation,
+            xs: 12,
+            showCopyButton: Boolean(operationAnalyze?.cicLocation)
         },
         { label: "Caching", value: fieldValues.useCache, xs: 12 },
     ], [fieldValues, operationAnalyze]);
 
     return (
         <Card className={classes.gridItemCard}>
-            <CardHeader title="About" />
+            <CardHeader style={{ margin: '0.5rem' }}><Text variant='title-small'><b>About</b></Text></CardHeader>
             <Divider />
-            <CardContent className={classes.gridItemCardContent}>
+            <CardBody className={classes.gridItemCardContent} style={{ margin: '0.5rem' }}>
                 <Grid.Root columns='1'>
                     {fieldConfigs.map((config) => (
                         <FieldDisplay
@@ -132,7 +133,7 @@ export const McaOperationAboutCard = memo<McaOperationAboutCardProps>(({ operati
                         </AboutField>
                     </Grid.Item>
                 </Grid.Root>
-            </CardContent>
+            </CardBody>
         </Card>
     );
 });
