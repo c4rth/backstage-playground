@@ -27,7 +27,6 @@ export function ComponentHeaderLabels(props: EntityLabelsProps) {
             {system && (
                 <HeaderLabel
                     label='Owner'
-                    contentTypograpyRootComponent="p"
                     value={
                         <Link to={`/api-platform/system/${system}`}>
                             <div className={classes.label}>

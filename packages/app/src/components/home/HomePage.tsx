@@ -3,27 +3,11 @@ import { HomePageRecentlyVisited, HomePageStarredEntities, HomePageTopVisited, W
 import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { ToolkitCard } from '@internal/plugin-toolkit';
-import { makeStyles } from '@material-ui/core';
 import { Box, Grid } from '@backstage/ui';
-
-const useStyles = makeStyles(theme => ({
-    searchBarInput: {
-        maxWidth: '60vw',
-        margin: 'auto',
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: '50px',
-        boxShadow: theme.shadows[1],
-    },
-    searchBarOutline: {
-        borderStyle: 'none'
-    },
-}));
+import styles from './HomePage.module.css';
 
 
 export const HomePage = () => {
-
-    const classes = useStyles();
-
     return (
         <SearchContextProvider>
             <Page themeId="home">
@@ -36,8 +20,8 @@ export const HomePage = () => {
                             <HomePageSearchBar
                                 InputProps={{ classes: 
                                     { 
-                                        root: classes.searchBarInput, 
-                                        notchedOutline: classes.searchBarOutline 
+                                        root: styles.searchBarInput, 
+                                        notchedOutline: styles.searchBarOutline 
                                     } }}
                                 placeholder="Search"
                             />

@@ -2,44 +2,12 @@ import { MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
 import { Card, CardBody, CardHeader, Grid, Text } from "@backstage/ui";
 import { Divider } from "@internal/plugin-api-platform-react";
-import { makeStyles, Theme } from "@material-ui/core";
 import { useMemo, memo } from 'react';
+import styles from './McaElementAboutCard.module.css';
 
 export interface McaElementAboutCardProps {
   element: any;
 }
-
-const useStyles = makeStyles(
-  (theme: Theme) => ({
-    gridItemCard: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: 'calc(100% - 10px)', // for pages without content header
-      marginBottom: '10px',
-    },
-    infoCardHeader: {
-      padding: '16px',
-    },
-    gridItemCardContent: {
-      flex: 1,
-    },
-    value: {
-      fontWeight: 'bold',
-      overflow: 'hidden',
-      lineHeight: '24px',
-      wordBreak: 'break-word',
-    },
-    label: {
-      color: theme.palette.text.secondary,
-      textTransform: 'uppercase',
-      fontSize: '10px',
-      fontWeight: 'bold',
-      letterSpacing: 0.5,
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-    },
-  }),
-);
 
 const FieldDisplay = memo<{
   label: string;
@@ -56,7 +24,6 @@ const FieldDisplay = memo<{
 
 
 export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
-  const classes = useStyles();
   const fieldValues = useMemo(() => ({
     package: element?.package,
     superClass: element?.superClass,
@@ -83,17 +50,17 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
   }), []);
 
   return (
-    <Card className={classes.gridItemCard}>
+    <Card className={styles.gridItemCard}>
       <CardHeader style={{ margin: '0.5rem' }}><Text variant='title-small'><b>About</b></Text></CardHeader>
       <Divider />
-      <CardBody className={classes.gridItemCardContent} style={{ margin: '0.5rem' }}>
+      <CardBody className={styles.gridItemCardContent} style={{ margin: '0.5rem' }}>
         <Grid.Root columns='1'>
           {fieldConfigs.map((config) => (
             <FieldDisplay
               key={config.label}
               label={config.label}
               value={config.value}
-              className={classes.value}
+              className={styles.value}
               gridSizes={config.gridSizes}
             />
           ))}

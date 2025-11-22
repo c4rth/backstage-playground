@@ -30,25 +30,10 @@ import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
-
-// TODO-MUI
-import { makeStyles } from '@material-ui/core';
-
-
-const useStyles = makeStyles(
-    () => ({
-        gridItemCard: {
-            display: 'flex',
-            flexDirection: 'column',
-            height: 'calc(100% - 10px)', // for pages without content header
-            marginBottom: '10px',
-        },
-    }),
-);
+import styles from './ServicePlatformDefinitionCard.module.css';
 
 export const ServicePlatformDefinitionCard = memo(() => {
     const { entity } = useEntity<ComponentEntity>();
-    const classes = useStyles();
     const configApi = useApi(configApiRef);
 
     const entityData = useMemo(() => {
@@ -152,7 +137,7 @@ export const ServicePlatformDefinitionCard = memo(() => {
                         <InfoCard
                             title="About"
                             divider
-                            className={classes.gridItemCard}
+                            className={styles.gridItemCard}
                             action={docsButton}>
                             {aboutFields}
                             <Box mt='6' />

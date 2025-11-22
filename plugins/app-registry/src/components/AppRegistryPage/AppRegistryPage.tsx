@@ -1,7 +1,6 @@
 import {
+  Progress,
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
 import { ComponentEntity } from "@backstage/catalog-model";
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -11,10 +10,9 @@ import { AppRegistryOperation } from '../../types';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { memo, useMemo } from 'react';
 import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
-import { ButtonIcon, Flex, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
-
-// TODO-MUI
-import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow } from '@material-ui/core';
+import { ButtonIcon, Column, Table, TableHeader, TableBody, Row, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid } from '@backstage/ui';
+import { ResizableTableContainer, Cell as RACell } from 'react-aria-components';
+import { useAsyncList } from 'react-stately';
 
 type TableRow = {
   id: number,
@@ -22,87 +20,45 @@ type TableRow = {
 }
 
 const PdpMappingTable = memo<{ mapping: { valuePath: string; pdpField: string; }[] }>(({ mapping }) => (
-  <MuiTable size="small">
-    <MuiTableHead>
-      <MuiTableRow>
-        <MuiTableCell>
-          <Text>Value Path</Text>
-        </MuiTableCell>
-        <MuiTableCell>
-          <Text>PDP Field</Text>
-        </MuiTableCell>
-      </MuiTableRow>
-    </MuiTableHead>
-    <MuiTableBody>
-      {mapping.map((row, index) => (
-        <MuiTableRow key={`${row.valuePath}-${row.pdpField}-${index}`}>
-          <MuiTableCell component="th" scope="row">
-            {row.valuePath}
-          </MuiTableCell>
-          <MuiTableCell>{row.pdpField}</MuiTableCell>
-        </MuiTableRow>
-      ))}
-    </MuiTableBody>
-  </MuiTable>
+  <Grid.Root columns='2' mt="var(--bui-space-3)">
+    <Grid.Item><b>Value Path</b></Grid.Item>
+    <Grid.Item><b>PDP Field</b></Grid.Item>
+    {mapping.map((row) => (
+      <>
+        <Grid.Item>{row.valuePath}</Grid.Item>
+        <Grid.Item>{row.pdpField}</Grid.Item>
+      </>
+    ))}
+  </Grid.Root>
 ));
 
-const columns: TableColumn<TableRow>[] = [
-  {
-    title: 'Method',
-    width: '5%',
-    field: 'operation.method',
-    render: ({ operation }) => (
-      <Text>{operation.method}</Text>
-    ),
-  },
-  {
-    title: 'Name',
-    width: '70%',
-    field: 'operation.name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ operation }) => (
-      <Text>{operation.name}</Text>
-    ),
-  },
-  {
-    title: 'ABAC',
-    field: 'operation.abac',
-    width: '5%',
-    render: ({ operation }) => {
-      if (operation.pdpMapping) {
-        return (
-          <InfoPopOver
-            title="PDP Mapping"
-            variant="h6"
-            delayTime={250}
-            content={<PdpMappingTable mapping={operation.pdpMapping} />}>
-            <RiAddCircleFill color='primary' />
-          </InfoPopOver>
-        );
-      }
-      if (operation.abac) {
-        return (
-          <TooltipTrigger delay={250}>
-            <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent'}} icon={<RiCheckboxCircleFill color='primary'/>} />            
-            <Tooltip placement='bottom'>No PDP mapping</Tooltip>
-          </TooltipTrigger>
-        );
-      }
-      return (
-        <TooltipTrigger delay={250}>
-            <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent'}} icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />} />          
-          <Tooltip placement='bottom'>No ABAC</Tooltip>
-        </TooltipTrigger>
-      );
-    }
-  },
-  {
-    title: 'B-Function',
-    width: '10%',
-    field: 'operation.bFunction',
+const renderAbacCell = (operation: AppRegistryOperation) => {
+  if (operation.pdpMapping) {
+    return (
+      <InfoPopOver
+        title="PDP Mapping"
+        variant="h6"
+        delayTime={250}
+        content={<PdpMappingTable mapping={operation.pdpMapping} />}>
+        <RiAddCircleFill color='primary' />
+      </InfoPopOver>
+    );
   }
-];
+  if (operation.abac) {
+    return (
+      <TooltipTrigger delay={250}>
+        <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiCheckboxCircleFill color='primary' />} />
+        <Tooltip placement='bottom'>No PDP mapping</Tooltip>
+      </TooltipTrigger>
+    );
+  }
+  return (
+    <TooltipTrigger delay={250}>
+      <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />} />
+      <Tooltip placement='bottom'>No ABAC</Tooltip>
+    </TooltipTrigger>
+  );
+};
 
 const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => ({
   id: idx,
@@ -125,41 +81,76 @@ export const AppRegistryPage = () => {
     };
   }, [entity]);
 
-  const { data, loading, error } = useGetOperations(
-    entityData.system,
-    entityData.appName,
-    entityData.appVersion,
-    entityData.environment
-  );
 
-  const rows = useMemo(() => data?.map(toTableRow) ?? [], [data]);
+  const getOperations = useGetOperations();
 
-  const tableOptions = useMemo(() => ({
-    search: true,
-    padding: 'dense' as const,
-    paging: false,
-    showEmptyDataSourceMessage: !loading,
-    draggable: false,
-    thirdSortClick: false,
-  }), [loading]);
+  const list = useAsyncList<TableRow>({
+    async load({ }) {
+      const data = await getOperations(
+        entityData.system,
+        entityData.appName,
+        entityData.appVersion,
+        entityData.environment,
+      );
+      const rows = data?.map(toTableRow) ?? [];
+      return { items: rows };
+    },
+    async sort({ items, sortDescriptor }) {
+      return {
+        items: items.sort((a, b) => {
+          const desc = sortDescriptor.direction === 'descending' ? -1 : 1;
+          switch (sortDescriptor.column) {
+            case 'method':
+              return desc * a.operation.method.localeCompare(b.operation.method);
+            case 'name':
+              return desc * a.operation.name.localeCompare(b.operation.name);
+            case 'bFunction':
+              return desc * ((a.operation.bFunction ?? '').localeCompare(b.operation.bFunction ?? ''));
+            default:
+              return 0;
+          }
+        }),
+      };
+    }
+  });
 
-  const tableTitle = useMemo(() => (
-    <Flex align="center">
-      Operations ({rows.length})
-    </Flex>
-  ), [rows.length]);
-
-  if (error) {
-    return <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />;
+  if (list.error) {
+    return <ResponseErrorPanel title="Failed to call AppRegistry" error={list.error} />;
+  }
+  if (list.isLoading) {
+    return <Progress />;
   }
 
   return (
-    <Table<TableRow>
-      isLoading={loading}
-      columns={columns}
-      options={tableOptions}
-      title={tableTitle}
-      data={rows}
-    />
+    <Card>
+      <CardHeader>
+        <Text variant='title-small' weight='bold'>
+          Operations
+        </Text>
+      </CardHeader>
+      <CardBody>
+        <ResizableTableContainer>
+          <Table sortDescriptor={list.sortDescriptor} onSortChange={list.sort} >
+            <TableHeader>
+              <Column id='method' isRowHeader width='10%' allowsSorting>Method</Column>
+              <Column id='name' width='70%' allowsSorting>Name</Column>
+              <Column id='abac' width='10%'>ABAC</Column>
+              <Column id='bFunction' width='10%' allowsSorting>B-Function</Column>
+            </TableHeader>
+            <TableBody items={list.items}>
+              {(item) => (
+                <Row id={item.id} style={{ backgroundColor: item.id % 2 === 0 ? '#F8F8F8' : 'white' }}>
+                  <Cell title={item.operation.method} />
+                  <RACell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</RACell>
+                  <RACell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</RACell>
+                  <Cell title={item.operation.bFunction ?? '-'} />
+                </Row>
+              )}
+            </TableBody>
+          </Table>
+        </ResizableTableContainer>
+      </CardBody>
+    </Card>
   );
+
 }

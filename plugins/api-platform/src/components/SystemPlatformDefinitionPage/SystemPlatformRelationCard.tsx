@@ -1,5 +1,5 @@
 import { Link, Table, TableColumn } from "@backstage/core-components";
-import { Box, Flex } from "@backstage/ui";
+import { Flex } from "@backstage/ui";
 import { memo, useMemo } from 'react';
 import { ComponentDisplayName } from "../common";
 

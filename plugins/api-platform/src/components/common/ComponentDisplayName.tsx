@@ -17,21 +17,21 @@ const ICON_STYLE: React.CSSProperties = {
 
 export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps): React.JSX.Element => {
     return (
-        <Flex style={{ alignItems: 'center', textDecoration: 'inheri'}} gap='xs'>
+        <Flex gap='xs' style={{ alignItems: 'center', textDecoration: 'inherit', color: 'inherit' }}>
             {type === 'api' && (
-                <RiPuzzleFill style={ICON_STYLE} fontSize="inherit" size='16px'/>
+                <RiPuzzleFill style={ICON_STYLE} size='16px'/>
             )}
             {type === 'system' && (
-                <RiShapesFill style={ICON_STYLE} fontSize="inherit" size='16px'/>
+                <RiShapesFill style={ICON_STYLE} size='16px'/>
             )}
             {type === 'service' && (
-                <RiCpuLine style={ICON_STYLE} fontSize="inherit" size='16px'/>
+                <RiCpuLine style={ICON_STYLE}  size='16px'/>
             )}
             {type === 'azdo' && (
-                <AzureDevOpsIcon style={ICON_STYLE} fontSize="inherit" size='16px'/>
+                <AzureDevOpsIcon style={ICON_STYLE} size='16px'/>
             )}
             {type === 'url' && (
-                <RiGlobalLine style={ICON_STYLE} fontSize="inherit" size='16px'/>
+                <RiGlobalLine style={ICON_STYLE}  size='16px'/>
             )}
             {text}
         </Flex>

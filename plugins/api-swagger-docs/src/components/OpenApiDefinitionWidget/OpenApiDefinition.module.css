@@ -1,0 +1,188 @@
+.wrapper :global(.swagger-ui) {
+  font-family: var(--bui-font-regular);
+  color: var(--bui-fg-primary);
+}
+
+.wrapper :global(.swagger-ui .btn-clear) {
+  color: var(--bui-fg-primary);
+}
+
+.wrapper :global(.swagger-ui .scheme-container) {
+  background-color: var(--bui-bg);
+}
+
+.wrapper :global(.swagger-ui .opblock-tag),
+.wrapper :global(.swagger-ui .opblock-tag small),
+.wrapper :global(table thead tr td),
+.wrapper :global(table thead tr th),
+.wrapper :global(table tbody tr td),
+.wrapper :global(table tbody tr th) {
+  font-family: var(--bui-font-regular);
+  color: var(--bui-fg-primary);
+  border-color: var(--divider);
+}
+
+.wrapper :global(section.models),
+.wrapper :global(section.models.is-open h4) {
+  border-color: var(--divider);
+}
+
+.wrapper :global(.swagger-ui .model-title),
+.wrapper :global(.swagger-ui .model .renderedMarkdown),
+.wrapper :global(.swagger-ui .model .description) {
+  font-family: var(--bui-font-regular);
+  font-weight: var(--bui-font-weight-regular);
+}
+
+.wrapper :global(.swagger-ui h1),
+.wrapper :global(.swagger-ui h2),
+.wrapper :global(.swagger-ui h3),
+.wrapper :global(.swagger-ui h4),
+.wrapper :global(.swagger-ui h5),
+.wrapper :global(.swagger-ui h6),
+.wrapper :global(.swagger-ui .errors h4),
+.wrapper :global(.swagger-ui .error h4),
+.wrapper :global(.swagger-ui .opblock h4),
+.wrapper :global(.swagger-ui section.models h4),
+.wrapper :global(.swagger-ui .response-control-media-type__accept-message),
+.wrapper :global(.swagger-ui .opblock-summary-description),
+.wrapper :global(.swagger-ui .opblock-summary-operation-id),
+.wrapper :global(.swagger-ui .opblock-summary-path),
+.wrapper :global(.swagger-ui .opblock-summary-path__deprecated),
+.wrapper :global(.swagger-ui .opblock-description-wrapper),
+.wrapper :global(.swagger-ui .opblock-external-docs-wrapper),
+.wrapper :global(.swagger-ui .opblock-section-header .btn),
+.wrapper :global(.swagger-ui .opblock-section-header > label),
+.wrapper :global(.swagger-ui .scheme-container .schemes > label),
+.wrapper :global(.swagger-ui a.nostyle),
+.wrapper :global(.swagger-ui .parameter__name),
+.wrapper :global(.swagger-ui .response-col_status),
+.wrapper :global(.swagger-ui .response-col_links),
+.wrapper :global(.swagger-ui .error .btn),
+.wrapper :global(.swagger-ui .info .title) {
+  font-family: var(--bui-font-regular);
+  color: var(--bui-fg-primary);
+}
+
+.wrapper :global(.swagger-ui .opblock .opblock-section-header),
+.wrapper :global(.swagger-ui .model-box),
+.wrapper :global(.swagger-ui section.models .model-container) {
+  background: var(--bui-bg);
+}
+
+.wrapper :global(.swagger-ui .prop-format),
+.wrapper :global(.swagger-ui .parameter__in) {
+  color: var(--text-disabled);
+}
+
+.wrapper :global(.swagger-ui table.model),
+.wrapper :global(.swagger-ui .parameter__type),
+.wrapper :global(.swagger-ui .model.model-title),
+.wrapper :global(.swagger-ui .model-title),
+.wrapper :global(.swagger-ui .model span),
+.wrapper :global(.swagger-ui .model .brace-open),
+.wrapper :global(.swagger-ui .model .brace-close),
+.wrapper :global(.swagger-ui .model .property.primitive),
+.wrapper :global(.swagger-ui .model .renderedMarkdown),
+.wrapper :global(.swagger-ui .model .description),
+.wrapper :global(.swagger-ui .errors small) {
+  color: var(--bui-fg-secondary);
+}
+
+.wrapper :global(.swagger-ui .parameter__name.required:after),
+.wrapper :global(.swagger-ui .parameter__name.required span) {
+  color: var(--bui-fg-warning);
+}
+
+.wrapper :global(.swagger-ui table.model),
+.wrapper :global(.swagger-ui table.model .model),
+.wrapper :global(.swagger-ui .opblock-external-docs-wrapper) {
+  font-size: var(--bui-font-size-small);
+}
+
+.wrapper :global(.swagger-ui table.headers td) {
+  color: var(--bui-fg-primary);
+  font-weight: var(--bui-font-weight-regula);
+}
+
+.wrapper :global(.swagger-ui .model-hint) {
+  color: var(--bui-fg-secondary);
+  background-color: var(--bui-bg);
+}
+
+.wrapper :global(.swagger-ui .opblock-summary-method),
+.wrapper :global(.swagger-ui .info a) {
+  font-family: var(--bui-font-regular);
+}
+
+.wrapper :global(.swagger-ui .info),
+.wrapper :global(.swagger-ui .opblock),
+.wrapper :global(.swagger-ui .tab) {
+  font-family: var(--bui-font-regular);
+  color: var(--bui-fg-primary);
+}
+
+.wrapper :global(.swagger-ui a) {
+  color: var(--bui-fg-link);
+}
+
+.wrapper :global(.swagger-ui .renderedMarkdown code) {
+  color: var(--bui-fg-secondary);
+}
+
+.wrapper :global(.swagger-ui .property-row td:first-child) {
+  color: var(--bui-fg-primary);
+}
+
+.wrapper :global(.swagger-ui span.prop-type) {
+  color: var(--bui-fg-success);
+}
+
+.wrapper :global(.swagger-ui .opblock-control-arrow svg),
+.wrapper :global(.swagger-ui .authorization__btn .unlocked) {
+  fill: var(--bui-fg-primary);
+}
+
+.wrapper :global(.swagger-ui .json-schema-2020-12__title),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword__name),
+.wrapper :global(.swagger-ui .json-schema-2020-12-property .json-schema-2020-12__title),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword--description) {
+  color: var(--bui-fg-primary);
+}
+
+.wrapper :global(.json-schema-2020-12-accordion__icon svg) {
+  fill: var(--bui-fg-primary);
+}
+
+.wrapper :global(.swagger-ui .json-schema-2020-12-accordion),
+.wrapper :global(.swagger-ui .json-schema-2020-12-expand-deep-button) {
+  background: none;
+  appearance: none;
+}
+
+.wrapper :global(.swagger-ui .json-schema-2020-12-expand-deep-button),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword__name--secondary),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword__value--secondary),
+.wrapper :global(.swagger-ui .json-schema-2020-12__attribute--muted),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword__value--const),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword__value--warning) {
+  color: var(--bui-fg-secondary);
+}
+
+.wrapper :global(.swagger-ui .json-schema-2020-12-body),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword__value--const),
+.wrapper :global(.swagger-ui .json-schema-2020-12-keyword__value--warning) {
+  border-color: var(--bui-fg-secondary);
+}
+
+.wrapper :global(.json-schema-2020-12__constraint--string) {
+  background-color: var(--bui-bg);
+}
+
+.wrapper :global(.swagger-ui .json-schema-2020-12__attribute--primary) {
+  color: var(--bui-bg);
+}
+
+.wrapper :global(.swagger-ui .json-schema-2020-12-property--required > .json-schema-2020-12:first-of-type > .json-schema-2020-12-head .json-schema-2020-12__title:after) {
+  color: var(--bui-fg-warning);
+}

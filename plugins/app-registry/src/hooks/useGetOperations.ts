@@ -1,20 +1,16 @@
 import { appRegistryBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
-import useAsync from 'react-use/esm/useAsync';
 
-export function useGetOperations(
-  system?: string,
-  appName?: string,
-  appVersion?: string,
-  environment?: string,
-) {
+export function useGetOperations() {
   const api = useApi(appRegistryBackendApiRef);
 
-  const { value, loading, error } = useAsync(() => {
-    /*
-    if (!system || !appName || !appVersion || !environment) return Promise.resolve(undefined);
-    return api.getOperations(system, appName, appVersion, environment);
-    */
+  return async function getOperations(system?: string, appName?: string, appVersion?: string, environment?: string) {
+
+    if (system === "XXX") {
+      if (!system || !appName || !appVersion || !environment) return Promise.resolve(undefined);
+      return api.getOperations(system, appName, appVersion, environment);
+    }
+
     return Promise.resolve([
       {
         method: 'GET',
@@ -32,8 +28,8 @@ export function useGetOperations(
         abac: false,
         bFunction: 'B45678',
         pdpMapping: [
-          { valuePath: 'user.name', pdpField: 'subject.name' },
-          { valuePath: 'user.email', pdpField: 'subject.email' },
+          { valuePath: 'user.name', pdpField: 'subject.name subject.name subject.name' },
+          { valuePath: 'user.email user.email', pdpField: 'subject.email' },
         ],
       },
       {
@@ -43,12 +39,5 @@ export function useGetOperations(
         bFunction: 'B45678',
       },
     ]);
-    
-  }, [api, system, appName, appVersion, environment]);
-
-  return {
-    data: value,
-    loading,
-    error,
   };
 }

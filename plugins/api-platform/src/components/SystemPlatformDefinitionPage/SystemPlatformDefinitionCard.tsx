@@ -14,38 +14,7 @@ import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
 import { Box, Grid, ButtonIcon } from '@backstage/ui';
-
-// TODO-MUI
-import { makeStyles, Theme } from '@material-ui/core';
-
-const useStyles = makeStyles(
-    (theme: Theme) => ({
-        gridItemCard: {
-            display: 'flex',
-            flexDirection: 'column',
-            height: 'calc(100% - 10px)', // for pages without content header
-            marginBottom: '10px',
-        },
-        infoCardHeader: {
-            padding: '16px',
-        },
-        value: {
-            fontWeight: 'bold',
-            overflow: 'hidden',
-            lineHeight: '24px',
-            wordBreak: 'break-word',
-        },
-        label: {
-            color: theme.palette.text.secondary,
-            textTransform: 'uppercase',
-            fontSize: '10px',
-            fontWeight: 'bold',
-            letterSpacing: 0.5,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-        },
-    }),
-);
+import styles from './SystemPlatformDefinitionCard.module.css';
 
 interface SystemPlatformDefinitionCardProps {
     system: string;
@@ -56,8 +25,7 @@ interface SystemPlatformDefinitionCardProps {
 export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardProps>(({ system, apis, services }) => {
     const catalogApi = useApi(catalogApiRef);
     const { entity } = useEntity();
-    const classes = useStyles();
-
+    
     const entityData = useMemo(() => {
         const entityRef = getCompoundEntityRef(entity);
         const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
@@ -127,7 +95,7 @@ export const SystemPlatformDefinitionCard = memo<SystemPlatformDefinitionCardPro
                         <InfoCard
                             title="About"
                             divider
-                            className={classes.gridItemCard}
+                            className={styles.gridItemCard}
                             action={docsButton}
                         >
                             {aboutField}
