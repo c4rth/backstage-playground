@@ -35,12 +35,12 @@ mcaComponents:
     baseUrl: http://localhost:8080/basetypes
     listBaseUrl: http://localhost:8080/basetypes/allclasses-frame.html
     schedule:
-      frequency: PT1M
+      frequency: PT10M
       timeout: PT30S
   operations:
     csvBaseUrl: http://localhost:8080/mca/alloperations.csv
     schedule:
-      frequency: PT1M
+      frequency: PT10M
       timeout: PT30S
 
 backend:

@@ -47,15 +47,21 @@ export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(
     getComponentType(mca.component),
     [mca.component]
   );
-  const mcaComponent = useMemo(() => {
-    if (!data) return null;
-    return parseXML(data);
+
+ const { mcaComponent, parseError } = useMemo(() => {
+    if (!data) return { mcaComponent: null as any, parseError: null as Error | null };
+    try {
+      return { mcaComponent: parseXML(data), parseError: undefined };
+    } catch (e) {
+      return { mcaComponent: null as any, parseError: e instanceof Error ? e : new Error(String(e)) };
+    }
   }, [data]);
+
   const componentProps = useMemo(() => ({
     mcaComponent,
   }), [mcaComponent]);
 
-  if (error) return <ResponseErrorPanel error={error} />;
+  if (parseError || error) return <ResponseErrorPanel error={parseError ?? error!} />;
   if (loading) return <Progress />;
   if (!data) return <ResponseErrorPanel error={new Error(`No MCA component definition for '${mca.component}' received`)} />;
 

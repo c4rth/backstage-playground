@@ -50,14 +50,21 @@ function getOperationNodes(mcaComponent: any): NodesType {
 }
 
 export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(({ mcaComponent }) => {
-    const operationNodes = useMemo(() =>
-        getOperationNodes(mcaComponent),
-        [mcaComponent]
-    );
+    const operationNodesResult = useMemo(() => {
+        try {
+            return { nodes: getOperationNodes(mcaComponent), error: null as Error | null };
+        } catch (e) {
+            return { nodes: null as any, error: e instanceof Error ? e : new Error(String(e)) };
+        }
+    }, [mcaComponent]);
 
-    const { operationAnalyze, operation, operationType } = operationNodes;
+    const { nodes: operationNodes, error: getNodesError } = operationNodesResult;
+    const operationAnalyze = operationNodes?.operationAnalyze;
+    const operation = operationNodes?.operation;
+    const operationType = operationNodes?.operationType;
 
     const errorState = useMemo(() => {
+        if (getNodesError) return getNodesError;
         if (!operationAnalyze) {
             return new Error('Invalid operation definition: operation analysis not found');
         }
@@ -68,7 +75,7 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
             return new Error(`Unknown operation type: ${operationAnalyze?.type || 'undefined'}`);
         }
         return null;
-    }, [operationAnalyze, operation, operationType]);
+    }, [getNodesError, operationAnalyze, operation, operationType]);
 
     const overviewProps = useMemo(() => ({
         operationAnalyze,

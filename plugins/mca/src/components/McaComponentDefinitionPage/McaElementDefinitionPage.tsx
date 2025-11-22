@@ -11,22 +11,20 @@ export interface McaElementDefinitionPageProps {
 function getElement(mcaComponent: any) {
   const element = mcaComponent?.element;
   if (!element) {
-    return {
-      element: null,
-      error: new Error('Invalid element definition: required node not found'),
-    };
+    throw new Error('Invalid element definition: required node not found');
   }
-  return {
-    element,
-    error: null,
-  };
+  return element;
 }
 
 export const McaElementDefinitionPage = memo<McaElementDefinitionPageProps>(({ mcaComponent }) => {
-  const { element, error } = useMemo(() =>
-    getElement(mcaComponent),
-    [mcaComponent]
-  );
+
+  const { element, error } = useMemo(() => {
+    try {
+      return { element: getElement(mcaComponent), error: null as Error | null };
+    } catch (e) {
+      return { element: null as any, error: e instanceof Error ? e : new Error(String(e)) };
+    }
+  }, [mcaComponent]);
 
   const aboutCardProps = useMemo(() => ({
     element,
