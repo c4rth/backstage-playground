@@ -33,6 +33,14 @@ const PdpMappingTable = memo<{ mapping: { valuePath: string; pdpField: string; }
 ));
 
 const renderAbacCell = (operation: AppRegistryOperation) => {
+  if (!operation.abac) {
+    return (
+      <TooltipTrigger delay={250}>
+        <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />} />
+        <Tooltip placement='bottom'>No ABAC</Tooltip>
+      </TooltipTrigger>
+    );
+  }
   if (operation.pdpMapping) {
     return (
       <InfoPopOver
@@ -44,18 +52,10 @@ const renderAbacCell = (operation: AppRegistryOperation) => {
       </InfoPopOver>
     );
   }
-  if (operation.abac) {
-    return (
-      <TooltipTrigger delay={250}>
-        <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiCheckboxCircleFill color='primary' />} />
-        <Tooltip placement='bottom'>No PDP mapping</Tooltip>
-      </TooltipTrigger>
-    );
-  }
   return (
     <TooltipTrigger delay={250}>
-      <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />} />
-      <Tooltip placement='bottom'>No ABAC</Tooltip>
+      <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiCheckboxCircleFill color='primary' />} />
+      <Tooltip placement='bottom'>No PDP mapping</Tooltip>
     </TooltipTrigger>
   );
 };
@@ -128,8 +128,8 @@ export const AppRegistryPage = () => {
           Operations
         </Text>
       </CardHeader>
-      <CardBody>
-        <ResizableTableContainer>
+      <CardBody style={{ padding: '0'}}>
+        <ResizableTableContainer >
           <Table sortDescriptor={list.sortDescriptor} onSortChange={list.sort} >
             <TableHeader>
               <Column id='method' isRowHeader width='10%' allowsSorting>Method</Column>

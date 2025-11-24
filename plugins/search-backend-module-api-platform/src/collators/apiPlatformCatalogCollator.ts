@@ -8,7 +8,6 @@ import {
     ANNOTATION_SERVICE_PLATFORM,
     ANNOTATION_SERVICE_VERSION
 } from '@internal/plugin-api-platform-common';
-import { parse } from 'yaml';
 
 type EntityType = 'api' | 'service' | 'system';
 
