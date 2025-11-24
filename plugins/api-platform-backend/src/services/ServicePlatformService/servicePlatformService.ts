@@ -39,11 +39,11 @@ function getFilter(serviceName?: string): EntityFilterQuery {
   };
 }
 
-function getOrder(order: ServiceDefinitionsOptions | undefined): { field1: "name" | "system"; field2: "name" | "system"; order: 'asc' | 'desc'; } | undefined {
+function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "serviceName" | "system"; field2: "serviceName" | "system"; order: 'asc' | 'desc'; } | undefined {
   if (!order) return undefined;
   return {
-    field1: order.field === 'system' ? 'system' : 'name',
-    field2: order.field === 'system' ? 'name' : 'system',
+    field1: order.field === 'name' ? 'serviceName' : 'system',
+    field2: order.field === 'name' ? 'system' : 'serviceName',
     order: order.direction,
   };
 }
@@ -67,6 +67,10 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_SPEC_OWNER,
       ],
+      order: { 
+        field: CATALOG_METADATA_NAME, 
+        order: 'asc' 
+      },
     },
     { token });
 
@@ -124,11 +128,19 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
     );
   }
 
+  console.log('*****************', mapServices)
+
   const svcDefs = Array.from(mapServices.values());
+
+
+  console.log('*****************', svcDefs)
 
   // Sort by order
   if (orderBy) {
-    const order = getOrder(orderBy);
+    const order = getSortOrder(orderBy);
+
+    console.log('*****************', order)
+
     if (order) {
       svcDefs.sort((a, b) => {
       const compare1 = a[order.field1].localeCompare(b[order.field1]);
