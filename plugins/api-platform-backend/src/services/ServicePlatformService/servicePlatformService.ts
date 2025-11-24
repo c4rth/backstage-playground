@@ -41,16 +41,9 @@ function getFilter(serviceName?: string): EntityFilterQuery {
 
 function getOrder(order: ServiceDefinitionsOptions | undefined): { field1: "name" | "system"; field2: "name" | "system"; order: 'asc' | 'desc'; } | undefined {
   if (!order) return undefined;
-  if (order?.field === 'system') {
-    return {
-      field1: "system",
-      field2: "name",
-      order: order.direction,
-    };
-  }
   return {
-    field1: "name",
-    field2: "system",
+    field1: order.field === 'system' ? 'system' : 'name',
+    field2: order.field === 'system' ? 'name' : 'system',
     order: order.direction,
   };
 }
