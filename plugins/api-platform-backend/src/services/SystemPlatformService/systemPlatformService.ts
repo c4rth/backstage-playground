@@ -112,6 +112,16 @@ export async function systemPlatformService(options: CatalogPlatformServiceOptio
         filteredSystems = ownedSystems;
       }
 
+      const search = request.search?.toLowerCase();
+      if (search) {
+        filteredSystems = filteredSystems.filter(system => {
+          return (
+            system.metadata.name.toLowerCase().includes(search) ||
+            (system.spec?.owner?.toString() || '').toLowerCase().includes(search)
+          );
+        });
+      }
+
       const offset = request.offset ?? 0;
       const limit = request.limit ?? 20;
       return {

@@ -25,15 +25,6 @@ const BASE_LOCATION = '/api-platform/';
 const DEFAULT_PLATFORM = 'cloud';
 const DEFAULT_NAMESPACE = 'default';
 
-const parseApiDefinition = (definition: string): string => {
-    try {
-        const openApi = parse(definition);
-        return openApi?.info?.description ?? 'NO DESCRIPTION';
-    } catch {
-        return '';
-    }
-};
-
 const getApiInfo = (entity: Entity): EntityInfo | null => {
     const apiName = entity.metadata[ANNOTATION_API_NAME];
     const apiVersion = entity.metadata[ANNOTATION_API_VERSION];
@@ -42,17 +33,13 @@ const getApiInfo = (entity: Entity): EntityInfo | null => {
     if (!apiName || !apiVersion) {
         return null;
     }
-
-    const description = entity.metadata.description ?? '';
-    const definition = entity.spec?.definition && typeof entity.spec.definition === 'string' 
-        ? parseApiDefinition(entity.spec.definition) 
-        : '';
+    const definition = entity.spec?.definition ?? '';
 
     return {
         type: 'api',
         kind: 'OpenAPI',
         title: `${apiName} ${apiVersion}`,
-        text: `Description: ${description} - Definition: ${definition}`,
+        text: `${definition}`,
         location: `${BASE_LOCATION}api/${system}/${apiName}?version=${apiVersion}`,
         lifecycle: (entity.spec?.lifecycle as string) ?? '',
     };

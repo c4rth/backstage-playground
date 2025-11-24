@@ -138,22 +138,12 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
     const order = getOrder(orderBy);
     if (order) {
       svcDefs.sort((a, b) => {
-        const aValue1 = a[order.field1];
-        const bValue1 = b[order.field1];
-        if (aValue1 < bValue1)
-          return order.order === 'asc' ? -1 : 1;
-        if (aValue1 > bValue1)
-          return order.order === 'asc' ? 1 : -1;
-
-        // If main field is equal, sort by secondary field
-        const aValue2 = a[order.field2];
-        const bValue2 = b[order.field2];
-        if (aValue2 < bValue2)
-          return order.order === 'asc' ? -1 : 1;
-        if (aValue2 > bValue2)
-          return order.order === 'asc' ? 1 : -1;
-
-        return 0;
+      const compare1 = a[order.field1].localeCompare(b[order.field1]);
+      if (compare1 !== 0) {
+        return order.order === 'asc' ? compare1 : -compare1;
+      }
+      const compare2 = a[order.field2].localeCompare(b[order.field2]);
+      return order.order === 'asc' ? compare2 : -compare2;
       });
     }
   }
