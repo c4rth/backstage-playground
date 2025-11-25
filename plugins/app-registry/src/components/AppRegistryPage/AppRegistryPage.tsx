@@ -60,6 +60,12 @@ const renderAbacCell = (operation: AppRegistryOperation) => {
   );
 };
 
+const emptyState = () => (
+  <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
+    No operations found.
+  </div>
+);
+
 const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => ({
   id: idx,
   operation,
@@ -137,7 +143,7 @@ export const AppRegistryPage = () => {
               <Column id='abac' width='10%'>ABAC</Column>
               <Column id='bFunction' width='10%' allowsSorting>B-Function</Column>
             </TableHeader>
-            <TableBody items={list.items}>
+            <TableBody items={list.items} renderEmptyState={emptyState}>
               {(item) => (
                 <Row id={item.id} style={{ backgroundColor: item.id % 2 === 0 ? '#F8F8F8' : 'white' }}>
                   <Cell title={item.operation.method} />

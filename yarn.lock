@@ -1889,9 +1889,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-entity-validation@npm:^0.13.0":
-  version: 0.13.0
-  resolution: "@backstage-community/plugin-entity-validation@npm:0.13.0"
+"@backstage-community/plugin-entity-validation@npm:^0.13.1":
+  version: 0.13.1
+  resolution: "@backstage-community/plugin-entity-validation@npm:0.13.1"
   dependencies:
     "@backstage/catalog-client": "npm:^1.12.0"
     "@backstage/catalog-model": "npm:^1.7.5"
@@ -1918,7 +1918,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/30e49fef4e72e0ba56348b15834567c44bcc50f2cdee5f4f31c7aee6620fd06a2e1404cefa222510806e1ffecf250180a3ec3d7ec44b36dde7042d30d50b7a4c
+  checksum: 10/56ec4c9eefdcb25c0994463e30275c64b1fbbe7032742746a6b957b4c765b38869de82667c2933669748fc15c9dd1ab5684cfff2fed3d3021b5af36fb395c85e
   languageName: node
   linkType: hard
 
@@ -1937,9 +1937,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-shortcuts@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@backstage-community/plugin-shortcuts@npm:0.14.0"
+"@backstage-community/plugin-shortcuts@npm:^0.14.1":
+  version: 0.14.1
+  resolution: "@backstage-community/plugin-shortcuts@npm:0.14.1"
   dependencies:
     "@backstage/core-components": "npm:^0.18.2"
     "@backstage/core-plugin-api": "npm:^1.11.1"
@@ -1950,13 +1950,13 @@ __metadata:
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-hook-form: "npm:^7.12.2"
     react-use: "npm:^17.2.4"
-    uuid: "npm:^9.0.0"
+    uuid: "npm:^13.0.0"
     zen-observable: "npm:^0.10.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/687f4c983fcd0dc41d06c3e737f3a17ff7ec60adf87b3020674572401349390dda91686aa5c62daa4ee3acc667422a9a16101a50c04864b85dc361463f446a5c
+  checksum: 10/781d01974fcc50f9b25fd2c992eccce66c93849ad3d95a4b5141ec2dfd4726cdcc3e183681b21ead7d54ccc670ed529f440f8e9d9325476630597dfe6acc4f5c
   languageName: node
   linkType: hard
 
@@ -16093,8 +16093,8 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@backstage-community/plugin-azure-devops": "npm:^0.21.0"
-    "@backstage-community/plugin-entity-validation": "npm:^0.13.0"
-    "@backstage-community/plugin-shortcuts": "npm:^0.14.0"
+    "@backstage-community/plugin-entity-validation": "npm:^0.13.1"
+    "@backstage-community/plugin-shortcuts": "npm:^0.14.1"
     "@backstage-community/plugin-sonarqube": "npm:^0.20.1"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.12.0"
     "@backstage/app-defaults": "npm:^1.7.2"
@@ -35435,6 +35435,15 @@ __metadata:
   bin:
     uuid: dist/esm/bin/uuid
   checksum: 10/d2da43b49b154d154574891ced66d0c83fc70caaad87e043400cf644423b067542d6f3eb641b7c819224a7cd3b4c2f21906acbedd6ec9c6a05887aa9115a9cf5
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "uuid@npm:13.0.0"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: 10/2742b24d1e00257e60612572e4d28679423469998cafbaf1fe9f1482e3edf9c40754b31bfdb3d08d71b29239f227a304588f75210b3b48f2609f0673f1feccef
   languageName: node
   linkType: hard
 

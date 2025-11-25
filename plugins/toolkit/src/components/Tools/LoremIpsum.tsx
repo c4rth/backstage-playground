@@ -209,6 +209,7 @@ export const LoremIpsum = () => {
                         <Button
                             iconStart={<RiEditBoxLine />}
                             onClick={() => generate(fakerType)}
+                            size='medium'
                             variant="tertiary"
                             style={{
                                 paddingLeft: '16px',

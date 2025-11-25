@@ -1,0 +1,1 @@
+export $(cat .env | xargs) && NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" && yarn start 
