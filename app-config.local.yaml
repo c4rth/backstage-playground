@@ -14,9 +14,9 @@ backend:
       - matchers:
           plugin: scaffolder
         level: info
-      - matchers:
-          plugin: search
-        level: debug
+      #- matchers:
+      #    plugin: search
+       # level: debug
 
 
 auth:

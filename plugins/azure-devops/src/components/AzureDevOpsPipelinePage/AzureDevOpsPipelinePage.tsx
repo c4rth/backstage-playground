@@ -78,10 +78,11 @@ export const getBuildStateComponent = (
 interface PipelineRowProps {
   item: BuildRun;
   onViewLogs?: (buildId: number) => void;
+  loadingLogs: boolean;
   logs: string[] | null;
 }
 
-const PipelineRow = memo(({ item, onViewLogs, logs }: PipelineRowProps) => {
+const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowProps) => {
 
   const handleViewLogs = useCallback(() => {
     if (onViewLogs && item.id) {
@@ -114,26 +115,22 @@ const PipelineRow = memo(({ item, onViewLogs, logs }: PipelineRowProps) => {
           <Button variant='primary' onClick={handleViewLogs} isDisabled={!item.id}>
             View Logs
           </Button>
-          <Dialog width='100%'>
-            <DialogHeader>
-              <Flex justify='between' align='center' style={{ width: '100%'}}>
-                Logs
-                <Button
-                  slot="close"
-                  variant="primary"
-                >
-                  Close
-                </Button>
-              </Flex>
-            </DialogHeader>
-            <DialogBody>
-              <Box as='pre' style={{ whiteSpace: 'pre-wrap' }}>
-                <Text style={{ fontFamily: 'monospace' }}>
-                  {logs?.join('\n')}
-                </Text>
-              </Box>
-            </DialogBody>
-          </Dialog>
+          {!loadingLogs && logs && (
+            <Dialog width='100%' height='100%'>
+              <DialogHeader>
+                <Flex  style={{ width: '100%' }}>
+                  Logs - {item.title}
+                </Flex>
+              </DialogHeader>
+              <DialogBody>
+                <Box as='pre' style={{ whiteSpace: 'pre-wrap' }}>
+                  <Text style={{ fontFamily: 'monospace' }}>
+                    {logs?.join('\n')}
+                  </Text>
+                </Box>
+              </DialogBody>
+            </Dialog>
+          )}
         </DialogTrigger>
       </RACell>
     </Row>
@@ -146,6 +143,7 @@ export const AzureDevOpsPipelinePage = () => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [logs, setLogs] = useState<string[] | null>(null);
   const azureApi = useApi(azureDevOpsApiRef);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   const { entity } = useEntity();
   const { items, loading, error } = useBuildRuns(entity, DEFAULT_BUILD_LIMIT);
@@ -160,6 +158,7 @@ export const AzureDevOpsPipelinePage = () => {
   }, []);
 
   const fetchLogs = useCallback(async (buildId: number) => {
+    setLoadingLogs(true);
     setLogs([]);
     if (!buildId) {
       return;
@@ -179,7 +178,7 @@ export const AzureDevOpsPipelinePage = () => {
     } catch (err) {
       //
     } finally {
-      //
+      setLoadingLogs(false);
     }
   }, [entity, azureApi]);
 
@@ -227,6 +226,9 @@ export const AzureDevOpsPipelinePage = () => {
 
   return (
     <>
+      {loadingLogs && (
+        <Progress />
+      )}
       <Card>
         <CardHeader>
           <Text variant='title-small' weight='bold'>
@@ -250,6 +252,7 @@ export const AzureDevOpsPipelinePage = () => {
                   key={item.id}
                   item={item}
                   onViewLogs={handleViewLogs}
+                  loadingLogs={loadingLogs}
                   logs={logs}
                 />
               ))}
