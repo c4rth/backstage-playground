@@ -136,7 +136,7 @@ export const AppRegistryPage = () => {
       </CardHeader>
       <CardBody style={{ padding: '0'}}>
         <ResizableTableContainer >
-          <Table sortDescriptor={list.sortDescriptor} onSortChange={list.sort} >
+          <Table sortDescriptor={list.sortDescriptor} onSortChange={list.sort} aria-label="App Registry operations">
             <TableHeader>
               <Column id='method' isRowHeader width='10%' allowsSorting>Method</Column>
               <Column id='name' width='70%' allowsSorting>Name</Column>

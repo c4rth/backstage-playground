@@ -15,3 +15,4 @@
  */
 
 export * from './useBuildRuns';
+export * from './useGitTags';

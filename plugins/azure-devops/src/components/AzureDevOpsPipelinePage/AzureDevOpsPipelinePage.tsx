@@ -101,7 +101,7 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
   }, [item.startTime, item.finishTime]);
 
   return (
-    <Row key={item.id}>
+    <Row id={item.id}>
       <Cell title={item.id?.toString() ?? '-'} />
       <RACell>
         <Link to={item.link ?? ''}>{item.title}</Link>
@@ -137,6 +137,11 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
   );
 });
 
+const emptyState = () => (
+  <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
+    No tags found.
+  </div>
+);
 
 export const AzureDevOpsPipelinePage = () => {
   const [offset, setOffset] = useState(0);
@@ -246,10 +251,9 @@ export const AzureDevOpsPipelinePage = () => {
               <Column>Age</Column>
               <Column>Actions</Column>
             </TableHeader>
-            <TableBody>
+            <TableBody renderEmptyState={emptyState}>
               {data?.map(item => (
                 <PipelineRow
-                  key={item.id}
                   item={item}
                   onViewLogs={handleViewLogs}
                   loadingLogs={loadingLogs}
