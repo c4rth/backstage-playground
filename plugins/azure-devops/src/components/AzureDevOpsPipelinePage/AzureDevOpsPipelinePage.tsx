@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, memo } from 'react';
-import { useTable, Table, TableHeader, TableBody, Column, Row, Cell, TablePagination, Card, CardHeader, CardBody, Text, Button, Flex, DialogTrigger, Dialog, DialogHeader, DialogBody, Box } from '@backstage/ui';
+import { Table, TableHeader, TableBody, Column, Row, Cell, Card, CardHeader, CardBody, Text, Button, Flex, DialogTrigger, Dialog, DialogHeader, DialogBody, Box } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useBuildRuns } from '../../hooks';
 import { getDurationFromDates } from '../../utils';
