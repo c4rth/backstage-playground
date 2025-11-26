@@ -22,7 +22,6 @@ import { stringifyEntityRef } from '@backstage/catalog-model';
 import { azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 
-const DEFAULT_PAGE_SIZE = 10;
 const DEFAULT_BUILD_LIMIT = 20;
 
 const BUILD_RESULT_CONFIG = {
