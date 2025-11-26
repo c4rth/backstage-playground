@@ -62,7 +62,7 @@ export const AzureDevOpsGitTagsPage = () => {
             </TableHeader>
             <TableBody items={items} renderEmptyState={emptyState}>
               {item => (
-                <Row id={item.commitLink}>
+                <Row key={item.name} id={item.name}>
                   <RACell>
                     <Link to={item.link ?? ''}>{item.name}</Link>
                   </RACell>

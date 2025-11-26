@@ -91,9 +91,18 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
   }, [onViewLogs, item.id]);
 
   const age = useMemo(() => {
-    return item.queueTime
-      ? DateTime.fromISO(item.queueTime).toRelative() ?? '-'
-      : DateTime.now().toRelative() ?? '-';
+    if (!item.queueTime) {
+      return DateTime.now().toRelative() ?? '-';
+    }
+    
+    const queueDate = DateTime.fromISO(item.queueTime);
+    const now = DateTime.now();
+    
+    if (queueDate.hasSame(now, 'day')) {
+      return queueDate.toRelative() ?? '-';
+    }
+    
+    return `${queueDate.toFormat('LLL d')} - ${queueDate.toLocaleString(DateTime.TIME_24_SIMPLE)}`;
   }, [item.queueTime]);
 
   const duration = useMemo(() => {
@@ -101,7 +110,7 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
   }, [item.startTime, item.finishTime]);
 
   return (
-    <Row id={item.id}>
+    <Row key={item.id} id={item.id}>
       <Cell title={item.id?.toString() ?? '-'} />
       <RACell>
         <Link to={item.link ?? ''}>{item.title}</Link>
@@ -118,7 +127,7 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
           {!loadingLogs && logs && (
             <Dialog width='100%' height='100%'>
               <DialogHeader>
-                <Flex  style={{ width: '100%' }}>
+                <Flex style={{ width: '100%' }}>
                   Logs - {item.title}
                 </Flex>
               </DialogHeader>
@@ -144,23 +153,12 @@ const emptyState = () => (
 );
 
 export const AzureDevOpsPipelinePage = () => {
-  const [offset, setOffset] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [logs, setLogs] = useState<string[] | null>(null);
   const azureApi = useApi(azureDevOpsApiRef);
   const [loadingLogs, setLoadingLogs] = useState(false);
 
   const { entity } = useEntity();
   const { items, loading, error } = useBuildRuns(entity, DEFAULT_BUILD_LIMIT);
-
-  const handleOffsetChange = useCallback((newOffset: number) => {
-    setOffset(newOffset);
-  }, []);
-
-  const handlePageSizeChange = useCallback((newPageSize: number) => {
-    setPageSize(newPageSize);
-    setOffset(0);
-  }, []);
 
   const fetchLogs = useCallback(async (buildId: number) => {
     setLoadingLogs(true);
@@ -186,18 +184,6 @@ export const AzureDevOpsPipelinePage = () => {
       setLoadingLogs(false);
     }
   }, [entity, azureApi]);
-
-  const tableConfig = useMemo(() => ({
-    data: items || [],
-    pagination: {
-      offset,
-      pageSize,
-      onOffsetChange: handleOffsetChange,
-      onPageSizeChange: handlePageSizeChange,
-    }
-  }), [items, offset, pageSize, handleOffsetChange, handlePageSizeChange]);
-
-  const { data, paginationProps } = useTable(tableConfig);
 
   const handleViewLogs = useCallback((buildId: number) => {
     fetchLogs(buildId);
@@ -251,18 +237,17 @@ export const AzureDevOpsPipelinePage = () => {
               <Column>Age</Column>
               <Column>Actions</Column>
             </TableHeader>
-            <TableBody renderEmptyState={emptyState}>
-              {data?.map(item => (
+            <TableBody items={items} renderEmptyState={emptyState}>
+              {item => (
                 <PipelineRow
                   item={item}
                   onViewLogs={handleViewLogs}
                   loadingLogs={loadingLogs}
                   logs={logs}
                 />
-              ))}
+              )}
             </TableBody>
           </Table>
-          <TablePagination {...paginationProps} />
         </CardBody>
       </Card>
 
