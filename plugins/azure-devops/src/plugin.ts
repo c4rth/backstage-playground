@@ -5,7 +5,7 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-import { azureDevOpsApiRef, AzureDevOpsClient } from '@backstage-community/plugin-azure-devops';
+import { azureDevOpsApiRef, AzureDevOpsClient } from './api';
 
 export const azdoPlugin = createPlugin({
   id: 'azdo',
@@ -38,6 +38,15 @@ export const AzureDevOpsGitTagsPage = azdoPlugin.provide(
     component: {
       lazy: () =>
         import('./components/AzureDevOpsGitTagsPage').then(m => m.AzureDevOpsGitTagsPage),
+    },
+  }),
+);
+
+export const AzureReadmeCard = azdoPlugin.provide(
+  createComponentExtension({
+    name: 'EntityAzureReadmeCard',
+    component: {
+      lazy: () => import('./components/ReadmeCard').then(m => m.ReadmeCard),
     },
   }),
 );

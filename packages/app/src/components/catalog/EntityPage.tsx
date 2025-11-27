@@ -31,7 +31,6 @@ import {
   EntityOwnershipCard,
 } from '@backstage/plugin-org';
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
-import { EmptyState } from '@backstage/core-components';
 import {
   Direction,
   EntityCatalogGraphCard,
@@ -50,17 +49,11 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 // SonarQube
 import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
-// Azure Devops
-import {
-  EntityAzurePipelinesContent,
-  isAzurePipelinesAvailable,
-  isAzureDevOpsAvailable,
-} from '@backstage-community/plugin-azure-devops';
 // Spectral 
 import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 // Techdocs
 import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
-import { Button, Grid, Link } from '@backstage/ui';
+import { Grid } from '@backstage/ui';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -68,36 +61,6 @@ const techdocsContent = (
       <Mermaid />
     </TechDocsAddons>
   </EntityTechdocsContent>
-);
-
-const cicdContent = (
-  // This is an example of how you can implement your company's logic in entity page.
-  // You can for example enforce that all components of type 'service' should use GitHubActions
-  <EntitySwitch>
-
-    <EntitySwitch.Case if={isAzureDevOpsAvailable}>
-      <EntityAzurePipelinesContent defaultLimit={25} />
-    </EntitySwitch.Case>
-    <EntitySwitch.Case if={isAzurePipelinesAvailable}>
-      <EntityAzurePipelinesContent defaultLimit={25} />
-    </EntitySwitch.Case>
-
-    <EntitySwitch.Case>
-      <EmptyState
-        title="No CI/CD available for this entity"
-        missing="info"
-        description="You need to add an annotation to your component if you want to enable CI/CD for it. You can read more about annotations in Backstage by clicking the button below."
-        action={
-          <Button
-            variant="primary">
-            <Link target="_blank" rel="noopener noreferrer" href="https://backstage.io/docs/features/software-catalog/well-known-annotations">
-              Read more
-            </Link>
-          </Button>
-        }
-      />
-    </EntitySwitch.Case>
-  </EntitySwitch>
 );
 
 const entityWarningContent = (
@@ -155,10 +118,6 @@ const serviceEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
-      {cicdContent}
-    </EntityLayout.Route>
-
     <EntityLayout.Route path="/api" title="API">
       <Grid.Root columns='2'>
         <Grid.Item>
@@ -195,10 +154,6 @@ const websiteEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
-    </EntityLayout.Route>
-
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
-      {cicdContent}
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">

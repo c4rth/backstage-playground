@@ -45,7 +45,7 @@
     "@backstage/plugin-search-common": "^1.2.21",
     "@backstage/plugin-search-react": "^1.10.0",
     "@backstage/theme": "^0.7.0",
-    "@backstage/ui": "^0.9.0",
+    "@backstage/ui": "^0.9.1",
     "@internal/plugin-api-docs-spectral-linter": "workspace:^",
     "@internal/plugin-api-platform-common": "workspace:^",
     "@internal/plugin-api-platform-react": "workspace:^",

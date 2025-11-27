@@ -24,7 +24,7 @@ import { ComponentDisplayName } from '../common';
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 // Azure DevOps
-import { AzureDevOpsPipelinePage, AzureDevOpsGitTagsPage } from '@internal/plugin-azure-devops';
+import { AzureDevOpsPipelinePage, AzureDevOpsGitTagsPage, AzureReadmeCard } from '@internal/plugin-azure-devops';
 //
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
@@ -177,6 +177,10 @@ export const ServicePlatformDefinitionCard = memo(() => {
 
             <TabbedLayout.Route path="/gittags" title="Git Tags">
                 <AzureDevOpsGitTagsPage />
+            </TabbedLayout.Route>
+
+            <TabbedLayout.Route path="/readme" title="Readme">
+                <AzureReadmeCard />
             </TabbedLayout.Route>
 
             {

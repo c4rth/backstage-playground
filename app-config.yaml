@@ -37,11 +37,13 @@ mcaComponents:
     schedule:
       frequency: PT10M
       timeout: PT30S
+      initialDelay: PT1M
   operations:
     csvBaseUrl: http://localhost:8080/mca/alloperations.csv
     schedule:
       frequency: PT10M
       timeout: PT30S
+      initialDelay: PT1M
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins

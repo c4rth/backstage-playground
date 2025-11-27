@@ -75,8 +75,6 @@ import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unproc
 import { ToolsPage } from '@internal/plugin-toolkit';
 // Scaffolder Extensions
 import { ProjectPickerFieldExtension } from '@internal/plugin-scaffolder-extensions';
-// Mui-to-Bui
-import { BuiThemerPage } from '@backstage/plugin-mui-to-bui';
 
 const app = createApp({
   apis,
@@ -195,7 +193,6 @@ const routes = (
       </RequirePermission>
     }
     />
-    <Route path="/mui-to-bui" element={<BuiThemerPage />} />
     <Route path="/devtools"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>

@@ -1759,33 +1759,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-azure-devops@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@backstage-community/plugin-azure-devops@npm:0.21.0"
-  dependencies:
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.16.0"
-    "@backstage/catalog-model": "npm:^1.7.5"
-    "@backstage/core-compat-api": "npm:^0.5.3"
-    "@backstage/core-components": "npm:^0.18.2"
-    "@backstage/core-plugin-api": "npm:^1.11.1"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/frontend-plugin-api": "npm:^0.12.1"
-    "@backstage/plugin-catalog-react": "npm:^1.21.2"
-    "@backstage/plugin-permission-react": "npm:^0.4.37"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
-    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    humanize-duration: "npm:^3.27.0"
-    luxon: "npm:^3.0.0"
-    react-use: "npm:^17.2.4"
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/a3bbed6051fcab625ce1110335562a8af48aadfacba955047386d148e4cbe19da337232f5077559bfe2d34282bb18917da1ece1a85458bba11f9af248c4bb50c
-  languageName: node
-  linkType: hard
-
 "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@npm:^0.13.0":
   version: 0.13.0
   resolution: "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@npm:0.13.0"
@@ -3413,29 +3386,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-mui-to-bui@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@backstage/plugin-mui-to-bui@npm:0.2.1"
-  dependencies:
-    "@backstage/core-compat-api": "npm:^0.5.4"
-    "@backstage/core-plugin-api": "npm:^1.12.0"
-    "@backstage/frontend-plugin-api": "npm:^0.13.0"
-    "@backstage/theme": "npm:^0.7.0"
-    "@backstage/ui": "npm:^0.9.0"
-    "@mui/material": "npm:^5.12.2"
-    "@mui/system": "npm:^5.16.14"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/7a42e21f3aa2544800f19734e50cbc0f0eaca98ceec9ef4b63c913bc6fb0c716b0b4ecb7ae65dc95385e64973a73a818c91c1c44f79c0838c8d79ed71adb6112
-  languageName: node
-  linkType: hard
-
 "@backstage/plugin-org@npm:^0.6.46":
   version: 0.6.46
   resolution: "@backstage/plugin-org@npm:0.6.46"
@@ -3520,7 +3470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-react@npm:^0.4.37, @backstage/plugin-permission-react@npm:^0.4.38":
+"@backstage/plugin-permission-react@npm:^0.4.38":
   version: 0.4.38
   resolution: "@backstage/plugin-permission-react@npm:0.4.38"
   dependencies:
@@ -4436,9 +4386,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@backstage/ui@npm:0.9.0"
+"@backstage/ui@npm:^0.9.1":
+  version: 0.9.1
+  resolution: "@backstage/ui@npm:0.9.1"
   dependencies:
     "@remixicon/react": "npm:^4.6.0"
     "@tanstack/react-table": "npm:^8.21.3"
@@ -4452,7 +4402,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/3f71f6115bcee79b2546944d564b9f9e6b3fac69b82176e2d8662f21625c240fc40d603a42c789dca21983a248a7a0a44d2ed1d717ddde26a32608e78018e5cc
+  checksum: 10/a600bf5df2955f5cf279a792a44196df4737f190a88b7d77fc88940a175ae5dd7ef6f388a4a075428e1da63e2db87711c55e70860f95037e429de85b88e667e5
   languageName: node
   linkType: hard
 
@@ -5988,7 +5938,7 @@ __metadata:
     "@backstage/core-components": "npm:^0.18.3"
     "@backstage/core-plugin-api": "npm:^1.12.0"
     "@backstage/plugin-catalog-react": "npm:^1.21.3"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@stoplight/spectral-core": "npm:1.20.0"
     "@stoplight/spectral-ruleset-bundler": "npm:1.6.3"
     "@stoplight/spectral-runtime": "npm:1.1.4"
@@ -6041,7 +5991,7 @@ __metadata:
   resolution: "@internal/plugin-api-platform-react@workspace:plugins/api-platform-react"
   dependencies:
     "@backstage/cli": "npm:^0.34.5"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -6074,7 +6024,7 @@ __metadata:
     "@backstage/plugin-search-common": "npm:^1.2.21"
     "@backstage/plugin-search-react": "npm:^1.10.0"
     "@backstage/theme": "npm:^0.7.0"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@internal/plugin-api-docs-spectral-linter": "workspace:^"
     "@internal/plugin-api-platform-common": "workspace:^"
     "@internal/plugin-api-platform-react": "workspace:^"
@@ -6127,7 +6077,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.0"
     "@backstage/plugin-catalog-react": "npm:^1.21.3"
     "@backstage/theme": "npm:^0.7.0"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@internal/plugin-api-platform-common": "workspace:^"
     "@internal/plugin-api-platform-react": "workspace:^"
     "@remixicon/react": "npm:^4.6.0"
@@ -6146,7 +6096,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/plugin-azure-devops@workspace:plugins/azure-devops"
   dependencies:
-    "@backstage-community/plugin-azure-devops": "npm:^0.21.0"
     "@backstage-community/plugin-azure-devops-common": "npm:^0.16.0"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.34.5"
@@ -6154,7 +6103,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.0"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/plugin-catalog-react": "npm:^1.21.3"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@types/humanize-duration": "npm:^3.18.1"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
@@ -6182,7 +6131,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.21.3"
     "@backstage/plugin-home": "npm:^0.8.14"
     "@backstage/plugin-home-react": "npm:^0.1.32"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -6232,7 +6181,7 @@ __metadata:
     "@backstage/plugin-search-common": "npm:^1.2.21"
     "@backstage/plugin-search-react": "npm:^1.10.0"
     "@backstage/theme": "npm:^0.7.0"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@date-io/core": "npm:^1.3.13"
     "@internal/plugin-api-platform-react": "workspace:^"
     "@internal/plugin-iframe": "workspace:^"
@@ -6288,7 +6237,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.21.3"
     "@backstage/plugin-scaffolder": "npm:^1.34.3"
     "@backstage/plugin-scaffolder-react": "npm:^1.19.3"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@types/react": "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-use: "npm:^17.6.0"
@@ -6380,7 +6329,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.21.3"
     "@backstage/plugin-techdocs": "npm:^1.16.0"
     "@backstage/theme": "npm:^0.7.0"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@internal/plugin-iframe": "workspace:^"
     "@internal/plugin-techdocs-addon-mermaid": "workspace:^"
     "@remixicon/react": "npm:^4.6.0"
@@ -6404,7 +6353,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.0"
     "@backstage/plugin-home": "npm:^0.8.14"
     "@backstage/theme": "npm:^0.7.0"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@faker-js/faker": "npm:^10.1.0"
     "@internal/plugin-api-platform-react": "workspace:^"
     "@material-ui/core": "npm:^4.12.2"
@@ -7889,7 +7838,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/system@npm:^5.16.14, @mui/system@npm:^5.18.0":
+"@mui/system@npm:^5.18.0":
   version: 5.18.0
   resolution: "@mui/system@npm:5.18.0"
   dependencies:
@@ -15815,7 +15764,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@backstage-community/plugin-azure-devops": "npm:^0.21.0"
     "@backstage-community/plugin-entity-validation": "npm:^0.13.1"
     "@backstage-community/plugin-sonarqube": "npm:^0.20.1"
     "@backstage-community/plugin-sonarqube-react": "npm:^0.12.0"
@@ -15836,7 +15784,6 @@ __metadata:
     "@backstage/plugin-devtools": "npm:^0.1.33"
     "@backstage/plugin-devtools-common": "npm:^0.1.19"
     "@backstage/plugin-home": "npm:^0.8.14"
-    "@backstage/plugin-mui-to-bui": "npm:^0.2.1"
     "@backstage/plugin-org": "npm:^0.6.46"
     "@backstage/plugin-permission-react": "npm:^0.4.38"
     "@backstage/plugin-scaffolder": "npm:^1.34.3"
@@ -15848,7 +15795,7 @@ __metadata:
     "@backstage/plugin-techdocs-react": "npm:^1.3.5"
     "@backstage/plugin-user-settings": "npm:^0.8.29"
     "@backstage/theme": "npm:^0.7.0"
-    "@backstage/ui": "npm:^0.9.0"
+    "@backstage/ui": "npm:^0.9.1"
     "@internal/plugin-api-docs-spectral-linter": "workspace:^"
     "@internal/plugin-api-platform": "workspace:^"
     "@internal/plugin-api-platform-common": "workspace:^"
