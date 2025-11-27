@@ -8,6 +8,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+knip-report.md
 
 # Coverage directory generated when running tests with coverage
 coverage

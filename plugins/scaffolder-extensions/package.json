@@ -25,7 +25,6 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.3",
     "@backstage/core-plugin-api": "^1.12.0",
     "@backstage/errors": "^1.2.7",
     "@backstage/integration-react": "^1.2.12",
@@ -33,12 +32,10 @@
     "@backstage/plugin-scaffolder": "^1.34.3",
     "@backstage/plugin-scaffolder-react": "^1.19.3",
     "@backstage/ui": "^0.9.0",
-    "react-use": "^17.6.0",
-    "react-window": "^1.8.11"
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@types/react": "*",
-    "@types/react-window": "^1",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [

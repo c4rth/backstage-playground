@@ -26,19 +26,13 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.5.0",
-    "@backstage/plugin-catalog-react": "^1.21.3",
-    "@backstage/plugin-scaffolder": "^1.34.3",
     "@backstage/plugin-scaffolder-node": "^0.12.1",
-    "@backstage/plugin-scaffolder-react": "^1.19.3",
     "fs-extra": "^11.2.0",
-    "react-use": "^17.6.0",
     "yaml": "^2.8.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.0",
-    "@types/react": "*",
-    "@types/react-window": "^1",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "@types/react": "*"
   },
   "files": [
     "dist"
