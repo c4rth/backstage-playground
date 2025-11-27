@@ -1,4 +1,4 @@
-import { Table, TableHeader, TableBody, Column, Row, Cell, Card, CardHeader, CardBody, Text } from '@backstage/ui';
+import { Table, TableHeader, TableBody, Column, Row, Cell, Card, CardHeader, CardBody, Text, Flex } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGitTags } from '../../hooks';
 import { Cell as RACell } from 'react-aria-components';
@@ -14,6 +14,14 @@ const emptyState = () => (
   </div>
 );
 
+const title = () => (
+  <Flex style={{ paddingTop: '12px', paddingLeft: '4px' }}>
+    <Text variant='title-small' weight='bold' >
+      Azure Repos - Git Tags
+    </Text>
+  </Flex>
+);
+
 export const AzureDevOpsGitTagsPage = () => {
   const { entity } = useEntity();
 
@@ -23,7 +31,7 @@ export const AzureDevOpsGitTagsPage = () => {
     return (
       <Card>
         <CardHeader>
-          <Text variant='title-small' weight='bold'>Azure Repos - Git Tags</Text>
+          {title()}
         </CardHeader>
         <CardBody>
           <Progress />
@@ -36,7 +44,7 @@ export const AzureDevOpsGitTagsPage = () => {
     return (
       <Card>
         <CardHeader>
-          <Text variant='title-small' weight='bold'>Azure Repos - Git Tags</Text>
+          {title()}
         </CardHeader>
         <CardBody>
           <ResponseErrorPanel error={error} />
@@ -49,9 +57,7 @@ export const AzureDevOpsGitTagsPage = () => {
     <>
       <Card>
         <CardHeader>
-          <Text variant='title-small' weight='bold'>
-            Azure Repos - Git Tags
-          </Text>
+          {title()}
         </CardHeader>
         <CardBody>
           <Table aria-label="Azure Repos - Git Tags">

@@ -93,14 +93,14 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
     if (!item.queueTime) {
       return DateTime.now().toRelative() ?? '-';
     }
-    
+
     const queueDate = DateTime.fromISO(item.queueTime);
     const now = DateTime.now();
-    
+
     if (queueDate.hasSame(now, 'day')) {
       return queueDate.toRelative() ?? '-';
     }
-    
+
     return `${queueDate.toFormat('LLL d')} - ${queueDate.toLocaleString(DateTime.TIME_24_SIMPLE)}`;
   }, [item.queueTime]);
 
@@ -151,6 +151,14 @@ const emptyState = () => (
   </div>
 );
 
+const title = () => (
+  <Flex style={{ paddingTop: '12px', paddingLeft: '4px' }}>
+    <Text variant='title-small' weight='bold' >
+      Azure DevOps Pipelines
+    </Text>
+  </Flex>
+);
+
 export const AzureDevOpsPipelinePage = () => {
   const [logs, setLogs] = useState<string[] | null>(null);
   const azureApi = useApi(azureDevOpsApiRef);
@@ -192,7 +200,7 @@ export const AzureDevOpsPipelinePage = () => {
     return (
       <Card>
         <CardHeader>
-          <Text variant='title-small' weight='bold'>Azure DevOps Pipelines</Text>
+          {title()}
         </CardHeader>
         <CardBody>
           <Progress />
@@ -205,7 +213,7 @@ export const AzureDevOpsPipelinePage = () => {
     return (
       <Card>
         <CardHeader>
-          <Text variant='title-small' weight='bold'>Azure DevOps Pipelines</Text>
+          {title()}
         </CardHeader>
         <CardBody>
           <ResponseErrorPanel error={error} />
@@ -221,9 +229,7 @@ export const AzureDevOpsPipelinePage = () => {
       )}
       <Card>
         <CardHeader>
-          <Text variant='title-small' weight='bold'>
-            Azure DevOps Pipelines
-          </Text>
+          {title()}
         </CardHeader>
         <CardBody>
           <Table aria-label="Azure DevOps pipeline runs">
