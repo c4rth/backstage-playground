@@ -46,3 +46,18 @@ export function useGitTags(entity: Entity): {
     error,
   };
 }
+
+export function useAsyncGitTags() {
+  const api = useApi(azureDevOpsApiRef);
+
+  return async function getGitTags(entity: Entity) {
+    const { project, repo, host, org } = getAnnotationValuesFromEntity(entity);
+    return api.getGitTags(
+      project,
+      repo as string,
+      stringifyEntityRef(entity),
+      host,
+      org,
+    );
+  };
+}

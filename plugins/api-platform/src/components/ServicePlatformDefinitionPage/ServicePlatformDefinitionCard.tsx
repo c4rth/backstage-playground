@@ -31,6 +31,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import styles from './ServicePlatformDefinitionCard.module.css';
+import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '@internal/plugin-azure-devops';
 
 export const ServicePlatformDefinitionCard = memo(() => {
     const { entity } = useEntity<ComponentEntity>();
@@ -58,6 +59,8 @@ export const ServicePlatformDefinitionCard = memo(() => {
 
     const availabilityChecks = useMemo(() => ({
         sonarQube: isSonarQubeAvailable(entity),
+        azureDevOps: isAzureDevOpsAvailable(entity),
+        azurePipelines: isAzurePipelinesAvailable(entity),
     }), [entity]);
 
     /*
@@ -170,26 +173,32 @@ export const ServicePlatformDefinitionCard = memo(() => {
             <TabbedLayout.Route path="/appreg" title="App Registry">
                 <AppRegistryPage />
             </TabbedLayout.Route>
-            
-            <TabbedLayout.Route path="/ci-cd" title="CI/CD">
-                <AzureDevOpsPipelinePage />
-            </TabbedLayout.Route>
 
-            <TabbedLayout.Route path="/gittags" title="Git Tags">
-                <AzureDevOpsGitTagsPage />
-            </TabbedLayout.Route>
+            {availabilityChecks.azurePipelines && (
+                <TabbedLayout.Route path="/ci-cd" title="CI/CD">
+                    <AzureDevOpsPipelinePage />
+                </TabbedLayout.Route>
+            )}
 
-            <TabbedLayout.Route path="/readme" title="Readme">
-                <AzureReadmeCard />
-            </TabbedLayout.Route>
+            {availabilityChecks.azureDevOps && (
+                <TabbedLayout.Route path="/gittags" title="Git Tags">
+                    <AzureDevOpsGitTagsPage />
+                </TabbedLayout.Route>
+            )}
 
-            {
-                availabilityChecks.sonarQube && (
-                    <TabbedLayout.Route path="/sonarqube" title="SonarQube">
-                        <EntitySonarQubeContentPage />
-                    </TabbedLayout.Route>
-                )
+            {availabilityChecks.azureDevOps && (
+                <TabbedLayout.Route path="/readme" title="Readme">
+                    <AzureReadmeCard />
+                </TabbedLayout.Route>
+            )}
+
+            {availabilityChecks.sonarQube && (
+                <TabbedLayout.Route path="/sonarqube" title="SonarQube">
+                    <EntitySonarQubeContentPage />
+                </TabbedLayout.Route>
+            )
             }
+
         </TabbedLayout >
     );
 });

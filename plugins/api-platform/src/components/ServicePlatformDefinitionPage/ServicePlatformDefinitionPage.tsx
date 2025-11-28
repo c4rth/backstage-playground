@@ -4,7 +4,7 @@ import {
   Page,
   Select,
 } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
 import { ServicePlatformDefinitionCard } from './ServicePlatformDefinitionCard';
@@ -45,7 +45,6 @@ export const ServicePlatformDefinitionPage = () => {
   const [serviceEntity, setServiceEntity] = useState<ComponentEntity | undefined>(undefined);
   const isInitialLoad = useRef(true);
   const catalogApi = useApi(catalogApiRef);
-  const configApi = useApi(configApiRef);
 
   const mapVersionEnv = useMemo(() => parseServiceDefinition(serviceDefinition), [serviceDefinition]);
 
@@ -100,15 +99,13 @@ export const ServicePlatformDefinitionPage = () => {
     }
   }, [selectedVersion, selectedEnvironment, catalogApi, mapVersionEnv]);
 
-  const generatedSubtitle = `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Service Explorer`;
-
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={serviceEntity}>
       <Page
         themeId="services">
         <Header
-          title={`Service - ${name}`}
-          subtitle={generatedSubtitle}>
+          title={name}
+          type='Service'>
           <ComponentHeaderLabels entity={serviceEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
         </Header>
         <Content>

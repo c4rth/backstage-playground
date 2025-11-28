@@ -69,7 +69,7 @@ export const McaBaseTypeDefinitionPage = () => {
   }, [baseType, baseTypesUrl]);
 
   const pageProps = useMemo(() => ({
-    title: `MCA BaseType - ${name || 'Unknown'}`,
+    title: `${name || 'Unknown'}`,
     subtitle: urls.constructedUrl || 'Loading...',
   }), [name, urls.constructedUrl]);
 
@@ -97,7 +97,7 @@ export const McaBaseTypeDefinitionPage = () => {
       key={name} // Force re-render when name changes
       themeId="apis"
       title={pageProps.title}
-      subtitle={pageProps.subtitle}
+      type='MCA BaseType'
     >
       <IFramePage {...iframeProps} />
     </PageWithHeader>

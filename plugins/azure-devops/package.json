@@ -39,6 +39,7 @@
     "humanize-duration": "^3.27.0",
     "luxon": "^3.0.0",
     "react-aria-components": "^1.13.0",
+    "react-stately": "^3.42.0",
     "react-use": "^17.6.0"
   },
   "devDependencies": {

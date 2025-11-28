@@ -6113,6 +6113,7 @@ __metadata:
     react-aria-components: "npm:^1.13.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
+    react-stately: "npm:^3.42.0"
     react-use: "npm:^17.6.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -15760,7 +15761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app@workspace:packages/app":
+"app@workspace:^, app@workspace:packages/app":
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
@@ -15800,6 +15801,7 @@ __metadata:
     "@internal/plugin-api-platform": "workspace:^"
     "@internal/plugin-api-platform-common": "workspace:^"
     "@internal/plugin-app-registry": "workspace:^"
+    "@internal/plugin-azure-devops": "workspace:^"
     "@internal/plugin-mca": "workspace:^"
     "@internal/plugin-mca-common": "workspace:^"
     "@internal/plugin-permissions-common": "workspace:^"
@@ -16478,6 +16480,7 @@ __metadata:
     "@internal/plugin-search-backend-module-api-platform": "workspace:^"
     "@internal/plugin-search-backend-module-mca": "workspace:^"
     "@microsoft/microsoft-graph-types": "npm:^2.6.0"
+    app: "workspace:^"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"

@@ -1,12 +1,14 @@
 import { Table, TableHeader, TableBody, Column, Row, Cell, Card, CardHeader, CardBody, Text, Flex } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useGitTags } from '../../hooks';
+import { useAsyncGitTags } from '../../hooks';
 import { Cell as RACell } from 'react-aria-components';
+import { useAsyncList } from 'react-stately';
 import {
   Link,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
+import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 
 const emptyState = () => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
@@ -25,9 +27,24 @@ const title = () => (
 export const AzureDevOpsGitTagsPage = () => {
   const { entity } = useEntity();
 
-  const { items, loading, error } = useGitTags(entity);
+  const getGitTags = useAsyncGitTags();
 
-  if (loading) {
+  const list = useAsyncList<GitTag>({
+    async load({ }) {
+      const data = await getGitTags(entity);
+      return { items: data.items || [] };
+    },
+    async sort({ items, sortDescriptor }) {
+      return {
+        items: items.sort((a, b) => {
+          const desc = sortDescriptor.direction === 'descending' ? -1 : 1;
+          return desc * (a.name?.localeCompare(b.name ?? '') ?? 0);
+        }),
+      };
+    }
+  });  
+
+  if (list.isLoading) {
     return (
       <Card>
         <CardHeader>
@@ -40,14 +57,14 @@ export const AzureDevOpsGitTagsPage = () => {
     );
   }
 
-  if (error) {
+  if (list.error) {
     return (
       <Card>
         <CardHeader>
           {title()}
         </CardHeader>
         <CardBody>
-          <ResponseErrorPanel error={error} />
+          <ResponseErrorPanel error={list.error} />
         </CardBody>
       </Card>
     );
@@ -60,20 +77,23 @@ export const AzureDevOpsGitTagsPage = () => {
           {title()}
         </CardHeader>
         <CardBody>
-          <Table aria-label="Azure Repos - Git Tags">
+          <Table
+            aria-label="Azure Repos - Git Tags"
+            sortDescriptor={list.sortDescriptor}
+            onSortChange={list.sort}>
             <TableHeader>
-              <Column isRowHeader>Tag</Column>
+              <Column isRowHeader allowsSorting>Tag</Column>
               <Column>Commit</Column>
               <Column>Created By</Column>
             </TableHeader>
-            <TableBody items={items} renderEmptyState={emptyState}>
+            <TableBody items={list.items} renderEmptyState={emptyState}>
               {item => (
                 <Row key={item.name} id={item.name}>
                   <RACell>
                     <Link to={item.link ?? ''}>{item.name}</Link>
                   </RACell>
                   <RACell>
-                    <Link to={item.commitLink ?? ''}>{item.peeledObjectId}</Link>
+                    <Link to={item.commitLink ?? ''}>{item.peeledObjectId ?? item.objectId}</Link>
                   </RACell>
                   <Cell title={item.createdBy ?? '-'} />
                 </Row>

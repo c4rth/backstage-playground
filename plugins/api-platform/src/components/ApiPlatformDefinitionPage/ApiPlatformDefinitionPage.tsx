@@ -4,7 +4,7 @@ import {
   Page,
   Select,
 } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
@@ -34,7 +34,6 @@ export const ApiPlatformDefinitionPage = () => {
   const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
   const [apiEntity, setApiEntity] = useState<ApiEntity | undefined>(undefined);
   const isInitialLoad = useRef(true);
-  const configApi = useApi(configApiRef);
 
   useEffect(() => {
     if (!selectedVersion && versions.length > 0) {
@@ -58,18 +57,13 @@ export const ApiPlatformDefinitionPage = () => {
     }
   }, [selectedVersion, catalogApi]);
 
-  const generatedSubtitle = useMemo(() =>
-    `${configApi.getOptionalString('organization.name') ?? 'Backstage'} API Explorer`,
-    [configApi]
-  );
-
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
       <Page
         themeId="apis">
         <Header
-          title={`API - ${name}`}
-          subtitle={generatedSubtitle}>
+          title={name}
+          type='API'>
           <ComponentHeaderLabels entity={apiEntity ?? { metadata: { name, title: name } } as ApiEntity} />
         </Header>
 
@@ -81,7 +75,7 @@ export const ApiPlatformDefinitionPage = () => {
           </Box>
           <Box mb='-3'>
             {apiEntity ?
-                <ApiPlatformDefinitionCard />
+              <ApiPlatformDefinitionCard />
               : <div />
             }
           </Box>

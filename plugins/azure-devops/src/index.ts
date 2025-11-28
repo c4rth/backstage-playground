@@ -1,6 +1,8 @@
-export { 
-  azdoPlugin, 
-  AzureDevOpsPipelinePage, 
+export {
+  azdoPlugin,
+  AzureDevOpsPipelinePage,
   AzureDevOpsGitTagsPage,
-  AzureReadmeCard
- } from './plugin';
+  AzureReadmeCard,
+  isAzureDevOpsAvailable,
+  isAzurePipelinesAvailable,
+} from './plugin';

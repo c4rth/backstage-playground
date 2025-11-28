@@ -7,7 +7,7 @@ import {
   SelectedItems,
   SelectItem,
 } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-common';
@@ -53,7 +53,6 @@ async function getMca(mcaApi: McaComponentsBackendApi, name: string,): Promise<M
 
 export const McaComponentDefinitionPage = () => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
-  const configApi = useApi(configApiRef);
   const { name } = useParams();
   const [searchParams] = useSearchParams();
 
@@ -69,14 +68,6 @@ export const McaComponentDefinitionPage = () => {
   const queryVersion = useMemo(() =>
     searchParams.get('version'),
     [searchParams]
-  );
-  const organizationName = useMemo(() =>
-    configApi.getOptionalString('organization.name') ?? 'Backstage',
-    [configApi]
-  );
-  const subtitle = useMemo(() =>
-    `${organizationName} MCA Component Explorer`,
-    [organizationName]
   );
 
   const selectProps = useMemo(() => ({
@@ -126,8 +117,8 @@ export const McaComponentDefinitionPage = () => {
     <PageWithHeader
       key={name}
       themeId="apis"
-      title={`MCA Component - ${name}`}
-      subtitle={subtitle}
+      title={name}
+      type='MCA Component'
     >
       <Content>
         <Box mb='1'>
