@@ -126,7 +126,7 @@ export const SystemPlatformTable = ({ }: SystemPlatformTableProps) => {
     }), [loadingCount, initialSearch]);
 
     const tableTitle = useMemo(() => (
-        <Flex align='center'>
+            <Flex gap="0" align="center">
             <Box mr='1' />
             {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
             <Box ml='2' />

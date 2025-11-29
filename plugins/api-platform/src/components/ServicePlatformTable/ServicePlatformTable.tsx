@@ -194,10 +194,10 @@ export const ServicePlatformTable = () => {
 
     const tableTitle = useMemo(
         () => (
-            <Flex align="center">
+            <Flex gap="0" align="center">
                 <Box mr="1" />
                 {ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})
-                <Box ml="2" />
+                <Box ml="4" />
                 <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
             </Flex>
         ),
