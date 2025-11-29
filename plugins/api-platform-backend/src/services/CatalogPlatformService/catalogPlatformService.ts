@@ -2,6 +2,7 @@ import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { CatalogPlatformService } from './types';
 import { Entity } from "@backstage/catalog-model";
+import { getCatalogToken } from '../common/token';
 
 export interface CatalogPlatformServiceOptions {
   logger: LoggerService;
@@ -15,10 +16,7 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
 
   return {
     async registerCatalogInfo(request: { target: string, kind: string }): Promise<String> {
-      const { token } = await auth.getPluginRequestToken({
-        onBehalfOf: await auth.getOwnServiceCredentials(),
-        targetPluginId: 'catalog',
-      });
+      const token = await getCatalogToken(auth);
       const existResponse = await catalogClient.addLocation(
         {
           type: 'url',
@@ -55,10 +53,7 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
     },
 
     async getEntityByName(request: { name: string, kind: string }): Promise<Entity | undefined> {
-      const { token } = await auth.getPluginRequestToken({
-        onBehalfOf: await auth.getOwnServiceCredentials(),
-        targetPluginId: 'catalog',
-      });
+      const token = await getCatalogToken(auth);
       const entities = await catalogClient.getEntities(
         {
           filter: {
@@ -75,10 +70,7 @@ export async function catalogPlatformService(options: CatalogPlatformServiceOpti
     },
 
     async unregisterCatalogInfo(entity: Entity): Promise<String> {
-      const { token } = await auth.getPluginRequestToken({
-        onBehalfOf: await auth.getOwnServiceCredentials(),
-        targetPluginId: 'catalog',
-      });
+      const token = await getCatalogToken(auth);
       const annotations = entity.metadata.annotations;
       if (!annotations || !annotations['backstage.io/managed-by-origin-location']) {
         throw new Error("Metadata location not found");

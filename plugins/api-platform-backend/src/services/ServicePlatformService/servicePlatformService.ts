@@ -22,8 +22,10 @@ import {
   ServiceInformation,
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
+import { Entity } from '@backstage/catalog-model';
 import { ApiPlatformStore } from '../../database/apiPlatformStore';
 import { getUserGroups } from '../common/utils';
+import { getCatalogToken } from '../common/token';
 
 function getFilter(serviceName?: string): EntityFilterQuery {
   if (serviceName) {
@@ -49,10 +51,7 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "
 }
 
 async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, orderBy: ServiceDefinitionsOptions | undefined, serviceName: string | undefined): Promise<ServiceDefinition[]> {
-  const { token } = await auth.getPluginRequestToken({
-    onBehalfOf: await auth.getOwnServiceCredentials(),
-    targetPluginId: 'catalog',
-  });
+  const token = await getCatalogToken(auth);
   const entities = await catalogClient.getEntities(
     {
       filter: getFilter(serviceName),
@@ -74,29 +73,68 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
     },
     { token });
 
+  return processServiceEntities(entities.items, orderBy);
+}
+
+// Shared function to fetch service entities with ownership filter
+async function fetchServiceEntities(
+  catalogClient: CatalogApi,
+  auth: AuthService,
+  fields: string[],
+  ownership: OwnershipType,
+  userEntityRef: string | undefined,
+): Promise<Entity[]> {
+  const token = await getCatalogToken(auth);
+  
+  // Fetch user groups in parallel with entities if needed
+  const [entities, userGroupRefs] = await Promise.all([
+    catalogClient.getEntities(
+      {
+        filter: getFilter(undefined),
+        fields,
+      },
+      { token }
+    ).then(res => res.items),
+    ownership === 'owned' && userEntityRef
+      ? getUserGroups(catalogClient, auth, userEntityRef)
+      : Promise.resolve([] as string[]),
+  ]);
+
+  // Filter by ownership if needed
+  if (ownership === 'owned' && userEntityRef && userGroupRefs.length > 0) {
+    const groupSet = new Set(userGroupRefs);
+    return entities.filter(entity => {
+      const owner = entity.spec?.owner?.toString() || '';
+      return groupSet.has(owner);
+    });
+  }
+
+  return entities;
+}
+
+// Process entities into ServiceDefinition array
+function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsOptions | undefined): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
 
-  for (const entity of entities.items) {
-
-    if (!entity.metadata || !entity.spec)
-      continue;
+  for (const entity of entities) {
+    if (!entity.metadata || !entity.spec) continue;
+    
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const system = entity.spec.system?.toString();
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
-    if (!name || !version)
-      continue;
+    if (!name || !version) continue;
 
     const lifecycle = entity.spec.lifecycle?.toString().toLowerCase() || '-';
-
-    // Get or create service definition
     const mapKey = `${system}-${name}`;
+    
+    // Get or create service definition
     let def = mapServices.get(mapKey);
     if (!def) {
       def = {
         name: mapKey,
         serviceName: name,
         owner: entity.spec.owner?.toString() || '',
-        system: entity.spec?.system?.toString() || '-',
+        system: system || '-',
         versions: []
       };
       mapServices.set(mapKey, def);
@@ -128,32 +166,39 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
     );
   }
 
-  console.log('*****************', mapServices)
-
   const svcDefs = Array.from(mapServices.values());
-
-
-  console.log('*****************', svcDefs)
 
   // Sort by order
   if (orderBy) {
     const order = getSortOrder(orderBy);
-
-    console.log('*****************', order)
-
     if (order) {
       svcDefs.sort((a, b) => {
-      const compare1 = a[order.field1].localeCompare(b[order.field1]);
-      if (compare1 !== 0) {
-        return order.order === 'asc' ? compare1 : -compare1;
-      }
-      const compare2 = a[order.field2].localeCompare(b[order.field2]);
-      return order.order === 'asc' ? compare2 : -compare2;
+        const compare1 = a[order.field1].localeCompare(b[order.field1]);
+        if (compare1 !== 0) {
+          return order.order === 'asc' ? compare1 : -compare1;
+        }
+        const compare2 = a[order.field2].localeCompare(b[order.field2]);
+        return order.order === 'asc' ? compare2 : -compare2;
       });
     }
   }
 
   return svcDefs;
+}
+
+// Extract unique service count from entities
+function countUniqueServices(entities: Entity[]): number {
+  const uniqueNames = new Set<string>();
+  for (const entity of entities) {
+    if (entity.metadata) {
+      const system = entity.spec?.system?.toString() ?? '';
+      const serviceName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '';
+      if (serviceName) {
+        uniqueNames.add(`${system}-${serviceName}`);
+      }
+    }
+  }
+  return uniqueNames.size;
 }
 
 export interface ServicePlatformServiceOptions {
@@ -171,59 +216,43 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
   return {
 
     async getServicesCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
-      const { token } = await auth.getPluginRequestToken({
-        onBehalfOf: await auth.getOwnServiceCredentials(),
-        targetPluginId: 'catalog',
-      });
-      let allEntities = await catalogClient.getEntities(
-        {
-          filter: getFilter(undefined),
-          fields: [
-            CATALOG_SPEC_SYSTEM,
-            CATALOG_METADATA_SERVICE_NAME,
-            CATALOG_SPEC_OWNER,
-          ],
-        },
-        { token }).then(res => res.items);
-
-      if (ownership === 'owned' && userEntityRef) {
-        const userGroupRefs = await getUserGroups(catalogClient, auth, userEntityRef!!);
-        allEntities = allEntities.filter(entity => {
-          const owner = entity.spec?.owner?.toString() || '';
-          return userGroupRefs.includes(owner);
-        });
-      }
-
-      const uniqueNames = new Set<string>();
-      for (const entity of allEntities) {
-        if (entity.metadata) {
-          const svcName = `${entity.spec?.system?.toString()}-${entity.metadata[ANNOTATION_SERVICE_NAME]?.toString()}`;
-          if (svcName) {
-            uniqueNames.add(svcName);
-          }
-        }
-      }
-
-      return uniqueNames.size;
+      const entities = await fetchServiceEntities(
+        catalogClient,
+        auth,
+        [CATALOG_SPEC_SYSTEM, CATALOG_METADATA_SERVICE_NAME, CATALOG_SPEC_OWNER],
+        ownership,
+        userEntityRef,
+      );
+      return countUniqueServices(entities);
     },
 
     async listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
-      let services = await innerGetServices(catalogClient, auth, request.orderBy, undefined);
-      if (request.ownership === 'owned') {
-        const userGroupRefs = await getUserGroups(catalogClient, auth, request.userEntityRef!!);
-        services = services.filter(service => {
-          return userGroupRefs.includes(service.owner);
-        });
-      }
+      const entities = await fetchServiceEntities(
+        catalogClient,
+        auth,
+        [
+          CATALOG_METADATA_NAME,
+          CATALOG_METADATA_NAMESPACE,
+          CATALOG_METADATA_SERVICE_NAME,
+          CATALOG_METADATA_SERVICE_PLATFORM,
+          CATALOG_METADATA_SERVICE_VERSION,
+          CATALOG_METADATA_IMAGE_VERSION,
+          CATALOG_SPEC_SYSTEM,
+          CATALOG_SPEC_LIFECYCLE,
+          CATALOG_SPEC_OWNER,
+        ],
+        request.ownership ?? 'all',
+        request.userEntityRef,
+      );
+
+      let services = processServiceEntities(entities, request.orderBy);
 
       const search = request.search?.toLowerCase();
       if (search) {
-        services = services.filter(svc => {
-          return (
-            svc.name.toLowerCase().includes(search) ||
-            svc.system.toLowerCase().includes(search)
-          );
-        });
+        services = services.filter(svc => (
+          svc.name.toLowerCase().includes(search) ||
+          svc.system.toLowerCase().includes(search)
+        ));
       }
 
       const offset = request.offset ?? 0;
@@ -239,7 +268,14 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
     async getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition> {
       const { system, serviceName } = request;
       const services = await innerGetServices(catalogClient, auth, undefined, serviceName);
-      return services.filter(svc => svc.system === `${system}`)[0];
+      // Find first matching service (array already filtered by serviceName at query level)
+      return services.find(svc => svc.system === system) ?? {
+        name: `${system}-${serviceName}`,
+        serviceName,
+        owner: '',
+        system,
+        versions: [],
+      };
     },
 
     async getServiceInformation(request: { applicationCode: string, serviceName: string, serviceVersion: string, imageVersion: string }): Promise<ServiceInformation | undefined> {
@@ -249,10 +285,10 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
         return res;
       }
       return {
-        applicationCode: applicationCode,
-        serviceName: serviceName,
-        serviceVersion: serviceVersion,
-        imageVersion: imageVersion,
+        applicationCode,
+        serviceName,
+        serviceVersion,
+        imageVersion,
         repository: '',
         sonarQubeProjectKey: '',
         apiDependencies: {},
@@ -261,9 +297,8 @@ export async function servicePlatformService(options: ServicePlatformServiceOpti
 
     async addServiceInformation(request: { serviceInformation: ServiceInformation }): Promise<string> {
       const { serviceInformation } = request;
-      await apiPlatformStore.storeServiceInformation(serviceInformation)
+      await apiPlatformStore.storeServiceInformation(serviceInformation);
       return "ok";
     }
-  }
-
+  };
 }
