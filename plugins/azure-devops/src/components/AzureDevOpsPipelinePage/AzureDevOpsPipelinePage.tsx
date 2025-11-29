@@ -76,18 +76,16 @@ export const getBuildStateComponent = (
 
 interface PipelineRowProps {
   item: BuildRun;
-  onViewLogs?: (buildId: number) => void;
-  loadingLogs: boolean;
-  logs: string[] | null;
+  onViewLogs?: (buildId: number, title: string) => void;
 }
 
-const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowProps) => {
+const PipelineRow = memo(({ item, onViewLogs }: PipelineRowProps) => {
 
   const handleViewLogs = useCallback(() => {
     if (onViewLogs && item.id) {
-      onViewLogs(item.id);
+      onViewLogs(item.id, item.title ?? '');
     }
-  }, [onViewLogs, item.id]);
+  }, [onViewLogs, item.id, item.title]);
 
   const age = useMemo(() => {
     if (!item.queueTime) {
@@ -119,27 +117,9 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
       <Cell title={duration} />
       <Cell title={age} />
       <RACell>
-        <DialogTrigger>
-          <Button variant='primary' onClick={handleViewLogs} isDisabled={!item.id}>
-            View Logs
-          </Button>
-          {!loadingLogs && logs && (
-            <Dialog width='100%' height='100%'>
-              <DialogHeader>
-                <Flex style={{ width: '100%' }}>
-                  Logs - {item.title}
-                </Flex>
-              </DialogHeader>
-              <DialogBody>
-                <Box as='pre' style={{ whiteSpace: 'pre-wrap' }}>
-                  <Text style={{ fontFamily: 'monospace' }}>
-                    {logs?.join('\n')}
-                  </Text>
-                </Box>
-              </DialogBody>
-            </Dialog>
-          )}
-        </DialogTrigger>
+        <Button variant='primary' onPress={handleViewLogs} isDisabled={!item.id}>
+          View Logs
+        </Button>
       </RACell>
     </Row>
   );
@@ -147,7 +127,7 @@ const PipelineRow = memo(({ item, onViewLogs, loadingLogs, logs }: PipelineRowPr
 
 const emptyState = () => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-    No tags found.
+    No Pipelines found.
   </div>
 );
 
@@ -159,18 +139,66 @@ const title = () => (
   </Flex>
 );
 
-export const AzureDevOpsPipelinePage = () => {
-  const [logs, setLogs] = useState<string[] | null>(null);
-  const azureApi = useApi(azureDevOpsApiRef);
-  const [loadingLogs, setLoadingLogs] = useState(false);
+interface LogsDialogState {
+  isOpen: boolean;
+  title: string;
+  loading: boolean;
+  logs: string[] | null;
+}
 
+interface LogsDialogProps extends LogsDialogState {
+  onOpenChange: (isOpen: boolean) => void;
+}
+
+const LogsDialog = memo(({ isOpen, onOpenChange, title: dialogTitle, loading, logs }: LogsDialogProps) => (
+  <DialogTrigger isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Button style={{ display: 'none' }} />
+    <Dialog width='100%' height='100%'>
+      <DialogHeader>
+        <Flex style={{ width: '100%' }}>
+          Logs - {dialogTitle}
+        </Flex>
+      </DialogHeader>
+      <DialogBody>
+        {loading ? (
+          <Progress />
+        ) : (
+          <Box as='pre' style={{ whiteSpace: 'pre-wrap', overflow: 'auto' }}>
+            <Text style={{ fontFamily: 'monospace' }}>
+              {logs?.join('\n') ?? 'No logs available'}
+            </Text>
+          </Box>
+        )}
+      </DialogBody>
+    </Dialog>
+  </DialogTrigger>
+));
+
+const initialLogsDialogState: LogsDialogState = {
+  isOpen: false,
+  title: '',
+  loading: false,
+  logs: null,
+};
+
+export const AzureDevOpsPipelinePage = () => {
+  const [logsDialogState, setLogsDialogState] = useState<LogsDialogState>(initialLogsDialogState);
+  
+  const azureApi = useApi(azureDevOpsApiRef);
   const { entity } = useEntity();
   const { items, loading, error } = useBuildRuns(entity, DEFAULT_BUILD_LIMIT);
 
-  const fetchLogs = useCallback(async (buildId: number) => {
-    setLoadingLogs(true);
-    setLogs([]);
+  const fetchLogs = useCallback(async (buildId: number, buildTitle: string) => {
+      setLogsDialogState(prev => ({
+      ...prev,
+      loading: true,
+      logs: null,
+      title: buildTitle,
+      isOpen: true,
+    }));
+
     if (!buildId) {
+        setLogsDialogState(prev => ({ ...prev, loading: false }));
       return;
     }
 
@@ -184,17 +212,22 @@ export const AzureDevOpsPipelinePage = () => {
         org,
       );
 
-      setLogs(response.log);
+      setLogsDialogState(prev => ({ ...prev, logs: response.log }));
     } catch (err) {
-      //
+        setLogsDialogState(prev => ({ ...prev, logs: ['Error fetching logs'] }));
     } finally {
-      setLoadingLogs(false);
+      setLogsDialogState(prev => ({ ...prev, loading: false }));
     }
   }, [entity, azureApi]);
 
-  const handleViewLogs = useCallback((buildId: number) => {
-    fetchLogs(buildId);
+  const handleViewLogs = useCallback((buildId: number, buildTitle: string) => {
+    fetchLogs(buildId, buildTitle);
   }, [fetchLogs]);
+
+  const handleDialogOpenChange = useCallback((isOpen: boolean) => {
+    setLogsDialogState(prev => ({ ...prev, isOpen }));
+  }, []);
+
 
   if (loading) {
     return (
@@ -224,9 +257,6 @@ export const AzureDevOpsPipelinePage = () => {
 
   return (
     <>
-      {loadingLogs && (
-        <Progress />
-      )}
       <Card>
         <CardHeader>
           {title()}
@@ -247,8 +277,6 @@ export const AzureDevOpsPipelinePage = () => {
                 <PipelineRow
                   item={item}
                   onViewLogs={handleViewLogs}
-                  loadingLogs={loadingLogs}
-                  logs={logs}
                 />
               )}
             </TableBody>
@@ -256,6 +284,10 @@ export const AzureDevOpsPipelinePage = () => {
         </CardBody>
       </Card>
 
+      <LogsDialog
+        {...logsDialogState}
+        onOpenChange={handleDialogOpenChange}
+      />
     </>
   );
 };
