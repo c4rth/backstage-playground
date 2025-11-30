@@ -55,6 +55,7 @@ import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 // Admin Tools
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { adminToolsPermission, notGuestPermission } from '@internal/plugin-permissions-common';
+import { Shortcuts } from '@backstage-community/plugin-shortcuts';
 
 const SidebarLogo = () => {
   const { isOpen } = useSidebarOpenState();
@@ -166,6 +167,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         </SidebarScrollWrapper>
       </SidebarGroup>
       <SidebarSpace />
+      <Shortcuts />
       <SidebarDivider />
       <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
         <SidebarItem icon={RiAdminLine as IconComponent} to="devtools" text="Admin" />
