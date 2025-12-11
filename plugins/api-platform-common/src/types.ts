@@ -97,6 +97,7 @@ export type ServiceInformation = {
   repository: string;
   sonarQubeProjectKey: string;
   apiDependencies: ServiceApisDefinition;
+  dependencies: string[];
 };
 
 export const SERVICEDEFINITIONS_FIELDS = [
@@ -160,5 +161,34 @@ export type SystemDefinitionListResult = {
   offset: number;
   limit: number;
   totalCount: number;
+};
+
+// Libraries
+
+export type LibraryDefinition = {
+  name: string;
+  version: string;
+  owner: string;
+  repository: string;
+  description: string;
+};
+
+export type LibraryDefinitionListResult = {
+  items: LibraryDefinition[];
+  offset: number;
+  limit: number;
+  totalCount: number;
+};
+
+export type LibraryDefinitionsListRequest = {
+  offset?: number;
+  limit?: number;
+  orderBy?: {
+    field: 'name' | 'owner';
+    direction: 'asc' | 'desc';
+  };
+  search?: string;
+  ownership: OwnershipType;
+  userEntityRef?: string | undefined;
 };
 

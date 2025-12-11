@@ -3,13 +3,14 @@ import Router from 'express-promise-router';
 import { DatabaseApiPlatformStore } from '../database/apiPlatformStore';
 import { AuthService, DatabaseService, HttpAuthService, LoggerService, UserInfoService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
-import { createApiPlatformService } from './ApiPlatformService';
-import { createCatalogPlatformService } from './CatalogPlatformService';
-import { createServicePlatformService } from './ServicePlatformService';
-import { createSystemPlatformService } from './SystemPlatformService';
+import { createApiService } from './ApiService';
+import { createCatalogService } from './CatalogService';
+import { createServiceService } from './ServiceService';
+import { createSystemService } from './SystemService';
 import { APIDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation, SYSTEMDEFINITIONS_FIELDS } from '@internal/plugin-api-platform-common';
-import { parseOrderByParam, parseSearchParam, parseTypeParam } from './ApiPlatformService/utils';
-import { RelationType } from './ApiPlatformService/types';
+import { parseOrderByParam, parseSearchParam, parseTypeParam } from './ApiService/utils';
+import { RelationType } from './ApiService/types';
+import { createServiceInformationService } from './ServiceInformationService';
 
 async function getUserEntityRef(ownership: string, httpAuth: HttpAuthService, req: any, userInfo: UserInfoService) {
   let userEntityRef = undefined;
@@ -41,23 +42,26 @@ export async function createRouter(
     skipMigrations: false,
     logger,
   });
-  const apiPlatformService = await createApiPlatformService({
+  const apiService = await createApiService({
     logger,
     catalogClient,
     auth,
   });
-  const catalogPlatformService = await createCatalogPlatformService({
+  const catalogService = await createCatalogService({
     logger,
     catalogClient,
     auth,
   });
-  const servicePlatformService = await createServicePlatformService({
+  const serviceService = await createServiceService({
     logger,
     catalogClient,
-    apiPlatformStore,
     auth
   });
-  const systemPlatformService = await createSystemPlatformService({
+  const serviceInformationService = await createServiceInformationService({
+    logger,
+    apiStore: apiPlatformStore,
+  });
+  const systemService = await createSystemService({
     logger,
     catalogClient,
     auth,
@@ -74,23 +78,23 @@ export async function createRouter(
     const search = parseSearchParam(req.query.search);
     const ownership = parseTypeParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await apiPlatformService.listApis({ limit, offset, orderBy, search, ownership, userEntityRef }));
+    res.json(await apiService.listApis({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
   router.get('/apis/count', async (req, res) => {
     const ownership = parseTypeParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await apiPlatformService.getApisCount(ownership, userEntityRef));
+    res.json(await apiService.getApisCount(ownership, userEntityRef));
   });
 
   router.get('/apis/definitions/:system/:apiName', async (req, res) => {
     const { system, apiName } = req.params;
-    res.json(await apiPlatformService.getApiVersions({ system, apiName }));
+    res.json(await apiService.getApiVersions({ system, apiName }));
   });
 
   router.get('/apis/definitions/:system/:apiName/:apiVersion', async (req, res) => {
     const { system, apiName, apiVersion } = req.params;
-    res.json(await apiPlatformService.getApiMatchingVersion({ system, apiName, apiVersion }));
+    res.json(await apiService.getApiMatchingVersion({ system, apiName, apiVersion }));
   });
 
   router.get('/apis/relations/:system/:apiName', async (req, res) => {
@@ -100,20 +104,20 @@ export async function createRouter(
     if (relationTypeParam === "provider" || relationTypeParam === "consumer") {
       relationType = relationTypeParam as RelationType;
     }
-    res.json(await apiPlatformService.getApiRelations({ system, apiName, relationType }));
+    res.json(await apiService.getApiRelations({ system, apiName, relationType }));
   });
 
   // Endpoints: /catalog
 
   router.post('/catalog', async (req, res) => {
-    res.status(201).json(await catalogPlatformService.registerCatalogInfo(req.body));
+    res.status(201).json(await catalogService.registerCatalogInfo(req.body));
   });
 
   router.delete('/catalog/:kind/:name', async (req, res) => {
-    const entity = await catalogPlatformService.getEntityByName({ name: req.params.name, kind: req.params.kind });
+    const entity = await catalogService.getEntityByName({ name: req.params.name, kind: req.params.kind });
     if (entity) {
       try {
-        res.status(204).json(await catalogPlatformService.unregisterCatalogInfo(entity));
+        res.status(204).json(await catalogService.unregisterCatalogInfo(entity));
       } catch (error) {
         res.status(500).json({ error: error });
       }
@@ -127,7 +131,7 @@ export async function createRouter(
   router.get('/services/count', async (req, res) => {
     const ownership = parseTypeParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await servicePlatformService.getServicesCount(ownership, userEntityRef));
+    res.json(await serviceService.getServicesCount(ownership, userEntityRef));
   });
 
   router.get('/services/definitions', async (req, res) => {
@@ -137,18 +141,18 @@ export async function createRouter(
     const search = parseSearchParam(req.query.search);
     const ownership = parseTypeParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await servicePlatformService.listServices({ limit, offset, orderBy, search, ownership, userEntityRef }));
+    res.json(await serviceService.listServices({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
   router.get('/services/definitions/:system/:serviceName', async (req, res) => {
     const { system, serviceName } = req.params;
-    res.json(await servicePlatformService.getServiceVersions({ system, serviceName }));
+    res.json(await serviceService.getServiceVersions({ system, serviceName }));
   });
 
   // Exposed endpoints: /services-informations
   router.get('/service-informations/:applicationCode/:serviceName/:serviceVersion/:imageVersion', async (req, res) => {
     const { applicationCode, serviceName, serviceVersion, imageVersion } = req.params;
-    const info = await servicePlatformService.getServiceInformation({
+    const info = await serviceInformationService.getServiceInformation({
       applicationCode,
       serviceName,
       serviceVersion,
@@ -159,7 +163,7 @@ export async function createRouter(
 
   router.post('/service-informations', async (req, res) => {
     const serviceInformation: ServiceInformation = req.body;
-    const result = await servicePlatformService.addServiceInformation({ serviceInformation });
+    const result = await serviceInformationService.addServiceInformation({ serviceInformation });
     res.status(201).json(result);
   });
 
@@ -171,18 +175,18 @@ export async function createRouter(
     const search = parseSearchParam(req.query.search);
     const ownership = parseTypeParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await systemPlatformService.listSystems({ limit, offset, orderBy, search, ownership, userEntityRef }));
+    res.json(await systemService.listSystems({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
   router.get('/systems/count', async (req, res) => {
     const ownership = parseTypeParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await systemPlatformService.getSystemsCount(ownership, userEntityRef));
+    res.json(await systemService.getSystemsCount(ownership, userEntityRef));
   });
 
 
   router.get('/systems/definitions/:systemName', async (req, res) => {
-    res.json(await systemPlatformService.getSystem(req.params.systemName));
+    res.json(await systemService.getSystem(req.params.systemName));
   });
 
   return router;

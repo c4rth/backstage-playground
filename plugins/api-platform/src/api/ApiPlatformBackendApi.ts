@@ -9,7 +9,9 @@ import {
   SystemDefinition,
   SystemDefinitionListResult,
   SystemDefinitionsListRequest,
-  OwnershipType
+  OwnershipType,
+  LibraryDefinitionsListRequest,
+  LibraryDefinitionListResult
 } from "@internal/plugin-api-platform-common";
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
@@ -34,6 +36,8 @@ export interface ApiPlatformBackendApi {
   listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult>;
 
   getSystem(systemName: string): Promise<(SystemDefinition)>;
+
+  listLibraries(options: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult>;
 
 }
 
@@ -175,6 +179,13 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
     const encodedSystemName = encodeURIComponent(systemName);
     return this.fetchJson<SystemDefinition>(`/systems/definitions/${encodedSystemName}`);
+  }
+
+  // Libraries
+  
+  async listLibraries(options: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult> {
+    const searchParams = this.buildListParams(options);
+    return this.fetchJson<LibraryDefinitionListResult>('/libraries/definitions', searchParams);
   }
 
 }

@@ -1,1 +1,0 @@
-export { ApiPlatformExplorerPage } from './ApiPlatformExplorerPage';

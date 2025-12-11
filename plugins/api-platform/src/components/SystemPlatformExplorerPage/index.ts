@@ -1,1 +1,0 @@
-export { SystemPlatformExplorerPage  } from './SystemPlatformExplorerPage';

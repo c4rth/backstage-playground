@@ -8,4 +8,5 @@ export type DbServicesRow = {
   sonarQubeProjectKey: string;
   providedApis?: string;
   consumedApis?: string;
+  dependencies?: string;
 };

@@ -47,7 +47,7 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Api Platform
-import { ApiPlatformSearchResultListItem } from '@internal/plugin-api-platform';
+import { ApiSearchResultListItem } from '@internal/plugin-api-platform';
 // Search
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
@@ -85,7 +85,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarLogo />
       <SidebarGroup to="/search">
         <SidebarSearchModal icon={RiMenuSearchLine as IconComponent} resultItemComponents={[
-          <ApiPlatformSearchResultListItem icon={<CatalogIcon />} />,
+          <ApiSearchResultListItem icon={<CatalogIcon />} />,
           <McaComponentSearchResultListItem icon={<RiStackLine />} />,
           <CatalogSearchResultListItem icon={<CatalogIcon />} />,
           <TechDocsSearchResultListItem icon={<DocsIcon />} />
@@ -97,6 +97,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
         <SidebarItem icon={RiCpuLine as IconComponent} to="api-platform/service" text="Services" />
         <SidebarItem icon={useApp().getSystemIcon('kind:api')!} to="api-platform/api" text="APIs" />
+        <SidebarItem icon={RiBookShelfLine as IconComponent} to="api-platform/library" text="Libraries" />
         <SidebarItem icon={RiStackLine as IconComponent} text="MCA" hasSubmenu>
           <SidebarSubmenu title="MCA">
             <SidebarSubmenuItem icon={RiCircleLine as IconComponent} to="mca/components" title="Components" />

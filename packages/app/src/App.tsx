@@ -1,5 +1,5 @@
 import { Route } from 'react-router-dom';
-import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
+import { apiDocsPlugin, ApiExplorerPage as BackstageApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
   CatalogEntityPage,
   CatalogIndexPage,
@@ -52,13 +52,14 @@ import { AutoLogout } from '@backstage/core-components';
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
 // API platform
 import {
-  ApiPlatformDefinitionPage,
-  ApiPlatformRedirectToNoSystem,
-  ApiPlatformExplorerPage,
+  ApiDefinitionPage,
+  ApiRedirectToNoSystem,
+  ApiExplorerPage,
   ServicePlatformExplorerPage,
   ServicePlatformDefinitionPage,
   SystemPlatformExplorerPage,
   SystemPlatformDefinitionPage,
+  LibraryExplorerPage,
 } from '@internal/plugin-api-platform';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
@@ -153,7 +154,7 @@ const routes = (
         </RequirePermission>
       }
     />
-    <Route path="/api-docs" element={<ApiExplorerPage />} />
+    <Route path="/api-docs" element={<BackstageApiExplorerPage />} />
     <Route
       path="/catalog-import"
       element={
@@ -175,14 +176,15 @@ const routes = (
         </RequirePermission>
       }
     />
-    <Route path="/api-platform/api" element={<ApiPlatformExplorerPage />} />
+    <Route path="/api-platform/api" element={<ApiExplorerPage />} />
     {/* For compatibility with old URLs */}
-    <Route path="/api-platform/api/:name" element={<ApiPlatformRedirectToNoSystem />} />
-    <Route path="/api-platform/api/:system/:name" element={<ApiPlatformDefinitionPage />} />
+    <Route path="/api-platform/api/:name" element={<ApiRedirectToNoSystem />} />
+    <Route path="/api-platform/api/:system/:name" element={<ApiDefinitionPage />} />
     <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />
     <Route path="/api-platform/service/:system/:name" element={<ServicePlatformDefinitionPage />} />
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
     <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
+    <Route path="/api-platform/library" element={<LibraryExplorerPage />} />
     <Route path="/mca/components" element={<McaComponentExplorerPage />} />
     <Route path="/mca/components/:name" element={<McaComponentDefinitionPage />} />
     <Route path="/mca/basetypes" element={<McaBaseTypeExplorerPage />} />

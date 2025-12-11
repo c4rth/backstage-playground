@@ -5,9 +5,9 @@ export function getStringForKey(key: string): string {
         case 'ServicePlatformExplorerPage.text2':
             return 'The Service Explorer helps you maintain visibility and control over your organization\'s services, making it easy to discover, document, and govern your service landscape.';
 
-        case 'ApiPlatformExplorerPage.text1':
+        case 'ApiExplorerPage.text1':
             return "Explore all API definitions registered in Backstage. This screen provides a searchable and filterable table of APIs, including their names, descriptions, and associated systems. Use this view to quickly find, review, and navigate to detailed information about each API in your platform.";
-        case 'ApiPlatformExplorerPage.text2':
+        case 'ApiExplorerPage.text2':
             return "The API Explorer helps you maintain visibility and control over your organization's APIs, making it easy to discover, document, and govern your API landscape.";
 
         case 'SystemPlatformExplorerPage.text1':

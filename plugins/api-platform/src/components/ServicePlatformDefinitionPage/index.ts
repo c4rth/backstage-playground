@@ -1,1 +1,0 @@
-export { ServicePlatformDefinitionPage } from './ServicePlatformDefinitionPage';

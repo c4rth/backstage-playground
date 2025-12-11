@@ -89,6 +89,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
         consumedApis: result.consumedApis ? JSON.parse(result.consumedApis) : [],
         providedApis: result.providedApis ? JSON.parse(result.providedApis) : [],
       },
+      dependencies: result.dependencies ? JSON.parse(result.dependencies) : [],
     };
   }
 

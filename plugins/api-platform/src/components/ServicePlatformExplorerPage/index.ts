@@ -1,1 +1,0 @@
-export { ServicePlatformExplorerPage  } from './ServicePlatformExplorerPage';

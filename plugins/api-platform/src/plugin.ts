@@ -6,10 +6,10 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-import { ApiPlatformBackendClient, apiPlatformBackendApiRef } from './api';
+import { apiPlatformBackendApiRef, ApiPlatformBackendClient } from './api';
 import { apiPlatformRouteRef } from './routes';
 import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
-import { ApiPlatformSearchResultListItemProps } from './components/ApiPlatformSearchResultListItem';
+import { ApiSearchResultListItemProps } from './components/ApiSearchResultListItem';
 
 export const apiPlatformPlugin = createPlugin({
   id: 'api-platform',
@@ -23,87 +23,98 @@ export const apiPlatformPlugin = createPlugin({
   ],
 });
 
-export const ApiPlatformExplorerPage = apiPlatformPlugin.provide(
+export const ApiExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
-    name: 'ApiPlatformExplorerPage',
+    name: 'ApiExplorerPage',
     component: () =>
-      import('./components/ApiPlatformExplorerPage').then(m => m.ApiPlatformExplorerPage),
+      import('./components/ApiExplorerPage').then(m => m.ApiExplorerPage),
     mountPoint: apiPlatformRouteRef,
   }),
 );
 
-export const ApiPlatformDefinitionPage = apiPlatformPlugin.provide(
+export const ApiDefinitionPage = apiPlatformPlugin.provide(
   createComponentExtension({
-    name: 'ApiPlatformDefinitionPage',
+    name: 'ApiDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/ApiPlatformDefinitionPage').then(m => m.ApiPlatformDefinitionPage),
+        import('./components/ApiDefinitionPage').then(m => m.ApiDefinitionPage),
     },
   }),
 );
 
-export const ApiPlatformRedirectToNoSystem = apiPlatformPlugin.provide(
+export const ApiRedirectToNoSystem = apiPlatformPlugin.provide(
   createComponentExtension({
-    name: 'ApiPlatformRedirectToNoSystem',
+    name: 'ApiRedirectToNoSystem',
     component: {
       lazy: () =>
-        import('./components/ApiPlatformDefinitionPage').then(m => m.ApiPlatformRedirectToNoSystem),
+        import('./components/ApiDefinitionPage').then(m => m.ApiRedirectToNoSystem),
     },
   }),
 );
 
 //-------------------------------------------------------------------------------------------------
 
-export const ServicePlatformExplorerPage = apiPlatformPlugin.provide(
+export const ServiceExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
-    name: 'ServicePlatformExplorerPage',
+    name: 'ServiceExplorerPage',
     component: () =>
-      import('./components/ServicePlatformExplorerPage').then(m => m.ServicePlatformExplorerPage),
+      import('./components/ServiceExplorerPage').then(m => m.ServiceExplorerPage),
     mountPoint: apiPlatformRouteRef,
   }),
 );
 
-export const ServicePlatformDefinitionPage = apiPlatformPlugin.provide(
+export const ServiceDefinitionPage = apiPlatformPlugin.provide(
   createComponentExtension({
-    name: 'ServicePlatformDefinitionPage',
+    name: 'ServiceDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/ServicePlatformDefinitionPage').then(m => m.ServicePlatformDefinitionPage),
+        import('./components/ServiceDefinitionPage').then(m => m.ServiceDefinitionPage),
     },
   }),
 );
 
 //-------------------------------------------------------------------------------------------------
 
-export const SystemPlatformExplorerPage = apiPlatformPlugin.provide(
+export const LibraryExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
-    name: 'SystemPlatformExplorerPage',
+    name: 'LibraryExplorerPage',
     component: () =>
-      import('./components/SystemPlatformExplorerPage').then(m => m.SystemPlatformExplorerPage),
+      import('./components/LibraryExplorerPage').then(m => m.LibraryExplorerPage),
     mountPoint: apiPlatformRouteRef,
   }),
 );
 
-export const SystemPlatformDefinitionPage = apiPlatformPlugin.provide(
+//-------------------------------------------------------------------------------------------------
+
+export const SystemExplorerPage = apiPlatformPlugin.provide(
+  createRoutableExtension({
+    name: 'SystemExplorerPage',
+    component: () =>
+      import('./components/SystemExplorerPage').then(m => m.SystemExplorerPage),
+    mountPoint: apiPlatformRouteRef,
+  }),
+);
+
+export const SystemDefinitionPage = apiPlatformPlugin.provide(
   createComponentExtension({
-    name: 'SystemPlatformDefinitionPage',
+    name: 'SystemDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/SystemPlatformDefinitionPage').then(m => m.SystemPlatformDefinitionPage),
+        import('./components/SystemDefinitionPage').then(m => m.SystemDefinitionPage),
     },
   }),
 );
 
 //-------------------------------------------------------------------------------------------------
 
-export const ApiPlatformSearchResultListItem: (
-  props: SearchResultListItemExtensionProps<ApiPlatformSearchResultListItemProps>,
+export const ApiSearchResultListItem: (
+  props: SearchResultListItemExtensionProps<ApiSearchResultListItemProps>,
 ) => React.JSX.Element | null = apiPlatformPlugin.provide(
   createSearchResultListItemExtension({
-    name: 'ApiPlatformSearchResultListItem',
+    name: 'ApiSearchResultListItem',
     component: () =>
-      import('./components/ApiPlatformSearchResultListItem').then(
-        m => m.ApiPlatformSearchResultListItem,
+      import('./components/ApiSearchResultListItem').then(
+        m => m.ApiSearchResultListItem,
       ),
     predicate: result => result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.')
   }),

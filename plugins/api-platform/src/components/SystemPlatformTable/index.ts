@@ -1,1 +1,0 @@
-export { SystemPlatformTable } from './SystemPlatformTable';

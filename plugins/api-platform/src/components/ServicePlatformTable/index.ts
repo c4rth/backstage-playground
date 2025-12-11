@@ -1,1 +1,0 @@
-export { ServicePlatformTable } from './ServicePlatformTable';
