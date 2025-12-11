@@ -30,6 +30,7 @@ export const CATALOG_SPEC_LIFECYCLE = "spec.lifecycle";
 export const CATALOG_SPEC_OWNER = "spec.owner";
 export const CATALOG_SPEC_SYSTEM = "spec.system";
 export const CATALOG_SPEC_TYPE = "spec.type";
+export const CATALOG_SPEC_DEPENDS_ON = "spec.dependsOn";
 export const CATALOG_RELATIONS = "relations";
 export const CATALOG_KIND = "kind";
 

@@ -29,7 +29,7 @@ import { AzureDevOpsPipelinePage, AzureDevOpsGitTagsPage, AzureReadmeCard } from
 //
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Grid, Box, Text, ButtonIcon, Tabs, TabList, Tab, TabPanel } from '@backstage/ui';
+import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import styles from './ServiceDefinitionCard.module.css';
 import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '@internal/plugin-azure-devops';
@@ -161,12 +161,8 @@ export const ServiceDefinitionCard = memo(() => {
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/dependencies" title="Dependencies">
-                <Tabs>
-                    <TabList>
-                        <Tab id="tab-api"><Text variant='body-medium' weight='bold'>APIS</Text></Tab>
-                        <Tab id="tab-library"><Text variant='body-medium' weight='bold'>LIBRARIES</Text></Tab>
-                    </TabList>
-                    <TabPanel id="tab-api">
+                <TabbedLayout>
+                    <TabbedLayout.Route path="/dependencies/apis" title="APIs">
                         <Grid.Root columns='12'>
                             <Grid.Item colSpan='6'>
                                 <ServiceApiRelationCard dependency="provided" />
@@ -175,11 +171,11 @@ export const ServiceDefinitionCard = memo(() => {
                                 <ServiceApiRelationCard dependency="consumed" />
                             </Grid.Item>
                         </Grid.Root>
-                    </TabPanel>
-                    <TabPanel id="tab-library">
+                    </TabbedLayout.Route>
+                    <TabbedLayout.Route path="/dependencies/libraries" title="Libraries">
                         <ServiceLibraryRelationCard />
-                    </TabPanel>
-                </Tabs>
+                    </TabbedLayout.Route>
+                </TabbedLayout>
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/appreg" title="App Registry">

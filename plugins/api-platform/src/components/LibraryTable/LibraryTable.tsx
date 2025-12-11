@@ -4,9 +4,6 @@ import {
     Table,
     TableColumn,
 } from '@backstage/core-components';
-import {
-    EntityRefLinks,
-} from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box, Flex } from '@backstage/ui';
 import { useCallback, useMemo, useState } from 'react';

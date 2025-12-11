@@ -11,6 +11,7 @@ import {
   CATALOG_METADATA_SERVICE_NAME,
   CATALOG_METADATA_SERVICE_PLATFORM,
   CATALOG_METADATA_SERVICE_VERSION,
+  CATALOG_SPEC_DEPENDS_ON,
   CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_OWNER,
   CATALOG_SPEC_SYSTEM,
@@ -63,10 +64,11 @@ async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, or
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_SPEC_OWNER,
+        CATALOG_SPEC_DEPENDS_ON,
       ],
-      order: { 
-        field: CATALOG_METADATA_NAME, 
-        order: 'asc' 
+      order: {
+        field: CATALOG_METADATA_NAME,
+        order: 'asc'
       },
     },
     { token });
@@ -83,7 +85,7 @@ async function fetchServiceEntities(
   userEntityRef: string | undefined,
 ): Promise<Entity[]> {
   const token = await getCatalogToken(auth);
-  
+
   // Fetch user groups in parallel with entities if needed
   const [entities, userGroupRefs] = await Promise.all([
     catalogClient.getEntities(
@@ -110,13 +112,22 @@ async function fetchServiceEntities(
   return entities;
 }
 
+function parseDependencies(dependsOn: any): string[] {
+  if (Array.isArray(dependsOn)) {
+    return dependsOn.map(dep => dep.toString().replace(/^component:/, ''));
+  } else if (dependsOn) {
+    return [dependsOn.toString().replace(/^component:/, '')];
+  } 
+  return [];
+}
+
 // Process entities into ServiceDefinition array
 function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsOptions | undefined): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
 
   for (const entity of entities) {
     if (!entity.metadata || !entity.spec) continue;
-    
+
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
     const system = entity.spec.system?.toString();
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
@@ -124,7 +135,7 @@ function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsO
 
     const lifecycle = entity.spec.lifecycle?.toString().toLowerCase() || '-';
     const mapKey = `${system}-${name}`;
-    
+
     // Get or create service definition
     let def = mapServices.get(mapKey);
     if (!def) {
@@ -150,10 +161,12 @@ function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsO
 
     // Add environment info
     const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
+
     defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
       imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
       entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
       platform: platforms,
+      dependencies: parseDependencies(entity.spec.dependsOn),
     };
   }
 
@@ -237,10 +250,15 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
           CATALOG_SPEC_SYSTEM,
           CATALOG_SPEC_LIFECYCLE,
           CATALOG_SPEC_OWNER,
+          CATALOG_SPEC_DEPENDS_ON
         ],
         request.ownership ?? 'all',
         request.userEntityRef,
       );
+
+      logger.info("***************");
+      logger.info(JSON.stringify(entities, null, 2));
+      logger.info("***************");
 
       let services = processServiceEntities(entities, request.orderBy);
 

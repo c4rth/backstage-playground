@@ -48,8 +48,6 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
     },
     { token }
   );
-
-  // Single pass: map and filter in one iteration, skip redundant apiName check (already filtered by query)
   const versions: LibraryDefinition[] = [];
   for (const entity of entities.items) {
     const version = entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
@@ -61,7 +59,7 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
     }
   }
 
-  return versions.sort((a, b) => semver.rcompare(a.version, b.version));
+  return versions.sort((a, b) => semver.valid(a.version) && semver.valid(b.version) ? semver.rcompare(a.version, b.version) : b.version.localeCompare(a.version));
 }
 
 function getLatestByLibraryName(entities: Entity[]): Entity[] {

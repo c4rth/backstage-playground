@@ -56,6 +56,7 @@ export type ServiceEnvironmentDefinition = {
   imageVersion: string;
   entityRef: string;
   platform: string;
+  dependencies: string[];
 };
 
 export type ServiceVersionDefinition = {

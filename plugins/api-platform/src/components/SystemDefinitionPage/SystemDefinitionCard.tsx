@@ -53,7 +53,6 @@ export const SystemDefinitionCard = memo<SystemDefinitionCardProps>(({ system, a
             isDisabled={!entityData.hasDocs}
             size='medium'
             variant='tertiary'
-            onClick={(_) => alert('Hello')}
         >
             <Link to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`} />
         </ButtonIcon>

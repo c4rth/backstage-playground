@@ -11,7 +11,8 @@ import {
   SystemDefinitionsListRequest,
   OwnershipType,
   LibraryDefinitionsListRequest,
-  LibraryDefinitionListResult
+  LibraryDefinitionListResult,
+  LibraryDefinition
 } from "@internal/plugin-api-platform-common";
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
@@ -38,6 +39,8 @@ export interface ApiPlatformBackendApi {
   getSystem(systemName: string): Promise<(SystemDefinition)>;
 
   listLibraries(options: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult>;
+
+  getLibraryVersions(system: string, libraryName: string): Promise<(LibraryDefinition[])>;
 
 }
 
@@ -186,6 +189,13 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   async listLibraries(options: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult> {
     const searchParams = this.buildListParams(options);
     return this.fetchJson<LibraryDefinitionListResult>('/libraries/definitions', searchParams);
+  }
+
+  async getLibraryVersions(system: string, libraryName: string): Promise<LibraryDefinition[]> {
+    if (!libraryName?.trim()) throw new Error('Library name is required');
+    const path = `/libraries/definitions/${encodeURIComponent(system)}/${encodeURIComponent(libraryName)}`;
+    const versions = await this.fetchJson<LibraryDefinition[]>(path);
+    return Array.isArray(versions) ? versions : [];
   }
 
 }

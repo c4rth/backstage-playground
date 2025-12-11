@@ -1,10 +1,10 @@
-import { memo, useMemo } from 'react';
+import { Fragment, memo, useMemo } from 'react';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { Text, TooltipTrigger, Tooltip } from '@backstage/ui';
+import { Text, TooltipTrigger, Tooltip, Box, Flex } from '@backstage/ui';
 
 export type ServiceChipProps = {
     index: number;
@@ -62,9 +62,23 @@ export const ServiceChip = memo<ServiceChipProps>(({
 
         const tooltip = service ? (
             <>
-            <Text>Platform: <b>{service.platform}</b></Text>
-            <br/>
-            <Text>Version: <b>{service.imageVersion}</b></Text>
+                <Text>Platform: <b>{service.platform}</b></Text>
+                <br />
+                <Text>Version: <b>{service.imageVersion}</b></Text>
+                <br />
+                {service.dependencies && service.dependencies.length > 0 ?
+                    (
+                        <>
+                            <Text>Dependencies:</Text>
+                            <Flex direction="column" gap="spacing-1">
+                                {service.dependencies.map((dep) => (
+                                    <Text key={dep}>
+                                        <Text>- <b>{dep}</b></Text>
+                                    </Text>
+                                ))}
+                            </Flex>
+                        </>
+                    ) : null}
             </>
         ) : null;
 

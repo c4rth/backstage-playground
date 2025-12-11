@@ -207,6 +207,11 @@ export async function createRouter(
     res.json(await libraryService.listLibraries({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
+  router.get('/libraries/definitions/:system/:libraryName', async (req, res) => {
+    const { system, libraryName } = req.params;
+    res.json(await libraryService.getLibraryVersions({ system, libraryName }));
+  });
+
   return router;
 }
 
