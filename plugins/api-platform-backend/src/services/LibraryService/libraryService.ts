@@ -15,11 +15,12 @@ import {
   CATALOG_METADATA_LIBRARY_VERSION,
   LibraryDefinitionsOptions,
   ANNOTATION_LIBRARY_NAME,
-  ANNOTATION_LIBRARY_VERSION
+  ANNOTATION_LIBRARY_VERSION,
+  CATALOG_RELATIONS
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
-import { Entity } from '@backstage/catalog-model';
+import { Entity, RELATION_DEPENDENCY_OF } from '@backstage/catalog-model';
 import { getUserGroups } from '../common/utils';
 import { getCatalogToken } from '../common/token';
 
@@ -44,17 +45,19 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
   const entities = await catalogClient.getEntities(
     {
       filter: getFilter(system, libraryName),
-      fields: [CATALOG_METADATA],
+      fields: [CATALOG_METADATA, CATALOG_RELATIONS],
     },
     { token }
   );
   const versions: LibraryDefinition[] = [];
   for (const entity of entities.items) {
     const version = entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
+    const dependsOf = entity.relations?.reduce((count, relation) => relation.type === RELATION_DEPENDENCY_OF ? count + 1 : count, 0) || 0;
     if (version) {
       versions.push({
         entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         version,
+        dependsOf,
       });
     }
   }
@@ -211,7 +214,6 @@ export async function libraryService(options: LibraryServiceOptions): Promise<Li
     async getLibraryVersions(request: { system: string, libraryName: string }): Promise<LibraryDefinition[]> {
       return innerGetLibraryVersions(catalogClient, auth, request.system, request.libraryName);
     },
-
   };
 
 }

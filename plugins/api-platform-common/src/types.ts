@@ -169,6 +169,7 @@ export type SystemDefinitionListResult = {
 export type LibraryDefinition = {
   entityRef: string;
   version: string;
+  dependsOf: number;
 };
 
 export const LIBRARYDEFINITIONS_FIELDS = [

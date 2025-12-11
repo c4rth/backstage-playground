@@ -1,10 +1,10 @@
-import { Fragment, memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { Text, TooltipTrigger, Tooltip, Box, Flex } from '@backstage/ui';
+import { Text, TooltipTrigger, Tooltip, Flex } from '@backstage/ui';
 
 export type ServiceChipProps = {
     index: number;
