@@ -81,11 +81,11 @@ const tableOptions = {
     thirdSortClick: false,
 };
 
-interface ServiceRelationCardProps {
+interface ServiceApiRelationCardProps {
     dependency: 'provided' | 'consumed';
 }
 
-export const ServiceRelationCard = memo<ServiceRelationCardProps>(({ dependency }) => {
+export const ServiceApiRelationCard = memo<ServiceApiRelationCardProps>(({ dependency }) => {
     const { entity } = useEntity();
     const catalogApi = useApi(catalogApiRef);
 

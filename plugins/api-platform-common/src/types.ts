@@ -166,15 +166,27 @@ export type SystemDefinitionListResult = {
 // Libraries
 
 export type LibraryDefinition = {
-  name: string;
+  entityRef: string;
   version: string;
-  owner: string;
-  repository: string;
-  description: string;
+};
+
+export const LIBRARYDEFINITIONS_FIELDS = [
+  'name',
+  'description',
+  'system'] as const;
+
+export type LibraryDefinitionsListFields =
+  | 'name'
+  | 'description'
+  | 'system';
+
+export type LibraryDefinitionsOptions = {
+  field: LibraryDefinitionsListFields;
+  direction: 'asc' | 'desc';
 };
 
 export type LibraryDefinitionListResult = {
-  items: LibraryDefinition[];
+  items: Entity[];
   offset: number;
   limit: number;
   totalCount: number;
@@ -183,10 +195,7 @@ export type LibraryDefinitionListResult = {
 export type LibraryDefinitionsListRequest = {
   offset?: number;
   limit?: number;
-  orderBy?: {
-    field: 'name' | 'owner';
-    direction: 'asc' | 'desc';
-  };
+  orderBy?: LibraryDefinitionsOptions;
   search?: string;
   ownership: OwnershipType;
   userEntityRef?: string | undefined;

@@ -84,6 +84,16 @@ export const LibraryExplorerPage = apiPlatformPlugin.provide(
   }),
 );
 
+export const LibraryDefinitionPage = apiPlatformPlugin.provide(
+  createComponentExtension({
+    name: 'LibraryDefinitionPage',
+    component: {
+      lazy: () =>
+        import('./components/LibraryDefinitionPage').then(m => m.LibraryDefinitionPage),
+    },
+  }),
+);
+
 //-------------------------------------------------------------------------------------------------
 
 export const SystemExplorerPage = apiPlatformPlugin.provide(

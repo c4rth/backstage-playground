@@ -60,6 +60,7 @@ import {
   SystemPlatformExplorerPage,
   SystemPlatformDefinitionPage,
   LibraryExplorerPage,
+  LibraryDefinitionPage,
 } from '@internal/plugin-api-platform';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
@@ -185,6 +186,7 @@ const routes = (
     <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
     <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
     <Route path="/api-platform/library" element={<LibraryExplorerPage />} />
+    <Route path="/api-platform/library/:system/:name" element={<LibraryDefinitionPage />} />
     <Route path="/mca/components" element={<McaComponentExplorerPage />} />
     <Route path="/mca/components/:name" element={<McaComponentDefinitionPage />} />
     <Route path="/mca/basetypes" element={<McaBaseTypeExplorerPage />} />

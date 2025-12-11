@@ -1,6 +1,5 @@
 import {
     Link,
-    Progress,
     ResponseErrorPanel,
     Table,
     TableColumn,
@@ -10,19 +9,20 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box, Flex } from '@backstage/ui';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
 import { Query } from '@material-table/core';
-import { SystemDefinitionsListRequest, OwnershipType } from '@internal/plugin-api-platform-common';
+import { OwnershipType, LibraryDefinitionsListRequest, ANNOTATION_LIBRARY_NAME, ANNOTATION_LIBRARY_VERSION } from '@internal/plugin-api-platform-common';
 
 type TableRow = {
     id: number,
     name: string,
     description: string,
+    latestVersion: string,
     entityRef: string,
-    owner: string,
+    system: string,
 }
 
 const columns: TableColumn<TableRow>[] = [
@@ -32,11 +32,17 @@ const columns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ name }: TableRow) => (
-            <Link to={name}>
-                <ComponentDisplayName text={name} type='system' />
+        render: ({ name, system }: TableRow) => (
+            <Link to={`/api-platform/library/${system}/${name}`}>
+                <ComponentDisplayName text={name} type="library" />
             </Link>
         ),
+    },
+    {
+        title: 'Latest Version',
+        width: '15%',
+        field: 'latestVersion',
+        render: ({ latestVersion }: TableRow) => latestVersion || '-',
     },
     {
         title: 'Description',
@@ -45,15 +51,18 @@ const columns: TableColumn<TableRow>[] = [
         render: ({ description }: TableRow) => description || '-',
     },
     {
-        title: 'Owner',
-        width: '25%',
-        field: 'owner',
-        render: ({ owner }: TableRow) => (
-            <EntityRefLinks
-                entityRefs={[owner]}
-                defaultKind="group"
-            />
-        ),
+        title: 'System',
+        width: '10%',
+        field: 'system',
+        highlight: true,
+        render: ({ system }: TableRow) =>
+            system === '-' ? (
+                <ComponentDisplayName text={system} type="system" />
+            ) : (
+                <Link to={`/api-platform/system/${system}`}>
+                    <ComponentDisplayName text={system} type="system" />
+                </Link>
+            ),
     },
 ];
 
@@ -62,24 +71,25 @@ const PAGE_SIZE = 20;
 const toEntityRow = (entity: Entity, idx: number): TableRow => {
     return {
         id: idx,
-        name: entity.metadata.name ?? '?',
+        name: entity.metadata[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?',
         description: entity.metadata.description ?? '',
         entityRef: stringifyEntityRef(entity),
-        owner: entity.spec?.owner?.toString() ?? '-',
+        latestVersion: entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString() ?? '-',
+        system: entity.spec?.system?.toString() ?? '-',
     };
 };
 
 async function getData(apiPlatformApi: ApiPlatformBackendApi, ownership: OwnershipType, query: Query<TableRow>) {
     const page = query.page ?? 0;
     const pageSize = query.pageSize ?? PAGE_SIZE;
-    const result = await apiPlatformApi.listSystems({
+    const result = await apiPlatformApi.listLibraries({
         offset: page * pageSize,
         limit: pageSize,
         search: query.search,
         orderBy: query.orderBy ? {
             field: query.orderBy.field,
             direction: query.orderDirection,
-        } as SystemDefinitionsListRequest['orderBy'] : undefined,
+        } as LibraryDefinitionsListRequest['orderBy'] : undefined,
         ownership: ownership,
     });
     if (result) {
@@ -106,8 +116,6 @@ const STORAGE_SEARCH_KEY = 'librariesTablePageSearch';
 export const LibraryTable = ({ }: LibraryTableProps) => {
     const apiPlatformApi = useApi(apiPlatformBackendApiRef);
     const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
-    const [countRows, setCountRows] = useState<number>(0);
-    const [loadingCount, setLoadingCount] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
     const [ownership, setOwnership] = useState<OwnershipType>(
@@ -119,43 +127,31 @@ export const LibraryTable = ({ }: LibraryTableProps) => {
         padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: !loadingCount,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,
-    }), [loadingCount, initialSearch]);
+    }), [initialSearch]);
 
     const tableTitle = useMemo(() => (
-            <Flex gap="0" align="center">
+        <Flex gap="0" align="center">
             <Box mr='1' />
-            {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
+            {ownership === 'owned' ? 'Owned' : 'All'} Libraries
             <Box ml='2' />
             <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
         </Flex>
-    ), [ownership, countRows]);
-
-    useEffect(() => {
-        const fetchCount = async () => {
-            setLoadingCount(true);
-            setError(null);
-            try {
-                const count = await apiPlatformApi.getSystemsCount(ownership);
-                setCountRows(count);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setLoadingCount(false);
-            }
-        };
-        fetchCount();
-    }, [ownership, apiPlatformApi]);
+    ), [ownership]);
 
     const fetchData = useCallback(
         async (query: Query<TableRow>) => {
-            if (query.search !== undefined) {
-                sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
+            try {
+                if (query.search !== undefined) {
+                    sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
+                }
+                return getData(apiPlatformApi, ownership, query);
+            } catch (err) {
+                setError(err as Error);
+                return { data: [], page: 0, totalCount: 0 };
             }
-            return getData(apiPlatformApi, ownership, query);
         },
         [apiPlatformApi, ownership]
     );
@@ -164,16 +160,15 @@ export const LibraryTable = ({ }: LibraryTableProps) => {
         return <ResponseErrorPanel error={error} />;
     }
 
-    if (loadingCount) return <Progress />;
     if (error) return <ResponseErrorPanel error={error} />;
 
     return (
         <Table<TableRow>
-            isLoading={loadingCount}
             columns={columns}
             options={tableOptions}
             title={tableTitle}
             data={fetchData}
+            key={ownership}
         />
     );
 };

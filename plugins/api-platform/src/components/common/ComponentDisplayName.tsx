@@ -1,12 +1,12 @@
 import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
-import { RiPuzzleFill, RiShapesFill, RiCpuLine, RiGlobalLine } from '@remixicon/react'
+import { RiPuzzleFill, RiShapesFill, RiCpuLine, RiGlobalLine, RiBookShelfLine } from '@remixicon/react'
 import { Flex } from '@backstage/ui';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 
 export type ComponentDisplayNameProps = {
     text: string;
-    type: 'api' | 'system' | 'service' | 'azdo' | 'url';
+    type: 'api' | 'system' | 'service' | 'azdo' | 'url' | 'library';
 };
 
 const ICON_STYLE: React.CSSProperties = {
@@ -32,6 +32,9 @@ export const ComponentDisplayName = ({ text, type }: ComponentDisplayNameProps):
             )}
             {type === 'url' && (
                 <RiGlobalLine style={ICON_STYLE}  size='16px'/>
+            )}
+            {type === 'library' && (
+                <RiBookShelfLine style={ICON_STYLE}  size='16px'/>
             )}
             {text}
         </Flex>

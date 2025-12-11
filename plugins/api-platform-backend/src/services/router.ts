@@ -7,10 +7,11 @@ import { createApiService } from './ApiService';
 import { createCatalogService } from './CatalogService';
 import { createServiceService } from './ServiceService';
 import { createSystemService } from './SystemService';
-import { APIDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation, SYSTEMDEFINITIONS_FIELDS } from '@internal/plugin-api-platform-common';
+import { APIDEFINITIONS_FIELDS, LIBRARYDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation, SYSTEMDEFINITIONS_FIELDS } from '@internal/plugin-api-platform-common';
 import { parseOrderByParam, parseSearchParam, parseTypeParam } from './ApiService/utils';
 import { RelationType } from './ApiService/types';
 import { createServiceInformationService } from './ServiceInformationService';
+import { createLibraryService } from './LibraryService';
 
 async function getUserEntityRef(ownership: string, httpAuth: HttpAuthService, req: any, userInfo: UserInfoService) {
   let userEntityRef = undefined;
@@ -62,6 +63,11 @@ export async function createRouter(
     apiStore: apiPlatformStore,
   });
   const systemService = await createSystemService({
+    logger,
+    catalogClient,
+    auth,
+  });
+  const libraryService = await createLibraryService({
     logger,
     catalogClient,
     auth,
@@ -187,6 +193,18 @@ export async function createRouter(
 
   router.get('/systems/definitions/:systemName', async (req, res) => {
     res.json(await systemService.getSystem(req.params.systemName));
+  });
+
+  // Endpoints: /libraries
+
+  router.get('/libraries/definitions', async (req, res) => {
+    const offset = parseInt(req.query.offset as string, 10) || 0;
+    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const orderBy = parseOrderByParam(req.query.orderBy, LIBRARYDEFINITIONS_FIELDS);
+    const search = parseSearchParam(req.query.search);
+    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
+    res.json(await libraryService.listLibraries({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
   return router;

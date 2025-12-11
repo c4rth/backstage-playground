@@ -9,6 +9,7 @@ export {
   SystemDefinitionPage as SystemPlatformDefinitionPage,
   ApiSearchResultListItem,
   LibraryExplorerPage,
+  LibraryDefinitionPage,
  } from './plugin';
 
  export * from './hooks';
