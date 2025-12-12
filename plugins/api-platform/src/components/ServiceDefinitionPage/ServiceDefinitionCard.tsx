@@ -49,7 +49,7 @@ export const ServiceDefinitionCard = memo(() => {
         const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
         const entityRef = getCompoundEntityRef(entity);
         const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
-        if (isAzureDevOpsAvailable(entity)) {
+        if (!isAzureDevOpsAvailable(entity)) {
             return {
                 platform,
                 imageVersion,
