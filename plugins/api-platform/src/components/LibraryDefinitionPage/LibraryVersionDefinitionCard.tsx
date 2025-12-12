@@ -9,7 +9,7 @@ import {
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider, } from '@backstage/plugin-catalog-react';
-import { useEffect, useMemo, useState, Fragment } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ComponentEntity, } from '@backstage/catalog-model';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -23,7 +23,6 @@ import useAsync from 'react-use/esm/useAsync';
 import { fetchAllServicesByLibrary } from './fetchServicesByLibrary';
 import { ListBox, ListBoxItem } from 'react-aria-components';
 import { apiPlatformBackendApiRef } from '../../api';
-import { useGetLibraryVersions } from '../../hooks';
 
 type TableRow = {
   id: number;
@@ -32,22 +31,15 @@ type TableRow = {
   serviceDefinition: ServiceDefinition;
 };
 
-const LIST_ITEM_STYLE = {
-  margin: 2,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '2.5rem',
-};
-
-const EMPTY_STATE_STYLE = { pointerEvents: 'none' as const };
-
 const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
   <ListBox>
     {serviceDefinition.versions?.map((version, idx) => (
-      <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
-        <ListBoxItem style={LIST_ITEM_STYLE}>{renderItem(version, idx)}</ListBoxItem>
-      </Fragment>
+      <ListBoxItem
+        key={`${serviceDefinition.name}-${version.version}-${idx}`}
+        style={{ margin: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '2.5rem' }}
+      >
+        {renderItem(version, idx)}
+      </ListBoxItem>
     ))}
   </ListBox>
 );
@@ -68,17 +60,11 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
     });
   },
   render: ({ serviceDefinition }) =>
-    renderVersionList(serviceDefinition, (version) =>
-      env in version.environments ? (
-        <div style={EMPTY_STATE_STYLE}>
-          <Text variant="body-medium">{version.environments[env as keyof typeof version.environments]?.imageVersion ?? '-'}</Text>
-        </div>
-      ) : (
-        <div style={EMPTY_STATE_STYLE}>
-          <Text variant="body-medium">-</Text>
-        </div>
-      )
-    ),
+    renderVersionList(serviceDefinition, (version) => (
+      <Text variant="body-medium">
+        {version.environments[env as keyof typeof version.environments]?.imageVersion ?? '-'}
+      </Text>
+    )),
 });
 
 const serviceColumns: TableColumn<TableRow>[] = [
@@ -133,37 +119,35 @@ export const LibraryVersionDefinitionCard = () => {
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
 
-  const [libEntityRef, setLibEntityRef] = useState<string | null>(null);
-
   const catalogApi = useApi(catalogApiRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
 
   const [libraryEntity, setLibraryEntity] = useState<ComponentEntity | undefined>(undefined);
+  const [libEntityRef, setLibEntityRef] = useState<string | null>(null);
 
   useEffect(() => {
     if (!name || !queryVersion) return;
-    const fetchLibEntityRef = async () => {
+    
+    const fetchLibraryEntity = async () => {
       try {
         const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!);
         const matchedVersion = libVersions.find(lv => lv.version === queryVersion);
-        return matchedVersion?.entityRef;
+        
+        if (matchedVersion?.entityRef) {
+          setLibEntityRef(matchedVersion.entityRef);
+          const entity = await catalogApi.getEntityByRef(matchedVersion.entityRef);
+          setLibraryEntity(entity as ComponentEntity);
+        }
       } catch (error) {
-        return undefined;
+        setLibEntityRef(null);
+        setLibraryEntity(undefined);
       }
     };
-    fetchLibEntityRef()
-      .then((entityRef) => {
-        setLibEntityRef(entityRef || null);
-      });
-  }, [apiPlatformApi, system, name, queryVersion]);
+    
+    fetchLibraryEntity();
+  }, [apiPlatformApi, catalogApi, system, name, queryVersion]);
 
-  useEffect(() => {
-    if (!libEntityRef) return;
-    catalogApi.getEntityByRef(libEntityRef)
-      .then(entity => setLibraryEntity(entity as ComponentEntity));
-  }, [catalogApi, libEntityRef, system, name, queryVersion]);
-
-  const { value: allServices = [], loading: servicesLoading, error: servicesError } = useAsync(async () => {
+  const { value: allServices = [], loading, error } = useAsync(async () => {
     if (!name || !libraryEntity || !libEntityRef) return [];
     const libName = libEntityRef.replace(/^component:/, '').replace(/^default\//, '');
 
@@ -179,9 +163,6 @@ export const LibraryVersionDefinitionCard = () => {
       Services ({rows.length})
     </Flex>
   ), [rows.length]);
-
-  const loading = servicesLoading;
-  const error = servicesError;
 
   if (error) {
     return <ResponseErrorPanel title='Error loading Services' error={error} />;
