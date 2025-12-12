@@ -57,7 +57,7 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
       versions.push({
         entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         version,
-        dependsOf,
+        dependsOfCount: dependsOf,
       });
     }
   }

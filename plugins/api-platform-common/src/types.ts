@@ -121,6 +121,7 @@ export type ServiceDefinitionsListRequest = {
   search?: string,
   ownership: OwnershipType;
   userEntityRef?: string | undefined;
+  dependsOn?: string;
 };
 
 // Systems
@@ -169,7 +170,7 @@ export type SystemDefinitionListResult = {
 export type LibraryDefinition = {
   entityRef: string;
   version: string;
-  dependsOf: number;
+  dependsOfCount: number;
 };
 
 export const LIBRARYDEFINITIONS_FIELDS = [

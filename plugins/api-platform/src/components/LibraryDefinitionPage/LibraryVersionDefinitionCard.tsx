@@ -9,70 +9,106 @@ import {
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider, } from '@backstage/plugin-catalog-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, Fragment } from 'react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { ComponentEntity, Entity,  } from '@backstage/catalog-model';
+import { ComponentEntity, } from '@backstage/catalog-model';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
-import { Box, Flex } from '@backstage/ui';
+import { Box, Flex, Text } from '@backstage/ui';
 import { ComponentDisplayName } from "../common";
 import {
-  ANNOTATION_IMAGE_VERSION,
-  ANNOTATION_SERVICE_NAME,
-  ANNOTATION_SERVICE_VERSION,
+  ServiceDefinition,
 } from "@internal/plugin-api-platform-common";
 import useAsync from 'react-use/esm/useAsync';
-import { fetchServicesByLibrary } from './fetchServicesByLibrary';
+import { fetchAllServicesByLibrary } from './fetchServicesByLibrary';
+import { ListBox, ListBoxItem } from 'react-aria-components';
+import { apiPlatformBackendApiRef } from '../../api';
 
 type TableRow = {
-  readonly id: number;
-  readonly svcName: string;
-  readonly svcVersion: string;
-  readonly svcImageVersion: string;
-  readonly svcEnvironment: string;
-  readonly svcSystem: string;
+  id: number;
+  name: string;
+  system: string;
+  serviceDefinition: ServiceDefinition;
 };
+
+const LIST_ITEM_STYLE = {
+  margin: 2,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '2.5rem',
+};
+
+const EMPTY_STATE_STYLE = { pointerEvents: 'none' as const };
+
+const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
+  <ListBox>
+    {serviceDefinition.versions?.map((version, idx) => (
+      <Fragment key={`${serviceDefinition.name}-${version.version}-${idx}`}>
+        <ListBoxItem style={LIST_ITEM_STYLE}>{renderItem(version, idx)}</ListBoxItem>
+      </Fragment>
+    ))}
+  </ListBox>
+);
+
+const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
+  title: env.toUpperCase(),
+  width: '12%',
+  align: 'center',
+  cellStyle: { padding: 0 },
+  sorting: false,
+  searchable: true,
+  customFilterAndSearch: (query, row) => {
+    if (!row.serviceDefinition?.versions) return false;
+    const lowerQuery = query.toLowerCase();
+    return row.serviceDefinition.versions.some(version => {
+      const envData = version.environments[env as keyof typeof version.environments];
+      return envData?.imageVersion.toLowerCase().includes(lowerQuery);
+    });
+  },
+  render: ({ serviceDefinition }) =>
+    renderVersionList(serviceDefinition, (version) =>
+      env in version.environments ? (
+        <div style={EMPTY_STATE_STYLE}>
+          <Text variant="body-medium">{version.environments[env as keyof typeof version.environments]?.imageVersion ?? '-'}</Text>
+        </div>
+      ) : (
+        <div style={EMPTY_STATE_STYLE}>
+          <Text variant="body-medium">-</Text>
+        </div>
+      )
+    ),
+});
 
 const serviceColumns: TableColumn<TableRow>[] = [
   {
     title: 'Name',
-    width: '50%',
-    field: 'svcName',
+    width: '25%',
+    field: 'name',
     highlight: true,
     defaultSort: 'asc',
-    render: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
-      <Link to={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}>
-        <ComponentDisplayName text={svcName} type='service' />
+    render: ({ serviceDefinition }) => (
+      <Link to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}>
+        <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
       </Link>
     ),
   },
-  {
-    title: 'Version',
-    width: '10%',
-    field: 'svcImageVersion',
-    sorting: false,
-  },
-  {
-    title: 'Environment',
-    width: '10%',
-    field: 'svcEnvironment',
-  },
+  createEnvironmentColumn('tst'),
+  createEnvironmentColumn('gtu'),
+  createEnvironmentColumn('uat'),
+  createEnvironmentColumn('ptp'),
+  createEnvironmentColumn('prd'),
   {
     title: 'System',
     width: '10%',
     highlight: true,
     field: 'system',
-    render: ({ svcSystem }: TableRow) => {
-      if (svcSystem === "-") {
-        return <ComponentDisplayName text={svcSystem} type="system" />;
-      }
-      return (
-        <Link to={`/api-platform/system/${svcSystem}`} >
-          <ComponentDisplayName text={svcSystem} type="system" />
-        </Link >
-      );
-    },
-  }
+    render: ({ serviceDefinition }) => (
+      <Link to={`/api-platform/system/${serviceDefinition.system}`}>
+        <ComponentDisplayName text={serviceDefinition.system} type="system" />
+      </Link>
+    ),
+  },
 ];
 
 
@@ -84,39 +120,39 @@ const tableOptions = {
   thirdSortClick: false,
 } as const;
 
-const toRow = (service: Entity, idx: number): TableRow => ({
+const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => ({
   id: idx,
-  svcName: service.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '-',
-  svcVersion: service.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '-',
-  svcImageVersion: service.metadata[ANNOTATION_IMAGE_VERSION]?.toString() ?? '-',
-  svcEnvironment: service.spec?.lifecycle?.toString().toUpperCase() ?? '-',
-  svcSystem: service.spec?.system?.toString() ?? '-',
+  name: serviceDefinition.name,
+  system: serviceDefinition.system,
+  serviceDefinition,
 });
 
 export const LibraryVersionDefinitionCard = () => {
   const { name } = useParams();
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
-  const queryEntityRef = searchParams.get('entityRef');
+  const queryLibEntityRef = searchParams.get('entityRef');
 
   const catalogApi = useApi(catalogApiRef);
+  const apiPlatformApi = useApi(apiPlatformBackendApiRef);
 
   const [libraryEntity, setLibraryEntity] = useState<ComponentEntity | undefined>(undefined);
 
 
   useEffect(() => {
-    if (queryEntityRef) {
-      catalogApi.getEntityByRef(queryEntityRef)
+    if (queryLibEntityRef) {
+      catalogApi.getEntityByRef(queryLibEntityRef)
         .then(entity => setLibraryEntity(entity as ComponentEntity));
     }
-  }, [queryEntityRef, catalogApi]);
+  }, [queryLibEntityRef, catalogApi]);
 
 
   const { value: allServices = [], loading: servicesLoading, error: servicesError } = useAsync(async () => {
-    if (!name || !libraryEntity) return [];
-    const serviceArrays = await fetchServicesByLibrary(catalogApi, libraryEntity!);
-    return serviceArrays.flat();
-  }, [libraryEntity, catalogApi]);
+    if (!name || !libraryEntity || !queryLibEntityRef) return [];
+    const libName = queryLibEntityRef.replace(/^component:/, '').replace(/^default\//, '');
+    const result = await fetchAllServicesByLibrary(apiPlatformApi, libName);
+    return result.items;
+  }, [libraryEntity, apiPlatformApi, queryLibEntityRef]);
 
   const rows = useMemo(() => allServices.map(toRow), [allServices]);
 

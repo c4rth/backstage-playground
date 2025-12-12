@@ -76,7 +76,7 @@ const toRow = (libDef: LibraryDefinition, system: string, name: string, idx: num
   version: libDef.version || '?',
   name,
   system,
-  svcNumber: libDef.dependsOf || 0,
+  svcNumber: libDef.dependsOfCount || 0,
   entityRef: libDef.entityRef,
 });
 

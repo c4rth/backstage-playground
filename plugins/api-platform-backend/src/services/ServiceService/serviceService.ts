@@ -117,12 +117,12 @@ function parseDependencies(dependsOn: any): string[] {
     return dependsOn.map(dep => dep.toString().replace(/^component:/, ''));
   } else if (dependsOn) {
     return [dependsOn.toString().replace(/^component:/, '')];
-  } 
+  }
   return [];
 }
 
 // Process entities into ServiceDefinition array
-function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsOptions | undefined): ServiceDefinition[] {
+function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsOptions | undefined, dependsOn?: string): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
 
   for (const entity of entities) {
@@ -132,6 +132,11 @@ function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsO
     const system = entity.spec.system?.toString();
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
     if (!name || !version) continue;
+
+    const dependsOnList = parseDependencies(entity.spec.dependsOn);
+    if (dependsOn && !dependsOnList.includes(dependsOn)) {
+      continue;
+    }
 
     const lifecycle = entity.spec.lifecycle?.toString().toLowerCase() || '-';
     const mapKey = `${system}-${name}`;
@@ -169,6 +174,8 @@ function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsO
       dependencies: parseDependencies(entity.spec.dependsOn),
     };
   }
+
+  
 
   // Sort versions once per service
   for (const def of mapServices.values()) {
@@ -256,11 +263,7 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
         request.userEntityRef,
       );
 
-      logger.info("***************");
-      logger.info(JSON.stringify(entities, null, 2));
-      logger.info("***************");
-
-      let services = processServiceEntities(entities, request.orderBy);
+      let services = processServiceEntities(entities, request.orderBy, request.dependsOn);
 
       const search = request.search?.toLowerCase();
       if (search) {

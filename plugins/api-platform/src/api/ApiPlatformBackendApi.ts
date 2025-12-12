@@ -105,9 +105,9 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   }
 
   private buildListParams(
-    options: { offset?: number; limit?: number; search?: string; ownership?: OwnershipType; orderBy?: { field: string; direction: string } }
+    options: { offset?: number; limit?: number; search?: string; ownership?: OwnershipType; orderBy?: { field: string; direction: string }, dependsOn?: string }
   ): URLSearchParams {
-    const { offset, limit, search, ownership, orderBy } = options;
+    const { offset, limit, search, ownership, orderBy, dependsOn } = options;
 
     const params: Record<string, string | number | undefined> = {
       offset,
@@ -115,6 +115,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
       search,
       ownership,
       orderBy: this.buildOrderByParam(orderBy),
+      dependsOn,
     };
 
     return this.buildSearchParams(params);

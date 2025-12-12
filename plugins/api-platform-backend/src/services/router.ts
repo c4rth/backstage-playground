@@ -147,7 +147,8 @@ export async function createRouter(
     const search = parseSearchParam(req.query.search);
     const ownership = parseTypeParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await serviceService.listServices({ limit, offset, orderBy, search, ownership, userEntityRef }));
+    const dependsOn = parseSearchParam(req.query.dependsOn);
+    res.json(await serviceService.listServices({ limit, offset, orderBy, search, ownership, userEntityRef, dependsOn }));
   });
 
   router.get('/services/definitions/:system/:serviceName', async (req, res) => {
