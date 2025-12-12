@@ -38,16 +38,31 @@ export const ServiceDefinitionCard = memo(() => {
     const { entity } = useEntity<ComponentEntity>();
     const configApi = useApi(configApiRef);
 
+    const availabilityChecks = useMemo(() => ({
+        sonarQube: isSonarQubeAvailable(entity),
+        azureDevOps: isAzureDevOpsAvailable(entity),
+        azurePipelines: isAzurePipelinesAvailable(entity),
+    }), [entity]);
+
     const entityData = useMemo(() => {
         const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
         const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
         const entityRef = getCompoundEntityRef(entity);
         const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
-        const { project, repo } = getAnnotationValuesFromEntity(entity);
+        if (isAzureDevOpsAvailable(entity)) {
+            return {
+                platform,
+                imageVersion,
+                entityRef,
+                hasDocs,
+                repositoryUrl: undefined,
+                repository: undefined,
+            };
+        }
         const lifecycle = entity.spec.lifecycle;
+        const { project, repo } = getAnnotationValuesFromEntity(entity);
         const repositoryUrl = `https://${configApi.getString('azureDevOps.host')}/${configApi.getString('azureDevOps.organization')}/${project}/_git/${repo}?version=GT${lifecycle}`;
-        const repository = `${project}/${repo}`;
-
+        const repository =  `${project}/${repo}`;
         return {
             platform,
             imageVersion,
@@ -57,12 +72,6 @@ export const ServiceDefinitionCard = memo(() => {
             repository,
         };
     }, [entity, configApi]);
-
-    const availabilityChecks = useMemo(() => ({
-        sonarQube: isSonarQubeAvailable(entity),
-        azureDevOps: isAzureDevOpsAvailable(entity),
-        azurePipelines: isAzurePipelinesAvailable(entity),
-    }), [entity]);
 
     /*
     <IconButton
@@ -118,7 +127,7 @@ export const ServiceDefinitionCard = memo(() => {
                 <Grid.Item colSpan='12'>
                     <AboutField
                         label="Repository">
-                        {entityData.repository ? (
+                        {entityData.repository && entityData.repositoryUrl ? (
                             <Link to={entityData.repositoryUrl}>
                                 <ComponentDisplayName text={entityData.repository} type='azdo' />
                             </Link>
