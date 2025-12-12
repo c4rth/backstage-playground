@@ -171,7 +171,7 @@ export const ServiceDefinitionCard = memo(() => {
 
             <TabbedLayout.Route path="/dependencies" title="Dependencies">
                 <TabbedLayout>
-                    <TabbedLayout.Route path="/dependencies/apis" title="APIs">
+                    <TabbedLayout.Route path="/apis" title="APIs">
                         <Grid.Root columns='12'>
                             <Grid.Item colSpan='6'>
                                 <ServiceApiRelationCard dependency="provided" />
@@ -181,7 +181,7 @@ export const ServiceDefinitionCard = memo(() => {
                             </Grid.Item>
                         </Grid.Root>
                     </TabbedLayout.Route>
-                    <TabbedLayout.Route path="/dependencies/libraries" title="Libraries">
+                    <TabbedLayout.Route path="/libraries" title="Libraries">
                         <ServiceLibraryRelationCard />
                     </TabbedLayout.Route>
                 </TabbedLayout>

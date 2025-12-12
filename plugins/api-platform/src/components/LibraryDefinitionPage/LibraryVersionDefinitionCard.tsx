@@ -23,6 +23,7 @@ import useAsync from 'react-use/esm/useAsync';
 import { fetchAllServicesByLibrary } from './fetchServicesByLibrary';
 import { ListBox, ListBoxItem } from 'react-aria-components';
 import { apiPlatformBackendApiRef } from '../../api';
+import { useGetLibraryVersions } from '../../hooks';
 
 type TableRow = {
   id: number;
@@ -128,31 +129,48 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
 });
 
 export const LibraryVersionDefinitionCard = () => {
-  const { name } = useParams();
+  const { system, name } = useParams();
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
-  const queryLibEntityRef = searchParams.get('entityRef');
+
+  const [libEntityRef, setLibEntityRef] = useState<string | null>(null);
 
   const catalogApi = useApi(catalogApiRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
 
   const [libraryEntity, setLibraryEntity] = useState<ComponentEntity | undefined>(undefined);
 
+  useEffect(() => {
+    if (!name || !queryVersion) return;
+    const fetchLibEntityRef = async () => {
+      try {
+        const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!);
+        const matchedVersion = libVersions.find(lv => lv.version === queryVersion);
+        return matchedVersion?.entityRef;
+      } catch (error) {
+        return undefined;
+      }
+    };
+    fetchLibEntityRef()
+      .then((entityRef) => {
+        setLibEntityRef(entityRef || null);
+      });
+  }, [apiPlatformApi, system, name, queryVersion]);
 
   useEffect(() => {
-    if (queryLibEntityRef) {
-      catalogApi.getEntityByRef(queryLibEntityRef)
-        .then(entity => setLibraryEntity(entity as ComponentEntity));
-    }
-  }, [queryLibEntityRef, catalogApi]);
-
+    if (!libEntityRef) return;
+    catalogApi.getEntityByRef(libEntityRef)
+      .then(entity => setLibraryEntity(entity as ComponentEntity));
+  }, [catalogApi, libEntityRef, system, name, queryVersion]);
 
   const { value: allServices = [], loading: servicesLoading, error: servicesError } = useAsync(async () => {
-    if (!name || !libraryEntity || !queryLibEntityRef) return [];
-    const libName = queryLibEntityRef.replace(/^component:/, '').replace(/^default\//, '');
+    if (!name || !libraryEntity || !libEntityRef) return [];
+    const libName = libEntityRef.replace(/^component:/, '').replace(/^default\//, '');
+
     const result = await fetchAllServicesByLibrary(apiPlatformApi, libName);
+
     return result.items;
-  }, [libraryEntity, apiPlatformApi, queryLibEntityRef]);
+  }, [libraryEntity, apiPlatformApi, libEntityRef]);
 
   const rows = useMemo(() => allServices.map(toRow), [allServices]);
 
@@ -171,7 +189,6 @@ export const LibraryVersionDefinitionCard = () => {
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
-
       <Page
         themeId="libraries">
         <Header
@@ -179,7 +196,6 @@ export const LibraryVersionDefinitionCard = () => {
           type='Library'>
           <ComponentHeaderLabels entity={{ metadata: { name, title: name } } as ComponentEntity} />
         </Header>
-
         <Content>
           <Box mb='1'>
             <Table<TableRow>

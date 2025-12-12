@@ -18,11 +18,9 @@ import {
 } from "@internal/plugin-api-platform-common";
 import { useGetLibraryVersions } from '../../hooks';
 import { ComponentEntity } from '@backstage/catalog-model';
-import * as XLSX from "xlsx";
-import { fetchAllServices } from './fetchServicesByLibrary';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
-import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
+import { generateReport } from './generateReport';
 
 type TableRow = {
   readonly id: number;
@@ -48,8 +46,8 @@ const serviceColumns: TableColumn<TableRow>[] = [
       }
       return a.version.localeCompare(b.version);
     },
-    render: ({ name, system, version, entityRef }: TableRow) => (
-      <Link to={`/api-platform/library/${system}/${name}?version=${version}&entityRef=${encodeURIComponent(entityRef)}`}>
+    render: ({ name, system, version }: TableRow) => (
+      <Link to={`/api-platform/library/${system}/${name}?version=${version}`}>
         <ComponentDisplayName text={`${name} v${version}`} type="library" />
       </Link>
     ),
@@ -61,7 +59,6 @@ const serviceColumns: TableColumn<TableRow>[] = [
     sorting: false,
   },
 ];
-
 
 const tableOptions = {
   search: false,
@@ -85,57 +82,6 @@ const tableTitle = (
     By versions
   </Flex>
 );
-
-async function generateReport(
-  apiPlatformApi: ApiPlatformBackendApi,
-  libraryName: string,
-  libraryVersions: LibraryDefinition[] | undefined
-) {
-  if (!libraryVersions) {
-    throw new Error('No library versions to generate report');
-  }
-
-  const workbook = XLSX.utils.book_new();
-  const allServicesResult = await fetchAllServices(apiPlatformApi);
-  const allServices = allServicesResult.items || [];
-
-  for (const libVersion of libraryVersions) {
-
-    const libRef = libVersion.entityRef.replace(/^component:default\//, '');
-    const worksheetData = allServices.flatMap(service =>
-      service.versions.flatMap(version =>
-      {
-        return Object.entries(version.environments)
-          .filter(([_, env]) => env?.dependencies?.includes(libRef))
-          .map(([lifecycle, env]) => ({
-            System: service.system || '-',
-            ServiceName: service.serviceName || '-',
-            ServiceVersion: version.version || '-',
-            ImageVersion: env?.imageVersion || '-',
-            Lifecycle: lifecycle || '-',
-          }));
-        }
-      )
-    );
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Version ${libVersion.version}`);
-  }
-
-  const xlsBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
-  const blob = new Blob([xlsBuffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${libraryName}-report.xlsx`;
-  a.click();
-
-  window.URL.revokeObjectURL(url);
-}
 
 export const LibraryOverviewDefinitionCard = () => {
   const { system, name } = useParams();

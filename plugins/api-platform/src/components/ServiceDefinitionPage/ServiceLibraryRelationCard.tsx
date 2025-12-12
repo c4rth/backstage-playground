@@ -28,9 +28,9 @@ const serviceColumns: TableColumn<TableRow>[] = [
         field: 'name',
         highlight: true,
         defaultSort: 'asc',
-        render: ({ system, name, version }: TableRow) => {
+        render: ({ system, name }: TableRow) => {
             return (
-                <Link to={`/api-platform/library/${system}/${name}?version=${version}`}>
+                <Link to={`/api-platform/library/${system}/${name}`}>
                     <ComponentDisplayName text={name} type="library" />
                 </Link>
             );
@@ -40,6 +40,14 @@ const serviceColumns: TableColumn<TableRow>[] = [
         title: 'Version',
         width: '35%',
         field: 'version',
+        highlight: true,
+        render: ({ system, name, version }: TableRow) => {
+            return (
+                <Link to={`/api-platform/library/${system}/${name}?version=${version}`}>
+                    <ComponentDisplayName text={version} type="library" />
+                </Link>
+            );
+        },
     },
     {
         title: 'System',
