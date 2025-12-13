@@ -17,7 +17,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { fetchAllServices } from './fetchServicesByLibrary';
-import { ServiceChip } from '../common';
+import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
 
 type TableRow = {
@@ -27,13 +27,12 @@ type TableRow = {
     serviceDefinition: ServiceDefinition;
 };
 
+const LIST_ITEM_STYLE = { margin: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '2.5rem' };
+
 const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
     <ListBox>
         {serviceDefinition.versions?.map((version, idx) => (
-            <ListBoxItem
-                key={`${serviceDefinition.name}-${version.version}-${idx}`}
-                style={{ margin: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '2.5rem' }}
-            >
+            <ListBoxItem key={`${serviceDefinition.name}-${version.version}-${idx}`} style={LIST_ITEM_STYLE}>
                 {renderItem(version, idx)}
             </ListBoxItem>
         ))}
@@ -55,13 +54,13 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
             if (!dependencies.length) { 
                 return <Text variant="body-medium">-</Text>;
             }
-            
+
             return (
-                <ServiceChip
-                    index={dependencyIndexes[0] >= 0 ? dependencyIndexes[0] * 5 : 0}
+                <ComponentChip
+                    index={dependencyIndexes[0] >= 0 ? dependencyIndexes[0] * 2 : 0}
                     text={dependencies.join(', ')}
                     clickable={false}
-                    backgroundColor='#55b655'
+                    backgroundColor='#2196F3'
                 />
             );
         }),
@@ -90,7 +89,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
         ),
     },
     {
-        title: 'Versions',
+        title: 'Service Version',
         width: '5%',
         field: 'version',
         sorting: false,
@@ -98,7 +97,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
         cellStyle: { padding: 0 },
         render: ({ serviceDefinition }) =>
             renderVersionList(serviceDefinition, (version, idx) => (
-                <ServiceChip
+                <ComponentChip
                     index={idx}
                     text={version.version}
                     clickable={false}
@@ -132,52 +131,42 @@ const tableOptions = {
 } as const;
 
 const toRow = (libraryVersions: LibraryDefinition[], serviceDefinition: ServiceDefinition, idx: number, libraryName: string): TableRow => {
-    // Filter dependencies in each environment to keep only those containing the library name
-    const filteredServiceDefinition: ServiceDefinition = {
-        ...serviceDefinition,
-        versions: serviceDefinition.versions.map(version => ({
-            ...version,
-            environments: Object.fromEntries(
-                Object.entries(version.environments).map(([envKey, envData]) => {
-                    if (!envData) return [envKey, envData];
-                    
-                    const filteredDeps = envData.dependencies
-                        ?.filter((dep: string) => dep.includes(libraryName))
-                        .map(dep => {
-                            const matchedLib = libraryVersions.find(lv => dep.includes(lv.version));
-                            const libIndex = matchedLib ? libraryVersions.indexOf(matchedLib) : -1;
-                            return {
-                                original: dep,
-                                version: matchedLib?.version || dep,
-                                index: libIndex
-                            };
-                        }) || [];
-                    
-                    return [
-                        envKey,
-                        {
-                            ...envData,
-                            dependencies: filteredDeps.map(d => d.version),
-                            // Add index mapping as an extended property (not in type but accessible)
-                            dependencyIndexes: filteredDeps.map(d => d.index)
-                        } as any
-                    ];
-                })
-            ) as typeof version.environments
-        }))
-    };
+    const versions = serviceDefinition.versions.map(version => ({
+        ...version,
+        environments: Object.fromEntries(
+            Object.entries(version.environments).map(([key, data]) => {
+                if (!data) return [key, data];
+                
+                const filtered = data.dependencies
+                    ?.filter((dep: string) => dep.includes(libraryName))
+                    .map(dep => {
+                        const lib = libraryVersions.find(lv => dep.includes(lv.version));
+                        return {
+                            version: lib?.version || dep,
+                            index: lib ? libraryVersions.indexOf(lib) : -1
+                        };
+                    }) || [];
+                
+                return [key, {
+                    ...data,
+                    dependencies: filtered.map(d => d.version),
+                    dependencyIndexes: filtered.map(d => d.index)
+                } as any];
+            })
+        ) as typeof version.environments
+    }));
 
     return {
         id: idx,
         name: serviceDefinition.name,
         system: serviceDefinition.system,
-        serviceDefinition: filteredServiceDefinition,
+        serviceDefinition: { ...serviceDefinition, versions },
     };
 };
 
 const tableTitle = (
     <Flex align="center">
-        By services
+        Versions by services
     </Flex>
 );
 
@@ -205,29 +194,23 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
     }, [apiPlatformApi, name]);
 
     const rows = useMemo(() => {
-        let filteredServices = allServices;
-
+        if (!libraryVersions) return [];
+        
+        const hasLibraryDependency = (service: ServiceDefinition) =>
+            service.versions.some(version =>
+                Object.values(version.environments).some(env =>
+                    env?.dependencies?.some((dep: string) => dep.includes(name))
+                )
+            );
+        
+        let filtered = allServices;
         if (selectedDependency === 'depends') {
-            // Only services with at least one environment containing the library
-            filteredServices = allServices.filter(service =>
-                service.versions.some(version =>
-                    Object.values(version.environments).some(env =>
-                        env?.dependencies?.some((dep: string) => dep.includes(name))
-                    )
-                )
-            );
+            filtered = allServices.filter(hasLibraryDependency);
         } else if (selectedDependency === 'no') {
-            // Only services with no environment containing the library
-            filteredServices = allServices.filter(service =>
-                !service.versions.some(version =>
-                    Object.values(version.environments).some(env =>
-                        env?.dependencies?.some((dep: string) => dep.includes(name))
-                    )
-                )
-            );
+            filtered = allServices.filter(s => !hasLibraryDependency(s));
         }
 
-        return filteredServices.map((service, idx) => toRow(libraryVersions!, service, idx, name));
+        return filtered.map((service, idx) => toRow(libraryVersions, service, idx, name));
     }, [allServices, name, selectedDependency, libraryVersions]);
 
     if (error || errorLibVersion) {

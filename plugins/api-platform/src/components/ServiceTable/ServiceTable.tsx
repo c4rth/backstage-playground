@@ -5,7 +5,7 @@ import {
     Table,
     TableColumn,
 } from '@backstage/core-components';
-import { ServiceChip } from '../common';
+import { ComponentChip } from '../common';
 import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
@@ -72,7 +72,7 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
     render: ({ serviceDefinition }) =>
         renderVersionList(serviceDefinition, (version, idx) =>
             env in version.environments ? (
-                <ServiceChip
+                <ComponentChip
                     index={idx}
                     service={version.environments[env as keyof typeof version.environments]}
                     link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
@@ -99,7 +99,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
         ),
     },
     {
-        title: 'Versions',
+        title: 'Version',
         width: '5%',
         field: 'version',
         sorting: false,
@@ -107,7 +107,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
         cellStyle: { padding: 0 },
         render: ({ serviceDefinition }) =>
             renderVersionList(serviceDefinition, (version, idx) => (
-                <ServiceChip
+                <ComponentChip
                     index={idx}
                     text={version.version}
                     link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}

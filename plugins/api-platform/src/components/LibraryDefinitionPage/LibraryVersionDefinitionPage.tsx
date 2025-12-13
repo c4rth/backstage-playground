@@ -129,7 +129,7 @@ export const LibraryVersionDefinitionPage = () => {
     
     const fetchLibraryEntity = async () => {
       try {
-        const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!);
+        const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!, true);
         const matchedVersion = libVersions.find(lv => lv.version === queryVersion);
         
         if (matchedVersion?.entityRef) {

@@ -74,7 +74,7 @@ const toRow = (libDef: LibraryDefinition, system: string, name: string, idx: num
 
 const tableTitle = (
     <Flex align="center">
-        By versions
+        Versions
     </Flex>
 );
 

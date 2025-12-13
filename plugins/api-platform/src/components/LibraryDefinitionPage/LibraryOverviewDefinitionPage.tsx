@@ -27,7 +27,7 @@ export const LibraryOverviewDefinitionPage = () => {
    
     const fetchLibraryEntity = async () => {
       try {
-        const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!);
+        const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!, true);
         const lastVersion = libVersions.length === 0 ? undefined : libVersions[0];
         if (lastVersion?.entityRef) {
           const entity = await catalogApi.getEntityByRef(lastVersion.entityRef);

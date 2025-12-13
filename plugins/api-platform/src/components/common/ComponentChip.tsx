@@ -6,7 +6,7 @@ import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { Chip } from '@internal/plugin-api-platform-react';
 import { Text, TooltipTrigger, Tooltip, Flex } from '@backstage/ui';
 
-export type ServiceChipProps = {
+export type ComponentChipProps = {
     index: number;
     icon?: React.JSX.Element;
     text?: string;
@@ -24,6 +24,14 @@ const useStyles = makeStyles<Theme, { index: number; backgroundColor?: string }>
                 props.backgroundColor
                     ? alpha(props.backgroundColor, (props.index + 1) / 10)
                     : alpha(theme.palette.primary.light, (props.index + 1) / 10),
+            color: (props) => {
+                const alphaValue = (props.index + 1) / 10;                
+                if (alphaValue <= 0.5) {
+                    return theme.palette.text.primary;
+                }                
+                const baseColor = props.backgroundColor || theme.palette.primary.light;
+                return theme.palette.getContrastText(baseColor);
+            },
         },
         chipContainer: {
             padding: 0,
@@ -49,7 +57,7 @@ const getPlatformIcon = (platform?: string): React.JSX.Element => {
     return PLATFORM_ICONS.cloud;
 };
 
-export const ServiceChip = memo<ServiceChipProps>(({
+export const ComponentChip = memo<ComponentChipProps>(({
     index,
     icon,
     text,
