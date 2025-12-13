@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
-import { LibraryOverviewDefinitionCard } from './LibraryOverviewDefinitionCard';
-import { LibraryVersionDefinitionCard } from './LibraryVersionDefinitionCard';
+import { LibraryOverviewDefinitionPage } from './LibraryOverviewDefinitionPage';
+import { LibraryVersionDefinitionPage } from './LibraryVersionDefinitionPage';
 
 export const LibraryDefinitionPage = () => {
   const [searchParams] = useSearchParams();
@@ -10,10 +10,10 @@ export const LibraryDefinitionPage = () => {
     <>
       {queryVersion ?
         (
-          <LibraryVersionDefinitionCard />
+          <LibraryVersionDefinitionPage />
         ) :
         (
-          <LibraryOverviewDefinitionCard />
+          <LibraryOverviewDefinitionPage />
         )
       }
     </>

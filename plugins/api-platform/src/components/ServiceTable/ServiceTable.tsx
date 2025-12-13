@@ -5,7 +5,7 @@ import {
     Table,
     TableColumn,
 } from '@backstage/core-components';
-import { ServiceChip } from './ServiceChip';
+import { ServiceChip } from '../common';
 import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';

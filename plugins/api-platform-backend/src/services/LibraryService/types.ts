@@ -10,6 +10,6 @@ export interface LibraryService {
   
   listLibraries(request: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult>;
 
-  getLibraryVersions(request: { system: string, libraryName: string }): Promise<LibraryDefinition[]>;
+  getLibraryVersions(request: { system: string, libraryName: string, servicesCount: boolean }): Promise<LibraryDefinition[]>;
 
 }

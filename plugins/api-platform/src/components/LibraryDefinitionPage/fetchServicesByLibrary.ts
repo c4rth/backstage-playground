@@ -3,13 +3,13 @@ import {
 } from "@internal/plugin-api-platform-common";
 import { ApiPlatformBackendApi } from "../../api/ApiPlatformBackendApi";
 
-export const fetchAllServicesByLibrary = async (
+export const fetchAllServicesByLibraryVersion = async (
     apiPlatformApi: ApiPlatformBackendApi,
-    libraryName: string,
+    libraryVersionRef: string,
 ): Promise<ServiceDefinitionListResult> => {
     const result = await apiPlatformApi.listServices({
         ownership: 'all',
-        dependsOn: libraryName,
+        dependsOn: libraryVersionRef,
     });
     return result ?? [];
 };

@@ -20,7 +20,7 @@ import {
   ServiceDefinition,
 } from "@internal/plugin-api-platform-common";
 import useAsync from 'react-use/esm/useAsync';
-import { fetchAllServicesByLibrary } from './fetchServicesByLibrary';
+import { fetchAllServicesByLibraryVersion } from './fetchServicesByLibrary';
 import { ListBox, ListBoxItem } from 'react-aria-components';
 import { apiPlatformBackendApiRef } from '../../api';
 
@@ -98,7 +98,6 @@ const serviceColumns: TableColumn<TableRow>[] = [
   },
 ];
 
-
 const tableOptions = {
   search: true,
   padding: 'dense' as const,
@@ -114,7 +113,7 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
   serviceDefinition,
 });
 
-export const LibraryVersionDefinitionCard = () => {
+export const LibraryVersionDefinitionPage = () => {
   const { system, name } = useParams();
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
@@ -149,9 +148,9 @@ export const LibraryVersionDefinitionCard = () => {
 
   const { value: allServices = [], loading, error } = useAsync(async () => {
     if (!name || !libraryEntity || !libEntityRef) return [];
-    const libName = libEntityRef.replace(/^component:/, '').replace(/^default\//, '');
+    const libVersionRef = libEntityRef.replace(/^component:/, '').replace(/^default\//, '');
 
-    const result = await fetchAllServicesByLibrary(apiPlatformApi, libName);
+    const result = await fetchAllServicesByLibraryVersion(apiPlatformApi, libVersionRef);
 
     return result.items;
   }, [libraryEntity, apiPlatformApi, libEntityRef]);
@@ -175,7 +174,7 @@ export const LibraryVersionDefinitionCard = () => {
         <Header
           title={`${name} - v${queryVersion}`}
           type='Library'>
-          <ComponentHeaderLabels entity={{ metadata: { name, title: name } } as ComponentEntity} />
+          <ComponentHeaderLabels entity={libraryEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
         </Header>
         <Content>
           <Box mb='1'>

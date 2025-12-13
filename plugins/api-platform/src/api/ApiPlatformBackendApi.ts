@@ -40,7 +40,7 @@ export interface ApiPlatformBackendApi {
 
   listLibraries(options: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult>;
 
-  getLibraryVersions(system: string, libraryName: string): Promise<(LibraryDefinition[])>;
+  getLibraryVersions(system: string, libraryName: string, servicesCount: boolean): Promise<(LibraryDefinition[])>;
 
 }
 
@@ -192,9 +192,9 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return this.fetchJson<LibraryDefinitionListResult>('/libraries/definitions', searchParams);
   }
 
-  async getLibraryVersions(system: string, libraryName: string): Promise<LibraryDefinition[]> {
+  async getLibraryVersions(system: string, libraryName: string, servicesCount: boolean): Promise<LibraryDefinition[]> {
     if (!libraryName?.trim()) throw new Error('Library name is required');
-    const path = `/libraries/definitions/${encodeURIComponent(system)}/${encodeURIComponent(libraryName)}`;
+    const path = `/libraries/definitions/${encodeURIComponent(system)}/${encodeURIComponent(libraryName)}?servicesCount=${servicesCount}`;
     const versions = await this.fetchJson<LibraryDefinition[]>(path);
     return Array.isArray(versions) ? versions : [];
   }

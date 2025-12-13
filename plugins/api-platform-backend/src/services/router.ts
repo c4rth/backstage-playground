@@ -210,7 +210,8 @@ export async function createRouter(
 
   router.get('/libraries/definitions/:system/:libraryName', async (req, res) => {
     const { system, libraryName } = req.params;
-    res.json(await libraryService.getLibraryVersions({ system, libraryName }));
+    const servicesCount = req.query.servicesCount === 'false' ? false : true;
+    res.json(await libraryService.getLibraryVersions({ system, libraryName, servicesCount }));
   });
 
   return router;

@@ -40,12 +40,15 @@ function getFilter(system: string, libraryName?: string): EntityFilterQuery {
   };
 }
 
-async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthService, system: string, libraryName: string): Promise<LibraryDefinition[]> {
+async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthService, system: string, libraryName: string, servicesCount: boolean): Promise<LibraryDefinition[]> {
   const token = await getCatalogToken(auth);
+  const fields = servicesCount
+    ? [CATALOG_METADATA, CATALOG_RELATIONS]
+    : [CATALOG_METADATA];
   const entities = await catalogClient.getEntities(
     {
       filter: getFilter(system, libraryName),
-      fields: [CATALOG_METADATA, CATALOG_RELATIONS],
+      fields: fields,
     },
     { token }
   );
@@ -211,8 +214,8 @@ export async function libraryService(options: LibraryServiceOptions): Promise<Li
       };
     },
 
-    async getLibraryVersions(request: { system: string, libraryName: string }): Promise<LibraryDefinition[]> {
-      return innerGetLibraryVersions(catalogClient, auth, request.system, request.libraryName);
+    async getLibraryVersions(request: { system: string, libraryName: string, servicesCount: boolean }): Promise<LibraryDefinition[]> {
+      return innerGetLibraryVersions(catalogClient, auth, request.system, request.libraryName, request.servicesCount);
     },
   };
 

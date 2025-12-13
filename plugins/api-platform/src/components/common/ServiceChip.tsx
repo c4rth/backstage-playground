@@ -10,16 +10,20 @@ export type ServiceChipProps = {
     index: number;
     icon?: React.JSX.Element;
     text?: string;
-    link: string;
+    link?: string;
     service?: ServiceEnvironmentDefinition;
     disabled?: boolean;
+    clickable?: boolean;
+    backgroundColor?: string;
 };
 
-const useStyles = makeStyles<Theme, { index: number }>(
+const useStyles = makeStyles<Theme, { index: number; backgroundColor?: string }>(
     (theme: Theme) => ({
         badge: {
             backgroundColor: (props) =>
-                alpha(theme.palette.primary.light, (props.index + 1) / 10),
+                props.backgroundColor
+                    ? alpha(props.backgroundColor, (props.index + 1) / 10)
+                    : alpha(theme.palette.primary.light, (props.index + 1) / 10),
         },
         chipContainer: {
             padding: 0,
@@ -52,8 +56,10 @@ export const ServiceChip = memo<ServiceChipProps>(({
     link,
     service,
     disabled = false,
+    clickable = true,
+    backgroundColor,
 }) => {
-    const classes = useStyles({ index });
+    const classes = useStyles({ index, backgroundColor });
 
     const { chipIcon, chipLabel, tooltipContent } = useMemo(() => {
         const platformIcon = getPlatformIcon(service?.platform);
@@ -95,7 +101,7 @@ export const ServiceChip = memo<ServiceChipProps>(({
             size="small"
             variant="outlined"
             className={classes.badge}
-            clickable={!disabled}
+            clickable={clickable}
             disabled={disabled}
             icon={chipIcon}
             style={{ padding: tooltipContent ? 5 : 0, margin: 0 }}
@@ -112,8 +118,10 @@ export const ServiceChip = memo<ServiceChipProps>(({
     ) : chip;
 
     return (
-        <Link to={link} className={classes.chipContainer}>
-            {content}
-        </Link>
+        link ? (
+            <Link to={link} className={classes.chipContainer}>
+                {content}
+            </Link>
+        ) : content
     );
 });
