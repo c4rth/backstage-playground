@@ -24,8 +24,7 @@ export const SystemDefinitionPage = () => {
             {(systemDefinition && name) && (
               <SystemDefinitionCard
                 system={name}
-                apis={systemDefinition.apis}
-                services={systemDefinition.services}
+                systemDefinition={systemDefinition}
               />
             )}
           </Box>

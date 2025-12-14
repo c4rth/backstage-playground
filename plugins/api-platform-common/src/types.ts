@@ -130,6 +130,7 @@ export type SystemDefinition = {
   entity: Entity;
   apis: string[];
   services: string[];
+  libraries: string[];
 };
 
 export const SYSTEMDEFINITIONS_FIELDS = [

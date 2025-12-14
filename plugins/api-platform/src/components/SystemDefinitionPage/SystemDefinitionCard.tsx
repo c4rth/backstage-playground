@@ -13,19 +13,19 @@ import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
-import { Box, Grid, ButtonIcon } from '@backstage/ui';
+import { Box, Grid, ButtonIcon, Flex } from '@backstage/ui';
 import styles from './SystemDefinitionCard.module.css';
+import { SystemDefinition } from '@internal/plugin-api-platform-common';
 
 interface SystemDefinitionCardProps {
     system: string;
-    apis: string[];
-    services: string[];
+    systemDefinition: SystemDefinition;
 }
 
-export const SystemDefinitionCard = memo<SystemDefinitionCardProps>(({ system, apis, services }) => {
+export const SystemDefinitionCard = memo<SystemDefinitionCardProps>(({ system, systemDefinition }) => {
     const catalogApi = useApi(catalogApiRef);
     const { entity } = useEntity();
-    
+
     const entityData = useMemo(() => {
         const entityRef = getCompoundEntityRef(entity);
         const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
@@ -48,7 +48,7 @@ export const SystemDefinitionCard = memo<SystemDefinitionCardProps>(({ system, a
 
     // TODO-MUI
     const docsButton = useMemo(() => (
-         <ButtonIcon
+        <ButtonIcon
             icon={<RiFileFill />}
             isDisabled={!entityData.hasDocs}
             size='medium'
@@ -72,14 +72,11 @@ export const SystemDefinitionCard = memo<SystemDefinitionCardProps>(({ system, a
     return (
         <TabbedLayout>
             <TabbedLayout.Route path="/" title="Ownership">
-                <Grid.Root columns='12'>
-                    <Grid.Item colSpan='6'>
-                        <SystemRelationCard system={system} dependency="service" data={services} />
-                    </Grid.Item>
-                    <Grid.Item colSpan='6'>
-                        <SystemRelationCard system={system} dependency="api" data={apis} />
-                    </Grid.Item>
-                </Grid.Root>
+                <Flex gap='2' direction='column'>
+                    <SystemRelationCard system={system} dependency="service" data={systemDefinition.services} />
+                    <SystemRelationCard system={system} dependency="api" data={systemDefinition.apis} />
+                    <SystemRelationCard system={system} dependency="library" data={systemDefinition.libraries} />
+                </Flex>
             </TabbedLayout.Route>
 
             <TabbedLayout.Route path="/members" title="Members">

@@ -43,6 +43,23 @@ const serviceColumns: TableColumn<TableRow>[] = [
         },
     },
 ];
+const libraryColumns: TableColumn<TableRow>[] = [
+    {
+        title: 'Name',
+        width: '100%',
+        field: 'name',
+        highlight: true,
+        defaultSort: 'asc',
+        render: ({ name, system }: TableRow) => {
+            return (
+                <Link to={`/api-platform/library/${system}/${name}`}>
+                    <ComponentDisplayName type="library" text={name}
+                    />
+                </Link>
+            );
+        },
+    },
+];
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -54,7 +71,7 @@ const toRow = (item: string, idx: number, system: string): TableRow => ({
 
 interface SystemPlatformRelationCardProps {
     system: string;
-    dependency: 'api' | 'service';
+    dependency: 'api' | 'service' | 'library';
     data: string[];
 }
 
@@ -62,10 +79,24 @@ export const SystemRelationCard = memo<SystemPlatformRelationCardProps>(({ syste
 
     const computedValues = useMemo(() => {
         const isApi = dependency === 'api';
+        const isLibrary = dependency === 'library';
+        let columns: TableColumn<TableRow>[];
+        let title: string;        
+        if (isApi) {
+            columns = apiColumns;
+            title = 'APIs';
+        } else if (isLibrary) {
+            columns = libraryColumns;
+            title = 'Libraries';
+        } else {
+            columns = serviceColumns;
+            title = 'Services';
+        }        
         return {
             isApi,
-            title: isApi ? 'APIs' : 'Services',
-            columns: isApi ? apiColumns : serviceColumns,
+            isLibrary,
+            title,
+            columns,
         };
     }, [dependency]);
 
@@ -73,7 +104,7 @@ export const SystemRelationCard = memo<SystemPlatformRelationCardProps>(({ syste
     const showPagination = useMemo(() => rows.length > DEFAULT_PAGE_SIZE, [rows.length]);
 
     const tableOptions = useMemo(() => ({
-        search: true,
+        search: false,
         padding: 'dense' as const,
         paging: showPagination,
         pageSize: DEFAULT_PAGE_SIZE,

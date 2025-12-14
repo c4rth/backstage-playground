@@ -14,7 +14,8 @@ import {
   SystemDefinitionListResult,
   SystemDefinitionsListRequest,
   SystemDefinitionsOptions,
-  OwnershipType
+  OwnershipType,
+  ANNOTATION_LIBRARY_NAME
 } from '@internal/plugin-api-platform-common';
 import { getUserGroups } from '../common/utils';
 import { getCatalogToken } from '../common/token';
@@ -132,7 +133,7 @@ export async function systemService(options: SystemServiceOptions): Promise<Syst
 
     async getSystem(systemName: string): Promise<SystemDefinition> {
       const token = await getCatalogToken(auth);
-      
+
       // Fetch system entity
       const systemEntities = await catalogClient.getEntities(
         {
@@ -141,21 +142,22 @@ export async function systemService(options: SystemServiceOptions): Promise<Syst
         },
         { token }
       );
-      
+
       const entity = systemEntities.items[0];
       const system: SystemDefinition = {
         entity,
         apis: [],
         services: [],
+        libraries: [],
       };
-      
+
       if (!entity?.relations || entity.relations.length === 0) {
         return system;
       }
 
       // Extract entity refs from relations
       const targetRefs = entity.relations.map(rel => rel.targetRef);
-      
+
       // Batch fetch all related entities in a single query instead of N individual calls
       const relatedEntities = await catalogClient.getEntitiesByRefs(
         { entityRefs: targetRefs },
@@ -165,21 +167,28 @@ export async function systemService(options: SystemServiceOptions): Promise<Syst
       // Use Sets to collect unique names
       const apiNames = new Set<string>();
       const serviceNames = new Set<string>();
+      const libraryNames = new Set<string>();
 
       for (const relEntity of relatedEntities.items) {
         if (!relEntity) continue;
-        
+
         if (relEntity.kind === 'API') {
           const name = relEntity.metadata[ANNOTATION_API_NAME]?.toString();
           if (name) apiNames.add(name);
         } else if (relEntity.kind === 'Component') {
           const name = relEntity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
-          if (name) serviceNames.add(name);
+          if (name) {
+            serviceNames.add(name);
+            continue;
+          }
+          const libName = relEntity.metadata[ANNOTATION_LIBRARY_NAME]?.toString();
+          if (libName) libraryNames.add(libName);
         }
       }
 
       system.apis = Array.from(apiNames);
       system.services = Array.from(serviceNames);
+      system.libraries = Array.from(libraryNames);
 
       return system;
     },
