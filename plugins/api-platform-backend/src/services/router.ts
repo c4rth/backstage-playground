@@ -142,7 +142,7 @@ export async function createRouter(
 
   router.get('/services/definitions', async (req, res) => {
     const offset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : undefined;
     const orderBy = parseOrderByParam(req.query.orderBy, SERVICEDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
     const ownership = parseTypeParam(req.query.ownership) || "all";
