@@ -79,7 +79,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     {
         title: 'Name',
         width: '25%',
-        field: 'name',
+        field: 'serviceDefinition.serviceName',
         highlight: true,
         defaultSort: 'asc',
         render: ({ serviceDefinition }) => (

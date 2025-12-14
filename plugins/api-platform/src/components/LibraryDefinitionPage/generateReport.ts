@@ -66,58 +66,64 @@ export async function generateReport(
   // By service - showing which library version is used in each environment
   const serviceMap = new Map<string, any>();
   
+  // Pre-populate with all services
   allServices.forEach(service => {
     service.versions.forEach(version => {
-      Object.entries(version.environments).forEach(([env, envData]) => {
-        if (!envData?.dependencies) return;
-        
-        // Check each dependency to find library version references
-        envData.dependencies.forEach(dep => {
-          // Match library references like "lib-core-v1.0.0" or "lib-core-v2.0.0"
-          const libVersionMatch = libraryVersions.find(lv => {
-            const libRef = lv.entityRef.replace(/^component:default\//, '');
-            return dep === libRef;
-          });
-          
-          if (libVersionMatch) {
-            const serviceKey = `${service.system}|${service.serviceName}|${version.version}`;
-            if (!serviceMap.has(serviceKey)) {
-              serviceMap.set(serviceKey, {
-                System: service.system || '-',
-                ServiceName: service.serviceName || '-',
-                ServiceVersion: version.version || '-',
-                TST: '-',
-                GTU: '-',
-                UAT: '-',
-                PTP: '-',
-                PRD: '-',
-              });
-            }
-            const row = serviceMap.get(serviceKey);
-            row[env.toUpperCase()] = libVersionMatch.version || '-';
-          }
-        });
+      const serviceKey = `${service.system}|${service.serviceName}|${version.version}`;
+      serviceMap.set(serviceKey, {
+        System: service.system || '-',
+        ServiceName: service.serviceName || '-',
+        ServiceVersion: version.version || '-',
+        TST: '-',
+        GTU: '-',
+        UAT: '-',
+        PTP: '-',
+        PRD: '-',
       });
     });
   });
   
-  if (serviceMap.size > 0) {
-    const byServiceData = Array.from(serviceMap.values());
-    const byServiceSheet = XLSX.utils.json_to_sheet(byServiceData);
-    
-    byServiceSheet['!cols'] = [
-      { wch: 15 }, // System
-      { wch: 30 }, // ServiceName
-      { wch: 12 }, // ServiceVersion
-      { wch: 15 }, // TST
-      { wch: 15 }, // GTU
-      { wch: 15 }, // UAT
-      { wch: 15 }, // PTP
-      { wch: 15 }, // PRD
-    ];
-    
-    XLSX.utils.book_append_sheet(workbook, byServiceSheet, 'By Service');
-  }
+  // Update with library versions where used
+  allServices.forEach(service => {
+    service.versions.forEach(version => {
+      const serviceKey = `${service.system}|${service.serviceName}|${version.version}`;
+      const row = serviceMap.get(serviceKey);
+      
+      Object.entries(version.environments).forEach(([env, envData]) => {
+        if (!envData?.dependencies) return;
+        
+        // Check each dependency to find library version references
+        const libVersionMatch = libraryVersions.find(lv => {
+          const libRef = lv.entityRef.replace(/^component:default\//, '');
+          return envData.dependencies.some(dep => dep === libRef);
+        });
+        
+        if (libVersionMatch) {
+          row[env.toUpperCase()] = libVersionMatch.version || '-';
+        }
+      });
+    });
+  });
+  
+  const byServiceData = Array.from(serviceMap.values()).sort((a, b) => {
+    const systemCompare = (a.System || '').localeCompare(b.System || '');
+    if (systemCompare !== 0) return systemCompare;
+    return (a.ServiceName || '').localeCompare(b.ServiceName || '');
+  });
+  const byServiceSheet = XLSX.utils.json_to_sheet(byServiceData);
+  
+  byServiceSheet['!cols'] = [
+    { wch: 15 }, // System
+    { wch: 30 }, // ServiceName
+    { wch: 12 }, // ServiceVersion
+    { wch: 15 }, // TST
+    { wch: 15 }, // GTU
+    { wch: 15 }, // UAT
+    { wch: 15 }, // PTP
+    { wch: 15 }, // PRD
+  ];
+  
+  XLSX.utils.book_append_sheet(workbook, byServiceSheet, 'By Service');
 
   const xlsBuffer = XLSX.write(workbook, {
     bookType: "xlsx",

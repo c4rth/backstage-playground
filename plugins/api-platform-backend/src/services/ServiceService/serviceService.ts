@@ -275,11 +275,6 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
 
       const offset = request.offset ?? 0;
       const limit = request.limit ?? services.length - offset;
-
-      console.log('****************************');
-      console.log(`Returning services from ${offset} to ${offset + limit} of total ${services.length}`);
-      console.log('****************************');
-
       return {
         items: services.slice(offset, offset + limit),
         offset,
