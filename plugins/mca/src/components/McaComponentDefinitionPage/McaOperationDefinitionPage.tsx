@@ -99,6 +99,7 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
     }), [operation]);
 
     if (errorState) {
+        console.error(errorState);
         return <ResponseErrorPanel error={errorState} />;
     }
 

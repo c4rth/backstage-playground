@@ -39,6 +39,7 @@ export const McaElementDefinitionPage = memo<McaElementDefinitionPageProps>(({ m
   }), [element]);
 
   if (error) {
+    console.error(error);
     return <ResponseErrorPanel error={new Error('Invalid element definition: required node not found')} />;
   }
 

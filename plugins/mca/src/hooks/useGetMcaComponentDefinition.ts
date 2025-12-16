@@ -1,13 +1,23 @@
 import { mcaComponentsBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
+import { XMLParser } from 'fast-xml-parser';
+
+const xmlParserConfig = {
+  ignoreAttributes: false,
+  attributeNamePrefix: '',
+  allowBooleanAttributes: true,
+  trimValues: true,
+};
+const xmlParser = new XMLParser(xmlParserConfig);
 
 export function useGetMcaComponentDefinition(component?: string, refP?: string) {
   const api = useApi(mcaComponentsBackendApiRef);
 
-  const { value, loading, error } = useAsync(() => {
-    if (!component || !refP) return Promise.resolve(undefined);
-    return api.getMcaComponentDefinition(component, refP);
+  const { value, loading, error } = useAsync(async () => {
+    if (!component || !refP) return undefined;
+    const result = await api.getMcaComponentDefinition(component, refP);
+    return result ? xmlParser.parse(result) : undefined;
   }, [api, component, refP]);
 
   return {

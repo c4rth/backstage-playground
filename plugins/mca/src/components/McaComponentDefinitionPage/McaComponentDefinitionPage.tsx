@@ -25,7 +25,6 @@ const mapMcaVersions = (mca: McaComponent | undefined): McaComponentVersion[] =>
   if (!mca) {
     return [];
   }
-
   // Create version entries in priority order
   const versionEntries = [
     { version: mca.p4Version, suffix: '' },
@@ -34,7 +33,6 @@ const mapMcaVersions = (mca: McaComponent | undefined): McaComponentVersion[] =>
     { version: mca.p1Version, suffix: '' },
     { version: mca.prdVersion, suffix: ' (PRD)' },
   ];
-
   return versionEntries
     .filter(({ version }) => version) // Filter out falsy versions
     .map(({ version, suffix }) => ({
@@ -60,10 +58,8 @@ export const McaComponentDefinitionPage = () => {
   const [error, setError] = useState<Error | null>(null);
   const [mca, setMca] = useState<McaComponent>();
   const [selectedVersion, setSelectedVersion] = useState<string>();
-  const isInitialLoad = useRef(true);
-
-
   const [versions, setVersions] = useState<SelectItem[]>([]);
+  const isInitialLoad = useRef(true);
 
   const queryVersion = useMemo(() =>
     searchParams.get('version'),
@@ -87,11 +83,10 @@ export const McaComponentDefinitionPage = () => {
     getMca(mcaApi, name!).then(component => {
       setVersions([]);
       setMca(component);
-      setLoading(false);
     }).catch(err => {
       setError(err);
-      setLoading(false);
-    });
+    })
+    .finally(() => { setLoading(false); });
   }, [name, mcaApi]);
 
   useEffect(() => {
@@ -110,8 +105,11 @@ export const McaComponentDefinitionPage = () => {
     }
   }, [mca, queryVersion, selectedVersion]);
 
-  if (error) return <ResponseErrorPanel error={error} />;
   if (loading) return <Progress />;
+  if (error) {
+    console.error(error);
+    return <ResponseErrorPanel error={error} />;
+  }
 
   return (
     <PageWithHeader
