@@ -27,29 +27,18 @@ export class McaOperationScheduledTask {
     }
 
     _getColumns(columnNumber: number) {
-        if (columnNumber === 8) {
-            return {
-                'component': '_0',
-                'prdVersion': '_1',
-                'p1Version': '_2',
-                'p2Version': '_3',
-                'p3Version': '_4',
-                'p4Version': '_5',
-                'applicationCode': '_6',
-                'packageName': '_7',
-            };
-        }
-        return {
+        const baseColumns = {
             'component': '_0',
             'prdVersion': '_1',
             'p1Version': '_2',
             'p2Version': '_3',
-            'p3Version': '_4',
-            'p4Version': undefined,
-            'applicationCode': '_5',
-            'packageName': '_6',
+            'p3Version': columnNumber >= 7 ? '_4' : undefined,
+            'p4Version': columnNumber === 8 ? '_5' : undefined,
+            'applicationCode': `_${columnNumber >= 7 ? columnNumber - 2 : 4}`,
+            'packageName': `_${columnNumber >= 7 ? columnNumber - 1 : 5}`,
         };
-    };
+        return baseColumns;
+    }
 
     async runAsync() {
         const allOperationsCsvBaseUrl = this.config.getString('mcaComponents.operations.csvBaseUrl');
@@ -81,13 +70,11 @@ export class McaOperationScheduledTask {
                                 isFirstRow = false;
                                 // Detect number of columns from first row
                                 const columnCount = Object.keys(data).length;
-                                this.logger.info(JSON.stringify(data));
                                 columns = this._getColumns(columnCount);
-
                                 mcaVersions = {
                                     p1Version: data[columns.p1Version],
                                     p2Version: data[columns.p2Version],
-                                    p3Version: data[columns.p3Version],
+                                    p3Version: columns.p3Version ? data[columns.p3Version] : '',
                                     p4Version: columns.p4Version ? data[columns.p4Version] : '',
                                 };
                             }
@@ -96,7 +83,7 @@ export class McaOperationScheduledTask {
                                 prdVersion: data[columns.prdVersion],
                                 p1Version: data[columns.p1Version],
                                 p2Version: data[columns.p2Version],
-                                p3Version: data[columns.p3Version],
+                                p3Version: columns.p3Version ? data[columns.p3Version] : '',
                                 p4Version: columns.p4Version ? data[columns.p4Version] : '',
                                 applicationCode: data[columns.applicationCode],
                                 packageName: data[columns.packageName],

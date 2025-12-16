@@ -23,6 +23,8 @@ export interface McaComponentsBackendApi {
 
   getMcaBaseType(baseType: string): Promise<McaBaseType | undefined>;
 
+  scheduleMcaComponentTask(): Promise<void>;
+
 }
 
 export class McaComponentsBackendClient implements McaComponentsBackendApi {
@@ -187,6 +189,13 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     const url = new URL(`${baseUrl}/baseTypes/components/${encodedBaseType}`);
     
     return this.fetchJson<McaBaseType>(url);
+  }
+
+  async scheduleMcaComponentTask(): Promise<void> {
+    const baseUrl = await this.getMcaBaseUrl();
+    const url = new URL(`${baseUrl}/mca/schedule-task?type=component`);
+    
+    await this.fetchApi.fetch(url, { method: 'POST' });
   }
   
   clearCache(): void {

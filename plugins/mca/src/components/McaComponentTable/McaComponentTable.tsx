@@ -70,16 +70,20 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
                 <Link to={`${row.component}?version=${row.p2Version}`}>{row.p2Version}</Link>
             ),
         },
-        {
-            title: versions?.p3Version || 'P+3',
-            width: '5%',
-            field: 'p3Version',
-            highlight: true,
-            render: (row) => (
-                <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
-            ),
-        },
     ];
+    if (versions?.p3Version !== '') {
+        columns.push(
+            {
+                title: versions?.p3Version || 'P+3',
+                width: '5%',
+                field: 'p3Version',
+                highlight: true,
+                render: (row) => (
+                    <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
+                ),
+            },
+        );
+    }
     if (versions?.p4Version !== '') {
         columns.push(
             {
@@ -93,7 +97,6 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
             }
         );
     }
-
     columns.push(
         {
             title: 'Package',
