@@ -42,7 +42,7 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
   }
 
   private async *execute(): AsyncGenerator<IndexableMcaBaseTypeDocument> {
-    this.logger.info('Indexing mca-basetypes');
+    this.logger.debug('Indexing mca-basetypes');
 
     const { token } = await this.auth.getPluginRequestToken({
       onBehalfOf: await this.auth.getOwnServiceCredentials(),
@@ -54,7 +54,7 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
     const countUrl = new URL(`${baseUrl}/basetypes/count`);
     const responseCount = await fetch(countUrl, { headers: { Authorization: `Bearer ${token}` } });
     const dataCount = (await responseCount.json()) as number;
-    this.logger.info(`/basetypes/count: ${dataCount} - limit: ${this.limit}`);
+    this.logger.debug(`/basetypes/count: ${dataCount} - limit: ${this.limit}`);
 
     for (let offset = 0; offset < dataCount; offset += this.limit) {
       const query = new URLSearchParams({ offset: String(offset), limit: String(this.limit) });
