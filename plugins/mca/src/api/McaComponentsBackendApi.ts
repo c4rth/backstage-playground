@@ -81,14 +81,15 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     }
   }
 
-  private async fetchText(url: URL): Promise<string> {
+  private async fetchOctetStreamAsText(url: URL): Promise<string> {
     try {
       const response = await this.fetchApi.fetch(url);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      return await response.text();
+      const buffer = await response.arrayBuffer();
+      return new TextDecoder('utf-8').decode(buffer);
     } catch (error) {
       throw error;
     }
@@ -145,7 +146,7 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     const url = new URL(`${this.backendBaseUrl}/api/proxy/operations-sources/api/v1/sources/OPER/${encodedComponent}.${extension}`);
     url.search = searchParams.toString();
     
-    return this.fetchText(url);
+    return this.fetchOctetStreamAsText(url);
   }
 
   async getMcaVersions(): Promise<McaVersions> {
