@@ -11,11 +11,10 @@ const xmlParserConfig = {
 };
 const xmlParser = new XMLParser(xmlParserConfig);
 
-export function useGetMcaComponentDefinition(component?: string, refP?: string) {
+export function useGetMcaComponentDefinition(component: string, refP: string) {
   const api = useApi(mcaComponentsBackendApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    if (!component || !refP) return undefined;
     const result = await api.getMcaComponentDefinition(component, refP);
     return result ? xmlParser.parse(result) : undefined;
   }, [api, component, refP]);

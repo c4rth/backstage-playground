@@ -8,7 +8,7 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-common';
 import { McaComponentDefinitionCard } from './McaComponentDefinitionCard';
@@ -22,10 +22,8 @@ type McaComponentVersion = {
 };
 
 const mapMcaVersions = (mca: McaComponent | undefined): McaComponentVersion[] => {
-  if (!mca) {
-    return [];
-  }
-  // Create version entries in priority order
+  if (!mca) return [];
+
   const versionEntries = [
     { version: mca.p4Version, suffix: '' },
     { version: mca.p3Version, suffix: '' },
@@ -33,8 +31,9 @@ const mapMcaVersions = (mca: McaComponent | undefined): McaComponentVersion[] =>
     { version: mca.p1Version, suffix: '' },
     { version: mca.prdVersion, suffix: ' (PRD)' },
   ];
+
   return versionEntries
-    .filter(({ version }) => version) // Filter out falsy versions
+    .filter(({ version }) => version)
     .map(({ version, suffix }) => ({
       label: `${version}${suffix}`,
       value: version!,
@@ -61,19 +60,7 @@ export const McaComponentDefinitionPage = () => {
   const [versions, setVersions] = useState<SelectItem[]>([]);
   const isInitialLoad = useRef(true);
 
-  const queryVersion = useMemo(() =>
-    searchParams.get('version'),
-    [searchParams]
-  );
-
-  const selectProps = useMemo(() => ({
-    onChange: (selected: SelectedItems) => {
-      setSelectedVersion(selected.toString())
-    },
-    label: "Versions",
-    items: versions,
-    selected: selectedVersion,
-  }), [versions, selectedVersion]);
+  const queryVersion = searchParams.get('version');
 
   useEffect(() => {
     setSelectedVersion(undefined);
@@ -122,7 +109,12 @@ export const McaComponentDefinitionPage = () => {
         <Box mb='1'>
           <Grid.Root columns='2'>
             <Grid.Item>
-              <Select {...selectProps} />
+              <Select
+                onChange={(selected: SelectedItems) => setSelectedVersion(selected.toString())}
+                label="Versions"
+                items={versions}
+                selected={selectedVersion}
+              />
             </Grid.Item>
           </Grid.Root>
         </Box>

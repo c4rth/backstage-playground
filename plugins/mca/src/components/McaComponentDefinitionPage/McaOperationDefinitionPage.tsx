@@ -8,114 +8,84 @@ export interface McaOperationDefinitionPageProps {
     mcaComponent: any;
 }
 
+type OperationType = 'atomic' | 'list' | undefined;
+
 type NodesType = {
     operationAnalyze: any;
     operation: any;
-    operationType: 'atomic' | 'list' | undefined;
+    operationType: OperationType;
 };
 
 function getOperationNodes(mcaComponent: any): NodesType {
-    const root = mcaComponent.OPERATION;
-    const specification = root.SPECIFICATION;
-    const operationAnalyze = specification.OperationAnalyse;
-    const type = operationAnalyze.type;
-    const java = root.JAVA;
+    const { OPERATION: root } = mcaComponent;
+    const operationAnalyze = root.SPECIFICATION.OperationAnalyse;
+    const { type } = operationAnalyze;
+    const { JAVA: java } = root;
+
     if (!java) {
-        return {
-            operationAnalyze,
-            operation: undefined,
-            operationType: undefined,
-        };
+        return { operationAnalyze, operation: undefined, operationType: undefined };
     }
+
+    let operationType: OperationType;
     let operation;
-    let operationType: 'atomic' | 'list';
+    
     if (type.endsWith('OperationAtomique')) {
-        operation = java.operationAtomic;
         operationType = 'atomic';
+        operation = java.operationAtomic;
     } else if (type.endsWith('OperationList')) {
-        operation = java.operationList;
         operationType = 'list';
+        operation = java.operationList;
     } else {
-        return {
-            operationAnalyze,
-            operation,
-            operationType: undefined
-        };
+        operationType = undefined;
+        operation = undefined;
     }
-    return {
-        operationAnalyze,
-        operation,
-        operationType,
-    };
+
+    return { operationAnalyze, operation, operationType };
 }
 
 export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(({ mcaComponent }) => {
-    const operationNodesResult = useMemo(() => {
+    const { operationAnalyze, operation, operationType, error } = useMemo(() => {
         try {
-            return { nodes: getOperationNodes(mcaComponent), error: null as Error | null };
+            const nodes = getOperationNodes(mcaComponent);
+            
+            if (!nodes.operationAnalyze) {
+                return { ...nodes, error: new Error('Invalid operation definition: operation analysis not found') };
+            }
+            if (!nodes.operation) {
+                return { ...nodes, error: new Error('Invalid operation definition: required node not found') };
+            }
+            if (!nodes.operationType) {
+                return { ...nodes, error: new Error(`Unknown operation type: ${nodes.operationAnalyze?.type || 'undefined'}`) };
+            }
+            
+            return { ...nodes, error: null };
         } catch (e) {
-            return { nodes: null as any, error: e instanceof Error ? e : new Error(String(e)) };
+            return { 
+                operationAnalyze: null, 
+                operation: null, 
+                operationType: undefined, 
+                error: e instanceof Error ? e : new Error(String(e)) 
+            };
         }
     }, [mcaComponent]);
 
-    const { nodes: operationNodes, error: getNodesError } = operationNodesResult;
-    const operationAnalyze = operationNodes?.operationAnalyze;
-    const operation = operationNodes?.operation;
-    const operationType = operationNodes?.operationType;
-
-    const errorState = useMemo(() => {
-        if (getNodesError) return getNodesError;
-        if (!operationAnalyze) {
-            return new Error('Invalid operation definition: operation analysis not found');
-        }
-        if (!operation) {
-            return new Error('Invalid operation definition: required node not found');
-        }
-        if (!operationType) {
-            return new Error(`Unknown operation type: ${operationAnalyze?.type || 'undefined'}`);
-        }
-        return null;
-    }, [getNodesError, operationAnalyze, operation, operationType]);
-
-    const overviewProps = useMemo(() => ({
-        operationAnalyze,
-        operation,
-    }), [operationAnalyze, operation]);
-
-    const inputFieldsProps = useMemo(() => ({
-        operation,
-        operationType,
-        fieldType: 'input' as const,
-    }), [operation, operationType]);
-
-    const outputFieldsProps = useMemo(() => ({
-        operation,
-        operationType,
-        fieldType: 'output' as const,
-    }), [operation, operationType]);
-
-    const methodsCardProps = useMemo(() => ({
-        operation,
-    }), [operation]);
-
-    if (errorState) {
-        console.error(errorState);
-        return <ResponseErrorPanel error={errorState} />;
+    if (error) {
+        return <ResponseErrorPanel error={error} />;
     }
 
     return (
         <TabbedLayout>
             <TabbedLayout.Route path="/" title="Overview">
-                <McaOperationAboutCard {...overviewProps} />
+                <McaOperationAboutCard operationAnalyze={operationAnalyze} operation={operation} />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/inputfields" title="Input Fields">
-                <McaOperationFieldsCard {...inputFieldsProps} />
+                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="input" />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/outputfields" title="Output Fields">
-                <McaOperationFieldsCard {...outputFieldsProps} />
+                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="output" />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/methods" title="Methods">
-                <McaOperationMethodsCard {...methodsCardProps} />
+                <McaOperationMethodsCard operation={operation} />
             </TabbedLayout.Route>
         </TabbedLayout>
     );

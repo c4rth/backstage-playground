@@ -17,42 +17,28 @@ function getElement(mcaComponent: any) {
 }
 
 export const McaElementDefinitionPage = memo<McaElementDefinitionPageProps>(({ mcaComponent }) => {
-
   const { element, error } = useMemo(() => {
     try {
-      return { element: getElement(mcaComponent), error: null as Error | null };
+      return { element: getElement(mcaComponent), error: null };
     } catch (e) {
-      return { element: null as any, error: e instanceof Error ? e : new Error(String(e)) };
+      return { element: null, error: e instanceof Error ? e : new Error(String(e)) };
     }
   }, [mcaComponent]);
 
-  const aboutCardProps = useMemo(() => ({
-    element,
-  }), [element]);
-
-  const fieldsCardProps = useMemo(() => ({
-    element,
-  }), [element]);
-
-  const methodsCardProps = useMemo(() => ({
-    element,
-  }), [element]);
-
   if (error) {
-    console.error(error);
-    return <ResponseErrorPanel error={new Error('Invalid element definition: required node not found')} />;
+    return <ResponseErrorPanel error={error} />;
   }
 
   return (
     <TabbedLayout>
       <TabbedLayout.Route path="/" title="Overview">
-        <McaElementAboutCard {...aboutCardProps} />
+        <McaElementAboutCard element={element} />
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/fields" title="Fields">
-        <McaElementFieldsCard {...fieldsCardProps} />
+        <McaElementFieldsCard element={element} />
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/methods" title="Methods">
-        <McaElementMethodsCard {...methodsCardProps} />
+        <McaElementMethodsCard element={element} />
       </TabbedLayout.Route>
     </TabbedLayout>
   );
