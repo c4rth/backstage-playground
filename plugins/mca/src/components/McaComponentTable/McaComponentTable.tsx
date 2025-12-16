@@ -30,8 +30,9 @@ type TableRow = {
     packageName: string,
 }
 
+
 function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
-    return [
+    const columns: TableColumn<TableRow>[] = [
         {
             title: 'Name',
             width: '45%',
@@ -78,15 +79,22 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
                 <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
             ),
         },
-        {
-            title: versions?.p4Version || 'P+4',
-            width: '5%',
-            field: 'p4Version',
-            highlight: true,
-            render: (row) => (
-                <Link to={`${row.component}?version=${row.p4Version}`}>{row.p4Version}</Link>
-            ),
-        },
+    ];
+    if (versions?.p4Version !== '') {
+        columns.push(
+            {
+                title: versions?.p4Version || 'P+4',
+                width: '5%',
+                field: 'p4Version',
+                highlight: true,
+                render: (row) => (
+                    <Link to={`${row.component}?version=${row.p4Version}`}>{row.p4Version}</Link>
+                ),
+            }
+        );
+    }
+
+    columns.push(
         {
             title: 'Package',
             width: '20%',
@@ -96,8 +104,9 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
             title: 'System',
             width: '10%',
             field: 'applicationCode',
-        },
-    ];
+        }
+    );
+    return columns;
 }
 
 const PAGE_SIZE = 20;

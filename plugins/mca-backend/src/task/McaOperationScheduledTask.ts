@@ -26,10 +26,34 @@ export class McaOperationScheduledTask {
         return new McaOperationScheduledTask(options);
     }
 
+    _getColumns(columnNumber: number) {
+        if (columnNumber === 8) {
+            return {
+                'component': '_0',
+                'prdVersion': '_1',
+                'p1Version': '_2',
+                'p2Version': '_3',
+                'p3Version': '_4',
+                'p4Version': '_5',
+                'applicationCode': '_6',
+                'packageName': '_7',
+            };
+        }
+        return {
+            'component': '_0',
+            'prdVersion': '_1',
+            'p1Version': '_2',
+            'p2Version': '_3',
+            'p3Version': '_4',
+            'p4Version': undefined,
+            'applicationCode': '_5',
+            'packageName': '_6',
+        };
+    };
+
     async runAsync() {
         const allOperationsCsvBaseUrl = this.config.getString('mcaComponents.operations.csvBaseUrl');
-        this.logger.debug(`Scheduled task: get all operations CSV from ${allOperationsCsvBaseUrl}`);
-
+        this.logger.info(`Scheduled task: get all operations CSV from ${allOperationsCsvBaseUrl}`);
         try {
             const response = await fetch(allOperationsCsvBaseUrl);
             if (!response.ok) {
@@ -37,12 +61,13 @@ export class McaOperationScheduledTask {
             }
 
             const csvData = await response.text();
-            this.logger.debug('CSV data fetched successfully');
+            this.logger.info('CSV data fetched successfully');
 
             return new Promise<void>((resolve, reject) => {
                 const components: Array<any> = [];
                 let mcaVersions: any = null;
                 let isFirstRow = true;
+                let columns: any = null;
 
                 Readable.from(csvData)
                     .pipe(csv({
@@ -51,27 +76,34 @@ export class McaOperationScheduledTask {
                         mapValues: ({ value }) => value.trim(),
                     }))
                     .on('data', data => {
-                        if (isFirstRow) {
-                            isFirstRow = false;
-                            mcaVersions = {
-                                p1Version: data._2,
-                                p2Version: data._3,
-                                p3Version: data._4,
-                                p4Version: data._5,
-                            };
-                            return;
-                        }
+                        try {
+                            if (isFirstRow) {
+                                isFirstRow = false;
+                                // Detect number of columns from first row
+                                const columnCount = Object.keys(data).length;
+                                this.logger.info(JSON.stringify(data));
+                                columns = this._getColumns(columnCount);
 
-                        components.push({
-                            component: data._0,
-                            prdVersion: data._1,
-                            p1Version: data._2,
-                            p2Version: data._3,
-                            p3Version: data._4,
-                            p4Version: data._5,
-                            applicationCode: data._6,
-                            packageName: data._7,
-                        });
+                                mcaVersions = {
+                                    p1Version: data[columns.p1Version],
+                                    p2Version: data[columns.p2Version],
+                                    p3Version: data[columns.p3Version],
+                                    p4Version: columns.p4Version ? data[columns.p4Version] : '',
+                                };
+                            }
+                            components.push({
+                                component: data[columns.component],
+                                prdVersion: data[columns.prdVersion],
+                                p1Version: data[columns.p1Version],
+                                p2Version: data[columns.p2Version],
+                                p3Version: data[columns.p3Version],
+                                p4Version: columns.p4Version ? data[columns.p4Version] : '',
+                                applicationCode: data[columns.applicationCode],
+                                packageName: data[columns.packageName],
+                            });
+                        } catch (error) {
+                            this.logger.error(`Error processing row: ${error}`);
+                        }
                     })
                     .on('end', async () => {
                         try {
@@ -94,9 +126,10 @@ export class McaOperationScheduledTask {
                             }
 
                             await Promise.all(promises);
-                            this.logger.debug(`CSV data parsed successfully. Processed ${components.length} components`);
+                            this.logger.info(`CSV data parsed successfully. Processed ${components.length} components`);
                             resolve();
                         } catch (error) {
+                            this.logger.error(`Error updating database: ${error}`);
                             reject(error);
                         }
                     })
@@ -108,6 +141,7 @@ export class McaOperationScheduledTask {
 
         } catch (error: any) {
             this.logger.error(`Error fetching CSV: ${error.message}`);
+            throw error;
         }
     }
 }

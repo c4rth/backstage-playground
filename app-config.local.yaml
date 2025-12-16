@@ -9,10 +9,13 @@ backend:
   logger:
     meta:
       env: prod
-    level: debug
+    level: warn
     overrides:
       - matchers:
           plugin: scaffolder
+        level: debug
+      - matchers:
+          plugin: mca
         level: info
       #- matchers:
       #    plugin: search

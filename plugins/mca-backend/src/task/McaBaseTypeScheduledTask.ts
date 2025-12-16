@@ -27,7 +27,7 @@ export class McaBaseTypeScheduledTask {
 
     async runAsync() {
         const listBaseTypesBaseUrl = this.config.getString('mcaComponents.baseTypes.listBaseUrl');
-        this.logger.debug(`Scheduled task: get basetypes from ${listBaseTypesBaseUrl}`);
+        this.logger.info(`Scheduled task: get basetypes from ${listBaseTypesBaseUrl}`);
 
         try {
             const response = await fetch(listBaseTypesBaseUrl);
@@ -36,7 +36,7 @@ export class McaBaseTypeScheduledTask {
             }
 
             const htmlPage = await response.text();
-            this.logger.debug('BaseTypes HTML fetched successfully');
+            this.logger.info('BaseTypes HTML fetched successfully');
 
             const $ = cheerio.load(htmlPage);
             const baseTypes: Array<{ baseType: string; packageName: string }> = [];
@@ -64,7 +64,7 @@ export class McaBaseTypeScheduledTask {
                         this.mcaComponentsStore.addOrUpdateBaseType(item)
                     )
                 );
-                this.logger.debug(`Processed ${baseTypes.length} base types`);
+                this.logger.info(`Processed ${baseTypes.length} base types`);
             }
         } catch (error: any) {
             this.logger.error(`Error fetching BaseTypes HTML: ${error.message}`);

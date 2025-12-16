@@ -34,9 +34,9 @@ import {
   RiWrenchFill,
   RiAdminLine,
   RiStackLine,
-  RiCircleLine,
-  RiTriangleLine,
   RiFolderAddLine,
+  RiBubbleChartLine,
+  RiAlbumLine,
 } from '@remixicon/react';
 
 
@@ -98,12 +98,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={RiCpuLine as IconComponent} to="api-platform/service" text="Services" />
         <SidebarItem icon={useApp().getSystemIcon('kind:api')!} to="api-platform/api" text="APIs" />
         <SidebarItem icon={RiBookShelfLine as IconComponent} to="api-platform/library" text="Libraries" />
-        <SidebarItem icon={RiStackLine as IconComponent} text="MCA" hasSubmenu>
-          <SidebarSubmenu title="MCA">
-            <SidebarSubmenuItem icon={RiCircleLine as IconComponent} to="mca/components" title="Components" />
-            <SidebarSubmenuItem icon={RiTriangleLine as IconComponent} to="mca/basetypes" title="BaseTypes" />
-          </SidebarSubmenu>
-        </SidebarItem>
+        <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA" />
+        <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="BaseTypes" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="docs" text="Docs" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="external-docs" text="ExtDocs" />
         <RequirePermission permission={taskCreatePermission} errorPage={<div />} >
