@@ -92,7 +92,7 @@ export const McaComponentDefinitionPage = () => {
     }
   }, [mca, queryVersion, selectedVersion]);
 
-  if (loading) return <Progress />;
+  if (loading || !selectedVersion) return <Progress />;
   if (error) {
     console.error(error);
     return <ResponseErrorPanel error={error} />;

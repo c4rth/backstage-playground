@@ -21,7 +21,6 @@ export interface McaComponentDefinitionCardProps {
 
 export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(({ mca, version }) => {
   const { data, loading, error } = useGetMcaComponentDefinition(mca.component, version);
-
   const componentType = getComponentType(mca.component);
 
   if (loading) return <Progress />;
