@@ -25,7 +25,6 @@ export async function catalogService(options: CatalogServiceOptions): Promise<Ca
         },
         { token }
       );
-      logger.debug(JSON.stringify(existResponse));
       let returnMessage = '';
       if (existResponse.exists) {
         const entity = existResponse.entities.find(candidate => candidate.kind === request.kind);

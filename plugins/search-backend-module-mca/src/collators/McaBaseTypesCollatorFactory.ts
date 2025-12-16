@@ -54,7 +54,7 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
     const countUrl = new URL(`${baseUrl}/basetypes/count`);
     const responseCount = await fetch(countUrl, { headers: { Authorization: `Bearer ${token}` } });
     const dataCount = (await responseCount.json()) as number;
-    this.logger.debug(`/basetypes/count: ${dataCount} - limit: ${this.limit}`);
+    this.logger.info(`/basetypes/count: ${dataCount} - limit: ${this.limit}`);
 
     for (let offset = 0; offset < dataCount; offset += this.limit) {
       const query = new URLSearchParams({ offset: String(offset), limit: String(this.limit) });

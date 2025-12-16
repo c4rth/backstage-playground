@@ -77,7 +77,9 @@ export class McaOperationScheduledTask {
                                     p3Version: columns.p3Version ? data[columns.p3Version] : '',
                                     p4Version: columns.p4Version ? data[columns.p4Version] : '',
                                 };
+                                return; // Skip processing first row as component
                             }
+                            if (!data[columns.component].startsWith('Operation') && !data[columns.component].startsWith('Element')) return;
                             components.push({
                                 component: data[columns.component],
                                 prdVersion: data[columns.prdVersion],

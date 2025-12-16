@@ -59,7 +59,7 @@ export class McaComponentsCollatorFactory implements DocumentCollatorFactory {
     const countUrl = new URL(`${baseUrl}/mca/count?type=all`);
     const responseCount = await fetch(countUrl, { headers: { Authorization: `Bearer ${token}` } });
     const dataCount = (await responseCount.json()) as number;
-    this.logger.debug(`mca/count: ${dataCount} - limit: ${this.limit}`);
+    this.logger.info(`mca/count: ${dataCount} - limit: ${this.limit}`);
 
     for (let offset = 0; offset < dataCount; offset += this.limit) {
       const query = new URLSearchParams({ offset: String(offset), limit: String(this.limit), type: 'all' });

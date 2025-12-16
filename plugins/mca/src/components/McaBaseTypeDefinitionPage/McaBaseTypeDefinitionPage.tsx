@@ -51,36 +51,30 @@ export const McaBaseTypeDefinitionPage = () => {
       });
   }, [name, mcaApi]);
 
-  const urls = useMemo(() => {
+  const baseTypeUrl = useMemo(() => {
     if (!baseType || !baseTypesUrl) {
-      return {
-        constructedUrl: '',
-        fallbackUrl: `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`,
-      };
+      return undefined;
     }
 
     const packageUrl = baseType.packageName?.replace(/\./g, '/') || '';
     const constructedUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
 
-    return {
-      constructedUrl,
-      fallbackUrl: `${baseTypesUrl}/dexia/opmk/basetypes/account/MCAccount.html`,
-    };
+    return constructedUrl;
   }, [baseType, baseTypesUrl]);
 
   const pageProps = useMemo(() => ({
     title: `${name || 'Unknown'}`,
-    subtitle: urls.constructedUrl || 'Loading...',
-  }), [name, urls.constructedUrl]);
+    subtitle: baseTypeUrl || 'Loading...',
+  }), [name, baseTypeUrl]);
 
   const iframeProps = useMemo(() => ({
-    title: "BaseType",
+    title: `BaseType :${baseTypeUrl}`,
     iframe: {
-      src: urls.constructedUrl || urls.fallbackUrl,
+      src: baseTypeUrl || '',
       height: '100%' as const,
       width: '100%' as const,
     },
-  }), [urls.constructedUrl, urls.fallbackUrl]);
+  }), [baseTypeUrl]);
 
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading) return <Progress />;

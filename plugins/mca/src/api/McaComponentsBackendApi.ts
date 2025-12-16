@@ -135,14 +135,14 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
   async getMcaComponentDefinition(component: string, refP: string): Promise<string | undefined> {
     const extension = component.startsWith('Operation') ? 'osml' : 'esml';
     const encodedComponent = encodeURIComponent(component.trim());
-    const encodedRefP = encodeURIComponent(refP.trim());
+    const encodedRefP = encodeURIComponent(refP.trim().replace(/^P/, '').replace(/^0+/, ''));
     
     const searchParams = this.buildQueryParams({
       env: 'TST',
       myCurrentP: encodedRefP,
     });
     
-    const url = new URL(`${this.backendBaseUrl}/api/proxy/operations-sources/v1/operation-sources/${encodedComponent}.${extension}/active`);
+    const url = new URL(`${this.backendBaseUrl}/api/proxy/operations-sources/api/v1/sources/OPER/${encodedComponent}.${extension}`);
     url.search = searchParams.toString();
     
     return this.fetchText(url);
