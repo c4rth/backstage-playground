@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 import { RiInformationLine } from '@remixicon/react';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { Box, Flex, Text, TextVariants } from '@backstage/ui';
@@ -14,17 +14,12 @@ export const InfoPopUp = (props: InfoPopUpProps) => {
 
     const { text, title, variant = 'body-medium', content } = props;
 
-    const popoverProps = useMemo(() => ({
-        title,
-        content,
-    }), [title, content]);
-
     return (
         <Flex align='center' mt='2' gap='xs'>
             <Box as="span">
                 <Text variant={variant} style={{ color: "var(--bui-fg-solid)" }}>{text}</Text>
             </Box>
-            <InfoPopOver {...popoverProps}>
+            <InfoPopOver title={title} content={content}>
                 <RiInformationLine style={{ color: "var(--bui-fg-solid)" }} aria-label="More information" />
             </InfoPopOver>
         </Flex>
