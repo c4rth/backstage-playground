@@ -8,7 +8,6 @@ import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
 import { AppRegistryOperation } from '../../types';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
-import { memo, useMemo } from 'react';
 import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
 import { ButtonIcon, Column, Table, TableHeader, TableBody, Row, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid } from '@backstage/ui';
 import { ResizableTableContainer, Cell as RACell } from 'react-aria-components';
@@ -19,7 +18,7 @@ type TableRow = {
   operation: AppRegistryOperation,
 }
 
-const PdpMappingTable = memo<{ mapping: { valuePath: string; pdpField: string; }[] }>(({ mapping }) => (
+const PdpMappingTable = ({ mapping }: { mapping: { valuePath: string; pdpField: string; }[] }) => (
   <Grid.Root columns='2' mt="var(--bui-space-3)">
     <Grid.Item><b>Value Path</b></Grid.Item>
     <Grid.Item><b>PDP Field</b></Grid.Item>
@@ -30,7 +29,7 @@ const PdpMappingTable = memo<{ mapping: { valuePath: string; pdpField: string; }
       </>
     ))}
   </Grid.Root>
-));
+);
 
 const renderAbacCell = (operation: AppRegistryOperation) => {
   if (!operation.abac) {
@@ -73,30 +72,20 @@ const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => (
 
 export const AppRegistryPage = () => {
   const { entity } = useEntity<ComponentEntity>();
-  const entityData = useMemo(() => {
-    const system = entity.spec.system;
-    const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
-    const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
-    const environment = entity.spec?.lifecycle?.toUpperCase();
-
-    return {
-      system,
-      appName,
-      appVersion,
-      environment,
-    };
-  }, [entity]);
-
+  const system = entity.spec.system;
+  const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
+  const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
+  const environment = entity.spec?.lifecycle?.toUpperCase();
 
   const getOperations = useGetOperations();
 
   const list = useAsyncList<TableRow>({
     async load({ }) {
       const data = await getOperations(
-        entityData.system,
-        entityData.appName,
-        entityData.appVersion,
-        entityData.environment,
+        system,
+        appName,
+        appVersion,
+        environment,
       );
       const rows = data?.map(toTableRow) ?? [];
       return { items: rows };
