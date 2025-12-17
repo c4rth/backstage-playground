@@ -2,7 +2,7 @@ import { MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
 import { Card, CardBody, CardHeader, Grid, Text } from "@backstage/ui";
 import { Divider } from "@internal/plugin-api-platform-react";
-import { useMemo, memo } from 'react';
+import { memo } from 'react';
 import styles from './McaElementAboutCard.module.css';
 
 export interface McaElementAboutCardProps {
@@ -23,31 +23,22 @@ const FieldDisplay = memo<{
 ));
 
 
-export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
-  const fieldValues = useMemo(() => ({
-    package: element?.package,
-    superClass: element?.superClass,
-    description: element?.description || '',
-  }), [element?.package, element?.superClass, element?.description]);
+const fieldGridSizes = { xs: 12, sm: 6, lg: 6 };
+const descriptionGridSizes = { xs: 12, sm: 6, lg: 12 };
 
-  const fieldConfigs = useMemo(() => [
+export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
+  const fieldConfigs = [
     {
       label: "Package",
-      value: fieldValues.package,
-      gridSizes: { xs: 12, sm: 6, lg: 6 }
+      value: element?.package,
+      gridSizes: fieldGridSizes
     },
     {
       label: "Extends",
-      value: fieldValues.superClass,
-      gridSizes: { xs: 12, sm: 6, lg: 6 }
+      value: element?.superClass,
+      gridSizes: fieldGridSizes
     },
-  ], [fieldValues.package, fieldValues.superClass]);
-
-  const descriptionGridSizes = useMemo(() => ({
-    xs: 12,
-    sm: 6,
-    lg: 12
-  }), []);
+  ];
 
   return (
     <Card className={styles.gridItemCard}>
@@ -65,7 +56,7 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
             />
           ))}
           <AboutField label="Description" gridSizes={descriptionGridSizes}>
-            <MarkdownContent content={fieldValues.description} />
+            <MarkdownContent content={element?.description || ''} />
           </AboutField>
         </Grid.Root>
       </CardBody>

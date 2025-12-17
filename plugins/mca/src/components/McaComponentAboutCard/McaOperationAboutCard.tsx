@@ -1,7 +1,7 @@
 import { CopyTextButton, MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
 import { Card, CardBody, CardHeader, Grid, Text } from "@backstage/ui";
-import { useMemo, memo } from 'react';
+import { memo } from 'react';
 import { Divider } from "@internal/plugin-api-platform-react";
 import styles from './McaOperationAboutCard.module.css';
 
@@ -34,49 +34,34 @@ export interface McaOperationAboutCardProps {
 }
 
 export const McaOperationAboutCard = memo<McaOperationAboutCardProps>(({ operationAnalyze, operation }) => {
-    const fieldValues = useMemo(() => ({
-        package: operationAnalyze?.package,
-        type: operationAnalyze?.type,
-        version: operationAnalyze?.version,
-        cobolName: operationAnalyze?.cobolName,
-        flowControllerName: operationAnalyze?.flowControlerName,
-        bsName: operationAnalyze?.bsName,
-        bfunction: operationAnalyze?.bfunction,
-        ficLocation: getDecodedURI(operationAnalyze?.ficLocation),
-        ticLocation: getDecodedURI(operationAnalyze?.ticLocation),
-        cicLocation: getDecodedURI(operationAnalyze?.cicLocation),
-        useCache: operation?.useCache ? 'TRUE' : 'FALSE',
-        description: operationAnalyze?.description,
-    }), [operationAnalyze, operation]);
-
-    const fieldConfigs = useMemo(() => [
-        { label: "Package", value: fieldValues.package, xs: 6 },
-        { label: "Extends", value: fieldValues.type, xs: 6 },
-        { label: "Operation Version", value: fieldValues.version, xs: 6 },
-        { label: "Operation Type", value: fieldValues.cobolName, xs: 6 },
-        { label: "Flow Controller", value: fieldValues.flowControllerName, xs: 6 },
-        { label: "BS", value: fieldValues.bsName, xs: 6 },
-        { label: "B-Function", value: fieldValues.bfunction, xs: 12 },
+    const fieldConfigs = [
+        { label: "Package", value: operationAnalyze?.package, xs: 6 },
+        { label: "Extends", value: operationAnalyze?.type, xs: 6 },
+        { label: "Operation Version", value: operationAnalyze?.version, xs: 6 },
+        { label: "Operation Type", value: operationAnalyze?.cobolName, xs: 6 },
+        { label: "Flow Controller", value: operationAnalyze?.flowControlerName, xs: 6 },
+        { label: "BS", value: operationAnalyze?.bsName, xs: 6 },
+        { label: "B-Function", value: operationAnalyze?.bfunction, xs: 12 },
         {
             label: "FIC",
-            value: fieldValues.ficLocation,
+            value: getDecodedURI(operationAnalyze?.ficLocation),
             xs: 12,
             showCopyButton: Boolean(operationAnalyze?.ficLocation)
         },
         {
             label: "TIC",
-            value: fieldValues.ticLocation,
+            value: getDecodedURI(operationAnalyze?.ticLocation),
             xs: 12,
             showCopyButton: Boolean(operationAnalyze?.ticLocation)
         },
         {
             label: "CIC",
-            value: fieldValues.cicLocation,
+            value: getDecodedURI(operationAnalyze?.cicLocation),
             xs: 12,
             showCopyButton: Boolean(operationAnalyze?.cicLocation)
         },
-        { label: "Caching", value: fieldValues.useCache, xs: 12 },
-    ], [fieldValues, operationAnalyze]);
+        { label: "Caching", value: operation?.useCache ? 'TRUE' : 'FALSE', xs: 12 },
+    ];
 
     return (
         <Card className={styles.gridItemCard}>
@@ -95,7 +80,7 @@ export const McaOperationAboutCard = memo<McaOperationAboutCardProps>(({ operati
                     ))}
                     <Grid.Item>
                         <AboutField label="Description">
-                            <MarkdownContent content={fieldValues.description || ''} />
+                            <MarkdownContent content={operationAnalyze?.description || ''} />
                         </AboutField>
                     </Grid.Item>
                 </Grid.Root>

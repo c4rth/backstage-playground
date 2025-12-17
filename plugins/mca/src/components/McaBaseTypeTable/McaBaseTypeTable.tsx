@@ -13,7 +13,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { Query } from '@material-table/core';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { useEffect, useState, useMemo, useCallback, memo } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
@@ -80,10 +80,6 @@ async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>) 
   };
 }
 
-function getCount(mcaApi: McaComponentsBackendApi) {
-  return mcaApi.getMcaBaseTypesCount();
-}
-
 export const McaBaseTypeTable = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
@@ -91,13 +87,10 @@ export const McaBaseTypeTable = memo(() => {
   const [loadingCount, setLoadingCount] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const initialSearch = useMemo(() =>
-    sessionStorage.getItem(STORAGE_KEY) || '',
-    []
-  );
+  const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
 
   useEffect(() => {
-    getCount(mcaApi)
+    mcaApi.getMcaBaseTypesCount()
       .then(count => {
         setCountRows(count);
         setLoadingCount(false);
@@ -108,15 +101,14 @@ export const McaBaseTypeTable = memo(() => {
       });
   }, [mcaApi]);
 
-  const dataFunction = useCallback(async (query: Query<TableRow>) => {
-    // Persist search term
+  const dataFunction = async (query: Query<TableRow>) => {
     if (query.search !== undefined) {
       sessionStorage.setItem(STORAGE_KEY, query.search);
     }
     return getData(mcaApi, query);
-  }, [mcaApi]);
+  };
 
-  const tableOptions = useMemo(() => ({
+  const tableOptions = {
     paginationPosition: 'bottom' as const,
     search: true,
     padding: 'dense' as const,
@@ -126,12 +118,12 @@ export const McaBaseTypeTable = memo(() => {
     draggable: false,
     thirdSortClick: false,
     searchText: initialSearch,
-  }), [loadingCount, initialSearch]);
-  const tableTitle = useMemo(() => (
+  };
+  const tableTitle = (
     <Flex align="center">
       BaseTypes ({countRows})
     </Flex>
-  ), [countRows]);
+  );
 
 
   if (loadingCount) return <Progress />;

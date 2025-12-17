@@ -15,7 +15,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { Query } from '@material-table/core';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
@@ -71,31 +71,27 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
             ),
         },
     ];
-    if (versions?.p3Version !== '') {
-        columns.push(
-            {
-                title: versions?.p3Version || 'P+3',
-                width: '5%',
-                field: 'p3Version',
-                highlight: true,
-                render: (row) => (
-                    <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
-                ),
-            },
-        );
+    if (versions?.p3Version) {
+        columns.push({
+            title: versions.p3Version,
+            width: '5%',
+            field: 'p3Version',
+            highlight: true,
+            render: (row) => (
+                <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
+            ),
+        });
     }
-    if (versions?.p4Version !== '') {
-        columns.push(
-            {
-                title: versions?.p4Version || 'P+4',
-                width: '5%',
-                field: 'p4Version',
-                highlight: true,
-                render: (row) => (
-                    <Link to={`${row.component}?version=${row.p4Version}`}>{row.p4Version}</Link>
-                ),
-            }
-        );
+    if (versions?.p4Version) {
+        columns.push({
+            title: versions.p4Version,
+            width: '5%',
+            field: 'p4Version',
+            highlight: true,
+            render: (row) => (
+                <Link to={`${row.component}?version=${row.p4Version}`}>{row.p4Version}</Link>
+            ),
+        });
     }
     columns.push(
         {
@@ -154,23 +150,11 @@ async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>, 
     };
 }
 
-const getCount = (mcaApi: McaComponentsBackendApi, type: McaComponentType) =>
-    mcaApi.getMcaComponentsCount(type);
-
-const getVersions = (mcaApi: McaComponentsBackendApi) =>
-    mcaApi.getMcaVersions();
-
 function getTitle(type: McaComponentType) {
-    switch (type) {
-        case 'operation':
-            return 'Operations';
-        case 'element':
-            return 'Elements';
-        case 'all':
-            return 'All components';
-        default:
-            return 'Unknown type';
-    }
+    if (type === 'operation') return 'Operations';
+    if (type === 'element') return 'Elements';
+    if (type === 'all') return 'All components';
+    return 'Unknown type';
 }
 
 type McaComponentTableProps = {
@@ -186,14 +170,9 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
     const [loadingVersions, setLoadingVersions] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
-    const initialSearch = useMemo(() =>
-        sessionStorage.getItem(STORAGE_KEY) || '', []
-    );
-    const columns = useMemo(() =>
-        getColumns(mcaVersions), [mcaVersions]
-    );
-
-    const tableOptions = useMemo(() => ({
+    const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
+    const columns = getColumns(mcaVersions);
+    const tableOptions = {
         paginationPosition: 'bottom' as const,
         search: true,
         padding: 'dense' as const,
@@ -203,24 +182,22 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,
-    }), [loadingVersions, loadingCount, initialSearch]);
-
-    const tableTitle = useMemo(() => (
+    };
+    const tableTitle = (
         <Flex align="center">
             {getTitle(selectedType)} ({countRows})
         </Flex>
-    ), [selectedType, countRows]);
+    );
 
-    const dataFetcher = useCallback(async (query: Query<TableRow>) => {
+    const dataFetcher = async (query: Query<TableRow>) => {
         if (query.search !== undefined) {
             sessionStorage.setItem(STORAGE_KEY, query.search);
         }
-
         return getData(mcaApi, query, selectedType);
-    }, [mcaApi, selectedType]);
+    };
 
     useEffect(() => {
-        getVersions(mcaApi)
+        mcaApi.getMcaVersions()
             .then(versions => setMcaVersions(versions))
             .catch(setError)
             .finally(() => setLoadingVersions(false));
@@ -228,7 +205,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
 
     useEffect(() => {
         setSelectedType(type);
-        getCount(mcaApi, type)
+        mcaApi.getMcaComponentsCount(type)
             .then(setCountRows)
             .catch(setError)
             .finally(() => setLoadingCount(false));

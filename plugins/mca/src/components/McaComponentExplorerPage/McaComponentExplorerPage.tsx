@@ -7,7 +7,7 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentTable } from '../McaComponentTable';
 import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 import { Box, Button, Flex, Grid } from '@backstage/ui';
 import { mcaComponentsBackendApiRef } from '../../api';
@@ -15,12 +15,12 @@ import { mcaComponentsBackendApiRef } from '../../api';
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
 
-const POPUP_CONTENT = memo(() => (
+const POPUP_CONTENT = (
   <InfoPopUpContent
     text1="Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform."
     text2="The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks."
   />
-));
+);
 
 const componentTypes: SelectItem[] = [
   { label: 'Operations', value: 'operation' },
@@ -44,36 +44,29 @@ export const McaComponentExplorerPage = () => {
   const configApi = useApi(configApiRef);
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
-  const organizationName = useMemo(() =>
-    configApi.getOptionalString('organization.name') ?? 'Backstage',
-    [configApi]
-  );
-
-  const subtitle = useMemo(() =>
-    `${organizationName} MCA Components Explorer`,
-    [organizationName]
-  );
+  const organizationName = configApi.getOptionalString('organization.name') ?? 'Backstage';
+  const subtitle = `${organizationName} MCA Components Explorer`;
 
   const [selectedType, setSelectedType] = useState<McaComponentType>(() =>
     getInitialType()
   );
 
-  const handleSelectChange = useCallback((selected: string) => {
+  const handleSelectChange = (selected: string) => {
     const normalizedType = normalizeComponentType(selected);
     sessionStorage.setItem(STORAGE_KEY, normalizedType);
     setSelectedType(normalizedType);
-  }, []);
+  };
 
-  const handleSchedule = useCallback(() => {
+  const handleSchedule = () => {
     mcaApi.scheduleMcaComponentTask();
-  }, [mcaApi]);
+  };
 
-  const subtitleComponent = useMemo(() => (
+  const subtitleComponent = (
     <InfoPopUp
       text={subtitle}
-      content={<POPUP_CONTENT />}
+      content={POPUP_CONTENT}
     />
-  ), [subtitle]);
+  );
 
   return (
     <PageWithHeader

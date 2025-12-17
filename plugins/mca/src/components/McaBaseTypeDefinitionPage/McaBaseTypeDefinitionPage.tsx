@@ -8,7 +8,7 @@ import { IFramePage } from '@internal/plugin-iframe';
 import { useParams } from 'react-router-dom';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
 
 async function getBaseType(
@@ -31,13 +31,12 @@ export const McaBaseTypeDefinitionPage = () => {
   const [error, setError] = useState<Error | null>(null);
   const [baseType, setBaseType] = useState<McaBaseType>();
 
-  const baseTypesUrl = useMemo(() => {
-    try {
-      return configApi.getString('mcaComponents.baseTypes.baseUrl');
-    } catch (configError) {
-      return '';
-    }
-  }, [configApi]);
+  let baseTypesUrl = '';
+  try {
+    baseTypesUrl = configApi.getString('mcaComponents.baseTypes.baseUrl');
+  } catch (configError) {
+    // baseTypesUrl remains empty
+  }
 
   useEffect(() => {
     getBaseType(mcaApi, name!)
@@ -51,30 +50,11 @@ export const McaBaseTypeDefinitionPage = () => {
       });
   }, [name, mcaApi]);
 
-  const baseTypeUrl = useMemo(() => {
-    if (!baseType || !baseTypesUrl) {
-      return undefined;
-    }
-
+  let baseTypeUrl: string | undefined;
+  if (baseType && baseTypesUrl) {
     const packageUrl = baseType.packageName?.replace(/\./g, '/') || '';
-    const constructedUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
-
-    return constructedUrl;
-  }, [baseType, baseTypesUrl]);
-
-  const pageProps = useMemo(() => ({
-    title: `${name || 'Unknown'}`,
-    subtitle: baseTypeUrl || 'Loading...',
-  }), [name, baseTypeUrl]);
-
-  const iframeProps = useMemo(() => ({
-    title: `BaseType :${baseTypeUrl}`,
-    iframe: {
-      src: baseTypeUrl || '',
-      height: '100%' as const,
-      width: '100%' as const,
-    },
-  }), [baseTypeUrl]);
+    baseTypeUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
+  }
 
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading) return <Progress />;
@@ -88,12 +68,19 @@ export const McaBaseTypeDefinitionPage = () => {
 
   return (
     <PageWithHeader
-      key={name} // Force re-render when name changes
+      key={name}
       themeId="apis"
-      title={pageProps.title}
+      title={name || 'Unknown'}
       type='MCA BaseType'
     >
-      <IFramePage {...iframeProps} />
+      <IFramePage 
+        title={`BaseType :${baseTypeUrl}`}
+        iframe={{
+          src: baseTypeUrl || '',
+          height: '100%',
+          width: '100%',
+        }}
+      />
     </PageWithHeader>
   );
 }

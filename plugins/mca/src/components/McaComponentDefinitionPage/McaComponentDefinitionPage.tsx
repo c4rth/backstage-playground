@@ -16,15 +16,10 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { Box, Grid } from '@backstage/ui';
 
-type McaComponentVersion = {
-  label: string;
-  value: string;
-};
-
-const mapMcaVersions = (mca: McaComponent | undefined): McaComponentVersion[] => {
+function mapMcaVersions(mca: McaComponent | undefined): SelectItem[] {
   if (!mca) return [];
 
-  const versionEntries = [
+  const versions = [
     { version: mca.p4Version, suffix: '' },
     { version: mca.p3Version, suffix: '' },
     { version: mca.p2Version, suffix: '' },
@@ -32,7 +27,7 @@ const mapMcaVersions = (mca: McaComponent | undefined): McaComponentVersion[] =>
     { version: mca.prdVersion, suffix: ' (PRD)' },
   ];
 
-  return versionEntries
+  return versions
     .filter(({ version }) => version)
     .map(({ version, suffix }) => ({
       label: `${version}${suffix}`,
@@ -65,28 +60,27 @@ export const McaComponentDefinitionPage = () => {
   useEffect(() => {
     setSelectedVersion(undefined);
     setMca(undefined);
+    setVersions([]);
     setLoading(true);
     setError(null);
-    getMca(mcaApi, name!).then(component => {
-      setVersions([]);
-      setMca(component);
-    }).catch(err => {
-      setError(err);
-    })
-    .finally(() => { setLoading(false); });
+    
+    getMca(mcaApi, name!)
+      .then(component => setMca(component))
+      .catch(err => setError(err))
+      .finally(() => setLoading(false));
   }, [name, mcaApi]);
 
   useEffect(() => {
-    if (!selectedVersion) {
-      const mcaVersions = mapMcaVersions(mca);
-      const data = mcaVersions.map(mcaVersion => ({ label: mcaVersion.label, value: mcaVersion.value }));
+    if (!selectedVersion && mca) {
+      const data = mapMcaVersions(mca);
       setVersions(data);
+      
       let selVersion: string | undefined;
       if (isInitialLoad.current && queryVersion && data.some(item => item.value === queryVersion)) {
-        selVersion = data.find(item => item.value === queryVersion)?.value;
+        selVersion = queryVersion;
         isInitialLoad.current = false;
       } else if (data.length > 0) {
-        selVersion = data[0].value;
+        selVersion = String(data[0].value);
       }
       if (selVersion) setSelectedVersion(selVersion);
     }
@@ -94,7 +88,6 @@ export const McaComponentDefinitionPage = () => {
 
   if (loading || !selectedVersion) return <Progress />;
   if (error) {
-    console.error(error);
     return <ResponseErrorPanel error={error} />;
   }
 
@@ -119,7 +112,7 @@ export const McaComponentDefinitionPage = () => {
           </Grid.Root>
         </Box>
         <Box mb='-3'>
-          {mca ? <McaComponentDefinitionCard mca={mca} version={selectedVersion!} /> : <div />}
+          <McaComponentDefinitionCard mca={mca!} version={selectedVersion} />
         </Box>
       </Content>
     </PageWithHeader>

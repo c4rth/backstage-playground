@@ -1,9 +1,10 @@
 import { InfoCard, Table, TableColumn } from '@backstage/core-components';
 import { Flex, Box, Text } from '@backstage/ui';
-import { useMemo, memo } from 'react';
+import { memo } from 'react';
 
-export interface McaElementMethodsCardProps {
-    element: any;
+export interface McaComponentMethodsCardProps {
+    data: any;
+    componentType?: 'element' | 'operation';
 }
 
 type MethodRow = {
@@ -18,62 +19,58 @@ const columns: TableColumn<MethodRow>[] = [
         field: 'name',
         defaultSort: 'asc',
         highlight: true,
-        render: ({ name }) => (
-            <Text variant='body-medium'>{name}</Text>
-        ),
     },
 ];
 
 function transformMethodsToRows(methods: any[]): MethodRow[] {
-
     if (!Array.isArray(methods)) {
         return [];
     }
-
     return methods
-        .filter(method => method?.name?.trim()) 
+        .filter(method => method?.name?.trim())
         .map((method, index) => ({
             id: index,
             name: method.name.trim(),
         }));
 }
 
-export const McaElementMethodsCard = memo<McaElementMethodsCardProps>(({ element }) => {
-    const methods = useMemo(() => {
-        const implementedMethods = element?.implementedMethods?.implementedMethod;
-        
-        if (!implementedMethods) {
-            return [];
-        }
+const tableOptions = {
+    search: true,
+    padding: 'dense' as const,
+    paging: false,
+    draggable: false,
+    thirdSortClick: false,
+    showEmptyDataSourceMessage: true,
+};
 
-        const methodsArray = Array.isArray(implementedMethods) 
-            ? implementedMethods 
-            : [implementedMethods];
+function getMethods(data: any): MethodRow[] {
+    const implementedMethods = data?.implementedMethods?.implementedMethod;
 
-        return transformMethodsToRows(methodsArray);
-    }, [element?.implementedMethods?.implementedMethod]);
+    if (!implementedMethods) {
+        return [];
+    }
 
-    const tableOptions = useMemo(() => ({
-        search: true,
-        padding: 'dense' as const,
-        paging: false,
-        draggable: false,
-        thirdSortClick: false,
-        showEmptyDataSourceMessage: true,
-    }), []);
+    const methodsArray = Array.isArray(implementedMethods)
+        ? implementedMethods
+        : [implementedMethods];
 
-    const tableTitle = useMemo(() => (
+    return transformMethodsToRows(methodsArray);
+}
+
+export const McaComponentMethodsCard = memo<McaComponentMethodsCardProps>(({ data, componentType = 'element' }) => {
+    const methods = getMethods(data);
+    const tableTitle = (
         <Flex align="center">
             Implemented Methods ({methods.length})
         </Flex>
-    ), [methods.length]);
+    );
 
     if (methods.length === 0) {
         return (
             <InfoCard title="Implemented Methods">
                 <Box p='2'>
                     <Text variant='body-medium' color="secondary">
-                        No implemented methods found for this element.
+                        No implemented methods found for this {componentType}.
                     </Text>
                 </Box>
             </InfoCard>

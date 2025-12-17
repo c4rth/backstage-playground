@@ -1,8 +1,8 @@
 import { ResponseErrorPanel, TabbedLayout } from "@backstage/core-components";
 import { McaOperationAboutCard } from "../McaComponentAboutCard";
-import { McaOperationFieldsCard } from "../McaComponentFieldsCard";
 import { memo, useMemo } from "react";
-import { McaOperationMethodsCard } from "../McaComponentMethodsCard";
+import { McaComponentFieldsCard } from "./McaComponentFieldsCard";
+import { McaComponentMethodsCard } from "./McaComponentMethodsCard";
 
 export interface McaOperationDefinitionPageProps {
     mcaComponent: any;
@@ -44,7 +44,7 @@ function getOperationNodes(mcaComponent: any): NodesType {
 }
 
 export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(({ mcaComponent }) => {
-    const { operationAnalyze, operation, operationType, error } = useMemo(() => {
+    const { operationAnalyze, operation, error } = useMemo(() => {
         try {
             const nodes = getOperationNodes(mcaComponent);
             
@@ -79,13 +79,13 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
                 <McaOperationAboutCard operationAnalyze={operationAnalyze} operation={operation} />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/inputfields" title="Input Fields">
-                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="input" />
+                <McaComponentFieldsCard data={operation} fieldType="input" />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/outputfields" title="Output Fields">
-                <McaOperationFieldsCard operation={operation} operationType={operationType} fieldType="output" />
+                <McaComponentFieldsCard data={operation} fieldType="output" />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/methods" title="Methods">
-                <McaOperationMethodsCard operation={operation} />
+                <McaComponentMethodsCard data={operation} componentType="operation" />
             </TabbedLayout.Route>
         </TabbedLayout>
     );
