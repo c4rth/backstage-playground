@@ -7,7 +7,7 @@ import {
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo, useState } from 'react';
 import { Box, Flex, Text } from '@backstage/ui';
-import { ListBox, ListBoxItem,  } from 'react-aria-components';
+import { ListBox, ListBoxItem, } from 'react-aria-components';
 import { ComponentDisplayName } from "../common";
 import {
   LibraryDefinition,
@@ -180,24 +180,24 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
   }, [apiPlatformApi, name]);
 
   const rows = useMemo(() => {
-        if (!libraryVersions) return [];
-        
-        const hasLibraryDependency = (service: ServiceDefinition) =>
-            service.versions.some(version =>
-                Object.values(version.environments).some(env =>
-                    env?.dependencies?.some((dep: string) => dep.includes(name))
-                )
-            );
-        
-        let filtered = allServices;
-        if (selectedDependency === 'yes') {
-            filtered = allServices.filter(hasLibraryDependency);
-        } else if (selectedDependency === 'no') {
-            filtered = allServices.filter(s => !hasLibraryDependency(s));
-        }
+    if (!libraryVersions) return [];
 
-        return filtered.map((service, idx) => toRow(libraryVersions, service, idx, name));
-    }, [allServices, name, selectedDependency, libraryVersions]);
+    const hasLibraryDependency = (service: ServiceDefinition) =>
+      service.versions.some(version =>
+        Object.values(version.environments).some(env =>
+          env?.dependencies?.some((dep: string) => dep.includes(name))
+        )
+      );
+
+    let filtered = allServices;
+    if (selectedDependency === 'yes') {
+      filtered = allServices.filter(hasLibraryDependency);
+    } else if (selectedDependency === 'no') {
+      filtered = allServices.filter(s => !hasLibraryDependency(s));
+    }
+
+    return filtered.map((service, idx) => toRow(libraryVersions, service, idx, name));
+  }, [allServices, name, selectedDependency, libraryVersions]);
 
   if (error || errorLibVersion) {
     return <ResponseErrorPanel title='Error loading Library Versions' error={error || errorLibVersion!} />;
@@ -217,9 +217,10 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
           options={{
             search: true,
             padding: 'dense' as const,
-            paging: false,
             draggable: false,
             thirdSortClick: false,
+            pageSize: 20,
+            pageSizeOptions: [10, 20, 50],
           }}
           title={
             <Flex align="center">
