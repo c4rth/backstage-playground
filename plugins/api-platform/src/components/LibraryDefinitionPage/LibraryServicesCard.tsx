@@ -3,12 +3,11 @@ import {
   Table,
   Link,
   ResponseErrorPanel,
-  Select,
 } from '@backstage/core-components';
 import useAsync from 'react-use/esm/useAsync';
 import { useState } from 'react';
 import { Box, Flex, Text } from '@backstage/ui';
-import { ListBox, ListBoxItem } from 'react-aria-components';
+import { ListBox, ListBoxItem,  } from 'react-aria-components';
 import { ComponentDisplayName } from "../common";
 import {
   LibraryDefinition,
@@ -19,6 +18,7 @@ import { apiPlatformBackendApiRef } from '../../api';
 import { fetchAllServices } from './fetchServicesByLibrary';
 import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
+import { DependentsToggle } from './DependtsToggle';
 
 type TableRow = {
   id: number;
@@ -56,7 +56,7 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
       const envData = version.environments[env as keyof typeof version.environments] as any;
       const dependencies = envData?.dependencies || [];
       const dependencyIndexes = envData?.dependencyIndexes || [];
-      
+
       if (!dependencies.length) {
         return <Text variant="body-medium">-</Text>;
       }
@@ -134,7 +134,7 @@ const toRow = (libraryVersions: LibraryDefinition[], serviceDefinition: ServiceD
     environments: Object.fromEntries(
       Object.entries(version.environments).map(([key, data]) => {
         if (!data) return [key, data];
-        
+
         const filtered = data.dependencies
           ?.filter((dep: string) => dep.includes(libraryName))
           .map(dep => {
@@ -144,7 +144,7 @@ const toRow = (libraryVersions: LibraryDefinition[], serviceDefinition: ServiceD
               index: lib ? libraryVersions.indexOf(lib) : -1
             };
           }) || [];
-        
+
         return [key, {
           ...data,
           dependencies: filtered.map(d => d.version),
@@ -166,12 +166,6 @@ interface LibraryServicesCardProps {
   system: string;
   name: string;
 }
-
-const dependencies = [
-  { label: 'All', value: 'all' },
-  { label: 'Yes', value: 'depends' },
-  { label: 'No', value: 'no' },
-];
 
 export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
@@ -209,13 +203,8 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
 
   return (
     <>
-      <Box mb='1'>
-        <Select
-          onChange={selected => setSelectedDependency(selected.toString())}
-          label="Dependents"
-          items={dependencies}
-          selected={selectedDependency}
-        />
+      <Box mb='4'>
+        <DependentsToggle handleDependentChange={(type) => setSelectedDependency(type)} />
       </Box>
       <Box>
         <Table<TableRow>
