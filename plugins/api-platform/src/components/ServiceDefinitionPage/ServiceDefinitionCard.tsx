@@ -3,7 +3,6 @@ import {
     TabbedLayout,
     Link,
 } from '@backstage/core-components';
-import { memo, useMemo } from 'react';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
@@ -34,188 +33,150 @@ import { RiFileFill } from '@remixicon/react';
 import styles from './ServiceDefinitionCard.module.css';
 import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '@internal/plugin-azure-devops';
 
-export const ServiceDefinitionCard = memo(() => {
-    const { entity } = useEntity<ComponentEntity>();
-    const configApi = useApi(configApiRef);
+export const ServiceDefinitionCard = () => {
+  const { entity } = useEntity<ComponentEntity>();
+  const configApi = useApi(configApiRef);
 
-    const availabilityChecks = useMemo(() => ({
-        sonarQube: isSonarQubeAvailable(entity),
-        azureDevOps: isAzureDevOpsAvailable(entity),
-        azurePipelines: isAzurePipelinesAvailable(entity),
-    }), [entity]);
+  const sonarQube = isSonarQubeAvailable(entity);
+  const azureDevOps = isAzureDevOpsAvailable(entity);
+  const azurePipelines = isAzurePipelinesAvailable(entity);
 
-    const entityData = useMemo(() => {
-        const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
-        const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
-        const entityRef = getCompoundEntityRef(entity);
-        const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
-        if (!isAzureDevOpsAvailable(entity)) {
-            return {
-                platform,
-                imageVersion,
-                entityRef,
-                hasDocs,
-                repositoryUrl: undefined,
-                repository: undefined,
-            };
-        }
-        const lifecycle = entity.spec.lifecycle;
-        const { project, repo } = getAnnotationValuesFromEntity(entity);
-        const repositoryUrl = `https://${configApi.getString('azureDevOps.host')}/${configApi.getString('azureDevOps.organization')}/${project}/_git/${repo}?version=GT${lifecycle}`;
-        const repository =  `${project}/${repo}`;
-        return {
-            platform,
-            imageVersion,
-            entityRef,
-            hasDocs,
-            repositoryUrl,
-            repository,
-        };
-    }, [entity, configApi]);
+  const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
+  const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
+  const entityRef = getCompoundEntityRef(entity);
+  const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
 
-    /*
-    <IconButton
-                aria-label="Documentation"
-                title="TechDocs"
-                disabled={!entityData.hasDocs}
-                component={Link}
-                to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}
+  let repositoryUrl: string | undefined;
+  let repository: string | undefined;
+
+  if (azureDevOps) {
+    const lifecycle = entity.spec.lifecycle;
+    const { project, repo } = getAnnotationValuesFromEntity(entity);
+    repositoryUrl = `https://${configApi.getString('azureDevOps.host')}/${configApi.getString('azureDevOps.organization')}/${project}/_git/${repo}?version=GT${lifecycle}`;
+    repository = `${project}/${repo}`;
+  }
+
+  return (
+    <TabbedLayout>
+      <TabbedLayout.Route path="/" title="Overview">
+        <Grid.Root columns='12'>
+          <Grid.Item colSpan='6'>
+            <InfoCard
+              title="About"
+              divider
+              className={styles.gridItemCard}
+              action={
+                <Link to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}>
+                  <ButtonIcon
+                    icon={<RiFileFill />}
+                    isDisabled={!hasDocs}
+                    size='medium'
+                    variant='tertiary'
+                  />
+                </Link>
+              }
             >
-                <DocsIcon />
-            </IconButton>*/
-
-    // TODO-MUI
-    const docsButton = useMemo(() => (
-        <Link to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`}>
-            <ButtonIcon
-                icon={<RiFileFill />}
-                isDisabled={!entityData.hasDocs}
-                size='medium'
-                variant='tertiary'
-            />
-        </Link>
-    ), [entityData.hasDocs, entityData.entityRef]);
-
-    const aboutFields = useMemo(() => (
-        <Box>
-            <Grid.Root columns='12'>
-                <Grid.Item colSpan='4'>
-                    <AboutField
-                        label="Service reference">
-                        <EntityRefLink entityRef={entity} />
-                    </AboutField>
-                </Grid.Item>
-
-                <Grid.Item colSpan='4'>
-                    <AboutField
-                        label="Platform">
-                        <Text variant='body-medium'>
-                            {entityData.platform}
-                        </Text>
-                    </AboutField>
-                </Grid.Item>
-
-                <Grid.Item colSpan='4'>
-                    <AboutField
-                        label="Image version">
-                        <Text variant='body-medium'>
-                            {entityData.imageVersion || 'N/A'}
-                        </Text>
-                    </AboutField>
-                </Grid.Item>
-
-                <Grid.Item colSpan='12'>
-                    <AboutField
-                        label="Repository">
-                        {entityData.repository && entityData.repositoryUrl ? (
-                            <Link to={entityData.repositoryUrl}>
-                                <ComponentDisplayName text={entityData.repository} type='azdo' />
-                            </Link>
-                        ) : (
-                            <Text variant='body-medium'>
-                                -
-                            </Text>
-                        )}
-                    </AboutField>
-                </Grid.Item>
-            </Grid.Root>
-        </Box>
-    ), [entity, entityData]);
-
-    return (
-        <TabbedLayout>
-            <TabbedLayout.Route path="/" title="Overview">
+              <Box>
                 <Grid.Root columns='12'>
-                    <Grid.Item colSpan='6'>
-                        <InfoCard
-                            title="About"
-                            divider
-                            className={styles.gridItemCard}
-                            action={docsButton}>
-                            {aboutFields}
-                            <Box mt='6' />
-                            <ComponentAboutContent entity={entity} />
-                        </InfoCard>
-                    </Grid.Item>
-                    <Grid.Item colSpan='6'>
-                        <EntityCatalogGraphCard
-                            variant="gridItem"
-                            height={400}
-                            kinds={['API', 'Component']}
-                            direction={Direction.TOP_BOTTOM}
-                            unidirectional
-                        />
-                    </Grid.Item>
+                  <Grid.Item colSpan='4'>
+                    <AboutField label="Service reference">
+                      <EntityRefLink entityRef={entity} />
+                    </AboutField>
+                  </Grid.Item>
+
+                  <Grid.Item colSpan='4'>
+                    <AboutField label="Platform">
+                      <Text variant='body-medium'>
+                        {platform}
+                      </Text>
+                    </AboutField>
+                  </Grid.Item>
+
+                  <Grid.Item colSpan='4'>
+                    <AboutField label="Image version">
+                      <Text variant='body-medium'>
+                        {imageVersion || 'N/A'}
+                      </Text>
+                    </AboutField>
+                  </Grid.Item>
+
+                  <Grid.Item colSpan='12'>
+                    <AboutField label="Repository">
+                      {repository && repositoryUrl ? (
+                        <Link to={repositoryUrl}>
+                          <ComponentDisplayName text={repository} type='azdo' />
+                        </Link>
+                      ) : (
+                        <Text variant='body-medium'>
+                          -
+                        </Text>
+                      )}
+                    </AboutField>
+                  </Grid.Item>
                 </Grid.Root>
-            </TabbedLayout.Route>
+              </Box>
+              <Box mt='6' />
+              <ComponentAboutContent entity={entity} />
+            </InfoCard>
+          </Grid.Item>
+          <Grid.Item colSpan='6'>
+            <EntityCatalogGraphCard
+              variant="gridItem"
+              height={400}
+              kinds={['API', 'Component']}
+              direction={Direction.TOP_BOTTOM}
+              unidirectional
+            />
+          </Grid.Item>
+        </Grid.Root>
+      </TabbedLayout.Route>
 
-            <TabbedLayout.Route path="/dependencies" title="Dependencies">
-                <TabbedLayout>
-                    <TabbedLayout.Route path="/apis" title="APIs">
-                        <Grid.Root columns='12'>
-                            <Grid.Item colSpan='6'>
-                                <ServiceApiRelationCard dependency="provided" />
-                            </Grid.Item>
-                            <Grid.Item colSpan='6'>
-                                <ServiceApiRelationCard dependency="consumed" />
-                            </Grid.Item>
-                        </Grid.Root>
-                    </TabbedLayout.Route>
-                    <TabbedLayout.Route path="/libraries" title="Libraries">
-                        <ServiceLibraryRelationCard />
-                    </TabbedLayout.Route>
-                </TabbedLayout>
-            </TabbedLayout.Route>
+      <TabbedLayout.Route path="/dependencies" title="Dependencies">
+        <TabbedLayout>
+          <TabbedLayout.Route path="/apis" title="APIs">
+            <Grid.Root columns='12'>
+              <Grid.Item colSpan='6'>
+                <ServiceApiRelationCard dependency="provided" />
+              </Grid.Item>
+              <Grid.Item colSpan='6'>
+                <ServiceApiRelationCard dependency="consumed" />
+              </Grid.Item>
+            </Grid.Root>
+          </TabbedLayout.Route>
+          <TabbedLayout.Route path="/libraries" title="Libraries">
+            <ServiceLibraryRelationCard />
+          </TabbedLayout.Route>
+        </TabbedLayout>
+      </TabbedLayout.Route>
 
-            <TabbedLayout.Route path="/appreg" title="App Registry">
-                <AppRegistryPage />
-            </TabbedLayout.Route>
+      <TabbedLayout.Route path="/appreg" title="App Registry">
+        <AppRegistryPage />
+      </TabbedLayout.Route>
 
-            {availabilityChecks.azurePipelines && (
-                <TabbedLayout.Route path="/ci-cd" title="CI/CD">
-                    <AzureDevOpsPipelinePage />
-                </TabbedLayout.Route>
-            )}
+      {azurePipelines && (
+        <TabbedLayout.Route path="/ci-cd" title="CI/CD">
+          <AzureDevOpsPipelinePage />
+        </TabbedLayout.Route>
+      )}
 
-            {availabilityChecks.azureDevOps && (
-                <TabbedLayout.Route path="/gittags" title="Git Tags">
-                    <AzureDevOpsGitTagsPage />
-                </TabbedLayout.Route>
-            )}
+      {azureDevOps && (
+        <TabbedLayout.Route path="/gittags" title="Git Tags">
+          <AzureDevOpsGitTagsPage />
+        </TabbedLayout.Route>
+      )}
 
-            {availabilityChecks.azureDevOps && (
-                <TabbedLayout.Route path="/readme" title="Readme">
-                    <AzureReadmeCard />
-                </TabbedLayout.Route>
-            )}
+      {azureDevOps && (
+        <TabbedLayout.Route path="/readme" title="Readme">
+          <AzureReadmeCard />
+        </TabbedLayout.Route>
+      )}
 
-            {availabilityChecks.sonarQube && (
-                <TabbedLayout.Route path="/sonarqube" title="SonarQube">
-                    <EntitySonarQubeContentPage />
-                </TabbedLayout.Route>
-            )
-            }
+      {sonarQube && (
+        <TabbedLayout.Route path="/sonarqube" title="SonarQube">
+          <EntitySonarQubeContentPage />
+        </TabbedLayout.Route>
+      )}
 
-        </TabbedLayout >
-    );
-});
+    </TabbedLayout>
+  );
+}

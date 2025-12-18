@@ -1,24 +1,16 @@
-import {
-  Content,
-  PageWithHeader,
-} from '@backstage/core-components';
+import { Content, PageWithHeader } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { LibraryTable } from '../LibraryTable';
-import { useMemo, } from 'react';
 
 export const LibraryExplorerPage = () => {
   const configApi = useApi(configApiRef);
-
-  const generatedSubtitle = useMemo(() =>
-    `${configApi.getOptionalString('organization.name') ?? 'Backstage'} Library Explorer`,
-    [configApi]
-  );
+  const orgName = configApi.getOptionalString('organization.name') ?? 'Backstage';
 
   return (
     <PageWithHeader
       themeId="libraries"
       title="Libraries"
-      subtitle={generatedSubtitle}
+      subtitle={`${orgName} Library Explorer`}
       pageTitleOverride="Libraries"
     >
       <Content>

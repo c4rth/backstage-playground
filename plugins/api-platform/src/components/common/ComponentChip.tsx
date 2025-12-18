@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react';
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
@@ -57,7 +56,7 @@ const getPlatformIcon = (platform?: string): React.JSX.Element => {
     return PLATFORM_ICONS.cloud;
 };
 
-export const ComponentChip = memo<ComponentChipProps>(({
+export const ComponentChip = ({
     index,
     icon,
     text,
@@ -66,42 +65,33 @@ export const ComponentChip = memo<ComponentChipProps>(({
     disabled = false,
     clickable = true,
     backgroundColor,
-}) => {
+}: ComponentChipProps) => {
     const classes = useStyles({ index, backgroundColor });
 
-    const { chipIcon, chipLabel, tooltipContent } = useMemo(() => {
-        const platformIcon = getPlatformIcon(service?.platform);
-        const label = text || service?.imageVersion || '?';
-        const chipIconValue = text ? icon : platformIcon;
+    const platformIcon = getPlatformIcon(service?.platform);
+    const chipLabel = text || service?.imageVersion || '?';
+    const chipIcon = text ? icon : platformIcon;
 
-        const tooltip = service ? (
-            <>
-                <Text>Platform: <b>{service.platform}</b></Text>
-                <br />
-                <Text>Version: <b>{service.imageVersion}</b></Text>
-                <br />
-                {service.dependencies && service.dependencies.length > 0 ?
-                    (
-                        <>
-                            <Text>Dependencies:</Text>
-                            <Flex direction="column" gap="spacing-1">
-                                {service.dependencies.map((dep) => (
-                                    <Text key={dep}>
-                                        <Text>- <b>{dep}</b></Text>
-                                    </Text>
-                                ))}
-                            </Flex>
-                        </>
-                    ) : null}
-            </>
-        ) : null;
-
-        return {
-            chipIcon: chipIconValue,
-            chipLabel: label,
-            tooltipContent: tooltip,
-        };
-    }, [service, text, icon]);
+    const tooltipContent = service ? (
+        <>
+            <Text>Platform: <b>{service.platform}</b></Text>
+            <br />
+            <Text>Version: <b>{service.imageVersion}</b></Text>
+            <br />
+            {service.dependencies && service.dependencies.length > 0 && (
+                <>
+                    <Text>Dependencies:</Text>
+                    <Flex direction="column" gap="spacing-1">
+                        {service.dependencies.map((dep) => (
+                            <Text key={dep}>
+                                <Text>- <b>{dep}</b></Text>
+                            </Text>
+                        ))}
+                    </Flex>
+                </>
+            )}
+        </>
+    ) : null;
 
     const chip = (
         <Chip
@@ -132,4 +122,4 @@ export const ComponentChip = memo<ComponentChipProps>(({
             </Link>
         ) : content
     );
-});
+};

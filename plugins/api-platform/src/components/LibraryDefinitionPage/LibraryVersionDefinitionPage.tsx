@@ -8,17 +8,14 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { AsyncEntityProvider, } from '@backstage/plugin-catalog-react';
-import { useEffect, useMemo, useState } from 'react';
-import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { ComponentEntity, } from '@backstage/catalog-model';
+import { AsyncEntityProvider, catalogApiRef } from '@backstage/plugin-catalog-react';
+import { useEffect, useState } from 'react';
+import { ComponentEntity } from '@backstage/catalog-model';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
 import { Box, Flex, Text } from '@backstage/ui';
 import { ComponentDisplayName } from "../common";
-import {
-  ServiceDefinition,
-} from "@internal/plugin-api-platform-common";
+import { ServiceDefinition } from "@internal/plugin-api-platform-common";
 import useAsync from 'react-use/esm/useAsync';
 import { fetchAllServicesByLibraryVersion } from './fetchServicesByLibrary';
 import { ListBox, ListBoxItem } from 'react-aria-components';
@@ -98,14 +95,6 @@ const serviceColumns: TableColumn<TableRow>[] = [
   },
 ];
 
-const tableOptions = {
-  search: true,
-  padding: 'dense' as const,
-  paging: false,
-  draggable: false,
-  thirdSortClick: false,
-} as const;
-
 const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => ({
   id: idx,
   name: serviceDefinition.name,
@@ -126,12 +115,12 @@ export const LibraryVersionDefinitionPage = () => {
 
   useEffect(() => {
     if (!name || !queryVersion) return;
-    
+
     const fetchLibraryEntity = async () => {
       try {
         const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!, true);
         const matchedVersion = libVersions.find(lv => lv.version === queryVersion);
-        
+
         if (matchedVersion?.entityRef) {
           setLibEntityRef(matchedVersion.entityRef);
           const entity = await catalogApi.getEntityByRef(matchedVersion.entityRef);
@@ -142,38 +131,27 @@ export const LibraryVersionDefinitionPage = () => {
         setLibraryEntity(undefined);
       }
     };
-    
+
     fetchLibraryEntity();
   }, [apiPlatformApi, catalogApi, system, name, queryVersion]);
 
   const { value: allServices = [], loading, error } = useAsync(async () => {
     if (!name || !libraryEntity || !libEntityRef) return [];
     const libVersionRef = libEntityRef.replace(/^component:/, '').replace(/^default\//, '');
-
     const result = await fetchAllServicesByLibraryVersion(apiPlatformApi, libVersionRef);
-
     return result.items;
   }, [libraryEntity, apiPlatformApi, libEntityRef]);
-
-  const rows = useMemo(() => allServices.map(toRow), [allServices]);
-
-  const tableTitle = useMemo(() => (
-    <Flex align="center">
-      Services ({rows.length})
-    </Flex>
-  ), [rows.length]);
 
   if (error) {
     return <ResponseErrorPanel title='Error loading Services' error={error} />;
   }
 
+  const rows = allServices.map(toRow);
+
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
-      <Page
-        themeId="libraries">
-        <Header
-          title={`${name} - v${queryVersion}`}
-          type='Library'>
+      <Page themeId="libraries">
+        <Header title={`${name} - v${queryVersion}`} type='Library'>
           <ComponentHeaderLabels entity={libraryEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
         </Header>
         <Content>
@@ -181,8 +159,18 @@ export const LibraryVersionDefinitionPage = () => {
             <Table<TableRow>
               isLoading={loading}
               columns={serviceColumns}
-              options={tableOptions}
-              title={tableTitle}
+              options={{
+                search: true,
+                padding: 'dense' as const,
+                paging: false,
+                draggable: false,
+                thirdSortClick: false,
+              }}
+              title={
+                <Flex align="center">
+                  Services ({rows.length})
+                </Flex>
+              }
               data={rows}
             />
           </Box>

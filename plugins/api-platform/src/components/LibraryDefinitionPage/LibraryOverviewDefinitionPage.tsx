@@ -24,11 +24,11 @@ export const LibraryOverviewDefinitionPage = () => {
 
   useEffect(() => {
     if (!name || !system) return;
-   
+
     const fetchLibraryEntity = async () => {
       try {
-        const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!, true);
-        const lastVersion = libVersions.length === 0 ? undefined : libVersions[0];
+        const libVersions = await apiPlatformApi.getLibraryVersions(system, name, true);
+        const lastVersion = libVersions[0];
         if (lastVersion?.entityRef) {
           const entity = await catalogApi.getEntityByRef(lastVersion.entityRef);
           setLibraryEntity(entity as ComponentEntity);
@@ -46,29 +46,19 @@ export const LibraryOverviewDefinitionPage = () => {
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
-      <Page
-        themeId="libraries">
-        <Header
-          title={name}
-          type='Library'>
+      <Page themeId="libraries">
+        <Header title={name} type='Library'>
           <ComponentHeaderLabels entity={libraryEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
         </Header>
         <Content>
           <TabbedLayout>
             <TabbedLayout.Route path="/" title="By versions">
-              <LibraryVersionsCard
-                system={system!}
-                name={name!}
-              />
+              <LibraryVersionsCard system={system!} name={name!} />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/services" title="By services">
-              <LibraryServicesCard
-                system={system!}
-                name={name!}
-              />
+              <LibraryServicesCard system={system!} name={name!} />
             </TabbedLayout.Route>
           </TabbedLayout>
-
         </Content>
       </Page>
     </AsyncEntityProvider>

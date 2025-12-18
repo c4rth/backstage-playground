@@ -1,13 +1,12 @@
 import {
-    InfoCard,
-    TabbedLayout,
-    Link,
+  InfoCard,
+  TabbedLayout,
+  Link,
 } from '@backstage/core-components';
 import { getCompoundEntityRef } from "@backstage/catalog-model";
 import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
-import { AboutField, } from '@backstage/plugin-catalog';
+import { AboutField } from '@backstage/plugin-catalog';
 import { SystemRelationCard } from './SystemPlatformRelationCard';
-import { memo, useMemo } from 'react';
 import { EntityMembersListCard } from '@backstage/plugin-org';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
@@ -18,89 +17,71 @@ import styles from './SystemDefinitionCard.module.css';
 import { SystemDefinition } from '@internal/plugin-api-platform-common';
 
 interface SystemDefinitionCardProps {
-    system: string;
-    systemDefinition: SystemDefinition;
+  system: string;
+  systemDefinition: SystemDefinition;
 }
 
-export const SystemDefinitionCard = memo<SystemDefinitionCardProps>(({ system, systemDefinition }) => {
-    const catalogApi = useApi(catalogApiRef);
-    const { entity } = useEntity();
+export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinitionCardProps) => {
+  const catalogApi = useApi(catalogApiRef);
+  const { entity } = useEntity();
 
-    const entityData = useMemo(() => {
-        const entityRef = getCompoundEntityRef(entity);
-        const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+  const entityRef = getCompoundEntityRef(entity);
+  const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
 
-        return {
-            entityRef,
-            hasDocs,
-        };
-    }, [entity]);
-
-    const ownedByGroup = useAsync(async () => {
-        const ownedBy = entity.relations?.find(
-            rel => rel.type === 'ownedBy' && rel.targetRef.toLowerCase().startsWith('group')
-        );
-        if (ownedBy) {
-            return await catalogApi.getEntityByRef(ownedBy.targetRef);
-        }
-        return undefined;
-    }, [entity, catalogApi]);
-
-    // TODO-MUI
-    const docsButton = useMemo(() => (
-        <ButtonIcon
-            icon={<RiFileFill />}
-            isDisabled={!entityData.hasDocs}
-            size='medium'
-            variant='tertiary'
-        >
-            <Link to={`/docs/${entityData.entityRef.namespace}/${entityData.entityRef.kind}/${entityData.entityRef.name}`} />
-        </ButtonIcon>
-    ), [entityData.hasDocs, entityData.entityRef]);
-
-    const aboutField = useMemo(() => (
-        <Box mb='4'>
-            <AboutField
-                label="System reference"
-                gridSizes={{ xs: 12 }}
-            >
-                <EntityRefLink entityRef={entity} />
-            </AboutField>
-        </Box>
-    ), [entity]);
-
-    return (
-        <TabbedLayout>
-            <TabbedLayout.Route path="/" title="Ownership">
-                <Flex gap='2' direction='column'>
-                    <SystemRelationCard system={system} dependency="service" data={systemDefinition.services} />
-                    <SystemRelationCard system={system} dependency="api" data={systemDefinition.apis} />
-                    <SystemRelationCard system={system} dependency="library" data={systemDefinition.libraries} />
-                </Flex>
-            </TabbedLayout.Route>
-
-            <TabbedLayout.Route path="/members" title="Members">
-                <EntityProvider entity={ownedByGroup.value}>
-                    <EntityMembersListCard />
-                </EntityProvider>
-            </TabbedLayout.Route>
-
-            <TabbedLayout.Route path="/info" title="Info">
-                <Grid.Root columns='12'>
-                    <Grid.Item colSpan='6'>
-                        <InfoCard
-                            title="About"
-                            divider
-                            className={styles.gridItemCard}
-                            action={docsButton}
-                        >
-                            {aboutField}
-                            <ComponentAboutContent entity={entity} />
-                        </InfoCard>
-                    </Grid.Item>
-                </Grid.Root>
-            </TabbedLayout.Route>
-
-        </TabbedLayout>
+  const ownedByGroup = useAsync(async () => {
+    const ownedBy = entity.relations?.find(
+      rel => rel.type === 'ownedBy' && rel.targetRef.toLowerCase().startsWith('group')
     );
-});
+    if (ownedBy) {
+      return await catalogApi.getEntityByRef(ownedBy.targetRef);
+    }
+    return undefined;
+  }, [entity, catalogApi]);
+
+  return (
+    <TabbedLayout>
+      <TabbedLayout.Route path="/" title="Ownership">
+        <Flex gap='2' direction='column'>
+          <SystemRelationCard system={system} dependency="service" data={systemDefinition.services} />
+          <SystemRelationCard system={system} dependency="api" data={systemDefinition.apis} />
+          <SystemRelationCard system={system} dependency="library" data={systemDefinition.libraries} />
+        </Flex>
+      </TabbedLayout.Route>
+
+      <TabbedLayout.Route path="/members" title="Members">
+        <EntityProvider entity={ownedByGroup.value}>
+          <EntityMembersListCard />
+        </EntityProvider>
+      </TabbedLayout.Route>
+
+      <TabbedLayout.Route path="/info" title="Info">
+        <Grid.Root columns='12'>
+          <Grid.Item colSpan='6'>
+            <InfoCard
+              title="About"
+              divider
+              className={styles.gridItemCard}
+              action={
+                <ButtonIcon
+                  icon={<RiFileFill />}
+                  isDisabled={!hasDocs}
+                  size='medium'
+                  variant='tertiary'
+                >
+                  <Link to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`} />
+                </ButtonIcon>
+              }
+            >
+              <Box mb='4'>
+                <AboutField label="System reference" gridSizes={{ xs: 12 }}>
+                  <EntityRefLink entityRef={entity} />
+                </AboutField>
+              </Box>
+              <ComponentAboutContent entity={entity} />
+            </InfoCard>
+          </Grid.Item>
+        </Grid.Root>
+      </TabbedLayout.Route>
+    </TabbedLayout>
+  );
+};
