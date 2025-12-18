@@ -99,7 +99,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={useApp().getSystemIcon('kind:api')!} to="api-platform/api" text="APIs" />
         <SidebarItem icon={RiBookShelfLine as IconComponent} to="api-platform/library" text="Libraries" />
         <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA" />
-        <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="BaseTypes" />
+        <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="MCA BaseTypes" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="docs" text="Docs" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="external-docs" text="ExtDocs" />
         <RequirePermission permission={taskCreatePermission} errorPage={<div />} >

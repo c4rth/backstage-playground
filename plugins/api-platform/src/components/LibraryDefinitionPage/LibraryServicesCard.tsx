@@ -5,7 +5,7 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import useAsync from 'react-use/esm/useAsync';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Box, Flex, Text } from '@backstage/ui';
 import { ListBox, ListBoxItem,  } from 'react-aria-components';
 import { ComponentDisplayName } from "../common";
@@ -18,7 +18,7 @@ import { apiPlatformBackendApiRef } from '../../api';
 import { fetchAllServices } from './fetchServicesByLibrary';
 import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
-import { DependentsToggle } from './DependtsToggle';
+import { DependentsToggle, DependentsType } from './DependentsToggle';
 
 type TableRow = {
   id: number;
@@ -169,7 +169,7 @@ interface LibraryServicesCardProps {
 
 export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const [selectedDependency, setSelectedDependency] = useState('all');
+  const [selectedDependency, setSelectedDependency] = useState<DependentsType>('all');
 
   const { libraryVersions, loading: loadingLibVersions, error: errorLibVersion } = useGetLibraryVersions(system!, name!, false);
 
@@ -179,27 +179,31 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
     return result.items;
   }, [apiPlatformApi, name]);
 
+  const rows = useMemo(() => {
+        if (!libraryVersions) return [];
+        
+        const hasLibraryDependency = (service: ServiceDefinition) =>
+            service.versions.some(version =>
+                Object.values(version.environments).some(env =>
+                    env?.dependencies?.some((dep: string) => dep.includes(name))
+                )
+            );
+        
+        let filtered = allServices;
+        if (selectedDependency === 'yes') {
+            filtered = allServices.filter(hasLibraryDependency);
+        } else if (selectedDependency === 'no') {
+            filtered = allServices.filter(s => !hasLibraryDependency(s));
+        }
+
+        return filtered.map((service, idx) => toRow(libraryVersions, service, idx, name));
+    }, [allServices, name, selectedDependency, libraryVersions]);
+
   if (error || errorLibVersion) {
     return <ResponseErrorPanel title='Error loading Library Versions' error={error || errorLibVersion!} />;
   }
 
   if (!libraryVersions) return null;
-
-  const hasLibraryDependency = (service: ServiceDefinition) =>
-    service.versions.some(version =>
-      Object.values(version.environments).some(env =>
-        env?.dependencies?.some((dep: string) => dep.includes(name))
-      )
-    );
-
-  let filtered = allServices;
-  if (selectedDependency === 'depends') {
-    filtered = allServices.filter(hasLibraryDependency);
-  } else if (selectedDependency === 'no') {
-    filtered = allServices.filter(s => !hasLibraryDependency(s));
-  }
-
-  const rows = filtered.map((service, idx) => toRow(libraryVersions, service, idx, name));
 
   return (
     <>
