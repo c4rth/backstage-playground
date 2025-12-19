@@ -32,7 +32,7 @@ appRegistry:
 mcaComponents:
   serviceBaseUrl: &mcaComponentsServiceUrl http://localhost:8080
   baseTypes:
-    baseUrl: http://localhost:8080/basetypes
+    baseUrl: &mcaBasetypesUrl http://localhost:8080/basetypes
     listBaseUrl: http://localhost:8080/basetypes/allclasses-frame.html
     schedule:
       frequency: PT2M
@@ -151,6 +151,13 @@ proxy:
       secure: false
     '/operations-sources':
       target: *mcaComponentsServiceUrl
+      allowedMethods: ['GET']
+      allowedHeaders: ['Accept']
+      # changeOrigin: true
+      # Change to "false" in case of using self hosted cluster with a self-signed certificate
+      secure: false
+    '/base-types':
+      target: *mcaBasetypesUrl
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true

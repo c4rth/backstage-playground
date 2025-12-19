@@ -6203,6 +6203,7 @@ __metadata:
     "@internal/plugin-mca-common": "workspace:^"
     "@material-table/core": "npm:3.2.5"
     "@material-ui/core": "npm:^4.12.2"
+    "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     fast-xml-parser: "npm:^5.3.0"
