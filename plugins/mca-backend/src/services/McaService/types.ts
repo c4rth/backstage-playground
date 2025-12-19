@@ -41,8 +41,4 @@ export interface McaService {
     getMcaBaseTypesCount(): Promise<number>;
 
     getMcaBaseType(request: { baseType: string }): Promise<McaBaseType | undefined>
-
-    scheduleMcaComponentTask(): Promise<void>;
-    
-    scheduleMcaBaseTypeTask(): Promise<void>;
 }

@@ -135,10 +135,10 @@ export const AppRegistryPage = () => {
             <TableBody items={list.items} renderEmptyState={emptyState}>
               {(item) => (
                 <Row id={item.id} style={{ backgroundColor: item.id % 2 === 0 ? '#F8F8F8' : 'white' }}>
-                  <Cell title={item.operation.method} />
+                  <Cell textValue={item.operation.method} />
                   <RACell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</RACell>
                   <RACell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</RACell>
-                  <Cell title={item.operation.bFunction ?? '-'} />
+                  <Cell textValue={item.operation.bFunction ?? '-'} />
                 </Row>
               )}
             </TableBody>

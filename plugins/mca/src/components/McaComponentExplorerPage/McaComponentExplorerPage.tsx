@@ -9,8 +9,7 @@ import { McaComponentTable } from '../McaComponentTable';
 import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Box, Button, Flex, Grid } from '@backstage/ui';
-import { mcaComponentsBackendApiRef } from '../../api';
+import { Box, Grid } from '@backstage/ui';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
@@ -42,7 +41,6 @@ function normalizeComponentType(type: string): McaComponentType {
 
 export const McaComponentExplorerPage = () => {
   const configApi = useApi(configApiRef);
-  const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const organizationName = configApi.getOptionalString('organization.name') ?? 'Backstage';
   const subtitle = `${organizationName} MCA Components Explorer`;
@@ -55,10 +53,6 @@ export const McaComponentExplorerPage = () => {
     const normalizedType = normalizeComponentType(selected);
     sessionStorage.setItem(STORAGE_KEY, normalizedType);
     setSelectedType(normalizedType);
-  };
-
-  const handleSchedule = () => {
-    mcaApi.scheduleMcaComponentTask();
   };
 
   const subtitleComponent = (
@@ -87,13 +81,6 @@ export const McaComponentExplorerPage = () => {
               />
             </Grid.Item>
           </Grid.Root>
-        </Box>
-        <Box mb='1'>
-          <Flex mb='4' mt='-3' style={{ justifyContent: 'end' }}>
-            <Button variant='primary' onClick={handleSchedule}>
-              DEBUG: Schedule
-            </Button>
-          </Flex>
         </Box>
         <McaComponentTable type={selectedType} />
       </Content>

@@ -95,7 +95,7 @@ export const AzureDevOpsGitTagsPage = () => {
                   <RACell>
                     <Link to={item.commitLink ?? ''}>{item.peeledObjectId ?? item.objectId}</Link>
                   </RACell>
-                  <Cell title={item.createdBy ?? '-'} />
+                  <Cell textValue={item.createdBy ?? '-'} />
                 </Row>
               )}
             </TableBody>

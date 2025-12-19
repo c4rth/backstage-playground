@@ -295,3 +295,7 @@ devTools:
       - name: 'App Registry'
         type: 'fetch'
         target: *appRegistryFetchUrl
+  scheduledTasks:
+    plugins:
+      - catalog
+      - mca

@@ -108,14 +108,14 @@ const PipelineRow = memo(({ item, onViewLogs }: PipelineRowProps) => {
 
   return (
     <Row key={item.id} id={item.id}>
-      <Cell title={item.id?.toString() ?? '-'} />
+      <Cell textValue={item.id?.toString() ?? '-'} />
       <RACell>
         <Link to={item.link ?? ''}>{item.title}</Link>
       </RACell>
-      <Cell title={item.source} />
+      <Cell textValue={item.source} />
       <RACell>{getBuildStateComponent(item.status, item.result)}</RACell>
-      <Cell title={duration} />
-      <Cell title={age} />
+      <Cell textValue={duration} />
+      <Cell textValue={age} />
       <RACell>
         <Button variant='primary' onPress={handleViewLogs} isDisabled={!item.id}>
           View Logs

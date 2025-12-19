@@ -81,15 +81,5 @@ export async function createRouter(
     res.json(result);
   });
 
-  router.post('/mca/schedule-task', async (req, res) => {
-    const type = (req.query.type || 'component') as 'component' | 'basetype';
-    if (type === 'component') {
-      mcaService.scheduleMcaComponentTask();
-    } else {
-      mcaService.scheduleMcaComponentTask();
-    }
-    res.status(204).end();
-  });
-
   return router;
 }

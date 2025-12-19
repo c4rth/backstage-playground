@@ -85,28 +85,6 @@ export async function mcaService(options: McaServiceOptions): Promise<McaService
       return mcaComponentsStore.getMcaBaseType(request.baseType);
     },
 
-    async scheduleMcaComponentTask(): Promise<void> {
-      const scheduledTasks = await scheduler.getScheduledTasks();
-      logger.info(`Scheduled Tasks: ${JSON.stringify(scheduledTasks)}`);
-      try {
-        await scheduler.triggerTask('update-all-operations-csv');
-        logger.info(`Triggered Task: update-all-operations-csv`);
-      } catch (error) {
-        logger.error(`Error triggering update-all-operations-csv task: ${error}`);
-      }
-    },
-
-    async scheduleMcaBaseTypeTask(): Promise<void> {
-      const scheduledTasks = await scheduler.getScheduledTasks();
-      logger.info(`Scheduled Tasks: ${JSON.stringify(scheduledTasks)}`);
-      try {
-        await scheduler.triggerTask('update-basetypes');
-        logger.info(`Triggered Task: update-basetypes`);
-      } catch (error) {
-        logger.error(`Error triggering update-basetypes task: ${error}`);
-      }
-    },
-
   };
 
 }

@@ -1,5 +1,5 @@
 import {LayoutLoaderDefinition, MermaidConfig} from 'mermaid';
-import { IconLoader } from 'mermaid/dist/rendering-util/icons';
+import { IconLoader } from 'mermaid/dist/rendering-util/icons.js';
 
 /**
  * Configuration options for controlling D3 zoom and pan behavior in Mermaid diagrams.
