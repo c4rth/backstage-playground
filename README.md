@@ -1,5 +1,10 @@
 # [Backstage](https://backstage.io)
 
+## node 
+version 24.11.1
+
+headers: https://nodejs.org/download/release/v24.11.1/
+
 ## bump versions
 ```sh
 yarn backstage-cli versions:bump 
