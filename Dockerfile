@@ -1,4 +1,4 @@
-ARG imagename=c4rth/backstage-base:20250118.1
+ARG imagename=c4rth/backstage-base:20251219.1
 
 # Stage 1 - Create yarn install skeleton layer
 FROM ${imagename} AS packages

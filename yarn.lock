@@ -6613,7 +6613,7 @@ __metadata:
     "@internal/plugin-mca-common": "workspace:^"
     "@types/express": "npm:^4.17.6"
     "@types/jest": "npm:^29.5.11"
-    cheerio: "npm:^1.0.0"
+    cheerio: "npm:^1.1.2"
     csv-parser: "npm:^3.2.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
@@ -6650,7 +6650,7 @@ __metadata:
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
-    fast-xml-parser: "npm:^5.3.0"
+    fast-xml-parser: "npm:^5.3.3"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"
@@ -6679,7 +6679,7 @@ __metadata:
     "@types/fs-extra": "npm:^11.0.0"
     "@types/react": "npm:*"
     fs-extra: "npm:^11.2.0"
-    yaml: "npm:^2.8.1"
+    yaml: "npm:^2.8.2"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -6762,11 +6762,10 @@ __metadata:
     "@types/react": "npm:^18.3.12"
     d3-selection: "npm:^3.0.0"
     d3-zoom: "npm:^3.0.0"
-    mermaid: "npm:^11.12.1"
+    mermaid: "npm:^11.12.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.3.0"
-    typescript: "npm:~5.8.0"
   peerDependencies:
     "@types/react": ^17.0.0 || ^18.0.0
     react: ^17.0.0 || ^18.0.0
@@ -7607,7 +7606,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/microsoft-graph-types@npm:^2.6.0":
+"@microsoft/microsoft-graph-types@npm:^2.43.1, @microsoft/microsoft-graph-types@npm:^2.6.0":
   version: 2.43.1
   resolution: "@microsoft/microsoft-graph-types@npm:2.43.1"
   checksum: 10/d24bf4230f3eaae6d93aee217c9d54693a45431287ec83cf9031a0b7335c3c6bc0119f24ee658dfb0092db11a62db29df313b39c3315bd98418b285618b01795
@@ -16624,7 +16623,7 @@ __metadata:
     "@internal/plugin-scaffolder-extensions-backend": "workspace:^"
     "@internal/plugin-search-backend-module-api-platform": "workspace:^"
     "@internal/plugin-search-backend-module-mca": "workspace:^"
-    "@microsoft/microsoft-graph-types": "npm:^2.6.0"
+    "@microsoft/microsoft-graph-types": "npm:^2.43.1"
     app: "workspace:^"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
@@ -17535,7 +17534,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cheerio@npm:^1.0.0":
+"cheerio@npm:^1.1.2":
   version: 1.1.2
   resolution: "cheerio@npm:1.1.2"
   dependencies:
@@ -21263,7 +21262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^5.0.7, fast-xml-parser@npm:^5.3.0":
+"fast-xml-parser@npm:^5.0.7":
   version: 5.3.2
   resolution: "fast-xml-parser@npm:5.3.2"
   dependencies:
@@ -21271,6 +21270,17 @@ __metadata:
   bin:
     fxparser: src/cli/cli.js
   checksum: 10/8157045ebb1709696729f75c5a1d31e1224df73d51300dadd2468224b9ffdc3197615712affee4578889534ed47d6344545765a0d63b3151749dd427b68b70da
+  languageName: node
+  linkType: hard
+
+"fast-xml-parser@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "fast-xml-parser@npm:5.3.3"
+  dependencies:
+    strnum: "npm:^2.1.0"
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: 10/84bc57dda635e8bc7fafca8645ddf927d40dedaeff7b83249db3361f7699e9c8a322a679b14beb8d9c5bce08de3b8a983b7bea62f1e624721b5f97187d80ff45
   languageName: node
   linkType: hard
 
@@ -26136,7 +26146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mermaid@npm:^11.12.1":
+"mermaid@npm:^11.12.2":
   version: 11.12.2
   resolution: "mermaid@npm:11.12.2"
   dependencies:
@@ -31373,7 +31383,7 @@ __metadata:
     "@playwright/test": "npm:^1.32.3"
     node-gyp: "npm:^10.0.0"
     prettier: "npm:^2.3.2"
-    typescript: "npm:~5.8.0"
+    typescript: "npm:~5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -33909,7 +33919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.8.0":
+"typescript@npm:~5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -33939,7 +33949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.8.0#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A~5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
@@ -35316,7 +35326,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.0.0-10, yaml@npm:^2.1.1, yaml@npm:^2.2.1, yaml@npm:^2.2.2, yaml@npm:^2.6.0, yaml@npm:^2.8.1":
+"yaml@npm:^2.0.0, yaml@npm:^2.0.0-10, yaml@npm:^2.1.1, yaml@npm:^2.2.1, yaml@npm:^2.2.2, yaml@npm:^2.6.0, yaml@npm:^2.8.2":
   version: 2.8.2
   resolution: "yaml@npm:2.8.2"
   bin:
