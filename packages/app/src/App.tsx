@@ -109,6 +109,13 @@ const app = createApp({
     ),
   },
   themes: carthThemes,
+  featureFlags: [
+    {
+      pluginId: 'api-platform',
+      name: 'enable-api-platform-libraries',
+      description: 'Enable API Platform libraries',
+    },
+  ],
 });
 
 const routes = (

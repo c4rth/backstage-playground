@@ -1,5 +1,6 @@
-import { ConfigApi, createApiRef, FetchApi } from "@backstage/core-plugin-api";
+import { ConfigApi, createApiRef, FetchApi, FeatureFlagsApi } from "@backstage/core-plugin-api";
 import { AppRegistryEndpoint, AppRegistryOperation, AppRegistryOperationPdpMapping } from "../types";
+import { dummyCall } from "./fake-data";
 
 export const appRegistryBackendApiRef = createApiRef<AppRegistryBackendApi>({
     id: 'plugin.app-registry.service',
@@ -38,12 +39,14 @@ function extractPdpMapping(abac: boolean, endpoint: AppRegistryEndpoint): AppReg
 export class AppRegistryBackendClient implements AppRegistryBackendApi {
     private readonly configApi: ConfigApi;
     private readonly fetchApi: FetchApi;
+    private readonly featureFlagsApi: FeatureFlagsApi;
     private readonly baseUrl: string;
     private readonly apiVersion: string;
 
-    constructor(options: { configApi: ConfigApi, fetchApi: FetchApi }) {
+    constructor(options: { configApi: ConfigApi, fetchApi: FetchApi, featureFlagsApi: FeatureFlagsApi }) {
         this.configApi = options.configApi;
         this.fetchApi = options.fetchApi;
+        this.featureFlagsApi = options.featureFlagsApi;
         this.baseUrl = this.configApi.getString('backend.baseUrl');
         this.apiVersion = this.configApi.getString('appRegistry.version');
     }
@@ -83,6 +86,10 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
         }
 
         try {
+            if (this.featureFlagsApi.isActive('mock-app-registry')) {
+                const data = dummyCall();
+                return data.map(endpoint => this.transformEndpointToOperation(endpoint));
+            }
             const queryParams = this.buildQueryParams(system, appName, appVersion, environment);
             const url = new URL(`${this.baseUrl}/api/proxy/app-registry/endpoints`);
             url.search = queryParams.toString();
@@ -98,17 +105,12 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
                 const errorText = await response.text();
                 throw new Error(`HTTP ${response.status}: Failed to fetch AppRegistry operations - ${errorText}`);
             }
-
             const data = await response.json() as AppRegistryEndpoint[];
 
             if (!Array.isArray(data)) {
                 throw new Error('Invalid response format: expected array of endpoints');
             }
-            /*
-            // const data = this.dummyCall();
             
-            const data = this.dummyEmptyCall();
-            */
             return data.map(endpoint => this.transformEndpointToOperation(endpoint));
 
         } catch (error) {

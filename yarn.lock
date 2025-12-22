@@ -5873,7 +5873,6 @@ __metadata:
     "@internal/plugin-app-registry": "workspace:^"
     "@internal/plugin-azure-devops": "workspace:^"
     "@material-table/core": "npm:3.2.5"
-    "@material-ui/core": "npm:^4.12.2"
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -6030,7 +6029,6 @@ __metadata:
     "@internal/plugin-iframe": "workspace:^"
     "@internal/plugin-mca-common": "workspace:^"
     "@material-table/core": "npm:3.2.5"
-    "@material-ui/core": "npm:^4.12.2"
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
@@ -6203,7 +6201,7 @@ __metadata:
     "@types/react-dom": "npm:*"
     asn1js: "npm:^3.0.6"
     cronstrue: "npm:^2.61.0"
-    jose: "npm:^5.2.0"
+    jose: "npm:^6.1.1"
     jwt-decode: "npm:^4.0.0"
     pkijs: "npm:^3.2.5"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -23724,7 +23722,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^5.0.0, jose@npm:^5.2.0":
+"jose@npm:^5.0.0":
   version: 5.10.0
   resolution: "jose@npm:5.10.0"
   checksum: 10/03881d1dfb390dcf50926402edcfe233bf557b5a77321fcb1bdb53453bc1cdd26d2d0a9ab28c7445cbb826881f84fdf5074179700f10c2711ccb9880f51065d7

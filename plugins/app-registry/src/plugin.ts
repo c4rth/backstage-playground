@@ -4,9 +4,9 @@ import {
   createComponentExtension,
   createPlugin,
   fetchApiRef,
+  featureFlagsApiRef,
 } from '@backstage/core-plugin-api';
 import { appRegistryBackendApiRef, AppRegistryBackendClient } from './api';
-
 import { rootRouteRef } from './routes';
 
 export const appRegistryPlugin = createPlugin({
@@ -14,14 +14,19 @@ export const appRegistryPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: appRegistryBackendApiRef,
-      deps: { configApi: configApiRef, fetchApi: fetchApiRef },
-      factory: ({ configApi, fetchApi }) =>
-        new AppRegistryBackendClient({ configApi, fetchApi }),
+      deps: { configApi: configApiRef, fetchApi: fetchApiRef, featureFlagsApi: featureFlagsApiRef },
+      factory: ({ configApi, fetchApi, featureFlagsApi }) =>
+        new AppRegistryBackendClient({ configApi, fetchApi, featureFlagsApi }),
     }),
   ],
   routes: {
     root: rootRouteRef,
   },
+  featureFlags: [
+    {
+      name: 'mock-app-registry',
+    },
+  ],
 });
 
 export const AppRegistryPage = appRegistryPlugin.provide(

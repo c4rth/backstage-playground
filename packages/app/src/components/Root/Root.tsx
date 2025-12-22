@@ -33,10 +33,11 @@ import {
   RiToolsFill,
   RiWrenchFill,
   RiAdminLine,
-  RiStackLine,
   RiFolderAddLine,
   RiBubbleChartLine,
   RiAlbumLine,
+  RiPuzzleFill,
+  RiShapesFill,
 } from '@remixicon/react';
 
 
@@ -56,6 +57,7 @@ import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { adminToolsPermission, notGuestPermission } from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
+import { FeatureFlagged } from '@backstage/core-app-api';
 
 const SidebarLogo = () => {
   const { isOpen } = useSidebarOpenState();
@@ -86,7 +88,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarGroup to="/search">
         <SidebarSearchModal icon={RiMenuSearchLine as IconComponent} resultItemComponents={[
           <ApiSearchResultListItem icon={<CatalogIcon />} />,
-          <McaComponentSearchResultListItem icon={<RiStackLine />} />,
+          <McaComponentSearchResultListItem icon={<RiBubbleChartLine />} />,
           <CatalogSearchResultListItem icon={<CatalogIcon />} />,
           <TechDocsSearchResultListItem icon={<DocsIcon />} />
         ]} />
@@ -94,10 +96,12 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<RiMenuFill />}>
         <SidebarItem icon={RiHome2Fill as IconComponent} to="/" text="Home" />
-        <SidebarItem icon={useApp().getSystemIcon('kind:system')!} to="api-platform/system" text="Systems" />
+        <SidebarItem icon={RiShapesFill as IconComponent} to="api-platform/system" text="Systems" />
         <SidebarItem icon={RiCpuLine as IconComponent} to="api-platform/service" text="Services" />
-        <SidebarItem icon={useApp().getSystemIcon('kind:api')!} to="api-platform/api" text="APIs" />
-        <SidebarItem icon={RiBookShelfLine as IconComponent} to="api-platform/library" text="Libraries" />
+        <SidebarItem icon={RiPuzzleFill as IconComponent} to="api-platform/api" text="APIs" />
+        <FeatureFlagged with="enable-api-platform-libraries">
+          <SidebarItem icon={RiBookShelfLine as IconComponent} to="api-platform/library" text="Libraries" />
+        </FeatureFlagged>
         <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA" />
         <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="MCA BaseTypes" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="docs" text="Docs" />
