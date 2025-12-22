@@ -12,7 +12,7 @@ import { AsyncEntityProvider, catalogApiRef } from '@backstage/plugin-catalog-re
 import { useEffect, useState } from 'react';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
+import { ComponentHeaderLabels } from '../common';
 import { Box, Flex, Text } from '@backstage/ui';
 import { ComponentDisplayName } from "../common";
 import { ServiceDefinition } from "@internal/plugin-api-platform-common";

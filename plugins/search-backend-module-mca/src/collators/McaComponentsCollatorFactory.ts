@@ -15,6 +15,7 @@ export type IndexableMcaComponentDocument = IndexableDocument & {
   shortName: string;
   prdVersion: string;
   otherVersions: string[];
+  kind: string;
 };
 
 export type McaComponentsCollatorOptions = {
@@ -83,6 +84,7 @@ export class McaComponentsCollatorFactory implements DocumentCollatorFactory {
       prdVersion: mcaComponent.prdVersion,
       otherVersions: [mcaComponent.p1Version, mcaComponent.p2Version, mcaComponent.p3Version, mcaComponent.p4Version].filter(x => x) as string[],
       location: `/mca/components/${mcaComponent.component}`,
+      kind: 'MCA Component',
     };
   }
 }

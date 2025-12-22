@@ -5,8 +5,8 @@ import {
     PasteFromClipboardButton,
     SampleButton,
 } from '../Buttons';
-import { TextField } from '@material-ui/core';
-import { Box, Flex, Grid } from '@backstage/ui';
+import { TextField, TextArea, } from 'react-aria-components';
+import { Box, Flex, Grid , Text} from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
 
 type Props = {
@@ -49,7 +49,7 @@ export const DefaultEditor = (props: Props) => {
     } = props;
 
     return (
-        <>
+        <Flex direction="column" style={{ height: '100%' }}>
             <Flex mb='4' align='center' style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                     {modes && modes.length > 0 && (
@@ -74,47 +74,62 @@ export const DefaultEditor = (props: Props) => {
                     <Grid.Item>{additionalTools.map(tool => tool)}</Grid.Item>
                 )}
             </Flex>
-            <Grid.Root>
+            <Grid.Root style={{ flex: 1, display: 'flex' }}>
                 <Grid.Item
-                    style={{ paddingTop: '8px !important', paddingLeft: '8px !important' }}
+                    style={{ paddingTop: '8px !important', paddingLeft: '8px !important', display: 'flex', flexDirection: 'column', width: '50%' }}
                 >
                     {leftContent ?? (
-                        <TextField
-                            label={inputLabel}
-                            // eslint-disable-next-line
-                            id="input"
-                            multiline
-                            value={input}
-                            onChange={e => setInput(e.target.value)}
-                            minRows={minRows}
-                            variant="outlined"
-                            style={{
-                                width: '100%',
-                                padding: '8px',
-                            }}
-                        />
+                        <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                            <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{inputLabel}</Text>
+                            <TextArea
+                                value={input}
+                                onChange={e => setInput(e.target.value)}
+                                rows={minRows}
+                                style={{
+                                    width: '100%',
+                                    flex: 1,
+                                    padding: '8px',
+                                    fontFamily: 'monospace',
+                                    fontSize: '14px',
+                                    border: '1px solid var(--bui-gray-4)',
+                                    boxSizing: 'border-box',
+                                    borderRadius: '4px',
+                                    backgroundColor: 'var(--bui-bg-surface-1)',
+                                    color: 'var(--bui-fg-default)',
+                                    resize: 'none',
+                                }}
+                            />
+                        </TextField>
                     )}
                     {extraLeftContent}
                 </Grid.Item>
                 <Grid.Item
-                    style={{ padding: '8px !important' }}>
+                    style={{ padding: '8px !important', display: 'flex', flexDirection: 'column', width: '50%' }}>
                     {rightContent ?? (
-                        <TextField
-                            id="output"
-                            label={outputLabel}
-                            value={output || ''}
-                            multiline
-                            minRows={minRows}
-                            variant="outlined"
-                            style={{
-                                width: '100%',
-                                padding: '8px',
-                            }}
-                        />
+                        <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                            <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{outputLabel}</Text>
+                            <TextArea
+                                value={output || ''}
+                                rows={minRows}
+                                readOnly
+                                style={{
+                                    width: '100%',
+                                    flex: 1,
+                                    padding: '8px',
+                                    fontFamily: 'monospace',
+                                    fontSize: '14px',
+                                    border: '1px solid var(--md-sys-color-outline, #ccc)',
+                                    borderRadius: '4px',
+                                    backgroundColor: 'var(--md-sys-color-surface, #fff)',
+                                    color: 'var(--md-sys-color-on-surface, #000)',
+                                    resize: 'none',
+                                }}
+                            />
+                        </TextField>
                     )}
                     {extraRightContent}
                 </Grid.Item>
             </Grid.Root>
-        </>
+        </Flex>
     );
 };

@@ -1,7 +1,6 @@
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
-import { alpha, makeStyles, Theme } from '@material-ui/core/styles';
 import { Chip } from '@internal/plugin-api-platform-react';
 import { Text, TooltipTrigger, Tooltip, Flex } from '@backstage/ui';
 
@@ -16,28 +15,29 @@ export type ComponentChipProps = {
     backgroundColor?: string;
 };
 
-const useStyles = makeStyles<Theme, { index: number; backgroundColor?: string }>(
-    (theme: Theme) => ({
-        badge: {
-            backgroundColor: (props) =>
-                props.backgroundColor
-                    ? alpha(props.backgroundColor, (props.index + 1) / 10)
-                    : alpha(theme.palette.primary.light, (props.index + 1) / 10),
-            color: (props) => {
-                const alphaValue = (props.index + 1) / 10;                
-                if (alphaValue <= 0.5) {
-                    return theme.palette.text.primary;
-                }                
-                const baseColor = props.backgroundColor || theme.palette.primary.light;
-                return theme.palette.getContrastText(baseColor);
-            },
-        },
-        chipContainer: {
-            padding: 0,
-            margin: 0,
-        },
-    }),
-);
+const alphaToHex = (alpha: number): string => {
+    const alphaInt = Math.round(alpha * 255);
+    const hex = alphaInt.toString(16).padStart(2, '0').toUpperCase();
+    return hex;
+}
+
+const applyAlpha = (color: string, alpha: number): string => {
+   return `${color}${alphaToHex(alpha)}`;
+};
+
+const getChipStyles = (index: number, backgroundColor: string) => {
+    const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
+    const bgColor = applyAlpha(backgroundColor, alphaValue);
+    
+    const textColor = alphaValue <= 0.5 
+        ? 'var(--bui-fg-primary)'
+        : 'var(--bui-fg-secondary)';
+    
+    return {
+        backgroundColor: bgColor,
+        color: textColor,
+    };
+};
 
 const PLATFORM_ICONS = {
     all: <RiGlobalLine />,
@@ -64,9 +64,9 @@ export const ComponentChip = ({
     service,
     disabled = false,
     clickable = true,
-    backgroundColor,
+    backgroundColor = "#C30045",
 }: ComponentChipProps) => {
-    const classes = useStyles({ index, backgroundColor });
+    const chipStyles = getChipStyles(index, backgroundColor);
 
     const platformIcon = getPlatformIcon(service?.platform);
     const chipLabel = text || service?.imageVersion || '?';
@@ -98,11 +98,14 @@ export const ComponentChip = ({
             label={chipLabel}
             size="small"
             variant="outlined"
-            className={classes.badge}
             clickable={clickable}
             disabled={disabled}
             icon={chipIcon}
-            style={{ padding: tooltipContent ? 5 : 0, margin: 0 }}
+            style={{ 
+                padding: tooltipContent ? 5 : 0, 
+                margin: 0,
+                ...chipStyles,
+            }}
         />
     );
 
@@ -117,7 +120,7 @@ export const ComponentChip = ({
 
     return (
         link ? (
-            <Link to={link} className={classes.chipContainer}>
+            <Link to={link} style={{ padding: 0, margin: 0 }}>
                 {content}
             </Link>
         ) : content

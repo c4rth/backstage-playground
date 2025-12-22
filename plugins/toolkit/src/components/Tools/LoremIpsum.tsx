@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
-import { TextField } from '@material-ui/core';
+import { TextField, TextArea } from 'react-aria-components';
 import { SelectItem, Select, } from '@backstage/core-components';
 import { RiEditBoxLine } from '@remixicon/react';
-import { Button, Flex, Grid } from '@backstage/ui';
+import { Button, Flex, Grid, Text } from '@backstage/ui';
 
 const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * max) + min;
@@ -186,7 +186,7 @@ export const LoremIpsum = () => {
     );
 
     return (
-        <Flex direction="column" gap="large">
+        <Flex direction="column" gap="large" style={{ height: '100%' }}>
             <Grid.Item>
                 <Grid.Root columns='12' style={{ marginBottom: 10, alignContent: 'center' }}>
                     <Grid.Item colSpan='2'>
@@ -225,17 +225,25 @@ export const LoremIpsum = () => {
                     </Grid.Item>
                 </Grid.Root>
             </Grid.Item>
-            <Grid.Item style={{ width: '100%' }}>
-                <TextField
-                    id="output"
-                    label="Output"
-                    value={output || ''}
-                    style={{ width: '100%' }}
-                    multiline
-                    minRows={20}
-                    maxRows={50}
-                    variant="outlined"
-                />
+            <Grid.Item style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>Output</Text>
+                    <TextArea
+                        value={output || ''}
+                        style={{
+                            width: '100%',
+                            flex: 1,
+                            padding: '8px',
+                            fontFamily: 'monospace',
+                            fontSize: '14px',
+                            border: '1px solid var(--md-sys-color-outline, #ccc)',
+                            borderRadius: '4px',
+                            backgroundColor: 'var(--md-sys-color-surface, #fff)',
+                            color: 'var(--md-sys-color-on-surface, #000)',
+                            resize: 'none',
+                        }}
+                    />
+                </TextField>
             </Grid.Item>
         </Flex>
     );

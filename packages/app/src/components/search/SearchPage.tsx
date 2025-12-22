@@ -24,7 +24,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiSearchResultListItem } from '@internal/plugin-api-platform';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
-import { RiCodeFill } from '@remixicon/react';
+import { RiBubbleChartLine, RiCodeFill } from '@remixicon/react';
 
 const SearchPage = () => {
   const { types } = useSearch();
@@ -93,7 +93,7 @@ const SearchPage = () => {
             <SearchPagination />
             <SearchResult>
               <ApiSearchResultListItem icon={<CatalogIcon />} />
-              <McaComponentSearchResultListItem icon={<RiCodeFill />} />
+              <McaComponentSearchResultListItem icon={<RiBubbleChartLine />} />
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
             </SearchResult>

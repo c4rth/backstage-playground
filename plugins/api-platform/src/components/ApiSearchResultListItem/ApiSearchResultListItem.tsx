@@ -7,26 +7,7 @@ import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Link } from '@backstage/core-components';
 import { Box, Text } from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
-
-// TODO-MUI
-import { ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
-
-const useStyles = makeStyles(
-  {
-    item: {
-      display: 'flex',
-    },
-    flexContainer: {
-      flexWrap: 'wrap',
-    },
-    itemText: {
-      width: '100%',
-      wordBreak: 'break-all',
-      marginBottom: '1rem',
-    },
-  },
-  { name: 'CatalogSearchResultListItem' },
-);
+import { RiCpuLine, RiPuzzleFill, RiShapesFill, } from '@remixicon/react';
 
 export interface ApiSearchResultListItemProps {
   icon?: ReactNode | ((result: IndexableDocument) => ReactNode);
@@ -36,39 +17,36 @@ export interface ApiSearchResultListItemProps {
   lineClamp?: number;
 }
 
-function renderChips(result: any) {
-  return (
-    <Box>
-      {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" style={{ marginRight: '0.5rem' }} />}
-      {result.type && <Chip label={`Type: ${result.type}`} size="small" style={{ marginRight: '0.5rem' }} />}
-      {result.lifecycle && <Chip label={`lifecycle: ${result.lifecycle}`} size="small" style={{ marginRight: '0.5rem' }} />}
-      {result.owner && <Chip label={`Owner: ${result.owner}`} size="small" />}
-    </Box>
-  );
+function getIcon(kind: string, defaultIcon: ReactNode) {
+  switch (kind) {
+    case 'OpenAPI':
+      return <RiPuzzleFill />;
+    case 'System':
+      return <RiShapesFill />;
+    case 'Service':
+      return <RiCpuLine />;
+    default:
+      return defaultIcon;
+  }
 }
 
-export function ApiSearchResultListItem(
-  props: ApiSearchResultListItemProps,
-) {
+export const ApiSearchResultListItem = (props: ApiSearchResultListItemProps) => {
   const result = props.result as any;
   const highlight = props.highlight as ResultHighlight;
-  const classes = useStyles();
 
   if (!result) return null;
 
   return (
-    <div className={classes.item}>
+    <Box style={{ display: 'flex' }}>
       {props.icon && (
-        <ListItemIcon>
-          {typeof props.icon === 'function' ? props.icon(result) : props.icon}
-        </ListItemIcon>
+        <Box style={{ display: 'flex', alignItems: 'flex-start', marginRight: '1rem' }}>
+          {typeof props.icon === 'function' ? props.icon(result) : getIcon(result.kind, props.icon)}
+        </Box>
       )}
-      <div className={classes.flexContainer}>
-        <ListItemText
-          className={classes.itemText}
-          primaryTypographyProps={{ variant: 'h6' }}
-          primary={
-            <Link noTrack to={result.apiPlatformLocation}>
+      <Box style={{ flexWrap: 'wrap', flex: 1, marginLeft: '20px' }}>
+        <Box style={{ width: '100%', wordBreak: 'break-all', marginBottom: '1rem' }}>
+          <Link noTrack to={result.apiPlatformLocation}>
+            <Text weight='bold' style={{ color: 'var(--bui-fg-link)', fontSize: '20px' }}>
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText
                   text={highlight.fields.title}
@@ -78,33 +56,36 @@ export function ApiSearchResultListItem(
               ) : (
                 result.title
               )}
-            </Link>
-          }
-          secondary={
-            <Text
-              style={{
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: props.lineClamp,
-                overflow: 'hidden',
-              }}
-              color="secondary"
-              variant="body-medium"
-            >
-              {highlight?.fields.text ? (
-                <HighlightedSearchResultText
-                  text={highlight.fields.text}
-                  preTag={highlight.preTag}
-                  postTag={highlight.postTag}
-                />
-              ) : (
-                result.text
-              )}
             </Text>
-          }
-        />
-        {renderChips(result)}
-      </div>
-    </div>
+          </Link>
+          <Text
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: props.lineClamp,
+              overflow: 'hidden',
+            }}
+            color="secondary"
+            variant="body-medium"
+          >
+            {highlight?.fields.text ? (
+              <HighlightedSearchResultText
+                text={highlight.fields.text}
+                preTag={highlight.preTag}
+                postTag={highlight.postTag}
+              />
+            ) : (
+              result.text
+            )}
+          </Text>
+        </Box>
+        <Box>
+          {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" style={{ marginRight: '0.5rem' }} />}
+          {result.type && <Chip label={`Type: ${result.type}`} size="small" style={{ marginRight: '0.5rem' }} />}
+          {result.lifecycle && <Chip label={`lifecycle: ${result.lifecycle}`} size="small" style={{ marginRight: '0.5rem' }} />}
+          {result.owner && <Chip label={`Owner: ${result.owner}`} size="small" />}
+        </Box>
+      </Box>
+    </Box>
   );
 }

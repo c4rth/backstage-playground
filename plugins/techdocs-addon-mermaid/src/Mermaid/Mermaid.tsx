@@ -15,17 +15,24 @@
  */
 
 import { useEffect, useState } from 'react';
-import { PaletteType, useTheme } from '@material-ui/core';
 
 import { useShadowRootElements } from '@backstage/plugin-techdocs-react';
 import mermaid, { MermaidConfig } from 'mermaid'
 import { isMermaidCode } from './hooks';
 import { MermaidProps } from './props';
-import { BackstageTheme } from '@backstage/theme';
 import { ZoomHandler } from './zoomHandler';
 import { deepMerge } from './utils';
 
-export function selectConfig(backstagePalette: PaletteType, properties: MermaidProps): MermaidConfig {
+function detectTheme(): 'light' | 'dark' {
+  // Check for Backstage theme class
+  const bodyElement = document.body;
+  if (bodyElement.getAttribute('data-theme-mode') === 'dark') {
+    return 'dark';
+  }
+  return 'light';
+}
+
+export function selectConfig(backstagePalette: 'light' | 'dark', properties: MermaidProps): MermaidConfig {
   // Determine the default config based on palette
   const defaultConfig = backstagePalette === 'light'
     ? (properties.lightConfig || {})
@@ -75,7 +82,6 @@ export const MermaidAddon = (properties: MermaidProps) => {
   const highlightTables = useShadowRootElements<HTMLDivElement>(['.highlighttable']);
   const highlightDivs = useShadowRootElements<HTMLDivElement>(['.highlight']);
   const mermaidPreBlocks = useShadowRootElements<HTMLPreElement>(['.mermaid']);
-  const theme = useTheme<BackstageTheme>();
 
   const [ initialized, setInitialized ] = useState(false);
 
@@ -83,8 +89,9 @@ export const MermaidAddon = (properties: MermaidProps) => {
     if (initialized) {
       return;
     }
-    const config: MermaidConfig = selectConfig(theme.palette.type, properties);
-    if ( properties.iconLoaders ) {
+    const themeType = detectTheme();
+    const config: MermaidConfig = selectConfig(themeType, properties);
+   if ( properties.iconLoaders ) {
       mermaid.registerIconPacks(properties.iconLoaders);
     }
     if (properties.layoutLoaders) {
@@ -92,7 +99,7 @@ export const MermaidAddon = (properties: MermaidProps) => {
     }
     mermaid.initialize(config);
     setInitialized(true);
-  }, [initialized, properties, theme.palette.type]);
+  }, [initialized, properties]);
 
   useEffect(() => {
     if (!initialized) {

@@ -10,7 +10,9 @@ import {
 } from '@backstage/backend-plugin-api';
 import { McaBaseType } from '@internal/plugin-mca-common';
 
-export type IndexableMcaBaseTypeDocument = IndexableDocument;
+export type IndexableMcaBaseTypeDocument = IndexableDocument & {
+  kind: string;
+};
 
 export type McaBaseTypesCollatorOptions = {
   logger: LoggerService;
@@ -72,6 +74,7 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
       title: mcaBaseType.baseType,
       text: `package: ${mcaBaseType.packageName}`,
       location: `/mca/basetypes/${mcaBaseType.baseType}`,
+      kind: 'BaseType',
     };
   }
 }

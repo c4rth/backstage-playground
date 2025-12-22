@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DefaultEditor } from '../DefaultEditor';
-import { Box } from '@backstage/ui';
+import { Box, Text } from '@backstage/ui';
 import * as asn1js from "asn1js";
 import { AttributeTypeAndValue, Certificate } from "pkijs";
 import ReactJson from 'react-json-view';
@@ -105,17 +105,30 @@ async function computeFingerprint(certDer: ArrayBuffer, algorithm: "SHA-1" | "SH
 export const CertificateDecoder = () => {
   const [input, setInput] = useState('');
   const [info, setInfo] = useState<any>(null);
-  const [mode, setMode] = useState('Decode');
-
 
   const CertificateDecodeOutput = (props: { info?: any }) => {
     return (
-      <Box style={{ width: '100%', height: '99%' }}>
-        <legend>Decoded Certificate</legend>
+      <Box style={{
+        width: '100%',
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column'
+      }}>
+        <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>Decoded Certificate</Text>
         {props.info ? (
-          <ReactJson name={false} src={props.info || {}} />
+          <ReactJson
+            name={false}
+            src={props.info || {}}
+            style={{
+              border: '1px solid var(--bui-gray-4)',
+              boxSizing: 'border-box',
+              borderRadius: '4px',
+              flex: 1,
+              backgroundColor: 'var(--bui-bg-surface-1)'
+            }}
+          />
         ) : (
-          <Box>No Certificate data available</Box>
+          <Box><i>No Certificate data available</i></Box>
         )}
       </Box>
     );
@@ -129,12 +142,12 @@ export const CertificateDecoder = () => {
       }
       try {
         const certificates = parsePemCertificates(input);
-        
+
         // Process all certificates
         const certInfos = await Promise.all(
           certificates.map(async ({ cert, der }, index) => {
             const sha256 = await computeFingerprint(der, "SHA-256");
-            
+
             return {
               [`Certificate ${index + 1}`]: {
                 subject: formatName(cert.subject.typesAndValues),
@@ -168,9 +181,8 @@ export const CertificateDecoder = () => {
   return (
     <DefaultEditor
       input={input}
-      mode={mode}
+      mode={"Decode"}
       setInput={setInput}
-      setMode={setMode}
       sample={
         exampleCertificate
       }

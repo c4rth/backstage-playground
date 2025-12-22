@@ -17,7 +17,7 @@ export interface ComponentAboutContentProps {
 
 
 /** @public */
-export function ComponentAboutContent(props: ComponentAboutContentProps) {
+export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
   const { entity } = props;
 
   const isSystem = entity.kind.toLocaleLowerCase('en-US') === 'system';

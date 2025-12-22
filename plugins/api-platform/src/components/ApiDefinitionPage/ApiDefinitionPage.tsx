@@ -12,7 +12,7 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
 import { ApiDefinitionCard } from './ApiDefinitionCard';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
+import { ComponentHeaderLabels } from '../common';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
 import { Box } from '@backstage/ui';
 

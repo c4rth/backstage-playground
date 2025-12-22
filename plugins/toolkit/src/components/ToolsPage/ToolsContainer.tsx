@@ -4,9 +4,7 @@ import { useCallback, useState } from "react";
 import { Tool } from "./types";
 import { ToolContainer } from "./ToolContainer";
 import { Grid } from "@backstage/ui";
-
-// TODO-MUI
-import { List, ListItem } from "@material-ui/core";
+import { ListBox, ListBoxItem } from "react-aria-components";
 
 export const ToolsContainer = () => {
 
@@ -28,14 +26,25 @@ export const ToolsContainer = () => {
                         padding: '0 !important',
                     }}
                 >
-                    <List>
+                    <ListBox
+                        aria-label="Tools"
+                        selectedKeys={[selectedTool.id]}
+                        selectionMode="single"
+                        onSelectionChange={(keys) => {
+                            const key = Array.from(keys)[0] as string;
+                            if (key) handleSelectedChange(key);
+                        }}
+                    >
                         {tools.map(tool => (
-                            <ListItem
-                                selected={selectedTool.id === tool.id}
+                            <ListBoxItem
                                 key={tool.id}
                                 id={tool.id}
-                                onClick={() => handleSelectedChange(tool.id)}
-                                style={{ padding: '0 !important' }}>
+                                textValue={tool.name}
+                                style={({ isSelected }) => ({ 
+                                    padding: '10px',
+                                    backgroundColor: isSelected ? 'var(--bui-gray-3 )' : 'transparent',
+                                })}
+                            >
                                 <Grid.Root
                                     style={{ padding: '8px', cursor: 'pointer' }}>
                                     <Grid.Item>
@@ -43,9 +52,9 @@ export const ToolsContainer = () => {
                                         <div>{tool.description}</div>
                                     </Grid.Item>
                                 </Grid.Root>
-                            </ListItem>
+                            </ListBoxItem>
                         ))}
-                    </List>
+                    </ListBox>
                 </Grid.Item>
 
                 <Grid.Item colSpan='10' style={{ padding: 0 }}>

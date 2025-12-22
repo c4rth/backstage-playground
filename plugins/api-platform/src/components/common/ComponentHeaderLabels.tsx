@@ -1,26 +1,13 @@
 import { HeaderLabel, Link } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
-import { ComponentDisplayName } from '.';
+import { ComponentDisplayName } from './ComponentDisplayName';
 
-// TODO-MUI
-import { makeStyles } from '@material-ui/core';
-
-type EntityLabelsProps = {
+export type EntityLabelsProps = {
     entity: Entity;
 };
 
-const useStyles = makeStyles(
-  theme => ({
-    label: {
-      color: theme.page.fontColor,
-    },
-  }),
-  { name: 'BackstageHeaderLabel' },
-);
-
-export function ComponentHeaderLabels(props: EntityLabelsProps) {
+export const ComponentHeaderLabels = (props: EntityLabelsProps) => {
     const { entity } = props;
-    const classes = useStyles();
     const system = entity.spec?.system?.toString();
     return (
         <>
@@ -29,7 +16,7 @@ export function ComponentHeaderLabels(props: EntityLabelsProps) {
                     label='Owner'
                     value={
                         <Link to={`/api-platform/system/${system}`}>
-                            <div className={classes.label}>
+                            <div style={{ color: 'var(--bui-fg-solid)'}}>
                                 <ComponentDisplayName text={system} type="system" />
                             </div>
                         </Link>

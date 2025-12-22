@@ -12,7 +12,7 @@ import { ComponentEntity } from '@backstage/catalog-model';
 import { AsyncEntityProvider, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { ComponentHeaderLabels } from '../common/ComponentHeaderLabels';
+import { ComponentHeaderLabels } from '../common';
 import { Box, Grid } from '@backstage/ui';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>
