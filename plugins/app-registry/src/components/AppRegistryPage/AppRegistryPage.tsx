@@ -9,8 +9,8 @@ import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/p
 import { AppRegistryOperation } from '../../types';
 import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
-import { ButtonIcon, Column, Table, TableHeader, TableBody, Row, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid } from '@backstage/ui';
-import { ResizableTableContainer, Cell as RACell } from 'react-aria-components';
+import { ButtonIcon, Column, Table, TableHeader, TableBody, Row, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid, CellText } from '@backstage/ui';
+import { ResizableTableContainer } from 'react-aria-components';
 import { useAsyncList } from 'react-stately';
 
 type TableRow = {
@@ -135,10 +135,10 @@ export const AppRegistryPage = () => {
             <TableBody items={list.items} renderEmptyState={emptyState}>
               {(item) => (
                 <Row id={item.id} style={{ backgroundColor: item.id % 2 === 0 ? '#F8F8F8' : 'white' }}>
-                  <Cell textValue={item.operation.method} />
-                  <RACell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</RACell>
-                  <RACell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</RACell>
-                  <Cell textValue={item.operation.bFunction ?? '-'} />
+                  <CellText title={item.operation.method} />
+                  <Cell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>
+                  <Cell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>
+                  <CellText title={item.operation.bFunction ?? '-'} />
                 </Row>
               )}
             </TableBody>
