@@ -8,7 +8,7 @@
 }
 
 .wrapper :global(.swagger-ui .scheme-container) {
-  background-color: var(--bui-bg);
+  background-color: var(--bui-bg-surface-0);
 }
 
 .wrapper :global(.swagger-ui .opblock-tag),
@@ -67,7 +67,7 @@
 .wrapper :global(.swagger-ui .opblock .opblock-section-header),
 .wrapper :global(.swagger-ui .model-box),
 .wrapper :global(.swagger-ui section.models .model-container) {
-  background: var(--bui-bg);
+  background: var(--bui-bg-surface-0);
 }
 
 .wrapper :global(.swagger-ui .prop-format),
@@ -107,7 +107,7 @@
 
 .wrapper :global(.swagger-ui .model-hint) {
   color: var(--bui-fg-secondary);
-  background-color: var(--bui-bg);
+  background-color: var(--bui-bg-surface-0);
 }
 
 .wrapper :global(.swagger-ui .opblock-summary-method),
@@ -176,11 +176,11 @@
 }
 
 .wrapper :global(.json-schema-2020-12__constraint--string) {
-  background-color: var(--bui-bg);
+  background-color: var(--bui-bg-surface-0);
 }
 
 .wrapper :global(.swagger-ui .json-schema-2020-12__attribute--primary) {
-  color: var(--bui-bg);
+  color: var(--bui-bg-surface-0);
 }
 
 .wrapper :global(.swagger-ui .json-schema-2020-12-property--required > .json-schema-2020-12:first-of-type > .json-schema-2020-12-head .json-schema-2020-12__title:after) {

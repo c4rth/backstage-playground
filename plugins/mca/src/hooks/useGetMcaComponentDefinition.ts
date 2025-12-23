@@ -3,22 +3,22 @@ import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
-const xmlParserConfig = {
+const xmlParser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '',
   allowBooleanAttributes: true,
   trimValues: true,
-};
-const xmlParser = new XMLParser(xmlParserConfig);
+});
 
 export function useGetMcaComponentDefinition(component: string, refP: string) {
   const api = useApi(mcaComponentsBackendApiRef);
 
   const { value, loading, error } = useAsync(async () => {
+    if (!component || !refP) return undefined;
+
     const result = await api.getMcaComponentDefinition(component, refP);
-    if (!result) {
-      return undefined;
-    }
+    if (!result) return undefined;
+
     const validationResult = XMLValidator.validate(result);
     if (validationResult !== true) {
       throw new Error(

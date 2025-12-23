@@ -88,7 +88,8 @@ export const AppRegistryPage = () => {
         environment,
       );
       const rows = data?.map(toTableRow) ?? [];
-      return { items: rows };
+      const sortedRows = rows.sort((a, b) => a.operation.name.localeCompare(b.operation.name));
+      return { items: sortedRows };
     },
     async sort({ items, sortDescriptor }) {
       return {
@@ -106,7 +107,8 @@ export const AppRegistryPage = () => {
           }
         }),
       };
-    }
+    },
+    initialSortDescriptor: { column: 'name', direction: 'ascending' },
   });
 
   if (list.error) {
@@ -125,7 +127,7 @@ export const AppRegistryPage = () => {
       </CardHeader>
       <CardBody style={{ padding: '0'}}>
         <ResizableTableContainer >
-          <Table sortDescriptor={list.sortDescriptor} onSortChange={list.sort} aria-label="App Registry operations">
+          <Table sortDescriptor={list.sortDescriptor} onSortChange={list.sort} aria-label="App Registry operations" >
             <TableHeader>
               <Column id='method' isRowHeader width='10%' allowsSorting>Method</Column>
               <Column id='name' width='70%' allowsSorting>Name</Column>
@@ -133,14 +135,14 @@ export const AppRegistryPage = () => {
               <Column id='bFunction' width='10%' allowsSorting>B-Function</Column>
             </TableHeader>
             <TableBody items={list.items} renderEmptyState={emptyState}>
-              {(item) => (
-                <Row id={item.id} style={{ backgroundColor: item.id % 2 === 0 ? '#F8F8F8' : 'white' }}>
+                {(item: TableRow) => (
+                <Row id={item.id} className='custom-bui-TableRow'>
                   <CellText title={item.operation.method} />
                   <Cell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>
                   <Cell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>
                   <CellText title={item.operation.bFunction ?? '-'} />
                 </Row>
-              )}
+                )}
             </TableBody>
           </Table>
         </ResizableTableContainer>

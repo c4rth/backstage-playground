@@ -1,6 +1,6 @@
 import { InfoCard, Table, TableColumn } from '@backstage/core-components';
 import { Flex, Box, Text } from '@backstage/ui';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 export interface McaComponentMethodsCardProps {
     data: any;
@@ -58,7 +58,8 @@ function getMethods(data: any): MethodRow[] {
 }
 
 export const McaComponentMethodsCard = memo<McaComponentMethodsCardProps>(({ data, componentType = 'element' }) => {
-    const methods = getMethods(data);
+    const methods = useMemo(() => getMethods(data), [data]);
+    
     const tableTitle = (
         <Flex align="center">
             Implemented Methods ({methods.length})

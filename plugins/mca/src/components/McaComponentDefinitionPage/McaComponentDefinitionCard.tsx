@@ -8,12 +8,12 @@ import { McaOperationDefinitionPage } from './McaOperationDefinitionPage';
 import { McaElementDefinitionPage } from './McaElementDefinitionPage';
 import { memo } from 'react';
 
+
 function getComponentType(componentName: string): 'operation' | 'element' | 'unknown' {
   if (componentName?.startsWith('Operation')) return 'operation';
   if (componentName?.startsWith('Element')) return 'element';
   return 'unknown';
 }
-
 export interface McaComponentDefinitionCardProps {
   mca: McaComponent;
   version: string;
@@ -21,14 +21,14 @@ export interface McaComponentDefinitionCardProps {
 
 export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(({ mca, version }) => {
   const { data, loading, error } = useGetMcaComponentDefinition(mca.component, version);
+  
   const componentType = getComponentType(mca.component);
 
-  if (loading) return <Progress />;
+  if (loading || (!data && !error)) return <Progress />;
   if (error) {
     console.error(error);
     return <ResponseErrorPanel error={error} />;
   }
-  if (!data) return <Progress />;
 
   switch (componentType) {
     case 'operation':

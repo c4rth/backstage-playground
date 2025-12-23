@@ -74,7 +74,7 @@ export const AzureDevOpsGitTagsPage = () => {
             )}
           >
             {item => (
-              <Row key={item.name} id={item.name}>
+              <Row key={item.name} id={item.name} className='custom-bui-TableRow'>
                 <Cell>
                   <Link to={item.link ?? ''}>{item.name}</Link>
                 </Cell>

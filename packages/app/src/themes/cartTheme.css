@@ -17,6 +17,7 @@
   --bui-fg-warning: rgb(178, 106, 0);
   --bui-fg-success: rgb(53, 122, 56);
   --bui-bg: #F8F8F8;
+  --bui-bg-surface-0: #F8F8F8;
   --bui-bg-surface-1: #FFFFFF;
   --bui-bg-surface-2: #F8F8F8;
   --bui-bg-solid: #C30045;
@@ -35,8 +36,34 @@
   --bui-border-success: #4caf50;
   --bui-border: #E6E6E6;
   --bui-ring: #FFFBCC;
+
+  .custom-bui-TableRow {
+    border-bottom: 1px solid var(--bui-border);
+    transition: color 0.2s ease-in-out;
+
+    &[data-selected] {
+      background-color: var(--bui-bg-tint-pressed);
+    }
+
+    &[data-pressed] {
+      background-color: var(--bui-bg-tint-pressed);
+    }
+
+    &[data-disabled] {
+      background-color: var(--bui-bg-tint-disabled);
+    }
+
+    &[data-react-aria-pressable='true'] {
+      cursor: pointer;
+    }
+
+    &:nth-child(even) {
+      background-color: var(--bui-bg-surface-2);
+    }
+  }
+
 }
- 
+
 [data-theme-mode='dark'] {
   --bui-bg-solid: #C30045;
   --bui-bg-solid-hover: rgb(166, 0, 59);

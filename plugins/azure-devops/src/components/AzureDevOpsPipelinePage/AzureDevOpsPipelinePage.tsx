@@ -42,7 +42,7 @@ const PipelineRow = ({ item, onViewLogs }: { item: BuildRun; onViewLogs?: (build
   }, [item.startTime, item.finishTime]);
 
   return (
-    <Row key={item.id} id={item.id}>
+    <Row key={item.id} id={item.id} className='custom-bui-TableRow'>
       <CellText title={item.id?.toString() ?? '-'} />
       <Cell>
         <Link to={item.link ?? ''}>{item.title}</Link>
