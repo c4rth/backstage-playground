@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "@backstage-community/plugin-azure-devops-common": "^0.17.0",
-    "@backstage-community/plugin-sonarqube": "^0.20.1",
-    "@backstage-community/plugin-sonarqube-react": "^0.12.0",
+    "@backstage-community/plugin-sonarqube": "^0.22.0",
+    "@backstage-community/plugin-sonarqube-react": "^0.14.0",
     "@backstage/catalog-model": "^1.7.6",
     "@backstage/core-components": "^0.18.4",
     "@backstage/core-plugin-api": "^1.12.1",
