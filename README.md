@@ -27,11 +27,11 @@ yarn tsc
 ## run dev
 start db
 ```sh
-docker compose -f docker-db-compose.yml up
+podman compose -f docker-db-compose.yml up -d
 ```
 start backstage
 ```sh
-./run-dev.sh
+./run.sh
 ```
 
 ### .env
