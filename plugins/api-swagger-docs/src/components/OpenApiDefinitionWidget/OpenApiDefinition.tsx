@@ -15,14 +15,14 @@
  */
 
 import { useEffect, useState } from 'react';
-import SwaggerUI, { SwaggerUIProps } from 'swagger-ui-react';
+import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 import styles from './OpenApiDefinition.module.css';
 
 
 export type OpenApiDefinitionProps = {
   definition: string;
-} & Omit<SwaggerUIProps, 'spec'>;
+} & Omit<React.ComponentProps<typeof SwaggerUI>, 'spec'>;
 
 export const OpenApiDefinition = ({
   definition,

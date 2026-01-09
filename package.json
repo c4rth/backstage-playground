@@ -23,7 +23,8 @@
     "new": "backstage-cli new",
     "mui-to-bui": "node ./scripts/mui-to-bui/backstage-migration-analytics.js",
     "build:knip-reports": "backstage-repo-tools knip-reports",
-    "build:lint": "backstage-repo-tools lint"
+    "build:lint": "backstage-repo-tools lint",
+    "mui-usage": "node ./scripts/mui-to-bui/analyze-react-component-usage.js"
   },
   "workspaces": {
     "packages": [
