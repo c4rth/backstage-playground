@@ -102,7 +102,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <FeatureFlagged with="enable-api-platform-libraries">
           <SidebarItem icon={RiBookShelfLine as IconComponent} to="api-platform/library" text="Libraries" />
         </FeatureFlagged>
-        <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA" />
+        <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA Operations" />
         <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="MCA BaseTypes" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="docs" text="Docs" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="external-docs" text="ExtDocs" />
@@ -112,44 +112,12 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
             to="create" text="Scaffolder" />
         </RequirePermission>
         <RequirePermission permission={notGuestPermission} errorPage={<div />} >
-          <SidebarItem icon={RiBookShelfLine as IconComponent} to="catalog" text="Catalog">
+          <SidebarItem icon={RiBookShelfLine as IconComponent} text="Catalog">
             <SidebarSubmenu title="Catalog">
               <SidebarSubmenuItem
-                title="Domains"
-                to="catalog?filters[kind]=domain"
-                icon={useApp().getSystemIcon('kind:domain')}
-              />
-              <SidebarSubmenuItem
-                title="Systems"
-                to="catalog?filters[kind]=system"
-                icon={useApp().getSystemIcon('kind:system')}
-              />
-              <SidebarSubmenuItem
-                title="Components"
-                to="catalog?filters[kind]=component"
-                icon={useApp().getSystemIcon('kind:component')}
-              />
-              <SidebarDivider />
-              <SidebarSubmenuItem
-                title="Resources"
-                to="catalog?filters[kind]=resource"
-                icon={useApp().getSystemIcon('kind:resource')}
-              />
-              <SidebarSubmenuItem
-                title="Location"
-                to="catalog?filters[kind]=location"
-                icon={useApp().getSystemIcon('kind:location')}
-              />
-              <SidebarDivider />
-              <SidebarSubmenuItem
-                title="Groups"
-                to="catalog?filters[kind]=group"
-                icon={useApp().getSystemIcon('kind:group')}
-              />
-              <SidebarSubmenuItem
-                title="Users"
-                to="catalog?filters[kind]=user"
-                icon={useApp().getSystemIcon('kind:user')}
+                title="Catalog"
+                to="catalog"
+                icon={RiBookShelfLine as IconComponent}
               />
               <RequirePermission permission={adminToolsPermission} errorPage={<div />} >
                 <SidebarDivider />
