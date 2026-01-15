@@ -8,7 +8,7 @@ import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backst
 import { AboutField } from '@backstage/plugin-catalog';
 import { SystemRelationCard } from './SystemPlatformRelationCard';
 import { EntityMembersListCard } from '@backstage/plugin-org';
-import { useApi } from '@backstage/core-plugin-api';
+import { featureFlagsApiRef, useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
@@ -23,7 +23,9 @@ interface SystemDefinitionCardProps {
 
 export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinitionCardProps) => {
   const catalogApi = useApi(catalogApiRef);
+  const featureFlagsApi = useApi(featureFlagsApiRef);
   const { entity } = useEntity();
+  const showLibraries = featureFlagsApi.isActive('enable-api-platform-libraries');
 
   const entityRef = getCompoundEntityRef(entity);
   const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
@@ -44,7 +46,9 @@ export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinit
         <Flex gap='2' direction='column'>
           <SystemRelationCard system={system} dependency="service" data={systemDefinition.services} />
           <SystemRelationCard system={system} dependency="api" data={systemDefinition.apis} />
-          <SystemRelationCard system={system} dependency="library" data={systemDefinition.libraries} />
+          {showLibraries &&
+            <SystemRelationCard system={system} dependency="library" data={systemDefinition.libraries} />
+          }
         </Flex>
       </TabbedLayout.Route>
 

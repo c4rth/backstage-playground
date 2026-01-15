@@ -1,16 +1,16 @@
 import {
-    InfoCard,
-    TabbedLayout,
-    Link,
+  InfoCard,
+  TabbedLayout,
+  Link,
 } from '@backstage/core-components';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import {
-    AboutField,
+  AboutField,
 } from '@backstage/plugin-catalog';
 import {
-    Direction,
-    EntityCatalogGraphCard,
+  Direction,
+  EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
 import { ANNOTATION_IMAGE_VERSION, ANNOTATION_SERVICE_PLATFORM } from '@internal/plugin-api-platform-common';
 // SonarQube
@@ -27,7 +27,7 @@ import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { AzureDevOpsPipelinePage, AzureDevOpsGitTagsPage, AzureReadmeCard } from '@internal/plugin-azure-devops';
 //
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, featureFlagsApiRef, useApi } from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import styles from './ServiceDefinitionCard.module.css';
@@ -36,10 +36,12 @@ import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '@internal/plu
 export const ServiceDefinitionCard = () => {
   const { entity } = useEntity<ComponentEntity>();
   const configApi = useApi(configApiRef);
+  const featureFlagsApi = useApi(featureFlagsApiRef);
 
   const sonarQube = isSonarQubeAvailable(entity);
   const azureDevOps = isAzureDevOpsAvailable(entity);
   const azurePipelines = isAzurePipelinesAvailable(entity);
+  const showLibraries = featureFlagsApi.isActive('enable-api-platform-libraries');
 
   const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
   const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
@@ -143,9 +145,11 @@ export const ServiceDefinitionCard = () => {
               </Grid.Item>
             </Grid.Root>
           </TabbedLayout.Route>
-          <TabbedLayout.Route path="/libraries" title="Libraries">
-            <ServiceLibraryRelationCard />
-          </TabbedLayout.Route>
+          {showLibraries && (
+            <TabbedLayout.Route path="/libraries" title="Libraries">
+              <ServiceLibraryRelationCard />
+            </TabbedLayout.Route>
+          )}
         </TabbedLayout>
       </TabbedLayout.Route>
 
