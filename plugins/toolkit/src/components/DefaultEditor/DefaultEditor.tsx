@@ -79,7 +79,7 @@ export const DefaultEditor = (props: Props) => {
                     style={{ paddingTop: '8px !important', paddingLeft: '8px !important', display: 'flex', flexDirection: 'column', width: '50%' }}
                 >
                     {leftContent ?? (
-                        <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Input'>
                             <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{inputLabel}</Text>
                             <TextArea
                                 value={input}
@@ -106,7 +106,7 @@ export const DefaultEditor = (props: Props) => {
                 <Grid.Item
                     style={{ padding: '8px !important', display: 'flex', flexDirection: 'column', width: '50%' }}>
                     {rightContent ?? (
-                        <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Output'>
                             <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{outputLabel}</Text>
                             <TextArea
                                 value={output || ''}

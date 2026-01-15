@@ -44,9 +44,9 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
 });
 
 const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
-  <ListBox>
+  <ListBox aria-label='Services versions'>
     {serviceDefinition.versions?.map((version, idx) => (
-      <ListBoxItem key={`${serviceDefinition.name}-${version.version}-${idx}`} style={LIST_ITEM_STYLE}>
+      <ListBoxItem key={`${serviceDefinition.name}-${version.version}-${idx}`} style={LIST_ITEM_STYLE} aria-label={`${serviceDefinition.name} version ${version.version}`}>
         {renderItem(version, idx)}
       </ListBoxItem>
     ))}

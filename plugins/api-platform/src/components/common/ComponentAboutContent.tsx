@@ -149,7 +149,7 @@ export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
           label='Tags'
           value='No Tags'
         >
-          <TagGroup>
+          <TagGroup aria-label='Tags'>
             {(entity?.metadata?.tags || []).map(tag => (
               <Tag key={tag}>{tag}</Tag>
             ))}

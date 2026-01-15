@@ -226,7 +226,7 @@ export const LoremIpsum = () => {
                 </Grid.Root>
             </Grid.Item>
             <Grid.Item style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Output'>
                     <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>Output</Text>
                     <TextArea
                         value={output || ''}

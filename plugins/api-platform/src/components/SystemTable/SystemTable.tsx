@@ -46,6 +46,7 @@ const columns: TableColumn<TableRow>[] = [
     title: 'Owner',
     width: '25%',
     field: 'owner',
+    highlight: true,
     render: ({ owner }: TableRow) => (
       <EntityRefLinks entityRefs={[owner]} defaultKind="group" />
     ),

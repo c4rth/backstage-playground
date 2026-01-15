@@ -216,6 +216,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
           style={chipStyles}
           onPress={onClick}
           isDisabled={disabled}
+          aria-label={label as string | undefined}
         >
           {content}
         </Button>
