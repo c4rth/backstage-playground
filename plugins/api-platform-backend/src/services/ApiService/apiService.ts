@@ -41,7 +41,13 @@ function getFilter(apiName: string, system: string): EntityFilterQuery {
   };
 }
 
-async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService, system: string, apiName: string): Promise<ApiVersionDefinition[]> {
+async function innerGetApiVersions(
+  catalogClient: CatalogApi, 
+  auth: AuthService, 
+  system: string, 
+  apiName: string,
+  options?: { skipSort?: boolean; matchPrefix?: string }
+): Promise<ApiVersionDefinition[]> {
   const token = await getCatalogToken(auth);
   const entities = await catalogClient.getEntities(
     {
@@ -51,29 +57,58 @@ async function innerGetApiVersions(catalogClient: CatalogApi, auth: AuthService,
     { token }
   );
   
-  // Single pass: map and filter in one iteration, skip redundant apiName check (already filtered by query)
   const versions: ApiVersionDefinition[] = [];
+  const matchPrefix = options?.matchPrefix?.toLowerCase();
+  
   for (const entity of entities.items) {
     const version = entity.metadata[ANNOTATION_API_VERSION]?.toString();
-    if (version) {
-      versions.push({
+    if (!version) continue;
+    
+    // Early return if looking for a specific prefix match
+    if (matchPrefix && version.toLowerCase().startsWith(matchPrefix)) {
+      return [{
         entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
         version,
         project: entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '',
-      });
+      }];
     }
+    
+    versions.push({
+      entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
+      version,
+      project: entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '',
+    });
+  }
+  
+  // Skip sort if not needed (e.g., when caller only needs existence check)
+  if (options?.skipSort) {
+    return versions;
   }
   
   return versions.sort((a, b) => semver.rcompare(a.version, b.version));
 }
 
-function getLatestByApiName(entities: Entity[]): Entity[] {
+function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
   const latest = new Map<string, { entity: Entity, version: semver.SemVer }>();
+  const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
     const apiName = item.metadata[ANNOTATION_API_NAME]?.toString();
     const system = item.spec?.system?.toString();
     if (!apiName || !system) continue;
+
+    // Apply search filter during iteration to avoid second pass
+    if (searchLower) {
+      const description = item.metadata.description?.toString() || '';
+      const project = item.metadata[ANNOTATION_API_PROJECT]?.toString() || '';
+      const matchesSearch = 
+        apiName.toLowerCase().includes(searchLower) ||
+        system.toLowerCase().includes(searchLower) ||
+        project.toLowerCase().includes(searchLower) ||
+        description.toLowerCase().includes(searchLower);
+      if (!matchesSearch) continue;
+    }
+
     const versionStr = item.metadata[ANNOTATION_API_VERSION]?.toString();
     if (!versionStr) continue;
     
@@ -161,19 +196,6 @@ async function fetchApiEntities(
   return entities;
 }
 
-// Extract unique API count from entities
-function countUniqueApis(entities: Entity[]): number {
-  const uniqueApiNames = new Set<string>();
-  for (const entity of entities) {
-    const system = entity.spec?.system?.toString() ?? '';
-    const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '';
-    if (apiName) {
-      uniqueApiNames.add(`${system}-${apiName}`);
-    }
-  }
-  return uniqueApiNames.size;
-}
-
 export async function apiService(options: ApiServiceOptions): Promise<ApiService> {
   const { logger, catalogClient, auth } = options;
   logger.info('Initializing ApiService');
@@ -188,7 +210,16 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
         ownership,
         userEntityRef,
       );
-      return countUniqueApis(entities);
+      // Inline counting to avoid function call overhead
+      const uniqueApiNames = new Set<string>();
+      for (const entity of entities) {
+        const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString();
+        if (apiName) {
+          const system = entity.spec?.system?.toString() ?? '';
+          uniqueApiNames.add(`${system}-${apiName}`);
+        }
+      }
+      return uniqueApiNames.size;
     },
 
     async listApis(request: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult> {
@@ -209,30 +240,19 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
         getOrder(request.orderBy),
       );
 
-      let latestEntities = getLatestByApiName(entities);
-      
-      const search = request.search?.toLowerCase();
-      if (search) {
-        latestEntities = latestEntities.filter(entity => {
-          const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString() || '';
-          const description = entity.metadata.description?.toString() || '';
-          const system = entity.spec?.system?.toString() || entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '';
-          return (
-            apiName.toLowerCase().includes(search) ||
-            system.toLowerCase().includes(search) ||
-            description.toLowerCase().includes(search)
-          );
-        });
-      }
+      // Combine filtering and grouping in single pass
+      const latestEntities = getLatestByApiName(entities, request.search);
       
       const offset = request.offset ?? 0;
       const limit = request.limit ?? 20;
-      return {
-        items: latestEntities.slice(offset, offset + limit),
-        offset,
-        limit,
-        totalCount: latestEntities.length,
-      };
+      const totalCount = latestEntities.length;
+      
+      // Only slice if needed - avoid creating new array when returning all
+      const items = (offset === 0 && limit >= totalCount) 
+        ? latestEntities 
+        : latestEntities.slice(offset, offset + limit);
+      
+      return { items, offset, limit, totalCount };
     },
 
     async getApiVersions(request: { system: string, apiName: string }): Promise<ApiVersionDefinition[]> {
@@ -240,8 +260,11 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
     },
 
     async getApiMatchingVersion(request: { system: string, apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {
-      const apiVersions = await innerGetApiVersions(catalogClient, auth, request.system, request.apiName);
-      return apiVersions.find(apiDef => apiDef.version.startsWith(request.apiVersion));
+      // Use matchPrefix option for early return - avoids sorting all versions
+      const versions = await innerGetApiVersions(catalogClient, auth, request.system, request.apiName, { 
+        matchPrefix: request.apiVersion 
+      });
+      return versions[0];
     },
 
     async getApiRelations(request: { system: string, apiName: string, relationType: 'provider' | 'consumer' }): Promise<ApiRelationDefinition[]> {
@@ -268,21 +291,26 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
       
       const relations: ApiRelationDefinition[] = [];
       for (const entity of entities.items) {
-        const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString();
         const apiVersion = entity.metadata[ANNOTATION_API_VERSION]?.toString();
-        if (!apiName || !apiVersion) continue;
+        if (!apiVersion) continue;
         
-        // Filter relations by type
-        const filteredRelations = entity.relations?.filter(r => r.type === relationTypeFilter) || [];
-        if (filteredRelations.length > 0) {
-          relations.push({
-            apiVersion,
-            services: filteredRelations.map(relation => ({
+        // Build services array directly without intermediate filter array
+        const entityRelations = entity.relations;
+        if (!entityRelations?.length) continue;
+        
+        const services: ApiRelationDefinition['services'] = [];
+        for (const relation of entityRelations) {
+          if (relation.type === relationTypeFilter) {
+            services.push({
               entityRef: relation.targetRef,
               version: apiVersion,
               lifecycle: relation.type,
-            })),
-          });
+            });
+          }
+        }
+        
+        if (services.length > 0) {
+          relations.push({ apiVersion, services });
         }
       }
       return relations;

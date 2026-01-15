@@ -26,18 +26,18 @@ import { Entity } from '@backstage/catalog-model';
 import { getUserGroups } from '../common/utils';
 import { getCatalogToken } from '../common/token';
 
-function getFilter(serviceName?: string): EntityFilterQuery {
-  if (serviceName) {
-    return {
-      kind: ['Component'],
-      'spec.type': ['service'],
-      'metadata.service-name': serviceName
-    };
-  }
-  return {
+function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
+  const filter: EntityFilterQuery = {
     kind: ['Component'],
-    'spec.type': ['service']
+    'spec.type': ['service'],
   };
+  if (serviceName) {
+    filter['metadata.service-name'] = serviceName;
+  }
+  if (system) {
+    filter['spec.system'] = system;
+  }
+  return filter;
 }
 
 function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "serviceName" | "system"; field2: "serviceName" | "system"; order: 'asc' | 'desc'; } | undefined {
@@ -49,11 +49,17 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "
   };
 }
 
-async function innerGetServices(catalogClient: CatalogApi, auth: AuthService, orderBy: ServiceDefinitionsOptions | undefined, serviceName: string | undefined): Promise<ServiceDefinition[]> {
+async function innerGetServices(
+  catalogClient: CatalogApi, 
+  auth: AuthService, 
+  orderBy: ServiceDefinitionsOptions | undefined, 
+  serviceName?: string,
+  system?: string
+): Promise<ServiceDefinition[]> {
   const token = await getCatalogToken(auth);
   const entities = await catalogClient.getEntities(
     {
-      filter: getFilter(serviceName),
+      filter: getFilter(serviceName, system),
       fields: [
         CATALOG_METADATA_NAME,
         CATALOG_METADATA_NAMESPACE,
@@ -122,16 +128,30 @@ function parseDependencies(dependsOn: any): string[] {
 }
 
 // Process entities into ServiceDefinition array
-function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsOptions | undefined, dependsOn?: string): ServiceDefinition[] {
+function processServiceEntities(
+  entities: Entity[], 
+  orderBy: ServiceDefinitionsOptions | undefined, 
+  dependsOn?: string,
+  search?: string
+): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
+  const searchLower = search?.toLowerCase();
 
   for (const entity of entities) {
     if (!entity.metadata || !entity.spec) continue;
 
     const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
-    const system = entity.spec.system?.toString();
+    const system = entity.spec.system?.toString() || '-';
     const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
     if (!name || !version) continue;
+
+    // Apply search filter during iteration to avoid second pass
+    if (searchLower) {
+      const matchesSearch = 
+        name.toLowerCase().includes(searchLower) ||
+        system.toLowerCase().includes(searchLower);
+      if (!matchesSearch) continue;
+    }
 
     const dependsOnList = parseDependencies(entity.spec.dependsOn);
     if (dependsOn && !dependsOnList.includes(dependsOn)) {
@@ -148,7 +168,7 @@ function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsO
         name: mapKey,
         serviceName: name,
         owner: entity.spec.owner?.toString() || '',
-        system: system || '-',
+        system,
         versions: []
       };
       mapServices.set(mapKey, def);
@@ -174,8 +194,6 @@ function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsO
       dependencies: parseDependencies(entity.spec.dependsOn),
     };
   }
-
-  
 
   // Sort versions once per service
   for (const def of mapServices.values()) {
@@ -204,21 +222,6 @@ function processServiceEntities(entities: Entity[], orderBy: ServiceDefinitionsO
   return svcDefs;
 }
 
-// Extract unique service count from entities
-function countUniqueServices(entities: Entity[]): number {
-  const uniqueNames = new Set<string>();
-  for (const entity of entities) {
-    if (entity.metadata) {
-      const system = entity.spec?.system?.toString() ?? '';
-      const serviceName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '';
-      if (serviceName) {
-        uniqueNames.add(`${system}-${serviceName}`);
-      }
-    }
-  }
-  return uniqueNames.size;
-}
-
 export interface ServiceServiceOptions {
   logger: LoggerService;
   catalogClient: CatalogApi;
@@ -240,7 +243,16 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
         ownership,
         userEntityRef,
       );
-      return countUniqueServices(entities);
+      // Inline counting to avoid function call overhead
+      const uniqueNames = new Set<string>();
+      for (const entity of entities) {
+        const serviceName = entity.metadata?.[ANNOTATION_SERVICE_NAME]?.toString();
+        if (serviceName) {
+          const system = entity.spec?.system?.toString() ?? '';
+          uniqueNames.add(`${system}-${serviceName}`);
+        }
+      }
+      return uniqueNames.size;
     },
 
     async listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
@@ -263,31 +275,27 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
         request.userEntityRef,
       );
 
-      let services = processServiceEntities(entities, request.orderBy, request.dependsOn);
-
-      const search = request.search?.toLowerCase();
-      if (search) {
-        services = services.filter(svc => (
-          svc.name.toLowerCase().includes(search) ||
-          svc.system.toLowerCase().includes(search)
-        ));
-      }
+      // Combine filtering and grouping in single pass
+      const services = processServiceEntities(entities, request.orderBy, request.dependsOn, request.search);
 
       const offset = request.offset ?? 0;
-      const limit = request.limit ?? services.length - offset;
-      return {
-        items: services.slice(offset, offset + limit),
-        offset,
-        limit,
-        totalCount: services.length,
-      };
+      const totalCount = services.length;
+      const limit = request.limit ?? totalCount - offset;
+      
+      // Only slice if needed - avoid creating new array when returning all
+      const items = (offset === 0 && limit >= totalCount) 
+        ? services 
+        : services.slice(offset, offset + limit);
+      
+      return { items, offset, limit, totalCount };
     },
 
     async getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition> {
       const { system, serviceName } = request;
-      const services = await innerGetServices(catalogClient, auth, undefined, serviceName);
-      // Find first matching service (array already filtered by serviceName at query level)
-      return services.find(svc => svc.system === system) ?? {
+      // Filter by both serviceName and system at catalog level to minimize data fetched
+      const services = await innerGetServices(catalogClient, auth, undefined, serviceName, system);
+      // Return first match or empty definition
+      return services[0] ?? {
         name: `${system}-${serviceName}`,
         serviceName,
         owner: '',

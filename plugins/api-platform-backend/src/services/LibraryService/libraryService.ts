@@ -52,29 +52,51 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
     },
     { token }
   );
+  
   const versions: LibraryDefinition[] = [];
   for (const entity of entities.items) {
     const version = entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
-    const dependsOf = entity.relations?.reduce((count, relation) => relation.type === RELATION_DEPENDENCY_OF ? count + 1 : count, 0) || 0;
-    if (version) {
-      versions.push({
-        entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-        version,
-        dependsOfCount: dependsOf,
-      });
+    if (!version) continue;
+    
+    // Count dependencies inline without reduce overhead
+    let dependsOfCount = 0;
+    if (servicesCount && entity.relations) {
+      for (const relation of entity.relations) {
+        if (relation.type === RELATION_DEPENDENCY_OF) {
+          dependsOfCount++;
+        }
+      }
     }
+    
+    versions.push({
+      entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+      version,
+      dependsOfCount,
+    });
   }
 
   return versions.sort((a, b) => semver.valid(a.version) && semver.valid(b.version) ? semver.rcompare(a.version, b.version) : b.version.localeCompare(a.version));
 }
 
-function getLatestByLibraryName(entities: Entity[]): Entity[] {
+function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
   const latest = new Map<string, { entity: Entity, version: semver.SemVer }>();
+  const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
     const libraryName = item.metadata[ANNOTATION_LIBRARY_NAME]?.toString();
     const system = item.spec?.system?.toString();
     if (!libraryName || !system) continue;
+
+    // Apply search filter during iteration to avoid second pass
+    if (searchLower) {
+      const description = item.metadata.description?.toString() || '';
+      const matchesSearch = 
+        libraryName.toLowerCase().includes(searchLower) ||
+        system.toLowerCase().includes(searchLower) ||
+        description.toLowerCase().includes(searchLower);
+      if (!matchesSearch) continue;
+    }
+
     const versionStr = item.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
     if (!versionStr) continue;
 
@@ -188,30 +210,19 @@ export async function libraryService(options: LibraryServiceOptions): Promise<Li
         getOrder(request.orderBy),
       );
 
-      let latestEntities = getLatestByLibraryName(entities);
-
-      const search = request.search?.toLowerCase();
-      if (search) {
-        latestEntities = latestEntities.filter(entity => {
-          const libraryName = entity.metadata[ANNOTATION_LIBRARY_NAME]?.toString() || '';
-          const description = entity.metadata.description?.toString() || '';
-          const system = entity.spec?.system?.toString() || '';
-          return (
-            libraryName.toLowerCase().includes(search) ||
-            system.toLowerCase().includes(search) ||
-            description.toLowerCase().includes(search)
-          );
-        });
-      }
+      // Combine filtering and grouping in single pass
+      const latestEntities = getLatestByLibraryName(entities, request.search);
 
       const offset = request.offset ?? 0;
       const limit = request.limit ?? 20;
-      return {
-        items: latestEntities.slice(offset, offset + limit),
-        offset,
-        limit,
-        totalCount: latestEntities.length,
-      };
+      const totalCount = latestEntities.length;
+      
+      // Only slice if needed - avoid creating new array when returning all
+      const items = (offset === 0 && limit >= totalCount) 
+        ? latestEntities 
+        : latestEntities.slice(offset, offset + limit);
+      
+      return { items, offset, limit, totalCount };
     },
 
     async getLibraryVersions(request: { system: string, libraryName: string, servicesCount: boolean }): Promise<LibraryDefinition[]> {
