@@ -151,7 +151,7 @@ export const LibraryVersionDefinitionPage = () => {
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <Page themeId="libraries">
-        <Header title={`${name} - v${queryVersion}`} type='Library'>
+        <Header title={`${name} - ${queryVersion}`} type='Library'>
           <ComponentHeaderLabels entity={libraryEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
         </Header>
         <Content>

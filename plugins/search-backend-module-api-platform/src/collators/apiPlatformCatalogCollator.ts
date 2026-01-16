@@ -70,7 +70,7 @@ const getServiceInfo = (entity: Entity): EntityInfo | null => {
     return {
         type: 'service',
         kind: 'Service',
-        title: `${serviceName} v${serviceVersion} in ${lifecycle}`,
+        title: `${serviceName} ${serviceVersion} in ${lifecycle}`,
         text: `${description} - Version: ${imageVersion} - Platform: ${platform}`,
         location: `${BASE_LOCATION}service/${system}/${serviceName}?version=${serviceVersion}&env=${lifecycle}`,
         lifecycle,
