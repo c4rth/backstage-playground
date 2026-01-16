@@ -39,10 +39,7 @@ import {
   RiPuzzleFill,
   RiShapesFill,
 } from '@remixicon/react';
-
-
-// Entity Validation
-import { IconComponent, useApp } from '@backstage/core-plugin-api';
+import { IconComponent } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';

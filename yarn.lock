@@ -2737,9 +2737,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-graph@npm:^0.5.4":
-  version: 0.5.4
-  resolution: "@backstage/plugin-catalog-graph@npm:0.5.4"
+"@backstage/plugin-catalog-graph@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@backstage/plugin-catalog-graph@npm:0.5.5"
   dependencies:
     "@backstage/catalog-client": "npm:^1.12.1"
     "@backstage/catalog-model": "npm:^1.7.6"
@@ -2764,7 +2764,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/0e8cc748b369bcd43e44ce23f4470ecc51dc55b348078e25d382abf65c7ec64464e1d2f3080bc712c3a1442ad9f1bb4d26a272fd331c55d94c7023606649c8df
+  checksum: 10/40c98416657433966e563af8df4a9c73d923645569c649daccdf613c431ae9998937469cd842bc507735d221ca0c07f102ea9ab41eaa5b6e6a43244caa1d6a5f
   languageName: node
   linkType: hard
 
@@ -3744,9 +3744,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "@backstage/plugin-search@npm:1.5.1"
+"@backstage/plugin-search@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "@backstage/plugin-search@npm:1.5.2"
   dependencies:
     "@backstage/core-components": "npm:^0.18.4"
     "@backstage/core-plugin-api": "npm:^1.12.1"
@@ -3769,7 +3769,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/d9a4b09273cfa45fb5e68f390521020c4ff03a158dac624ed29c7c6cc8d238afd3d7545db59cef41da9a1d4e8b72437e8249527ff4e81fb87a13e8dec24c05e7
+  checksum: 10/ab5053542960302a8219241e2acd098af1a1d92b504f71e25fbc98a7d7f0470f320e2efd09b411d705fea9ea940b8bb70847c71983cbc87aaea785b42370634a
   languageName: node
   linkType: hard
 
@@ -5788,7 +5788,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.1"
     "@backstage/plugin-api-docs": "npm:^0.13.2"
     "@backstage/plugin-catalog": "npm:^1.32.1"
-    "@backstage/plugin-catalog-graph": "npm:^0.5.4"
+    "@backstage/plugin-catalog-graph": "npm:^0.5.5"
     "@backstage/plugin-catalog-react": "npm:^1.21.4"
     "@backstage/plugin-org": "npm:^0.6.47"
     "@backstage/plugin-search-common": "npm:^1.2.21"
@@ -15353,7 +15353,7 @@ __metadata:
     "@backstage/plugin-api-docs": "npm:^0.13.2"
     "@backstage/plugin-catalog": "npm:^1.32.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.7"
-    "@backstage/plugin-catalog-graph": "npm:^0.5.4"
+    "@backstage/plugin-catalog-graph": "npm:^0.5.5"
     "@backstage/plugin-catalog-import": "npm:^0.13.8"
     "@backstage/plugin-catalog-react": "npm:^1.21.4"
     "@backstage/plugin-catalog-unprocessed-entities": "npm:^0.2.24"
@@ -15365,7 +15365,7 @@ __metadata:
     "@backstage/plugin-scaffolder": "npm:^1.35.0"
     "@backstage/plugin-scaffolder-common": "npm:^1.7.4"
     "@backstage/plugin-scaffolder-react": "npm:^1.19.4"
-    "@backstage/plugin-search": "npm:^1.5.1"
+    "@backstage/plugin-search": "npm:^1.5.2"
     "@backstage/plugin-search-react": "npm:^1.10.1"
     "@backstage/plugin-techdocs": "npm:^1.16.1"
     "@backstage/plugin-techdocs-react": "npm:^1.3.6"
