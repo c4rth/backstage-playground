@@ -41,7 +41,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     },
     render: ({ name, system, version }: TableRow) => (
       <Link to={`/api-platform/library/${system}/${name}?version=${version}`}>
-        <ComponentDisplayName text={`${name} v${version}`} type="library" />
+        <ComponentDisplayName text={`${version}`} type="library" />
       </Link>
     ),
   },
