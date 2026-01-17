@@ -30,7 +30,6 @@ type TableRow = {
     packageName: string,
 }
 
-
 function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
     const columns: TableColumn<TableRow>[] = [
         {
@@ -52,46 +51,76 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
                 <Link to={`${row.component}?version=${row.prdVersion}`}>{row.prdVersion}</Link>
             ),
         },
-        {
-            title: versions?.p1Version || 'P+1',
-            width: '5%',
-            field: 'p1Version',
-            highlight: true,
-            render: (row) => (
-                <Link to={`${row.component}?version=${row.p1Version}`}>{row.p1Version}</Link>
-            ),
-        },
-        {
-            title: versions?.p2Version || 'P+2',
-            width: '5%',
-            field: 'p2Version',
-            highlight: true,
-            render: (row) => (
-                <Link to={`${row.component}?version=${row.p2Version}`}>{row.p2Version}</Link>
-            ),
-        },
     ];
+    if (versions?.p1Version) {
+        columns.push(
+            {
+                title: versions?.p1Version,
+                width: '5%',
+                field: 'p1Version',
+                highlight: true,
+                render: (row) =>
+                    row.p1Version ? (
+                        <Link to={`${row.component}?version=${row.p1Version}`}>
+                            {row.p1Version}
+                        </Link>
+                    ) : (
+                        null
+                    ),
+            });
+    }
+    if (versions?.p2Version) {
+        columns.push(
+            {
+                title: versions?.p2Version,
+                width: '5%',
+                field: 'p2Version',
+                highlight: true,
+                render: (row) =>
+                    row.p2Version ? (
+                        <Link to={`${row.component}?version=${row.p2Version}`}>
+                            {row.p2Version}
+                        </Link>
+                    ) : (
+                        null
+                    ),
+            },);
+    }
     if (versions?.p3Version) {
-        columns.push({
-            title: versions.p3Version,
-            width: '5%',
-            field: 'p3Version',
-            highlight: true,
-            render: (row) => (
-                <Link to={`${row.component}?version=${row.p3Version}`}>{row.p3Version}</Link>
-            ),
-        });
+        columns.push(
+            {
+                title: versions.p3Version,
+                width: '5%',
+                field: 'p3Version',
+                highlight: true,
+                render: (row) =>
+                    row.p3Version ? (
+                        <Flex align="center">
+                            <Link to={`${row.component}?version=${row.p3Version}`}>
+                                {row.p3Version}
+                            </Link>
+                        </Flex>
+                    ) : (
+                        null
+                    ),
+            });
     }
     if (versions?.p4Version) {
-        columns.push({
-            title: versions.p4Version,
-            width: '5%',
-            field: 'p4Version',
-            highlight: true,
-            render: (row) => (
-                <Link to={`${row.component}?version=${row.p4Version}`}>{row.p4Version}</Link>
-            ),
-        });
+        columns.push(
+            {
+                title: versions.p4Version,
+                width: '5%',
+                field: 'p4Version',
+                highlight: true,
+                render: (row) =>
+                    row.p4Version ? (
+                        <Link to={`${row.component}?version=${row.p4Version}`}>
+                            {row.p4Version}
+                        </Link>
+                    ) : (
+                        null
+                    ),
+            });
     }
     columns.push(
         {
