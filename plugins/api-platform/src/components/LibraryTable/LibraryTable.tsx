@@ -119,6 +119,7 @@ export const LibraryTable = () => {
 
   const fetchData = async (query: Query<TableRow>) => {
     try {
+      setError(null);
       if (query.search !== undefined) {
         sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
       }
@@ -133,6 +134,7 @@ export const LibraryTable = () => {
 
   return (
     <Table<TableRow>
+      key={ownership}
       columns={columns}
       options={{
         search: true,
@@ -152,7 +154,6 @@ export const LibraryTable = () => {
         </Flex>
       }
       data={fetchData}
-      key={ownership}
     />
   );
 };

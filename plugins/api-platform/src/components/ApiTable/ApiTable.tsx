@@ -4,7 +4,6 @@ import {
   TableColumn,
   Link,
   OverflowTooltip,
-  Progress,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
@@ -14,7 +13,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Query } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
@@ -111,7 +110,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
 export const ApiTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [loadingCount, setLoadingCount] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(
     () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
@@ -119,55 +118,41 @@ export const ApiTable = () => {
 
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchCount = async () => {
-      setLoadingCount(true);
-      setError(null);
-      try {
-        const count = await apiPlatformApi.getApisCount(ownership);
-        if (isMounted) {
-          setCountRows(count);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err as Error);
-        }
-      } finally {
-        if (isMounted) {
-          setLoadingCount(false);
-        }
-      }
-    };
-
-    fetchCount();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [apiPlatformApi, ownership]);
-
   const fetchData = async (query: Query<TableRow>) => {
+    setLoading(true);
+    setError(null);
     if (query.search !== undefined) {
       sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
     }
-    return getData(apiPlatformApi, query, ownership);
+    try {
+      const result = await getData(apiPlatformApi, query, ownership);
+      setCountRows(result.totalCount);
+      return result;
+    } catch (e) {
+      setError(e as Error);
+      return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loadingCount) return <Progress />;
   if (error) return <ResponseErrorPanel error={error} />;
 
   return (
     <Table<TableRow>
-      isLoading={loadingCount}
+      key={ownership}
+      isLoading={loading}
       columns={COLUMNS}
       options={{
         search: true,
         padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: !loadingCount,
+        showEmptyDataSourceMessage: countRows === 0 && !loading,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,

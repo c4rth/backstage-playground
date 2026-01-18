@@ -3,7 +3,6 @@ import {
   Table,
   TableColumn,
   Link,
-  Progress,
 } from '@backstage/core-components';
 import {
   McaBaseType,
@@ -13,7 +12,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { Query } from '@material-table/core';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { useEffect, useState, memo } from 'react';
+import { useState, memo } from 'react';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
@@ -84,28 +83,32 @@ export const McaBaseTypeTable = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const [countRows, setCountRows] = useState(0);
-  const [loadingCount, setLoadingCount] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
-
-  useEffect(() => {
-    mcaApi.getMcaBaseTypesCount()
-      .then(count => {
-        setCountRows(count);
-        setLoadingCount(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoadingCount(false);
-      });
-  }, [mcaApi]);
 
   const dataFunction = async (query: Query<TableRow>) => {
     if (query.search !== undefined) {
       sessionStorage.setItem(STORAGE_KEY, query.search);
     }
-    return getData(mcaApi, query);
+
+    try {
+      setLoading(true);
+      const result = await getData(mcaApi, query);
+      setCountRows(result.totalCount);
+      return result;
+    } catch (e) {
+      setError(e as Error);
+      setCountRows(0);
+      return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const tableOptions = {
@@ -114,7 +117,7 @@ export const McaBaseTypeTable = memo(() => {
     padding: 'dense' as const,
     pageSize: PAGE_SIZE,
     pageSizeOptions: [10, PAGE_SIZE, 50],
-    showEmptyDataSourceMessage: !loadingCount,
+    showEmptyDataSourceMessage: countRows === 0,
     draggable: false,
     thirdSortClick: false,
     searchText: initialSearch,
@@ -125,12 +128,11 @@ export const McaBaseTypeTable = memo(() => {
     </Flex>
   );
 
-
-  if (loadingCount) return <Progress />;
   if (error) return <ResponseErrorPanel error={error} />;
 
   return (
     <Table<TableRow>
+      isLoading={loading}
       columns={columns}
       options={tableOptions}
       title={tableTitle}

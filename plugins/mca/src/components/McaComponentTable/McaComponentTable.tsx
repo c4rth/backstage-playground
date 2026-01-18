@@ -3,7 +3,6 @@ import {
     Table,
     TableColumn,
     Link,
-    Progress,
 } from '@backstage/core-components';
 import {
     McaComponent,
@@ -192,10 +191,8 @@ type McaComponentTableProps = {
 
 export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
     const mcaApi = useApi(mcaComponentsBackendApiRef);
-    const [selectedType, setSelectedType] = useState<McaComponentType>(type);
     const [mcaVersions, setMcaVersions] = useState<McaVersions>();
     const [countRows, setCountRows] = useState<number>(0);
-    const [loadingCount, setLoadingCount] = useState(true);
     const [loadingVersions, setLoadingVersions] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -207,22 +204,26 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
         padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: !loadingVersions && !loadingCount,
+        showEmptyDataSourceMessage: !loadingVersions,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,
     };
     const tableTitle = (
         <Flex align="center">
-            {getTitle(selectedType)} ({countRows})
+            {getTitle(type)} ({countRows})
         </Flex>
     );
 
     const dataFetcher = async (query: Query<TableRow>) => {
+        setLoadingVersions(true);
         if (query.search !== undefined) {
             sessionStorage.setItem(STORAGE_KEY, query.search);
         }
-        return getData(mcaApi, query, selectedType);
+        const result = await getData(mcaApi, query, type);
+        setCountRows(result.totalCount);
+        setLoadingVersions(false);
+        return result;
     };
 
     useEffect(() => {
@@ -232,20 +233,13 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
             .finally(() => setLoadingVersions(false));
     }, [mcaApi]);
 
-    useEffect(() => {
-        setSelectedType(type);
-        mcaApi.getMcaComponentsCount(type)
-            .then(setCountRows)
-            .catch(setError)
-            .finally(() => setLoadingCount(false));
-    }, [type, mcaApi]);
 
-    if (loadingVersions || loadingCount) return <Progress />;
     if (error) return <ResponseErrorPanel error={error} />;
 
     return (
         <Table<TableRow>
-            key={selectedType}
+            key={type}
+            isLoading={loadingVersions}
             columns={columns}
             options={tableOptions}
             title={tableTitle}

@@ -1,6 +1,5 @@
 import {
   Link,
-  Progress,
   ResponseErrorPanel,
   Table,
   TableColumn,
@@ -8,7 +7,7 @@ import {
 import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box, Flex } from '@backstage/ui';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
@@ -102,48 +101,49 @@ export const SystemTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
   const [countRows, setCountRows] = useState(0);
-  const [loadingCount, setLoadingCount] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(
     () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
   );
 
-  useEffect(() => {
-    const fetchCount = async () => {
-      setLoadingCount(true);
-      setError(null);
-      try {
-        const count = await apiPlatformApi.getSystemsCount(ownership);
-        setCountRows(count);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoadingCount(false);
-      }
-    };
-    fetchCount();
-  }, [ownership, apiPlatformApi]);
 
   const fetchData = async (query: Query<TableRow>) => {
+    setLoading(true);
     if (query.search !== undefined) {
       sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
     }
-    return getData(apiPlatformApi, ownership, query);
+    try {
+      const result = await getData(apiPlatformApi, ownership, query);
+      setCountRows(result.totalCount);
+      setError(null);
+      return result;
+    } catch (e) {
+      setError(e as Error);
+      setCountRows(0);
+      return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loadingCount) return <Progress />;
   if (error) return <ResponseErrorPanel error={error} />;
 
   return (
     <Table<TableRow>
-      isLoading={loadingCount}
+      key={ownership}
+      isLoading={loading}
       columns={columns}
       options={{
         search: true,
         padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: !loadingCount,
+        showEmptyDataSourceMessage: countRows === 0,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,
