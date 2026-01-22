@@ -66,7 +66,6 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
           index={dependencyIndexes[0] >= 0 ? dependencyIndexes[0] * 2 : 0}
           text={dependencies.join(', ')}
           clickable={false}
-          backgroundColor='#2196F3'
         />
       );
     }),
@@ -104,9 +103,10 @@ const serviceColumns: TableColumn<TableRow>[] = [
     render: ({ serviceDefinition }) =>
       renderVersionList(serviceDefinition, (version, idx) => (
         <ComponentChip
-          index={idx}
+          index={0}
           text={version.version}
           clickable={false}
+          backgroundColor='#FFFFFF'
         />
       )),
   },

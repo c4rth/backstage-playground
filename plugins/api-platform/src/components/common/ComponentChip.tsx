@@ -22,21 +22,65 @@ const alphaToHex = (alpha: number): string => {
 }
 
 const applyAlpha = (color: string, alpha: number): string => {
-   return `${color}${alphaToHex(alpha)}`;
+    return `${color}${alphaToHex(alpha)}`;
 };
 
-const getChipStyles = (index: number, backgroundColor: string) => {
-    const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
-    const bgColor = applyAlpha(backgroundColor, alphaValue);
-    
-    const textColor = alphaValue <= 0.5 
-        ? 'var(--bui-fg-primary)'
-        : 'var(--bui-fg-secondary)';
-    
-    return {
-        backgroundColor: bgColor,
-        color: textColor,
-    };
+/*
+const backgroundColors = [
+    '#1976D2',
+    '#512DA8',
+    '#7B1FA2',
+    '#C2185B',
+    '#D32F2F',
+    '#0288D1',
+    '#00796B',
+    '#388E3C',
+    '#FBC02D',
+    '#F57C00',
+];
+*/
+const backgroundColors = [
+    'var(--belui-chip-bg-color1)',
+    'var(--belui-chip-bg-color2)',
+    'var(--belui-chip-bg-color3)',
+    'var(--belui-chip-bg-color4)',
+    'var(--belui-chip-bg-color5)',
+    'var(--belui-chip-bg-color6)',
+    'var(--belui-chip-bg-color7)',
+    'var(--belui-chip-bg-color8)',
+    'var(--belui-chip-bg-color9)',
+    'var(--belui-chip-bg-color10)',
+];
+
+const textColors = [
+    'var(--belui-chip-fg-color1)',
+    'var(--belui-chip-fg-color2)',
+    'var(--belui-chip-fg-color3)',
+    'var(--belui-chip-fg-color4)',
+    'var(--belui-chip-fg-color5)',
+    'var(--belui-chip-fg-color6)',
+    'var(--belui-chip-fg-color7)',
+    'var(--belui-chip-fg-color8)',
+    'var(--belui-chip-fg-color9)',
+    'var(--belui-chip-fg-color10)',
+];
+
+const getChipStyles = (index: number, backgroundColor: string | undefined) => {
+    if (backgroundColor) {
+        const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
+        const textColor = alphaValue <= 0.5
+            ? 'var(--bui-fg-primary)'
+            : 'var(--bui-bg)';
+        return {
+            backgroundColor: applyAlpha(backgroundColor, alphaValue),
+            color: textColor,
+        };
+    } else {
+        return {
+            backgroundColor: backgroundColors[index % backgroundColors.length],
+            color: textColors[index % textColors.length], // 'var(--bui-fg-primary)'
+        };;
+    }
 };
 
 const PLATFORM_ICONS = {
@@ -64,7 +108,7 @@ export const ComponentChip = ({
     service,
     disabled = false,
     clickable = true,
-    backgroundColor = "#C30045",
+    backgroundColor,
 }: ComponentChipProps) => {
     const chipStyles = getChipStyles(index, backgroundColor);
 
@@ -84,7 +128,7 @@ export const ComponentChip = ({
                     <Flex direction="column" gap="spacing-1">
                         {service.dependencies.map((dep) => (
                             <Text key={dep}>
-                                <Text>- <b>{dep}</b></Text>
+                                <Text truncate>- <b>{dep}</b></Text>
                             </Text>
                         ))}
                     </Flex>
@@ -101,8 +145,8 @@ export const ComponentChip = ({
             clickable={clickable}
             disabled={disabled}
             icon={chipIcon}
-            style={{ 
-                padding: tooltipContent ? 5 : 0, 
+            style={{
+                padding: tooltipContent ? 5 : 0,
                 margin: 0,
                 ...chipStyles,
             }}

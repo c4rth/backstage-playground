@@ -5,7 +5,7 @@ import {
   TableColumn,
 } from '@backstage/core-components';
 import { ComponentChip } from '../common';
-import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
+import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest, ServiceEnvironmentDefinitions, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
 import { useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
@@ -19,6 +19,7 @@ type TableRow = {
   name: string;
   system: string;
   serviceDefinition: ServiceDefinition;
+  imageVersions: string[][];
 };
 
 const PAGE_SIZE = 20;
@@ -40,6 +41,16 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
   name: serviceDefinition.name,
   system: serviceDefinition.system,
   serviceDefinition,
+  imageVersions: serviceDefinition.versions.map(version => {
+    const envs: ServiceEnvironmentDefinitions = version.environments;
+    const versions: string[] = [];
+    if (envs.tst) { versions.push(envs.tst.imageVersion); } else { versions.push(''); }
+    if (envs.gtu) { versions.push(envs.gtu.imageVersion); } else { versions.push(''); }
+    if (envs.uat) { versions.push(envs.uat.imageVersion); } else { versions.push(''); }
+    if (envs.ptp) { versions.push(envs.ptp.imageVersion); } else { versions.push(''); }
+    if (envs.prd) { versions.push(envs.prd.imageVersion); } else { versions.push(''); }
+    return versions;
+  }),
 });
 
 const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
@@ -67,19 +78,24 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
       return envData?.imageVersion.toLowerCase().includes(lowerQuery);
     });
   },
-  render: ({ serviceDefinition }) =>
-    renderVersionList(serviceDefinition, (version, idx) => {
+  render: ({ serviceDefinition, imageVersions }) =>
+    renderVersionList(serviceDefinition, (version: ServiceVersionDefinition, idx) => {
       const envData = version.environments[env as keyof typeof version.environments];
-      return envData ? (
+      if (!envData) {
+        return (
+          <div style={EMPTY_STATE_STYLE}>
+            <Text variant="body-medium">-</Text>
+          </div>
+        );
+      }     
+      const index = imageVersions[idx].indexOf(envData.imageVersion);
+      console.log(idx, envData.imageVersion, index, imageVersions[idx]);
+      return (
         <ComponentChip
-          index={idx}
+          index={index}
           service={envData}
           link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
         />
-      ) : (
-        <div style={EMPTY_STATE_STYLE}>
-          <Text variant="body-medium">-</Text>
-        </div>
       );
     }),
 });
@@ -108,6 +124,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
       renderVersionList(serviceDefinition, (version, idx) => (
         <ComponentChip
           index={idx}
+          backgroundColor="#C30045"
           text={version.version}
           link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
         />

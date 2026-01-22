@@ -59,15 +59,17 @@ export type ServiceEnvironmentDefinition = {
   dependencies: string[];
 };
 
+export type ServiceEnvironmentDefinitions = {
+  tst?: ServiceEnvironmentDefinition;
+  gtu?: ServiceEnvironmentDefinition;
+  uat?: ServiceEnvironmentDefinition;
+  ptp?: ServiceEnvironmentDefinition;
+  prd?: ServiceEnvironmentDefinition;
+};
+
 export type ServiceVersionDefinition = {
   version: string;
-  environments: {
-    tst?: ServiceEnvironmentDefinition;
-    gtu?: ServiceEnvironmentDefinition;
-    uat?: ServiceEnvironmentDefinition;
-    ptp?: ServiceEnvironmentDefinition;
-    prd?: ServiceEnvironmentDefinition;
-  };
+  environments: ServiceEnvironmentDefinitions;
 };
 
 export type ServiceDefinition = {
