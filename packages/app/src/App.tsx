@@ -64,7 +64,7 @@ import {
 } from '@internal/plugin-api-platform';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
-import { adminToolsPermission, notGuestPermission } from '@internal/plugin-permissions-common';
+import { adminToolsPermission } from '@internal/plugin-permissions-common';
 // TechDocs
 import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';

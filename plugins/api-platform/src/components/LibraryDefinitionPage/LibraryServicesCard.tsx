@@ -101,7 +101,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     align: 'center',
     cellStyle: { padding: 0 },
     render: ({ serviceDefinition }) =>
-      renderVersionList(serviceDefinition, (version, idx) => (
+      renderVersionList(serviceDefinition, (version) => (
         <ComponentChip
           index={0}
           text={version.version}

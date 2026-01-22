@@ -89,7 +89,6 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
         );
       }     
       const index = imageVersions[idx].indexOf(envData.imageVersion);
-      console.log(idx, envData.imageVersion, index, imageVersions[idx]);
       return (
         <ComponentChip
           index={index}
