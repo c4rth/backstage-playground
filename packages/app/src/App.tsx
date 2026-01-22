@@ -198,12 +198,7 @@ const routes = (
     <Route path="/mca/components/:name" element={<McaComponentDefinitionPage />} />
     <Route path="/mca/basetypes" element={<McaBaseTypeExplorerPage />} />
     <Route path="/mca/basetypes/:name" element={<McaBaseTypeDefinitionPage />} />
-    <Route path="/tools" element={
-      <RequirePermission permission={notGuestPermission}>
-        <ToolsPage />
-      </RequirePermission>
-    }
-    />
+    <Route path="/tools" element={<ToolsPage />} />
     <Route path="/devtools"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>

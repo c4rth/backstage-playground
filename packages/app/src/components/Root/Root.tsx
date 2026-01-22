@@ -125,8 +125,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               </RequirePermission>
             </SidebarSubmenu>
           </SidebarItem>
-          <SidebarItem icon={RiWrenchFill as IconComponent} text="DevTools" to="tools" />
         </RequirePermission>
+        <SidebarItem icon={RiWrenchFill as IconComponent} text="DevTools" to="tools" />
         {/* End global nav */}
         <SidebarScrollWrapper>
           {/* Items in this group will be scrollable if they run out of space */}
