@@ -25,20 +25,6 @@ const applyAlpha = (color: string, alpha: number): string => {
     return `${color}${alphaToHex(alpha)}`;
 };
 
-/*
-const backgroundColors = [
-    '#1976D2',
-    '#512DA8',
-    '#7B1FA2',
-    '#C2185B',
-    '#D32F2F',
-    '#0288D1',
-    '#00796B',
-    '#388E3C',
-    '#FBC02D',
-    '#F57C00',
-];
-*/
 const backgroundColors = [
     'var(--belui-chip-bg-color1)',
     'var(--belui-chip-bg-color2)',
