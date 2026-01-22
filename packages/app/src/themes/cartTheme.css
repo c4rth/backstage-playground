@@ -24,10 +24,6 @@
   --bui-bg-solid-hover: rgb(166, 0, 59);
   --bui-bg-solid-pressed: rgb(136, 0, 48);
   --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
-  --bui-bg-tint: transparent;
-  --bui-bg-tint-hover: rgba(195, 0, 69, 0.4);
-  --bui-bg-tint-pressed: rgba(195, 0, 69, 0.6);
-  --bui-bg-tint-disabled: rgba(0, 0, 0, 0.12);
   --bui-bg-danger: rgb(246, 104, 94);
   --bui-bg-warning: rgb(255, 172, 51);
   --bui-bg-success: rgb(111, 191, 115);
@@ -58,33 +54,6 @@
   --belui-chip-fg-color8: #065F46;
   --belui-chip-fg-color9: #701A75;
   --belui-chip-fg-color10: #0F172A;
-
-  .custom-bui-TableRow {
-    border-bottom: 1px solid var(--bui-border);
-    transition: color 0.2s ease-in-out;
-
-    &[data-selected] {
-      background-color: var(--bui-bg-tint-pressed);
-    }
-
-    &[data-pressed] {
-      background-color: var(--bui-bg-tint-pressed);
-    }
-
-    &[data-disabled] {
-      background-color: var(--bui-bg-tint-disabled);
-    }
-
-    &[data-react-aria-pressable='true'] {
-      cursor: pointer;
-    }
-
-    &:nth-child(even) {
-      background-color: var(--bui-bg-surface-2);
-    }
-  }
-
-
 }
 
 [data-theme-mode='dark'] {

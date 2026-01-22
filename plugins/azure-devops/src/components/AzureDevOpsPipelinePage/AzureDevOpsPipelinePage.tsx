@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Table, TableHeader, TableBody, Column, Row, Cell, Card, CardHeader, CardBody, Text, Button, Flex, CellText } from '@backstage/ui';
+import { useState, useMemo, useCallback } from 'react';
+import { Table, Row, Cell, Card, CardHeader, CardBody, Text, Button, Flex, CellText, useTable, ColumnConfig } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useBuildRuns } from '../../hooks';
 import { getDurationFromDates } from '../../utils';
@@ -11,58 +11,60 @@ import {
 } from '@backstage/core-components';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import type { BuildRun } from '@backstage-community/plugin-azure-devops-common';
-import { stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
-import { ResizableTableContainer } from 'react-aria-components';
 import { BuildStateComponent } from './BuildStateComponent';
 import { LogsDialog } from './LogsDialog';
 
-const DEFAULT_BUILD_LIMIT = 20;
+type TableRow = {
+  id: number,
+  item: BuildRun,
+}
 
-const PipelineRow = ({ item, onViewLogs }: { item: BuildRun; onViewLogs?: (buildId: number, title: string) => void }) => {
+const toTableRow = (buildRun: BuildRun, idx: number): TableRow => ({
+  id: idx,
+  item: buildRun,
+});
 
-  const age = useMemo(() => {
-    if (!item.queueTime) {
-      return DateTime.now().toRelative() ?? '-';
-    }
+const cardTitle = (
+  <Flex style={{ paddingTop: '12px', paddingLeft: '4px' }}>
+    <Text variant='title-small' weight='bold'>Azure DevOps Pipelines</Text>
+  </Flex>
+);
 
-    const queueDate = DateTime.fromISO(item.queueTime);
-    const now = DateTime.now();
+const emptyState = () => (
+  <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
+    No Pipelines found.
+  </div>
+);
 
-    if (queueDate.hasSame(now, 'day')) {
-      return queueDate.toRelative() ?? '-';
-    }
+function getAge(queueTime?: string): string {
+  if (!queueTime) {
+    return '-';
+  }
+  const queueDate = DateTime.fromISO(queueTime);
+  const now = DateTime.now();
+  if (queueDate.hasSame(now, 'day')) {
+    return queueDate.toRelative() ?? '-';
+  }
+  return `${queueDate.toFormat('LLL d')} - ${queueDate.toLocaleString(DateTime.TIME_24_SIMPLE)}`;
+}
 
-    return `${queueDate.toFormat('LLL d')} - ${queueDate.toLocaleString(DateTime.TIME_24_SIMPLE)}`;
-  }, [item.queueTime]);
+function getDuration(finishTime?: string, startTime?: string): string {
+  if (!startTime || !finishTime) {
+    return '-';
+  }
+  return getDurationFromDates(startTime, finishTime);
+}
 
-  const duration = useMemo(() => {
-    return getDurationFromDates(item.startTime, item.finishTime);
-  }, [item.startTime, item.finishTime]);
-
-  return (
-    <Row key={item.id} id={item.id} className='custom-bui-TableRow'>
-      <CellText title={item.id?.toString() ?? '-'} />
-      <Cell>
-        <Link to={item.link ?? ''}>{item.title}</Link>
-      </Cell>
-      <CellText title={item.source ?? '-'} />
-      <Cell><BuildStateComponent status={item.status} result={item.result} /></Cell>
-      <CellText title={duration} />
-      <CellText title={age} />
-      <Cell>
-        <Button
-          variant='primary'
-          onPress={() => onViewLogs?.(item.id!, item.title ?? '')}
-          isDisabled={!item.id}
-        >
-          View Logs
-        </Button>
-      </Cell>
-    </Row>
-  );
-};
+async function fetchData(
+  getBuildRuns: (entity: Entity) => Promise<{ items: BuildRun[] }>,
+  entity: Entity,
+) {
+  const data = await getBuildRuns(entity);
+  return data?.items.map(toTableRow) ?? [];
+}
 
 export const AzureDevOpsPipelinePage = () => {
   const [logsDialogState, setLogsDialogState] = useState({
@@ -74,9 +76,10 @@ export const AzureDevOpsPipelinePage = () => {
 
   const azureApi = useApi(azureDevOpsApiRef);
   const { entity } = useEntity();
-  const { items, loading, error } = useBuildRuns(entity, DEFAULT_BUILD_LIMIT);
 
-  const fetchLogs = async (buildId: number, buildTitle: string) => {
+  const getBuildRuns = useBuildRuns();
+
+  const fetchLogs = useCallback(async (buildId: number, buildTitle: string) => {
     setLogsDialogState(prev => ({
       ...prev,
       loading: true,
@@ -99,38 +102,77 @@ export const AzureDevOpsPipelinePage = () => {
         host,
         org,
       );
-
       setLogsDialogState(prev => ({ ...prev, logs: response.log }));
     } catch (err) {
       setLogsDialogState(prev => ({ ...prev, logs: ['Error fetching logs'] }));
     } finally {
       setLogsDialogState(prev => ({ ...prev, loading: false }));
     }
-  };
+  }, [azureApi, entity]);
 
+  const columns: ColumnConfig<TableRow>[] = useMemo(() => [{
+    id: 'id',
+    label: 'ID',
+    isRowHeader: true,
+    cell: item => <CellText title={item.id?.toString() ?? '-'} />,
+    width: '2%'
+  }, {
+    id: 'build',
+    label: 'Build',
+    cell: row =>
+      <Cell>
+        <Link to={row.item.link ?? ''}>{row.item.title}</Link>
+      </Cell>,
+    width: '25%'
+  }, {
+    id: 'source',
+    label: 'Source',
+    cell: row => <CellText title={row.item.source ?? '-'} />,
+    width: '20%'
+  }, {
+    id: 'state',
+    label: 'State',
+    cell: row => <Cell><BuildStateComponent status={row.item.status} result={row.item.result} /></Cell>,
+    width: '15%'
+  }, {
+    id: 'duration',
+    label: 'Duration',
+    cell: row => <CellText title={getDuration(row.item.finishTime, row.item.startTime)} />,
+    width: '10%'
+  }, {
+    id: 'age',
+    label: 'Age',
+    cell: row => <CellText title={getAge(row.item.queueTime)} />,
+    width: '15%'
+  }, {
+    id: 'actions',
+    label: 'Actions',
+    cell: row =>
+      <Cell>
+        <Button
+          variant='primary'
+          onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
+          isDisabled={!row.item.id}
+        >
+          View Logs
+        </Button>
+      </Cell>,
+    width: '13%'
+  }], [fetchLogs]);
 
-  const cardTitle = (
-    <Flex style={{ paddingTop: '12px', paddingLeft: '4px' }}>
-      <Text variant='title-small' weight='bold'>Azure DevOps Pipelines</Text>
-    </Flex>
-  );
+  const getData = useCallback(() => fetchData(getBuildRuns, entity), [getBuildRuns, entity]);
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>{cardTitle}</CardHeader>
-        <CardBody><Progress /></CardBody>
-      </Card>
-    );
+  const { tableProps } = useTable({
+    mode: 'complete',
+    getData,
+  });
+
+  if (tableProps.error) {
+    return <ResponseErrorPanel title="Failed to call AzureDevOps" error={tableProps.error} />;
   }
 
-  if (error) {
-    return (
-      <Card>
-        <CardHeader>{cardTitle}</CardHeader>
-        <CardBody><ResponseErrorPanel error={error} /></CardBody>
-      </Card>
-    );
+  if (tableProps.loading) {
+    return <Progress />;
   }
 
   return (
@@ -138,29 +180,14 @@ export const AzureDevOpsPipelinePage = () => {
       <Card>
         <CardHeader>{cardTitle}</CardHeader>
         <CardBody>
-          <ResizableTableContainer>
-            <Table aria-label="Azure DevOps pipeline runs">
-              <TableHeader>
-                <Column isRowHeader width='2%'>ID</Column>
-                <Column width='25%'>Build</Column>
-                <Column width='20%'>Source</Column>
-                <Column width='15%'>State</Column>
-                <Column width='10%'>Duration</Column>
-                <Column width='15%'>Age</Column>
-                <Column width='13%'>Actions</Column>
-              </TableHeader>
-              <TableBody
-                items={items}
-                renderEmptyState={() => (
-                  <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-                    No Pipelines found.
-                  </div>
-                )}
-              >
-                {item => <PipelineRow item={item} onViewLogs={fetchLogs} />}
-              </TableBody>
-            </Table>
-          </ResizableTableContainer>
+          <Table
+            columnConfig={columns}
+            {...tableProps}
+            pagination={{
+              type: 'none',
+            }}
+            emptyState={emptyState()}
+          />
         </CardBody>
       </Card>
 
