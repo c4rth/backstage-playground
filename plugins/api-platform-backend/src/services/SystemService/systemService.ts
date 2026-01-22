@@ -17,7 +17,7 @@ import {
   OwnershipType,
   ANNOTATION_LIBRARY_NAME
 } from '@internal/plugin-api-platform-common';
-import { getUserGroups } from '../common/utils';
+import { getUserGroups, isUserGuest } from '../common/utils';
 import { getCatalogToken } from '../common/token';
 
 export interface SystemServiceOptions {
@@ -48,6 +48,12 @@ async function fetchSystemEntities(
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
+
+  if (ownership === 'owned' && isUserGuest(userEntityRef)) {
+    // Guest users have no owned systems
+    return [];
+  }
+
   const token = await getCatalogToken(auth);
 
   // Fetch entities and user groups in parallel if ownership filtering needed

@@ -1,6 +1,6 @@
 import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
 import { Flex } from "@backstage/ui";
-import { Entity, parseEntityRef, RELATION_DEPENDS_ON, stringifyEntityRef } from "@backstage/catalog-model";
+import { Entity, parseEntityRef, RELATION_DEPENDS_ON } from "@backstage/catalog-model";
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from "@backstage/core-plugin-api";
 import useAsync from 'react-use/esm/useAsync';

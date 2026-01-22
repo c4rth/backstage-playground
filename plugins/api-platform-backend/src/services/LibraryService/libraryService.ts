@@ -21,7 +21,7 @@ import {
 import { CatalogApi, EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
 import { Entity, RELATION_DEPENDENCY_OF } from '@backstage/catalog-model';
-import { getUserGroups } from '../common/utils';
+import { getUserGroups, isUserGuest } from '../common/utils';
 import { getCatalogToken } from '../common/token';
 
 function getFilter(system: string, libraryName?: string): EntityFilterQuery {
@@ -52,12 +52,12 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
     },
     { token }
   );
-  
+
   const versions: LibraryDefinition[] = [];
   for (const entity of entities.items) {
     const version = entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
     if (!version) continue;
-    
+
     // Count dependencies inline without reduce overhead
     let dependsOfCount = 0;
     if (servicesCount && entity.relations) {
@@ -67,7 +67,7 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
         }
       }
     }
-    
+
     versions.push({
       entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
       version,
@@ -90,7 +90,7 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
     // Apply search filter during iteration to avoid second pass
     if (searchLower) {
       const description = item.metadata.description?.toString() || '';
-      const matchesSearch = 
+      const matchesSearch =
         libraryName.toLowerCase().includes(searchLower) ||
         system.toLowerCase().includes(searchLower) ||
         description.toLowerCase().includes(searchLower);
@@ -154,6 +154,12 @@ async function fetchLibraryEntities(
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
+
+  if (ownership === 'owned' && isUserGuest(userEntityRef)) {
+    // Guest users have no owned Libraries
+    return [];
+  }
+
   const token = await getCatalogToken(auth);
 
   // Fetch user groups in parallel with entities if needed
@@ -216,12 +222,12 @@ export async function libraryService(options: LibraryServiceOptions): Promise<Li
       const offset = request.offset ?? 0;
       const limit = request.limit ?? 20;
       const totalCount = latestEntities.length;
-      
+
       // Only slice if needed - avoid creating new array when returning all
-      const items = (offset === 0 && limit >= totalCount) 
-        ? latestEntities 
+      const items = (offset === 0 && limit >= totalCount)
+        ? latestEntities
         : latestEntities.slice(offset, offset + limit);
-      
+
       return { items, offset, limit, totalCount };
     },
 

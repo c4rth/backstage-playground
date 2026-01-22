@@ -23,7 +23,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
-import { getUserGroups } from '../common/utils';
+import { getUserGroups, isUserGuest } from '../common/utils';
 import { getCatalogToken } from '../common/token';
 
 function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
@@ -50,9 +50,9 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "
 }
 
 async function innerGetServices(
-  catalogClient: CatalogApi, 
-  auth: AuthService, 
-  orderBy: ServiceDefinitionsOptions | undefined, 
+  catalogClient: CatalogApi,
+  auth: AuthService,
+  orderBy: ServiceDefinitionsOptions | undefined,
   serviceName?: string,
   system?: string
 ): Promise<ServiceDefinition[]> {
@@ -90,6 +90,12 @@ async function fetchServiceEntities(
   ownership: OwnershipType,
   userEntityRef: string | undefined,
 ): Promise<Entity[]> {
+
+  if (ownership === 'owned' && isUserGuest(userEntityRef)) {
+    // Guest users have no owned Services
+    return [];
+  }
+
   const token = await getCatalogToken(auth);
 
   // Fetch user groups in parallel with entities if needed
@@ -129,8 +135,8 @@ function parseDependencies(dependsOn: any): string[] {
 
 // Process entities into ServiceDefinition array
 function processServiceEntities(
-  entities: Entity[], 
-  orderBy: ServiceDefinitionsOptions | undefined, 
+  entities: Entity[],
+  orderBy: ServiceDefinitionsOptions | undefined,
   dependsOn?: string,
   search?: string
 ): ServiceDefinition[] {
@@ -147,7 +153,7 @@ function processServiceEntities(
 
     // Apply search filter during iteration to avoid second pass
     if (searchLower) {
-      const matchesSearch = 
+      const matchesSearch =
         name.toLowerCase().includes(searchLower) ||
         system.toLowerCase().includes(searchLower);
       if (!matchesSearch) continue;
@@ -281,12 +287,12 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
       const offset = request.offset ?? 0;
       const totalCount = services.length;
       const limit = request.limit ?? totalCount - offset;
-      
+
       // Only slice if needed - avoid creating new array when returning all
-      const items = (offset === 0 && limit >= totalCount) 
-        ? services 
+      const items = (offset === 0 && limit >= totalCount)
+        ? services
         : services.slice(offset, offset + limit);
-      
+
       return { items, offset, limit, totalCount };
     },
 
