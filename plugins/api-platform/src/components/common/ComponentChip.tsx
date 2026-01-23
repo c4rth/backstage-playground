@@ -2,7 +2,7 @@ import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-comm
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { Text, TooltipTrigger, Tooltip, Flex } from '@backstage/ui';
+import { Text, TooltipTrigger, Tooltip, Flex, Box } from '@backstage/ui';
 
 export type ComponentChipProps = {
     index: number;
@@ -64,7 +64,7 @@ const getChipStyles = (index: number, backgroundColor: string | undefined) => {
     } else {
         return {
             backgroundColor: backgroundColors[index % backgroundColors.length],
-            color: textColors[index % textColors.length], // 'var(--bui-fg-primary)'
+            color: textColors[index % textColors.length], 
         };;
     }
 };
@@ -103,7 +103,7 @@ export const ComponentChip = ({
     const chipIcon = text ? icon : platformIcon;
 
     const tooltipContent = service ? (
-        <>
+        <Box>
             <Text>Platform: <b>{service.platform}</b></Text>
             <br />
             <Text>Version: <b>{service.imageVersion}</b></Text>
@@ -114,13 +114,13 @@ export const ComponentChip = ({
                     <Flex direction="column" gap="spacing-1">
                         {service.dependencies.map((dep) => (
                             <Text key={dep}>
-                                <Text truncate>- <b>{dep}</b></Text>
+                                <Text>- <b>{dep}</b></Text>
                             </Text>
                         ))}
                     </Flex>
                 </>
             )}
-        </>
+        </Box>
     ) : null;
 
     const chip = (
@@ -142,7 +142,7 @@ export const ComponentChip = ({
     const content = tooltipContent ? (
         <TooltipTrigger trigger='hover' delay={250}>
             {chip}
-            <Tooltip placement="bottom">
+            <Tooltip placement="bottom" style={{ maxWidth: '50rem'}}>
                 {tooltipContent}
             </Tooltip>
         </TooltipTrigger>
