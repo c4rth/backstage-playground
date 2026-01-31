@@ -131,9 +131,17 @@ integrations:
     - host: dev.azure.com
       credentials:
         #- personalAccessToken: ${ADO_PERSONAL_ACCESS_TOKEN}
-        - tenantId: ${AZURE_TENANT_ID}
-          clientId: ${AZURE_CLIENT_ID}
-          clientSecret: ${AZURE_CLIENT_SECRET}
+        # service principal auth
+        #- tenantId: ${AZURE_TENANT_ID}
+        #  clientId: ${AZURE_CLIENT_ID}
+        #  clientSecret: ${AZURE_CLIENT_SECRET}
+        # service principal auth for Azure DevOps
+        #- tenantId: ${AZURE_TENANT_ID}
+        #  clientId: ${AZDO_CLIENT_ID}
+        #  clientSecret: ${AZDO_CLIENT_SECRET}
+        - clientId: ${MANAGED_IDENTITY_CLIENT_ID} # Use Managed Identity
+          managedIdentity: true
+
 
 azureDevOps:
   host: dev.azure.com
