@@ -38,7 +38,7 @@
     "@backstage/core-plugin-api": "^1.12.2",
     "@backstage/plugin-catalog-react": "^1.21.6",
     "@backstage/ui": "^0.11.2",
-    "@stoplight/spectral-core": "1.20.0",
+    "@stoplight/spectral-core": "1.21.0",
     "@stoplight/spectral-ruleset-bundler": "1.6.3",
     "@stoplight/spectral-runtime": "1.1.4",
     "react-dom": "^18.2.0",
