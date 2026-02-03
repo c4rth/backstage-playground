@@ -9,7 +9,7 @@ import { McaComponentTable } from '../McaComponentTable';
 import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Box, Grid } from '@backstage/ui';
+import { Box, Flex, Grid, Text } from '@backstage/ui';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
@@ -79,6 +79,15 @@ export const McaComponentExplorerPage = () => {
                 items={componentTypes}
                 selected={selectedType}
               />
+            </Grid.Item>
+            <Grid.Item>
+              <Flex style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <Box p="4" style={{ borderRadius: '10px', border: '1px solid var(--bui-border-warning)', backgroundColor: 'rgb(255, 172, 51, 0.5)' }}>
+                  <Text variant="title-x-small">
+                    Only MCA components promoted to PRD or with a P &ge; current PRD P are shown.
+                  </Text>
+                </Box>
+              </Flex>
             </Grid.Item>
           </Grid.Root>
         </Box>

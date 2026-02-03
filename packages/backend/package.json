@@ -18,7 +18,7 @@
   "dependencies": {
     "@backstage-community/plugin-azure-devops-backend": "^0.25.0",
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.16.0",
-    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.20.0",
+    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.20.1",
     "@backstage-community/plugin-sonarqube-backend": "^0.17.0",
     "@backstage/backend-defaults": "^0.15.1",
     "@backstage/backend-plugin-api": "^1.6.2",

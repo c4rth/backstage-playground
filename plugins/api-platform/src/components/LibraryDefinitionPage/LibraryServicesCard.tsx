@@ -63,7 +63,7 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
 
       return (
         <ComponentChip
-          index={dependencyIndexes[0] >= 0 ? dependencyIndexes[0] * 2 : 0}
+          index={(dependencyIndexes[0] >= 0 ? dependencyIndexes[0] + 1 : 0) * 2}
           text={dependencies.join(', ')}
           clickable={false}
         />
