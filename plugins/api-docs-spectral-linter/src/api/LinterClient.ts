@@ -16,7 +16,7 @@
 
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { LinterApi, LinterResult, LintOptions } from './types';
-import { Spectral } from '@stoplight/spectral-core';
+import { Spectral, Ruleset } from '@stoplight/spectral-core';
 // @ts-ignore
 import { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
 import { fetch } from '@stoplight/spectral-runtime';
@@ -91,7 +91,7 @@ export class LinterClient implements LinterApi {
       fs,
       fetch,
     });
-    spectral.setRuleset(ruleSet);
+    spectral.setRuleset(ruleSet as unknown as Ruleset);
 
     const formattedContent = countLines(content) === 1 ? prettyPrint(content) : content;
 

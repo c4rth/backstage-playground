@@ -31,11 +31,6 @@ const backgroundColors = [
     'var(--belui-chip-bg-color3)',
     'var(--belui-chip-bg-color4)',
     'var(--belui-chip-bg-color5)',
-    'var(--belui-chip-bg-color6)',
-    'var(--belui-chip-bg-color7)',
-    'var(--belui-chip-bg-color8)',
-    'var(--belui-chip-bg-color9)',
-    'var(--belui-chip-bg-color10)',
 ];
 
 const textColors = [
@@ -44,11 +39,6 @@ const textColors = [
     'var(--belui-chip-fg-color3)',
     'var(--belui-chip-fg-color4)',
     'var(--belui-chip-fg-color5)',
-    'var(--belui-chip-fg-color6)',
-    'var(--belui-chip-fg-color7)',
-    'var(--belui-chip-fg-color8)',
-    'var(--belui-chip-fg-color9)',
-    'var(--belui-chip-fg-color10)',
 ];
 
 const getChipStyles = (index: number, backgroundColor: string | undefined) => {

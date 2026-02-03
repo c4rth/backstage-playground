@@ -89,7 +89,6 @@ const commonColumns: TableColumn<TableRow>[] = [
     title: "Name",
     width: "20%",
     field: "name",
-    defaultSort: "asc",
     highlight: true,
   },
   {
@@ -173,7 +172,7 @@ const tableOptions = {
   padding: "dense" as const,
   paging: false,
   draggable: false,
-  thirdSortClick: false,
+  thirdSortClick: true,
   showEmptyDataSourceMessage: true,
 };
 

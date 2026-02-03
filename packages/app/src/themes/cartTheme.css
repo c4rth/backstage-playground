@@ -33,27 +33,42 @@
   --bui-border: #E6E6E6;
   --bui-ring: #FFFBCC;
 
-  --belui-chip-bg-color1:  #A1C2EE;
-  --belui-chip-bg-color2:  #E4C56E;
-  --belui-chip-bg-color3:  #78D4C8;
-  --belui-chip-bg-color4:  #E7A1AE;
-  --belui-chip-bg-color5:  #B3A7E3;
-  --belui-chip-bg-color6:  #E1AD7E;
-  --belui-chip-bg-color7:  #8BBFDB;
-  --belui-chip-bg-color8:  #79CBA8;
-  --belui-chip-bg-color9:  #D7A3DE;
-  --belui-chip-bg-color10: #A3A7AD;
+  --belui-chip-bg-color1: #C30045;
+  --belui-chip-bg-color2: #E11D5E;
+  --belui-chip-bg-color3: #F4728C;
+  --belui-chip-bg-color4: #3A6EA5;
+  --belui-chip-bg-color5: #2F8F83;
 
-  --belui-chip-fg-color1:  #1E3A8A;
-  --belui-chip-fg-color2:  #7C3F0A;
-  --belui-chip-fg-color3:  #065F46;
-  --belui-chip-fg-color4:  #8F1235;
-  --belui-chip-fg-color5:  #4A1D96;
-  --belui-chip-fg-color6:  #8A3A14;
-  --belui-chip-fg-color7:  #0B4A6A;
-  --belui-chip-fg-color8:  #065F46;
-  --belui-chip-fg-color9:  #6B1A72;
-  --belui-chip-fg-color10:#2E2E2E;
+  --belui-chip-fg-color1: #F8F8F8;
+  --belui-chip-fg-color2: #F8F8F8;
+  --belui-chip-fg-color3: #F8F8F8;
+  --belui-chip-fg-color4: #F8F8F8;
+  --belui-chip-fg-color5: #F8F8F8;
+  
+  .custom-bui-TableRow {
+    border-bottom: 1px solid var(--bui-border);
+    transition: color 0.2s ease-in-out;
+
+    &[data-selected] {
+      background-color: var(--bui-bg-tint-pressed);
+    }
+
+    &[data-pressed] {
+      background-color: var(--bui-bg-tint-pressed);
+    }
+
+    &[data-disabled] {
+      background-color: var(--bui-bg-tint-disabled);
+    }
+
+    &[data-react-aria-pressable='true'] {
+      cursor: pointer;
+    }
+
+    &:nth-child(even) {
+      background-color: var(--bui-bg-surface-2);
+    }
+  }
 
 }
 
@@ -67,26 +82,4 @@
   --bui-bg-tint-pressed: #9cc9ff29;
   --bui-bg-tint-disabled: transparent;
   --bui-fg-solid: #fff;
-
-  --belui-chip-bg-color1:  #1E3A8A;
-  --belui-chip-bg-color2:  #7C3F0A;
-  --belui-chip-bg-color3:  #065F46;
-  --belui-chip-bg-color4:  #8F1235;
-  --belui-chip-bg-color5:  #4A1D96;
-  --belui-chip-bg-color6:  #8A3A14;
-  --belui-chip-bg-color7:  #0B4A6A;
-  --belui-chip-bg-color8:  #065F46;
-  --belui-chip-bg-color9:  #6B1A72;
-  --belui-chip-bg-color10:#2E2E2E;
-
-  --belui-chip-fg-color1:  #A1C2EE;
-  --belui-chip-fg-color2:  #E4C56E;
-  --belui-chip-fg-color3:  #78D4C8;
-  --belui-chip-fg-color4:  #E7A1AE;
-  --belui-chip-fg-color5:  #B3A7E3;
-  --belui-chip-fg-color6:  #E1AD7E;
-  --belui-chip-fg-color7:  #8BBFDB;
-  --belui-chip-fg-color8:  #79CBA8;
-  --belui-chip-fg-color9:  #D7A3DE;
-  --belui-chip-fg-color10: #A3A7AD;
 }

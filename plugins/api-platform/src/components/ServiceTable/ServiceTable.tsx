@@ -44,11 +44,11 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
   imageVersions: serviceDefinition.versions.map(version => {
     const envs: ServiceEnvironmentDefinitions = version.environments;
     const versions: string[] = [];
-    if (envs.tst) { versions.push(envs.tst.imageVersion); } else { versions.push(''); }
-    if (envs.gtu) { versions.push(envs.gtu.imageVersion); } else { versions.push(''); }
-    if (envs.uat) { versions.push(envs.uat.imageVersion); } else { versions.push(''); }
-    if (envs.ptp) { versions.push(envs.ptp.imageVersion); } else { versions.push(''); }
     if (envs.prd) { versions.push(envs.prd.imageVersion); } else { versions.push(''); }
+    if (envs.ptp) { versions.push(envs.ptp.imageVersion); } else { versions.push(''); }
+    if (envs.uat) { versions.push(envs.uat.imageVersion); } else { versions.push(''); }
+    if (envs.gtu) { versions.push(envs.gtu.imageVersion); } else { versions.push(''); }
+    if (envs.tst) { versions.push(envs.tst.imageVersion); } else { versions.push(''); }
     return versions;
   }),
 });
