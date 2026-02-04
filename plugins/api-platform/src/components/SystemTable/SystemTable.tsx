@@ -136,14 +136,13 @@ export const SystemTable = () => {
   return (
     <Table<TableRow>
       key={ownership}
-      isLoading={loading}
       columns={columns}
       options={{
         search: true,
         padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: countRows === 0,
+        showEmptyDataSourceMessage: countRows === 0 && !loading,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,

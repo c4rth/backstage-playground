@@ -145,7 +145,6 @@ export const ApiTable = () => {
   return (
     <Table<TableRow>
       key={ownership}
-      isLoading={loading}
       columns={COLUMNS}
       options={{
         search: true,

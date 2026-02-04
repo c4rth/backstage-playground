@@ -239,7 +239,6 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
     return (
         <Table<TableRow>
             key={type}
-            isLoading={loadingVersions}
             columns={columns}
             options={tableOptions}
             title={tableTitle}
