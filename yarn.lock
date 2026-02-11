@@ -5954,6 +5954,7 @@ __metadata:
     "@internal/plugin-api-swagger-docs": "workspace:^"
     "@internal/plugin-app-registry": "workspace:^"
     "@internal/plugin-azure-devops": "workspace:^"
+    "@internal/plugin-mca": "workspace:^"
     "@material-table/core": "npm:3.2.5"
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
@@ -6282,6 +6283,7 @@ __metadata:
     asn1js: "npm:^3.0.6"
     cronstrue: "npm:^2.61.0"
     jose: "npm:^6.1.1"
+    jsonata: "npm:^2.1.0"
     jwt-decode: "npm:^4.0.0"
     pkijs: "npm:^3.2.5"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -24377,6 +24379,13 @@ __metadata:
   bin:
     json5: lib/cli.js
   checksum: 10/1db67b853ff0de3534085d630691d3247de53a2ed1390ba0ddff681ea43e9b3e30ecbdb65c5e9aab49435e44059c23dbd6fee8ee619419ba37465bb0dd7135da
+  languageName: node
+  linkType: hard
+
+"jsonata@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "jsonata@npm:2.1.0"
+  checksum: 10/cd5527c4bf5ab5150aa1251584440d5f7dca56d63bd881e8e135ee5560f3c51591797868b898198b01a7daaaa5fe94a456fa964d6fdbc13ab1e61e441b5ea0bd
   languageName: node
   linkType: hard
 

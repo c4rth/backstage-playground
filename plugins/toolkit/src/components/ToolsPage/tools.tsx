@@ -6,6 +6,7 @@ const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
 const CertificateDecoder = lazy(() => import('../Tools/CertificateDecoder'));
 const CronDecoder = lazy(() => import('../Tools/CronDecoder'));
 const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
+const JSONataTester = lazy(() => import('../Tools/JsonAtaTester'));
 
 export const defaultTools: Tool[] = [
      {
@@ -29,6 +30,13 @@ export const defaultTools: Tool[] = [
         component: <CertificateDecoder />,
         category: 'Decode',
         description: 'Decode PEM certificate',
+    },
+    {
+        id: 'jsonata-tester',
+        name: 'JSONata Tester',
+        component: <JSONataTester />,
+        category: 'Encode/Decode',
+        description: 'Test JSONata expressions against your JSON data',
     },
     {
         id: 'cron-decoder',
