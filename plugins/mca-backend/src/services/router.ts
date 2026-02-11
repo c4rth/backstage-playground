@@ -48,6 +48,10 @@ export async function createRouter(
 
   router.get('/mca/components/:component', async (req, res) => {
     const result = await mcaService.getMcaComponent({ component: req.params.component });
+    if (!result) {
+      res.status(404).json({ message: 'Component not found' });
+      return;
+    }
     res.json(result);
   });
 
@@ -78,6 +82,10 @@ export async function createRouter(
 
   router.get('/basetypes/components/:baseType', async (req, res) => {
     const result = await mcaService.getMcaBaseType({ baseType: req.params.baseType });
+    if (!result) {
+      res.status(404).json({ message: 'Base type not found' });
+      return;
+    }
     res.json(result);
   });
 

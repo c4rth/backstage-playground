@@ -19,7 +19,9 @@ import {
   ApiDefinitionsOptions,
   ApiDefinitionsListRequest,
   OwnershipType,
-  CATALOG_SPEC_OWNER
+  CATALOG_SPEC_OWNER,
+  ANNOTATION_API_TYPE,
+  CATALOG_METADATA_API_TYPE
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
@@ -94,6 +96,7 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
 
   for (const item of entities) {
     const apiName = item.metadata[ANNOTATION_API_NAME]?.toString();
+    const apiType = item.metadata[ANNOTATION_API_TYPE]?.toString() || 'osdfv2';
     const system = item.spec?.system?.toString();
     if (!apiName || !system) continue;
 
@@ -105,6 +108,7 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
         apiName.toLowerCase().includes(searchLower) ||
         system.toLowerCase().includes(searchLower) ||
         project.toLowerCase().includes(searchLower) ||
+        apiType.toLowerCase().includes(searchLower) ||
         description.toLowerCase().includes(searchLower);
       if (!matchesSearch) continue;
     }
@@ -237,6 +241,7 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
           CATALOG_METADATA_NAME,
           CATALOG_METADATA_DESCRIPTION,
           CATALOG_METADATA_API_NAME,
+          CATALOG_METADATA_API_TYPE,
           CATALOG_METADATA_API_VERSION,
           CATALOG_SPEC_SYSTEM,
           CATALOG_SPEC_OWNER,

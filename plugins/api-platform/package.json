@@ -52,6 +52,7 @@
     "@internal/plugin-api-swagger-docs": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
     "@internal/plugin-azure-devops": "workspace:^",
+    "@internal/plugin-mca": "workspace:^",
     "@material-table/core": "3.2.5",
     "@remixicon/react": "^4.6.0",
     "react-aria-components": "^1.13.0",

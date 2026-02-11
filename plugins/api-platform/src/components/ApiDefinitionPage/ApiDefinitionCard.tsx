@@ -48,6 +48,7 @@ export const ApiDefinitionCard = () => {
 
   const definition = entity.spec.definition.toString();
   const isLinterAvailable = isApiDocsSpectralLinterAvailable(entity);
+  const isMcaApi = entity.metadata['api-type'] === 'mca';
 
   return (
     <TabbedLayout>
@@ -57,7 +58,7 @@ export const ApiDefinitionCard = () => {
       <TabbedLayout.Route path="/raw" title="Raw">
         <PlainApiDefinitionWidget definition={definition} language="yaml" />
       </TabbedLayout.Route>
-      {isLinterAvailable && (
+      {isLinterAvailable && !isMcaApi && (
         <TabbedLayout.Route path="/linter" title="Linter">
           <EntityApiDocsSpectralLinterCard />
         </TabbedLayout.Route>
@@ -94,25 +95,38 @@ export const ApiDefinitionCard = () => {
             </AboutField>
           </Box>
           <ComponentAboutContent entity={entity} />
-          <Box mt='5'>
-            <AboutField label="Azure Artifact" gridSizes={{ xs: 12 }}>
-              <Link to={artifactUrl} target="_blank" rel="noopener noreferrer">
-                <ComponentDisplayName text={artifactText} type='azdo' />
-              </Link>
-            </AboutField>
-          </Box>
-          <Box mt='5'>
-            <AboutField label="Maven Snippet" gridSizes={{ xs: 4 }}>
-              <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
-            </AboutField>
-          </Box>
-          <Box mt='5'>
-            <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
-              <Link to={platformUrl} target="_blank" rel="noopener noreferrer">
-                <ComponentDisplayName text={platformUrl} type='url' />
-              </Link>
-            </AboutField>
-          </Box>
+          {!isMcaApi && (
+            <>
+              <Box mt='5'>
+                <AboutField label="Azure Artifact" gridSizes={{ xs: 12 }}>
+                  <Link to={artifactUrl} target="_blank" rel="noopener noreferrer">
+                    <ComponentDisplayName text={artifactText} type='azdo' />
+                  </Link>
+                </AboutField>
+              </Box>
+              <Box mt='5'>
+                <AboutField label="Maven Snippet" gridSizes={{ xs: 4 }}>
+                  <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
+                </AboutField>
+              </Box>
+              <Box mt='5'>
+                <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
+                  <Link to={platformUrl} target="_blank" rel="noopener noreferrer">
+                    <ComponentDisplayName text={platformUrl} type='url' />
+                  </Link>
+                </AboutField>
+              </Box>
+            </>
+          )}
+          {isMcaApi && (
+              <Box mt='5'>
+                <AboutField label="MCA Operation" gridSizes={{ xs: 12 }}>
+                  <Link to={`/mca/components/${entity.metadata['api-name']}`} >
+                    <ComponentDisplayName text={`${entity.metadata['api-name']}`} type='api' />
+                  </Link>
+                </AboutField>
+              </Box>
+          )}
         </InfoCard>
       </TabbedLayout.Route>
     </TabbedLayout>

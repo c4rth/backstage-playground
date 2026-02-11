@@ -64,10 +64,10 @@ export const ReadmeCard = (props: Props) => {
   const { entity } = useEntity();
   const { loading, error, item: value } = useReadme(entity);
 
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
+  if (error) {
     return <ReadmeCardError error={error} />;
+  } else if (loading) {
+    return <Progress />;
   }
 
   return (

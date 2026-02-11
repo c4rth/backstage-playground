@@ -21,13 +21,9 @@ export const CustomDocsReaderPage = (props: CustomDocsReaderPageProps) => {
 
     const { entity, loading, error } = useCatalogEntity(entityRef);
 
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
-
-    if (loading) {
-        return <Progress />
-    }
+    if (error) return <ResponseErrorPanel error={error} />;
+    if (loading) return <Progress />;
+    
     const techdocsRef = entity?.metadata.annotations?.['backstage.io/techdocs-ref'];
     const isExternal = isExternalUrl(techdocsRef);
     const url = extractUrl(techdocsRef);

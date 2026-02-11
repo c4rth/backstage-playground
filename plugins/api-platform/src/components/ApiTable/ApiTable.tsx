@@ -8,6 +8,7 @@ import {
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   ANNOTATION_API_NAME,
+  ANNOTATION_API_TYPE,
   ApiDefinitionsListRequest,
   OwnershipType,
 } from '@internal/plugin-api-platform-common';
@@ -23,6 +24,7 @@ type TableRow = {
   id: number;
   name: string;
   description: string;
+  type: string;
   system: string;
   entityRef: string;
 };
@@ -35,6 +37,7 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
   name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
   description: entity.metadata.description ?? '',
+  type: entity.metadata[ANNOTATION_API_TYPE]?.toString() ?? 'osdfv2',
   system: entity.spec?.system?.toString() ?? '-',
   entityRef: stringifyEntityRef(entity),
 });
@@ -88,8 +91,14 @@ const COLUMNS: TableColumn<TableRow>[] = [
   {
     title: 'Description',
     field: 'description',
-    width: '50%',
+    width: '45%',
     render: ({ description }: TableRow) => <OverflowTooltip text={description} line={2} />,
+  },
+  {
+    title: 'Type',
+    field: 'type',
+    width: '5%',
+    render: ({ type }: TableRow) => <OverflowTooltip text={type} line={2} />,
   },
   {
     title: 'System',

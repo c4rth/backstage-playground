@@ -69,9 +69,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
   private async fetchJson<T>(url: URL): Promise<T> {
     try {
       const response = await this.fetchApi.fetch(url);
-
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const errorBody = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorBody || response.statusText  }`);
       }
       return await response.json();
     } catch (error) {
@@ -127,7 +127,6 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     const baseUrl = await this.getMcaBaseUrl();
     const encodedComponent = encodeURIComponent(component.trim());
     const url = new URL(`${baseUrl}/mca/components/${encodedComponent}`);
-    
     return this.fetchJson<McaComponent>(url);
   }
 

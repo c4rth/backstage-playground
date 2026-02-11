@@ -24,11 +24,8 @@ export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(
   
   const componentType = getComponentType(mca.component);
 
-  if (loading || (!data && !error)) return <Progress />;
-  if (error) {
-    console.error(error);
-    return <ResponseErrorPanel error={error} />;
-  }
+  if (error) return <ResponseErrorPanel error={error} />;
+  if (loading || !data) return <Progress />;
 
   switch (componentType) {
     case 'operation':
