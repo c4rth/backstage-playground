@@ -19,6 +19,7 @@ import {
   ApiDefinitionsOptions,
   ApiDefinitionsListRequest,
   OwnershipType,
+  ApiType,
   CATALOG_SPEC_OWNER,
   ANNOTATION_API_TYPE,
   CATALOG_METADATA_API_TYPE
@@ -168,6 +169,7 @@ async function fetchApiEntities(
   auth: AuthService,
   fields: string[],
   ownership: OwnershipType,
+  apiType: ApiType,
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
@@ -194,16 +196,25 @@ async function fetchApiEntities(
       : Promise.resolve([] as string[]),
   ]);
 
+  let filteredEntities = entities;
+  // Filter by API type if needed
+  if (apiType !== 'all') {
+    filteredEntities = filteredEntities.filter(entity => {
+      const type = entity.metadata[ANNOTATION_API_TYPE]?.toString() || 'osdfv2';
+      return type === apiType;
+    });
+  }
+
   // Filter by ownership if needed
   if (ownership === 'owned' && userEntityRef && userGroupRefs.length > 0) {
     const groupSet = new Set(userGroupRefs);
-    return entities.filter(entity => {
+    filteredEntities = filteredEntities.filter(entity => {
       const owner = entity.spec?.owner?.toString() || '';
       return groupSet.has(owner);
     });
   }
 
-  return entities;
+  return filteredEntities;
 }
 
 export async function apiService(options: ApiServiceOptions): Promise<ApiService> {
@@ -212,12 +223,13 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
 
   return {
 
-    async getApisCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
+    async  getApisCount(ownership: OwnershipType, apiType: ApiType, userEntityRef: string | undefined): Promise<number> {
       const entities = await fetchApiEntities(
         catalogClient,
         auth,
         [CATALOG_METADATA_API_NAME, CATALOG_SPEC_SYSTEM, CATALOG_SPEC_OWNER],
         ownership,
+        apiType,
         userEntityRef,
       );
       // Inline counting to avoid function call overhead
@@ -247,6 +259,7 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
           CATALOG_SPEC_OWNER,
         ],
         request.ownership ?? 'all',
+        request.apiType ?? 'all',
         request.userEntityRef,
         getOrder(request.orderBy),
       );

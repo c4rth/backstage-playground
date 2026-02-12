@@ -10,15 +10,17 @@ import {
   ANNOTATION_API_NAME,
   ANNOTATION_API_TYPE,
   ApiDefinitionsListRequest,
+  ApiType,
   OwnershipType,
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { useState } from 'react';
-import { Query } from '@material-table/core';
+import { Query, MTableAction } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { Box, Flex } from '@backstage/ui';
+import { Chip } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number;
@@ -32,6 +34,7 @@ type TableRow = {
 const PAGE_SIZE = 20;
 const STORAGE_OWNERSHIP_KEY = 'apisTablePageOwner';
 const STORAGE_SEARCH_KEY = 'apisTablePageSearch';
+const STORAGE_TYPE_KEY = 'apisTablePageType';
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
@@ -45,7 +48,8 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
   query: Query<TableRow>,
-  ownership: OwnershipType
+  ownership: OwnershipType,
+  apiType: ApiType
 ) => {
   const page = query.page ?? 0;
   const pageSize = query.pageSize ?? PAGE_SIZE;
@@ -55,24 +59,25 @@ const getData = async (
     search: query.search,
     orderBy: query.orderBy
       ? {
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as ApiDefinitionsListRequest['orderBy']
+        field: query.orderBy.field,
+        direction: query.orderDirection,
+      } as ApiDefinitionsListRequest['orderBy']
       : undefined,
     ownership,
+    apiType,
   });
 
   return result
     ? {
-        data: result.items.map(toEntityRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toEntityRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 };
 
 const COLUMNS: TableColumn<TableRow>[] = [
@@ -116,6 +121,10 @@ const COLUMNS: TableColumn<TableRow>[] = [
   },
 ];
 
+function getTitle(ownership: OwnershipType, apiType: ApiType, count: number): string {
+  return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : apiType.toUpperCase() + ' '} APIs (${count})`;
+} 
+
 export const ApiTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
@@ -123,6 +132,9 @@ export const ApiTable = () => {
   const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(
     () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+  );
+  const [selectedType, setSelectedType] = useState<ApiType>(
+    () => (sessionStorage.getItem(STORAGE_TYPE_KEY) ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as ApiType) : 'all')
   );
 
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
@@ -134,7 +146,7 @@ export const ApiTable = () => {
       sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
     }
     try {
-      const result = await getData(apiPlatformApi, query, ownership);
+      const result = await getData(apiPlatformApi, query, ownership, selectedType);
       setCountRows(result.totalCount);
       return result;
     } catch (e) {
@@ -153,7 +165,7 @@ export const ApiTable = () => {
 
   return (
     <Table<TableRow>
-      key={ownership}
+      key={`${ownership}-${selectedType}`}
       columns={COLUMNS}
       options={{
         search: true,
@@ -168,11 +180,63 @@ export const ApiTable = () => {
       title={
         <Flex gap="0" align="center">
           <Box mr="1" />
-          {ownership === 'owned' ? 'Owned' : 'All'} APIs ({countRows})
+          {getTitle(ownership, selectedType, countRows)}
           <Box ml="4" />
           <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
         </Flex>
       }
+      actions={[
+        {
+          isFreeAction: true,
+          onClick: () => null,
+          // @ts-ignore
+          component: (
+            <Box ml="4">
+              <Chip
+                label="All APIs"
+                color={selectedType === 'all' ? '#1976d2' : 'default'}
+                onClick={() => setSelectedType('all')}
+              />
+            </Box>
+          )
+        },
+        {
+          isFreeAction: true,
+          onClick: () => null,
+          // @ts-ignore
+          component: (
+            <Box ml="2">
+              <Chip
+                label="OSDFv2"
+                color={selectedType === 'osdfv2' ? '#1976d2' : 'default'}
+                onClick={() => setSelectedType('osdfv2')}
+              />
+            </Box>
+          ),
+        },
+        {
+          isFreeAction: true,
+          onClick: () => null,
+          // @ts-ignore
+          component: (
+            <Box mx="2">
+              <Chip
+                label="MCA"
+                color={selectedType === 'mca' ? '#1976d2' : 'default'}
+                onClick={() => setSelectedType('mca')}
+              />
+            </Box>
+          ),
+        },
+      ]}
+      components={{
+        Action: (props: any) => {
+          if (props.action.component) {
+            return props.action.component;
+          }
+          return <MTableAction {...props} />;
+        },
+      }}
       data={fetchData}
     />
   );

@@ -1,4 +1,5 @@
 import { InputError } from '@backstage/errors';
+import { ApiType } from '@internal/plugin-api-platform-common';
 
 export const parseOrderByParam = <T extends readonly string[]>(
   str: unknown,
@@ -23,9 +24,16 @@ export const parseSearchParam = (str: unknown): string | undefined => {
   return str;
 };
 
-export const parseTypeParam = (str: unknown): 'all' | 'owned' | undefined => {
+export const parseOwnershipParam = (str: unknown): 'all' | 'owned' | undefined => {
   if (str === undefined) return undefined;
   if (typeof str !== 'string') throw new InputError('invalid type query, must be a string');
   if (!['all', 'owned'].includes(str)) throw new InputError("invalid type query, must be 'all' or 'owned'");
   return str as 'all' | 'owned';
+};
+
+export const parseApiTypeParam = (str: unknown): ApiType | undefined => {
+  if (str === undefined) return undefined;
+  if (typeof str !== 'string') throw new InputError('invalid type query, must be a string');
+  if (!['osdfv2', 'all', 'mca'].includes(str)) throw new InputError("invalid type query, must be 'osdfv2', 'all' or 'mca'");
+  return str as ApiType;
 };

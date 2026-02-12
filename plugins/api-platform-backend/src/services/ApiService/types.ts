@@ -2,6 +2,7 @@ import {
   ApiDefinitionListResult,
   ApiDefinitionsListRequest,
   ApiRelationDefinition,
+  ApiType,
   ApiVersionDefinition,
   OwnershipType
 } from "@internal/plugin-api-platform-common";
@@ -10,7 +11,7 @@ export type RelationType = 'provider' | 'consumer';
 
 export interface ApiService {
 
-  getApisCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number>;
+  getApisCount(ownership: OwnershipType, apiType: ApiType, userEntityRef: string | undefined): Promise<number>;
 
   listApis(request: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult>;
 

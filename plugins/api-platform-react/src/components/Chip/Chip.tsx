@@ -13,7 +13,9 @@ export interface ChipProps {
   /** Callback fired when chip is clicked */
   onClick?: () => void;
   /** The color of the chip */
-  color?: 'default' | 'primary' | 'secondary';
+  color?: 'default' | 'primary' | 'secondary' | string;
+  /** The text color of the chip */
+  textColor?: string;
   /** The size of the chip */
   size?: 'small' | 'medium';
   /** The variant to use */
@@ -32,6 +34,7 @@ export interface ChipProps {
 
 const getChipStyles = (
   color: ChipProps['color'],
+  textColor: ChipProps['textColor'] | undefined,
   variant: ChipProps['variant'],
   size: ChipProps['size'],
   clickable: boolean,
@@ -71,12 +74,15 @@ const getChipStyles = (
     } else if (color === 'secondary') {
       baseStyles.backgroundColor = 'var(--bui-bg-secondary)';
       baseStyles.color = 'var(--bui-black)';
-    } else {
+    } else if (color === 'default') {
       baseStyles.backgroundColor = 'var(--bui-bg-subtle, #e0e0e0)';
       baseStyles.color = 'var(--bui-black)';
+    } else {
+      baseStyles.backgroundColor = color;
+      baseStyles.color = textColor || '#fff';
     }
   } else {
-    // outlined variant
+    // outlined variant 
     baseStyles.border = '1px solid #0000003b';
     /*
     if (color === 'primary') {
@@ -159,6 +165,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       onDelete,
       onClick,
       color = 'default',
+      textColor = undefined,
       size = 'medium',
       variant = 'filled',
       clickable = false,
@@ -173,7 +180,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     const isDeletable = !!onDelete;
 
     const chipStyles = {
-      ...getChipStyles(color, variant, size, isClickable, disabled),
+      ...getChipStyles(color, textColor, variant, size, isClickable, disabled),
       ...style,
     };
 
