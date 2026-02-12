@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Flex } from '@backstage/ui';
 import { ClearValueButton, PasteFromClipboardButton, SampleButton } from '../../Buttons';
 import jsonata from 'jsonata';
-import Editor from '@monaco-editor/react';
+import CodeMirror from '@uiw/react-codemirror';
+import { json } from '@codemirror/lang-json';
 import { useResizable } from './useResizable';
 import { styles, dividerBaseStyle } from './styles';
 import { sampleInput, sampleExpression } from './constants';
-import registerJsonata from './JSONataMode';
+import { jsonataLanguage } from './jsonata-lang';
 
 export const JSONataTester = () => {
   const [input, setInput] = useState('');
@@ -16,6 +17,9 @@ export const JSONataTester = () => {
 
   const mainContainerRef = useRef<HTMLDivElement | null>(null);
   const rightContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const jsonExtensions = useMemo(() => [json()], []);
+  const jsonataExtensions = useMemo(() => [jsonataLanguage], []);
 
   // Layout State
   const { percentage: splitX, onMouseDown: onDragX } = useResizable('horizontal', 50, mainContainerRef);
@@ -29,14 +33,6 @@ export const JSONataTester = () => {
       const data = JSON.parse(jsonStr);
       const compiled = jsonata(expr);
       let pathresult = await compiled.evaluate(data);
-      /*
-      // Strip internal JSONata properties (e.g. 'sequence') via JSON round-trip
-      if (typeof res === 'object' && res !== null) {
-        const cleaned = JSON.parse(JSON.stringify(res));
-        setResult(cleaned);
-      } else {
-        setResult("** no match **");
-      }*/
       if (typeof pathresult === 'undefined') {
         pathresult = '** no match **';
       } else {
@@ -78,21 +74,17 @@ export const JSONataTester = () => {
         {/* Left Panel: Input */}
         <div style={styles.panel}>
           <div style={styles.panelContent}>
-            <Editor
+            <CodeMirror
               width="100%"
               height="100%"
-              language="json"
-              theme="jsonataTheme"
+              style={{ height: '100%' }}
               value={input}
-              options={{
-                lineNumbers: 'off',
-                minimap: { enabled: false },
-                automaticLayout: true,
-                contextmenu: false,
-                scrollBeyondLastLine: false,
+              basicSetup={{
+                lineNumbers: true,
+                syntaxHighlighting: true,
               }}
               onChange={newValue => setInput(newValue ?? '')}
-              beforeMount={registerJsonata}
+              extensions={jsonExtensions}
             />
           </div>
         </div>
@@ -111,21 +103,17 @@ export const JSONataTester = () => {
           {/* Top Right: Expression */}
           <div style={styles.panel}>
             <div style={styles.panelContent}>
-              <Editor              
+              <CodeMirror
                 width="100%"
                 height="100%"
-                language="jsonata"
-                theme='jsonataTheme'
+                style={{ height: '100%' }}
                 value={expression}
-                options={{
-                  lineNumbers: 'off',
-                  minimap: { enabled: false },
-                  automaticLayout: true,
-                  contextmenu: false,
-                  scrollBeyondLastLine: false,
-                }}
                 onChange={newValue => setExpression(newValue ?? '')}
-                beforeMount={registerJsonata}
+                basicSetup={{
+                  lineNumbers: true,
+                  syntaxHighlighting: true,
+                }}
+                extensions={jsonataExtensions}
               />
             </div>
           </div>
@@ -144,17 +132,15 @@ export const JSONataTester = () => {
               {error ? (
                 <Box style={{ color: '#f44336' }}>{error}</Box>
               ) :
-                <Editor
-                  language="json"
-                  theme="jsonataTheme"
+                <CodeMirror
                   value={result}
-                  options={{
-                    lineNumbers: 'off',
-                    minimap: { enabled: false },
-                    automaticLayout: true,
-                    contextmenu: false,
-                    scrollBeyondLastLine: false,
-                    readOnly: true,
+                  height="100%"
+                  style={{ height: '100%' }}
+                  readOnly={true}
+                  extensions={jsonExtensions}
+                  basicSetup={{
+                    lineNumbers: true,
+                    syntaxHighlighting: true,
                   }}
                 />
               }
@@ -169,18 +155,3 @@ export const JSONataTester = () => {
 };
 
 export default JSONataTester;
-
-/*
-<Editor
-                  language="json"
-                  value={result}
-                  options={{
-                    lineNumbers: 'off',
-                    minimap: { enabled: false },
-                    automaticLayout: true,
-                    contextmenu: false,
-                    scrollBeyondLastLine: false,
-                    readOnly: true,
-                  }}
-                />
-                */
