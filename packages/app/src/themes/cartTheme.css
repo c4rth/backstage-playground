@@ -33,17 +33,17 @@
   --bui-border: #E6E6E6;
   --bui-ring: #FFFBCC;
 
-  --belui-chip-bg-color1: #C30045;
-  --belui-chip-bg-color2: #E11D5E;
-  --belui-chip-bg-color3: #DD9800;
-  --belui-chip-bg-color4: #3A6EA5;
-  --belui-chip-bg-color5: #2F8F83;
+--belui-chip-bg-color1: #DFEAF4;
+--belui-chip-bg-color2: #DFE8E2;
+--belui-chip-bg-color3: #E6E0EC;
+--belui-chip-bg-color4: #E8E4DC;
+--belui-chip-bg-color5: #DEE3E8;
 
-  --belui-chip-fg-color1: #F8F8F8;
-  --belui-chip-fg-color2: #F8F8F8;
-  --belui-chip-fg-color3: #F8F8F8;
-  --belui-chip-fg-color4: #F8F8F8;
-  --belui-chip-fg-color5: #F8F8F8;
+--belui-chip-fg-color1: #1B3A5C;
+--belui-chip-fg-color2: #1E3B2B;
+--belui-chip-fg-color3: #3B2858;
+--belui-chip-fg-color4: #4A3F31;
+--belui-chip-fg-color5: #2D3F4F;
   
   .custom-bui-TableRow {
     border-bottom: 1px solid var(--bui-border);
