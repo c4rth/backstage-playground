@@ -33,18 +33,18 @@
   --bui-border: #E6E6E6;
   --bui-ring: #FFFBCC;
 
---belui-chip-bg-color1: #DFEAF4;
---belui-chip-bg-color2: #DFE8E2;
---belui-chip-bg-color3: #E6E0EC;
---belui-chip-bg-color4: #E8E4DC;
---belui-chip-bg-color5: #DEE3E8;
+  --belui-chip-bg-color1: #C9D6FF;
+  --belui-chip-bg-color2: #FFD6E8;
+  --belui-chip-bg-color3: #CDEDE4;
+  --belui-chip-bg-color4: #E6D6FF;
+  --belui-chip-bg-color5: #DCE3EA;
 
---belui-chip-fg-color1: #1B3A5C;
---belui-chip-fg-color2: #1E3B2B;
---belui-chip-fg-color3: #3B2858;
---belui-chip-fg-color4: #4A3F31;
---belui-chip-fg-color5: #2D3F4F;
-  
+  --belui-chip-fg-color1: #1C2F8A;
+  --belui-chip-fg-color2: #7A123E;
+  --belui-chip-fg-color3: #0F4A3C;
+  --belui-chip-fg-color4: #4A1C8A;
+  --belui-chip-fg-color5: #1F2933;
+
   .custom-bui-TableRow {
     border-bottom: 1px solid var(--bui-border);
     transition: color 0.2s ease-in-out;
