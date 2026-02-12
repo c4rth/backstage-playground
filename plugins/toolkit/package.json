@@ -40,7 +40,7 @@
     "pkijs": "^3.2.5",
     "react-aria-components": "^1.13.0",
     "react-dom": "^18.2.0",
-    "react-json-view": "^1.21.3",
+    "react-json-view": "^1.27.1",
     "react-router-dom": "^6.3.0"
   },
   "peerDependencies": {

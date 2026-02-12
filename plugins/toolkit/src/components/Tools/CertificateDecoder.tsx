@@ -110,11 +110,10 @@ export const CertificateDecoder = () => {
     return (
       <Box style={{
         width: '100%',
-        height: '100%', 
-        display: 'flex', 
+        height: '100%',
+        display: 'flex',
         flexDirection: 'column'
       }}>
-        <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>Decoded Certificate</Text>
         {props.info ? (
           <ReactJson
             name={false}
@@ -126,9 +125,24 @@ export const CertificateDecoder = () => {
               flex: 1,
               backgroundColor: 'var(--bui-bg-surface-1)'
             }}
+            enableClipboard={true}
           />
         ) : (
-          <Box><i>No Certificate data available</i></Box>
+           <div
+            style={{
+              flex: 1,
+              overflow: 'auto',
+              padding: '8px',
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              border: '1px solid var(--bui-gray-4)',
+              borderRadius: '4px',
+              backgroundColor: 'var(--bui-bg-surface-1)',
+              color: 'var(--bui-fg-default)',
+            }}
+          >
+            <Box style={{ color: 'var(--bui-fg-muted)' }}><i>No Certificate data available</i></Box>
+          </div>
         )}
       </Box>
     );

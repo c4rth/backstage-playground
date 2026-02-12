@@ -50,7 +50,7 @@ export const DefaultEditor = (props: Props) => {
 
     return (
         <Flex direction="column" style={{ height: '100%' }}>
-            <Flex mb='4' align='center' style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Flex align='center' style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                     {modes && modes.length > 0 && (
                         <>
@@ -80,7 +80,6 @@ export const DefaultEditor = (props: Props) => {
                 >
                     {leftContent ?? (
                         <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Input'>
-                            <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{inputLabel}</Text>
                             <TextArea
                                 value={input}
                                 onChange={e => setInput(e.target.value)}
@@ -107,7 +106,6 @@ export const DefaultEditor = (props: Props) => {
                     style={{ padding: '8px !important', display: 'flex', flexDirection: 'column', width: '50%' }}>
                     {rightContent ?? (
                         <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Output'>
-                            <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{outputLabel}</Text>
                             <TextArea
                                 value={output || ''}
                                 rows={minRows}

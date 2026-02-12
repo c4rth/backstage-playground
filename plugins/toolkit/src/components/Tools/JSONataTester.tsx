@@ -5,51 +5,65 @@ import { ClearValueButton, PasteFromClipboardButton, SampleButton } from '../But
 import jsonata from 'jsonata';
 import ReactJson from 'react-json-view';
 
-/* ---- Resizable divider ---- */
-const DIVIDER_SIZE = 2;
+/* ---- Resizable divider (preserved styles) ---- */
+const DIVIDER_SIZE = 4; // Increased grab area slightly for better UX
 
 const dividerBaseStyle: React.CSSProperties = {
   flexShrink: 0,
   background: 'var(--bui-gray-4)',
   borderRadius: '3px',
   transition: 'background 0.15s',
+  position: 'relative',
+  zIndex: 10,
 };
 
+/* ---- Simplified Resizable Hook (returns percentages for Grid) ---- */
 const useResizable = (
   direction: 'horizontal' | 'vertical',
-  initialFraction: number,
+  initialPercentage: number, // 0 to 100
   containerRef: React.RefObject<HTMLDivElement | null>,
+  minPercentage = 15,
+  maxPercentage = 85,
 ) => {
-  const [fraction, setFraction] = useState(initialFraction);
+  const [percentage, setPercentage] = useState(initialPercentage);
   const dragging = useRef(false);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
       dragging.current = true;
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';
+
       const move = (ev: MouseEvent) => {
         if (!dragging.current || !containerRef.current) return;
         const rect = containerRef.current.getBoundingClientRect();
-        let f: number;
+        let p: number;
+
         if (direction === 'horizontal') {
-          f = (ev.clientX - rect.left) / rect.width;
+          p = ((ev.clientX - rect.left) / rect.width) * 100;
         } else {
-          f = (ev.clientY - rect.top) / rect.height;
+          p = ((ev.clientY - rect.top) / rect.height) * 100;
         }
-        setFraction(Math.min(0.85, Math.max(0.15, f)));
+
+        setPercentage(Math.min(maxPercentage, Math.max(minPercentage, p)));
       };
+
       const up = () => {
         dragging.current = false;
+        document.body.style.userSelect = '';
+        document.body.style.cursor = '';
         window.removeEventListener('mousemove', move);
         window.removeEventListener('mouseup', up);
       };
+
       window.addEventListener('mousemove', move);
       window.addEventListener('mouseup', up);
     },
-    [direction, containerRef],
+    [direction, containerRef, minPercentage, maxPercentage],
   );
 
-  return { fraction, onMouseDown };
+  return { percentage, onMouseDown };
 };
 
 const sampleInput = JSON.stringify(
@@ -63,14 +77,14 @@ const sampleInput = JSON.stringify(
     },
   },
   null,
-  2,  
+  2,
 );
 
 const sampleExpression = 'account.order.product.price';
 
 const monoStyle: React.CSSProperties = {
   width: '100%',
-  flex: 1,
+  height: '100%',
   padding: '8px',
   fontFamily: 'monospace',
   fontSize: '14px',
@@ -80,6 +94,64 @@ const monoStyle: React.CSSProperties = {
   backgroundColor: 'var(--bui-bg-surface-1)',
   color: 'var(--bui-fg-default)',
   resize: 'none',
+  outline: 'none',
+};
+
+const styles = {
+  container: { height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' as const },
+  toolbar: { padding: '8px', borderBottom: '1px solid var(--bui-gray-4)', flexShrink: 0 },
+
+  // Main Grid Layout for Left/Right split
+  mainGrid: (percentage: number) => ({
+    display: 'grid',
+    gridTemplateColumns: `${percentage}% ${DIVIDER_SIZE}px minmax(0, 1fr)`,
+    flex: 1,
+    minHeight: 0,
+    width: '100%',
+    overflow: 'hidden',
+  }),
+
+  // Right Grid Layout for Top/Bottom split
+  rightGrid: (percentage: number) => ({
+    display: 'grid',
+    gridTemplateRows: `${percentage}% ${DIVIDER_SIZE}px minmax(0, 1fr)`,
+    height: '100%',
+    width: '100%',
+    minHeight: 0,
+    overflow: 'hidden',
+  }),
+
+  panel: {
+    overflow: 'hidden',
+    position: 'relative' as const,
+    height: '100%',
+    width: '100%',
+    minWidth: 0,
+    minHeight: 0,
+  },
+
+  panelContent: {
+    position: 'absolute' as const,
+    top: 0, left: 0, right: 0, bottom: 0,
+    overflow: 'hidden',
+  },
+
+  resultBox: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflow: 'auto',
+    padding: '8px',
+    fontFamily: 'monospace',
+    fontSize: '14px',
+    border: '1px solid var(--bui-gray-4)',
+    borderRadius: '4px',
+    backgroundColor: 'var(--bui-bg-surface-1)',
+    color: 'var(--bui-fg-default)',
+    boxSizing: 'border-box' as const,
+  }
 };
 
 export const JSONataTester = () => {
@@ -88,10 +160,12 @@ export const JSONataTester = () => {
   const [result, setResult] = useState<any>(undefined);
   const [error, setError] = useState<string | null>(null);
 
-  const hContainerRef = useRef<HTMLDivElement | null>(null);
-  const vContainerRef = useRef<HTMLDivElement | null>(null);
-  const { fraction: hFraction, onMouseDown: onHDividerDown } = useResizable('horizontal', 0.5, hContainerRef);
-  const { fraction: vFraction, onMouseDown: onVDividerDown } = useResizable('vertical', 0.35, vContainerRef);
+  const mainContainerRef = useRef<HTMLDivElement | null>(null);
+  const rightContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Layout State
+  const { percentage: splitX, onMouseDown: onDragX } = useResizable('horizontal', 50, mainContainerRef);
+  const { percentage: splitY, onMouseDown: onDragY } = useResizable('vertical', 35, rightContainerRef, 10, 50);
 
   const evaluate = useCallback(async (jsonStr: string, expr: string) => {
     setError(null);
@@ -99,9 +173,10 @@ export const JSONataTester = () => {
     if (!jsonStr || !expr) return;
     try {
       const data = JSON.parse(jsonStr);
-      const compiled = jsonata(expr);
-      const res = await compiled.evaluate(data);
-      setResult(res);
+      const expression = jsonata(expr);
+      const res = await expression.evaluate(data);
+      // Strip internal JSONata properties (e.g. 'sequence') via JSON round-trip
+      setResult(JSON.parse(JSON.stringify(res)));
     } catch (e: any) {
       setError(e.message ?? String(e));
     }
@@ -117,9 +192,9 @@ export const JSONataTester = () => {
   }, []);
 
   return (
-    <Flex direction="column" style={{ height: '100%' }}>
+    <div style={styles.container}>
       {/* Toolbar */}
-      <Flex mb="4" align="center" style={{ alignItems: 'center' }}>
+      <Flex align="center" style={{ alignItems: 'center' }}>
         <Box>
           <ClearValueButton setValue={(v: string) => { setInput(v); setExpression(v); }} />
           <PasteFromClipboardButton setInput={setInput} />
@@ -127,84 +202,69 @@ export const JSONataTester = () => {
         </Box>
       </Flex>
 
-      {/* Main 3-panel layout */}
-      <div ref={hContainerRef} style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        {/* Left panel – JSON input (full height) */}
-        <div style={{ width: `calc(${hFraction * 100}% - ${DIVIDER_SIZE / 2}px)`, display: 'flex', flexDirection: 'column' }}>
-          <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label="JSON Input">
-            <TextArea
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              rows={20}
-              style={monoStyle}
-            />
-          </TextField>
-        </div>
+      {/* Main Split (Left vs Right) */}
+      <div ref={mainContainerRef} style={styles.mainGrid(splitX)}>
 
-        {/* Horizontal divider */}
-        <div
-          onMouseDown={onHDividerDown}
-          style={{
-            ...dividerBaseStyle,
-            width: DIVIDER_SIZE,
-            cursor: 'col-resize',
-            margin: '0 2px',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-gray-6)')}
-          onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-gray-4)')}
-        />
-
-        {/* Right panels – expression (top) + result (bottom) */}
-        <div ref={vContainerRef} style={{ width: `calc(${(1 - hFraction) * 100}% - ${DIVIDER_SIZE / 2}px)`, display: 'flex', flexDirection: 'column' }}>
-          {/* Right top – JSONata expression */}
-          <div style={{ height: `calc(${vFraction * 100}% - ${DIVIDER_SIZE / 2}px)`, display: 'flex', flexDirection: 'column' }}>
-            <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label="JSONata Expression">
+        {/* Left Panel: Input */}
+        <div style={styles.panel}>
+          <div style={styles.panelContent}>
+            <TextField aria-label="JSON Input" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
               <TextArea
-                value={expression}
-                onChange={e => setExpression(e.target.value)}
-                rows={5}
+                value={input}
+                onChange={e => setInput(e.target.value)}
                 style={monoStyle}
               />
             </TextField>
           </div>
+        </div>
 
-          {/* Vertical divider */}
+        {/* Vertical Grabber */}
+        <div
+          onMouseDown={onDragX}
+          style={{ ...dividerBaseStyle, cursor: 'col-resize' }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-gray-6)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-gray-4)')}
+        />
+
+        {/* Right Panel: Split (Top vs Bottom) */}
+        <div ref={rightContainerRef} style={styles.rightGrid(splitY)}>
+
+          {/* Top Right: Expression */}
+          <div style={styles.panel}>
+            <div style={styles.panelContent}>
+              <TextField aria-label="JSONata Expression" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <TextArea
+                  value={expression}
+                  onChange={e => setExpression(e.target.value)}
+                  style={monoStyle}
+                />
+              </TextField>
+            </div>
+          </div>
+
+          {/* Horizontal Grabber */}
           <div
-            onMouseDown={onVDividerDown}
-            style={{
-              ...dividerBaseStyle,
-              height: DIVIDER_SIZE,
-              cursor: 'row-resize',
-              margin: '2px 0',
-            }}
+            onMouseDown={onDragY}
+            style={{ ...dividerBaseStyle, cursor: 'row-resize' }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-gray-6)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-gray-4)')}
           />
 
-          {/* Right bottom – Result */}
-          <div style={{ height: `calc(${(1 - vFraction) * 100}% - ${DIVIDER_SIZE / 2}px)`, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-            <div
-              style={{
-                flex: 1,
-                overflow: 'auto',
-                padding: '8px',
-                fontFamily: 'monospace',
-                fontSize: '14px',
-                border: '1px solid var(--bui-gray-4)',
-                borderRadius: '4px',
-                backgroundColor: 'var(--bui-bg-surface-1)',
-                color: 'var(--bui-fg-default)',
-              }}
-            >
+          {/* Bottom Right: Result */}
+          <div style={styles.panel}>
+            <div style={styles.resultBox}>
               {error ? (
                 <Box style={{ color: '#f44336' }}>{error}</Box>
               ) : result !== undefined ? (
                 typeof result === 'object' && result !== null ? (
-                  <ReactJson
-                    name={false}
-                    src={result}
-                    style={{ backgroundColor: 'transparent' }}
-                  />
+                  <>
+                    <ReactJson
+                      name={false}
+                      src={result}
+                      style={{ backgroundColor: 'transparent' }}
+                      enableClipboard={true}
+                    />
+                  </>
                 ) : (
                   <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{JSON.stringify(result, null, 2)}</pre>
                 )
@@ -213,9 +273,11 @@ export const JSONataTester = () => {
               )}
             </div>
           </div>
+
         </div>
+
       </div>
-    </Flex>
+    </div>
   );
 };
 
