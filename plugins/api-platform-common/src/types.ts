@@ -22,11 +22,13 @@ export type ApiRelationDefinition = {
 export type ApiDefinitionsListFields =
   | 'name'
   | 'description'
-  | 'system';
+  | 'system'
+  | 'type';
 
 export const APIDEFINITIONS_FIELDS = [
   'name',
   'description',
+  'type',
   'system'] as const;
 
 export type ApiDefinitionListResult = {
