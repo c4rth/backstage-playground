@@ -31,6 +31,7 @@
     "@backstage/ui": "^0.11.2",
     "@faker-js/faker": "^10.1.0",
     "@internal/plugin-api-platform-react": "workspace:^",
+    "@monaco-editor/react": "^4.7.0",
     "@remixicon/react": "^4.6.0",
     "asn1js": "^3.0.6",
     "cronstrue": "^2.61.0",
@@ -40,7 +41,7 @@
     "pkijs": "^3.2.5",
     "react-aria-components": "^1.13.0",
     "react-dom": "^18.2.0",
-    "react-json-view": "^1.27.1",
+    "react-json-view": "^1.21.3",
     "react-router-dom": "^6.3.0"
   },
   "peerDependencies": {

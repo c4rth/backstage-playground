@@ -6,7 +6,7 @@ const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
 const CertificateDecoder = lazy(() => import('../Tools/CertificateDecoder'));
 const CronDecoder = lazy(() => import('../Tools/CronDecoder'));
 const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
-const JSONataTester = lazy(() => import('../Tools/JSONataTester'));
+const JSONataTester = lazy(() => import('../Tools/jsonata/JSONataTester'));
 
 export const defaultTools: Tool[] = [
      {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DefaultEditor } from '../DefaultEditor';
-import { Box, Text } from '@backstage/ui';
+import { Box } from '@backstage/ui';
 import * as asn1js from "asn1js";
 import { AttributeTypeAndValue, Certificate } from "pkijs";
 import ReactJson from 'react-json-view';

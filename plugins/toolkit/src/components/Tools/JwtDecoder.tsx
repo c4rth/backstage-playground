@@ -4,7 +4,7 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import ReactJson from 'react-json-view'
-import { Box, Text } from '@backstage/ui';
+import { Box } from '@backstage/ui';
 
 const BASE64_REGEX = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 const exampleJwt =

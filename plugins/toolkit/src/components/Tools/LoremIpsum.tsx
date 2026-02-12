@@ -4,7 +4,7 @@ import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
 import { TextField, TextArea } from 'react-aria-components';
 import { SelectItem, Select, } from '@backstage/core-components';
 import { RiEditBoxLine } from '@remixicon/react';
-import { Button, Flex, Grid, Text } from '@backstage/ui';
+import { Button, Flex, Grid } from '@backstage/ui';
 
 const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * max) + min;

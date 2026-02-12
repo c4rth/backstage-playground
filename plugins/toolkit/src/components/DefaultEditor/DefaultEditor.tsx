@@ -6,7 +6,7 @@ import {
     SampleButton,
 } from '../Buttons';
 import { TextField, TextArea, } from 'react-aria-components';
-import { Box, Flex, Grid , Text} from '@backstage/ui';
+import { Box, Flex, Grid } from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
 
 type Props = {
@@ -15,8 +15,6 @@ type Props = {
     output?: string;
     mode?: string;
     minRows?: number;
-    inputLabel?: string;
-    outputLabel?: string;
     setMode?: (value: string) => void;
     modes?: Array<string>;
     leftContent?: ReactElement;
@@ -34,8 +32,6 @@ export const DefaultEditor = (props: Props) => {
         input,
         setInput,
         output,
-        inputLabel = 'Input',
-        outputLabel = 'Output',
         mode,
         setMode,
         modes,
