@@ -83,8 +83,8 @@ export const McaComponentExplorerPage = () => {
             <Grid.Item>
               <Flex style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                 <Box p="4" style={{ borderRadius: '10px', border: '1px solid var(--bui-border-warning)', backgroundColor: 'rgb(255, 172, 51, 0.5)' }}>
-                  <Text variant="title-x-small">
-                    Only MCA components promoted to PRD or with a P &ge; current PRD P are shown.
+                  <Text variant="body-large">
+                    Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible.
                   </Text>
                 </Box>
               </Flex>

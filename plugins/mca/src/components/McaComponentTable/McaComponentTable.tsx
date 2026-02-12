@@ -42,7 +42,7 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
             ),
         },
         {
-            title: 'PRD',
+            title: 'Baseline',
             width: '5%',
             field: 'prdVersion',
             highlight: true,
