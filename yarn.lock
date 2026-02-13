@@ -6266,7 +6266,6 @@ __metadata:
     "@backstage/theme": "npm:^0.7.1"
     "@backstage/ui": "npm:^0.11.2"
     "@internal/plugin-api-platform-common": "workspace:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"

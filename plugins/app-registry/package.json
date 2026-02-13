@@ -31,7 +31,6 @@
     "@backstage/theme": "^0.7.1",
     "@backstage/ui": "^0.11.2",
     "@internal/plugin-api-platform-common": "workspace:^",
-    "@internal/plugin-api-platform-react": "workspace:^",
     "@remixicon/react": "^4.6.0",
     "react-aria-components": "^1.13.0",
     "react-dom": "^18.2.0",

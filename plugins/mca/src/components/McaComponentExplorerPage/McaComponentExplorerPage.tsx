@@ -6,16 +6,17 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentTable } from '../McaComponentTable';
-import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
+import { InformationPopup, InformationPopupContent } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 import { Box, Flex, Grid, Text } from '@backstage/ui';
+import { RiLightbulbLine } from '@remixicon/react';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
 
 const POPUP_CONTENT = (
-  <InfoPopUpContent
+  <InformationPopupContent
     text1="Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform."
     text2="The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks."
   />
@@ -56,7 +57,7 @@ export const McaComponentExplorerPage = () => {
   };
 
   const subtitleComponent = (
-    <InfoPopUp
+    <InformationPopup
       text={subtitle}
       content={POPUP_CONTENT}
     />
@@ -82,10 +83,13 @@ export const McaComponentExplorerPage = () => {
             </Grid.Item>
             <Grid.Item>
               <Flex style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                <Box p="4" style={{ borderRadius: '10px', border: '1px solid var(--bui-border-warning)', backgroundColor: 'rgb(255, 172, 51, 0.5)' }}>
-                  <Text variant="body-large">
-                    Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible.
-                  </Text>
+                <Box p="4" style={{ borderRadius: '10px', border: '1px solid var(--bui-fg-link)', backgroundColor: 'rgba(195, 0, 69, 0.1)' }}>
+                  <Flex align="center" gap="3">
+                    <RiLightbulbLine />
+                    <Text variant="body-large">
+                      Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible.
+                    </Text>
+                  </Flex>
                 </Box>
               </Flex>
             </Grid.Item>

@@ -19,8 +19,7 @@ import { useState } from 'react';
 import { Query, MTableAction } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
-import { Box, Flex } from '@backstage/ui';
-import { Chip } from '@internal/plugin-api-platform-react';
+import { Box, Flex, Select } from '@backstage/ui';
 
 type TableRow = {
   id: number;
@@ -121,9 +120,15 @@ const COLUMNS: TableColumn<TableRow>[] = [
   },
 ];
 
+const API_TYPES = [
+  { value: 'all', label: 'All Types' },
+  { value: 'osdfv2', label: 'OSDFv2' },
+  { value: 'mca', label: 'MCA' },
+];
+
 function getTitle(ownership: OwnershipType, apiType: ApiType, count: number): string {
   return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : apiType.toUpperCase() + ' '} APIs (${count})`;
-} 
+}
 
 export const ApiTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
@@ -191,42 +196,16 @@ export const ApiTable = () => {
           onClick: () => null,
           // @ts-ignore
           component: (
-            <Box ml="4">
-              <Chip
-                label="All APIs"
-                color={selectedType === 'all' ? '#1976d2' : 'default'}
-                onClick={() => setSelectedType('all')}
+            <Box mx="4">
+              <Select
+                name="apiType"
+                size="medium"
+                value={selectedType}
+                onChange={(v) => setSelectedType(v as ApiType)}
+                options={API_TYPES}
               />
             </Box>
           )
-        },
-        {
-          isFreeAction: true,
-          onClick: () => null,
-          // @ts-ignore
-          component: (
-            <Box ml="2">
-              <Chip
-                label="OSDFv2"
-                color={selectedType === 'osdfv2' ? '#1976d2' : 'default'}
-                onClick={() => setSelectedType('osdfv2')}
-              />
-            </Box>
-          ),
-        },
-        {
-          isFreeAction: true,
-          onClick: () => null,
-          // @ts-ignore
-          component: (
-            <Box mx="2">
-              <Chip
-                label="MCA"
-                color={selectedType === 'mca' ? '#1976d2' : 'default'}
-                onClick={() => setSelectedType('mca')}
-              />
-            </Box>
-          ),
         },
       ]}
       components={{

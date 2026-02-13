@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Progress,
   ResponseErrorPanel,
@@ -7,7 +8,6 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
 import { AppRegistryOperation } from '../../types';
-import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
 import { ButtonIcon, Table, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid, CellText, useTable, ColumnConfig } from '@backstage/ui';
 
@@ -29,31 +29,35 @@ const PdpMappingTable = ({ mapping }: { mapping: { valuePath: string; pdpField: 
   </Grid.Root>
 );
 
+const AbacTooltip = ({ icon, children }: { icon: JSX.Element, children: React.ReactNode }) => (
+  <TooltipTrigger delay={250}>
+    <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={icon} />
+    <Tooltip placement='bottom' style={{ maxWidth: '50em' }}>
+      {children}
+    </Tooltip>
+  </TooltipTrigger>
+);
+
 const renderAbacCell = (operation: AppRegistryOperation) => {
   if (!operation.abac) {
     return (
-      <TooltipTrigger delay={250}>
-        <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />} />
-        <Tooltip placement='bottom'>No ABAC</Tooltip>
-      </TooltipTrigger>
+      <AbacTooltip icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />}>
+        No ABAC
+      </AbacTooltip>
     );
   }
   if (operation.pdpMapping) {
     return (
-      <InfoPopOver
-        title="PDP Mapping"
-        variant="h6"
-        delayTime={250}
-        content={<PdpMappingTable mapping={operation.pdpMapping} />}>
-        <RiAddCircleFill color='primary' />
-      </InfoPopOver>
+      <AbacTooltip icon={<RiAddCircleFill color='primary' />}>
+        <Text variant='title-x-small'><b>PDP Mapping</b></Text>
+        <PdpMappingTable mapping={operation.pdpMapping} />
+      </AbacTooltip>
     );
   }
   return (
-    <TooltipTrigger delay={250}>
-      <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiCheckboxCircleFill color='primary' />} />
-      <Tooltip placement='bottom'>No PDP mapping</Tooltip>
-    </TooltipTrigger>
+    <AbacTooltip icon={<RiCheckboxCircleFill color='primary' />}>
+      No PDP mapping
+    </AbacTooltip>
   );
 };
 
@@ -68,31 +72,33 @@ const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => (
   operation,
 });
 
-const columns: ColumnConfig<TableRow>[] = [{
-  id: 'method',
-  label: 'Method',
-  isRowHeader: true,
-  cell: item => <CellText title={item.operation.method} />,
-  isSortable: true,
-  width: '10%'
-}, {
-  id: 'name',
-  label: 'Name',
-  cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>,
-  isSortable: true,
-  width: '70%'
-}, {
-  id: 'abac',
-  label: 'ABAC',
-  cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>,
-  width: '10%'
-}, {
-  id: 'bFunction',
-  label: 'B-Function',
-  cell: item => <CellText title={item.operation.bFunction ?? '-'} />,
-  isSortable: true,
-  width: '10%'
-}];
+const columns: ColumnConfig<TableRow>[] = [
+  {
+    id: 'method',
+    label: 'Method',
+    isRowHeader: true,
+    cell: item => <CellText title={item.operation.method} />,
+    isSortable: true,
+    width: '10%'
+  }, {
+    id: 'name',
+    label: 'Name',
+    cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>,
+    isSortable: true,
+    width: '70%'
+  }, {
+    id: 'abac',
+    label: 'ABAC',
+    cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>,
+    width: '10%'
+  }, {
+    id: 'bFunction',
+    label: 'B-Function',
+    cell: item => <CellText title={item.operation.bFunction ?? '-'} />,
+    isSortable: true,
+    width: '10%'
+  }
+];
 
 async function fetchData(
   getOperations: (system?: string, appName?: string, appVersion?: string, environment?: string) => Promise<AppRegistryOperation[] | undefined>,

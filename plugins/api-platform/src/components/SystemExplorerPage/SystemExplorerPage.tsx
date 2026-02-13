@@ -1,11 +1,11 @@
 import { Content, PageWithHeader } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { SystemPlatformTable } from '../SystemTable';
-import { InfoPopUp, InfoPopUpContent } from '@internal/plugin-api-platform-react';
+import { InformationPopup, InformationPopupContent } from '@internal/plugin-api-platform-react';
 import { getStringForKey } from '../common';
 
 const POPUP_CONTENT = (
-  <InfoPopUpContent
+  <InformationPopupContent
     text1={getStringForKey("SystemPlatformExplorerPage.text1")}
     text2={getStringForKey("SystemPlatformExplorerPage.text2")}
   />
@@ -20,7 +20,7 @@ export const SystemExplorerPage = () => {
       themeId="systems"
       title="Systems"
       subtitle={
-        <InfoPopUp
+        <InformationPopup
           text={`${orgName} Team Explorer`}
           content={POPUP_CONTENT}
         />
