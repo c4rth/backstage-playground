@@ -3,11 +3,28 @@ import { Box, Flex } from '@backstage/ui';
 import { ClearValueButton, PasteFromClipboardButton, SampleButton } from '../../Buttons';
 import jsonata from 'jsonata';
 import CodeMirror from '@uiw/react-codemirror';
+import { vscodeLight } from '@uiw/codemirror-theme-vscode';
 import { json } from '@codemirror/lang-json';
-import { useResizable } from './useResizable';
 import { styles, dividerBaseStyle } from './styles';
-import { sampleInput, sampleExpression } from './constants';
 import { jsonataLanguage } from './jsonata-lang';
+import { registerCustomFunctions } from './jsonata-functions';
+import { useResizable } from '../../../hooks';
+
+const sampleInput = JSON.stringify(
+  {
+    account: {
+      accountName: 'Firefly',
+      order: [
+        { orderID: 'order103', product: [{ productName: 'Bowler Hat', productID: 858383, sku: '0406654608', description: { colour: 'Purple', width: 300, height: 200, depth: 210, weight: 0.75 }, price: 34.45, quantity: 2 }, { productName: 'Trilby hat', productID: 858236, sku: '0406634348', description: { colour: 'Orange', width: 300, height: 200, depth: 210, weight: 0.6 }, price: 21.67, quantity: 1 }] },
+        { orderID: 'order104', product: [{ productName: 'Bowler Hat', productID: 858383, sku: '040657863', description: { colour: 'Purple', width: 300, height: 200, depth: 210, weight: 0.75 }, price: 34.45, quantity: 4 }, { productID: 345664, sku: '0406654603', productName: 'Cloak', description: { colour: 'Black', width: 30, height: 20, depth: 210, weight: 2 }, price: 107.99, quantity: 1 }] },
+      ],
+    },
+  },
+  null,
+  2,
+);
+
+const sampleExpression = 'account.order.product.price';
 
 export const JSONataTester = () => {
   const [input, setInput] = useState('');
@@ -31,8 +48,9 @@ export const JSONataTester = () => {
     if (!jsonStr || !expr) return;
     try {
       const data = JSON.parse(jsonStr);
-      const compiled = jsonata(expr);
-      let pathresult = await compiled.evaluate(data);
+      const expression = jsonata(expr);
+      registerCustomFunctions(expression);
+      let pathresult = await expression.evaluate(data);
       if (typeof pathresult === 'undefined') {
         pathresult = '** no match **';
       } else {
@@ -79,6 +97,7 @@ export const JSONataTester = () => {
               height="100%"
               style={{ height: '100%' }}
               value={input}
+              theme={vscodeLight}
               basicSetup={{
                 lineNumbers: true,
                 syntaxHighlighting: true,
@@ -107,6 +126,7 @@ export const JSONataTester = () => {
                 width="100%"
                 height="100%"
                 style={{ height: '100%' }}
+                theme={vscodeLight}
                 value={expression}
                 onChange={newValue => setExpression(newValue ?? '')}
                 basicSetup={{
@@ -138,6 +158,7 @@ export const JSONataTester = () => {
                   style={{ height: '100%' }}
                   readOnly={true}
                   extensions={jsonExtensions}
+                  theme={vscodeLight}
                   basicSetup={{
                     lineNumbers: true,
                     syntaxHighlighting: true,

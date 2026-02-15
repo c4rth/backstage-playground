@@ -1,4 +1,5 @@
 import { StreamLanguage, StringStream } from '@codemirror/language';
+import { getCustomFunctions } from './jsonata-functions';
 
 /**
  * CodeMirror stream-based language mode for JSONata expressions.
@@ -32,6 +33,8 @@ const BUILTIN_FUNCTIONS = new Set([
   // Misc
   '$lookup', '$clone',
 ]);
+
+const CUSTOM_FUNCTIONS = getCustomFunctions().map(name => '$' + name);
 
 const KEYWORDS = new Set(['and', 'or', 'in', 'true', 'false', 'null']);
 
@@ -106,7 +109,7 @@ function tokenBase(stream: StringStream, state: JSONataState): string | null {
     const varName = '$';
     if (stream.match(/^[a-zA-Z_][a-zA-Z0-9_]*/)) {
       const fullName = varName + stream.current().slice(1);
-      if (BUILTIN_FUNCTIONS.has(fullName)) {
+      if (BUILTIN_FUNCTIONS.has(fullName) || CUSTOM_FUNCTIONS.includes(fullName)) {
         return 'keyword';
       }
       return 'variableName.definition';

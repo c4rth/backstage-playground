@@ -6543,6 +6543,7 @@ __metadata:
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     "@uiw/codemirror-extensions-langs": "npm:^4.25.0"
+    "@uiw/codemirror-theme-vscode": "npm:^4.25.0"
     "@uiw/react-codemirror": "npm:^4.25.0"
     asn1js: "npm:^3.0.6"
     cronstrue: "npm:^2.61.0"
@@ -15672,6 +15673,30 @@ __metadata:
     "@codemirror/language": ">=6.0.0"
     "@codemirror/language-data": ">=6.0.0"
   checksum: 10/520111291ba7f96efbaa21a6d766d67b508cb7f5d4ea12f44d61f5ae0c0a115c6569951a0276a4abbb8cda6b9e3ec274ac24f4f22df77dad89a60fb48a21cc0b
+  languageName: node
+  linkType: hard
+
+"@uiw/codemirror-theme-vscode@npm:^4.25.0":
+  version: 4.25.4
+  resolution: "@uiw/codemirror-theme-vscode@npm:4.25.4"
+  dependencies:
+    "@uiw/codemirror-themes": "npm:4.25.4"
+  checksum: 10/c18df839140794fea337c88b8496bc73339641c7e73b2044ef2d4bba07dc987935f3c8aa169009a633b5d81fbbd6318607bef1bb3f0bca8f8e235e09be7f1628
+  languageName: node
+  linkType: hard
+
+"@uiw/codemirror-themes@npm:4.25.4":
+  version: 4.25.4
+  resolution: "@uiw/codemirror-themes@npm:4.25.4"
+  dependencies:
+    "@codemirror/language": "npm:^6.0.0"
+    "@codemirror/state": "npm:^6.0.0"
+    "@codemirror/view": "npm:^6.0.0"
+  peerDependencies:
+    "@codemirror/language": ">=6.0.0"
+    "@codemirror/state": ">=6.0.0"
+    "@codemirror/view": ">=6.0.0"
+  checksum: 10/aab62e2c16a10dbde4592cef704d386c1a9e3caece4ff0eed85e9d9a5acdeaf3fd8717e2cb6a6795e12e890b8600956effb52d453aacbc618934e7ae8c3e59e3
   languageName: node
   linkType: hard
 

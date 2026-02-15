@@ -33,6 +33,7 @@
     "@internal/plugin-api-platform-react": "workspace:^",
     "@remixicon/react": "^4.6.0",
     "@uiw/codemirror-extensions-langs": "^4.25.0",
+    "@uiw/codemirror-theme-vscode": "^4.25.0",
     "@uiw/react-codemirror": "^4.25.0",
     "asn1js": "^3.0.6",
     "cronstrue": "^2.61.0",
