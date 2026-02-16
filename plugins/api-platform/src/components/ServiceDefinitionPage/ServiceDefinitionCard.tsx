@@ -33,8 +33,7 @@ import { RiFileFill } from '@remixicon/react';
 import styles from './ServiceDefinitionCard.module.css';
 import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '@internal/plugin-azure-devops';
 
-export const ServiceDefinitionCard = () => {
-  const { entity } = useEntity<ComponentEntity>();
+export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) => {
   const configApi = useApi(configApiRef);
   const featureFlagsApi = useApi(featureFlagsApiRef);
 

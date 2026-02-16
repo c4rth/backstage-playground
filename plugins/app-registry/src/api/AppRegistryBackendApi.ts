@@ -11,7 +11,10 @@ export interface AppRegistryBackendApi {
 }
 
 function getOperationName(endpoint: AppRegistryEndpoint): string {
-    return endpoint.operationId || endpoint.cobolName || endpoint.realPath || 'Unknown Operation';
+    if (endpoint.cobolName && endpoint.cobolName.length > 0) {
+        return endpoint.operationId || endpoint.cobolName;
+    }
+    return `${endpoint.realPath}`;
 }
 
 function isAbac(endpoint: AppRegistryEndpoint): boolean {

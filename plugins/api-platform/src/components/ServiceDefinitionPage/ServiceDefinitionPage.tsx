@@ -121,7 +121,7 @@ export const ServiceDefinitionPage = () => {
           </Box>
           <Box mb='-3'>
             {serviceEntity ? (
-              <ServiceDefinitionCard />
+              <ServiceDefinitionCard entity={serviceEntity} />
             ) : <div />}
           </Box>
         </Content>
