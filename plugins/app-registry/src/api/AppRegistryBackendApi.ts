@@ -1,6 +1,6 @@
 import { ConfigApi, createApiRef, FetchApi, FeatureFlagsApi } from "@backstage/core-plugin-api";
 import { AppRegistryEndpoint, AppRegistryOperation, AppRegistryOperationPdpMapping } from "../types";
-import { dummyCall } from "./fake-data";
+import { dummyCall, dummyEmptyCall } from "./fake-data";
 
 export const appRegistryBackendApiRef = createApiRef<AppRegistryBackendApi>({
     id: 'plugin.app-registry.service',
@@ -90,7 +90,7 @@ export class AppRegistryBackendClient implements AppRegistryBackendApi {
 
         try {
             if (this.featureFlagsApi.isActive('mock-app-registry')) {
-                const data = dummyCall();
+                const data = environment === 'TST' ? dummyEmptyCall() : dummyCall();
                 return data.map(endpoint => this.transformEndpointToOperation(endpoint));
             }
             const queryParams = this.buildQueryParams(system, appName, appVersion, environment);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   Progress,
   ResponseErrorPanel,
@@ -117,11 +117,13 @@ export const AppRegistryPage = () => {
   const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
   const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
   const environment = entity.spec?.lifecycle?.toUpperCase();
+  const isFirstRender = useRef(true);
 
   const getOperations = useGetOperations();
 
   const {
-    tableProps
+    tableProps,
+    reload,
   } = useTable({
     mode: 'complete',
     getData: () => fetchData(getOperations, system, appName, appVersion, environment),
@@ -148,6 +150,14 @@ export const AppRegistryPage = () => {
       });
     }
   });
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    reload();
+  }, [entity, reload]);
 
   if (tableProps.error) {
     return <ResponseErrorPanel title="Failed to call AppRegistry" error={tableProps.error} />;
