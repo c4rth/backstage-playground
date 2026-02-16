@@ -4,7 +4,7 @@ import {
   Link,
 } from '@backstage/core-components';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
-import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
   AboutField,
 } from '@backstage/plugin-catalog';
