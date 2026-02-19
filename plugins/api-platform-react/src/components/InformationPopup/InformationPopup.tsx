@@ -19,7 +19,7 @@ export const InformationPopup = (props: InformationPopupProps) => {
                 <Text variant={variant} style={{ color: "var(--bui-fg-solid)" }}>{text}</Text>
             </Box>
             <DialogTrigger>
-                <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={ <RiInformationLine style={{ color: "var(--bui-fg-solid)" }} aria-label="More information" />} />
+                <ButtonIcon variant='tertiary' size='medium' style={{ width: 'auto', background: 'transparent' }} icon={ <RiInformationLine style={{ color: "var(--bui-fg-solid)" }} aria-label="More information" />} />
                 <Popover placement='bottom' style={{ maxWidth: '50em' }}>
                     <Text variant='title-x-small'><b>{title}</b></Text>
                     {content}

@@ -31,7 +31,7 @@ const PdpMappingTable = ({ mapping }: { mapping: { valuePath: string; pdpField: 
 
 const AbacTooltip = ({ icon, children }: { icon: JSX.Element, children: React.ReactNode }) => (
   <TooltipTrigger delay={250}>
-    <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={icon} />
+    <ButtonIcon size='medium' variant='tertiary' style={{ width: 'auto', background: 'transparent' }} icon={icon} />
     <Tooltip placement='bottom' style={{ maxWidth: '50em' }}>
       {children}
     </Tooltip>

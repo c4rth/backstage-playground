@@ -77,7 +77,7 @@ const mandatoryColumn: TableColumn<TableRow> =
   field: "mandatory",
   render: ({ mandatory }) => (mandatory ?
     <TooltipTrigger delay={250}>
-      <ButtonIcon size='small' style={{ width: 'auto', background: 'transparent' }} icon={<RiAsterisk color='primary' />} />
+      <ButtonIcon variant='tertiary' size='small' style={{ width: 'auto', background: 'transparent' }} icon={<RiAsterisk color='primary' />} />
       <Tooltip placement='bottom'>Mandatory</Tooltip>
     </TooltipTrigger>
     :
