@@ -1,7 +1,6 @@
 import {
   InfoCard,
   TabbedLayout,
-  Link,
 } from '@backstage/core-components';
 import { getCompoundEntityRef } from "@backstage/catalog-model";
 import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
@@ -12,7 +11,7 @@ import { featureFlagsApiRef, useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
-import { Box, Grid, ButtonIcon, Flex } from '@backstage/ui';
+import { Box, Grid, Flex, ButtonLink } from '@backstage/ui';
 import styles from './SystemDefinitionCard.module.css';
 import { SystemDefinition } from '@internal/plugin-api-platform-common';
 
@@ -66,14 +65,13 @@ export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinit
               divider
               className={styles.gridItemCard}
               action={
-                <ButtonIcon
-                  icon={<RiFileFill />}
+                <ButtonLink
+                  href={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
                   isDisabled={!hasDocs}
                   size='medium'
                   variant='tertiary'
-                >
-                  <Link to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`} />
-                </ButtonIcon>
+                  iconStart={<RiFileFill />}
+                  />
               }
             >
               <Box mb='4'>
