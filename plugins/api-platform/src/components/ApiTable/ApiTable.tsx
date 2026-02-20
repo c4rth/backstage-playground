@@ -10,7 +10,8 @@ import {
   ANNOTATION_API_NAME,
   ANNOTATION_API_TYPE,
   ApiDefinitionsListRequest,
-  ApiType,
+  OPENAPITYPE_LIST,
+  OpenApiType,
   OwnershipType,
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
@@ -39,7 +40,7 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
   name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
   description: entity.metadata.description ?? '',
-  type: entity.metadata[ANNOTATION_API_TYPE]?.toString() ?? 'osdfv2',
+  type: entity.metadata[ANNOTATION_API_TYPE]?.toString() ?? '-',
   system: entity.spec?.system?.toString() ?? '-',
   entityRef: stringifyEntityRef(entity),
 });
@@ -48,7 +49,7 @@ const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
   query: Query<TableRow>,
   ownership: OwnershipType,
-  apiType: ApiType
+  apiType: OpenApiType
 ) => {
   const page = query.page ?? 0;
   const pageSize = query.pageSize ?? PAGE_SIZE;
@@ -121,12 +122,10 @@ const COLUMNS: TableColumn<TableRow>[] = [
 ];
 
 const API_TYPES = [
-  { value: 'all', label: 'All Types' },
-  { value: 'osdfv2', label: 'OSDFv2' },
-  { value: 'mca', label: 'MCA' },
+  ...OPENAPITYPE_LIST.map((type) => ({ value: type, label: type.charAt(0).toUpperCase() + type.slice(1) })),
 ];
 
-function getTitle(ownership: OwnershipType, apiType: ApiType, count: number): string {
+function getTitle(ownership: OwnershipType, apiType: OpenApiType, count: number): string {
   return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : apiType.toUpperCase() + ' '} APIs (${count})`;
 }
 
@@ -138,8 +137,8 @@ export const ApiTable = () => {
   const [ownership, setOwnership] = useState<OwnershipType>(
     () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
   );
-  const [selectedType, setSelectedType] = useState<ApiType>(
-    () => (sessionStorage.getItem(STORAGE_TYPE_KEY) ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as ApiType) : 'all')
+  const [selectedType, setSelectedType] = useState<OpenApiType>(
+    () => (sessionStorage.getItem(STORAGE_TYPE_KEY) ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as OpenApiType) : 'all')
   );
 
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
@@ -201,7 +200,7 @@ export const ApiTable = () => {
                 name="apiType"
                 size="medium"
                 value={selectedType}
-                onChange={(v) => setSelectedType(v as ApiType)}
+                onChange={(v) => setSelectedType(v as OpenApiType)}
                 options={API_TYPES}
               />
             </Box>

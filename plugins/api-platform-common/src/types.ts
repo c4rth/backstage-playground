@@ -2,7 +2,17 @@ import { Entity } from "@backstage/catalog-model";
 
 // API 
 
-export type ApiType = 'osdfv2' | 'all' | 'mca';
+export const OPENAPITYPE_LIST = [
+  'all',
+  'enterprise',
+  'public',
+  'experience',
+  'inner',
+  'third-party',
+  'front',
+  'mca'] as const;
+
+export type OpenApiType = 'all' | 'enterprise' | 'public' | 'experience' | 'inner' | 'third-party' | 'front' | 'mca';
 
 export type ApiVersionDefinition = {
   entityRef: string;
@@ -51,7 +61,7 @@ export type ApiDefinitionsListRequest = {
   orderBy?: ApiDefinitionsOptions,
   search?: string,
   ownership: OwnershipType;
-  apiType: ApiType;
+  apiType: OpenApiType;
   userEntityRef?: string | undefined;
 };
 

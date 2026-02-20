@@ -1,5 +1,5 @@
 import { InputError } from '@backstage/errors';
-import { ApiType } from '@internal/plugin-api-platform-common';
+import { OpenApiType, OPENAPITYPE_LIST } from '@internal/plugin-api-platform-common';
 
 export const parseOrderByParam = <T extends readonly string[]>(
   str: unknown,
@@ -31,9 +31,9 @@ export const parseOwnershipParam = (str: unknown): 'all' | 'owned' | undefined =
   return str as 'all' | 'owned';
 };
 
-export const parseApiTypeParam = (str: unknown): ApiType | undefined => {
+export const parseApiTypeParam = (str: unknown): OpenApiType | undefined => {
   if (str === undefined) return undefined;
   if (typeof str !== 'string') throw new InputError('invalid type query, must be a string');
-  if (!['osdfv2', 'all', 'mca'].includes(str)) throw new InputError("invalid type query, must be 'osdfv2', 'all' or 'mca'");
-  return str as ApiType;
+  if (!OPENAPITYPE_LIST.includes(str as OpenApiType)) throw new InputError(`invalid type query, must be one of ${OPENAPITYPE_LIST.join(', ')}`);
+  return str as OpenApiType;
 };

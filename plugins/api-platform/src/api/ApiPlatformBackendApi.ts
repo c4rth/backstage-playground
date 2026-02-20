@@ -13,7 +13,7 @@ import {
   LibraryDefinitionsListRequest,
   LibraryDefinitionListResult,
   LibraryDefinition,
-  ApiType
+  OpenApiType
 } from "@internal/plugin-api-platform-common";
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
@@ -23,7 +23,7 @@ export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
 export interface ApiPlatformBackendApi {
   listApis(options: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult>;
 
-  getApisCount(ownership: OwnershipType, apiType: ApiType): Promise<number>;
+  getApisCount(ownership: OwnershipType, apiType: OpenApiType): Promise<number>;
 
   getApiVersions(system: string, apiName: string): Promise<(ApiVersionDefinition[])>;
 
@@ -106,7 +106,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   }
 
   private buildListParams(
-    options: { offset?: number; limit?: number; search?: string; ownership?: OwnershipType; apiType?: ApiType; orderBy?: { field: string; direction: string }, dependsOn?: string }
+    options: { offset?: number; limit?: number; search?: string; ownership?: OwnershipType; apiType?: OpenApiType; orderBy?: { field: string; direction: string }, dependsOn?: string }
   ): URLSearchParams {
     const { offset, limit, search, ownership, apiType, orderBy, dependsOn } = options;
 
@@ -130,7 +130,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // APIs
 
-  async getApisCount(ownership: OwnershipType, apiType: ApiType): Promise<number> {
+  async getApisCount(ownership: OwnershipType, apiType: OpenApiType): Promise<number> {
     return this.fetchJson<number>('/apis/count', this.buildSearchParams({ ownership, apiType }));
   }
 

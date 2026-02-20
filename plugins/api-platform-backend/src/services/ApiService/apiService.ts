@@ -19,7 +19,7 @@ import {
   ApiDefinitionsOptions,
   ApiDefinitionsListRequest,
   OwnershipType,
-  ApiType,
+  OpenApiType,
   CATALOG_SPEC_OWNER,
   ANNOTATION_API_TYPE,
   CATALOG_METADATA_API_TYPE
@@ -97,7 +97,7 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
 
   for (const item of entities) {
     const apiName = item.metadata[ANNOTATION_API_NAME]?.toString();
-    const apiType = item.metadata[ANNOTATION_API_TYPE]?.toString() || 'osdfv2';
+    const apiType = item.metadata[ANNOTATION_API_TYPE]?.toString() || '?';
     const system = item.spec?.system?.toString();
     if (!apiName || !system) continue;
 
@@ -169,7 +169,7 @@ async function fetchApiEntities(
   auth: AuthService,
   fields: string[],
   ownership: OwnershipType,
-  apiType: ApiType,
+  apiType: OpenApiType | 'all',
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
@@ -200,7 +200,7 @@ async function fetchApiEntities(
   // Filter by API type if needed
   if (apiType !== 'all') {
     filteredEntities = filteredEntities.filter(entity => {
-      const type = entity.metadata[ANNOTATION_API_TYPE]?.toString() || 'osdfv2';
+      const type = entity.metadata[ANNOTATION_API_TYPE]?.toString() || '?';
       return type === apiType;
     });
   }
@@ -223,7 +223,7 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
 
   return {
 
-    async  getApisCount(ownership: OwnershipType, apiType: ApiType, userEntityRef: string | undefined): Promise<number> {
+    async  getApisCount(ownership: OwnershipType, apiType: OpenApiType, userEntityRef: string | undefined): Promise<number> {
       const entities = await fetchApiEntities(
         catalogClient,
         auth,
