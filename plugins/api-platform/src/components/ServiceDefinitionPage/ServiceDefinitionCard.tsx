@@ -42,8 +42,8 @@ export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) =
   const azurePipelines = isAzurePipelinesAvailable(entity);
   const showLibraries = featureFlagsApi.isActive('enable-api-platform-libraries');
 
-  const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
-  const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
+  const platform = (entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
+  const imageVersion = entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString();
   const entityRef = getCompoundEntityRef(entity);
   const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
 

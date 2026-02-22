@@ -53,8 +53,8 @@ const serviceColumns: TableColumn<TableRow>[] = [
 
 const toRow = (entity: Entity, idx: number): TableRow => ({
     id: idx,
-    name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
-    version: entity.metadata[ANNOTATION_API_VERSION]?.toString() ?? '?',
+    name: entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '?',
+    version: entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString() ?? '?',
     system: entity.spec?.system?.toString() ?? '-',
 });
 

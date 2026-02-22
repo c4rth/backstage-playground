@@ -81,8 +81,8 @@ const extractNameAndVersion = (fullName: string): { name: string; version: strin
 
 
 const toRow = (entity: Entity, idx: number): TableRow => {
-  let version = entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
-  let name = entity.metadata[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?';
+  let version = entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
+  let name = entity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?';
   let valid = true;
   if (!version) {
     const extracted = extractNameAndVersion(name);

@@ -29,7 +29,7 @@ function getFilter(system: string, libraryName?: string): EntityFilterQuery {
     return {
       kind: ['Component'],
       'spec.type': ['library'],
-      'metadata.library-name': libraryName,
+      'metadata.annotations.library.depo.be/name': libraryName,
       'spec.system': system
     };
   }
@@ -55,7 +55,7 @@ async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthServ
 
   const versions: LibraryDefinition[] = [];
   for (const entity of entities.items) {
-    const version = entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
+    const version = entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
     if (!version) continue;
 
     // Count dependencies inline without reduce overhead
@@ -83,7 +83,7 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
   const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
-    const libraryName = item.metadata[ANNOTATION_LIBRARY_NAME]?.toString();
+    const libraryName = item.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
     const system = item.spec?.system?.toString();
     if (!libraryName || !system) continue;
 
@@ -97,7 +97,7 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
       if (!matchesSearch) continue;
     }
 
-    const versionStr = item.metadata[ANNOTATION_LIBRARY_VERSION]?.toString();
+    const versionStr = item.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
     if (!versionStr) continue;
 
     let version: semver.SemVer;

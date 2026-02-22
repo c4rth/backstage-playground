@@ -90,8 +90,8 @@ const serviceColumns: TableColumn<TableRow>[] = [
 const toRow = (service: Entity & { apiVersion: string }, idx: number): TableRow => ({
   id: idx,
   apiVersion: service.apiVersion || '?',
-  svcName: service.metadata[ANNOTATION_SERVICE_NAME]?.toString() ?? '-',
-  svcVersion: service.metadata[ANNOTATION_SERVICE_VERSION]?.toString() ?? '-',
+  svcName: service.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString() ?? '-',
+  svcVersion: service.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString() ?? '-',
   svcEnvironment: service.spec?.lifecycle?.toString().toUpperCase() ?? '-',
   svcSystem: service.spec?.system?.toString() ?? '-',
 });
@@ -136,7 +136,7 @@ export const ApiAllRelationsCard = ({ dependency }: ApiAllRelationsCardProps) =>
   const catalogApi = useApi(catalogApiRef);
 
   const system = entity.spec?.system?.toString() ?? '';
-  const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '';
+  const apiName = entity?.metadata?.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '';
   const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
   const { apiVersions, loading: versionsLoading, error: versionsError } = useGetApiVersions(system, apiName);
@@ -152,9 +152,9 @@ export const ApiAllRelationsCard = ({ dependency }: ApiAllRelationsCardProps) =>
     });
 
     const servicePromises = apiEntities.items
-      .filter(apiEntity => apiEntity.metadata[ANNOTATION_API_VERSION])
+      .filter(apiEntity => apiEntity.metadata.annotations?.[ANNOTATION_API_VERSION])
       .map(async apiEntity => {
-        const apiVersion = apiEntity.metadata[ANNOTATION_API_VERSION]!.toString();
+        const apiVersion = apiEntity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString() ?? '';
         try {
           const services = await fetchEntities(catalogApi, apiEntity, dependency);
           return services.map(service => ({ ...service, apiVersion }));

@@ -29,7 +29,7 @@
     "@backstage/theme": "^0.7.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "swagger-ui-react": "^5.31.1"
+    "swagger-ui-react": "^5.31.2"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"

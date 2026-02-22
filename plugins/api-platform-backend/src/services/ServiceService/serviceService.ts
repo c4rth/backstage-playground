@@ -32,7 +32,7 @@ function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
     'spec.type': ['service'],
   };
   if (serviceName) {
-    filter['metadata.service-name'] = serviceName;
+    filter['metadata.annotations.service.depo.be/name'] = serviceName;
   }
   if (system) {
     filter['spec.system'] = system;
@@ -146,9 +146,9 @@ function processServiceEntities(
   for (const entity of entities) {
     if (!entity.metadata || !entity.spec) continue;
 
-    const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
+    const name = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
     const system = entity.spec.system?.toString() || '-';
-    const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
+    const version = entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString();
     if (!name || !version) continue;
 
     // Apply search filter during iteration to avoid second pass
@@ -191,10 +191,10 @@ function processServiceEntities(
     }
 
     // Add environment info
-    const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
+    const platforms = entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
 
     defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
-      imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
+      imageVersion: entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
       entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
       platform: platforms,
       dependencies: parseDependencies(entity.spec.dependsOn),
@@ -252,7 +252,7 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
       // Inline counting to avoid function call overhead
       const uniqueNames = new Set<string>();
       for (const entity of entities) {
-        const serviceName = entity.metadata?.[ANNOTATION_SERVICE_NAME]?.toString();
+        const serviceName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
         if (serviceName) {
           const system = entity.spec?.system?.toString() ?? '';
           uniqueNames.add(`${system}-${serviceName}`);

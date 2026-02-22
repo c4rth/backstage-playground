@@ -114,8 +114,8 @@ async function fetchData(
 export const AppRegistryPage = () => {
   const { entity } = useEntity<ComponentEntity>();
   const system = entity.spec.system;
-  const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
-  const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
+  const appName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+  const appVersion = entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString();
   const environment = entity.spec?.lifecycle?.toUpperCase();
   const isFirstRender = useRef(true);
 

@@ -69,10 +69,10 @@ const STORAGE_SEARCH_KEY = 'librariesTablePageSearch';
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
-  name: entity.metadata[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?',
+  name: entity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?',
   description: entity.metadata.description ?? '',
   entityRef: stringifyEntityRef(entity),
-  latestVersion: entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString() ?? '-',
+  latestVersion: entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString() ?? '-',
   system: entity.spec?.system?.toString() ?? '-',
 });
 

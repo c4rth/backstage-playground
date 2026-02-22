@@ -179,15 +179,15 @@ export async function systemService(options: SystemServiceOptions): Promise<Syst
         if (!relEntity) continue;
 
         if (relEntity.kind === 'API') {
-          const name = relEntity.metadata[ANNOTATION_API_NAME]?.toString();
+          const name = relEntity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
           if (name) apiNames.add(name);
         } else if (relEntity.kind === 'Component') {
-          const name = relEntity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
+          const name = relEntity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
           if (name) {
             serviceNames.add(name);
             continue;
           }
-          const libName = relEntity.metadata[ANNOTATION_LIBRARY_NAME]?.toString();
+          const libName = relEntity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
           if (libName) libraryNames.add(libName);
         }
       }

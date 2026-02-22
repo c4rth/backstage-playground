@@ -38,9 +38,9 @@ const STORAGE_TYPE_KEY = 'apisTablePageType';
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
-  name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
+  name: entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '?',
   description: entity.metadata.description ?? '',
-  type: entity.metadata[ANNOTATION_API_TYPE]?.toString() ?? '-',
+  type: entity.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() ?? '-',
   system: entity.spec?.system?.toString() ?? '-',
   entityRef: stringifyEntityRef(entity),
 });

@@ -34,12 +34,12 @@ function getFilter(apiName: string, system: string): EntityFilterQuery {
   if (system === API_NO_SYSTEM) {
     return {
       kind: ['API'],
-      'metadata.api-name': apiName, // use string, constant does not work here
+      'metadata.annotations.api.depo.be/name': apiName, // use string, constant does not work here
     }
   }
   return {
     kind: ['API'],
-    'metadata.api-name': apiName, // use string, constant does not work here
+    'metadata.annotations.api.depo.be/name': apiName, // use string, constant does not work here
     'spec.system': system
   };
 }
@@ -59,12 +59,11 @@ async function innerGetApiVersions(
     },
     { token }
   );
-
   const versions: ApiVersionDefinition[] = [];
   const matchPrefix = options?.matchPrefix?.toLowerCase();
 
   for (const entity of entities.items) {
-    const version = entity.metadata[ANNOTATION_API_VERSION]?.toString();
+    const version = entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
     if (!version) continue;
 
     // Early return if looking for a specific prefix match
@@ -72,14 +71,14 @@ async function innerGetApiVersions(
       return [{
         entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
         version,
-        project: entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '',
+        project: entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
       }];
     }
 
     versions.push({
       entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
       version,
-      project: entity.metadata[ANNOTATION_API_PROJECT]?.toString() || '',
+      project: entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
     });
   }
 
@@ -96,15 +95,15 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
   const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
-    const apiName = item.metadata[ANNOTATION_API_NAME]?.toString();
-    const apiType = item.metadata[ANNOTATION_API_TYPE]?.toString() || '?';
+    const apiName = item.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
+    const apiType = item.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() || '?';
     const system = item.spec?.system?.toString();
     if (!apiName || !system) continue;
 
     // Apply search filter during iteration to avoid second pass
     if (searchLower) {
       const description = item.metadata.description?.toString() || '';
-      const project = item.metadata[ANNOTATION_API_PROJECT]?.toString() || '';
+      const project = item.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '';
       const matchesSearch =
         apiName.toLowerCase().includes(searchLower) ||
         system.toLowerCase().includes(searchLower) ||
@@ -114,7 +113,7 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
       if (!matchesSearch) continue;
     }
 
-    const versionStr = item.metadata[ANNOTATION_API_VERSION]?.toString();
+    const versionStr = item.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
     if (!versionStr) continue;
 
     let version: semver.SemVer;
@@ -203,7 +202,7 @@ async function fetchApiEntities(
   // Filter by API type if needed
   if (apiType !== 'all') {
     filteredEntities = filteredEntities.filter(entity => {
-      const type = entity.metadata[ANNOTATION_API_TYPE]?.toString() || '?';
+      const type = entity.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() || '?';
       return type === apiType;
     });
   }
@@ -238,7 +237,7 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
       // Inline counting to avoid function call overhead
       const uniqueApiNames = new Set<string>();
       for (const entity of entities) {
-        const apiName = entity.metadata[ANNOTATION_API_NAME]?.toString();
+        const apiName = entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
         if (apiName) {
           const system = entity.spec?.system?.toString() ?? '';
           uniqueApiNames.add(`${system}-${apiName}`);
@@ -300,7 +299,7 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
         {
           filter: {
             kind: ['API'],
-            'metadata.api-name': request.apiName,
+            'metadata.annotations."api.depo.be/name"': request.apiName,
             'spec.system': request.system
           },
           fields: [
@@ -318,7 +317,7 @@ export async function apiService(options: ApiServiceOptions): Promise<ApiService
 
       const relations: ApiRelationDefinition[] = [];
       for (const entity of entities.items) {
-        const apiVersion = entity.metadata[ANNOTATION_API_VERSION]?.toString();
+        const apiVersion = entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
         if (!apiVersion) continue;
 
         // Build services array directly without intermediate filter array
