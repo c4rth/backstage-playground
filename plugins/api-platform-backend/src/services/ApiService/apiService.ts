@@ -148,6 +148,9 @@ function getOrder(order: ApiDefinitionsOptions | undefined): EntityOrderQuery | 
     case 'system':
       field = CATALOG_SPEC_SYSTEM;
       break;
+    case 'type':
+      field = CATALOG_METADATA_API_TYPE;
+      break;
     default:
       field = CATALOG_METADATA_API_NAME;
   }

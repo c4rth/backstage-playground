@@ -195,7 +195,7 @@ export const ApiTable = () => {
           onClick: () => null,
           // @ts-ignore
           component: (
-            <Box mx="4">
+            <Box mx="4" style={{ width: '10em'}}>
               <Select
                 name="apiType"
                 size="medium"
