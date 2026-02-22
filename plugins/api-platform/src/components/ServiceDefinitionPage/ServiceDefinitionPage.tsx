@@ -54,6 +54,13 @@ export const ServiceDefinitionPage = () => {
   );
 
   useEffect(() => {
+    setSelectedVersion(undefined);
+    setSelectedEnvironment(undefined);
+    setServiceEntity(undefined);
+    isInitialLoad.current = true;
+  }, [name, system, queryVersion, queryEnv]);
+
+  useEffect(() => {
     if (!selectedVersion && versions.length > 0) {
       let selVersion = null;
       if (isInitialLoad.current && queryVersion && versions.some(item => item.value === queryVersion)) {

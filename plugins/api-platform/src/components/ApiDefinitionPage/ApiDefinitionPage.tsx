@@ -36,6 +36,12 @@ export const ApiDefinitionPage = () => {
   const isInitialLoad = useRef(true);
 
   useEffect(() => {
+    setSelectedVersion(undefined);
+    setApiEntity(undefined);
+    isInitialLoad.current = true;
+  }, [name, system, queryVersion]);
+
+  useEffect(() => {
     if (!selectedVersion && versions.length > 0) {
       let selVersion = null;
       if (isInitialLoad.current && queryVersion && versions.some(item => item.label === queryVersion)) {
