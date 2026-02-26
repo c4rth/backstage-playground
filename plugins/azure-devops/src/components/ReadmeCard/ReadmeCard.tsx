@@ -24,7 +24,7 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { useReadme } from '../../hooks';
-import { Box, Button, ButtonLink, Link } from '@backstage/ui';
+import { Box, ButtonLink } from '@backstage/ui';
 
 type Props = {
   maxHeight?: number;
