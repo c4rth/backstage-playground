@@ -24,7 +24,7 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { useReadme } from '../../hooks';
-import { Box, Button, Link } from '@backstage/ui';
+import { Box, Button, ButtonLink, Link } from '@backstage/ui';
 
 type Props = {
   maxHeight?: number;
@@ -41,18 +41,14 @@ function isNotFoundError(error: any): boolean {
 const ReadmeCardError = ({ error }: ErrorProps) => {
   if (isNotFoundError(error)) {
     return (
-      <EmptyState
+     <EmptyState
         title="No README available for this service"
         missing="field"
         description="You can add a README to your service by following the Azure DevOps documentation."
         action={
-          <Button
-            variant="primary"
-          >
-            <Link target="_blank" rel="noopener noreferrer" href='https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops'>
+          <ButtonLink variant="primary" href='https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops' target="_blank" rel="noopener noreferrer">
             Read more
-            </Link>
-          </Button>
+          </ButtonLink>
         }
       />
     );
@@ -83,4 +79,5 @@ export const ReadmeCard = (props: Props) => {
       </Box>
     </InfoCard>
   );
+  
 };
