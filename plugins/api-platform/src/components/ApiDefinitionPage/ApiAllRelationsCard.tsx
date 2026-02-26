@@ -147,7 +147,7 @@ export const ApiAllRelationsCard = ({ dependency }: ApiAllRelationsCardProps) =>
     const apiEntities = await catalogApi.getEntities({
       filter: {
         kind: ['API'],
-        [`metadata.${ANNOTATION_API_NAME}`]: [apiName],
+        [`metadata.annotations.${ANNOTATION_API_NAME}`]: [apiName],
       },
     });
 

@@ -32,7 +32,7 @@
   "dependencies": {
     "@backstage/core-components": "^0.18.7",
     "@backstage/core-plugin-api": "^1.12.3",
-    "@backstage/plugin-catalog": "^1.33.0",
+    "@backstage/plugin-catalog": "^1.33.1",
     "@backstage/plugin-search-common": "^1.2.22",
     "@backstage/plugin-search-react": "^1.10.4",
     "@backstage/theme": "^0.7.2",

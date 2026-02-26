@@ -38,7 +38,7 @@
     "@backstage/core-components": "^0.18.7",
     "@backstage/core-plugin-api": "^1.12.3",
     "@backstage/plugin-api-docs": "^0.13.4",
-    "@backstage/plugin-catalog": "^1.33.0",
+    "@backstage/plugin-catalog": "^1.33.1",
     "@backstage/plugin-catalog-graph": "^0.5.7",
     "@backstage/plugin-catalog-react": "^2.0.0",
     "@backstage/plugin-org": "^0.6.49",
