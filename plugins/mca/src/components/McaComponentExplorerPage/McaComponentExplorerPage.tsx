@@ -9,8 +9,7 @@ import { McaComponentTable } from '../McaComponentTable';
 import { InformationPopup, InformationPopupContent } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Box, Flex, Grid, Text } from '@backstage/ui';
-import { RiLightbulbLine } from '@remixicon/react';
+import { Alert, Box, Flex, Grid, } from '@backstage/ui';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
@@ -83,14 +82,9 @@ export const McaComponentExplorerPage = () => {
             </Grid.Item>
             <Grid.Item>
               <Flex style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                <Box p="4" style={{ borderRadius: '10px', border: '1px solid var(--bui-fg-link)', backgroundColor: 'rgba(195, 0, 69, 0.1)' }}>
-                  <Flex align="center" gap="3">
-                    <RiLightbulbLine />
-                    <Text variant="body-large">
-                      Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible.
-                    </Text>
-                  </Flex>
-                </Box>
+                <Flex align="center" gap="3">
+                  <Alert status="warning" icon={true} title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible." />
+                </Flex>
               </Flex>
             </Grid.Item>
           </Grid.Root>
