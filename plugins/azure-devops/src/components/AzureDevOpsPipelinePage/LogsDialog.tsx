@@ -1,4 +1,4 @@
-import { Text, Button, Flex, DialogTrigger, Dialog, DialogHeader, DialogBody, Box, } from '@backstage/ui';
+import { Text, Flex, DialogTrigger, Dialog, DialogHeader, DialogBody, Box, } from '@backstage/ui';
 import {
   Progress,
 } from '@backstage/core-components';
@@ -11,7 +11,6 @@ export const LogsDialog = ({ isOpen, onOpenChange, title: dialogTitle, loading, 
   onOpenChange: (isOpen: boolean) => void;
 }) => (
   <DialogTrigger isOpen={isOpen} onOpenChange={onOpenChange}>
-    <Button style={{ display: 'none' }} />
     <Dialog width='100%' height='100%'>
       <DialogHeader>
         <Flex style={{ width: '100%' }}>

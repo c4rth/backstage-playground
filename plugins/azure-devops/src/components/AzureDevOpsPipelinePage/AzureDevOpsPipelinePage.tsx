@@ -115,7 +115,7 @@ export const AzureDevOpsPipelinePage = () => {
     label: 'ID',
     isRowHeader: true,
     cell: item => <CellText title={item.id?.toString() ?? '-'} />,
-    width: '2%'
+    width: '3%'
   }, {
     id: 'build',
     label: 'Build',
@@ -157,7 +157,7 @@ export const AzureDevOpsPipelinePage = () => {
           View Logs
         </Button>
       </Cell>,
-    width: '13%'
+    width: '12%'
   }], [fetchLogs]);
 
   const getData = useCallback(() => fetchData(getBuildRuns, entity), [getBuildRuns, entity]);
