@@ -7,7 +7,7 @@
     "role": "frontend"
   },
   "dependencies": {
-    "@backstage-community/plugin-entity-validation": "^0.16.0",
+    "@backstage-community/plugin-entity-validation": "^0.17.0",
     "@backstage-community/plugin-shortcuts": "^0.18.0",
     "@backstage-community/plugin-sonarqube": "^0.23.0",
     "@backstage-community/plugin-sonarqube-react": "^0.15.0",
