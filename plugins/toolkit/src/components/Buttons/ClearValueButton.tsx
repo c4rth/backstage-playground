@@ -4,6 +4,7 @@ import { Button, TooltipTrigger, Tooltip} from '@backstage/ui';
 
 type Props = {
   setValue: (input: string) => void;
+  defaultValue?: string;
   tooltip?: string;
 };
 
@@ -13,7 +14,7 @@ export const ClearValueButton = (props: Props) => {
       <Button
         size='medium'
         iconStart={<RiCloseCircleLine />}
-        onClick={() => props.setValue('')}
+        onClick={() => props.setValue(props.defaultValue || '')}
         variant='tertiary'
       >
         Clear

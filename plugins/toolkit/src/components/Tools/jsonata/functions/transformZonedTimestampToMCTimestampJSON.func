@@ -1,0 +1,5 @@
+function($value, $default) {  
+    ($exists($value) and $value != null)  
+        ? $fromMillisZoned($toMillis($value), "[Y0001]-[M01]-[D01]-[H01].[m01].[s01].[f000]000", "Europe/Brussels")  
+        : ($default ? $dummyMCTimestampJSON() : null)  
+}  

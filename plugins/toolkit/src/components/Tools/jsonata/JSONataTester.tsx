@@ -6,8 +6,8 @@ import CodeMirror from '@uiw/react-codemirror';
 import { vscodeLight } from '@uiw/codemirror-theme-vscode';
 import { json } from '@codemirror/lang-json';
 import { styles, dividerBaseStyle } from './styles';
-import { jsonataLanguage } from './jsonata-lang';
-import { registerCustomFunctions } from './jsonata-functions';
+import { jsonataLanguage } from './codemirror-jsonata';
+import { registerCustomFunctions, loadFuncBindings } from './jsonata-functions';
 import { useResizable } from '../../../hooks';
 
 const sampleInput = JSON.stringify(
@@ -27,7 +27,7 @@ const sampleInput = JSON.stringify(
 const sampleExpression = 'account.order.product.price';
 
 export const JSONataTester = () => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState('{}');
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState<any>(undefined);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +50,8 @@ export const JSONataTester = () => {
       const data = JSON.parse(jsonStr);
       const expression = jsonata(expr);
       registerCustomFunctions(expression);
-      let pathresult = await expression.evaluate(data);
+      const funcBindings = await loadFuncBindings();
+      let pathresult = await expression.evaluate(data, funcBindings);
       if (typeof pathresult === 'undefined') {
         pathresult = '** no match **';
       } else {
@@ -80,7 +81,7 @@ export const JSONataTester = () => {
       {/* Toolbar */}
       <Flex align="center" style={{ alignItems: 'center' }}>
         <Box>
-          <ClearValueButton setValue={(v: string) => { setInput(v); setExpression(v); }} />
+          <ClearValueButton setValue={(v: string) => { setInput(v); setExpression(''); }} defaultValue='{}'/>
           <PasteFromClipboardButton setInput={setInput} />
           <SampleButton setInput={loadSample} sample="sample" />
         </Box>

@@ -2,12 +2,6 @@ import { useEffect, useState } from 'react';
 import { useTechDocsReaderPage } from '@backstage/plugin-techdocs-react';
 import { DrawIoProps } from './props';
 
-declare global {
-    interface Window {
-        GraphViewer: any;
-    }
-}
-
 export const DrawIoAddOn = ({ 
         enableEdit= false, 
         enablePrint= false,

@@ -4,7 +4,7 @@ import { getCustomFunctions } from './jsonata-functions';
 /**
  * CodeMirror stream-based language mode for JSONata expressions.
  * Covers: strings, numbers, booleans/null, operators, path navigation,
- * variables ($xxx), built-in functions, comments, regex, backtick-quoted fields.
+ * variables ($xxx), built-in and custom functions, comments, regex, backtick-quoted fields.
  */
 
 const BUILTIN_FUNCTIONS = new Set([
