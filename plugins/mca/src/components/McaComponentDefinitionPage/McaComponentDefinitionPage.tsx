@@ -85,9 +85,6 @@ export const McaComponentDefinitionPage = () => {
     }
   }, [mca, queryVersion, selectedVersion]);
 
-
-  console.log('MCA Component:', name, queryVersion, selectedVersion, JSON.stringify(mca, null, 2));
-
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading || !selectedVersion) return <Progress />;
 
