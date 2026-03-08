@@ -47,7 +47,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   }
 
   async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
-    this.logger.info(`Add service ${JSON.stringify(serviceInformation)}`);
+    this.logger.info(`Upsert service ${JSON.stringify(serviceInformation)}`);
     await this.db('services').insert({
       applicationCode: serviceInformation.applicationCode,
       service: serviceInformation.serviceName,
@@ -57,7 +57,13 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
       sonarQubeProjectKey: serviceInformation.sonarQubeProjectKey,
       consumedApis: JSON.stringify(serviceInformation.apiDependencies.consumedApis ?? []),
       providedApis: JSON.stringify(serviceInformation.apiDependencies.providedApis ?? []),
-    });
+      dependencies: JSON.stringify(serviceInformation.dependencies ?? []),
+    }).onConflict([
+      'applicationCode',
+      'service',
+      'version',
+      'imageVersion',
+    ]).merge();
   }
 
   async getServiceInformation(
