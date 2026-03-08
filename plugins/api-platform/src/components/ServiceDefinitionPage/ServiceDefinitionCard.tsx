@@ -4,7 +4,7 @@ import {
   Link,
 } from '@backstage/core-components';
 import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
-import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
   AboutField,
 } from '@backstage/plugin-catalog';
@@ -33,8 +33,7 @@ import { RiFileFill } from '@remixicon/react';
 import styles from './ServiceDefinitionCard.module.css';
 import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '@internal/plugin-azure-devops';
 
-export const ServiceDefinitionCard = () => {
-  const { entity } = useEntity<ComponentEntity>();
+export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) => {
   const configApi = useApi(configApiRef);
   const featureFlagsApi = useApi(featureFlagsApiRef);
 
@@ -43,8 +42,8 @@ export const ServiceDefinitionCard = () => {
   const azurePipelines = isAzurePipelinesAvailable(entity);
   const showLibraries = featureFlagsApi.isActive('enable-api-platform-libraries');
 
-  const platform = (entity.metadata[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
-  const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString();
+  const platform = (entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
+  const imageVersion = entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString();
   const entityRef = getCompoundEntityRef(entity);
   const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
 

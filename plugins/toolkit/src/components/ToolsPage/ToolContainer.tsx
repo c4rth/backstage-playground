@@ -12,10 +12,14 @@ export const ToolContainer = (props: ToolContainerProps) => {
             padding: '1rem',
             width: '100%',
             height: '100%',
-            overflow: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
         }}>
             {tool.headerButtons}
-            {tool.component}
+            <div style={{ flex: 1, minHeight: 0 }}>
+                {tool.component}
+            </div>
         </div>
     );
 };

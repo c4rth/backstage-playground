@@ -8,7 +8,7 @@ import { createCatalogService } from './CatalogService';
 import { createServiceService } from './ServiceService';
 import { createSystemService } from './SystemService';
 import { APIDEFINITIONS_FIELDS, LIBRARYDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation, SYSTEMDEFINITIONS_FIELDS } from '@internal/plugin-api-platform-common';
-import { parseOrderByParam, parseSearchParam, parseTypeParam } from './ApiService/utils';
+import { parseOrderByParam, parseSearchParam, parseOwnershipParam, parseApiTypeParam } from './ApiService/utils';
 import { RelationType } from './ApiService/types';
 import { createServiceInformationService } from './ServiceInformationService';
 import { createLibraryService } from './LibraryService';
@@ -82,15 +82,17 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, APIDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const ownership = parseOwnershipParam(req.query.ownership) || "all";
+    const apiType = parseApiTypeParam(req.query.apiType) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await apiService.listApis({ limit, offset, orderBy, search, ownership, userEntityRef }));
+    res.json(await apiService.listApis({ limit, offset, orderBy, search, ownership, apiType, userEntityRef }));
   });
 
   router.get('/apis/count', async (req, res) => {
-    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const ownership = parseOwnershipParam(req.query.ownership) || "all";
+    const apiType = parseApiTypeParam(req.query.apiType) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
-    res.json(await apiService.getApisCount(ownership, userEntityRef));
+    res.json(await apiService.getApisCount(ownership, apiType, userEntityRef));
   });
 
   router.get('/apis/definitions/:system/:apiName', async (req, res) => {
@@ -135,7 +137,7 @@ export async function createRouter(
   // Endpoints: /services
 
   router.get('/services/count', async (req, res) => {
-    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const ownership = parseOwnershipParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
     res.json(await serviceService.getServicesCount(ownership, userEntityRef));
   });
@@ -145,7 +147,7 @@ export async function createRouter(
     const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : undefined;
     const orderBy = parseOrderByParam(req.query.orderBy, SERVICEDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const ownership = parseOwnershipParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
     const dependsOn = parseSearchParam(req.query.dependsOn);
     res.json(await serviceService.listServices({ limit, offset, orderBy, search, ownership, userEntityRef, dependsOn }));
@@ -180,13 +182,13 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, SYSTEMDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const ownership = parseOwnershipParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
     res.json(await systemService.listSystems({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });
 
   router.get('/systems/count', async (req, res) => {
-    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const ownership = parseOwnershipParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
     res.json(await systemService.getSystemsCount(ownership, userEntityRef));
   });
@@ -203,7 +205,7 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, LIBRARYDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const ownership = parseTypeParam(req.query.ownership) || "all";
+    const ownership = parseOwnershipParam(req.query.ownership) || "all";
     const userEntityRef = await getUserEntityRef(ownership, httpAuth, req, userInfo);
     res.json(await libraryService.listLibraries({ limit, offset, orderBy, search, ownership, userEntityRef }));
   });

@@ -77,7 +77,7 @@ const mandatoryColumn: TableColumn<TableRow> =
   field: "mandatory",
   render: ({ mandatory }) => (mandatory ?
     <TooltipTrigger delay={250}>
-      <ButtonIcon size='small' style={{ width: 'auto', background: 'transparent' }} icon={<RiAsterisk color='primary' />} />
+      <ButtonIcon variant='tertiary' size='small' style={{ width: 'auto', background: 'transparent' }} icon={<RiAsterisk color='primary' />} />
       <Tooltip placement='bottom'>Mandatory</Tooltip>
     </TooltipTrigger>
     :
@@ -89,7 +89,6 @@ const commonColumns: TableColumn<TableRow>[] = [
     title: "Name",
     width: "20%",
     field: "name",
-    defaultSort: "asc",
     highlight: true,
   },
   {
@@ -173,7 +172,7 @@ const tableOptions = {
   padding: "dense" as const,
   paging: false,
   draggable: false,
-  thirdSortClick: false,
+  thirdSortClick: true,
   showEmptyDataSourceMessage: true,
 };
 

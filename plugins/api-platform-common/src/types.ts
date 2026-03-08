@@ -2,6 +2,18 @@ import { Entity } from "@backstage/catalog-model";
 
 // API 
 
+export const OPENAPITYPE_LIST = [
+  'all',
+  'enterprise',
+  'public',
+  'experience',
+  'inner',
+  'third-party',
+  'front',
+  'mca'] as const;
+
+export type OpenApiType = 'all' | 'enterprise' | 'public' | 'experience' | 'inner' | 'third-party' | 'front' | 'mca';
+
 export type ApiVersionDefinition = {
   entityRef: string;
   version: string;
@@ -22,11 +34,13 @@ export type ApiRelationDefinition = {
 export type ApiDefinitionsListFields =
   | 'name'
   | 'description'
-  | 'system';
+  | 'system'
+  | 'type';
 
 export const APIDEFINITIONS_FIELDS = [
   'name',
   'description',
+  'type',
   'system'] as const;
 
 export type ApiDefinitionListResult = {
@@ -47,6 +61,7 @@ export type ApiDefinitionsListRequest = {
   orderBy?: ApiDefinitionsOptions,
   search?: string,
   ownership: OwnershipType;
+  apiType: OpenApiType;
   userEntityRef?: string | undefined;
 };
 
@@ -59,15 +74,17 @@ export type ServiceEnvironmentDefinition = {
   dependencies: string[];
 };
 
+export type ServiceEnvironmentDefinitions = {
+  tst?: ServiceEnvironmentDefinition;
+  gtu?: ServiceEnvironmentDefinition;
+  uat?: ServiceEnvironmentDefinition;
+  ptp?: ServiceEnvironmentDefinition;
+  prd?: ServiceEnvironmentDefinition;
+};
+
 export type ServiceVersionDefinition = {
   version: string;
-  environments: {
-    tst?: ServiceEnvironmentDefinition;
-    gtu?: ServiceEnvironmentDefinition;
-    uat?: ServiceEnvironmentDefinition;
-    ptp?: ServiceEnvironmentDefinition;
-    prd?: ServiceEnvironmentDefinition;
-  };
+  environments: ServiceEnvironmentDefinitions;
 };
 
 export type ServiceDefinition = {

@@ -24,16 +24,16 @@ export const ComponentOwnership = ({ storageKey, handleOwnershipChange }: Compon
   return (
     <Box display='flex'>
       <Chip
-        label="Owned"
-        color={selectedType === 'owned' ? 'primary' : 'default'}
-        style={chipStyle}
-        onClick={() => handleSelectChange('owned')}
-      />
-      <Chip
         label="All"
         color={selectedType === 'all' ? 'primary' : 'default'}
         style={chipStyle}
         onClick={() => handleSelectChange('all')}
+      />
+      <Chip
+        label="Owned"
+        color={selectedType === 'owned' ? 'primary' : 'default'}
+        style={chipStyle}
+        onClick={() => handleSelectChange('owned')}
       />
     </Box>
   );

@@ -4,7 +4,7 @@ import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
 import { TextField, TextArea } from 'react-aria-components';
 import { SelectItem, Select, } from '@backstage/core-components';
 import { RiEditBoxLine } from '@remixicon/react';
-import { Button, Flex, Grid, Text } from '@backstage/ui';
+import { Button, Flex, Grid } from '@backstage/ui';
 
 const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * max) + min;
@@ -227,7 +227,6 @@ export const LoremIpsum = () => {
             </Grid.Item>
             <Grid.Item style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Output'>
-                    <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>Output</Text>
                     <TextArea
                         value={output || ''}
                         style={{

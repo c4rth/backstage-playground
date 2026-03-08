@@ -4,11 +4,11 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import ReactJson from 'react-json-view'
-import { Box, Text } from '@backstage/ui';
+import { Box } from '@backstage/ui';
 
 const BASE64_REGEX = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 const exampleJwt =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
 
 export const JwtDecoder = () => {
   const alertApi = useApi(alertApiRef);
@@ -83,7 +83,6 @@ export const JwtDecoder = () => {
         display: 'flex',
         flexDirection: 'column'
       }}>
-        <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>Decoded JWT</Text>
         {props.jwt ? (
           <>
             {props.signatureVerified !== null && (
@@ -115,10 +114,25 @@ export const JwtDecoder = () => {
                 flex: 1,
                 backgroundColor: 'var(--bui-bg-surface-1)'
               }}
+              enableClipboard={true}
             />
           </>
         ) : (
-          <Box><i>No JWT data available</i></Box>
+          <div
+            style={{
+              flex: 1,
+              overflow: 'auto',
+              padding: '8px',
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              border: '1px solid var(--bui-gray-4)',
+              borderRadius: '4px',
+              backgroundColor: 'var(--bui-bg-surface-1)',
+              color: 'var(--bui-fg-default)',
+            }}
+          >
+            <Box style={{ color: 'var(--bui-fg-muted)' }}><i>No JWT data available</i></Box>
+          </div>
         )}
       </Box>
     );

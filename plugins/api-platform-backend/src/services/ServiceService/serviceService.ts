@@ -23,7 +23,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
-import { getUserGroups } from '../common/utils';
+import { getUserGroups, isUserGuest } from '../common/utils';
 import { getCatalogToken } from '../common/token';
 
 function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
@@ -32,7 +32,7 @@ function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
     'spec.type': ['service'],
   };
   if (serviceName) {
-    filter['metadata.service-name'] = serviceName;
+    filter['metadata.annotations.service.depo.be/name'] = serviceName;
   }
   if (system) {
     filter['spec.system'] = system;
@@ -50,9 +50,9 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "
 }
 
 async function innerGetServices(
-  catalogClient: CatalogApi, 
-  auth: AuthService, 
-  orderBy: ServiceDefinitionsOptions | undefined, 
+  catalogClient: CatalogApi,
+  auth: AuthService,
+  orderBy: ServiceDefinitionsOptions | undefined,
   serviceName?: string,
   system?: string
 ): Promise<ServiceDefinition[]> {
@@ -90,6 +90,12 @@ async function fetchServiceEntities(
   ownership: OwnershipType,
   userEntityRef: string | undefined,
 ): Promise<Entity[]> {
+
+  if (ownership === 'owned' && isUserGuest(userEntityRef)) {
+    // Guest users have no owned Services
+    return [];
+  }
+
   const token = await getCatalogToken(auth);
 
   // Fetch user groups in parallel with entities if needed
@@ -129,8 +135,8 @@ function parseDependencies(dependsOn: any): string[] {
 
 // Process entities into ServiceDefinition array
 function processServiceEntities(
-  entities: Entity[], 
-  orderBy: ServiceDefinitionsOptions | undefined, 
+  entities: Entity[],
+  orderBy: ServiceDefinitionsOptions | undefined,
   dependsOn?: string,
   search?: string
 ): ServiceDefinition[] {
@@ -140,14 +146,14 @@ function processServiceEntities(
   for (const entity of entities) {
     if (!entity.metadata || !entity.spec) continue;
 
-    const name = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
+    const name = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
     const system = entity.spec.system?.toString() || '-';
-    const version = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
+    const version = entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString();
     if (!name || !version) continue;
 
     // Apply search filter during iteration to avoid second pass
     if (searchLower) {
-      const matchesSearch = 
+      const matchesSearch =
         name.toLowerCase().includes(searchLower) ||
         system.toLowerCase().includes(searchLower);
       if (!matchesSearch) continue;
@@ -185,10 +191,10 @@ function processServiceEntities(
     }
 
     // Add environment info
-    const platforms = entity.metadata[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
+    const platforms = entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
 
     defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
-      imageVersion: entity.metadata[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
+      imageVersion: entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
       entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
       platform: platforms,
       dependencies: parseDependencies(entity.spec.dependsOn),
@@ -246,7 +252,7 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
       // Inline counting to avoid function call overhead
       const uniqueNames = new Set<string>();
       for (const entity of entities) {
-        const serviceName = entity.metadata?.[ANNOTATION_SERVICE_NAME]?.toString();
+        const serviceName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
         if (serviceName) {
           const system = entity.spec?.system?.toString() ?? '';
           uniqueNames.add(`${system}-${serviceName}`);
@@ -281,12 +287,12 @@ export async function serviceService(options: ServiceServiceOptions): Promise<Se
       const offset = request.offset ?? 0;
       const totalCount = services.length;
       const limit = request.limit ?? totalCount - offset;
-      
+
       // Only slice if needed - avoid creating new array when returning all
-      const items = (offset === 0 && limit >= totalCount) 
-        ? services 
+      const items = (offset === 0 && limit >= totalCount)
+        ? services
         : services.slice(offset, offset + limit);
-      
+
       return { items, offset, limit, totalCount };
     },
 

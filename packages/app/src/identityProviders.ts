@@ -6,8 +6,8 @@ import {
 export const providers: IdentityProviders = [
     {
         id: 'microsoft-auth-provider',
-        title: 'Microsoft',
-        message: 'Sign In using Microsoft Entra ID',
+        title: 'Authenticated',
+        message: 'Sign in using Microsoft Entra ID',
         apiRef: microsoftAuthApiRef,
     },
     'guest'

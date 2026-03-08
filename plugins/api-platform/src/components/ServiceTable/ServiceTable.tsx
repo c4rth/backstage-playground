@@ -1,13 +1,12 @@
 import {
   Link,
-  Progress,
   ResponseErrorPanel,
   Table,
   TableColumn,
 } from '@backstage/core-components';
 import { ComponentChip } from '../common';
-import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest } from '@internal/plugin-api-platform-common';
-import { useEffect, useState } from 'react';
+import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest, ServiceEnvironmentDefinitions, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+import { useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
@@ -20,6 +19,7 @@ type TableRow = {
   name: string;
   system: string;
   serviceDefinition: ServiceDefinition;
+  imageVersions: string[][];
 };
 
 const PAGE_SIZE = 20;
@@ -41,6 +41,16 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
   name: serviceDefinition.name,
   system: serviceDefinition.system,
   serviceDefinition,
+  imageVersions: serviceDefinition.versions.map(version => {
+    const envs: ServiceEnvironmentDefinitions = version.environments;
+    const versions: string[] = [];
+    if (envs.prd) { versions.push(envs.prd.imageVersion); } else { versions.push(''); }
+    if (envs.ptp) { versions.push(envs.ptp.imageVersion); } else { versions.push(''); }
+    if (envs.uat) { versions.push(envs.uat.imageVersion); } else { versions.push(''); }
+    if (envs.gtu) { versions.push(envs.gtu.imageVersion); } else { versions.push(''); }
+    if (envs.tst) { versions.push(envs.tst.imageVersion); } else { versions.push(''); }
+    return versions;
+  }),
 });
 
 const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
@@ -68,19 +78,23 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
       return envData?.imageVersion.toLowerCase().includes(lowerQuery);
     });
   },
-  render: ({ serviceDefinition }) =>
-    renderVersionList(serviceDefinition, (version, idx) => {
+  render: ({ serviceDefinition, imageVersions }) =>
+    renderVersionList(serviceDefinition, (version: ServiceVersionDefinition, idx) => {
       const envData = version.environments[env as keyof typeof version.environments];
-      return envData ? (
+      if (!envData) {
+        return (
+          <div style={EMPTY_STATE_STYLE}>
+            <Text variant="body-medium">-</Text>
+          </div>
+        );
+      }     
+      const index = imageVersions[idx].indexOf(envData.imageVersion);
+      return (
         <ComponentChip
-          index={idx}
+          index={index}
           service={envData}
           link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
         />
-      ) : (
-        <div style={EMPTY_STATE_STYLE}>
-          <Text variant="body-medium">-</Text>
-        </div>
       );
     }),
 });
@@ -109,6 +123,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
       renderVersionList(serviceDefinition, (version, idx) => (
         <ComponentChip
           index={idx}
+          backgroundColor="#C30045"
           text={version.version}
           link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
         />
@@ -146,30 +161,30 @@ const getData = async (
     search: query.search,
     orderBy: query.orderBy
       ? {
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as ServiceDefinitionsListRequest['orderBy']
+        field: query.orderBy.field,
+        direction: query.orderDirection,
+      } as ServiceDefinitionsListRequest['orderBy']
       : undefined,
     ownership,
   });
 
   return result
     ? {
-        data: result.items.map(toRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 };
 
 export const ServiceTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [loadingCount, setLoadingCount] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(
     () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
@@ -177,55 +192,40 @@ export const ServiceTable = () => {
 
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchCount = async () => {
-      setLoadingCount(true);
-      setError(null);
-      try {
-        const count = await apiPlatformApi.getServicesCount(ownership);
-        if (isMounted) {
-          setCountRows(count);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err as Error);
-        }
-      } finally {
-        if (isMounted) {
-          setLoadingCount(false);
-        }
-      }
-    };
-
-    fetchCount();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [apiPlatformApi, ownership]);
-
   const fetchData = async (query: Query<TableRow>) => {
+    setLoading(true);
+    setError(null);
     if (query.search !== undefined) {
       sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
     }
-    return getData(apiPlatformApi, query, ownership);
+    try {
+      const result = await getData(apiPlatformApi, query, ownership);
+      setCountRows(result.totalCount);
+      return result;
+    } catch (e) {
+      setError(e as Error);
+      return {
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loadingCount) return <Progress />;
   if (error) return <ResponseErrorPanel error={error} />;
 
   return (
     <Table<TableRow>
-      isLoading={loadingCount}
+      key={ownership}
       columns={COLUMNS}
       options={{
         search: true,
         padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: !loadingCount,
+        showEmptyDataSourceMessage: countRows === 0 && !loading,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,

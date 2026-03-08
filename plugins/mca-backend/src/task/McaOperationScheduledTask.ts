@@ -27,15 +27,17 @@ export class McaOperationScheduledTask {
     }
 
     _getColumns(columnNumber: number) {
+        // Columns 4-8: component, prdVersion are first 2; applicationCode, packageName are last 2
+        // Middle columns (0-4): p1Version, p2Version, p3Version, p4Version
         const baseColumns = {
             'component': '_0',
             'prdVersion': '_1',
-            'p1Version': '_2',
-            'p2Version': '_3',
+            'p1Version': columnNumber >= 5 ? '_2' : undefined,
+            'p2Version': columnNumber >= 6 ? '_3' : undefined,
             'p3Version': columnNumber >= 7 ? '_4' : undefined,
-            'p4Version': columnNumber === 8 ? '_5' : undefined,
-            'applicationCode': `_${columnNumber >= 7 ? columnNumber - 2 : 4}`,
-            'packageName': `_${columnNumber >= 7 ? columnNumber - 1 : 5}`,
+            'p4Version': columnNumber >= 8 ? '_5' : undefined,
+            'applicationCode': `_${columnNumber - 2}`,
+            'packageName': `_${columnNumber - 1}`,
         };
         return baseColumns;
     }
@@ -72,8 +74,8 @@ export class McaOperationScheduledTask {
                                 const columnCount = Object.keys(data).length;
                                 columns = this._getColumns(columnCount);
                                 mcaVersions = {
-                                    p1Version: data[columns.p1Version],
-                                    p2Version: data[columns.p2Version],
+                                    p1Version: columns.p1Version ? data[columns.p1Version] : '',
+                                    p2Version: columns.p2Version ? data[columns.p2Version] : '',
                                     p3Version: columns.p3Version ? data[columns.p3Version] : '',
                                     p4Version: columns.p4Version ? data[columns.p4Version] : '',
                                 };
@@ -83,8 +85,8 @@ export class McaOperationScheduledTask {
                             components.push({
                                 component: data[columns.component],
                                 prdVersion: data[columns.prdVersion],
-                                p1Version: data[columns.p1Version],
-                                p2Version: data[columns.p2Version],
+                                p1Version: columns.p1Version ? data[columns.p1Version] : '',
+                                p2Version: columns.p2Version ? data[columns.p2Version] : '',
                                 p3Version: columns.p3Version ? data[columns.p3Version] : '',
                                 p4Version: columns.p4Version ? data[columns.p4Version] : '',
                                 applicationCode: data[columns.applicationCode],

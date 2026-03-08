@@ -97,13 +97,9 @@ export const TechDocsTable = () => {
         return response.items;
     });
 
-    if (loading) {
-        return <Progress />;
-    }
+    if (error) return <ResponseErrorPanel error={error} />;
+    if (loading) return <Progress />;
 
-    if (error) {
-        return <ResponseErrorPanel error={error} />;
-    }
 
     const rows = items?.map(toEntityRow) || [];
     const showPagination = rows.length > 20 || false;

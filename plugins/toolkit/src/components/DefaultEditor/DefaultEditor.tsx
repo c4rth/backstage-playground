@@ -6,7 +6,7 @@ import {
     SampleButton,
 } from '../Buttons';
 import { TextField, TextArea, } from 'react-aria-components';
-import { Box, Flex, Grid , Text} from '@backstage/ui';
+import { Box, Flex, Grid } from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
 
 type Props = {
@@ -15,8 +15,6 @@ type Props = {
     output?: string;
     mode?: string;
     minRows?: number;
-    inputLabel?: string;
-    outputLabel?: string;
     setMode?: (value: string) => void;
     modes?: Array<string>;
     leftContent?: ReactElement;
@@ -34,8 +32,6 @@ export const DefaultEditor = (props: Props) => {
         input,
         setInput,
         output,
-        inputLabel = 'Input',
-        outputLabel = 'Output',
         mode,
         setMode,
         modes,
@@ -50,7 +46,7 @@ export const DefaultEditor = (props: Props) => {
 
     return (
         <Flex direction="column" style={{ height: '100%' }}>
-            <Flex mb='4' align='center' style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Flex align='center' style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                     {modes && modes.length > 0 && (
                         <>
@@ -80,7 +76,6 @@ export const DefaultEditor = (props: Props) => {
                 >
                     {leftContent ?? (
                         <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Input'>
-                            <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{inputLabel}</Text>
                             <TextArea
                                 value={input}
                                 onChange={e => setInput(e.target.value)}
@@ -107,7 +102,6 @@ export const DefaultEditor = (props: Props) => {
                     style={{ padding: '8px !important', display: 'flex', flexDirection: 'column', width: '50%' }}>
                     {rightContent ?? (
                         <TextField style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} aria-label='Output'>
-                            <Text variant='body-large' style={{ display: 'block', marginBottom: '4px' }}>{outputLabel}</Text>
                             <TextArea
                                 value={output || ''}
                                 rows={minRows}

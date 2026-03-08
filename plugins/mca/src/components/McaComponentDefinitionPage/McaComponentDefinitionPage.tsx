@@ -63,7 +63,6 @@ export const McaComponentDefinitionPage = () => {
     setVersions([]);
     setLoading(true);
     setError(null);
-    
     getMca(mcaApi, name!)
       .then(component => setMca(component))
       .catch(err => setError(err))
@@ -86,10 +85,8 @@ export const McaComponentDefinitionPage = () => {
     }
   }, [mca, queryVersion, selectedVersion]);
 
+  if (error) return <ResponseErrorPanel error={error} />;
   if (loading || !selectedVersion) return <Progress />;
-  if (error) {
-    return <ResponseErrorPanel error={error} />;
-  }
 
   return (
     <PageWithHeader

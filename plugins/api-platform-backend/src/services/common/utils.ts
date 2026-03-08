@@ -27,3 +27,7 @@ export async function getUserGroups(catalogClient: CatalogApi, auth: AuthService
     { token });
   return entities.items.map(group => stringifyEntityRef(group));
 }
+
+export function isUserGuest(userEntityRef: string | undefined): boolean {
+  return !userEntityRef || userEntityRef.endsWith('guest');
+}

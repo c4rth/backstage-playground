@@ -208,9 +208,9 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
     const baseQuery = this.db<DbMcaRow>('mca_components')
       .count({ count: '*' });
     if (type === 'element') {
-      baseQuery.where('component', 'like', 'E%');
+      baseQuery.where('type', 'e');
     } else if (type === 'operation') {
-      baseQuery.where('component', 'like', 'O%');
+      baseQuery.where('type', 'o');
     }
     const total = await baseQuery;
     this.logger.debug(`Mca components count: ${JSON.stringify(total)}`);

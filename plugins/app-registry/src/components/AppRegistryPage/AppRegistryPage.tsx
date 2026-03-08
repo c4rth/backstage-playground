@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from 'react';
 import {
   Progress,
   ResponseErrorPanel,
@@ -7,11 +8,8 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
 import { AppRegistryOperation } from '../../types';
-import { InfoPopOver } from '@internal/plugin-api-platform-react';
 import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
-import { ButtonIcon, Column, Table, TableHeader, TableBody, Row, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid, CellText } from '@backstage/ui';
-import { ResizableTableContainer } from 'react-aria-components';
-import { useAsyncList } from 'react-stately';
+import { ButtonIcon, Table, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid, CellText, useTable, ColumnConfig } from '@backstage/ui';
 
 type TableRow = {
   id: number,
@@ -31,31 +29,35 @@ const PdpMappingTable = ({ mapping }: { mapping: { valuePath: string; pdpField: 
   </Grid.Root>
 );
 
+const AbacTooltip = ({ icon, children }: { icon: JSX.Element, children: React.ReactNode }) => (
+  <TooltipTrigger delay={250}>
+    <ButtonIcon size='medium' variant='tertiary' style={{ width: 'auto', background: 'transparent' }} icon={icon} />
+    <Tooltip placement='bottom' style={{ maxWidth: '50em' }}>
+      {children}
+    </Tooltip>
+  </TooltipTrigger>
+);
+
 const renderAbacCell = (operation: AppRegistryOperation) => {
   if (!operation.abac) {
     return (
-      <TooltipTrigger delay={250}>
-        <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />} />
-        <Tooltip placement='bottom'>No ABAC</Tooltip>
-      </TooltipTrigger>
+      <AbacTooltip icon={<RiIndeterminateCircleLine color='var(--bui-fg-solid-disabled)' />}>
+        No ABAC
+      </AbacTooltip>
     );
   }
   if (operation.pdpMapping) {
     return (
-      <InfoPopOver
-        title="PDP Mapping"
-        variant="h6"
-        delayTime={250}
-        content={<PdpMappingTable mapping={operation.pdpMapping} />}>
-        <RiAddCircleFill color='primary' />
-      </InfoPopOver>
+      <AbacTooltip icon={<RiAddCircleFill color='primary' />}>
+        <Text variant='title-x-small'><b>PDP Mapping</b></Text>
+        <PdpMappingTable mapping={operation.pdpMapping} />
+      </AbacTooltip>
     );
   }
   return (
-    <TooltipTrigger delay={250}>
-      <ButtonIcon size='medium' style={{ width: 'auto', background: 'transparent' }} icon={<RiCheckboxCircleFill color='primary' />} />
-      <Tooltip placement='bottom'>No PDP mapping</Tooltip>
-    </TooltipTrigger>
+    <AbacTooltip icon={<RiCheckboxCircleFill color='primary' />}>
+      No PDP mapping
+    </AbacTooltip>
   );
 };
 
@@ -70,51 +72,97 @@ const toTableRow = (operation: AppRegistryOperation, idx: number): TableRow => (
   operation,
 });
 
+const columns: ColumnConfig<TableRow>[] = [
+  {
+    id: 'method',
+    label: 'Method',
+    isRowHeader: true,
+    cell: item => <CellText title={item.operation.method} />,
+    isSortable: true,
+    width: '10%'
+  }, {
+    id: 'name',
+    label: 'Name',
+    cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>,
+    isSortable: true,
+    width: '70%'
+  }, {
+    id: 'abac',
+    label: 'ABAC',
+    cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>,
+    width: '10%'
+  }, {
+    id: 'bFunction',
+    label: 'B-Function',
+    cell: item => <CellText title={item.operation.bFunction ?? '-'} />,
+    isSortable: true,
+    width: '10%'
+  }
+];
+
+async function fetchData(
+  getOperations: (system?: string, appName?: string, appVersion?: string, environment?: string) => Promise<AppRegistryOperation[] | undefined>,
+  system?: string,
+  appName?: string,
+  appVersion?: string,
+  environment?: string,
+) {
+  const data = await getOperations(system, appName, appVersion, environment);
+  return data?.map(toTableRow) ?? [];
+}
+
 export const AppRegistryPage = () => {
   const { entity } = useEntity<ComponentEntity>();
   const system = entity.spec.system;
-  const appName = entity.metadata[ANNOTATION_SERVICE_NAME]?.toString();
-  const appVersion = entity.metadata[ANNOTATION_SERVICE_VERSION]?.toString();
+  const appName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+  const appVersion = entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString();
   const environment = entity.spec?.lifecycle?.toUpperCase();
+  const isFirstRender = useRef(true);
 
   const getOperations = useGetOperations();
 
-  const list = useAsyncList<TableRow>({
-    async load({ }) {
-      const data = await getOperations(
-        system,
-        appName,
-        appVersion,
-        environment,
-      );
-      const rows = data?.map(toTableRow) ?? [];
-      const sortedRows = rows.sort((a, b) => a.operation.name.localeCompare(b.operation.name));
-      return { items: sortedRows };
+  const {
+    tableProps,
+    reload,
+  } = useTable({
+    mode: 'complete',
+    getData: () => fetchData(getOperations, system, appName, appVersion, environment),
+    initialSort: {
+      column: 'name',
+      direction: 'ascending'
     },
-    async sort({ items, sortDescriptor }) {
-      return {
-        items: items.sort((a, b) => {
-          const desc = sortDescriptor.direction === 'descending' ? -1 : 1;
-          switch (sortDescriptor.column) {
-            case 'method':
-              return desc * a.operation.method.localeCompare(b.operation.method);
-            case 'name':
-              return desc * a.operation.name.localeCompare(b.operation.name);
-            case 'bFunction':
-              return desc * ((a.operation.bFunction ?? '').localeCompare(b.operation.bFunction ?? ''));
-            default:
-              return 0;
-          }
-        }),
-      };
-    },
-    initialSortDescriptor: { column: 'name', direction: 'ascending' },
+    sortFn: (items, {
+      column,
+      direction
+    }) => {
+      return [...items].sort((a, b) => {
+        const desc = direction === 'descending' ? -1 : 1;
+        switch (column) {
+          case 'method':
+            return desc * a.operation.method.localeCompare(b.operation.method);
+          case 'name':
+            return desc * a.operation.name.localeCompare(b.operation.name);
+          case 'bFunction':
+            return desc * ((a.operation.bFunction ?? '').localeCompare(b.operation.bFunction ?? ''));
+          default:
+            return 0;
+        }
+      });
+    }
   });
 
-  if (list.error) {
-    return <ResponseErrorPanel title="Failed to call AppRegistry" error={list.error} />;
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    reload();
+  }, [entity, reload]);
+
+  if (tableProps.error) {
+    return <ResponseErrorPanel title="Failed to call AppRegistry" error={tableProps.error} />;
   }
-  if (list.isLoading) {
+  if (tableProps.loading) {
     return <Progress />;
   }
 
@@ -125,27 +173,15 @@ export const AppRegistryPage = () => {
           Operations
         </Text>
       </CardHeader>
-      <CardBody style={{ padding: '0'}}>
-        <ResizableTableContainer >
-          <Table sortDescriptor={list.sortDescriptor} onSortChange={list.sort} aria-label="App Registry operations" >
-            <TableHeader>
-              <Column id='method' isRowHeader width='10%' allowsSorting>Method</Column>
-              <Column id='name' width='70%' allowsSorting>Name</Column>
-              <Column id='abac' width='10%'>ABAC</Column>
-              <Column id='bFunction' width='10%' allowsSorting>B-Function</Column>
-            </TableHeader>
-            <TableBody items={list.items} renderEmptyState={emptyState}>
-                {(item: TableRow) => (
-                <Row id={item.id} className='custom-bui-TableRow'>
-                  <CellText title={item.operation.method} />
-                  <Cell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>
-                  <Cell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>
-                  <CellText title={item.operation.bFunction ?? '-'} />
-                </Row>
-                )}
-            </TableBody>
-          </Table>
-        </ResizableTableContainer>
+      <CardBody style={{ padding: '0' }}>
+        <Table
+          columnConfig={columns}
+          {...tableProps}
+          pagination={{
+            type: 'none',
+          }}
+          emptyState={emptyState()}
+        />
       </CardBody>
     </Card>
   );

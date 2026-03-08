@@ -25,8 +25,8 @@ const DEFAULT_PLATFORM = 'cloud';
 const DEFAULT_NAMESPACE = 'default';
 
 const getApiInfo = (entity: Entity): EntityInfo | null => {
-    const apiName = entity.metadata[ANNOTATION_API_NAME];
-    const apiVersion = entity.metadata[ANNOTATION_API_VERSION];
+    const apiName = entity.metadata.annotations?.[ANNOTATION_API_NAME];
+    const apiVersion = entity.metadata.annotations?.[ANNOTATION_API_VERSION];
     const system = (entity.spec?.system as string) ?? '';
 
     if (!apiName || !apiVersion) {
@@ -54,8 +54,8 @@ const getSystemInfo = (entity: Entity): EntityInfo => ({
 });
 
 const getServiceInfo = (entity: Entity): EntityInfo | null => {
-    const serviceName = entity.metadata[ANNOTATION_SERVICE_NAME];
-    const serviceVersion = entity.metadata[ANNOTATION_SERVICE_VERSION];
+    const serviceName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME];
+    const serviceVersion = entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION];
     const lifecycle = (entity.spec?.lifecycle as string) ?? '';
     const system = (entity.spec?.system as string) ?? '';
 
@@ -64,8 +64,8 @@ const getServiceInfo = (entity: Entity): EntityInfo | null => {
     }
 
     const description = entity.metadata.description ?? '';
-    const imageVersion = entity.metadata[ANNOTATION_IMAGE_VERSION] ?? 'n/a';
-    const platform = entity.metadata[ANNOTATION_SERVICE_PLATFORM] ?? DEFAULT_PLATFORM;
+    const imageVersion = entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION] ?? 'n/a';
+    const platform = entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] ?? DEFAULT_PLATFORM;
 
     return {
         type: 'service',

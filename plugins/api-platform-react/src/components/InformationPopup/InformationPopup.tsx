@@ -1,16 +1,15 @@
 import { ReactNode } from 'react';
 import { RiInformationLine } from '@remixicon/react';
-import { InfoPopOver } from '@internal/plugin-api-platform-react';
-import { Box, Flex, Text, TextVariants } from '@backstage/ui';
+import { Box, Flex, Text, TextVariants, DialogTrigger, ButtonIcon, Popover  } from '@backstage/ui';
 
-export interface InfoPopUpProps {
+export interface InformationPopupProps {
     text: string;
     title?: string;
     variant?: TextVariants;
     content: ReactNode;
 }
 
-export const InfoPopUp = (props: InfoPopUpProps) => {
+export const InformationPopup = (props: InformationPopupProps) => {
 
     const { text, title, variant = 'body-medium', content } = props;
 
@@ -19,19 +18,23 @@ export const InfoPopUp = (props: InfoPopUpProps) => {
             <Box as="span">
                 <Text variant={variant} style={{ color: "var(--bui-fg-solid)" }}>{text}</Text>
             </Box>
-            <InfoPopOver title={title} content={content}>
-                <RiInformationLine style={{ color: "var(--bui-fg-solid)" }} aria-label="More information" />
-            </InfoPopOver>
+            <DialogTrigger>
+                <ButtonIcon variant='tertiary' size='medium' style={{ width: 'auto', background: 'transparent' }} icon={ <RiInformationLine style={{ color: "var(--bui-fg-solid)" }} aria-label="More information" />} />
+                <Popover placement='bottom' style={{ maxWidth: '50em' }}>
+                    <Text variant='title-x-small'><b>{title}</b></Text>
+                    {content}
+                </Popover>
+            </DialogTrigger>
         </Flex>
     );
-}
+};
 
-export interface InfoPopUpContentProps {
+export interface InformationPopupContentProps {
     text1: string;
     text2?: string;
 }
 
-export const InfoPopUpContent = (props: InfoPopUpContentProps) => {
+export const InformationPopupContent = (props: InformationPopupContentProps) => {
     const { text1, text2 } = props;
     return (
         <Box>

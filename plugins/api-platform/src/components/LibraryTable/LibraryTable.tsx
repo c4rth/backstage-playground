@@ -69,10 +69,10 @@ const STORAGE_SEARCH_KEY = 'librariesTablePageSearch';
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
-  name: entity.metadata[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?',
+  name: entity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?',
   description: entity.metadata.description ?? '',
   entityRef: stringifyEntityRef(entity),
-  latestVersion: entity.metadata[ANNOTATION_LIBRARY_VERSION]?.toString() ?? '-',
+  latestVersion: entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString() ?? '-',
   system: entity.spec?.system?.toString() ?? '-',
 });
 
@@ -112,20 +112,29 @@ const getData = async (
 export const LibraryTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
+  const [countRows, setCountRows] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(
     () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
   );
 
   const fetchData = async (query: Query<TableRow>) => {
+    setLoading(true);
+    setCountRows(0);
     try {
+      setError(null);
       if (query.search !== undefined) {
         sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
       }
-      return getData(apiPlatformApi, ownership, query);
+      const result = await getData(apiPlatformApi, ownership, query);
+      setCountRows(result.totalCount);
+      return result;
     } catch (err) {
       setError(err as Error);
       return { data: [], page: 0, totalCount: 0 };
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -133,12 +142,14 @@ export const LibraryTable = () => {
 
   return (
     <Table<TableRow>
+      key={ownership}
       columns={columns}
       options={{
         search: true,
         padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
+        showEmptyDataSourceMessage: countRows === 0 && !loading,
         draggable: false,
         thirdSortClick: false,
         searchText: initialSearch,
@@ -152,7 +163,6 @@ export const LibraryTable = () => {
         </Flex>
       }
       data={fetchData}
-      key={ownership}
     />
   );
 };

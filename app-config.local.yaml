@@ -17,6 +17,9 @@ backend:
       - matchers:
           plugin: mca
         level: info
+      - matchers:
+          plugin: api-platform
+        level: debug
       #- matchers:
       #    plugin: search
        # level: debug

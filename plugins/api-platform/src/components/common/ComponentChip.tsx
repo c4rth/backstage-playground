@@ -2,7 +2,7 @@ import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-comm
 import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { Text, TooltipTrigger, Tooltip, Flex } from '@backstage/ui';
+import { Text, TooltipTrigger, Tooltip, Flex, Box } from '@backstage/ui';
 
 export type ComponentChipProps = {
     index: number;
@@ -22,21 +22,41 @@ const alphaToHex = (alpha: number): string => {
 }
 
 const applyAlpha = (color: string, alpha: number): string => {
-   return `${color}${alphaToHex(alpha)}`;
+    return `${color}${alphaToHex(alpha)}`;
 };
 
-const getChipStyles = (index: number, backgroundColor: string) => {
-    const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
-    const bgColor = applyAlpha(backgroundColor, alphaValue);
-    
-    const textColor = alphaValue <= 0.5 
-        ? 'var(--bui-fg-primary)'
-        : 'var(--bui-fg-secondary)';
-    
-    return {
-        backgroundColor: bgColor,
-        color: textColor,
-    };
+const backgroundColors = [
+    'var(--belui-chip-bg-color1)',
+    'var(--belui-chip-bg-color2)',
+    'var(--belui-chip-bg-color3)',
+    'var(--belui-chip-bg-color4)',
+    'var(--belui-chip-bg-color5)',
+];
+
+const textColors = [
+    'var(--belui-chip-fg-color1)',
+    'var(--belui-chip-fg-color2)',
+    'var(--belui-chip-fg-color3)',
+    'var(--belui-chip-fg-color4)',
+    'var(--belui-chip-fg-color5)',
+];
+
+const getChipStyles = (index: number, backgroundColor: string | undefined) => {
+    if (backgroundColor) {
+        const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
+        const textColor = alphaValue <= 0.5
+            ? 'var(--bui-fg-primary)'
+            : 'var(--bui-bg)';
+        return {
+            backgroundColor: applyAlpha(backgroundColor, alphaValue),
+            color: textColor,
+        };
+    } else {
+        return {
+            backgroundColor: backgroundColors[index % backgroundColors.length],
+            color: textColors[index % textColors.length], 
+        };;
+    }
 };
 
 const PLATFORM_ICONS = {
@@ -64,7 +84,7 @@ export const ComponentChip = ({
     service,
     disabled = false,
     clickable = true,
-    backgroundColor = "#C30045",
+    backgroundColor,
 }: ComponentChipProps) => {
     const chipStyles = getChipStyles(index, backgroundColor);
 
@@ -73,7 +93,7 @@ export const ComponentChip = ({
     const chipIcon = text ? icon : platformIcon;
 
     const tooltipContent = service ? (
-        <>
+        <Box>
             <Text>Platform: <b>{service.platform}</b></Text>
             <br />
             <Text>Version: <b>{service.imageVersion}</b></Text>
@@ -90,7 +110,7 @@ export const ComponentChip = ({
                     </Flex>
                 </>
             )}
-        </>
+        </Box>
     ) : null;
 
     const chip = (
@@ -101,8 +121,8 @@ export const ComponentChip = ({
             clickable={clickable}
             disabled={disabled}
             icon={chipIcon}
-            style={{ 
-                padding: tooltipContent ? 5 : 0, 
+            style={{
+                padding: tooltipContent ? 5 : 0,
                 margin: 0,
                 ...chipStyles,
             }}
@@ -112,7 +132,7 @@ export const ComponentChip = ({
     const content = tooltipContent ? (
         <TooltipTrigger trigger='hover' delay={250}>
             {chip}
-            <Tooltip placement="bottom">
+            <Tooltip placement="bottom" style={{ maxWidth: '50rem'}}>
                 {tooltipContent}
             </Tooltip>
         </TooltipTrigger>

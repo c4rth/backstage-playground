@@ -52,28 +52,30 @@ const serviceColumns: TableColumn<TableRow>[] = [
 ];
 
 const toRow = (entity: Entity, idx: number): TableRow => ({
-    id: idx,
-    name: entity.metadata[ANNOTATION_API_NAME]?.toString() ?? '?',
-    version: entity.metadata[ANNOTATION_API_VERSION]?.toString() ?? '?',
-    system: entity.spec?.system?.toString() ?? '-',
+  id: idx,
+  name: entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '?',
+  version: entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString() ?? '?',
+  system: entity.spec?.system?.toString() ?? '-',
 });
 
 const createLocalEntity = (name: string): Entity => ({
-    apiVersion: 'backstage.io/v1alpha1',
-    kind: 'API',
-    metadata: {
-        name,
-        [ANNOTATION_API_NAME]: name,
-        [ANNOTATION_API_VERSION]: 'local',
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'API',
+  metadata: {
+    name,
+    annotations: {
+      [ANNOTATION_API_NAME]: name,
+      [ANNOTATION_API_VERSION]: 'local',
     },
+  },
 } as Entity);
 
 const tableOptions = {
-    search: true,
-    padding: 'dense' as const,
-    paging: false,
-    draggable: false,
-    thirdSortClick: false,
+  search: true,
+  padding: 'dense' as const,
+  paging: false,
+  draggable: false,
+  thirdSortClick: false,
 };
 
 interface ServiceApiRelationCardProps {
@@ -124,6 +126,7 @@ export const ServiceApiRelationCard = ({ dependency }: ServiceApiRelationCardPro
   }
 
   const title = dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs';
+
   const rows = entities.map(toRow);
 
   return (
