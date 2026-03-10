@@ -49,6 +49,7 @@ export const ApiDefinitionCard = () => {
   const definition = entity.spec.definition.toString();
   const isLinterAvailable = isApiDocsSpectralLinterAvailable(entity);
   const isMcaApi = entity.metadata.annotations?.['api.depo.be/type'] === 'mca';
+  const isDeadCommonComponents = entity.metadata.annotations?.['api.depo.be/name'] === 'common-components' && entity.metadata.annotations?.['api.depo.be/project'] === 'dead';
 
   return (
     <TabbedLayout>
@@ -95,7 +96,7 @@ export const ApiDefinitionCard = () => {
             </AboutField>
           </Box>
           <ComponentAboutContent entity={entity} />
-          {!isMcaApi && (
+          {!isMcaApi && !isDeadCommonComponents && (
             <>
               <Box mt='5'>
                 <AboutField label="Azure Artifact" gridSizes={{ xs: 12 }}>
@@ -119,13 +120,22 @@ export const ApiDefinitionCard = () => {
             </>
           )}
           {isMcaApi && (
-              <Box mt='5'>
-                <AboutField label="MCA Operation" gridSizes={{ xs: 12 }}>
-                  <Link to={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`} >
-                    <ComponentDisplayName text={`${entity.metadata.annotations?.['api.depo.be/name']}`} type='api' />
-                  </Link>
-                </AboutField>
-              </Box>
+            <Box mt='5'>
+              <AboutField label="MCA Operation" gridSizes={{ xs: 12 }}>
+                <Link to={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`} >
+                  <ComponentDisplayName text={`${entity.metadata.annotations?.['api.depo.be/name']}`} type='api' />
+                </Link>
+              </AboutField>
+            </Box>
+          )}
+          {isDeadCommonComponents && (
+            <Box mt='5'>
+              <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
+                <Link to={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`} target="_blank" rel="noopener noreferrer">
+                  <ComponentDisplayName text={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`} type='url' />
+                </Link>
+              </AboutField>
+            </Box>
           )}
         </InfoCard>
       </TabbedLayout.Route>
