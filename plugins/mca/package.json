@@ -42,7 +42,7 @@
     "@internal/plugin-mca-common": "workspace:^",
     "@material-table/core": "3.2.5",
     "@remixicon/react": "^4.6.0",
-    "fast-xml-parser": "^5.4.2",
+    "fast-xml-parser": "^5.5.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-use": "^17.2.4"
