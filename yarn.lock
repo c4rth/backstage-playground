@@ -6435,7 +6435,7 @@ __metadata:
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
-    fast-xml-parser: "npm:^5.5.4"
+    fast-xml-parser: "npm:^5.5.5"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"
@@ -21725,16 +21725,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^5.5.4":
-  version: 5.5.4
-  resolution: "fast-xml-parser@npm:5.5.4"
+"fast-xml-parser@npm:^5.5.5":
+  version: 5.5.5
+  resolution: "fast-xml-parser@npm:5.5.5"
   dependencies:
     fast-xml-builder: "npm:^1.1.3"
     path-expression-matcher: "npm:^1.1.3"
     strnum: "npm:^2.1.2"
   bin:
     fxparser: src/cli/cli.js
-  checksum: 10/590c839105658281b01e76df1e4d669b09a3dda0167c15a4f5c2ee0959d93355a82556d84e2c85f701de8580bd45c236961d6012ba6ad939461d3b2c6053d85c
+  checksum: 10/2f13b9364d51cd3461f0bd7f6f271e1d68e87c044d4e6fc41a0bc5bfc3dc62965190c22a904175e6f825f94250c4a45acfdfb5eef1d5a631e072184b74e14df6
   languageName: node
   linkType: hard
 
