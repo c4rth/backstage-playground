@@ -82,7 +82,7 @@ const extractNameAndVersion = (fullName: string): { name: string; version: strin
 
 const toRow = (entity: Entity, idx: number): TableRow => {
   let version = entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
-  let name = entity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?';
+  let name = entity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString() ?? entity.metadata.name;
   let valid = true;
   if (!version) {
     const extracted = extractNameAndVersion(name);
@@ -140,11 +140,11 @@ export const ServiceLibraryRelationCard = () => {
           kind: 'Component',
           metadata: {
             name: depName,
-            'library.depo.be/name': depName,
-            'library.depo.be/version': undefined,
+            annotations: {
+              'library.depo.be/name': depName,
+            }
           },
           spec: {
-            type: 'library',
             system: '-',
           },
         });
