@@ -35,11 +35,14 @@ export const ApiDefinitionPage = () => {
   const [apiEntity, setApiEntity] = useState<ApiEntity | undefined>(undefined);
   const isInitialLoad = useRef(true);
 
+  // TODO
+  /*
   useEffect(() => {
     setSelectedVersion(undefined);
     setApiEntity(undefined);
     isInitialLoad.current = true;
   }, [name, system, queryVersion]);
+  */
 
   useEffect(() => {
     if (!selectedVersion && versions.length > 0) {

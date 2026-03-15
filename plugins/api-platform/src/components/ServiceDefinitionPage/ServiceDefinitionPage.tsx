@@ -53,12 +53,16 @@ export const ServiceDefinitionPage = () => {
     [serviceDefinition]
   );
 
+  // TODO
+  /*
   useEffect(() => {
+    console.log("reinit service definition page", { name, system, queryVersion, queryEnv });
     setSelectedVersion(undefined);
     setSelectedEnvironment(undefined);
     setServiceEntity(undefined);
     isInitialLoad.current = true;
   }, [name, system, queryVersion, queryEnv]);
+  */
 
   useEffect(() => {
     if (!selectedVersion && versions.length > 0) {
