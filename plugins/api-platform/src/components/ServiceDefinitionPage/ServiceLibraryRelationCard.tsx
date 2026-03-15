@@ -140,8 +140,8 @@ export const ServiceLibraryRelationCard = () => {
           kind: 'Component',
           metadata: {
             name: depName,
-            'library-name': depName,
-            'library-version': undefined,
+            'library.depo.be/name': depName,
+            'library.depo.be/version': undefined,
           },
           spec: {
             type: 'library',
