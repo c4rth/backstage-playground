@@ -45,31 +45,6 @@
   --belui-chip-fg-color4: #4A1C8A;
   --belui-chip-fg-color5: #1F2933;
 
-  .custom-bui-TableRow {
-    border-bottom: 1px solid var(--bui-border);
-    transition: color 0.2s ease-in-out;
-
-    &[data-selected] {
-      background-color: var(--bui-bg-tint-pressed);
-    }
-
-    &[data-pressed] {
-      background-color: var(--bui-bg-tint-pressed);
-    }
-
-    &[data-disabled] {
-      background-color: var(--bui-bg-tint-disabled);
-    }
-
-    &[data-react-aria-pressable='true'] {
-      cursor: pointer;
-    }
-
-    &:nth-child(even) {
-      background-color: var(--bui-bg-surface-2);
-    }
-  }
-
 }
 
 [data-theme-mode='dark'] {

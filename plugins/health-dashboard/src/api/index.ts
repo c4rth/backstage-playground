@@ -1,0 +1,1 @@
+export { healthDashboardBackendApiRef, HealthDashboardBackendClient } from './HealthDashboardBackendApi';

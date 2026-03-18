@@ -45,6 +45,7 @@
     "@internal/plugin-api-platform-common": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
     "@internal/plugin-azure-devops": "workspace:^",
+    "@internal/plugin-health-dashboard": "workspace:^",
     "@internal/plugin-mca": "workspace:^",
     "@internal/plugin-mca-common": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",

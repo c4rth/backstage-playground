@@ -6367,6 +6367,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@internal/plugin-health-dashboard@workspace:^, @internal/plugin-health-dashboard@workspace:plugins/health-dashboard":
+  version: 0.0.0-use.local
+  resolution: "@internal/plugin-health-dashboard@workspace:plugins/health-dashboard"
+  dependencies:
+    "@backstage/catalog-model": "npm:^1.7.6"
+    "@backstage/cli": "npm:^0.35.4"
+    "@backstage/core-components": "npm:^0.18.7"
+    "@backstage/core-plugin-api": "npm:^1.12.3"
+    "@backstage/plugin-catalog-react": "npm:^2.0.0"
+    "@backstage/theme": "npm:^0.7.2"
+    "@backstage/ui": "npm:^0.12.0"
+    "@internal/plugin-api-platform-common": "workspace:^"
+    "@remixicon/react": "npm:^4.6.0"
+    "@types/react": "npm:*"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-aria-components: "npm:^1.14.0"
+    react-dom: "npm:^18.2.0"
+    react-router-dom: "npm:^6.3.0"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  languageName: unknown
+  linkType: soft
+
 "@internal/plugin-iframe@workspace:^, @internal/plugin-iframe@workspace:plugins/iframe":
   version: 0.0.0-use.local
   resolution: "@internal/plugin-iframe@workspace:plugins/iframe"
@@ -16454,6 +16477,7 @@ __metadata:
     "@internal/plugin-api-platform-common": "workspace:^"
     "@internal/plugin-app-registry": "workspace:^"
     "@internal/plugin-azure-devops": "workspace:^"
+    "@internal/plugin-health-dashboard": "workspace:^"
     "@internal/plugin-mca": "workspace:^"
     "@internal/plugin-mca-common": "workspace:^"
     "@internal/plugin-permissions-common": "workspace:^"

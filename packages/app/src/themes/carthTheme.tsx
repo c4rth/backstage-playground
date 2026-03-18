@@ -12,7 +12,7 @@ const colors = {
     white: '#ffffff',
     black: '#000000',
 };
- 
+
 function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], primary: string, secondary: string, pageTheme: PageTheme): UnifiedTheme {
     return createUnifiedTheme({
         palette: {
@@ -63,12 +63,31 @@ function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], primary:
             app: pageTheme,
             apis: pageTheme,
         },
+        components: {
+            BackstageSidebarItem: {
+                styleOverrides: {
+                    label: {
+                        overflow: 'unset',
+                    },
+                    root: {
+                        overflow: 'hidden',
+                        '&.Mui-selected': {
+                            backgroundColor: colors.slateGray,
+                            color: colors.white,
+                            '&:hover': {
+                                backgroundColor: colors.slateGray,
+                            },
+                        },
+                    },
+                },
+            },
+        }
     });
 }
- 
+
 const lightPageTheme = genPageTheme({ colors: [colors.rubyRed, colors.rubyRed], shape: shapes.round });
 const darkPageTheme = genPageTheme({ colors: [colors.darkCrimson, colors.rubyRed], shape: shapes.round });
- 
+
 export const carthThemes: AppTheme[] = [
     {
         id: 'light-theme',

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Progress,
   ResponseErrorPanel,
@@ -10,6 +10,7 @@ import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/p
 import { AppRegistryOperation } from '../../types';
 import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
 import { ButtonIcon, Table, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid, CellText, useTable, ColumnConfig } from '@backstage/ui';
+import styles from './AppRegistry.module.css';
 
 type TableRow = {
   id: number,
@@ -31,12 +32,13 @@ const PdpMappingTable = ({ mapping }: { mapping: { valuePath: string; pdpField: 
 
 const AbacTooltip = ({ icon, children }: { icon: JSX.Element, children: React.ReactNode }) => (
   <TooltipTrigger delay={250}>
-    <ButtonIcon size='medium' variant='tertiary' style={{ width: 'auto', background: 'transparent' }} icon={icon} />
+    <ButtonIcon size='medium' variant='tertiary' style={{ width: '20px', padding: 0, background: 'transparent' }} icon={icon} />
     <Tooltip placement='bottom' style={{ maxWidth: '50em' }}>
       {children}
     </Tooltip>
   </TooltipTrigger>
 );
+
 
 const renderAbacCell = (operation: AppRegistryOperation) => {
   if (!operation.abac) {
@@ -83,13 +85,13 @@ const columns: ColumnConfig<TableRow>[] = [
   }, {
     id: 'name',
     label: 'Name',
-    cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>,
+    cell: item => <Cell style={{ paddingLeft: 'var(--bui-space-3)' }}>{item.operation.name}</Cell>,
     isSortable: true,
     width: '70%'
   }, {
     id: 'abac',
     label: 'ABAC',
-    cell: item => <Cell style={{ padding: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>,
+    cell: item => <Cell style={{ paddingLeft: 'var(--bui-space-3)' }}>{renderAbacCell(item.operation)}</Cell>,
     width: '10%'
   }, {
     id: 'bFunction',
@@ -181,6 +183,7 @@ export const AppRegistryPage = () => {
             type: 'none',
           }}
           emptyState={emptyState()}
+          className={styles.customTable}
         />
       </CardBody>
     </Card>

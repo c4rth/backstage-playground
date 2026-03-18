@@ -1,0 +1,37 @@
+.customTable {
+    .bui-TableRow {
+        border-bottom: 0px;
+        transition: color 0.2s ease-in-out;
+        margin: 0;
+        padding: 0;
+
+        &[data-selected] {
+            background-color: var(--bui-bg-tint-pressed);
+        }
+
+        &[data-pressed] {
+            background-color: var(--bui-bg-tint-pressed);
+        }
+
+        &[data-disabled] {
+            background-color: var(--bui-bg-tint-disabled);
+        }
+
+        &[data-react-aria-pressable='true'] {
+            cursor: pointer;
+        }
+
+        &:nth-child(even) {
+            background-color: var(--bui-bg-surface-2);
+        }
+    }
+
+    .bui-TableCell {
+        padding: 2px;
+        font-size: var(--bui-font-size-3);
+        font-family: var(--bui-font-regular);
+        font-weight: var(--bui-font-weight-regular);
+        min-width: 0;
+        overflow: hidden;
+    }
+}

@@ -77,6 +77,7 @@ import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unproc
 import { ToolsPage } from '@internal/plugin-toolkit';
 // Scaffolder Extensions
 import { ProjectPickerFieldExtension } from '@internal/plugin-scaffolder-extensions';
+import { HealthDashboardPage } from '../../../plugins/health-dashboard/src';
 
 const app = createApp({
   apis,
@@ -198,6 +199,14 @@ const routes = (
     <Route path="/mca/components/:name" element={<McaComponentDefinitionPage />} />
     <Route path="/mca/basetypes" element={<McaBaseTypeExplorerPage />} />
     <Route path="/mca/basetypes/:name" element={<McaBaseTypeDefinitionPage />} />
+    <Route path="/health-dashboard"
+      element={
+        <RequirePermission permission={devToolsAdministerPermission}>
+          <HealthDashboardPage />
+        </RequirePermission>
+      }>
+      {customDevToolsPage}
+    </Route>
     <Route path="/tools" element={<ToolsPage />} />
     <Route path="/devtools"
       element={
