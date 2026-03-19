@@ -101,13 +101,13 @@ const overviewContent = (
   <Grid.Root columns='2'>
     {entityWarningContent}
     <Grid.Item>
-      <EntityAboutCard variant="gridItem" />
+      <EntityAboutCard />
     </Grid.Item>
     <Grid.Item>
-      <EntityCatalogGraphCard variant="gridItem" height={400} />
+      <EntityCatalogGraphCard height={400} />
     </Grid.Item>
     <Grid.Item>
-      <EntityHasSubcomponentsCard variant="gridItem" tableOptions={{ columnResizable: true }} />
+      <EntityHasSubcomponentsCard />
     </Grid.Item>
   </Grid.Root>
 );
@@ -132,10 +132,10 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/dependencies" title="Dependencies">
       <Grid.Root columns='2'>
         <Grid.Item>
-          <EntityDependsOnComponentsCard variant="gridItem" />
+          <EntityDependsOnComponentsCard />
         </Grid.Item>
         <Grid.Item>
-          <EntityDependsOnResourcesCard variant="gridItem" />
+          <EntityDependsOnResourcesCard />
         </Grid.Item>
       </Grid.Root>
     </EntityLayout.Route>
@@ -159,10 +159,10 @@ const websiteEntityPage = (
     <EntityLayout.Route path="/dependencies" title="Dependencies">
       <Grid.Root columns='2'>
         <Grid.Item>
-          <EntityDependsOnComponentsCard variant="gridItem" />
+          <EntityDependsOnComponentsCard />
         </Grid.Item>
         <Grid.Item>
-          <EntityDependsOnResourcesCard variant="gridItem" />
+          <EntityDependsOnResourcesCard />
         </Grid.Item>
       </Grid.Root>
     </EntityLayout.Route>
@@ -215,7 +215,7 @@ const apiPage = (
           <EntityAboutCard />
         </Grid.Item>
         <Grid.Item>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
+          <EntityCatalogGraphCard height={400} />
         </Grid.Item>
         <Grid.Root columns='2'>
           <Grid.Item>
@@ -248,10 +248,10 @@ const userPage = (
       <Grid.Root columns='2'>
         {entityWarningContent}
         <Grid.Item>
-          <EntityUserProfileCard variant="gridItem" />
+          <EntityUserProfileCard />
         </Grid.Item>
         <Grid.Item>
-          <EntityOwnershipCard variant="gridItem" />
+          <EntityOwnershipCard />
         </Grid.Item>
       </Grid.Root>
     </EntityLayout.Route>
@@ -265,10 +265,10 @@ const groupPage = (
       <Grid.Root columns='1'>
         {entityWarningContent}
         <Grid.Item>
-          <EntityGroupProfileCard variant="gridItem" />
+          <EntityGroupProfileCard />
         </Grid.Item>
         <Grid.Item>
-          <EntityOwnershipCard variant="gridItem" />
+          <EntityOwnershipCard />
         </Grid.Item>
         <Grid.Item>
           <EntityMembersListCard />
@@ -284,24 +284,18 @@ const systemPage = (
       <Grid.Root columns='2'>
         {entityWarningContent}
         <Grid.Item>
-          <EntityAboutCard variant="gridItem" />
+          <EntityAboutCard />
         </Grid.Item>
         <Grid.Item>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
+          <EntityCatalogGraphCard height={400} />
         </Grid.Item>
       </Grid.Root>
     </EntityLayout.Route>
     <EntityLayout.Route path="/components" title="Components">
-      <EntityHasComponentsCard variant="gridItem"
-        tableOptions={{
-          search: true,
-          paging: true,
-          pageSize: 15
-        }
-        } />
+      <EntityHasComponentsCard />
     </EntityLayout.Route>
     <EntityLayout.Route path="/apis" title="APIS">
-      <EntityHasApisCard variant="gridItem"
+      <EntityHasApisCard
         tableOptions={{
           search: true,
           paging: true,
@@ -311,7 +305,7 @@ const systemPage = (
     </EntityLayout.Route>
     <EntityLayout.Route path="/diagram" title="Diagram">
       <EntityCatalogGraphCard
-        variant="gridItem"
+       
         direction={Direction.TOP_BOTTOM}
         title="System Diagram"
         height={700}
@@ -337,13 +331,13 @@ const domainPage = (
       <Grid.Root columns='2'>
         {entityWarningContent}
         <Grid.Item>
-          <EntityAboutCard variant="gridItem" />
+          <EntityAboutCard />
         </Grid.Item>
         <Grid.Item>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
+          <EntityCatalogGraphCard height={400} />
         </Grid.Item>
         <Grid.Item>
-          <EntityHasSystemsCard variant="gridItem" />
+          <EntityHasSystemsCard />
         </Grid.Item>
       </Grid.Root>
     </EntityLayout.Route>

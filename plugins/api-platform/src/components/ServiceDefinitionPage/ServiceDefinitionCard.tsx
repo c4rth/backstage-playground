@@ -116,13 +116,11 @@ export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) =
                   </Grid.Item>
                 </Grid.Root>
               </Box>
-              <Box mt='6' />
-              <ComponentAboutContent entity={entity} />
+              <Box mt='6'><ComponentAboutContent entity={entity} /></Box>
             </InfoCard>
           </Grid.Item>
           <Grid.Item colSpan='6'>
             <EntityCatalogGraphCard
-              variant="gridItem"
               height={400}
               kinds={['API', 'Component']}
               direction={Direction.TOP_BOTTOM}

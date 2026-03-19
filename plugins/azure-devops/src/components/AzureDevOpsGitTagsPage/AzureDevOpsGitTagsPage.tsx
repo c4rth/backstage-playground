@@ -9,6 +9,7 @@ import {
 } from '@backstage/core-components';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 import { Entity } from '@backstage/catalog-model';
+import styles from './AzureDevOpsGitTagsPage.module.css';
 
 type TableRow = {
   id: number,
@@ -103,6 +104,7 @@ export const AzureDevOpsGitTagsPage = () => {
       <CardHeader>{cardTitle}</CardHeader>
       <CardBody>
         <Table
+          className={styles.customTable}
           columnConfig={columns}
           {...tableProps}
           pagination={{

@@ -149,10 +149,8 @@ export const SystemTable = () => {
       }}
       title={
         <Flex gap="0" align="center">
-          <Box mr='1' />
-          {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
-          <Box ml='2' />
-          <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
+          <Box ml='1'>{ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})</Box>
+          <Box ml='2'><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
         </Flex>
       }
       data={fetchData}

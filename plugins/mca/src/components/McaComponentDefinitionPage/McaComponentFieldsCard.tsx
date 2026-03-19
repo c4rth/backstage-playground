@@ -7,6 +7,7 @@ type FieldInfo = {
   kind: 'component' | 'basetype' | 'unknown';
   name: string;
   clientElement?: string;
+  clientKind?: 'components' | 'basetypes';
 };
 
 type TableRow = {
@@ -26,7 +27,8 @@ function getElementKind(className?: string, elementType?: string): FieldInfo {
   if (className.startsWith("dexia.gemk.operationlayer.client.")) {
     const classShort = className.split(".").pop();
     const element = elementType?.split(".").pop();
-    return { kind: 'component', clientElement: classShort, name: element || '' };
+    const clientKind = elementType?.startsWith("dexia.opmk.basetypes") ? "basetypes" : "components";
+    return { kind: 'component', clientElement: classShort, clientKind, name: element || '' };
   }
   if (className.startsWith("dexia.opmk.operation")) {
     return { kind: 'component', name: className.split(".").pop() || '' };
@@ -45,7 +47,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
       return (
         <div>
           {field.clientElement} of {field.name && (
-            <Link to={`/mca/components/${field.name}`}>
+            <Link to={`/mca/${field.clientKind}/${field.name}`}>
               <b>{field.name}</b>
             </Link>
           )}

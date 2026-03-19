@@ -126,7 +126,7 @@ const API_TYPES = [
 ];
 
 function getTitle(ownership: OwnershipType, apiType: OpenApiType, count: number): string {
-  return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : apiType.toUpperCase() + ' '} APIs (${count})`;
+  return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : API_TYPES.find(t => t.value === apiType)?.label ?? ''} APIs (${count})`;
 }
 
 export const ApiTable = () => {
@@ -173,7 +173,6 @@ export const ApiTable = () => {
       columns={COLUMNS}
       options={{
         search: true,
-        padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
         showEmptyDataSourceMessage: countRows === 0 && !loading,
@@ -183,10 +182,8 @@ export const ApiTable = () => {
       }}
       title={
         <Flex gap="0" align="center">
-          <Box mr="1" />
-          {getTitle(ownership, selectedType, countRows)}
-          <Box ml="4" />
-          <ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} />
+          <Box ml="1">{getTitle(ownership, selectedType, countRows)}</Box>
+          <Box ml="4"><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
         </Flex>
       }
       actions={[

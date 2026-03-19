@@ -38,3 +38,11 @@
     min-width: 0;
     overflow: hidden;
 }
+
+.denseTable :global(.bui-TableHeader .bui-TableHead:not(:first-child)) {
+    text-align: center;
+}
+
+.denseTable :global(.bui-TableHeader .bui-TableHead:not(:first-child) .bui-TableHeadContent) {
+    justify-content: center;
+}

@@ -71,12 +71,15 @@ const getChipStyles = (
     if (color === 'primary') {
       baseStyles.backgroundColor = 'var(--bui-bg-solid)';
       baseStyles.color = 'var(--bui-fg-solid)';
+      baseStyles.backgroundColor = "#C30045";
+      baseStyles.color = "#fff";
     } else if (color === 'secondary') {
       baseStyles.backgroundColor = 'var(--bui-bg-secondary)';
       baseStyles.color = 'var(--bui-black)';
     } else if (color === 'default') {
       baseStyles.backgroundColor = 'var(--bui-bg-subtle, #e0e0e0)';
       baseStyles.color = 'var(--bui-black)';
+      baseStyles.color = "#000";
     } else {
       baseStyles.backgroundColor = color;
       baseStyles.color = textColor || '#fff';
@@ -97,7 +100,6 @@ const getChipStyles = (
     } 
       */
   }
-
   return baseStyles;
 };
 

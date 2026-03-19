@@ -1,0 +1,30 @@
+.customTable :global(.bui-TableRow) {
+    border-bottom: 0px;
+    transition: color 0.2s ease-in-out;
+    margin: 0;
+    padding: 0;
+}
+
+.customTable :global(.bui-TableRow[data-selected]) {
+    background-color: var(--bui-bg-tint-pressed);
+}
+
+.customTable :global(.bui-TableRow[data-pressed]) {
+    background-color: var(--bui-bg-tint-pressed);
+}
+
+.customTable :global(.bui-TableRow[data-disabled]) {
+    background-color: var(--bui-bg-tint-disabled);
+}
+
+.customTable :global(.bui-TableRow[data-react-aria-pressable='true']) {
+    cursor: pointer;
+}
+
+.customTable :global(.bui-TableRow:hover) {
+    background-color: #00000000;
+}
+
+.customTable :global(.bui-TableRow:nth-child(even)) {
+    background-color: var(--bui-bg-surface-0);
+}

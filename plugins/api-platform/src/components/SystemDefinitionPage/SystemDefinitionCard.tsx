@@ -75,7 +75,7 @@ export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinit
               }
             >
               <Box mb='4'>
-                <AboutField label="System reference" gridSizes={{ xs: 12 }}>
+                <AboutField label="System reference">
                   <EntityRefLink entityRef={entity} />
                 </AboutField>
               </Box>

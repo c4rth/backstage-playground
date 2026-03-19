@@ -16,6 +16,7 @@ import { azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildStateComponent } from './BuildStateComponent';
 import { LogsDialog } from './LogsDialog';
+import styles from './AzureDevOpsPipelinePage.module.css';
 
 type TableRow = {
   id: number,
@@ -150,7 +151,7 @@ export const AzureDevOpsPipelinePage = () => {
     cell: row =>
       <Cell>
         <Button
-          variant='primary'
+          style={{ backgroundColor: 'var(--bui-fg-link)' }}
           onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
           isDisabled={!row.item.id}
         >
@@ -187,6 +188,7 @@ export const AzureDevOpsPipelinePage = () => {
               type: 'none',
             }}
             emptyState={emptyState()}
+            className={styles.customTable}
           />
         </CardBody>
       </Card>

@@ -9,6 +9,7 @@ import { useEffect, useRef } from 'react';
 import { useGetHealthData } from '../../hooks';
 import { ApplicationHealthData, HealthData } from '../../types';
 import { HealthProbeCell } from './HealthProbeCell';
+import styles from './HealthDashboardPage.module.css';
 
 const emptyState = () => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
@@ -46,31 +47,31 @@ const columns: ColumnConfig<TableRow>[] = [
     id: 'tst',
     label: 'TST',
     cell: item => <HealthProbeCell healthProbe={item.healthData.environments['tst']} />,
-    width: '10%',
+    width: '15%',
   },
   {
     id: 'gtu',
     label: 'GTU',
     cell: item => <HealthProbeCell healthProbe={item.healthData.environments['gtu']} />,
-    width: '10%',
+    width: '15%',
   },
   {
     id: 'uat',
     label: 'UAT',
     cell: item => <HealthProbeCell healthProbe={item.healthData.environments['uat']} />,
-    width: '10%',
+    width: '15%',
   },
   {
     id: 'ptp',
     label: 'PTP',
     cell: item => <HealthProbeCell healthProbe={item.healthData.environments['ptp']} />,
-    width: '10%',
+    width: '15%',
   },
   {
     id: 'prd',
     label: 'PRD',
     cell: item => <HealthProbeCell healthProbe={item.healthData.environments['prd']} />,
-    width: '10%',
+    width: '15%',
   },
 ];
 
@@ -97,11 +98,11 @@ export const HealthDashboardPage = () => {
   return (
     <PageWithHeader
       themeId="dashboard"
-      title="Health Dashboard - OSDF"
+      title="Health Dashboard"
       pageTitleOverride="Health Dashboard"
     >
       <Content>
-        <Box bg="neutral-1" style={{ display: 'flex', justifyContent: 'center' }}>
+        <Box bg="neutral" style={{ display: 'flex', justifyContent: 'center' }}>
           <Box >
             {tableProps.error ? (
               <ResponseErrorPanel title="Failed to get Health data" error={tableProps.error} />
@@ -115,6 +116,7 @@ export const HealthDashboardPage = () => {
                   type: 'none',
                 }}
                 emptyState={emptyState()}
+                className={styles.denseTable}
               />
             )}
           </Box>

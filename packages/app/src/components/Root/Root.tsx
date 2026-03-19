@@ -94,9 +94,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<RiMenuFill />}>
         <SidebarItem icon={RiHome2Fill as IconComponent} to="/" text="Home" />
-        <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
-          <SidebarItem icon={RiHeartPulseFill as IconComponent} to="health-dashboard" text="Health Dashboard" />
-        </RequirePermission>
         <SidebarItem icon={RiShapesFill as IconComponent} to="api-platform/system" text="Systems" />
         <SidebarItem icon={RiCpuLine as IconComponent} to="api-platform/service" text="Services" />
         <SidebarItem icon={RiPuzzleFill as IconComponent} to="api-platform/api" text="APIs" />
@@ -105,6 +102,9 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         </FeatureFlagged>
         <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA Operations" />
         <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="MCA BaseTypes" />
+        <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
+          <SidebarItem icon={RiHeartPulseFill as IconComponent} to="health-dashboard" text="Health Dashboard" />
+        </RequirePermission>
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="docs" text="Docs" />
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="external-docs" text="ExtDocs" />
         <RequirePermission permission={taskCreatePermission} errorPage={<div />} >

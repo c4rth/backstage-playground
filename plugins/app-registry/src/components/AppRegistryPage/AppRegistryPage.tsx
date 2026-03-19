@@ -183,7 +183,7 @@ export const AppRegistryPage = () => {
             type: 'none',
           }}
           emptyState={emptyState()}
-          className={styles.customTable}
+          className={styles.denseTable}
         />
       </CardBody>
     </Card>

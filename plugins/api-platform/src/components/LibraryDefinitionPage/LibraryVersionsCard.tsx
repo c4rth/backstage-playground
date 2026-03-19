@@ -95,7 +95,10 @@ export const LibraryVersionsCard = ({ system, name }: LibraryVersionsCardProps) 
   return (
     <Box>
       <Flex mb='4' mt='-3' style={{ justifyContent: 'end' }}>
-        <Button variant='primary' onClick={handleGenerateReport} isDisabled={generating}>
+        <Button
+          style={{ backgroundColor: 'var(--bui-fg-link)' }}
+          onClick={handleGenerateReport}
+          isDisabled={generating}>
           Generate report
         </Button>
       </Flex>

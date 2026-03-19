@@ -13,30 +13,24 @@ const FieldDisplay = memo<{
   label: string;
   value: string | undefined;
   className: string;
-  gridSizes?: { xs?: number; sm?: number; lg?: number };
-}>(({ label, value, className, gridSizes = { xs: 12, sm: 6, lg: 6 } }) => (
-  <AboutField label={label} gridSizes={gridSizes}>    
-    <Text variant="body-medium" className={className} style={{ display: 'inline'}}>
+}>(({ label, value, className }) => (
+  <AboutField label={label}>
+    <Text variant="body-medium" className={className} style={{ display: 'inline' }}>
       {value || '-'}
     </Text>
   </AboutField>
 ));
 
 
-const fieldGridSizes = { xs: 12, sm: 6, lg: 6 };
-const descriptionGridSizes = { xs: 12, sm: 6, lg: 12 };
-
 export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
   const fieldConfigs = [
     {
       label: "Package",
       value: element?.package,
-      gridSizes: fieldGridSizes
     },
     {
       label: "Extends",
       value: element?.superClass,
-      gridSizes: fieldGridSizes
     },
   ];
 
@@ -52,10 +46,9 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
               label={config.label}
               value={config.value}
               className={styles.value}
-              gridSizes={config.gridSizes}
             />
           ))}
-          <AboutField label="Description" gridSizes={descriptionGridSizes}>
+          <AboutField label="Description">
             <MarkdownContent content={element?.description || ''} />
           </AboutField>
         </Grid.Root>

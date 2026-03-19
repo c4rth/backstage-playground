@@ -41,7 +41,7 @@ export const ApiDefinitionCard = () => {
 <dependency>
     <groupId>${groupId}</groupId>
     <artifactId>${artifactId}</artifactId>
-    <version>${apiVersion}</version>
+    <version>${apiVersion?.replace("-snapshot","-SNAPSHOT")}</version>
     <type>yaml</type>
 </dependency>
 `;
@@ -91,7 +91,7 @@ export const ApiDefinitionCard = () => {
       <TabbedLayout.Route path="/info" title="Info">
         <InfoCard title='About' divider>
           <Box mb='4'>
-            <AboutField label="Catalog reference" gridSizes={{ xs: 12 }}>
+            <AboutField label="Catalog reference" >
               <EntityRefLink entityRef={entity!} />
             </AboutField>
           </Box>
@@ -99,19 +99,19 @@ export const ApiDefinitionCard = () => {
           {!isMcaApi && !isDeadCommonComponents && (
             <>
               <Box mt='5'>
-                <AboutField label="Azure Artifact" gridSizes={{ xs: 12 }}>
+                <AboutField label="Azure Artifact">
                   <Link to={artifactUrl} target="_blank" rel="noopener noreferrer">
                     <ComponentDisplayName text={artifactText} type='azdo' />
                   </Link>
                 </AboutField>
               </Box>
               <Box mt='5'>
-                <AboutField label="Maven Snippet" gridSizes={{ xs: 4 }}>
+                <AboutField label="Maven Snippet" >
                   <CodeSnippet text={mavenXml} language="xmlDoc" showCopyCodeButton />
                 </AboutField>
               </Box>
               <Box mt='5'>
-                <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
+                <AboutField label="API Platform URL">
                   <Link to={platformUrl} target="_blank" rel="noopener noreferrer">
                     <ComponentDisplayName text={platformUrl} type='url' />
                   </Link>
@@ -121,7 +121,7 @@ export const ApiDefinitionCard = () => {
           )}
           {isMcaApi && (
             <Box mt='5'>
-              <AboutField label="MCA Operation" gridSizes={{ xs: 12 }}>
+              <AboutField label="MCA Operation">
                 <Link to={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`} >
                   <ComponentDisplayName text={`${entity.metadata.annotations?.['api.depo.be/name']}`} type='api' />
                 </Link>
@@ -130,7 +130,7 @@ export const ApiDefinitionCard = () => {
           )}
           {isDeadCommonComponents && (
             <Box mt='5'>
-              <AboutField label="API Platform URL" gridSizes={{ xs: 12 }}>
+              <AboutField label="API Platform URL">
                 <Link to={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`} target="_blank" rel="noopener noreferrer">
                   <ComponentDisplayName text={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`} type='url' />
                 </Link>

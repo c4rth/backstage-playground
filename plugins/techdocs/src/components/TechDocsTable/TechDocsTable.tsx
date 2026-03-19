@@ -116,8 +116,7 @@ export const TechDocsTable = () => {
                 draggable: false,
             }}
             title={
-                <Box display="flex" style={{ alignItems: "center" }}>
-                    <Box mr='1' />
+                <Box display="flex" style={{ alignItems: "center" }} mr='1'>
                     All ({items ? items.length : 0})
                 </Box>
             }
