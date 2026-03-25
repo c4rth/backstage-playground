@@ -29,7 +29,7 @@
     "@backstage/plugin-home": "^0.9.3",
     "@backstage/theme": "^0.7.2",
     "@backstage/ui": "^0.13.1",
-    "@faker-js/faker": "^10.3.0",
+    "@faker-js/faker": "^10.4.0",
     "@internal/plugin-api-platform-react": "workspace:^",
     "@remixicon/react": "^4.6.0",
     "@uiw/codemirror-extensions-langs": "^4.25.8",
