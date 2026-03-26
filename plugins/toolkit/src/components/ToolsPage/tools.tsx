@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Tool } from "./types";
+import { StringUtilities } from "../Tools/StringUtilities";
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
@@ -51,5 +52,12 @@ export const defaultTools: Tool[] = [
         component: <LoremIpsum />,
         category: 'Generate',
         description: 'Generate random text for placeholders',
+    },
+    {
+        id: 'string-utilities',
+        name: 'String Utilities',
+        component: <StringUtilities />,
+        category: 'Utilities',
+        description: 'Various string manipulation tools',
     },
 ];
