@@ -1,6 +1,5 @@
 import { lazy } from "react";
 import { Tool } from "./types";
-import { StringUtilities } from "../Tools/StringUtilities";
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
@@ -8,6 +7,7 @@ const CertificateDecoder = lazy(() => import('../Tools/CertificateDecoder'));
 const CronDecoder = lazy(() => import('../Tools/CronDecoder'));
 const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
 const JSONataTester = lazy(() => import('../Tools/jsonata/JSONataTester'));
+const StringUtilities = lazy(() => import('../Tools/StringUtilities'));
 
 export const defaultTools: Tool[] = [
      {
