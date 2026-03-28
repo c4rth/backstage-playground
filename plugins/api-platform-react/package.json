@@ -23,7 +23,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/ui": "^0.13.1",
+    "@backstage/ui": "^0.13.2",
     "@remixicon/react": "^4.6.0",
     "react-aria-components": "^1.14.0",
     "react-dom": "^18.2.0",
