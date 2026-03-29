@@ -37,10 +37,14 @@
     "@backstage/cli-defaults": "^0.1.0",
     "@backstage/e2e-test-utils": "^0.1.2",
     "@backstage/repo-tools": "^0.17.0",
+    "@jest/environment-jsdom-abstract": "^30.0.0",
     "@playwright/test": "^1.32.3",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "jsdom": "^27.1.0",
     "node-gyp": "^10.0.0",
-    "prettier": "^2.3.2",
-    "typescript": "~5.8.3"
+    "prettier": "^3.0.0",
+    "typescript": "~5.9.0"
   },
   "resolutions": {
     "@types/react": "^18",
@@ -56,5 +60,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.8.1"
+  "packageManager": "yarn@4.12.0"
 }

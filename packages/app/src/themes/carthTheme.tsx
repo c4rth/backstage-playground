@@ -88,6 +88,7 @@ function createCustomBaseTheme(palette: UnifiedThemeOptions['palette'], primary:
 const lightPageTheme = genPageTheme({ colors: [colors.rubyRed, colors.rubyRed], shape: shapes.round });
 const darkPageTheme = genPageTheme({ colors: [colors.darkCrimson, colors.rubyRed], shape: shapes.round });
 
+
 export const carthThemes: AppTheme[] = [
     {
         id: 'light-theme',
