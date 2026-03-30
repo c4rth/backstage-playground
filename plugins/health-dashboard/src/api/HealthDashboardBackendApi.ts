@@ -55,7 +55,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
             if (this.featureFlagsApi.isActive('mock-health-dashboard')) {
                 data = dummyCall();
             } else {
-                const url = new URL(`${this.baseUrl}/api/proxy/health-dashboard`);
+                const url = new URL(`${this.baseUrl}/api/proxy/health-probes`);
                 const headers = this.createHeaders();
                 const response = await this.fetchApi.fetch(url, {
                     method: 'GET',

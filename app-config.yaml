@@ -29,6 +29,9 @@ appRegistry:
   fetch: &appRegistryFetchUrl http://localhost:8080/actuator
   version: v2
 
+healthProbes:
+  baseUrl: &healthProbesUrl http://localhost:8080/health-probes
+
 mcaComponents:
   serviceBaseUrl: &mcaComponentsServiceUrl http://localhost:8080
   baseTypes:
@@ -166,6 +169,13 @@ proxy:
       secure: false
     '/base-types':
       target: *mcaBasetypesUrl
+      allowedMethods: ['GET']
+      allowedHeaders: ['Accept']
+      # changeOrigin: true
+      # Change to "false" in case of using self hosted cluster with a self-signed certificate
+      secure: false
+    '/health-probes':
+      target: *healthProbesUrl
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true
