@@ -11,8 +11,11 @@ import {
   errorApiRef,
 } from '@backstage/core-plugin-api';
 import { visitsApiRef, VisitsWebStorageApi } from '@backstage/plugin-home';
-import { ApiBlueprint } from '@backstage/frontend-plugin-api';
-
+import { ApiBlueprint, createFrontendModule } from '@backstage/frontend-plugin-api';
+import { carthThemes } from '../../themes/carthTheme';
+import { SignInPageBlueprint, ThemeBlueprint } from '@backstage/plugin-app-react';
+import { SignInPage } from '@backstage/core-components';
+import { providers } from './identityProviders';
 
 const visitsApiExtension = ApiBlueprint.make({
   name: 'visits',
@@ -48,7 +51,41 @@ const scmAuthApiExtension = ApiBlueprint.make({
     }),
 });
 
-export const apis = [
-  scmAuthApiExtension,
-  scmIntegrationsApiExtension,
-];
+
+const signInPageExtension = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props => (
+      <SignInPage
+        {...props}
+        providers={providers}
+        title="Select a sign-in method"
+        align="center" />
+    ),
+  },
+});
+
+const carthLightThemeExtension = ThemeBlueprint.make({
+  name: 'light',
+  params: {
+    theme: carthThemes[0],
+  },
+});
+
+const carthDarkThemeExtension = ThemeBlueprint.make({
+  name: 'dark',
+  params: {
+    theme: carthThemes[1],
+  },
+});
+
+export const appOverrides = createFrontendModule({
+    pluginId: 'app',
+    extensions: [
+        signInPageExtension,
+        carthLightThemeExtension,
+        carthDarkThemeExtension,
+        scmIntegrationsApiExtension,
+        scmAuthApiExtension,
+        visitsApiExtension,
+    ]
+});

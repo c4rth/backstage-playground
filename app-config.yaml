@@ -14,6 +14,14 @@ app:
         links:
           - url: https://discord.gg/backstage-687207715902193673
             title: '#backstage'
+  # Enable all packages by default, this will discover packages from packages/app/package.json
+  packages: all
+
+  extensions:
+    # Configure the catalog index page to be the root page, this is normally mounted on /catalog
+    - page:catalog:
+        config:
+          path: /catalog
 
 organization:
   name: Acme

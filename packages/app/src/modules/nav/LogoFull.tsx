@@ -1,4 +1,4 @@
-const LogoFull = () => {
+export const  LogoFull = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -17,5 +17,3 @@ const LogoFull = () => {
     </svg>
   );
 };
-
-export default LogoFull;

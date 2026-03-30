@@ -173,6 +173,7 @@ export const ApiTable = () => {
       columns={COLUMNS}
       options={{
         search: true,
+        padding: 'dense' as const,
         pageSize: PAGE_SIZE,
         pageSizeOptions: [10, PAGE_SIZE, 50],
         showEmptyDataSourceMessage: countRows === 0 && !loading,

@@ -50,7 +50,7 @@ import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { DrawIo } from '@internal/plugin-techdocs-addon-drawio';
 // DevTools
-import { DevToolsPage } from '@backstage/plugin-devtools';
+import { DevToolsPage, devToolsPlugin } from '@backstage/plugin-devtools';
 import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
