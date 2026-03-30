@@ -1,5 +1,5 @@
 import { HealthProbe } from "../../types";
-import { TooltipTrigger, Cell, Tooltip, ButtonLink, Box, Grid } from "@backstage/ui";
+import { TooltipTrigger, Cell, Tooltip, ButtonLink, Box } from "@backstage/ui";
 
 
 const StatusTable = ({ status }: {
@@ -8,15 +8,27 @@ const StatusTable = ({ status }: {
         [key: string]: any;
     };
 }) => (
-    <Grid.Root columns='2' mt="var(--bui-space-3)" mb="var(--bui-space-3)">
-        {Object.entries(status).map(([key, value]) => (
-            <>
-                <Grid.Item><b>{key}</b></Grid.Item>
-                <Grid.Item>{value}</Grid.Item>
-            </>
-        ))}
-    </Grid.Root>
+    <table>
+        <tbody>
+            {Object.entries(status).map(([key, value]) => (
+            <tr>
+                <td style={{ paddingRight: '8px'}}><b>{key}</b></td>
+                <td>{value}</td>
+            </tr>
+            ))}
+        </tbody>
+    </table>
 );
+
+const getBulletColor = (status: number): string => {
+    if (status === 200) {
+        return 'green';
+    }
+    if (status === 202) {
+        return 'blue';
+    }
+    return 'red';
+};
 
 export const HealthProbeCell = ({
     healthProbe,
@@ -28,7 +40,7 @@ export const HealthProbeCell = ({
         return <Cell />;
     }
 
-    const bulletColor = healthProbe.returnedHttpStatus === 200 ? 'green' : healthProbe.returnedHttpStatus === 202 ? 'blue' : 'red';
+    const bulletColor = getBulletColor(healthProbe.returnedHttpStatus);
 
     return (
         <Cell>
