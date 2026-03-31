@@ -30,7 +30,6 @@ import homePlugin from '@backstage/plugin-home/alpha';
 import { homePluginOverrides } from './modules/home';
 import orgPlugin from '@backstage/plugin-org/alpha';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
-import { scaffolderPluginOverrides } from './modules/scaffolder';
 import searchPlugin from '@backstage/plugin-search/alpha';
 import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';

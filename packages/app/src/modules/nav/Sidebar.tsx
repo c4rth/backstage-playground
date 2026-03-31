@@ -64,14 +64,6 @@ export const SidebarContent = NavContentBlueprint.make({
             return compatWrapper(
                 <Sidebar>
                     <SidebarLogo />
-                    <SidebarGroup to="/search">
-                        <SidebarSearchModal icon={RiMenuSearchLine as IconComponent} resultItemComponents={[
-                            <ApiSearchResultListItem icon={<CatalogIcon />} />,
-                            <McaComponentSearchResultListItem icon={<RiBubbleChartLine />} />,
-                            <CatalogSearchResultListItem icon={<CatalogIcon />} />,
-                            <TechDocsSearchResultListItem icon={<DocsIcon />} />
-                        ]} />
-                    </SidebarGroup>
                     <SidebarDivider />
                     <SidebarGroup label="Menu" icon={<RiMenuFill />}>
                         {nav.take('page:home')}
