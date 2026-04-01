@@ -4,7 +4,7 @@ import {
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { Box, CellText, ColumnConfig, useTable, Table } from '@backstage/ui';
+import { Box, Cell, ColumnConfig, useTable, Table } from '@backstage/ui';
 import { useEffect, useRef } from 'react';
 import { useGetHealthData } from '../../hooks';
 import { ApplicationHealthData, HealthData } from '../../types';
@@ -44,9 +44,9 @@ const getEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
 const columns: ColumnConfig<TableRow>[] = [
   {
     id: 'app',
-    label: 'Application',
+    label: 'APPLICATION',
     isRowHeader: true,
-    cell: item => <CellText title={item.healthData.application} />,
+    cell: item => <Cell><b>{item.healthData.application}</b></Cell>,
     isSortable: true,
     width: '25%'
   },

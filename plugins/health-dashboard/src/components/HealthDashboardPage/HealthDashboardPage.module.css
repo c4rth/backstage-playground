@@ -10,7 +10,13 @@
     min-height: 0;
     overflow: auto;
     display: flex;
-    justify-content: center;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+.tableContainer {
+    width: 50%;
+    margin: 0 auto;
 }
 
 .denseTable :global(.bui-TableRow) {

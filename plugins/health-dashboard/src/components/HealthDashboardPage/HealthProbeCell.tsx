@@ -11,10 +11,10 @@ const StatusTable = ({ status }: {
     <table>
         <tbody>
             {Object.entries(status).map(([key, value]) => (
-            <tr>
-                <td style={{ paddingRight: '8px'}}><b>{key}</b></td>
-                <td>{value}</td>
-            </tr>
+                <tr>
+                    <td style={{ paddingRight: '8px' }}><b>{key}</b></td>
+                    <td>{value}</td>
+                </tr>
             ))}
         </tbody>
     </table>
@@ -47,7 +47,11 @@ export const HealthProbeCell = ({
 }) => {
 
     if (!healthProbe || !healthProbe.returnedHttpStatus) {
-        return <Cell />;
+        return (
+            <Cell>
+                <Box style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>-</Box>
+            </Cell>
+        );
     }
 
     const bulletColor = getBulletColor(healthProbe.returnedHttpStatus);
