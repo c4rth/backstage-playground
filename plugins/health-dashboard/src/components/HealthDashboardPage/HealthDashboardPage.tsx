@@ -67,6 +67,9 @@ export const HealthDashboardPage = () => {
   } = useTable({
     mode: 'complete',
     getData: () => fetchData(getHealthData),
+    paginationOptions: {
+      type: 'none',
+    },
   });
 
   useEffect(() => {
@@ -83,9 +86,9 @@ export const HealthDashboardPage = () => {
       title="Health Dashboard"
       pageTitleOverride="Health Dashboard"
     >
-      <Content>
-        <Box bg="neutral" style={{ display: 'flex', justifyContent: 'center' }}>
-          <Box >
+      <Content className={styles.contentRoot}>
+        <Box bg="neutral" className={styles.contentScrollArea}>
+          <Box className={styles.tableContainer}>
             {tableProps.error && (
               <ResponseErrorPanel title="Failed to get Health data" error={tableProps.error} />
             )}

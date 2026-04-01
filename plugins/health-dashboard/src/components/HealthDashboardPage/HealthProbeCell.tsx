@@ -30,6 +30,16 @@ const getBulletColor = (status: number): string => {
     return 'red';
 };
 
+const getHealthUrl = (probeUrl: string | undefined): string => {
+    if (!probeUrl) {
+        return '';
+    }
+    if (probeUrl.startsWith('http')) {
+        return probeUrl;
+    }
+    return `https://${probeUrl}`;
+}
+
 export const HealthProbeCell = ({
     healthProbe,
 }: {
@@ -47,7 +57,7 @@ export const HealthProbeCell = ({
             <Box style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                 <TooltipTrigger delay={500}>
                     <ButtonLink variant="tertiary"
-                        href={healthProbe.healthUrl}
+                        href={getHealthUrl(healthProbe.healthUrl)}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{ color: bulletColor }}>
