@@ -1470,19 +1470,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-entity-validation@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "@backstage-community/plugin-entity-validation@npm:0.17.0"
+"@backstage-community/plugin-entity-validation@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "@backstage-community/plugin-entity-validation@npm:0.18.0"
   dependencies:
-    "@backstage/catalog-client": "npm:^1.13.0"
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/core-compat-api": "npm:^0.5.8"
-    "@backstage/core-components": "npm:^0.18.7"
-    "@backstage/core-plugin-api": "npm:^1.12.3"
+    "@backstage/catalog-client": "npm:^1.14.0"
+    "@backstage/catalog-model": "npm:^1.7.7"
+    "@backstage/core-compat-api": "npm:^0.5.9"
+    "@backstage/core-components": "npm:^0.18.8"
+    "@backstage/core-plugin-api": "npm:^1.12.4"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/frontend-plugin-api": "npm:^0.14.1"
+    "@backstage/frontend-plugin-api": "npm:^0.15.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.8"
-    "@backstage/plugin-catalog-react": "npm:^2.0.0"
+    "@backstage/plugin-catalog-react": "npm:^2.1.0"
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
     "@codemirror/view": "npm:^6.0.0"
@@ -1499,7 +1499,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/6feb79e1cd8332fb51ef1756f8990eac60de97f31f655571c59146e81589c9865b69c10a5fb7e3a1234cb36800851e961841f49eb2d1140a7e70afb6b7561455
+  checksum: 10/8f3f4e6b81ac474c220dcde7227b5e2f4a9cd9f0b07cef57c1896d08272e96db204b7495a33506f79e9c78993a496476c33f757935c3b460b3fed1134f0d000a
   languageName: node
   linkType: hard
 
@@ -1518,12 +1518,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-shortcuts@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "@backstage-community/plugin-shortcuts@npm:0.18.0"
+"@backstage-community/plugin-shortcuts@npm:^0.19.0":
+  version: 0.19.0
+  resolution: "@backstage-community/plugin-shortcuts@npm:0.19.0"
   dependencies:
-    "@backstage/core-components": "npm:^0.18.7"
-    "@backstage/core-plugin-api": "npm:^1.12.3"
+    "@backstage/core-components": "npm:^0.18.8"
+    "@backstage/core-plugin-api": "npm:^1.12.4"
     "@backstage/theme": "npm:^0.7.2"
     "@backstage/types": "npm:^1.2.2"
     "@material-ui/core": "npm:^4.12.2"
@@ -1537,7 +1537,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/94e59b3828c17ad58bed5b3bef00ff03198005e5131c48696261d62e9d3f7b99bf27645422e2451e020afc0abe12313d5bb6f47a2e08f6b9df692ca07aa04b0c
+  checksum: 10/54cc0ba9ceb1799f9384381e140c1bc719b5058edfdb78ef159b2b8b1c3f3eaa555246841431a40aa0c84d6362f5e45278ca219bd5c131b678302d6979cd0e38
   languageName: node
   linkType: hard
 
@@ -1910,7 +1910,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@npm:^1.12.1, @backstage/catalog-client@npm:^1.13.0, @backstage/catalog-client@npm:^1.14.0":
+"@backstage/catalog-client@npm:^1.12.1, @backstage/catalog-client@npm:^1.14.0":
   version: 1.14.0
   resolution: "@backstage/catalog-client@npm:1.14.0"
   dependencies:
@@ -2439,7 +2439,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-compat-api@npm:^0.5.7, @backstage/core-compat-api@npm:^0.5.8, @backstage/core-compat-api@npm:^0.5.9":
+"@backstage/core-compat-api@npm:^0.5.7, @backstage/core-compat-api@npm:^0.5.9":
   version: 0.5.9
   resolution: "@backstage/core-compat-api@npm:0.5.9"
   dependencies:
@@ -2465,7 +2465,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@npm:^0.18.6, @backstage/core-components@npm:^0.18.7, @backstage/core-components@npm:^0.18.8":
+"@backstage/core-components@npm:^0.18.6, @backstage/core-components@npm:^0.18.8":
   version: 0.18.8
   resolution: "@backstage/core-components@npm:0.18.8"
   dependencies:
@@ -2523,7 +2523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@npm:^1.12.1, @backstage/core-plugin-api@npm:^1.12.2, @backstage/core-plugin-api@npm:^1.12.3, @backstage/core-plugin-api@npm:^1.12.4":
+"@backstage/core-plugin-api@npm:^1.12.1, @backstage/core-plugin-api@npm:^1.12.2, @backstage/core-plugin-api@npm:^1.12.4":
   version: 1.12.4
   resolution: "@backstage/core-plugin-api@npm:1.12.4"
   dependencies:
@@ -2661,27 +2661,6 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/d2028e36b99829736399df098118513461ad9f8b78f9efaaa939e7a84b92b109d5dce0e211067291b41dbc8fa5038c38776520dd1ed6bbe5f82e8aa9af417f28
-  languageName: node
-  linkType: hard
-
-"@backstage/frontend-plugin-api@npm:^0.14.1":
-  version: 0.14.1
-  resolution: "@backstage/frontend-plugin-api@npm:0.14.1"
-  dependencies:
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.2"
-    "@backstage/version-bridge": "npm:^1.0.12"
-    zod: "npm:^3.25.76"
-    zod-to-json-schema: "npm:^3.25.1"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.30.2
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/d54c3bee4c7f3708c1196aedec76a4edcc4d99e5856a2d7b404ad1f70ed6395ee32ac7de69290b37f3cc32c19507b8cdda566c04655c57e6ed364ee356434538
   languageName: node
   linkType: hard
 
@@ -3357,7 +3336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:^2.0.0, @backstage/plugin-catalog-react@npm:^2.1.0, @backstage/plugin-catalog-react@npm:^2.1.1":
+"@backstage/plugin-catalog-react@npm:^2.1.0, @backstage/plugin-catalog-react@npm:^2.1.1":
   version: 2.1.1
   resolution: "@backstage/plugin-catalog-react@npm:2.1.1"
   dependencies:
@@ -6408,7 +6387,7 @@ __metadata:
     "@remixicon/react": "npm:^4.6.0"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
-    fast-xml-parser: "npm:^5.5.9"
+    fast-xml-parser: "npm:^5.5.10"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.3.0"
@@ -6519,7 +6498,7 @@ __metadata:
     "@types/react": "npm:^18.3.12"
     d3-selection: "npm:^3.0.0"
     d3-zoom: "npm:^3.0.0"
-    mermaid: "npm:^11.13.0"
+    mermaid: "npm:^11.14.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.3.0"
@@ -7628,12 +7607,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mermaid-js/parser@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@mermaid-js/parser@npm:1.0.1"
+"@mermaid-js/parser@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@mermaid-js/parser@npm:1.1.0"
   dependencies:
     langium: "npm:^4.0.0"
-  checksum: 10/648c96da8464113c3694587f3f950421b1914d34fddc194b6dff7a8c28da5e37273ddc4d56a4efaeda82e93c7a168389f035dbac6c8d5b65930ee60b5063ece4
+  checksum: 10/845bafce5d2be94a8104112e2197ebd925e58b3c9aae5b3e4b7795e308b0bc7c8016a5c955974da956cf7351a5572e4797ad5c991ecbb771326ffa18d1db2074
   languageName: node
   linkType: hard
 
@@ -16390,8 +16369,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@backstage-community/plugin-entity-validation": "npm:^0.17.0"
-    "@backstage-community/plugin-shortcuts": "npm:^0.18.0"
+    "@backstage-community/plugin-entity-validation": "npm:^0.18.0"
+    "@backstage-community/plugin-shortcuts": "npm:^0.19.0"
     "@backstage-community/plugin-sonarqube": "npm:^1.0.0"
     "@backstage-community/plugin-sonarqube-react": "npm:^1.0.0"
     "@backstage/app-defaults": "npm:^1.7.6"
@@ -21704,7 +21683,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^5.0.7, fast-xml-parser@npm:^5.3.4, fast-xml-parser@npm:^5.5.1, fast-xml-parser@npm:^5.5.9":
+"fast-xml-parser@npm:^5.0.7, fast-xml-parser@npm:^5.3.4, fast-xml-parser@npm:^5.5.1":
   version: 5.5.9
   resolution: "fast-xml-parser@npm:5.5.9"
   dependencies:
@@ -21714,6 +21693,19 @@ __metadata:
   bin:
     fxparser: src/cli/cli.js
   checksum: 10/5f1a1a8b524406af21e9adb24f846b0da6b629c86b1eeedb54757cc293c24ed4f79ff9570b82206265b6951d68acd2dc93e74687ea5d7da0beafa09536cee73f
+  languageName: node
+  linkType: hard
+
+"fast-xml-parser@npm:^5.5.10":
+  version: 5.5.10
+  resolution: "fast-xml-parser@npm:5.5.10"
+  dependencies:
+    fast-xml-builder: "npm:^1.1.4"
+    path-expression-matcher: "npm:^1.2.1"
+    strnum: "npm:^2.2.2"
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: 10/ac48edff66e5cad1c5f978a9edc2f081edc36abf74a745a3df83acaf35a7603ca561c5be9a0c0c0184095bfd06c6c7f75afb6e3bc81e6ff0cb3544b3886fa4c6
   languageName: node
   linkType: hard
 
@@ -26615,13 +26607,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mermaid@npm:^11.13.0":
-  version: 11.13.0
-  resolution: "mermaid@npm:11.13.0"
+"mermaid@npm:^11.14.0":
+  version: 11.14.0
+  resolution: "mermaid@npm:11.14.0"
   dependencies:
     "@braintree/sanitize-url": "npm:^7.1.1"
     "@iconify/utils": "npm:^3.0.2"
-    "@mermaid-js/parser": "npm:^1.0.1"
+    "@mermaid-js/parser": "npm:^1.1.0"
     "@types/d3": "npm:^7.4.3"
     "@upsetjs/venn.js": "npm:^2.0.0"
     cytoscape: "npm:^3.33.1"
@@ -26640,7 +26632,7 @@ __metadata:
     stylis: "npm:^4.3.6"
     ts-dedent: "npm:^2.2.0"
     uuid: "npm:^11.1.0"
-  checksum: 10/7bf2123b005925983eb4d528896665963002c3a617f13fe9d356e4910ff71d3ad0c3f817e717414828f9cdba147651f2ac28af15c60c085f4444f5a786691dd1
+  checksum: 10/44a4d1884702956b61e99a54a7a8f369749c65da4c2278d6aa6dd2c4a6904f9950ce9925b310c37fc9f71c7684c38f5853995e4c0002256e7d887621bb24a4ec
   languageName: node
   linkType: hard
 
@@ -28826,6 +28818,13 @@ __metadata:
   version: 1.2.0
   resolution: "path-expression-matcher@npm:1.2.0"
   checksum: 10/eab23babd9a97d6cf4841a99825c3e990b70b2b29ea6529df9fb6a1f3953befbc68e9e282a373d7a75aff5dc6542d05a09ee2df036ff9bfddf5e1627b769875b
+  languageName: node
+  linkType: hard
+
+"path-expression-matcher@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "path-expression-matcher@npm:1.2.1"
+  checksum: 10/2ef295fc82c0aed1efbf78b022ac38517e677c6cb06d7819872e2a3e789cdc7064164a5876aaff22358c49dce7c59157c77ef587dbd8a998e1d71cb44f15d707
   languageName: node
   linkType: hard
 

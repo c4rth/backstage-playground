@@ -109,7 +109,7 @@ export const LibraryVersionsCard = ({ system, name }: LibraryVersionsCardProps) 
           columns={serviceColumns}
           options={{
             search: false,
-            padding: 'default' as const,
+            padding: 'dense' as const,
             paging: false,
             draggable: false,
             thirdSortClick: false,
