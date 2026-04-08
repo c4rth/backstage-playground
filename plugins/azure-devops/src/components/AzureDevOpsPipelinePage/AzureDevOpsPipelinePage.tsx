@@ -115,7 +115,7 @@ export const AzureDevOpsPipelinePage = () => {
     id: 'id',
     label: 'ID',
     isRowHeader: true,
-    cell: item => <CellText title={item.id?.toString() ?? '-'} />,
+    cell: row => <CellText title={row.item.id?.toString() ?? '-'} />,
     width: '3%'
   }, {
     id: 'build',

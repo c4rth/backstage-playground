@@ -1,5 +1,5 @@
 :root {
-  --bui-font-regular: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+
   --bui-font-weight-regular: 400;
   --bui-font-weight-bold: 700;
   --bui-black: #000;
@@ -11,8 +11,6 @@
   --bui-fg-disabled: rgba(0, 0, 0, 0.38);
   --bui-fg-solid: #fff;
   --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
-  --bui-fg-tint: #6E6E6E;
-  --bui-fg-tint-disabled: #DDD;
   --bui-fg-danger: rgb(170, 46, 37);
   --bui-fg-warning: rgb(178, 106, 0);
   --bui-fg-success: rgb(53, 122, 56);
@@ -20,10 +18,6 @@
   --bui-bg-surface-0: #F8F8F8;
   --bui-bg-surface-1: #FFFFFF;
   --bui-bg-surface-2: #F8F8F8;
-  --bui-bg-solid: #C30045;
-  --bui-bg-solid-hover: rgb(166, 0, 59);
-  --bui-bg-solid-pressed: rgb(136, 0, 48);
-  --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
   --bui-bg-danger: rgb(246, 104, 94);
   --bui-bg-warning: rgb(255, 172, 51);
   --bui-bg-success: rgb(111, 191, 115);
@@ -45,16 +39,27 @@
   --belui-chip-fg-color4: #4A1C8A;
   --belui-chip-fg-color5: #1F2933;
 
-}
+  [data-theme-mode='light'] {
+    --bui-font-regular: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    --bui-bg-solid: #C30045;
+    --bui-bg-solid-hover: rgb(166, 0, 59);
+    --bui-bg-solid-pressed: rgb(136, 0, 48);
+    --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
+    --bui-fg-tint: #6E6E6E;
+    --bui-fg-tint-disabled: #DDD;
+  }
 
-[data-theme-mode='dark'] {
-  --bui-bg-solid: #C30045;
-  --bui-bg-solid-hover: rgb(166, 0, 59);
-  --bui-bg-solid-pressed: rgb(136, 0, 48);
-  --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
-  --bui-bg-tint: transparent;
-  --bui-bg-tint-hover: #9cc9ff1f;
-  --bui-bg-tint-pressed: #9cc9ff29;
-  --bui-bg-tint-disabled: transparent;
-  --bui-fg-solid: #fff;
+  [data-theme-mode='dark'] {
+    --bui-font-regular: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    --bui-bg-solid: #C30045;
+    --bui-bg-solid-hover: rgb(166, 0, 59);
+    --bui-bg-solid-pressed: rgb(136, 0, 48);
+    --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
+    --bui-bg-tint: transparent;
+    --bui-bg-tint-hover: #9cc9ff1f;
+    --bui-bg-tint-pressed: #9cc9ff29;
+    --bui-bg-tint-disabled: transparent;
+    --bui-fg-solid: #fff;
+  }
+
 }

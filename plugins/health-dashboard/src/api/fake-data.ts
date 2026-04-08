@@ -10,7 +10,7 @@ export function dummyCall(): EnvironmentHealthData {
       "lastRefresh": "17-03-2026 10:12:45",
       "applicationStarted": false,
       "returnedHttpStatus": 200,
-      "healthUrl": "https://x4q9-status.alpha-grid.dev/services/aaaa/actuator/health",
+      "healthUrl": "x4q9-status.alpha-grid.dev/services/aaaa/actuator/health",
       "status": {
         "service": "Service OK",
         "started": "17/03/2026 08:01:12",
@@ -135,6 +135,218 @@ export function dummyCall(): EnvironmentHealthData {
         "service": "Service OK",
         "started": "17/03/2026 08:01:12",
         "server": "svc-r3f0-5f78c7d4c8-k2hqp"
+      }
+    },
+    "C8M1": {
+      "defl": "C8M1",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://api.delta-circuit.net/services/c8m1/actuator/health",
+      "status": {
+        "service": "Service OK",
+        "started": "17/03/2026 09:44:03",
+        "server": "svc-c8m1-7d94f6b8f6-bt9cn"
+      }
+    },
+    "P4L7": {
+      "defl": "P4L7",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://edge.green-node.io/runtime/p4l7/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "T9Q2": {
+      "defl": "T9Q2",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://mesh.bluelane.app/cluster/t9q2/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    },
+    "K6R4": {
+      "defl": "K6R4",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://ops.sunharbor.dev/env/k6r4/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "D2X9": {
+      "defl": "D2X9",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://status.silver-fleet.cloud/apps/d2x9/actuator/health",
+      "status": {
+        "service": "Service OK",
+        "started": "17/03/2026 09:17:28",
+        "server": "svc-d2x9-6f58b8c9f9-j4nzs"
+      }
+    },
+    "W1F3": {
+      "defl": "W1F3",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://gateway.redline.tech/services/w1f3/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "Y7N5": {
+      "defl": "Y7N5",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://node31.cloudframe.org/pods/y7n5/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    },
+    "G3V8": {
+      "defl": "G3V8",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://platform.ocean-grid.net/tenant/g3v8/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "J5S6": {
+      "defl": "J5S6",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://health.prime-core.io/system/j5s6/actuator/health",
+      "status": {
+        "service": "Service OK",
+        "started": "17/03/2026 09:55:41",
+        "server": "svc-j5s6-5d9b7f66d8-zx2qk"
+      }
+    },
+    "U0H2": {
+      "defl": "U0H2",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://probe.crystal-net.dev/runtime/u0h2/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "E4K9": {
+      "defl": "E4K9",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://runtime.nova-grid.dev/apps/e4k9/actuator/health",
+      "status": {
+        "service": "Service OK",
+        "started": "17/03/2026 10:01:14",
+        "server": "svc-e4k9-66f7f6d9c7-v2kmd"
+      }
+    },
+    "S2B4": {
+      "defl": "S2B4",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://gateway.horizon-lab.io/services/s2b4/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "F9T1": {
+      "defl": "F9T1",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://mesh.iron-bridge.app/tenant/f9t1/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    },
+    "X6P3": {
+      "defl": "X6P3",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://edge.steel-cloud.net/cluster/x6p3/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "I8D5": {
+      "defl": "I8D5",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://status.lumen-core.org/services/i8d5/actuator/health",
+      "status": {
+        "service": "Service OK",
+        "started": "17/03/2026 09:58:22",
+        "server": "svc-i8d5-74b8c7c9ff-k8qtp"
+      }
+    },
+    "O3W7": {
+      "defl": "O3W7",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://probe.delta-harbor.dev/runtime/o3w7/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "R8L2": {
+      "defl": "R8L2",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://platform.quartz-grid.io/apps/r8l2/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    },
+    "B7Y0": {
+      "defl": "B7Y0",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://ops.sunfield.cloud/env/b7y0/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "N1C6": {
+      "defl": "N1C6",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://api.skyline-node.tech/services/n1c6/actuator/health",
+      "status": {
+        "service": "Service OK",
+        "started": "17/03/2026 10:06:37",
+        "server": "svc-n1c6-6dd8c6f8c9-r4xgz"
+      }
+    },
+    "Q2M8": {
+      "defl": "Q2M8",
+      "lastRefresh": "17-03-2026 10:12:45",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://gateway.blueforge.dev/services/q2m8/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
       }
     }
   },

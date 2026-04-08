@@ -156,7 +156,7 @@ export const LibraryTable = () => {
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml='1'>{ownership === 'owned' ? 'Owned' : 'All'} Libraries</Box>
+          <Box ml='1'><b>{ownership === 'owned' ? 'Owned' : 'All'} Libraries</b></Box>
           <Box ml='2'><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
         </Flex>
       }

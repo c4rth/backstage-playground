@@ -179,11 +179,11 @@ export const ApiTable = () => {
         showEmptyDataSourceMessage: countRows === 0 && !loading,
         draggable: false,
         thirdSortClick: false,
-        searchText: initialSearch,
+        searchText: initialSearch,  
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml="1">{getTitle(ownership, selectedType, countRows)}</Box>
+          <Box ml="1"><b>{getTitle(ownership, selectedType, countRows)}</b></Box>
           <Box ml="4"><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
         </Flex>
       }

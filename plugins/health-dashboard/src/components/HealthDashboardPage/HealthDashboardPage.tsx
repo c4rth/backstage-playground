@@ -4,7 +4,7 @@ import {
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { Box, CellText, ColumnConfig, useTable, Table } from '@backstage/ui';
+import { Box, Cell, ColumnConfig, useTable, Table } from '@backstage/ui';
 import { useEffect, useRef } from 'react';
 import { useGetHealthData } from '../../hooks';
 import { ApplicationHealthData, HealthData } from '../../types';
@@ -17,13 +17,6 @@ const emptyState = () => (
   </div>
 );
 
-async function fetchData(
-  getHealthData: () => Promise<HealthData | undefined>,
-) {
-  const data = await getHealthData();
-  return data?.map(toTableRow) ?? [];
-}
-
 type TableRow = {
   id: number,
   healthData: ApplicationHealthData,
@@ -34,45 +27,34 @@ const toTableRow = (healthData: ApplicationHealthData, idx: number): TableRow =>
   healthData,
 });
 
+async function fetchData(
+  getHealthData: () => Promise<HealthData | undefined>,
+) {
+  const data = await getHealthData();
+  return data?.map(toTableRow) ?? [];
+}
+
+const getEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
+    id: env,
+    label: env.toUpperCase(),
+    cell: item => <HealthProbeCell healthProbe={item.healthData.environments[env]} />,
+    width: '15%',
+});
+
 const columns: ColumnConfig<TableRow>[] = [
   {
     id: 'app',
-    label: 'Application',
+    label: 'APPLICATION',
     isRowHeader: true,
-    cell: item => <CellText title={item.healthData.application} />,
+    cell: item => <Cell><b>{item.healthData.application}</b></Cell>,
     isSortable: true,
     width: '25%'
   },
-  {
-    id: 'tst',
-    label: 'TST',
-    cell: item => <HealthProbeCell healthProbe={item.healthData.environments['tst']} />,
-    width: '15%',
-  },
-  {
-    id: 'gtu',
-    label: 'GTU',
-    cell: item => <HealthProbeCell healthProbe={item.healthData.environments['gtu']} />,
-    width: '15%',
-  },
-  {
-    id: 'uat',
-    label: 'UAT',
-    cell: item => <HealthProbeCell healthProbe={item.healthData.environments['uat']} />,
-    width: '15%',
-  },
-  {
-    id: 'ptp',
-    label: 'PTP',
-    cell: item => <HealthProbeCell healthProbe={item.healthData.environments['ptp']} />,
-    width: '15%',
-  },
-  {
-    id: 'prd',
-    label: 'PRD',
-    cell: item => <HealthProbeCell healthProbe={item.healthData.environments['prd']} />,
-    width: '15%',
-  },
+  getEnvironmentColumn('tst'),
+  getEnvironmentColumn('gtu'),
+  getEnvironmentColumn('uat'),
+  getEnvironmentColumn('ptp'),
+  getEnvironmentColumn('prd'),
 ];
 
 export const HealthDashboardPage = () => {
@@ -85,6 +67,9 @@ export const HealthDashboardPage = () => {
   } = useTable({
     mode: 'complete',
     getData: () => fetchData(getHealthData),
+    paginationOptions: {
+      type: 'none',
+    },
   });
 
   useEffect(() => {
@@ -101,14 +86,16 @@ export const HealthDashboardPage = () => {
       title="Health Dashboard"
       pageTitleOverride="Health Dashboard"
     >
-      <Content>
-        <Box bg="neutral" style={{ display: 'flex', justifyContent: 'center' }}>
-          <Box >
-            {tableProps.error ? (
+      <Content className={styles.contentRoot}>
+        <Box bg="neutral" className={styles.contentScrollArea}>
+          <Box className={styles.tableContainer}>
+            {tableProps.error && (
               <ResponseErrorPanel title="Failed to get Health data" error={tableProps.error} />
-            ) : tableProps.loading ? (
+            )}
+            {!tableProps.error && tableProps.loading && (
               <Progress />
-            ) : (
+            )}
+            {!tableProps.error && !tableProps.loading && (
               <Table
                 columnConfig={columns}
                 {...tableProps}
