@@ -1,5 +1,5 @@
 {
-  "name": "@internal/plugin-api-swagger-docs",
+  "name": "@internal/plugin-analytics",
   "version": "0.1.0",
   "license": "Apache-2.0",
   "private": true,
@@ -11,7 +11,12 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "analytics",
+    "pluginPackages": [
+      "@internal/plugin-analytics",
+      "@internal/plugin-analytics-backend"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -26,18 +31,25 @@
   "dependencies": {
     "@backstage/core-components": "^0.18.8",
     "@backstage/core-plugin-api": "^1.12.4",
+    "@backstage/plugin-catalog": "^2.0.1",
+    "@backstage/plugin-catalog-react": "^2.1.1",
+    "@backstage/plugin-search-common": "^1.2.22",
+    "@backstage/plugin-search-react": "^1.11.0",
     "@backstage/theme": "^0.7.2",
+    "@backstage/ui": "^0.13.2",
+    "@remixicon/react": "^4.6.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "swagger-ui-react": "^5.32.2"
+    "react-use": "^17.2.4"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.0",
     "@types/react": "*",
-    "@types/swagger-ui-react": "^5.18.0",
+    "@types/react-dom": "*",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [

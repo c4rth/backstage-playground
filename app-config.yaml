@@ -48,6 +48,13 @@ mcaComponents:
       timeout: PT30S
       initialDelay: PT1M
 
+analytics:
+  threshold: PT30D # Threshold in days for deleting old analytics data
+  schedule:
+    frequency: PT5M
+    timeout: PT15M
+    initialDelay: PT1M
+
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
@@ -302,7 +309,7 @@ sonarqube:
   apiKey: 123456789abcdef0123456789abcedf012
   
 devTools:
-  externalDependencies:
+  externalDependencies: 
     endpoints:
       - name: 'Google'
         type: 'fetch'
@@ -317,3 +324,4 @@ devTools:
     plugins:
       - catalog
       - mca
+      - analytics

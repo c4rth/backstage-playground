@@ -77,7 +77,7 @@ import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unproc
 import { ToolsPage } from '@internal/plugin-toolkit';
 // Scaffolder Extensions
 import { ProjectPickerFieldExtension } from '@internal/plugin-scaffolder-extensions';
-import { HealthDashboardPage } from '../../../plugins/health-dashboard/src';
+import { HealthDashboardPage } from '@internal/plugin-health-dashboard';
 
 const app = createApp({
   apis,

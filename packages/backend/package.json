@@ -52,6 +52,7 @@
     "@backstage/plugin-search-backend-module-pg": "^0.5.53",
     "@backstage/plugin-search-backend-module-techdocs": "^0.4.12",
     "@backstage/plugin-techdocs-backend": "^2.1.6",
+    "@internal/plugin-analytics-backend": "workspace:^",
     "@internal/plugin-api-platform-backend": "workspace:^",
     "@internal/plugin-mca-backend": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",

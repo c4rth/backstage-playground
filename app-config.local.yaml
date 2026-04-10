@@ -20,6 +20,9 @@ backend:
       - matchers:
           plugin: api-platform
         level: debug
+      - matchers:
+          plugin: analytics
+        level: debug
       #- matchers:
       #    plugin: search
        # level: debug

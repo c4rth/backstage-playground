@@ -112,4 +112,8 @@ backend.add(import('@internal/plugin-mca-backend'));
 // MCP
 backend.add(import('@backstage/plugin-mcp-actions-backend'));
 
+// Analytics
+backend.add(import('@internal/plugin-analytics-backend'));
+
+// Start
 backend.start();
