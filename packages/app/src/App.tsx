@@ -36,6 +36,7 @@ import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import { userSettingsPluginOverrides } from './modules/userSettings';
 import apiDocsPlugin from '@backstage/plugin-api-docs/alpha';
 import { apiDocsPluginOverrides } from './modules/api-docs';
+import samplePlugin from '@internal/backstage-plugin-sample';
 
 const legacyAppOptions = convertLegacyAppOptions({
   plugins: Object.values(plugins),
@@ -67,6 +68,8 @@ const app = createApp({
     appOverrides,
     // Nav sidebar layout:
     navModule,
+    
+    samplePlugin,
 
     // Upstream NFS plugins:
     catalogPlugin,

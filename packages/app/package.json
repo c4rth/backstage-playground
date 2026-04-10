@@ -45,6 +45,7 @@
     "@backstage/plugin-user-settings": "^0.9.1",
     "@backstage/theme": "^0.7.2",
     "@backstage/ui": "^0.13.2",
+    "@internal/backstage-plugin-sample": "workspace:^",
     "@internal/plugin-api-docs-spectral-linter": "workspace:^",
     "@internal/plugin-api-platform": "workspace:^",
     "@internal/plugin-api-platform-common": "workspace:^",

@@ -67,6 +67,7 @@ export const SidebarContent = NavContentBlueprint.make({
                     <SidebarDivider />
                     <SidebarGroup label="Menu" icon={<RiMenuFill />}>
                         {nav.take('page:home')}
+                        {nav.take('page:sample')}
                         {nav.take('page:catalog')}
                         {nav.take('page:techdocs')}
                         <SidebarDivider />
