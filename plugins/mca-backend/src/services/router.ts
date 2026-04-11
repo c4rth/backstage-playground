@@ -1,40 +1,21 @@
 import express from 'express';
 import Router from 'express-promise-router';
-import { DatabaseMcaComponentsStore } from '../database/mcaComponentStore';
-import { DatabaseService, LoggerService, SchedulerService } from '@backstage/backend-plugin-api';
 import { MCABASETYPE_FIELDS, MCACOMPONENT_FIELDS, McaComponentType } from '@internal/plugin-mca-common';
-import { createMcaService } from './McaService';
 import { parseOrderByParam, parseSearchParam } from './utils';
-import { Config } from '@backstage/config';
+import { McaService } from './types';
 
 export interface RouterOptions {
-  logger: LoggerService;
-  database: DatabaseService;
-  scheduler: SchedulerService;
-  config: Config;
+  mcaService: McaService
 }
 
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, database, scheduler, config } = options;
+  const { mcaService } = options;
+
   const router = Router();
 
-  const mcaComponentsStore = await DatabaseMcaComponentsStore.create({
-    database,
-    skipMigrations: false,
-    logger,
-  });
-  const mcaService = await createMcaService({
-    logger,
-    mcaComponentsStore,
-    scheduler,
-    config,
-  });
-
   router.use(express.json());
-
-  // Enpoints: /mca
 
   router.get('/mca/components', async (req, res) => {
     const offset = parseInt(req.query.offset as string, 10) || 0;

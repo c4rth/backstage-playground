@@ -1,19 +1,19 @@
 import { LoggerService, } from "@backstage/backend-plugin-api";
 import { Config } from "@backstage/config";
-import { McaComponentsStore } from "../database/mcaComponentStore";
 import csv from 'csv-parser';
 import { Readable } from 'stream';
+import { McaComponentStore } from "../database";
 
 export type McaOperationScheduledTaskOptions = {
     logger: LoggerService;
-    mcaComponentsStore: McaComponentsStore;
+    mcaComponentsStore: McaComponentStore;
     config: Config;
 };
 
 export class McaOperationScheduledTask {
 
     private readonly logger: LoggerService;
-    private readonly mcaComponentsStore: McaComponentsStore;
+    private readonly mcaComponentsStore: McaComponentStore;
     private readonly config: Config;
 
     constructor(options: McaOperationScheduledTaskOptions) {

@@ -16,8 +16,6 @@ export class AnalyticsDbService implements AnalyticsService {
 
   private readonly logger: LoggerService;
   private readonly analyticsStore: AnalyticsStore;
-  private readonly config: Config;
-  private readonly scheduler: SchedulerService;
 
   constructor(options: {
     logger: LoggerService;
@@ -27,12 +25,10 @@ export class AnalyticsDbService implements AnalyticsService {
   }) {
     this.logger = options.logger;
     this.analyticsStore = options.analyticsStore;
-    this.config = options.config;
-    this.scheduler = options.scheduler;
 
     this.logger.info('Initializing AnalyticsService');
 
-    this.createScheduledTask(this.config, this.logger, this.analyticsStore, this.scheduler);
+    this.createScheduledTask(options.config, options.logger, options.analyticsStore, options.scheduler);
   }
 
   async createScheduledTask(config: Config, logger: LoggerService, analyticsStore: AnalyticsStore, scheduler: SchedulerService) {

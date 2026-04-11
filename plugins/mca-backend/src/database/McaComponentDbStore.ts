@@ -1,4 +1,7 @@
 import {
+  coreServices,
+  createServiceFactory,
+  createServiceRef,
   DatabaseService,
   LoggerService,
   resolvePackagePath,
@@ -7,22 +10,8 @@ import { McaBaseType, McaBaseTypeListResult, McaComponent, McaComponentListResul
 
 import { Knex } from 'knex';
 import { DbBaseTypeRow, DbMcaRow } from './tables';
-import { McaBaseTypeOrderByOptions, McaComponentOrderByOptions } from '../services/McaService/types';
-
-export interface McaComponentsStore {
-
-  getMcaComponent(component: string): Promise<McaComponent | undefined>;
-  getMcaComponents(limit: number, offset: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string,): Promise<McaComponentListResult>;
-  getMcaComponentsCount(type: McaComponentType): Promise<number>;
-  getMcaVersions(): Promise<McaVersions | undefined>;
-  getMcaBaseTypes(limit: number, offset: number, orderBy?: McaBaseTypeOrderByOptions, search?: string,): Promise<McaBaseTypeListResult>;
-  getMcaBaseTypesCount(): Promise<number>;
-  getMcaBaseType(baseTypeName: string): Promise<McaBaseType | undefined>;
-
-  addOrUpdateMcaVersions(mcaVersions: McaVersions): Promise<void>;
-  addOrUpdateMcaComponent(mcaComponent: McaComponent): Promise<void>;
-  addOrUpdateBaseType(baseType: McaBaseType): Promise<void>;
-}
+import { McaBaseTypeOrderByOptions, McaComponentOrderByOptions } from '../services/types';
+import { McaComponentStore } from './types';
 
 const migrationsDir = resolvePackagePath(
   '@internal/plugin-mca-backend', // Package name
@@ -64,7 +53,7 @@ function mapMcaBaseTypeOrderByField(field: string): string {
   }
 }
 
-export class DatabaseMcaComponentsStore implements McaComponentsStore {
+export class McaComponentDbStore implements McaComponentStore {
   private constructor(
     private readonly db: Knex,
     private readonly logger: LoggerService,
@@ -78,7 +67,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
     database: DatabaseService;
     skipMigrations: boolean;
     logger: LoggerService;
-  }): Promise<McaComponentsStore> {
+  }): Promise<McaComponentStore> {
     logger.info("Init Mca database");
     const client = await database.getClient();
 
@@ -88,7 +77,7 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
         directory: migrationsDir,
       });
     }
-    return new DatabaseMcaComponentsStore(client, logger);
+    return new McaComponentDbStore(client, logger);
   }
 
   async getMcaComponent(component: string): Promise<McaComponent | undefined> {
@@ -341,3 +330,25 @@ export class DatabaseMcaComponentsStore implements McaComponentsStore {
   }
 
 }
+
+/**
+ * @public
+ */
+export const mcaComponentStoreServiceRef = createServiceRef<McaComponentStore>({
+  id: 'mca.component.store',
+  defaultFactory: async service =>
+    createServiceFactory({
+      service,
+      deps: {
+        database: coreServices.database,
+        logger: coreServices.logger,
+      },
+      factory: async ({ database, logger }) => {
+        return McaComponentDbStore.create({
+          database,
+          skipMigrations: false,
+          logger,
+        });
+      },
+    }),
+});

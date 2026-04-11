@@ -3,6 +3,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './services/router';
+import { mcaComponentServiceRef } from './services/McaComponentService';
 
 /**
  * mcaComponentsBackendPlugin backend plugin
@@ -14,25 +15,16 @@ export const mcaComponentsBackendPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
-        database: coreServices.database,
-        scheduler: coreServices.scheduler,
-        config: coreServices.rootConfig,
+        mcaService: mcaComponentServiceRef
       },
       async init({
-        logger,
         httpRouter,
-        database,
-        scheduler,
-        config,
+        mcaService
       }) {
         httpRouter.use(
           await createRouter({
-            logger,
-            database,
-            scheduler,
-            config
+            mcaService,
           }),
         );
         httpRouter.addAuthPolicy({

@@ -1,18 +1,18 @@
 import { Config } from "@backstage/config";
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { McaComponentsStore } from '../database/mcaComponentStore';
 import * as cheerio from 'cheerio';
+import { McaComponentStore } from "../database";
 
 export type McaBaseTypeScheduledTaskOptions = {
     logger: LoggerService;
-    mcaComponentsStore: McaComponentsStore;
+    mcaComponentsStore: McaComponentStore;
     config: Config;
 };
 
 export class McaBaseTypeScheduledTask {
 
     private readonly logger: LoggerService;
-    private readonly mcaComponentsStore: McaComponentsStore;
+    private readonly mcaComponentsStore: McaComponentStore;
     private readonly config: Config;
 
     constructor(options: McaBaseTypeScheduledTaskOptions) {
