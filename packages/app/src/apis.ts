@@ -6,7 +6,6 @@ import {
 } from '@backstage/integration-react';
 import {
   analyticsApiRef,
-  AnalyticsEvent,
   AnyApiFactory,
   configApiRef,
   createApiFactory,
@@ -14,7 +13,9 @@ import {
   fetchApiRef,
   microsoftAuthApiRef,
 } from '@backstage/core-plugin-api';
-import { AnalyticsBackendClient, analyticsBackendApiRef } from '@internal/plugin-analytics';
+import {
+  CustomAnalyticsApi,
+} from '@internal/plugin-analytics';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({
@@ -32,24 +33,12 @@ export const apis: AnyApiFactory[] = [
     factory: ({ microsoftAuthApi }) => ScmAuth.forAzure(microsoftAuthApi),
   }),
   createApiFactory({
-    api: analyticsBackendApiRef,
+    api: analyticsApiRef,
     deps: {
       discoveryApi: discoveryApiRef,
       fetchApi: fetchApiRef,
     },
     factory: ({ discoveryApi, fetchApi }) =>
-      new AnalyticsBackendClient({ discoveryApi, fetchApi }),
+      CustomAnalyticsApi.create({ discoveryApi, fetchApi }),
   }),
-  createApiFactory({
-    api: analyticsApiRef,
-    deps: {
-      analyticsApi: analyticsBackendApiRef,
-    },    
-    factory: ({ analyticsApi }) => ({
-      captureEvent: async (event: AnalyticsEvent) => {
-        await analyticsApi.logEvent(event);
-      },
-    }),
-  }),
-
 ];

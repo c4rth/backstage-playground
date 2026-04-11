@@ -12,8 +12,18 @@ export async function createRouter({
   router.use(express.json());
 
   router.post('/event', async (req, res) => {
-    analyticsService.logAnalyticsEvent(req);
+    await analyticsService.logAnalyticsEvent(req);
     res.status(204).send();
+  });
+
+  router.get('/metrics/daily-unique-users', async (_, res) => {
+    const count = await analyticsService.getTotalDailyUniqueVisitors();
+    res.json({ count });
+  });
+
+  router.get('/metrics/top-features', async (_, res) => {
+    const features = await analyticsService.getTopFeaturesByUniqueVisitors();
+    res.json({ features });
   });
 
   return router;

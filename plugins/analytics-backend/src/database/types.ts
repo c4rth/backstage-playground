@@ -3,7 +3,12 @@ export interface AnalyticsStore {
 
   storeAnalyticsEvent(visitorId: string, event: any): Promise<void>;
   getTotalDailyUniqueVisitors(): Promise<number>;
-  getTopPagesByUniqueVisitors(limit: number): Promise<{ pagePath: string; uniqueVisitors: number }[]>;
+  getTopFeaturesByUniqueVisitors(limit: number): Promise<{ featureName: string; uniqueVisitors: number }[]>;
   deleteOldAnalyticsData(thresholdInDays: number): Promise<void>;
 
+}
+
+export type TopFeature = {
+  featureName: string;
+  uniqueVisitors: number;
 }

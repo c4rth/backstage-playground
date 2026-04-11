@@ -55,10 +55,10 @@ import {
   ApiDefinitionPage,
   ApiRedirectToNoSystem,
   ApiExplorerPage,
-  ServicePlatformExplorerPage,
-  ServicePlatformDefinitionPage,
-  SystemPlatformExplorerPage,
-  SystemPlatformDefinitionPage,
+  ServiceExplorerPage,
+  ServiceDefinitionPage,
+  SystemExplorerPage,
+  SystemDefinitionPage,
   LibraryExplorerPage,
   LibraryDefinitionPage,
 } from '@internal/plugin-api-platform';
@@ -189,10 +189,10 @@ const routes = (
     {/* For compatibility with old URLs */}
     <Route path="/api-platform/api/:name" element={<ApiRedirectToNoSystem />} />
     <Route path="/api-platform/api/:system/:name" element={<ApiDefinitionPage />} />
-    <Route path="/api-platform/service" element={<ServicePlatformExplorerPage />} />
-    <Route path="/api-platform/service/:system/:name" element={<ServicePlatformDefinitionPage />} />
-    <Route path="/api-platform/system" element={<SystemPlatformExplorerPage />} />
-    <Route path="/api-platform/system/:name" element={<SystemPlatformDefinitionPage />} />
+    <Route path="/api-platform/service" element={<ServiceExplorerPage />} />
+    <Route path="/api-platform/service/:system/:name" element={<ServiceDefinitionPage />} />
+    <Route path="/api-platform/system" element={<SystemExplorerPage />} />
+    <Route path="/api-platform/system/:name" element={<SystemDefinitionPage />} />
     <Route path="/api-platform/library" element={<LibraryExplorerPage />} />
     <Route path="/api-platform/library/:system/:name" element={<LibraryDefinitionPage />} />
     <Route path="/mca/components" element={<McaComponentExplorerPage />} />

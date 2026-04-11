@@ -1,0 +1,46 @@
+.denseTable :global(.bui-TableRow) {
+    border-bottom: 0px;
+    transition: color 0.2s ease-in-out;
+    margin: 0;
+    padding: 0;
+}
+
+.denseTable :global(.bui-TableRow[data-selected]) {
+    background-color: var(--bui-bg-tint-pressed);
+}
+
+.denseTable :global(.bui-TableRow[data-pressed]) {
+    background-color: var(--bui-bg-tint-pressed);
+}
+
+.denseTable :global(.bui-TableRow[data-disabled]) {
+    background-color: var(--bui-bg-tint-disabled);
+}
+
+.denseTable :global(.bui-TableRow[data-react-aria-pressable='true']) {
+    cursor: pointer;
+}
+
+.denseTable :global(.bui-TableRow:hover) {
+    background-color: #00000000;
+}
+
+.denseTable :global(.bui-TableRow:nth-child(even)) {
+    background-color: var(--bui-bg-surface-0);
+}
+
+.denseTable :global(.bui-TableCell) {
+    font-size: var(--bui-font-size-3);
+    font-family: var(--bui-font-regular);
+    font-weight: var(--bui-font-weight-regular);
+    min-width: 0;
+    overflow: hidden;
+}
+
+.denseTable :global(.bui-TableHeader .bui-TableHead:not(:first-child)) {
+    text-align: center;
+}
+
+.denseTable :global(.bui-TableHeader .bui-TableHead:not(:first-child) .bui-TableHeadContent) {
+    justify-content: center;
+}

@@ -7,7 +7,7 @@ import {
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
-import { AnalyticsStore } from './types';
+import { AnalyticsStore, TopFeature } from './types';
 
 
 const migrationsDir = resolvePackagePath(
@@ -42,16 +42,18 @@ export class AnalyticsDbStore implements AnalyticsStore {
   }
 
   async storeAnalyticsEvent(visitorId: string, event: any): Promise<void> {
+    const context = event?.context ?? {};
+
     await this.db('analytics_events').insert({
       visitor_id: visitorId,
-      action: event.action,
-      subject: event.subject,
+      action: event?.action ?? 'unknown',
+      subject: event?.subject ?? context.routeRef ?? 'unknown',
       value: event.value ?? null,
 
       // Mapping from event.context
-      plugin_id: event.context.pluginId,
-      route_ref: event.context.routeRef,
-      extension: event.context.extension,
+      plugin_id: context.pluginId ?? null,
+      route_ref: context.routeRef ?? null,
+      extension: context.extension ?? null,
 
       attributes: JSON.stringify(event.attributes || {}),
     });
@@ -67,19 +69,20 @@ export class AnalyticsDbStore implements AnalyticsStore {
     return result?.length || 0;
   }
 
-  async getTopPagesByUniqueVisitors(limit: number): Promise<{ pagePath: string; uniqueVisitors: number }[]> {
+  async getTopFeaturesByUniqueVisitors(limit: number): Promise<TopFeature[]> {
     const results = await this.db('analytics_events')
       .select('subject as page_path')
       .count('id as total_views')
       .countDistinct('visitor_id as unique_visitors')
-      .where('action', 'view')
+      .where('action', 'navigate')
+      .whereNot('subject', 'unknown')
       .groupBy('subject')
       .orderBy('unique_visitors', 'desc')
       .limit(limit);
 
     return results.map((row: any) => ({
-      pagePath: row.page_path,
-      uniqueVisitors: row.unique_visitors,
+      featureName: row.page_path,
+      uniqueVisitors: Number(row.unique_visitors ?? 0),
     }));
   }
 

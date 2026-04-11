@@ -1,6 +1,6 @@
 import { Content, PageWithHeader } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { SystemPlatformTable } from '../SystemTable';
+import { SystemTable } from '../SystemTable';
 import { InformationPopup, InformationPopupContent } from '@internal/plugin-api-platform-react';
 import { getStringForKey } from '../common';
 
@@ -28,7 +28,7 @@ export const SystemExplorerPage = () => {
       pageTitleOverride="Systems"
     >
       <Content>
-        <SystemPlatformTable />
+        <SystemTable />
       </Content>
     </PageWithHeader>
   );

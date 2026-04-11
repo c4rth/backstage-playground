@@ -10,7 +10,7 @@ import { AnalyticsService } from './types';
 import { createHash } from 'node:crypto';
 import { Config } from "@backstage/config";
 import { AnalyticsScheduledTask } from '../task';
-import { AnalyticsStore, analyticsStoreServiceRef } from '../database';
+import { AnalyticsStore, analyticsStoreServiceRef, TopFeature } from '../database';
 
 export class AnalyticsDbService implements AnalyticsService {
 
@@ -64,12 +64,20 @@ export class AnalyticsDbService implements AnalyticsService {
   async logAnalyticsEvent(event: any): Promise<void> {
     const analyticsEvent = event.body;
     const visitorId = this.getVisitorId(event);
-    this.analyticsStore.storeAnalyticsEvent(visitorId, analyticsEvent);
+    await this.analyticsStore.storeAnalyticsEvent(visitorId, analyticsEvent);
+  }
+
+  async getTotalDailyUniqueVisitors(): Promise<number> {
+    return this.analyticsStore.getTotalDailyUniqueVisitors();
+  }
+
+  async getTopFeaturesByUniqueVisitors(): Promise<TopFeature[]> {
+    return this.analyticsStore.getTopFeaturesByUniqueVisitors(10);
   }
 }
 
 export const analyticsServiceRef = createServiceRef<AnalyticsService>({
-  id: 'analtyics.service',
+  id: 'analytics.service',
   defaultFactory: async service =>
     createServiceFactory({
       service,

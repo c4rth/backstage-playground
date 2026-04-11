@@ -1,1 +1,1 @@
-export { SystemTable as SystemPlatformTable } from './SystemTable';
+export { SystemTable } from './SystemTable';

@@ -1,1 +1,2 @@
-export { AnalyticsBackendClient, analyticsBackendApiRef } from './AnalyticsBackendApi';
+export { CustomAnalyticsApi, analyticsBackendApiRef } from './CustomAnalyticsApi';
+export type { CustomAnalytics, TopFeature } from './CustomAnalyticsApi';
