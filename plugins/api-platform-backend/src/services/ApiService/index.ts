@@ -1,1 +1,2 @@
-export { apiService as createApiService} from './apiService';
+export type { ApiService } from './types';
+export { ApiServiceImpl, apiServiceRef } from './ApiServiceImpl';

@@ -1,4 +1,4 @@
-import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+import { AuthService, coreServices, createServiceFactory, createServiceRef, LoggerService } from '@backstage/backend-plugin-api';
 import { LibraryService } from './types';
 import {
   CATALOG_KIND,
@@ -18,11 +18,11 @@ import {
   ANNOTATION_LIBRARY_VERSION,
   CATALOG_RELATIONS
 } from '@internal/plugin-api-platform-common';
-import { CatalogApi, EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
+import { EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
 import { Entity, RELATION_DEPENDENCY_OF } from '@backstage/catalog-model';
 import { getUserGroups, isUserGuest } from '../common/utils';
-import { getCatalogToken } from '../common/token';
+import { CatalogService, catalogServiceRef } from '@backstage/plugin-catalog-node';
 
 function getFilter(system: string, libraryName?: string): EntityFilterQuery {
   if (libraryName) {
@@ -40,17 +40,16 @@ function getFilter(system: string, libraryName?: string): EntityFilterQuery {
   };
 }
 
-async function innerGetLibraryVersions(catalogClient: CatalogApi, auth: AuthService, system: string, libraryName: string, servicesCount: boolean): Promise<LibraryDefinition[]> {
-  const token = await getCatalogToken(auth);
+async function innerGetLibraryVersions(catalog: CatalogService, auth: AuthService, system: string, libraryName: string, servicesCount: boolean): Promise<LibraryDefinition[]> {
   const fields = servicesCount
     ? [CATALOG_METADATA, CATALOG_RELATIONS]
     : [CATALOG_METADATA];
-  const entities = await catalogClient.getEntities(
+  const entities = await catalog.getEntities(
     {
       filter: getFilter(system, libraryName),
       fields: fields,
     },
-    { token }
+    { credentials: await auth.getOwnServiceCredentials() }
   );
 
   const versions: LibraryDefinition[] = [];
@@ -142,12 +141,12 @@ function getOrder(order: LibraryDefinitionsOptions | undefined): EntityOrderQuer
 
 export interface LibraryServiceOptions {
   logger: LoggerService;
-  catalogClient: CatalogApi;
+  catalog: CatalogService;
   auth: AuthService;
 }
 
 async function fetchLibraryEntities(
-  catalogClient: CatalogApi,
+  catalog: CatalogService,
   auth: AuthService,
   fields: string[],
   ownership: OwnershipType,
@@ -160,11 +159,9 @@ async function fetchLibraryEntities(
     return [];
   }
 
-  const token = await getCatalogToken(auth);
-
   // Fetch user groups in parallel with entities if needed
   const [entities, userGroupRefs] = await Promise.all([
-    catalogClient.getEntities(
+    catalog.getEntities(
       {
         filter: {
           kind: ['Component'],
@@ -173,10 +170,10 @@ async function fetchLibraryEntities(
         fields,
         order,
       },
-      { token }
+      { credentials: await auth.getOwnServiceCredentials() }
     ).then(res => res.items),
     ownership === 'owned' && userEntityRef
-      ? getUserGroups(catalogClient, auth, userEntityRef)
+      ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
   ]);
 
@@ -192,48 +189,72 @@ async function fetchLibraryEntities(
   return entities;
 }
 
-export async function libraryService(options: LibraryServiceOptions): Promise<LibraryService> {
-  const { logger, catalogClient, auth } = options;
-  logger.info('Initializing LibraryService');
+export class LibraryServiceImpl implements LibraryService {
 
-  return {
+  private readonly catalog: CatalogService;
+  private readonly auth: AuthService;
 
-    async listLibraries(request: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult> {
-      const entities = await fetchLibraryEntities(
-        catalogClient,
-        auth,
-        [
-          CATALOG_KIND,
-          CATALOG_METADATA_NAME,
-          CATALOG_METADATA_DESCRIPTION,
-          CATALOG_METADATA_LIBRARY_NAME,
-          CATALOG_METADATA_LIBRARY_VERSION,
-          CATALOG_SPEC_SYSTEM,
-          CATALOG_SPEC_OWNER,
-        ],
-        request.ownership ?? 'all',
-        request.userEntityRef,
-        getOrder(request.orderBy),
-      );
+  constructor(options: LibraryServiceOptions) {
+    this.catalog = options.catalog;
+    this.auth = options.auth;
 
-      // Combine filtering and grouping in single pass
-      const latestEntities = getLatestByLibraryName(entities, request.search);
+    options.logger.info('Initializing LibraryService');
+  }
+  async listLibraries(request: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult> {
+    const entities = await fetchLibraryEntities(
+      this.catalog,
+      this.auth,
+      [
+        CATALOG_KIND,
+        CATALOG_METADATA_NAME,
+        CATALOG_METADATA_DESCRIPTION,
+        CATALOG_METADATA_LIBRARY_NAME,
+        CATALOG_METADATA_LIBRARY_VERSION,
+        CATALOG_SPEC_SYSTEM,
+        CATALOG_SPEC_OWNER,
+      ],
+      request.ownership ?? 'all',
+      request.userEntityRef,
+      getOrder(request.orderBy),
+    );
 
-      const offset = request.offset ?? 0;
-      const limit = request.limit ?? 20;
-      const totalCount = latestEntities.length;
+    // Combine filtering and grouping in single pass
+    const latestEntities = getLatestByLibraryName(entities, request.search);
 
-      // Only slice if needed - avoid creating new array when returning all
-      const items = (offset === 0 && limit >= totalCount)
-        ? latestEntities
-        : latestEntities.slice(offset, offset + limit);
+    const offset = request.offset ?? 0;
+    const limit = request.limit ?? 20;
+    const totalCount = latestEntities.length;
 
-      return { items, offset, limit, totalCount };
-    },
+    // Only slice if needed - avoid creating new array when returning all
+    const items = (offset === 0 && limit >= totalCount)
+      ? latestEntities
+      : latestEntities.slice(offset, offset + limit);
 
-    async getLibraryVersions(request: { system: string, libraryName: string, servicesCount: boolean }): Promise<LibraryDefinition[]> {
-      return innerGetLibraryVersions(catalogClient, auth, request.system, request.libraryName, request.servicesCount);
-    },
-  };
+    return { items, offset, limit, totalCount };
+  }
 
-}
+  async getLibraryVersions(request: { system: string, libraryName: string, servicesCount: boolean }): Promise<LibraryDefinition[]> {
+    return innerGetLibraryVersions(this.catalog, this.auth, request.system, request.libraryName, request.servicesCount);
+  }
+};
+
+export const libraryServiceRef = createServiceRef<LibraryService>({
+  id: 'api-platform.library.service',
+  defaultFactory: async service =>
+    createServiceFactory({
+      service,
+      deps: {
+        logger: coreServices.logger,
+        auth: coreServices.auth,
+        catalog: catalogServiceRef
+      },
+      async factory({ logger, auth, catalog }) {
+        const libraryService = new LibraryServiceImpl({
+          logger,
+          catalog,
+          auth,
+        });
+        return libraryService;
+      },
+    }),
+});

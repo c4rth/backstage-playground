@@ -1,17 +1,15 @@
 import express from 'express';
 import Router from 'express-promise-router';
-import { DatabaseApiPlatformStore } from '../database/apiPlatformStore';
-import { AuthService, DatabaseService, HttpAuthService, LoggerService, UserInfoService } from '@backstage/backend-plugin-api';
-import { CatalogApi } from '@backstage/catalog-client';
-import { createApiService } from './ApiService';
-import { createCatalogService } from './CatalogService';
-import { createServiceService } from './ServiceService';
-import { createSystemService } from './SystemService';
+import { HttpAuthService, UserInfoService } from '@backstage/backend-plugin-api';
+import { ApiService } from './ApiService';
+import { ApiPlatformCatalogService } from './CatalogService';
+import { ServiceService } from './ServiceService';
+import { SystemService } from './SystemService';
 import { APIDEFINITIONS_FIELDS, LIBRARYDEFINITIONS_FIELDS, SERVICEDEFINITIONS_FIELDS, ServiceInformation, SYSTEMDEFINITIONS_FIELDS } from '@internal/plugin-api-platform-common';
 import { parseOrderByParam, parseSearchParam, parseOwnershipParam, parseApiTypeParam } from './ApiService/utils';
 import { RelationType } from './ApiService/types';
-import { createServiceInformationService } from './ServiceInformationService';
-import { createLibraryService } from './LibraryService';
+import { LibraryService } from './LibraryService';
+import { ServiceInformationService } from './ServiceInformationService';
 
 async function getUserEntityRef(ownership: string, httpAuth: HttpAuthService, req: any, userInfo: UserInfoService) {
   let userEntityRef = undefined;
@@ -24,55 +22,22 @@ async function getUserEntityRef(ownership: string, httpAuth: HttpAuthService, re
 }
 
 export interface RouterOptions {
-  logger: LoggerService;
-  catalogClient: CatalogApi;
-  database: DatabaseService;
-  auth: AuthService;
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
+  serviceInformationService: ServiceInformationService;
+  systemService: SystemService;
+  serviceService: ServiceService;
+  apiService: ApiService;
+  libraryService: LibraryService;
+  catalogService: ApiPlatformCatalogService;
 }
 
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, catalogClient, database, auth, httpAuth, userInfo } = options;
+  const { httpAuth, userInfo, serviceInformationService, systemService, serviceService, apiService, libraryService, catalogService } = options;
+
   const router = Router();
-
-  const apiPlatformStore = await DatabaseApiPlatformStore.create({
-    database,
-    skipMigrations: false,
-    logger,
-  });
-  const apiService = await createApiService({
-    logger,
-    catalogClient,
-    auth,
-  });
-  const catalogService = await createCatalogService({
-    logger,
-    catalogClient,
-    auth,
-  });
-  const serviceService = await createServiceService({
-    logger,
-    catalogClient,
-    auth
-  });
-  const serviceInformationService = await createServiceInformationService({
-    logger,
-    apiStore: apiPlatformStore,
-  });
-  const systemService = await createSystemService({
-    logger,
-    catalogClient,
-    auth,
-  });
-  const libraryService = await createLibraryService({
-    logger,
-    catalogClient,
-    auth,
-  });
-
   router.use(express.json());
 
   // Endpoints: /apis

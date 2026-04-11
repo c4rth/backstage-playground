@@ -1,1 +1,2 @@
-export { catalogService as createCatalogService} from './catalogService';
+export type { ApiPlatformCatalogService } from './types';
+export { CatalogServiceImpl, apiPlatformCatalogServiceRef } from './CatalogServiceImp';

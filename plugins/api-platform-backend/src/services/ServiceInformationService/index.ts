@@ -1,1 +1,3 @@
-export { serviceInformationService as createServiceInformationService} from './serviceInformationService';
+
+export type { ServiceInformationService } from './types';
+export { ServiceInformationServiceImpl, serviceInformationServiceRef } from './ServiceInformationServiceImpl';

@@ -1,4 +1,4 @@
-import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+import { AuthService, coreServices, createServiceFactory, createServiceRef, LoggerService } from '@backstage/backend-plugin-api';
 import { ServiceService } from './types';
 import {
   ANNOTATION_IMAGE_VERSION,
@@ -21,10 +21,10 @@ import {
   ServiceDefinitionsListRequest,
   ServiceDefinitionsOptions,
 } from '@internal/plugin-api-platform-common';
-import { CatalogApi, EntityFilterQuery } from '@backstage/catalog-client';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
 import { getUserGroups, isUserGuest } from '../common/utils';
-import { getCatalogToken } from '../common/token';
+import { CatalogService, catalogServiceRef } from '@backstage/plugin-catalog-node';
 
 function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
   const filter: EntityFilterQuery = {
@@ -50,14 +50,13 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "
 }
 
 async function innerGetServices(
-  catalogClient: CatalogApi,
+  catalog: CatalogService,
   auth: AuthService,
   orderBy: ServiceDefinitionsOptions | undefined,
   serviceName?: string,
   system?: string
 ): Promise<ServiceDefinition[]> {
-  const token = await getCatalogToken(auth);
-  const entities = await catalogClient.getEntities(
+  const entities = await catalog.getEntities(
     {
       filter: getFilter(serviceName, system),
       fields: [
@@ -77,14 +76,14 @@ async function innerGetServices(
         order: 'asc'
       },
     },
-    { token });
+    { credentials: await auth.getOwnServiceCredentials() });
 
   return processServiceEntities(entities.items, orderBy);
 }
 
 // Shared function to fetch service entities with ownership filter
 async function fetchServiceEntities(
-  catalogClient: CatalogApi,
+  catalog: CatalogService,
   auth: AuthService,
   fields: string[],
   ownership: OwnershipType,
@@ -96,19 +95,17 @@ async function fetchServiceEntities(
     return [];
   }
 
-  const token = await getCatalogToken(auth);
-
   // Fetch user groups in parallel with entities if needed
   const [entities, userGroupRefs] = await Promise.all([
-    catalogClient.getEntities(
+    catalog.getEntities(
       {
         filter: getFilter(undefined),
         fields,
       },
-      { token }
+      { credentials: await auth.getOwnServiceCredentials() }
     ).then(res => res.items),
     ownership === 'owned' && userEntityRef
-      ? getUserGroups(catalogClient, auth, userEntityRef)
+      ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
   ]);
 
@@ -230,85 +227,111 @@ function processServiceEntities(
 
 export interface ServiceServiceOptions {
   logger: LoggerService;
-  catalogClient: CatalogApi;
+  catalog: CatalogService;
   auth: AuthService;
 }
 
-export async function serviceService(options: ServiceServiceOptions): Promise<ServiceService> {
-  const { logger, catalogClient, auth } = options;
+export class ServiceServiceImpl implements ServiceService {
 
-  logger.info('Initializing ServiceService');
+  private readonly catalog: CatalogService;
+  private readonly auth: AuthService;
 
-  return {
+  constructor(options: ServiceServiceOptions) {
+    this.catalog = options.catalog;
+    this.auth = options.auth;
 
-    async getServicesCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
-      const entities = await fetchServiceEntities(
-        catalogClient,
-        auth,
-        [CATALOG_SPEC_SYSTEM, CATALOG_METADATA_SERVICE_NAME, CATALOG_SPEC_OWNER],
-        ownership,
-        userEntityRef,
-      );
-      // Inline counting to avoid function call overhead
-      const uniqueNames = new Set<string>();
-      for (const entity of entities) {
-        const serviceName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
-        if (serviceName) {
-          const system = entity.spec?.system?.toString() ?? '';
-          uniqueNames.add(`${system}-${serviceName}`);
-        }
+    options.logger.info('Initializing ServiceService');
+  }
+
+  async getServicesCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
+    const entities = await fetchServiceEntities(
+      this.catalog,
+      this.auth,
+      [CATALOG_SPEC_SYSTEM, CATALOG_METADATA_SERVICE_NAME, CATALOG_SPEC_OWNER],
+      ownership,
+      userEntityRef,
+    );
+    // Inline counting to avoid function call overhead
+    const uniqueNames = new Set<string>();
+    for (const entity of entities) {
+      const serviceName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+      if (serviceName) {
+        const system = entity.spec?.system?.toString() ?? '';
+        uniqueNames.add(`${system}-${serviceName}`);
       }
-      return uniqueNames.size;
-    },
+    }
+    return uniqueNames.size;
+  }
 
-    async listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
-      const entities = await fetchServiceEntities(
-        catalogClient,
-        auth,
-        [
-          CATALOG_METADATA_NAME,
-          CATALOG_METADATA_NAMESPACE,
-          CATALOG_METADATA_SERVICE_NAME,
-          CATALOG_METADATA_SERVICE_PLATFORM,
-          CATALOG_METADATA_SERVICE_VERSION,
-          CATALOG_METADATA_IMAGE_VERSION,
-          CATALOG_SPEC_SYSTEM,
-          CATALOG_SPEC_LIFECYCLE,
-          CATALOG_SPEC_OWNER,
-          CATALOG_SPEC_DEPENDS_ON
-        ],
-        request.ownership ?? 'all',
-        request.userEntityRef,
-      );
+  async listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
+    const entities = await fetchServiceEntities(
+      this.catalog,
+      this.auth,
+      [
+        CATALOG_METADATA_NAME,
+        CATALOG_METADATA_NAMESPACE,
+        CATALOG_METADATA_SERVICE_NAME,
+        CATALOG_METADATA_SERVICE_PLATFORM,
+        CATALOG_METADATA_SERVICE_VERSION,
+        CATALOG_METADATA_IMAGE_VERSION,
+        CATALOG_SPEC_SYSTEM,
+        CATALOG_SPEC_LIFECYCLE,
+        CATALOG_SPEC_OWNER,
+        CATALOG_SPEC_DEPENDS_ON
+      ],
+      request.ownership ?? 'all',
+      request.userEntityRef,
+    );
 
-      // Combine filtering and grouping in single pass
-      const services = processServiceEntities(entities, request.orderBy, request.dependsOn, request.search);
+    // Combine filtering and grouping in single pass
+    const services = processServiceEntities(entities, request.orderBy, request.dependsOn, request.search);
 
-      const offset = request.offset ?? 0;
-      const totalCount = services.length;
-      const limit = request.limit ?? totalCount - offset;
+    const offset = request.offset ?? 0;
+    const totalCount = services.length;
+    const limit = request.limit ?? totalCount - offset;
 
-      // Only slice if needed - avoid creating new array when returning all
-      const items = (offset === 0 && limit >= totalCount)
-        ? services
-        : services.slice(offset, offset + limit);
+    // Only slice if needed - avoid creating new array when returning all
+    const items = (offset === 0 && limit >= totalCount)
+      ? services
+      : services.slice(offset, offset + limit);
 
-      return { items, offset, limit, totalCount };
-    },
+    return { items, offset, limit, totalCount };
+  }
 
-    async getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition> {
-      const { system, serviceName } = request;
-      // Filter by both serviceName and system at catalog level to minimize data fetched
-      const services = await innerGetServices(catalogClient, auth, undefined, serviceName, system);
-      // Return first match or empty definition
-      return services[0] ?? {
-        name: `${system}-${serviceName}`,
-        serviceName,
-        owner: '',
-        system,
-        versions: [],
-      };
-    },
+  async getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition> {
+    const { system, serviceName } = request;
+    // Filter by both serviceName and system at catalog level to minimize data fetched
+    const services = await innerGetServices(this.catalog, this.auth, undefined, serviceName, system);
+    // Return first match or empty definition
+    return services[0] ?? {
+      name: `${system}-${serviceName}`,
+      serviceName,
+      owner: '',
+      system,
+      versions: [],
+    };
+  }
 
-  };
-}
+};
+
+
+export const serviceServiceRef = createServiceRef<ServiceService>({
+  id: 'api-platform.service.service',
+  defaultFactory: async service =>
+    createServiceFactory({
+      service,
+      deps: {
+        logger: coreServices.logger,
+        auth: coreServices.auth,
+        catalog: catalogServiceRef
+      },
+      async factory({ logger, catalog, auth }) {
+        const systemService = new ServiceServiceImpl({
+          logger,
+          catalog,
+          auth,
+        });
+        return systemService;
+      },
+    }),
+});

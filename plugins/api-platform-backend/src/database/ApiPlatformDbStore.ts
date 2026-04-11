@@ -1,4 +1,7 @@
 import {
+  coreServices,
+  createServiceFactory,
+  createServiceRef,
   DatabaseService,
   LoggerService,
   resolvePackagePath,
@@ -6,20 +9,14 @@ import {
 import { ServiceInformation } from '@internal/plugin-api-platform-common';
 import { Knex } from 'knex';
 import { DbServicesRow } from './tables';
-
-export interface ApiPlatformStore {
-
-  storeServiceInformation(serviceInformation: ServiceInformation): Promise<void>;
-  getServiceInformation(system: string, service: string, version: string, imageVersion: string): Promise<ServiceInformation | undefined>;
-
-}
+import { ApiPlatformStore } from './types';
 
 const migrationsDir = resolvePackagePath(
   '@internal/plugin-api-platform-backend', // Package name
   'migrations', // Migrations directory
 );
 
-export class DatabaseApiPlatformStore implements ApiPlatformStore {
+export class ApiPlatformDbStore implements ApiPlatformStore {
   private constructor(
     private readonly db: Knex,
     private readonly logger: LoggerService,
@@ -43,7 +40,7 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
         directory: migrationsDir,
       });
     }
-    return new DatabaseApiPlatformStore(client, logger);
+    return new ApiPlatformDbStore(client, logger);
   }
 
   async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
@@ -100,3 +97,25 @@ export class DatabaseApiPlatformStore implements ApiPlatformStore {
   }
 
 }
+
+/**
+ * @public
+ */
+export const apiPlatformStoreServiceRef = createServiceRef<ApiPlatformStore>({
+  id: 'api-platform.store',
+  defaultFactory: async service =>
+    createServiceFactory({
+      service,
+      deps: {
+        database: coreServices.database,
+        logger: coreServices.logger,
+      },
+      factory: async ({ database, logger }) => {
+        return ApiPlatformDbStore.create({
+          database,
+          skipMigrations: false,
+          logger,
+        });
+      },
+    }),
+});

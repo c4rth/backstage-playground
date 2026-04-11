@@ -3,7 +3,12 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './services/router';
-import { CatalogClient } from '@backstage/catalog-client';
+import { serviceInformationServiceRef } from './services/ServiceInformationService';
+import { systemServiceRef } from './services/SystemService';
+import { serviceServiceRef } from './services/ServiceService';
+import { libraryServiceRef } from './services/LibraryService';
+import { apiServiceRef } from './services/ApiService';
+import { apiPlatformCatalogServiceRef } from './services/CatalogService';
 
 /**
  * apiPlatformBackendPlugin backend plugin
@@ -15,35 +20,37 @@ export const apiPlatformBackendPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
-        discovery: coreServices.discovery,
-        userInfo: coreServices.userInfo,
-        auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
-        database: coreServices.database,
+        userInfo: coreServices.userInfo,
+        serviceInformationService: serviceInformationServiceRef,
+        systemService: systemServiceRef,
+        serviceService: serviceServiceRef,
+        apiService: apiServiceRef,
+        libraryService: libraryServiceRef,
+        catalogService: apiPlatformCatalogServiceRef,
       },
       async init({
-        logger,
         httpRouter,
-        discovery,        
-        auth,
         httpAuth,
-        database,
         userInfo,
+        serviceInformationService,
+        systemService,
+        serviceService,
+        apiService,
+        libraryService,
+        catalogService,
       }) {
-        const catalogClient = new CatalogClient({
-          discoveryApi: discovery,
-        });
-
         httpRouter.use(
           await createRouter({
-            logger,
-            catalogClient,
-            database,
-            auth,
             httpAuth,
             userInfo,
+            serviceInformationService,
+            systemService,
+            serviceService,
+            apiService,
+            libraryService,
+            catalogService,
           }),
         );
         httpRouter.addAuthPolicy({

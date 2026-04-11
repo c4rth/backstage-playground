@@ -1,17 +1,13 @@
 import { AuthService } from "@backstage/backend-plugin-api";
-import { CatalogApi } from "@backstage/catalog-client";
 import { stringifyEntityRef } from "@backstage/catalog-model";
+import { CatalogService } from "@backstage/plugin-catalog-node";
 import {
   CATALOG_KIND,
   CATALOG_METADATA,
 } from '@internal/plugin-api-platform-common';
 
-export async function getUserGroups(catalogClient: CatalogApi, auth: AuthService, userEntityRef: string): Promise<string[]> {
-  const { token } = await auth.getPluginRequestToken({
-    onBehalfOf: await auth.getOwnServiceCredentials(),
-    targetPluginId: 'catalog',
-  });
-  const entities = await catalogClient.getEntities(
+export async function getUserGroups(catalog: CatalogService, auth: AuthService, userEntityRef: string): Promise<string[]> {
+  const entities = await catalog.getEntities(
     {
       filter: [
         {
@@ -24,7 +20,7 @@ export async function getUserGroups(catalogClient: CatalogApi, auth: AuthService
         CATALOG_KIND,
       ],
     },
-    { token });
+    { credentials: await auth.getOwnServiceCredentials() });
   return entities.items.map(group => stringifyEntityRef(group));
 }
 
