@@ -7,7 +7,7 @@ import {
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
-import { AnalyticsStore, TopFeature } from './types';
+import { AnalyticsStore, DailyVisitor, TopFeature } from './types';
 
 
 const migrationsDir = resolvePackagePath(
@@ -59,18 +59,35 @@ export class AnalyticsDbStore implements AnalyticsStore {
     });
   }
 
-  async getTotalDailyUniqueVisitors(): Promise<number> {
-    const result = await this.db('analytics_events')
-      .select(this.db.raw('created_at::DATE as day'))
-      .countDistinct('visitor_id as unique_visitors')
-      .groupBy('day')
-      .orderBy('day', 'desc');
+  async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {
+    const query = this.db('analytics_events')
+      .select(this.db.raw('to_char(created_at, \'YYYY-MM-DD\') as date'))
+      .countDistinct('visitor_id as visitors')
+      .groupBy(this.db.raw('to_char(created_at, \'YYYY-MM-DD\')'))
+      .orderBy('date', 'asc');
 
-    return result?.length || 0;
+    if (days === 0) {
+      query.whereRaw(
+        "created_at >= CURRENT_DATE AND created_at < CURRENT_DATE + INTERVAL '1 day'",
+      );
+    } else {
+      query.where(
+        'created_at',
+        '>=',
+        this.db.raw("NOW() - (? * INTERVAL '1 day')", [days]),
+      );
+    }
+
+    const result = await query;
+
+    return result.map((row: any) => ({
+      date: row.date,
+      visitors: Number(row.visitors ?? 0),
+    }));
   }
 
-  async getTopFeaturesByUniqueVisitors(limit: number): Promise<TopFeature[]> {
-    const results = await this.db('analytics_events')
+  async getTopFeaturesByUniqueVisitors(count: number, days: number): Promise<TopFeature[]> {
+    const query = this.db('analytics_events')
       .select('subject as page_path')
       .count('id as total_views')
       .countDistinct('visitor_id as unique_visitors')
@@ -78,11 +95,26 @@ export class AnalyticsDbStore implements AnalyticsStore {
       .whereNot('subject', 'unknown')
       .groupBy('subject')
       .orderBy('unique_visitors', 'desc')
-      .limit(limit);
+      .limit(count);
 
+    if (days === 0) {
+      query.whereRaw(
+        "created_at >= CURRENT_DATE AND created_at < CURRENT_DATE + INTERVAL '1 day'",
+      );
+    } else {
+      query.where(
+        'created_at',
+        '>=',
+        this.db.raw("NOW() - (? * INTERVAL '1 day')", [days]),
+      );
+    }
+
+    const results = await query;
+    
     return results.map((row: any) => ({
       featureName: row.page_path,
       uniqueVisitors: Number(row.unique_visitors ?? 0),
+      totalHits: Number(row.total_views ?? 0),
     }));
   }
 

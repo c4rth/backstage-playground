@@ -32,8 +32,8 @@
     "@backstage/core-components": "^0.18.8",
     "@backstage/core-plugin-api": "^1.12.4",
     "@backstage/plugin-catalog": "^2.0.1",
-    "@backstage/plugin-devtools-common": "^0.1.23",
     "@backstage/plugin-catalog-react": "^2.1.1",
+    "@backstage/plugin-devtools-common": "^0.1.23",
     "@backstage/plugin-search-common": "^1.2.22",
     "@backstage/plugin-search-react": "^1.11.0",
     "@backstage/theme": "^0.7.2",
@@ -41,7 +41,8 @@
     "@remixicon/react": "^4.6.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "recharts": "^3.8.1"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",

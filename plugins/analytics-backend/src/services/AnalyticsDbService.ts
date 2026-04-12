@@ -11,6 +11,7 @@ import { createHash } from 'node:crypto';
 import { Config } from "@backstage/config";
 import { AnalyticsScheduledTask } from '../task';
 import { AnalyticsStore, analyticsStoreServiceRef, TopFeature } from '../database';
+import { DailyVisitor } from '../database/types';
 
 export class AnalyticsDbService implements AnalyticsService {
 
@@ -67,12 +68,12 @@ export class AnalyticsDbService implements AnalyticsService {
     await this.analyticsStore.storeAnalyticsEvent(visitorId, analyticsEvent);
   }
 
-  async getTotalDailyUniqueVisitors(): Promise<number> {
-    return this.analyticsStore.getTotalDailyUniqueVisitors();
+  async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {
+    return this.analyticsStore.getTotalDailyUniqueVisitors(days);
   }
 
-  async getTopFeaturesByUniqueVisitors(): Promise<TopFeature[]> {
-    return this.analyticsStore.getTopFeaturesByUniqueVisitors(10);
+  async getTopFeaturesByUniqueVisitors(count: number, days: number): Promise<TopFeature[]> {
+    return this.analyticsStore.getTopFeaturesByUniqueVisitors(count, days);
   }
 }
 

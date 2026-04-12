@@ -16,13 +16,19 @@ export async function createRouter({
     res.status(204).send();
   });
 
-  router.get('/metrics/daily-unique-users', async (_, res) => {
-    const count = await analyticsService.getTotalDailyUniqueVisitors();
+  router.get('/metrics/daily-unique-users', async (req, res) => {
+    const parsedDays = parseInt(req.query.days as string, 10);
+    const days = Number.isNaN(parsedDays) ? 1 : parsedDays;
+    const count = await analyticsService.getTotalDailyUniqueVisitors(days);
     res.json({ count });
   });
 
-  router.get('/metrics/top-features', async (_, res) => {
-    const features = await analyticsService.getTopFeaturesByUniqueVisitors();
+  router.get('/metrics/top-features', async (req, res) => {
+    const parsedCount = parseInt(req.query.count as string, 10);
+    const count = Number.isNaN(parsedCount) ? 10 : parsedCount;
+    const parsedDays = parseInt(req.query.days as string, 10);
+    const days = Number.isNaN(parsedDays) ? 1 : parsedDays;
+    const features = await analyticsService.getTopFeaturesByUniqueVisitors(count, days);
     res.json({ features });
   });
 

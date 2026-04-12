@@ -2,8 +2,8 @@
 export interface AnalyticsStore {
 
   storeAnalyticsEvent(visitorId: string, event: any): Promise<void>;
-  getTotalDailyUniqueVisitors(): Promise<number>;
-  getTopFeaturesByUniqueVisitors(limit: number): Promise<{ featureName: string; uniqueVisitors: number }[]>;
+  getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]>;
+  getTopFeaturesByUniqueVisitors(count: number, days: number): Promise<TopFeature[]>;
   deleteOldAnalyticsData(thresholdInDays: number): Promise<void>;
 
 }
@@ -11,4 +11,10 @@ export interface AnalyticsStore {
 export type TopFeature = {
   featureName: string;
   uniqueVisitors: number;
+  totalHits: number;
+}
+
+export type DailyVisitor = {
+  date: string;
+  visitors: number;
 }

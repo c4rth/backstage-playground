@@ -14,17 +14,23 @@ export interface CustomAnalytics extends LegacyAnalyticsApi, AnalyticsImplementa
     
     captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent): Promise<void>;
 
-    getDailyUniqueUsers(): Promise<number>;
-    getTopFeatures(): Promise<TopFeature[]>;
+    getDailyUniqueUsers(days: number): Promise<DailyVisitor[]>;
+    getTopFeatures(count: number, days: number): Promise<TopFeature[]>;
 
 }
 
 export type TopFeature = {
     featureName: string;
     uniqueVisitors: number;
+    totalHits: number;
 };
 
-export class CustomAnalyticsApi implements CustomAnalytics {
+export type DailyVisitor = {
+  date: string;
+  visitors: number;
+}
+
+export class CustomAnalyticsApi implements CustomAnalytics  {
 
     private readonly discoveryApi: DiscoveryApi;
     private readonly fetchApi: FetchApi;
@@ -76,9 +82,9 @@ export class CustomAnalyticsApi implements CustomAnalytics {
         }
     }
 
-    async getDailyUniqueUsers(): Promise<number> {
+    async getDailyUniqueUsers(days: number): Promise<DailyVisitor[]> {
         const baseUrl = await this.getAnalyticsBaseUrl();
-        const url = new URL(`${baseUrl}/metrics/daily-unique-users`);
+        const url = new URL(`${baseUrl}/metrics/daily-unique-users?days=${days}`);
 
         try {
             const response = await this.fetchApi.fetch(url);
@@ -88,14 +94,13 @@ export class CustomAnalyticsApi implements CustomAnalytics {
             const data = await response.json();
             return data.count;
         } catch (error) {
-            // In case of error, return 0 or consider caching the last known value
-            return 0;
+            return [];
         }
     }
 
-    async getTopFeatures(): Promise<TopFeature[]> {
+    async getTopFeatures(count: number, days: number): Promise<TopFeature[]> {
         const baseUrl = await this.getAnalyticsBaseUrl();
-        const url = new URL(`${baseUrl}/metrics/top-features`);
+        const url = new URL(`${baseUrl}/metrics/top-features?count=${count}&days=${days}`);
 
         try {
             const response = await this.fetchApi.fetch(url);
