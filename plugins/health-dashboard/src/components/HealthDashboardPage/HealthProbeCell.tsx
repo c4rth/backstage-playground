@@ -7,8 +7,8 @@ const centerStyle = { width: '100%', display: 'flex', justifyContent: 'center' }
 const tooltipStyle = { maxWidth: '50em' } as const;
 const bulletStyle = (color: string) => ({
     borderRadius: '50%',
-    width: '1.5em',
-    height: '1.5em',
+    width: '1em',
+    height: '1em',
     backgroundColor: color,
 } as const);
 
@@ -61,7 +61,7 @@ export const HealthProbeCell = memo(({
     return (
         <Cell>
             <Box style={centerStyle}>
-                <TooltipTrigger delay={500}>
+                <TooltipTrigger delay={500} closeDelay={100}>
                     <ButtonLink variant="tertiary"
                         href={getHealthUrl(healthProbe.healthUrl)}
                         target="_blank"
