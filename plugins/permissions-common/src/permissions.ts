@@ -15,3 +15,10 @@ export const notGuestPermission = createPermission({
       action: 'read',
     },
   });
+
+export const advancedUserPermission = createPermission({
+    name: 'advanced.read',
+    attributes: {
+      action: 'read',
+    },
+  });

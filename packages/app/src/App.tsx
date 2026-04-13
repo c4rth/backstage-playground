@@ -64,7 +64,7 @@ import {
 } from '@internal/plugin-api-platform';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
-import { adminToolsPermission } from '@internal/plugin-permissions-common';
+import { adminToolsPermission, advancedUserPermission } from '@internal/plugin-permissions-common';
 // TechDocs
 import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
@@ -201,14 +201,14 @@ const routes = (
     <Route path="/mca/basetypes/:name" element={<McaBaseTypeDefinitionPage />} />
     <Route path="/health-dashboard"
       element={
-        <RequirePermission permission={devToolsAdministerPermission}>
+        <RequirePermission permission={advancedUserPermission}>
           <HealthDashboardPage />
         </RequirePermission>
       }>
       {customDevToolsPage}
     </Route>
     <Route path="/tools" element={<ToolsPage />} />
-    <Route path="/devtools"
+    <Route path="/admin"
       element={
         <RequirePermission permission={devToolsAdministerPermission}>
           <DevToolsPage />

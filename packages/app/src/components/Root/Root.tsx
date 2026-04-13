@@ -52,8 +52,8 @@ import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 // Admin Tools
-import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
-import { adminToolsPermission, notGuestPermission } from '@internal/plugin-permissions-common';
+import { devToolsAdministerPermission, } from '@backstage/plugin-devtools-common';
+import { adminToolsPermission, notGuestPermission, advancedUserPermission } from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
 import { FeatureFlagged } from '@backstage/core-app-api';
 
@@ -102,7 +102,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         </FeatureFlagged>
         <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA Operations" />
         <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="MCA BaseTypes" />
-        <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
+        <RequirePermission permission={advancedUserPermission} errorPage={<div />} >
           <SidebarItem icon={RiHeartPulseFill as IconComponent} to="health-dashboard" text="Health Dashboard" />
         </RequirePermission>
         <SidebarItem icon={RiFileCopy2Line as IconComponent} to="docs" text="Docs" />
@@ -140,7 +140,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <Shortcuts />
       <SidebarDivider />
       <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
-        <SidebarItem icon={RiAdminLine as IconComponent} to="devtools" text="Admin" />
+        <SidebarItem icon={RiAdminLine as IconComponent} to="admin" text="Admin" />
       </RequirePermission>
 
       <SidebarGroup

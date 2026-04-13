@@ -11,7 +11,7 @@ import {
   PolicyQuery,
 } from '@backstage/plugin-permission-node';
 import { Config } from '@backstage/config';
-import { adminToolsPermission } from '@internal/plugin-permissions-common';
+import { adminToolsPermission, advancedUserPermission } from '@internal/plugin-permissions-common';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { templateManagementPermission } from '@backstage/plugin-scaffolder-common/alpha';
 
@@ -21,11 +21,13 @@ export class MyPermissionPolicy implements PermissionPolicy {
   logger: LoggerService;
   config: Config;
   superUserGroups: string[] = [];
+  advancedUserGroups: string[] = [];
 
   constructor(logger: LoggerService, config: Config) {
     this.logger = logger;
     this.config = config;
     this.superUserGroups = this.config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
+    this.advancedUserGroups = this.config.getOptionalStringArray('permission.rbac.advancedUsers') ?? [];
   }
 
   async handle(
@@ -40,7 +42,7 @@ export class MyPermissionPolicy implements PermissionPolicy {
           : AuthorizeResult.DENY,
       };
     }
-    
+
     // SuperUsers: allow all if in adminGroups
     const isSuperUser =
       this.superUserGroups.length !== 0 &&
@@ -49,6 +51,25 @@ export class MyPermissionPolicy implements PermissionPolicy {
       return { result: AuthorizeResult.ALLOW };
     }
 
+    const isAdvancedUser =
+      this.advancedUserGroups.length !== 0 &&
+      user?.identity?.ownershipEntityRefs.some(entityRef => this.advancedUserGroups.includes(entityRef));
+    if (isAdvancedUser) {
+      // AdvancedUsers: allow all except admin and delete permissions
+      const denyPermissions = [
+        catalogEntityCreatePermission,
+        catalogEntityDeletePermission,
+        adminToolsPermission,
+        devToolsAdministerPermission,
+        templateManagementPermission,
+      ];
+      if (denyPermissions.some(perm => isPermission(request.permission, perm))) {
+        return { result: AuthorizeResult.DENY };
+      }
+      return { result: AuthorizeResult.ALLOW };
+    }
+
+
     // Deny list for regular users
     const denyPermissions = [
       catalogEntityCreatePermission,
@@ -56,6 +77,7 @@ export class MyPermissionPolicy implements PermissionPolicy {
       adminToolsPermission,
       devToolsAdministerPermission,
       templateManagementPermission,
+      advancedUserPermission,
     ];
     if (denyPermissions.some(perm => isPermission(request.permission, perm))) {
       return { result: AuthorizeResult.DENY };
