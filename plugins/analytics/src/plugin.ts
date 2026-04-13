@@ -5,16 +5,16 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-import { analyticsBackendApiRef, CustomAnalyticsApi } from './api';
+import { AnalyticsBackendApi, analyticsBackendApiRef } from './api';
 
 export const analyticsPlugin = createPlugin({
-  id: 'analytics.custom-analytics',
+  id: 'plugin.custom-analytics.backend',
   apis: [
     createApiFactory({
       api: analyticsBackendApiRef,
       deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
       factory: ({ discoveryApi, fetchApi }) =>
-        new CustomAnalyticsApi({ discoveryApi, fetchApi }),
+        new AnalyticsBackendApi({ discoveryApi, fetchApi }),
     }),
   ],
 });

@@ -62,7 +62,8 @@ export class AnalyticsDbStore implements AnalyticsStore {
   async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {
     const query = this.db('analytics_events')
       .select(this.db.raw('to_char(created_at, \'YYYY-MM-DD\') as date'))
-      .countDistinct('visitor_id as visitors')
+      .select(this.db.raw("count(DISTINCT CASE WHEN visitor_id NOT LIKE 'guest%' THEN visitor_id ELSE NULL END) as visitors"))
+      .select(this.db.raw("count(DISTINCT CASE WHEN visitor_id LIKE 'guest%' THEN visitor_id ELSE NULL END) as guests"))
       .groupBy(this.db.raw('to_char(created_at, \'YYYY-MM-DD\')'))
       .orderBy('date', 'asc');
 
@@ -83,6 +84,7 @@ export class AnalyticsDbStore implements AnalyticsStore {
     return result.map((row: any) => ({
       date: row.date,
       visitors: Number(row.visitors ?? 0),
+      guests: Number(row.guests ?? 0),
     }));
   }
 

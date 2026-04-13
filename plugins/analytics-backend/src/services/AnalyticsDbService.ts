@@ -49,8 +49,11 @@ export class AnalyticsDbService implements AnalyticsService {
   }
 
   getVisitorId(req: any) {
-    const ip = req.ip;
-    const userAgent = req.headers['user-agent'] || '';
+    const event = req.body;
+
+    if (event.user.startsWith('guest')) {
+      return event.user;
+    }
 
     // Create a salt that changes every day
     // This is the "magic" that makes it GDPR compliant
@@ -58,14 +61,14 @@ export class AnalyticsDbService implements AnalyticsService {
     const secretKey = process.env.APP_SECRET; // A static secret key
 
     return createHash('sha256')
-      .update(`${ip}-${userAgent}-${dailyDate}-${secretKey}`)
+      .update(`${event.user}-${dailyDate}-${secretKey}`)
       .digest('hex');
   }
 
-  async logAnalyticsEvent(event: any): Promise<void> {
-    const analyticsEvent = event.body;
-    const visitorId = this.getVisitorId(event);
-    await this.analyticsStore.storeAnalyticsEvent(visitorId, analyticsEvent);
+  async logAnalyticsEvent(req: any): Promise<void> {
+    const event = req.body;
+    const visitorId = this.getVisitorId(req);
+    await this.analyticsStore.storeAnalyticsEvent(visitorId, event);
   }
 
   async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {

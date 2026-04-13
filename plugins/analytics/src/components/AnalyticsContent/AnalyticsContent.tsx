@@ -181,7 +181,13 @@ export const AnalyticsContent = () => {
                       />
                       <Bar
                         dataKey="visitors"
+                        stackId="a"
                         fill="var(--bui-bg-solid)"
+                      />
+                      <Bar
+                        dataKey="guests"
+                        stackId="a"
+                        fill="color-mix(in srgb, var(--bui-bg-solid) 50%, transparent)"
                       />
                     </BarChart>
                   </ResponsiveContainer>

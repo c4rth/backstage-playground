@@ -8,15 +8,11 @@ import {
     AnalyticsImplementation,
     DiscoveryApi,
     FetchApi,
+    IdentityApi,
 } from '@backstage/frontend-plugin-api';
 
-export interface CustomAnalytics extends LegacyAnalyticsApi, AnalyticsImplementation{
-    
+export interface CustomAnalytics extends LegacyAnalyticsApi, AnalyticsImplementation {
     captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent): Promise<void>;
-
-    getDailyUniqueUsers(days: number): Promise<DailyVisitor[]>;
-    getTopFeatures(count: number, days: number): Promise<TopFeature[]>;
-
 }
 
 export type TopFeature = {
@@ -26,23 +22,30 @@ export type TopFeature = {
 };
 
 export type DailyVisitor = {
-  date: string;
-  visitors: number;
+    date: string;
+    visitors: number;
 }
 
-export class CustomAnalyticsApi implements CustomAnalytics  {
+const GUEST_ENTITY_REF = 'user:default/guest';
+
+export class CustomAnalyticsApi implements CustomAnalytics {
 
     private readonly discoveryApi: DiscoveryApi;
     private readonly fetchApi: FetchApi;
+    private readonly identityApi: IdentityApi;
     private baseUrlCache: string | null = null;
     private baseUrlPromise: Promise<string> | null = null;
+    private userHashCache: string | null = null;
+    private userHashPromise: Promise<string> | null = null;
 
     constructor(options: {
         discoveryApi: DiscoveryApi;
         fetchApi: FetchApi;
+        identityApi: IdentityApi;
     }) {
         this.discoveryApi = options.discoveryApi;
         this.fetchApi = options.fetchApi;
+        this.identityApi = options.identityApi;
     }
 
     private async getAnalyticsBaseUrl(): Promise<string> {
@@ -59,8 +62,51 @@ export class CustomAnalyticsApi implements CustomAnalytics  {
         return this.baseUrlCache;
     }
 
-    static create(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi }): CustomAnalyticsApi {
+    static create(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi; identityApi: IdentityApi }): CustomAnalyticsApi {
         return new CustomAnalyticsApi(options);
+    }
+
+    private static readonly TEXT_ENCODER = new TextEncoder();
+    private static readonly HEX_TABLE = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, '0'));
+
+    private async hashString(message: string): Promise<string> {
+        const hashBuffer = await crypto.subtle.digest(
+            'SHA-256',
+            CustomAnalyticsApi.TEXT_ENCODER.encode(message),
+        );
+        const bytes = new Uint8Array(hashBuffer);
+        let hex = '';
+        for (let i = 0; i < bytes.length; i++) {
+            hex += CustomAnalyticsApi.HEX_TABLE[bytes[i]];
+        }
+        return hex;
+    }
+
+    private async getUserHash(): Promise<string> {
+        if (this.userHashCache) {
+            return this.userHashCache;
+        }
+        if (this.userHashPromise) {
+            return this.userHashPromise;
+        }
+
+        this.userHashPromise = (async () => {
+            const identity = await this.identityApi.getBackstageIdentity();
+            const userEntityRef = identity.userEntityRef;
+            
+            console.log(`Generating user hash for entityRef: ${userEntityRef}`);
+
+            if (userEntityRef === GUEST_ENTITY_REF) {
+                this.userHashCache = 'guest-' + crypto.randomUUID();
+            } else {
+                this.userHashCache = await this.hashString(userEntityRef);
+            }
+
+            this.userHashPromise = null;
+            return this.userHashCache;
+        })();
+
+        return this.userHashPromise;
     }
 
     async captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent) {
@@ -68,54 +114,24 @@ export class CustomAnalyticsApi implements CustomAnalytics  {
         const url = new URL(`${baseUrl}/event`);
 
         try {
+            const userHash = await this.getUserHash();
+            const enrichedEvent = {
+                ...event,
+                user: userHash,
+            };
             await this.fetchApi.fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    ...event,
-                }),
+                body: JSON.stringify(enrichedEvent),
             });
         } catch (error) {
             // ignore errors, as analytics should not impact user experience
         }
     }
-
-    async getDailyUniqueUsers(days: number): Promise<DailyVisitor[]> {
-        const baseUrl = await this.getAnalyticsBaseUrl();
-        const url = new URL(`${baseUrl}/metrics/daily-unique-users?days=${days}`);
-
-        try {
-            const response = await this.fetchApi.fetch(url);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch daily unique users: ${response.statusText}`);
-            }
-            const data = await response.json();
-            return data.count;
-        } catch (error) {
-            return [];
-        }
-    }
-
-    async getTopFeatures(count: number, days: number): Promise<TopFeature[]> {
-        const baseUrl = await this.getAnalyticsBaseUrl();
-        const url = new URL(`${baseUrl}/metrics/top-features?count=${count}&days=${days}`);
-
-        try {
-            const response = await this.fetchApi.fetch(url);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch top features: ${response.statusText}`);
-            }
-            const data = await response.json();
-            return data.features ?? [];
-        } catch (error) {
-            // In case of error, return an empty array or consider caching the last known value
-            return [];
-        }
-    }
 }
 
-export const analyticsBackendApiRef = createApiRef<CustomAnalytics>({
-  id: 'plugin.analytics.custom-analytics',
+export const analyticsCustomApiRef = createApiRef<CustomAnalytics>({
+    id: 'custom-analytics.api',
 });

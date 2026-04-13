@@ -11,6 +11,7 @@ import {
   createApiFactory,
   discoveryApiRef,
   fetchApiRef,
+  identityApiRef,
   microsoftAuthApiRef,
 } from '@backstage/core-plugin-api';
 import {
@@ -37,8 +38,9 @@ export const apis: AnyApiFactory[] = [
     deps: {
       discoveryApi: discoveryApiRef,
       fetchApi: fetchApiRef,
+      identityApi: identityApiRef,
     },
-    factory: ({ discoveryApi, fetchApi }) =>
-      CustomAnalyticsApi.create({ discoveryApi, fetchApi }),
+    factory: ({ discoveryApi, fetchApi, identityApi }) =>
+      CustomAnalyticsApi.create({ discoveryApi, fetchApi, identityApi }),
   }),
 ];
