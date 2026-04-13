@@ -46,30 +46,27 @@ export const DefaultEditor = (props: Props) => {
 
     return (
         <Flex direction="column" style={{ height: '100%' }}>
-            <Flex align='center' style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                    {modes && modes.length > 0 && (
-                        <>
-                            {modes.map(m => (
-                                <Chip
-                                    key={m}
-                                    label={m}
-                                    onClick={() => setMode && setMode(m)}
-                                    color={mode === m ? 'primary' : 'default'}
-                                    style={{ marginRight: '1rem'}}
-                                />
-                            ))}
-                        </>
-                    )}
-                    <ClearValueButton setValue={setInput} />
-                    <PasteFromClipboardButton setInput={setInput} />
-                    {output && <CopyToClipboardButton output={output} />}
-                    {sample && <SampleButton setInput={setInput} sample={sample} />}
-                </Box>
+            <Box style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {modes && modes.length > 0 && (
+                    <Flex direction="row" style={{ alignItems: 'center', marginRight:'24px' }}>
+                        {modes.map(m => (
+                            <Chip
+                                key={m}
+                                label={m}
+                                onClick={() => setMode && setMode(m)}
+                                color={mode === m ? 'primary' : 'default'}
+                            />
+                        ))}
+                    </Flex>
+                )}
+                <ClearValueButton setValue={setInput} />
+                <PasteFromClipboardButton setInput={setInput} />
+                {output && <CopyToClipboardButton output={output} />}
+                {sample && <SampleButton setInput={setInput} sample={sample} />}
                 {additionalTools && additionalTools.length > 0 && (
                     <Grid.Item>{additionalTools.map(tool => tool)}</Grid.Item>
                 )}
-            </Flex>
+            </Box>
             <Grid.Root style={{ flex: 1, display: 'flex' }}>
                 <Grid.Item
                     style={{ paddingTop: '8px !important', paddingLeft: '8px !important', display: 'flex', flexDirection: 'column', width: '50%' }}
