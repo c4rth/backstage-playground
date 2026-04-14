@@ -168,7 +168,7 @@ export const AppRegistryPage = () => {
   const boxRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
       const top = node.getBoundingClientRect().top;
-      setMaxHeight(window.innerHeight - top - 16); // 16px padding from bottom
+      setMaxHeight(window.innerHeight - top - 50); // 50px padding from bottom
     }
   }, []);
 

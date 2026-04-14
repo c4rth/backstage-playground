@@ -26,5 +26,5 @@
 }
 
 .customTable :global(.bui-TableRow:nth-child(even)) {
-    background-color: var(--bui-bg-surface-0);
+    background-color: var(--bui-bg-neutral-0);
 }

@@ -47,25 +47,27 @@ export const DefaultEditor = (props: Props) => {
     return (
         <Flex direction="column" style={{ height: '100%' }}>
             <Box style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {modes && modes.length > 0 && (
-                    <Flex direction="row" style={{ alignItems: 'center', marginRight:'24px' }}>
-                        {modes.map(m => (
-                            <Chip
-                                key={m}
-                                label={m}
-                                onClick={() => setMode && setMode(m)}
-                                color={mode === m ? 'primary' : 'default'}
-                            />
-                        ))}
-                    </Flex>
-                )}
-                <ClearValueButton setValue={setInput} />
-                <PasteFromClipboardButton setInput={setInput} />
-                {output && <CopyToClipboardButton output={output} />}
-                {sample && <SampleButton setInput={setInput} sample={sample} />}
-                {additionalTools && additionalTools.length > 0 && (
-                    <Grid.Item>{additionalTools.map(tool => tool)}</Grid.Item>
-                )}
+                <Flex direction="row" style={{ alignItems: 'center', marginRight: '24px', flexWrap: 'wrap' }}>
+                    {modes && modes.length > 0 && (
+                        <>
+                            {modes.map(m => (
+                                <Chip
+                                    key={m}
+                                    label={m}
+                                    onClick={() => setMode && setMode(m)}
+                                    color={mode === m ? 'primary' : 'default'}
+                                />
+                            ))}
+                        </>
+                    )}
+                    <ClearValueButton setValue={setInput} />
+                    <PasteFromClipboardButton setInput={setInput} />
+                    {output && <CopyToClipboardButton output={output} />}
+                    {sample && <SampleButton setInput={setInput} sample={sample} />}
+                    {additionalTools && additionalTools.length > 0 && (
+                        <Grid.Item>{additionalTools.map(tool => tool)}</Grid.Item>
+                    )}
+                </Flex>
             </Box>
             <Grid.Root style={{ flex: 1, display: 'flex' }}>
                 <Grid.Item
@@ -86,7 +88,7 @@ export const DefaultEditor = (props: Props) => {
                                     border: '1px solid var(--bui-gray-4)',
                                     boxSizing: 'border-box',
                                     borderRadius: '4px',
-                                    backgroundColor: 'var(--bui-bg-surface-1)',
+                                    backgroundColor: 'var(--bui-bg-neutral-1)',
                                     color: 'var(--bui-fg-default)',
                                     resize: 'none',
                                 }}

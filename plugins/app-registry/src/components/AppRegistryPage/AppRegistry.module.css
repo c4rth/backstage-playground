@@ -26,7 +26,7 @@
 }
 
 .denseTable :global(.bui-TableRow:nth-child(even)) {
-    background-color: var(--bui-bg-surface-0);
+    background-color: rgba(0,0,0, 0.87);
 }
 
 .denseTable :global(.bui-TableCell) {

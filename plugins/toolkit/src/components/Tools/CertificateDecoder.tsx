@@ -123,7 +123,7 @@ export const CertificateDecoder = () => {
               boxSizing: 'border-box',
               borderRadius: '4px',
               flex: 1,
-              backgroundColor: 'var(--bui-bg-surface-1)'
+              backgroundColor: 'var(--bui-bg-neutral-1)'
             }}
             enableClipboard={true}
           />
@@ -137,7 +137,7 @@ export const CertificateDecoder = () => {
               fontSize: '14px',
               border: '1px solid var(--bui-gray-4)',
               borderRadius: '4px',
-              backgroundColor: 'var(--bui-bg-surface-1)',
+              backgroundColor: 'var(--bui-bg-neutral-1)',
               color: 'var(--bui-fg-default)',
             }}
           >

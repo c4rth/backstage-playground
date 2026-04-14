@@ -15,9 +15,6 @@
   --bui-fg-warning: rgb(178, 106, 0);
   --bui-fg-success: rgb(53, 122, 56);
   --bui-bg: #F8F8F8;
-  --bui-bg-surface-0: #F8F8F8;
-  --bui-bg-surface-1: #FFFFFF;
-  --bui-bg-surface-2: #F8F8F8;
   --bui-bg-danger: rgb(246, 104, 94);
   --bui-bg-warning: rgb(255, 172, 51);
   --bui-bg-success: rgb(111, 191, 115);
@@ -59,7 +56,6 @@
     --bui-bg-tint-hover: #9cc9ff1f;
     --bui-bg-tint-pressed: #9cc9ff29;
     --bui-bg-tint-disabled: transparent;
-    --bui-fg-solid: #fff;
   }
 
 }
