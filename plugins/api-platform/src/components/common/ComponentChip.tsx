@@ -46,7 +46,7 @@ const getChipStyles = (index: number, backgroundColor: string | undefined) => {
         const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
         const textColor = alphaValue <= 0.5
             ? 'var(--bui-fg-primary)'
-            : 'var(--bui-bg)';
+            : 'var(--bui-bg-solid)';
         return {
             backgroundColor: applyAlpha(backgroundColor, alphaValue),
             color: textColor,

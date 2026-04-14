@@ -63,7 +63,7 @@ export const styles = {
     border: '1px solid var(--bui-border-1)',
     borderRadius: '4px',
     backgroundColor: 'var(--bui-bg-neutral-1)',
-    color: 'var(--bui-fg-default)',
+    color: 'var(--bui-fg-primary)',
     boxSizing: 'border-box' as const,
   }
 };

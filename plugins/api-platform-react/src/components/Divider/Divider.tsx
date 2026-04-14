@@ -30,8 +30,8 @@ const getDividerStyles = (
   const baseStyles: CSSProperties = {
     border: 'none',
     backgroundColor: light 
-      ? 'var(--bui-divider-light, rgba(0, 0, 0, 0.08))' 
-      : 'var(--bui-divider, rgba(0, 0, 0, 0.12))',
+      ? 'var(--bui-bg-neutral-2, rgba(0, 0, 0, 0.08))' 
+      : 'var(--bui-bg-neutral-3, rgba(0, 0, 0, 0.12))',
     flexShrink: 0,
   };
 

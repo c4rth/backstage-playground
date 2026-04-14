@@ -46,7 +46,7 @@ export const ApiSearchResultListItem = (props: ApiSearchResultListItemProps) => 
       <Box style={{ flexWrap: 'wrap', flex: 1, marginLeft: '20px' }}>
         <Box style={{ width: '100%', wordBreak: 'break-all', marginBottom: '1rem' }}>
           <Link noTrack to={result.apiPlatformLocation}>
-            <Text weight='bold' style={{ color: 'var(--bui-fg-link)', fontSize: '20px' }}>
+            <Text weight='bold' style={{ color: 'var(--bui-fg-info)', fontSize: '20px' }}>
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText
                   text={highlight.fields.title}

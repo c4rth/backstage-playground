@@ -1,7 +1,7 @@
 .searchBarInput {
     max-width: 60vw;
     margin: auto;
-    background-color: var(--bui-fg);
+    background-color: var(--bui-fg-solid);
     border-radius: 50px !important;
   box-shadow: var(--mui-shadow-1);
 }

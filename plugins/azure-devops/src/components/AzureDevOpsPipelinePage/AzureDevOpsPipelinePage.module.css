@@ -5,18 +5,6 @@
     padding: 0;
 }
 
-.customTable :global(.bui-TableRow[data-selected]) {
-    background-color: var(--bui-bg-tint-pressed);
-}
-
-.customTable :global(.bui-TableRow[data-pressed]) {
-    background-color: var(--bui-bg-tint-pressed);
-}
-
-.customTable :global(.bui-TableRow[data-disabled]) {
-    background-color: var(--bui-bg-tint-disabled);
-}
-
 .customTable :global(.bui-TableRow[data-react-aria-pressable='true']) {
     cursor: pointer;
 }
@@ -26,5 +14,5 @@
 }
 
 .customTable :global(.bui-TableRow:nth-child(even)) {
-    background-color: var(--bui-bg-neutral-0);
+    background-color: var(--bui-bg-neutral-1);
 }

@@ -128,10 +128,10 @@ export const JwtDecoder = () => {
               border: '1px solid var(--bui-border-1)',
               borderRadius: '4px',
               backgroundColor: 'var(--bui-bg-neutral-1)',
-              color: 'var(--bui-fg-default)',
+              color: 'var(--bui-fg-primary)',
             }}
           >
-            <Box style={{ color: 'var(--bui-fg-muted)' }}><i>No JWT data available</i></Box>
+            <Box><i>No JWT data available</i></Box>
           </div>
         )}
       </Box>

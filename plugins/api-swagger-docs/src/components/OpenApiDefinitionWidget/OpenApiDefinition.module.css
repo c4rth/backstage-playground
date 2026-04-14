@@ -8,7 +8,7 @@
 }
 
 .wrapper :global(.swagger-ui .scheme-container) {
-  background-color: var(--bui-bg-neutral-0);
+  background-color: var(--bui-bg-neutral-1);
 }
 
 .wrapper :global(.swagger-ui .opblock-tag),
@@ -25,13 +25,6 @@
 .wrapper :global(section.models),
 .wrapper :global(section.models.is-open h4) {
   border-color: var(--divider);
-}
-
-.wrapper :global(.swagger-ui .model-title),
-.wrapper :global(.swagger-ui .model .renderedMarkdown),
-.wrapper :global(.swagger-ui .model .description) {
-  font-family: var(--bui-font-regular);
-  font-weight: var(--bui-font-weight-regular);
 }
 
 .wrapper :global(.swagger-ui h1),
@@ -67,7 +60,7 @@
 .wrapper :global(.swagger-ui .opblock .opblock-section-header),
 .wrapper :global(.swagger-ui .model-box),
 .wrapper :global(.swagger-ui section.models .model-container) {
-  background: var(--bui-bg-neutral-0);
+  background: var(--bui-bg-neutral-1);
 }
 
 .wrapper :global(.swagger-ui .prop-format),
@@ -94,20 +87,13 @@
   color: var(--bui-fg-warning);
 }
 
-.wrapper :global(.swagger-ui table.model),
-.wrapper :global(.swagger-ui table.model .model),
-.wrapper :global(.swagger-ui .opblock-external-docs-wrapper) {
-  font-size: var(--bui-font-size-small);
-}
-
 .wrapper :global(.swagger-ui table.headers td) {
   color: var(--bui-fg-primary);
-  font-weight: var(--bui-font-weight-regula);
 }
 
 .wrapper :global(.swagger-ui .model-hint) {
   color: var(--bui-fg-secondary);
-  background-color: var(--bui-bg-neutral-0);
+  background-color: var(--bui-bg-neutral-1);
 }
 
 .wrapper :global(.swagger-ui .opblock-summary-method),
@@ -123,7 +109,7 @@
 }
 
 .wrapper :global(.swagger-ui a) {
-  color: var(--bui-fg-link);
+  color: var(--bui-fg-info);
 }
 
 .wrapper :global(.swagger-ui .renderedMarkdown code) {
@@ -176,11 +162,11 @@
 }
 
 .wrapper :global(.json-schema-2020-12__constraint--string) {
-  background-color: var(--bui-bg-neutral-0);
+  background-color: var(--bui-bg-neutral-1);
 }
 
 .wrapper :global(.swagger-ui .json-schema-2020-12__attribute--primary) {
-  color: var(--bui-bg-neutral-0);
+  color: var(--bui-bg-neutral-1);
 }
 
 .wrapper :global(.swagger-ui .json-schema-2020-12-property--required > .json-schema-2020-12:first-of-type > .json-schema-2020-12-head .json-schema-2020-12__title:after) {

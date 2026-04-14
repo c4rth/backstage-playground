@@ -1,25 +1,20 @@
 :root {
-
-  --bui-font-weight-regular: 400;
-  --bui-font-weight-bold: 700;
   --bui-fg-primary: rgba(0, 0, 0, 0.87);
   --bui-fg-secondary: #6E6E6E;
-  --bui-fg-link: #C30045;
-  --bui-fg-link-hover: #2196F3;
+  --bui-fg-info: #C30045;
   --bui-fg-disabled: rgba(0, 0, 0, 0.38);
   --bui-fg-solid: #fff;
   --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
   --bui-fg-danger: rgb(170, 46, 37);
   --bui-fg-warning: rgb(178, 106, 0);
   --bui-fg-success: rgb(53, 122, 56);
-  --bui-bg: #F8F8F8;
+  --bui-bg-app: #F8F8F8;
   --bui-bg-danger: rgb(246, 104, 94);
   --bui-bg-warning: rgb(255, 172, 51);
   --bui-bg-success: rgb(111, 191, 115);
   --bui-border-danger: #f44336;
   --bui-border-warning: #ff9800;
   --bui-border-success: #4caf50;
-  --bui-border: #E6E6E6;
   --bui-ring: #FFFBCC;
 
   --belui-chip-bg-color1: #C9D6FF;
@@ -40,8 +35,6 @@
     --bui-bg-solid-hover: rgb(166, 0, 59);
     --bui-bg-solid-pressed: rgb(136, 0, 48);
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
-    --bui-fg-tint: #6E6E6E;
-    --bui-fg-tint-disabled: #DDD;
   }
 
   [data-theme-mode='dark'] {
@@ -50,10 +43,6 @@
     --bui-bg-solid-hover: rgb(166, 0, 59);
     --bui-bg-solid-pressed: rgb(136, 0, 48);
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
-    --bui-bg-tint: transparent;
-    --bui-bg-tint-hover: #9cc9ff1f;
-    --bui-bg-tint-pressed: #9cc9ff29;
-    --bui-bg-tint-disabled: transparent;
   }
 
 }

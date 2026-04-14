@@ -26,18 +26,6 @@
     padding: 0;
 }
 
-.denseTable :global(.bui-TableRow[data-selected]) {
-    background-color: var(--bui-bg-tint-pressed);
-}
-
-.denseTable :global(.bui-TableRow[data-pressed]) {
-    background-color: var(--bui-bg-tint-pressed);
-}
-
-.denseTable :global(.bui-TableRow[data-disabled]) {
-    background-color: var(--bui-bg-tint-disabled);
-}
-
 .denseTable :global(.bui-TableRow[data-react-aria-pressable='true']) {
     cursor: pointer;
 }
@@ -54,8 +42,6 @@
     padding-top: 0px;
     padding-bottom: 0px;
     font-size: var(--bui-font-size-3);
-    font-family: var(--bui-font-regular);
-    font-weight: var(--bui-font-weight-regular);
     min-width: 0;
     overflow: hidden;
 }

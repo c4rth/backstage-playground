@@ -45,7 +45,7 @@ const getChipStyles = (
     alignItems: 'center',
     justifyContent: 'center',
     boxSizing: 'border-box',
-    fontFamily: 'var(--bui-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+    fontFamily: 'var(--bui-font-regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
     fontWeight: 400,
     whiteSpace: 'nowrap',
     cursor: clickable ? 'pointer' : 'default',
@@ -74,10 +74,10 @@ const getChipStyles = (
       baseStyles.backgroundColor = "#C30045";
       baseStyles.color = "#fff";
     } else if (color === 'secondary') {
-      baseStyles.backgroundColor = 'var(--bui-bg-secondary)';
+      baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
       baseStyles.color = 'var(--bui-black)';
     } else if (color === 'default') {
-      baseStyles.backgroundColor = 'var(--bui-bg-subtle, #e0e0e0)';
+      baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
       baseStyles.color = 'var(--bui-black)';
       baseStyles.color = "#000";
     } else {
@@ -87,18 +87,6 @@ const getChipStyles = (
   } else {
     // outlined variant 
     baseStyles.border = '1px solid #0000003b';
-    /*
-    if (color === 'primary') {
-      baseStyles.backgroundColor = 'var(--bui-bg-solid)';
-      baseStyles.color = 'var(--bui-fg-solid)';
-    } else if (color === 'secondary') {
-      baseStyles.backgroundColor = 'var(--bui-bg-secondary)';
-      baseStyles.color = 'var(--bui-black)';
-    } else if (color === 'default') {
-      baseStyles.backgroundColor = 'var(--bui-bg-subtle, #e0e0e0)';
-      baseStyles.color = 'var(--bui-black)';
-    } 
-      */
   }
   return baseStyles;
 };
