@@ -27,6 +27,7 @@ export type DailyVisitor = {
 }
 
 const GUEST_ENTITY_REF = 'user:default/guest';
+const ANALYTICS_KEY = 'analytics_id';
 
 export class CustomAnalyticsApi implements CustomAnalytics {
 
@@ -35,7 +36,7 @@ export class CustomAnalyticsApi implements CustomAnalytics {
     private readonly identityApi: IdentityApi;
     private baseUrlCache: string | null = null;
     private baseUrlPromise: Promise<string> | null = null;
-    private userHashCache: string | null = null;
+    private userHashCache: string | null = sessionStorage.getItem(ANALYTICS_KEY);
     private userHashPromise: Promise<string> | null = null;
 
     constructor(options: {
@@ -93,14 +94,14 @@ export class CustomAnalyticsApi implements CustomAnalytics {
         this.userHashPromise = (async () => {
             const identity = await this.identityApi.getBackstageIdentity();
             const userEntityRef = identity.userEntityRef;
-            
-            console.log(`Generating user hash for entityRef: ${userEntityRef}`);
 
             if (userEntityRef === GUEST_ENTITY_REF) {
                 this.userHashCache = 'guest-' + crypto.randomUUID();
             } else {
                 this.userHashCache = await this.hashString(userEntityRef);
             }
+            
+            sessionStorage.setItem(ANALYTICS_KEY, this.userHashCache);
 
             this.userHashPromise = null;
             return this.userHashCache;
