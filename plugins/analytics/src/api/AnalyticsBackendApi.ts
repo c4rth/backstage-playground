@@ -19,8 +19,9 @@ export type TopFeature = {
 };
 
 export type DailyVisitor = {
-    date: string;
-    visitors: number;
+  date: string;
+  visitors: number;
+  guests: number;
 }
 
 export class AnalyticsBackendApi implements AnalyticsBackend {
