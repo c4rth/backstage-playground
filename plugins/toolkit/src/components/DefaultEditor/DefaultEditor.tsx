@@ -85,7 +85,7 @@ export const DefaultEditor = (props: Props) => {
                                     padding: '8px',
                                     fontFamily: 'monospace',
                                     fontSize: '14px',
-                                    border: '1px solid var(--bui-gray-4)',
+                                    border: '1px solid var(--bui-border-1)',
                                     boxSizing: 'border-box',
                                     borderRadius: '4px',
                                     backgroundColor: 'var(--bui-bg-neutral-1)',
@@ -111,10 +111,10 @@ export const DefaultEditor = (props: Props) => {
                                     padding: '8px',
                                     fontFamily: 'monospace',
                                     fontSize: '14px',
-                                    border: '1px solid var(--md-sys-color-outline, #ccc)',
+                                    border: '1px solid var(--bui-border-1)',
                                     borderRadius: '4px',
-                                    backgroundColor: 'var(--md-sys-color-surface, #fff)',
-                                    color: 'var(--md-sys-color-on-surface, #000)',
+                                    backgroundColor: 'var(--bui-bg-neutral-1)',
+                                    color: 'var(--bui-fg-default)',
                                     resize: 'none',
                                 }}
                             />

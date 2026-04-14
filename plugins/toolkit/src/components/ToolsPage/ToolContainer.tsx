@@ -9,7 +9,7 @@ export const ToolContainer = (props: ToolContainerProps) => {
 
     return (
         <div style={{
-            padding: '1rem',
+            padding: '1rem 1rem 1rem 0',
             width: '100%',
             height: '100%',
             display: 'flex',

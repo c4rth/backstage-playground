@@ -22,7 +22,7 @@ export const ToolsContainer = () => {
                 <Grid.Item
                     colSpan='2'
                     style={{
-                        borderRight: '1px solid #FF0000',
+                        borderRight: '1px solid var(--bui-bg-solid)',
                         padding: '0 !important',
                     }}
                 >
@@ -42,7 +42,8 @@ export const ToolsContainer = () => {
                                 textValue={tool.name}
                                 style={({ isSelected }) => ({ 
                                     padding: '10px',
-                                    backgroundColor: isSelected ? 'var(--bui-gray-3 )' : 'transparent',
+                                    backgroundColor: isSelected ? 'var(--bui-bg-solid)' : 'transparent',
+                                    color: isSelected ? 'var(--bui-fg-solid)' : 'var(--bui-fg-primary)',
                                 })}
                             >
                                 <Grid.Root

@@ -4,7 +4,7 @@ export const DIVIDER_SIZE = 2;
 
 export const dividerBaseStyle: React.CSSProperties = {
   flexShrink: 0,
-  background: 'var(--bui-gray-4)',
+  background: 'var(--bui-border-1)',
   borderRadius: '3px',
   transition: 'background 0.15s',
   position: 'relative',
@@ -13,7 +13,6 @@ export const dividerBaseStyle: React.CSSProperties = {
 
 export const styles = {
   container: { height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' as const },
-  toolbar: { padding: '8px', borderBottom: '1px solid var(--bui-gray-4)', flexShrink: 0 },
 
   // Main Grid Layout for Left/Right split
   mainGrid: (percentage: number) => ({
@@ -48,6 +47,7 @@ export const styles = {
     position: 'absolute' as const,
     top: 0, left: 0, right: 0, bottom: 0,
     overflow: 'hidden',
+    border: '1px solid var(--bui-border-1)',
   },
 
   resultBox: {
@@ -60,7 +60,7 @@ export const styles = {
     padding: '8px',
     fontFamily: 'monospace',
     fontSize: '14px',
-    border: '1px solid var(--bui-gray-4)',
+    border: '1px solid var(--bui-border-1)',
     borderRadius: '4px',
     backgroundColor: 'var(--bui-bg-neutral-1)',
     color: 'var(--bui-fg-default)',

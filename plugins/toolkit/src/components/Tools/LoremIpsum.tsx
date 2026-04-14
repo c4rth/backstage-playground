@@ -214,8 +214,6 @@ export const LoremIpsum = () => {
                             style={{
                                 paddingLeft: '16px',
                                 paddingRight: '16px',
-                                borderColor: 'textVerySubtle',
-                                borderRadius: '4px !important',
                             }}
                         >
                             Generate
@@ -235,10 +233,10 @@ export const LoremIpsum = () => {
                             padding: '8px',
                             fontFamily: 'monospace',
                             fontSize: '14px',
-                            border: '1px solid var(--md-sys-color-outline, #ccc)',
+                            border: '1px solid var(--bui-border-1)',
                             borderRadius: '4px',
-                            backgroundColor: 'var(--md-sys-color-surface, #fff)',
-                            color: 'var(--md-sys-color-on-surface, #000)',
+                            backgroundColor: 'var(--bui-bg-neutral-1)',
+                            color: 'var(--bui-fg-default)',
                             resize: 'none',
                         }}
                     />

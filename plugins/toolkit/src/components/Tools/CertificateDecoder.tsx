@@ -119,7 +119,7 @@ export const CertificateDecoder = () => {
             name={false}
             src={props.info || {}}
             style={{
-              border: '1px solid var(--bui-gray-4)',
+              border: '1px solid var(--bui-border-1)',
               boxSizing: 'border-box',
               borderRadius: '4px',
               flex: 1,
@@ -135,7 +135,7 @@ export const CertificateDecoder = () => {
               padding: '8px',
               fontFamily: 'monospace',
               fontSize: '14px',
-              border: '1px solid var(--bui-gray-4)',
+              border: '1px solid var(--bui-border-1)',
               borderRadius: '4px',
               backgroundColor: 'var(--bui-bg-neutral-1)',
               color: 'var(--bui-fg-default)',

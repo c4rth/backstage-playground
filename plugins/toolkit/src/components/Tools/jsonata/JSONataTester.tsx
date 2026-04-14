@@ -113,8 +113,8 @@ export const JSONataTester = () => {
         <div
           onMouseDown={onDragX}
           style={{ ...dividerBaseStyle, cursor: 'col-resize' }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-gray-6)')}
-          onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-gray-4)')}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-border-2)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-border-1)')}
         />
 
         {/* Right Panel: Split (Top vs Bottom) */}
@@ -143,8 +143,8 @@ export const JSONataTester = () => {
           <div
             onMouseDown={onDragY}
             style={{ ...dividerBaseStyle, cursor: 'row-resize' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-gray-6)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-gray-4)')}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-border-2)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-border-1)')}
           />
 
           {/* Bottom Right: Result */}
