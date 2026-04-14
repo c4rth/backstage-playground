@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Progress,
   ResponseErrorPanel,
@@ -9,7 +9,7 @@ import { useGetOperations } from '../../hooks';
 import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION } from "@internal/plugin-api-platform-common";
 import { AppRegistryOperation } from '../../types';
 import { RiCheckboxCircleFill, RiIndeterminateCircleLine, RiAddCircleFill } from '@remixicon/react'
-import { ButtonIcon, Table, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid, CellText, useTable, ColumnConfig } from '@backstage/ui';
+import { ButtonIcon, Table, Cell, Tooltip, TooltipTrigger, Card, CardHeader, Text, CardBody, Grid, CellText, useTable, ColumnConfig, Box } from '@backstage/ui';
 import styles from './AppRegistry.module.css';
 
 type TableRow = {
@@ -133,6 +133,9 @@ export const AppRegistryPage = () => {
       column: 'name',
       direction: 'ascending'
     },
+    paginationOptions: {
+      type: 'none',
+    },
     sortFn: (items, {
       column,
       direction
@@ -161,6 +164,14 @@ export const AppRegistryPage = () => {
     reload();
   }, [entity, reload]);
 
+  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
+  const boxRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      const top = node.getBoundingClientRect().top;
+      setMaxHeight(window.innerHeight - top - 16); // 16px padding from bottom
+    }
+  }, []);
+
   if (tableProps.error) {
     return <ResponseErrorPanel title="Failed to call AppRegistry" error={tableProps.error} />;
   }
@@ -176,15 +187,17 @@ export const AppRegistryPage = () => {
         </Text>
       </CardHeader>
       <CardBody style={{ padding: '0' }}>
-        <Table
-          columnConfig={columns}
-          {...tableProps}
-          pagination={{
-            type: 'none',
-          }}
-          emptyState={emptyState()}
-          className={styles.denseTable}
-        />
+        <Box ref={boxRef} style={{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: 'auto' }}>
+          <Table
+            columnConfig={columns}
+            {...tableProps}
+            pagination={{
+              type: 'none',
+            }}
+            emptyState={emptyState()}
+            className={styles.denseTable}
+          />
+        </Box>
       </CardBody>
     </Card>
   );
