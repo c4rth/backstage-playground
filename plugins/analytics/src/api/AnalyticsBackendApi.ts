@@ -10,6 +10,7 @@ import {
 export interface AnalyticsBackend {
     getDailyUniqueUsers(days: number): Promise<DailyVisitor[]>;
     getTopFeatures(count: number, days: number): Promise<TopFeature[]>;
+    getPluginIds(): Promise<string[]>;
 }
 
 export type TopFeature = {
@@ -86,6 +87,22 @@ export class AnalyticsBackendApi implements AnalyticsBackend {
             return data.features ?? [];
         } catch (error) {
             // In case of error, return an empty array or consider caching the last known value
+            return [];
+        }
+    }
+
+    async getPluginIds(): Promise<string[]> {
+        const baseUrl = await this.getAnalyticsBaseUrl();
+        const url = new URL(`${baseUrl}/metrics/plugin-ids`);
+
+        try {
+            const response = await this.fetchApi.fetch(url);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch plugin IDs: ${response.statusText}`);
+            }
+            const data = await response.json();
+            return data.pluginIds ?? [];
+        } catch (error) {
             return [];
         }
     }

@@ -78,6 +78,10 @@ export class AnalyticsDbService implements AnalyticsService {
   async getTopFeaturesByUniqueVisitors(count: number, days: number): Promise<TopFeature[]> {
     return this.analyticsStore.getTopFeaturesByUniqueVisitors(count, days);
   }
+
+  async getPluginIds(): Promise<string[]> {
+    return this.analyticsStore.getPluginIds();
+  }
 }
 
 export const analyticsServiceRef = createServiceRef<AnalyticsService>({

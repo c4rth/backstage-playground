@@ -111,6 +111,11 @@ export class CustomAnalyticsApi implements CustomAnalytics {
     }
 
     async captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent) {
+
+        if (event.action != 'navigate') {
+            return;
+        }
+
         const baseUrl = await this.getAnalyticsBaseUrl();
         const url = new URL(`${baseUrl}/event`);
 

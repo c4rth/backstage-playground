@@ -4,6 +4,8 @@ export interface AnalyticsStore {
   storeAnalyticsEvent(visitorId: string, event: any): Promise<void>;
   getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]>;
   getTopFeaturesByUniqueVisitors(count: number, days: number): Promise<TopFeature[]>;
+  getPluginIds(): Promise<string[]>;  
+
   deleteOldAnalyticsData(thresholdInDays: number): Promise<void>;
 
 }
