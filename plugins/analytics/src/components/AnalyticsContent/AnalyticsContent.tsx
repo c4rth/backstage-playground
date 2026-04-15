@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/core-plugin-api';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { analyticsBackendApiRef } from '../../api';
 import { Box, Card, CardBody, CardHeader, CellText, Cell, ColumnConfig, Table, Text, useTable } from '@backstage/ui';
 import styles from './AnalyticsContent.module.css';
@@ -32,6 +32,7 @@ const columns: ColumnConfig<TableRow>[] = [
     id: 'featureName',
     label: 'Feature Name',
     isRowHeader: true,
+    isSortable: true,
     cell: item => <CellText title={item.featureName} />
   },
   {
@@ -71,6 +72,7 @@ export const AnalyticsContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [daysToShow, setDaysToShow] = useState(0);
+  const isFirstRender = useRef(true);
 
   const { tableProps } = useTable({
     mode: 'complete',
@@ -89,6 +91,8 @@ export const AnalyticsContent = () => {
       return [...items].sort((a, b) => {
         const desc = direction === 'descending' ? -1 : 1;
         switch (column) {
+          case 'featureName':
+            return desc * a.featureName.localeCompare(b.featureName);
           case 'totalHits':
             return desc * (a.totalHits - b.totalHits);
           case 'uniqueVisitors':
@@ -100,6 +104,14 @@ export const AnalyticsContent = () => {
     }
   });
 
+  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
+  const boxRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      const top = node.getBoundingClientRect().top;
+      setMaxHeight(window.innerHeight - top - 50); // 50px padding from bottom
+    }
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -110,7 +122,7 @@ export const AnalyticsContent = () => {
       try {
         const [count, features] = await Promise.all([
           analyticsApi.getDailyUniqueUsers(daysToShow),
-          analyticsApi.getTopFeatures(10, daysToShow),
+          analyticsApi.getTopFeatures(100, daysToShow),
         ]);
 
         if (!isMounted) {
@@ -197,16 +209,18 @@ export const AnalyticsContent = () => {
           </Card>
 
           <Card>
-            <CardHeader><Text variant='title-x-small'>Top features by unique visitors</Text></CardHeader>
+            <CardHeader><Text variant='title-x-small'>Top features by unique visitors ({topFeatures.length})</Text></CardHeader>
             <CardBody>
               {topFeatures.length === 0 ? (
                 <p>No feature navigation data yet.</p>
               ) : (
-                <Table
-                  columnConfig={columns}
-                  {...tableProps}
-                  className={styles.denseTable}
-                />
+                <Box ref={boxRef} style={{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: 'auto' }}>
+                  <Table
+                    columnConfig={columns}
+                    {...tableProps}
+                    className={styles.denseTable}
+                  />
+                </Box>
               )}
             </CardBody>
           </Card>

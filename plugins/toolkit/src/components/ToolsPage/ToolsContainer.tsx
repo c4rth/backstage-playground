@@ -4,24 +4,27 @@ import { useCallback, useState } from "react";
 import { Tool } from "./types";
 import { ToolContainer } from "./ToolContainer";
 import { Grid, List, ListRow } from "@backstage/ui";
+import { useAnalytics } from '@backstage/core-plugin-api';
 import styles from './ToolsContainer.module.css';
 
 export const ToolsContainer = () => {
 
     const tools = defaultTools;
+    const analytics = useAnalytics();
 
     const [selectedTool, setSelectedTool] = useState<Tool>(tools[0]);
 
     const handleSelectedChange = useCallback((toolId: string) => {
         setSelectedTool(defaultTools.find(tool => tool.id === toolId) ?? tools[0]);
-    }, [tools]);
+        analytics.captureEvent('navigate', `/tools/${toolId}`);
+    }, [tools, analytics]);
 
     return (
         <Content noPadding>
             <Grid.Root style={{ width: '100%', height: '100%' }} gap='0'>
                 <Grid.Item
-                    colSpan='2'                
-                    >
+                    colSpan='2'
+                >
                     <List
                         aria-label="Tools"
                         selectedKeys={[selectedTool.id]}
@@ -33,7 +36,7 @@ export const ToolsContainer = () => {
                         className={styles.customList}
                     >
                         {tools.map(tool => (
-                            <ListRow    
+                            <ListRow
                                 key={tool.id}
                                 id={tool.id}
                                 textValue={tool.name}
