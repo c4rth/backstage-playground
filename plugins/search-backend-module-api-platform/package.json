@@ -25,13 +25,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.8.0",
-    "@backstage/catalog-model": "^1.7.7",
-    "@backstage/plugin-search-backend-module-catalog": "^0.3.13",
+    "@backstage/backend-plugin-api": "^1.9.0",
+    "@backstage/catalog-model": "^1.8.0",
+    "@backstage/plugin-search-backend-module-catalog": "^0.3.14",
     "@internal/plugin-api-platform-common": "workspace:^"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.0"
+    "@backstage/cli": "^0.36.1"
   },
   "files": [
     "dist"
