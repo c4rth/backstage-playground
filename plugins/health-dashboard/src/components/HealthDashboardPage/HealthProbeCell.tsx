@@ -30,7 +30,7 @@ const StatusTable = memo(({ status }: {
     </table>
 ));
 
-const STATUS_COLORS: Record<number, string> = { 200: 'green', 202: 'blue' };
+const STATUS_COLORS: Record<number, string> = { 200: 'green', 202: 'blue', 404: 'gray' };
 const getBulletColor = (status: number): string => STATUS_COLORS[status] ?? 'red';
 
 const getHealthUrl = (probeUrl: string | undefined): string => {

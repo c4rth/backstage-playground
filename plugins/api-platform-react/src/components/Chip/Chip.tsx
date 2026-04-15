@@ -6,10 +6,6 @@ export interface ChipProps {
   label: ReactNode;
   /** Icon element to display at the start of the chip */
   icon?: ReactElement;
-  /** Icon element to display when deletable */
-  deleteIcon?: ReactElement;
-  /** Callback fired when delete icon is clicked */
-  onDelete?: () => void;
   /** Callback fired when chip is clicked */
   onClick?: () => void;
   /** The color of the chip */
@@ -28,8 +24,6 @@ export interface ChipProps {
   className?: string;
   /** Inline styles */
   style?: CSSProperties;
-  /** Avatar element to display at the start */
-  avatar?: ReactElement;
 }
 
 const getChipStyles = (
@@ -45,8 +39,8 @@ const getChipStyles = (
     alignItems: 'center',
     justifyContent: 'center',
     boxSizing: 'border-box',
-    fontFamily: 'var(--bui-font-regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
-    fontWeight: 400,
+    fontFamily: 'var(--bui-font-regular)',
+    fontWeight: 'var(--bui-font-weight-regular)',
     whiteSpace: 'nowrap',
     cursor: clickable ? 'pointer' : 'default',
     outline: 0,
@@ -111,48 +105,11 @@ const getIconStyles = (size: ChipProps['size']): CSSProperties => ({
   height: size === 'small' ? '16px' : '18px',
 });
 
-const getAvatarStyles = (size: ChipProps['size']): CSSProperties => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: size === 'small' ? '20px' : '24px',
-  height: size === 'small' ? '20px' : '24px',
-  marginLeft: size === 'small' ? '-3px' : '-4px',
-  marginRight: size === 'small' ? '3px' : '4px',
-  borderRadius: '50%',
-  overflow: 'hidden',
-});
-
-const getDeleteButtonStyles = (size: ChipProps['size']): CSSProperties => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'transparent',
-  border: 'none',
-  padding: 0,
-  cursor: 'pointer',
-  marginRight: size === 'small' ? '4px' : '5px',
-  marginLeft: size === 'small' ? '-4px' : '-6px',
-  width: size === 'small' ? '18px' : '22px',
-  height: size === 'small' ? '18px' : '22px',
-  borderRadius: '50%',
-  transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-});
-
-const getDeleteIconStyles = (size: ChipProps['size']): CSSProperties => ({
-  width: size === 'small' ? '16px' : '18px',
-  height: size === 'small' ? '16px' : '18px',
-  fill: 'currentColor',
-  opacity: 0.7,
-});
-
 export const Chip = forwardRef<HTMLDivElement, ChipProps>(
   (
     {
       label,
       icon,
-      deleteIcon,
-      onDelete,
       onClick,
       color = 'default',
       textColor = undefined,
@@ -162,12 +119,10 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       disabled = false,
       className = '',
       style,
-      avatar,
     },
     ref
   ) => {
     const isClickable = clickable || !!onClick;
-    const isDeletable = !!onDelete;
 
     const chipStyles = {
       ...getChipStyles(color, textColor, variant, size, isClickable, disabled),
@@ -176,36 +131,14 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
 
     const content = (
       <>
-        {avatar && (
-          <span style={getAvatarStyles(size)}>{avatar}</span>
-        )}
-        {icon && !avatar && (
+        {icon && (
           <span style={getIconStyles(size)}>{icon}</span>
         )}
-        <span style={getLabelStyles(size)}>{label}</span>
-        {isDeletable && (
-          <Button
-            style={getDeleteButtonStyles(size)}
-            onPress={onDelete}
-            isDisabled={disabled}
-            aria-label="Delete"
-          >
-            {deleteIcon || (
-              <svg
-                style={getDeleteIconStyles(size)}
-                focusable="false"
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-              </svg>
-            )}
-          </Button>
-        )}
+        <span style={getLabelStyles(size)}>{label}</span>        
       </>
     );
 
-    if (isClickable && !isDeletable) {
+    if (isClickable) {
       return (
         <Button
           ref={ref as any}

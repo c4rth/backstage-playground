@@ -1,8 +1,7 @@
-import { CopyTextButton, MarkdownContent } from "@backstage/core-components";
+import { CopyTextButton, InfoCard, MarkdownContent } from "@backstage/core-components";
 import { AboutField } from "@backstage/plugin-catalog";
-import { Card, CardBody, CardHeader, Grid, Text } from "@backstage/ui";
+import { Grid, Text } from "@backstage/ui";
 import { memo } from 'react';
-import { Divider } from "@internal/plugin-api-platform-react";
 import styles from './McaOperationAboutCard.module.css';
 
 const FieldDisplay = memo<{
@@ -64,27 +63,23 @@ export const McaOperationAboutCard = memo<McaOperationAboutCardProps>(({ operati
     ];
 
     return (
-        <Card className={styles.gridItemCard}>
-            <CardHeader style={{ margin: '0.5rem' }}><Text variant='title-small'><b>About</b></Text></CardHeader>
-            <Divider />
-            <CardBody className={styles.gridItemCardContent} style={{ margin: '0.5rem' }}>
-                <Grid.Root columns='1'>
-                    {fieldConfigs.map((config) => (
-                        <FieldDisplay
-                            key={config.label}
-                            label={config.label}
-                            value={config.value}
-                            className={styles.value}
-                            showCopyButton={config.showCopyButton}
-                        />
-                    ))}
-                    <Grid.Item>
-                        <AboutField label="Description">
-                            <MarkdownContent content={operationAnalyze?.description || ''} />
-                        </AboutField>
-                    </Grid.Item>
-                </Grid.Root>
-            </CardBody>
-        </Card>
+        <InfoCard title='About' divider>
+            <Grid.Root columns='1'>
+                {fieldConfigs.map((config) => (
+                    <FieldDisplay
+                        key={config.label}
+                        label={config.label}
+                        value={config.value}
+                        className={styles.value}
+                        showCopyButton={config.showCopyButton}
+                    />
+                ))}
+                <Grid.Item>
+                    <AboutField label="Description">
+                        <MarkdownContent content={operationAnalyze?.description || ''} />
+                    </AboutField>
+                </Grid.Item>
+            </Grid.Root>
+        </InfoCard>
     );
 });
