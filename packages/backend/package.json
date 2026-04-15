@@ -60,10 +60,7 @@
     "@internal/plugin-search-backend-module-api-platform": "workspace:^",
     "@internal/plugin-search-backend-module-mca": "workspace:^",
     "@microsoft/microsoft-graph-types": "^2.43.1",
-    "app": "workspace:^",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0"
+    "app": "workspace:^"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.1"
