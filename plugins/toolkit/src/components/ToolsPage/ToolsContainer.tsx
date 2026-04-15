@@ -3,8 +3,8 @@ import { defaultTools } from "./tools";
 import { useCallback, useState } from "react";
 import { Tool } from "./types";
 import { ToolContainer } from "./ToolContainer";
-import { Grid } from "@backstage/ui";
-import { ListBox, ListBoxItem } from "react-aria-components";
+import { Grid, List, ListRow } from "@backstage/ui";
+import styles from './ToolsContainer.module.css';
 
 export const ToolsContainer = () => {
 
@@ -18,15 +18,11 @@ export const ToolsContainer = () => {
 
     return (
         <Content noPadding>
-            <Grid.Root style={{ width: '100%', height: '100%'}}>
+            <Grid.Root style={{ width: '100%', height: '100%' }} gap='0'>
                 <Grid.Item
-                    colSpan='2'
-                    style={{
-                        borderRight: '1px solid var(--bui-bg-solid)',
-                        padding: '0 !important',
-                    }}
-                >
-                    <ListBox
+                    colSpan='2'                
+                    >
+                    <List
                         aria-label="Tools"
                         selectedKeys={[selectedTool.id]}
                         selectionMode="single"
@@ -34,28 +30,20 @@ export const ToolsContainer = () => {
                             const key = Array.from(keys)[0] as string;
                             if (key) handleSelectedChange(key);
                         }}
+                        className={styles.customList}
                     >
                         {tools.map(tool => (
-                            <ListBoxItem
+                            <ListRow    
                                 key={tool.id}
                                 id={tool.id}
                                 textValue={tool.name}
-                                style={({ isSelected }) => ({ 
-                                    padding: '10px',
-                                    backgroundColor: isSelected ? 'var(--bui-bg-solid)' : 'transparent',
-                                    color: isSelected ? 'var(--bui-fg-solid)' : 'var(--bui-fg-primary)',
-                                })}
+                                description={tool.description}
+                                className={styles.customList}
                             >
-                                <Grid.Root
-                                    style={{ padding: '8px', cursor: 'pointer' }}>
-                                    <Grid.Item>
-                                        <strong>{tool.name}</strong>
-                                        <div>{tool.description}</div>
-                                    </Grid.Item>
-                                </Grid.Root>
-                            </ListBoxItem>
+                                <strong>{tool.name}</strong>
+                            </ListRow>
                         ))}
-                    </ListBox>
+                    </List>
                 </Grid.Item>
 
                 <Grid.Item colSpan='10' style={{ padding: 0 }}>

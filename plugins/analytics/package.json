@@ -38,7 +38,7 @@
     "@backstage/plugin-search-react": "^1.11.1",
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.14.0",
-    "@remixicon/react": "^4.6.0",
+    "@remixicon/react": "^4.9.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-use": "^17.2.4",

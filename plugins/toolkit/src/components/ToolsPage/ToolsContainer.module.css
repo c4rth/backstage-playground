@@ -1,0 +1,15 @@
+.customList :global(.bui-ListRow) {
+    padding: var(--bui-space-4);
+}
+
+.customList :global(.bui-ListRowCheck) {
+    display: none;
+}
+
+.customList :global(.bui-ListRowDescription) {
+    font-size: var(--bui-font-size-2);
+    color: var(--bui-fg-primary);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

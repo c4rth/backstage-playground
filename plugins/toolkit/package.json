@@ -31,7 +31,7 @@
     "@backstage/ui": "^0.14.0",
     "@faker-js/faker": "^10.4.0",
     "@internal/plugin-api-platform-react": "workspace:^",
-    "@remixicon/react": "^4.6.0",
+    "@remixicon/react": "^4.9.0",
     "@uiw/codemirror-extensions-langs": "^4.25.9",
     "@uiw/codemirror-theme-vscode": "^4.25.9",
     "@uiw/react-codemirror": "^4.25.9",
