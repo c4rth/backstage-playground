@@ -77,8 +77,17 @@ async function innerGetLibraryVersions(catalog: CatalogService, auth: AuthServic
   return versions.sort((a, b) => semver.valid(a.version) && semver.valid(b.version) ? semver.rcompare(a.version, b.version) : b.version.localeCompare(a.version));
 }
 
+function isNewerVersion(current: string, existing: string): boolean {
+  const currentSemver = semver.valid(current);
+  const existingSemver = semver.valid(existing);
+  if (currentSemver && existingSemver) {
+    return semver.compare(currentSemver, existingSemver) > 0;
+  }
+  return current.toLowerCase() > existing.toLowerCase();
+}
+
 function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
-  const latest = new Map<string, { entity: Entity, version: semver.SemVer }>();
+  const latest = new Map<string, { entity: Entity, version: string }>();
   const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
@@ -99,18 +108,10 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
     const versionStr = item.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
     if (!versionStr) continue;
 
-    let version: semver.SemVer;
-    try {
-      version = new semver.SemVer(versionStr);
-    } catch {
-      version = new semver.SemVer('0.0.0');
-    }
-
     const mapKey = `${system}-${libraryName}`;
     const existing = latest.get(mapKey);
-    // Use compare() > 0 instead of gt() - avoids extra function call overhead
-    if (!existing || semver.compare(version, existing.version) > 0) {
-      latest.set(mapKey, { entity: item, version });
+    if (!existing || isNewerVersion(versionStr, existing.version)) {
+      latest.set(mapKey, { entity: item, version: versionStr });
     }
   }
 
