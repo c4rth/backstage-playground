@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/core-plugin-api';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { analyticsBackendApiRef } from '../../api';
 import { Box, Card, CardBody, CardHeader, CellText, Cell, ColumnConfig, Table, Text, useTable } from '@backstage/ui';
 import styles from './AnalyticsContent.module.css';
@@ -72,7 +72,6 @@ export const AnalyticsContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [daysToShow, setDaysToShow] = useState(0);
-  const isFirstRender = useRef(true);
 
   const { tableProps } = useTable({
     mode: 'complete',
