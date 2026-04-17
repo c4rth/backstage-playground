@@ -42,24 +42,33 @@ export const JSONataTester = () => {
   const { percentage: splitX, onMouseDown: onDragX } = useResizable('horizontal', 50, mainContainerRef);
   const { percentage: splitY, onMouseDown: onDragY } = useResizable('vertical', 35, rightContainerRef, 10, 50);
 
+  const formatValue = (val: any): any => {
+    if (typeof val !== 'undefined' && val !== null && val.toPrecision) {
+      return Number(val.toPrecision(13));
+    }
+    if (val && (val._jsonata_lambda === true || val._jsonata_function === true)) {
+      return `{function:${val.signature ? val.signature.definition : ""}}`;
+    }
+    if (typeof val === 'function') {
+      return `<native function>#${val.length}`;
+    }
+    return val;
+  };
+
   const evaluate = useCallback(async (jsonStr: string, expr: string) => {
     setError(null);
     setResult(undefined);
     if (!jsonStr || !expr) return;
     try {
       const data = JSON.parse(jsonStr);
-      const expression = jsonata(expr);
-      registerCustomFunctions(expression);
+      const jsonataExpr = jsonata(expr);
+      registerCustomFunctions(jsonataExpr);
       const funcBindings = await loadFuncBindings();
-      let pathresult = await expression.evaluate(data, funcBindings);
+      let pathresult = await jsonataExpr.evaluate(data, funcBindings);
       if (typeof pathresult === 'undefined') {
         pathresult = '** no match **';
       } else {
-        pathresult = JSON.stringify(pathresult, function (_, val) {
-          return (typeof val !== 'undefined' && val !== null && val.toPrecision) ? Number(val.toPrecision(13)) :
-            (val && (val._jsonata_lambda === true || val._jsonata_function === true)) ? '{function:' + (val.signature ? val.signature.definition : "") + '}' :
-              (typeof val === 'function') ? '<native function>#' + val.length : val;
-        }, 2);
+        pathresult = JSON.stringify(pathresult, (_, val) => formatValue(val), 2);
       }
       setResult(pathresult);
     } catch (e: any) {
@@ -111,10 +120,12 @@ export const JSONataTester = () => {
 
         {/* Vertical Grabber */}
         <div
+          role="presentation"
           onMouseDown={onDragX}
           style={{ ...dividerBaseStyle, cursor: 'col-resize' }}
           onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-border-2)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-border-1)')}
+          aria-label="Resize horizontal divider"
         />
 
         {/* Right Panel: Split (Top vs Bottom) */}
@@ -141,10 +152,12 @@ export const JSONataTester = () => {
 
           {/* Horizontal Grabber */}
           <div
+            role="presentation"
             onMouseDown={onDragY}
             style={{ ...dividerBaseStyle, cursor: 'row-resize' }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--bui-border-2)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--bui-border-1)')}
+            aria-label="Resize vertical divider"
           />
 
           {/* Bottom Right: Result */}
@@ -157,7 +170,7 @@ export const JSONataTester = () => {
                   value={result}
                   height="100%"
                   style={{ height: '100%' }}
-                  readOnly={true}
+                  readOnly
                   extensions={jsonExtensions}
                   theme={vscodeLight}
                   basicSetup={{

@@ -121,9 +121,9 @@ export const AzureDevOpsPipelinePage = () => {
     id: 'build',
     label: 'Build',
     cell: row =>
-      <Cell>
-        <Link to={row.item.link ?? ''}>{row.item.title}</Link>
-      </Cell>,
+    (<Cell>
+      <Link to={row.item.link ?? ''}>{row.item.title}</Link>
+    </Cell>),
     width: '25%'
   }, {
     id: 'source',
@@ -149,15 +149,15 @@ export const AzureDevOpsPipelinePage = () => {
     id: 'actions',
     label: 'Actions',
     cell: row =>
-      <Cell>
-        <Button
-          style={{ backgroundColor: 'var(--bui-fg-info)' }}
-          onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
-          isDisabled={!row.item.id}
-        >
-          View Logs
-        </Button>
-      </Cell>,
+    (<Cell>
+      <Button
+        style={{ backgroundColor: 'var(--bui-fg-info)' }}
+        onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
+        isDisabled={!row.item.id}
+      >
+        View Logs
+      </Button>
+    </Cell>),
     width: '12%'
   }], [fetchLogs]);
 

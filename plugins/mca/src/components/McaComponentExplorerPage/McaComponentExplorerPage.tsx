@@ -83,7 +83,7 @@ export const McaComponentExplorerPage = () => {
             <Grid.Item>
               <Flex style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                 <Flex align="center" gap="3">
-                  <Alert status="warning" icon={true} title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible." />
+                  <Alert status="warning" icon title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible." />
                 </Flex>
               </Flex>
             </Grid.Item>

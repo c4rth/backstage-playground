@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const DIVIDER_SIZE = 2;
 
 export const dividerBaseStyle: React.CSSProperties = {

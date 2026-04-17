@@ -96,7 +96,7 @@ export class CustomAnalyticsApi implements CustomAnalytics {
             const userEntityRef = identity.userEntityRef;
 
             if (userEntityRef === GUEST_ENTITY_REF) {
-                this.userHashCache = 'guest-' + crypto.randomUUID();
+                this.userHashCache = `guest-${  crypto.randomUUID()}`;
             } else {
                 this.userHashCache = await this.hashString(userEntityRef);
             }
@@ -112,7 +112,7 @@ export class CustomAnalyticsApi implements CustomAnalytics {
 
     async captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent) {
 
-        if (event.action != 'navigate') {
+        if (event.action !== 'navigate') {
             return;
         }
 

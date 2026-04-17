@@ -52,17 +52,17 @@ export const AzureDevOpsGitTagsPage = () => {
       label: 'Tag',
       isRowHeader: true,
       cell: item =>
-        <Cell>
-          <Link to={item.gitTag.link ?? ''}>{item.gitTag.name}</Link>
-        </Cell>,
+      (<Cell>
+        <Link to={item.gitTag.link ?? ''}>{item.gitTag.name}</Link>
+      </Cell>),
       isSortable: true,
     }, {
       id: 'commit',
       label: 'Commit',
       cell: item =>
-        <Cell>
-          <Link to={item.gitTag.commitLink ?? ''}>{item.gitTag.peeledObjectId ?? item.gitTag.objectId}</Link>
-        </Cell>,
+      (<Cell>
+        <Link to={item.gitTag.commitLink ?? ''}>{item.gitTag.peeledObjectId ?? item.gitTag.objectId}</Link>
+      </Cell>),
     }, {
       id: 'createdBy',
       label: 'Created By',

@@ -125,7 +125,7 @@ export const CertificateDecoder = () => {
               flex: 1,
               backgroundColor: 'var(--bui-bg-neutral-1)'
             }}
-            enableClipboard={true}
+            enableClipboard
           />
         ) : (
            <div
@@ -195,7 +195,7 @@ export const CertificateDecoder = () => {
   return (
     <DefaultEditor
       input={input}
-      mode={"Decode"}
+      mode="Decode"
       setInput={setInput}
       sample={
         exampleCertificate

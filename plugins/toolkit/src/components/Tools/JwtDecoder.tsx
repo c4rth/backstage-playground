@@ -114,7 +114,7 @@ export const JwtDecoder = () => {
                 flex: 1,
                 backgroundColor: 'var(--bui-bg-neutral-1)'
               }}
-              enableClipboard={true}
+              enableClipboard
             />
           </>
         ) : (
@@ -201,7 +201,7 @@ export const JwtDecoder = () => {
   return (
     <DefaultEditor
       input={input}
-      mode={"Decode"}
+      mode="Decode"
       setInput={setInput}
       sample={exampleJwt}
       output={output}

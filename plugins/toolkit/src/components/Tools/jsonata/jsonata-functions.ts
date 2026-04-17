@@ -44,7 +44,7 @@ export const registerCustomFunctions = (expr: jsonata.Expression): void => {
 // are already in scope when the transform funcs are compiled.
 export const loadFuncBindings = async (): Promise<Record<string, any>> => {
   const bindings: Record<string, any> = {};
-  bindings['fromMillisZoned'] = fromMillisZoned;
+  bindings.fromMillisZoned = fromMillisZoned;
   for (const [name, funcStr] of Object.entries(funcExpressions)) {
     bindings[name] = await jsonata(funcStr).evaluate({}, bindings);
   }

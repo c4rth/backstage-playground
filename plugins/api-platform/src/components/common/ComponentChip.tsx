@@ -51,12 +51,12 @@ const getChipStyles = (index: number, backgroundColor: string | undefined) => {
             backgroundColor: applyAlpha(backgroundColor, alphaValue),
             color: textColor,
         };
-    } else {
-        return {
-            backgroundColor: backgroundColors[index % backgroundColors.length],
-            color: textColors[index % textColors.length], 
-        };;
     }
+    return {
+        backgroundColor: backgroundColors[index % backgroundColors.length],
+        color: textColors[index % textColors.length],
+    };;
+
 };
 
 const PLATFORM_ICONS = {
@@ -132,7 +132,7 @@ export const ComponentChip = ({
     const content = tooltipContent ? (
         <TooltipTrigger trigger='hover' delay={250}>
             {chip}
-            <Tooltip placement="bottom" style={{ maxWidth: '50rem'}}>
+            <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
                 {tooltipContent}
             </Tooltip>
         </TooltipTrigger>

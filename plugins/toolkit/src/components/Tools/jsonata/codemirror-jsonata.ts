@@ -34,7 +34,7 @@ const BUILTIN_FUNCTIONS = new Set([
   '$lookup', '$clone',
 ]);
 
-const CUSTOM_FUNCTIONS = getCustomFunctions().map(name => '$' + name);
+const CUSTOM_FUNCTIONS = getCustomFunctions().map(name => `$${name}`);
 
 const KEYWORDS = new Set(['and', 'or', 'in', 'true', 'false', 'null']);
 

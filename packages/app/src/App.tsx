@@ -25,6 +25,7 @@ import { Root } from './components/Root';
 
 import {
   AlertDisplay,
+  ErrorPage,
   OAuthRequestDialog,
   SignInPage,
 } from '@backstage/core-components';
@@ -64,7 +65,7 @@ import {
 } from '@internal/plugin-api-platform';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
-import { adminToolsPermission, advancedUserPermission } from '@internal/plugin-permissions-common';
+import { adminToolsPermission, healthDashboardPermission, notGuestPermission } from '@internal/plugin-permissions-common';
 // TechDocs
 import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
@@ -124,10 +125,21 @@ const routes = (
     <Route path="/" element={<HomepageCompositionRoot />}>
       <HomePage />
     </Route>
-    <Route path="/catalog" element={<CatalogIndexPage pagination />} />
+    <Route
+      path="/catalog"
+      element={
+        <RequirePermission permission={notGuestPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+          <CatalogIndexPage pagination />
+        </RequirePermission>
+      }
+    />
     <Route
       path="/catalog/:namespace/:kind/:name"
-      element={<CatalogEntityPage />}
+      element={
+        <RequirePermission permission={notGuestPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+          <CatalogEntityPage />
+        </RequirePermission>
+      }
     >
       {entityPage}
     </Route>
@@ -154,7 +166,7 @@ const routes = (
     <Route
       path="/create"
       element={
-        <RequirePermission permission={taskCreatePermission}>
+        <RequirePermission permission={taskCreatePermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
           <ScaffolderPage >
             <ScaffolderFieldExtensions>
               <ProjectPickerFieldExtension />
@@ -167,7 +179,7 @@ const routes = (
     <Route
       path="/catalog-import"
       element={
-        <RequirePermission permission={catalogEntityCreatePermission}>
+        <RequirePermission permission={catalogEntityCreatePermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
           <CatalogImportPage />
         </RequirePermission>
       }
@@ -180,7 +192,7 @@ const routes = (
     <Route
       path="/entity-validation"
       element={
-        <RequirePermission permission={adminToolsPermission}>
+        <RequirePermission permission={adminToolsPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
           <EntityValidationPage />
         </RequirePermission>
       }
@@ -201,7 +213,7 @@ const routes = (
     <Route path="/mca/basetypes/:name" element={<McaBaseTypeDefinitionPage />} />
     <Route path="/health-dashboard"
       element={
-        <RequirePermission permission={advancedUserPermission}>
+        <RequirePermission permission={healthDashboardPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
           <HealthDashboardPage />
         </RequirePermission>
       }>
@@ -210,7 +222,7 @@ const routes = (
     <Route path="/tools" element={<ToolsPage />} />
     <Route path="/admin"
       element={
-        <RequirePermission permission={devToolsAdministerPermission}>
+        <RequirePermission permission={devToolsAdministerPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
           <DevToolsPage />
         </RequirePermission>
       }>

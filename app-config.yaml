@@ -124,8 +124,11 @@ permission:
       superUsers:
         - group:default/team-a.c
         #- group:default/team-x.c
-    advancedUsers:
-      - group:default/team-x.c
+    permissions:
+      - name: healthDashboard.read
+        allowed:
+          - group:default/team-a.X
+          - user:default/guest
   # rbac:
   #   pluginsWithPermission:
   #     - catalog
