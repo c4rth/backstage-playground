@@ -32,11 +32,12 @@
     "@backstage/ui": "^0.14.1",
     "@internal/plugin-api-platform-common": "workspace:^",
     "@remixicon/react": "^4.9.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0"
+    "react-dom": "^18.0.0"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.1",

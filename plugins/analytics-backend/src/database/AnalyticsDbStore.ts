@@ -120,14 +120,6 @@ export class AnalyticsDbStore implements AnalyticsStore {
     }));
   }
 
-  async getPluginIds(): Promise<string[]> {
-    const results = await this.db('analytics_events')
-      .distinct('plugin_id')
-      .whereNotNull('plugin_id');
-
-    return results.map((row: any) => row.plugin_id);
-  }
-
   async deleteOldAnalyticsData(thresholdInDays: number): Promise<void> {
     const thresholdDate = new Date();
     thresholdDate.setDate(thresholdDate.getDate() - thresholdInDays);

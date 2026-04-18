@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "@backstage-community/plugin-azure-devops-common": "^0.21.0",
-    "@backstage-community/plugin-sonarqube": "^1.0.0",
-    "@backstage-community/plugin-sonarqube-react": "^1.0.0",
+    "@backstage-community/plugin-sonarqube": "^1.1.0",
+    "@backstage-community/plugin-sonarqube-react": "^1.1.0",
     "@backstage/catalog-model": "^1.8.0",
     "@backstage/core-components": "^0.18.9",
     "@backstage/core-plugin-api": "^1.12.5",
@@ -56,8 +56,6 @@
     "@material-table/core": "3.2.5",
     "@remixicon/react": "^4.9.0",
     "react-aria-components": "^1.17.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0",
     "react-use": "^17.6.0",
     "semver": "^7.7.4",
     "xlsx": "^0.18.5"
@@ -65,7 +63,8 @@
   "devDependencies": {
     "@backstage/cli": "^0.36.1",
     "@types/react": "*",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
     "dist",
@@ -73,8 +72,8 @@
   ],
   "configSchema": "config.d.ts",
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.2"
   }
 }

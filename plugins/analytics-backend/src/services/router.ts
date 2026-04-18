@@ -32,10 +32,5 @@ export async function createRouter({
     res.json({ features });
   });
 
-  router.get('/metrics/plugin-ids', async (_, res) => {
-    const pluginIds = await analyticsService.getPluginIds();
-    res.json({ pluginIds });
-  });
-
   return router;
 }

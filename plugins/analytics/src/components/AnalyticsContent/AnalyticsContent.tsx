@@ -7,9 +7,11 @@ import { DailyVisitor, TopFeature } from '../../api/CustomAnalyticsApi';
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart,
-  Bar
+  Bar,
+  TooltipProps
 } from 'recharts';
 import { Progress, ResponseErrorPanel, Select } from '@backstage/core-components';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 type TableRow = {
   id: number;
@@ -64,6 +66,46 @@ const daysToShowOptions = [
   { label: 'Last 14 days', value: '14' },
   { label: 'Last 30 days', value: '30' },
 ];
+
+interface PayloadItem {
+  name: string;
+  value: number;
+  color: string;
+  payload: any; // This is the original data object for the row
+}
+
+interface CustomTooltipProps extends TooltipProps<number, string> {
+  active?: boolean;
+  payload?: PayloadItem[];
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  
+  if (active && payload && payload.length) {
+    // We use Number() because 'value' is typed as a generic that could be a string
+    const total = payload.reduce((sum, entry) => sum + (Number(entry.value) || 0), 0);
+
+    return (
+      <div style={{ 
+        backgroundColor: '#fff', 
+        padding: '10px', 
+        border: '1px solid #ccc',
+        borderRadius: '4px' 
+      }}>
+        <p style={{ fontWeight: 'bold', margin: '0 0 5px', textAlign: 'center', marginBottom: '4px' }}>Date: <i>{label}</i></p>
+        {payload.map((entry, index) => (
+          <div key={index} style={{ color: entry.color, fontSize: '14px' }}>
+            • {entry.name}: {entry.value}
+          </div>
+        ))}
+        <p style={{ fontWeight: 'bold', margin: 0, textAlign: 'center', marginTop: '4px' }}>Total: {total}</p>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 export const AnalyticsContent = () => {
   const analyticsApi = useApi(analyticsBackendApiRef);
@@ -186,10 +228,7 @@ export const AnalyticsContent = () => {
                       <YAxis
                         allowDecimals={false}
                         domain={[0, (dataMax) => Math.max(2, Math.ceil(dataMax))]} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: 'var(--bui-bg)', color: 'var(--bui-text-primary)' }}
-                        labelFormatter={(label) => `Date: ${formatDisplayDate(label)}`}
-                      />
+                      <Tooltip content={<CustomTooltip />} />
                       <Bar
                         dataKey="visitors"
                         stackId="a"

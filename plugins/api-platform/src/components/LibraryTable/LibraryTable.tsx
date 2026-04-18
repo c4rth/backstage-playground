@@ -1,17 +1,16 @@
 import {
   Link,
+  Progress,
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box, Flex } from '@backstage/ui';
-import { useState } from 'react';
+import { Box, Card, CardBody, CardHeader, Cell, CellText, ColumnConfig, Flex, SearchField, Table, Text, useTable } from '@backstage/ui';
+import { useCallback, useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
-import { Query } from '@material-table/core';
-import { OwnershipType, LibraryDefinitionsListRequest, ANNOTATION_LIBRARY_NAME, ANNOTATION_LIBRARY_VERSION } from '@internal/plugin-api-platform-common';
+import { OwnershipType, ANNOTATION_LIBRARY_NAME, ANNOTATION_LIBRARY_VERSION } from '@internal/plugin-api-platform-common';
+import styles from './LibraryTable.module.css';
 
 type TableRow = {
   id: number;
@@ -22,48 +21,53 @@ type TableRow = {
   system: string;
 };
 
-const columns: TableColumn<TableRow>[] = [
+const columns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    id: 'name',
+    label: 'Name',
     width: '25%',
-    field: 'name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ name, system }: TableRow) => (
-      <Link to={`/api-platform/library/${system}/${name}`}>
-        <ComponentDisplayName text={name} type="library" />
-      </Link>
+    isRowHeader: true,
+    cell: ({ name, system }: TableRow) => (
+      <Cell>
+        <Text weight='bold'>
+          <Link to={`/api-platform/library/${system}/${name}`}>
+            <ComponentDisplayName text={name} type="library" />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
   {
-    title: 'Latest Version',
+    id: 'latestVersion',
+    label: 'Latest Version',
     width: '15%',
-    field: 'latestVersion',
-    render: ({ latestVersion }: TableRow) => latestVersion || '-',
+    cell: ({ latestVersion }: TableRow) => <CellText title={latestVersion || '-'} />,
   },
   {
-    title: 'Description',
+    id: 'description',
+    label: 'Description',
     width: '50%',
-    field: 'description',
-    render: ({ description }: TableRow) => description || '-',
+    cell: ({ description }: TableRow) => <CellText title={description || '-'} />,
   },
   {
-    title: 'System',
+    id: 'system',
+    label: 'System',
     width: '10%',
-    field: 'system',
-    highlight: true,
-    render: ({ system }: TableRow) =>
+    cell: ({ system }: TableRow) =>
       system === '-' ? (
-        <ComponentDisplayName text={system} type="system" />
+        <Cell><ComponentDisplayName text={system} type="system" /></Cell>
       ) : (
-        <Link to={`/api-platform/system/${system}`}>
-          <ComponentDisplayName text={system} type="system" />
-        </Link>
+        <Cell>
+          <Text weight='bold'>
+            <Link to={`/api-platform/system/${system}`}>
+              <ComponentDisplayName text={system} type="system" />
+            </Link>
+          </Text>
+        </Cell>
       ),
   },
 ];
 
-const PAGE_SIZE = 20;
 const STORAGE_OWNERSHIP_KEY = 'librariesTablePageOwner';
 const STORAGE_SEARCH_KEY = 'librariesTablePageSearch';
 
@@ -76,91 +80,143 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   system: entity.spec?.system?.toString() ?? '-',
 });
 
-const getData = async (
+const fetchData = async (
   apiPlatformApi: ApiPlatformBackendApi,
-  ownership: OwnershipType,
-  query: Query<TableRow>
+  ownership: OwnershipType
 ) => {
-  const page = query.page ?? 0;
-  const pageSize = query.pageSize ?? PAGE_SIZE;
   const result = await apiPlatformApi.listLibraries({
-    offset: page * pageSize,
-    limit: pageSize,
-    search: query.search,
-    orderBy: query.orderBy
-      ? {
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as LibraryDefinitionsListRequest['orderBy']
-      : undefined,
     ownership,
   });
 
-  return result
-    ? {
-        data: result.items.map(toEntityRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
-    : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+  return result ? result.items.map(toEntityRow) : [];
 };
+
+const emptyState = () => (
+  <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
+    No libraries found.
+  </div>
+);
 
 export const LibraryTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
-  const [countRows, setCountRows] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(
     () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
   );
+  const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
 
-  const fetchData = async (query: Query<TableRow>) => {
-    setLoading(true);
-    setCountRows(0);
-    try {
-      setError(null);
-      if (query.search !== undefined) {
-        sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
+  const {
+    tableProps,
+    search
+  } = useTable({
+    mode: 'complete',
+    getData: () => fetchData(apiPlatformApi, ownership),
+    initialSort: {
+      column: 'name',
+      direction: 'ascending'
+    },
+    paginationOptions: {
+      type: 'none',
+    },
+    search: initialSearch,
+    searchFn: (items, query) => {
+      const lowerQuery = query.toLowerCase();
+      if (query.search !== undefined ) {
+        sessionStorage.setItem(STORAGE_SEARCH_KEY, lowerQuery);
       }
-      const result = await getData(apiPlatformApi, ownership, query);
-      setCountRows(result.totalCount);
-      return result;
-    } catch (err) {
-      setError(err as Error);
-      return { data: [], page: 0, totalCount: 0 };
-    } finally {
-      setLoading(false);
+      return items.filter(item => item.name.toLowerCase().includes(lowerQuery) ||
+        item.latestVersion.toLowerCase().includes(lowerQuery) ||
+        item.description.toLowerCase().includes(lowerQuery) ||
+        item.system.toLowerCase().includes(lowerQuery));
     }
-  };
+  });
 
-  if (error) return <ResponseErrorPanel error={error} />;
+  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
+  const boxRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      const top = node.getBoundingClientRect().top;
+      setMaxHeight(window.innerHeight - top - 50); // 50px padding from bottom
+    }
+  }, []);
+
+
+  if (tableProps.error) {
+    return <ResponseErrorPanel title="Failed to call AppRegistry" error={tableProps.error} />;
+  }
+  if (tableProps.loading) {
+    return <Progress />;
+  }
 
   return (
-    <Table<TableRow>
-      key={ownership}
-      columns={columns}
-      options={{
-        search: true,
-        padding: 'dense' as const,
-        pageSize: PAGE_SIZE,
-        pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: countRows === 0 && !loading,
-        draggable: false,
-        thirdSortClick: false,
-        searchText: initialSearch,
-      }}
-      title={
-        <Flex gap="0" align="center">
-          <Box ml='1'><b>{ownership === 'owned' ? 'Owned' : 'All'} Libraries</b></Box>
+
+    <Card style={{ height: '100%' }}>
+      <CardHeader>
+        <Flex align="center" gap="2">
+          <Box ml='1'><Text variant='title-small' weight='bold'>{ownership === 'owned' ? 'Owned' : 'All'} Libraries</Text></Box>
           <Box ml='2'><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
+          <Box style={{ marginLeft: 'auto', width: '250px' }}>
+            <SearchField placeholder='Filter...' {...search} />
+          </Box>
         </Flex>
-      }
-      data={fetchData}
-    />
+      </CardHeader>
+      <CardBody style={{ padding: '0' }}>
+        <Box ref={boxRef} style={{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: 'auto' }}>
+          <Table
+            columnConfig={columns}
+            {...tableProps}
+            pagination={{
+              type: 'none',
+            }}
+            emptyState={emptyState()}
+            className={styles.denseTable}
+          />
+        </Box>
+      </CardBody>
+    </Card>
   );
+
+  /*
+const fetchData = async (query: Query<TableRow>) => {
+  setLoading(true);
+  setCountRows(0);
+  try {
+    setError(null);
+    if (query.search !== undefined) {
+      sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
+    }
+    const result = await getData(apiPlatformApi, ownership, query);
+    setCountRows(result.totalCount);
+    return result;
+  } catch (err) {
+    setError(err as Error);
+    return { data: [], page: 0, totalCount: 0 };
+  } finally {
+    setLoading(false);
+  }
+};
+
+if (error) return <ResponseErrorPanel error={error} />;
+
+return (
+  <Table<TableRow>
+    key={ownership}
+    columns={columns}
+    options={{
+      search: true,
+      padding: 'dense' as const,
+      pageSize: PAGE_SIZE,
+      pageSizeOptions: [10, PAGE_SIZE, 50],
+      showEmptyDataSourceMessage: countRows === 0 && !loading,
+      draggable: false,
+      thirdSortClick: false,
+      searchText: initialSearch,
+    }}
+    title={
+      <Flex gap="0" align="center">
+        <Box ml='1'><b>{ownership === 'owned' ? 'Owned' : 'All'} Libraries</b></Box>
+        <Box ml='2'><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
+      </Flex>
+    }
+    data={fetchData}
+  />
+);*/
 };

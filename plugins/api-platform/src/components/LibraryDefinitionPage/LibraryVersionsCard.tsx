@@ -30,7 +30,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     width: '50%',
     field: 'libraryVersion',
     highlight: true,
-    defaultSort: 'asc',
+    defaultSort: 'desc',
     customSort: (a, b) => {
       const aValid = semver.valid(a.version);
       const bValid = semver.valid(b.version);

@@ -1,0 +1,26 @@
+.denseTable :global(.bui-TableRow) {
+    border-bottom: 0px;
+    transition: color 0.2s ease-in-out;
+    margin: 0;
+    padding: 0;
+}
+
+.denseTable :global(.bui-TableRow[data-react-aria-pressable='true']) {
+    cursor: pointer;
+}
+
+.denseTable :global(.bui-TableRow:hover) {
+    background-color: #00000000;
+}
+
+.denseTable :global(.bui-TableRow:nth-child(even)) {
+    background-color: rgba(0,0,0, 0.03);
+}
+
+.denseTable :global(.bui-TableCell) {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    font-size: var(--bui-font-size-3);
+    min-width: 0;
+    overflow: hidden;
+}
