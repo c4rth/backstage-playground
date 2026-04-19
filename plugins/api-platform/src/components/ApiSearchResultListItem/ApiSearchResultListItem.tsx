@@ -7,7 +7,7 @@ import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Link } from '@backstage/core-components';
 import { Box, Text } from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { RiCpuLine, RiPuzzleFill, RiShapesFill, } from '@remixicon/react';
+import { RiCpuLine, RiPuzzleFill, RiShapesFill } from '@remixicon/react';
 
 export interface ApiSearchResultListItemProps {
   icon?: ReactNode | ((result: IndexableDocument) => ReactNode);
@@ -30,7 +30,9 @@ function getIcon(kind: string, defaultIcon: ReactNode) {
   }
 }
 
-export const ApiSearchResultListItem = (props: ApiSearchResultListItemProps) => {
+export const ApiSearchResultListItem = (
+  props: ApiSearchResultListItemProps,
+) => {
   const result = props.result as any;
   const highlight = props.highlight as ResultHighlight;
 
@@ -39,14 +41,31 @@ export const ApiSearchResultListItem = (props: ApiSearchResultListItemProps) => 
   return (
     <Box style={{ display: 'flex' }}>
       {props.icon && (
-        <Box style={{ display: 'flex', alignItems: 'flex-start', marginRight: '1rem' }}>
-          {typeof props.icon === 'function' ? props.icon(result) : getIcon(result.kind, props.icon)}
+        <Box
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            marginRight: '1rem',
+          }}
+        >
+          {typeof props.icon === 'function'
+            ? props.icon(result)
+            : getIcon(result.kind, props.icon)}
         </Box>
       )}
       <Box style={{ flexWrap: 'wrap', flex: 1, marginLeft: '20px' }}>
-        <Box style={{ width: '100%', wordBreak: 'break-all', marginBottom: '1rem' }}>
+        <Box
+          style={{
+            width: '100%',
+            wordBreak: 'break-all',
+            marginBottom: '1rem',
+          }}
+        >
           <Link noTrack to={result.apiPlatformLocation}>
-            <Text weight='bold' style={{ color: 'var(--bui-fg-info)', fontSize: '20px' }}>
+            <Text
+              weight="bold"
+              style={{ color: 'var(--bui-fg-info)', fontSize: '20px' }}
+            >
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText
                   text={highlight.fields.title}
@@ -80,12 +99,32 @@ export const ApiSearchResultListItem = (props: ApiSearchResultListItemProps) => 
           </Text>
         </Box>
         <Box>
-          {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" style={{ marginRight: '0.5rem' }} />}
-          {result.type && <Chip label={`Type: ${result.type}`} size="small" style={{ marginRight: '0.5rem' }} />}
-          {result.lifecycle && <Chip label={`lifecycle: ${result.lifecycle}`} size="small" style={{ marginRight: '0.5rem' }} />}
-          {result.owner && <Chip label={`Owner: ${result.owner}`} size="small" />}
+          {result.kind && (
+            <Chip
+              label={`Kind: ${result.kind}`}
+              size="small"
+              style={{ marginRight: '0.5rem' }}
+            />
+          )}
+          {result.type && (
+            <Chip
+              label={`Type: ${result.type}`}
+              size="small"
+              style={{ marginRight: '0.5rem' }}
+            />
+          )}
+          {result.lifecycle && (
+            <Chip
+              label={`lifecycle: ${result.lifecycle}`}
+              size="small"
+              style={{ marginRight: '0.5rem' }}
+            />
+          )}
+          {result.owner && (
+            <Chip label={`Owner: ${result.owner}`} size="small" />
+          )}
         </Box>
       </Box>
     </Box>
   );
-}
+};

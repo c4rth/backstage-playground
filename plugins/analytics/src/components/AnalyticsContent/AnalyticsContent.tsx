@@ -1,16 +1,35 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useCallback, useEffect, useState } from 'react';
 import { analyticsBackendApiRef } from '../../api';
-import { Box, Card, CardBody, CardHeader, CellText, Cell, ColumnConfig, Table, Text, useTable } from '@backstage/ui';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  CellText,
+  Cell,
+  ColumnConfig,
+  Table,
+  Text,
+  useTable,
+} from '@backstage/ui';
 import styles from './AnalyticsContent.module.css';
 import { DailyVisitor, TopFeature } from '../../api/CustomAnalyticsApi';
 import {
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
   BarChart,
   Bar,
-  TooltipProps
+  TooltipProps,
 } from 'recharts';
-import { Progress, ResponseErrorPanel, Select } from '@backstage/core-components';
+import {
+  Progress,
+  ResponseErrorPanel,
+  Select,
+} from '@backstage/core-components';
 
 type TableRow = {
   id: number;
@@ -26,7 +45,11 @@ const toRow = (feature: TopFeature, idx: number): TableRow => ({
   totalHits: feature.totalHits,
 });
 
-const centerStyle = { width: '100%', display: 'flex', justifyContent: 'center' } as const;
+const centerStyle = {
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+} as const;
 
 const columns: ColumnConfig<TableRow>[] = [
   {
@@ -34,7 +57,7 @@ const columns: ColumnConfig<TableRow>[] = [
     label: 'Feature Name',
     isRowHeader: true,
     isSortable: true,
-    cell: item => <CellText title={item.featureName} />
+    cell: item => <CellText title={item.featureName} />,
   },
   {
     id: 'uniqueVisitors',
@@ -44,7 +67,7 @@ const columns: ColumnConfig<TableRow>[] = [
       <Cell>
         <Box style={centerStyle}>{item.uniqueVisitors}</Box>
       </Cell>
-    )
+    ),
   },
   {
     id: 'totalHits',
@@ -54,7 +77,7 @@ const columns: ColumnConfig<TableRow>[] = [
       <Cell>
         <Box style={centerStyle}>{item.totalHits}</Box>
       </Cell>
-    )
+    ),
   },
 ];
 
@@ -80,25 +103,47 @@ interface CustomTooltipProps extends TooltipProps<number, string> {
 }
 
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
-  
   if (active && payload && payload.length) {
     // We use Number() because 'value' is typed as a generic that could be a string
-    const total = payload.reduce((sum, entry) => sum + (Number(entry.value) || 0), 0);
+    const total = payload.reduce(
+      (sum, entry) => sum + (Number(entry.value) || 0),
+      0,
+    );
 
     return (
-      <div style={{ 
-        backgroundColor: '#fff', 
-        padding: '10px', 
-        border: '1px solid #ccc',
-        borderRadius: '4px' 
-      }}>
-        <p style={{ fontWeight: 'bold', margin: '0 0 5px', textAlign: 'center', marginBottom: '4px' }}>Date: <i>{label}</i></p>
+      <div
+        style={{
+          backgroundColor: '#fff',
+          padding: '10px',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+        }}
+      >
+        <p
+          style={{
+            fontWeight: 'bold',
+            margin: '0 0 5px',
+            textAlign: 'center',
+            marginBottom: '4px',
+          }}
+        >
+          Date: <i>{label}</i>
+        </p>
         {payload.map((entry, index) => (
           <div key={index} style={{ color: entry.color, fontSize: '14px' }}>
             • {entry.name}: {entry.value}
           </div>
         ))}
-        <p style={{ fontWeight: 'bold', margin: 0, textAlign: 'center', marginTop: '4px' }}>Total: {total}</p>
+        <p
+          style={{
+            fontWeight: 'bold',
+            margin: 0,
+            textAlign: 'center',
+            marginTop: '4px',
+          }}
+        >
+          Total: {total}
+        </p>
       </div>
     );
   }
@@ -108,7 +153,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 
 export const AnalyticsContent = () => {
   const analyticsApi = useApi(analyticsBackendApiRef);
-  const [dailyUniqueVisitors, setDailyUniqueVisitors] = useState<DailyVisitor[]>([]);
+  const [dailyUniqueVisitors, setDailyUniqueVisitors] = useState<
+    DailyVisitor[]
+  >([]);
   const [topFeatures, setTopFeatures] = useState<TableRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -124,10 +171,7 @@ export const AnalyticsContent = () => {
       column: 'totalHits',
       direction: 'descending',
     },
-    sortFn: (items, {
-      column,
-      direction
-    }) => {
+    sortFn: (items, { column, direction }) => {
       return [...items].sort((a, b) => {
         const desc = direction === 'descending' ? -1 : 1;
         switch (column) {
@@ -141,7 +185,7 @@ export const AnalyticsContent = () => {
             return 0;
         }
       });
-    }
+    },
   });
 
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
@@ -198,20 +242,28 @@ export const AnalyticsContent = () => {
   };
 
   return (
-
     <Box>
       {isLoading && <Progress />}
-      {error && <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />}
+      {error && (
+        <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />
+      )}
 
       {!isLoading && !error && (
         <>
           <Box>
-            <Select onChange={(selected) => {
-              setDaysToShow(parseInt(selected.toString(), 10));
-            }} label="Date Range" items={daysToShowOptions} selected={daysToShow.toString()} />
+            <Select
+              onChange={selected => {
+                setDaysToShow(parseInt(selected.toString(), 10));
+              }}
+              label="Date Range"
+              items={daysToShowOptions}
+              selected={daysToShow.toString()}
+            />
           </Box>
           <Card style={{ marginBottom: '16px' }}>
-            <CardHeader><Text variant='title-x-small'>Daily unique users</Text></CardHeader>
+            <CardHeader>
+              <Text variant="title-x-small">Daily unique users</Text>
+            </CardHeader>
             <CardBody>
               {dailyUniqueVisitors.length === 0 ? (
                 <p>No daily unique user data yet.</p>
@@ -220,13 +272,11 @@ export const AnalyticsContent = () => {
                   <ResponsiveContainer>
                     <BarChart data={dailyUniqueVisitors}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                      <XAxis
-                        dataKey="date"
-                        tickFormatter={formatDisplayDate}
-                      />
+                      <XAxis dataKey="date" tickFormatter={formatDisplayDate} />
                       <YAxis
                         allowDecimals={false}
-                        domain={[0, (dataMax) => Math.max(2, Math.ceil(dataMax))]} />
+                        domain={[0, dataMax => Math.max(2, Math.ceil(dataMax))]}
+                      />
                       <Tooltip content={<CustomTooltip />} />
                       <Bar
                         dataKey="visitors"
@@ -246,12 +296,22 @@ export const AnalyticsContent = () => {
           </Card>
 
           <Card>
-            <CardHeader><Text variant='title-x-small'>Top features by unique visitors ({topFeatures.length})</Text></CardHeader>
+            <CardHeader>
+              <Text variant="title-x-small">
+                Top features by unique visitors ({topFeatures.length})
+              </Text>
+            </CardHeader>
             <CardBody>
               {topFeatures.length === 0 ? (
                 <p>No feature navigation data yet.</p>
               ) : (
-                <Box ref={boxRef} style={{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: 'auto' }}>
+                <Box
+                  ref={boxRef}
+                  style={{
+                    maxHeight: maxHeight ? `${maxHeight}px` : undefined,
+                    overflow: 'auto',
+                  }}
+                >
                   <Table
                     columnConfig={columns}
                     {...tableProps}
@@ -262,9 +322,7 @@ export const AnalyticsContent = () => {
             </CardBody>
           </Card>
         </>
-      )
-      }
-    </Box >
-
+      )}
+    </Box>
   );
 };

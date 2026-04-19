@@ -18,27 +18,30 @@ const emptyState = () => (
 );
 
 type TableRow = {
-  id: number,
-  healthData: ApplicationHealthData,
-}
+  id: number;
+  healthData: ApplicationHealthData;
+};
 
-const toTableRow = (healthData: ApplicationHealthData, idx: number): TableRow => ({
+const toTableRow = (
+  healthData: ApplicationHealthData,
+  idx: number,
+): TableRow => ({
   id: idx,
   healthData,
 });
 
-async function fetchData(
-  getHealthData: () => Promise<HealthData | undefined>,
-) {
+async function fetchData(getHealthData: () => Promise<HealthData | undefined>) {
   const data = await getHealthData();
   return data?.map(toTableRow) ?? [];
 }
 
 const getEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
-    id: env,
-    label: env.toUpperCase(),
-    cell: item => <HealthProbeCell healthProbe={item.healthData.environments[env]} />,
-    width: '15%',
+  id: env,
+  label: env.toUpperCase(),
+  cell: item => (
+    <HealthProbeCell healthProbe={item.healthData.environments[env]} />
+  ),
+  width: '15%',
 });
 
 const columns: ColumnConfig<TableRow>[] = [
@@ -46,9 +49,13 @@ const columns: ColumnConfig<TableRow>[] = [
     id: 'app',
     label: 'APPLICATION',
     isRowHeader: true,
-    cell: item => <Cell><b>{item.healthData.application}</b></Cell>,
+    cell: item => (
+      <Cell>
+        <b>{item.healthData.application}</b>
+      </Cell>
+    ),
     isSortable: true,
-    width: '25%'
+    width: '25%',
   },
   getEnvironmentColumn('tst'),
   getEnvironmentColumn('gtu'),
@@ -61,10 +68,7 @@ export const HealthDashboardPage = () => {
   const getHealthData = useGetHealthData();
   const isFirstRender = useRef(true);
 
-  const {
-    tableProps,
-    reload,
-  } = useTable({
+  const { tableProps, reload } = useTable({
     mode: 'complete',
     getData: () => fetchData(getHealthData),
     paginationOptions: {
@@ -90,11 +94,12 @@ export const HealthDashboardPage = () => {
         <Box bg="neutral" className={styles.contentScrollArea}>
           <Box className={styles.tableContainer}>
             {tableProps.error && (
-              <ResponseErrorPanel title="Failed to get Health data" error={tableProps.error} />
+              <ResponseErrorPanel
+                title="Failed to get Health data"
+                error={tableProps.error}
+              />
             )}
-            {!tableProps.error && tableProps.loading && (
-              <Progress />
-            )}
+            {!tableProps.error && tableProps.loading && <Progress />}
             {!tableProps.error && !tableProps.loading && (
               <Table
                 columnConfig={columns}
@@ -111,5 +116,4 @@ export const HealthDashboardPage = () => {
       </Content>
     </PageWithHeader>
   );
-
 };

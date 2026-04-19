@@ -6,7 +6,12 @@ export function useGetOperations() {
   const api = useApi(appRegistryBackendApiRef);
 
   return useCallback(
-    async function getOperations(system?: string, appName?: string, appVersion?: string, environment?: string) {
+    async function getOperations(
+      system?: string,
+      appName?: string,
+      appVersion?: string,
+      environment?: string,
+    ) {
       if (!system || !appName || !appVersion || !environment) return undefined;
       return api.getOperations(system, appName, appVersion, environment);
     },

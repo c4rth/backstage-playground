@@ -16,12 +16,9 @@ export const mcaComponentsBackendPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
-        mcaService: mcaComponentServiceRef
+        mcaService: mcaComponentServiceRef,
       },
-      async init({
-        httpRouter,
-        mcaService
-      }) {
+      async init({ httpRouter, mcaService }) {
         httpRouter.use(
           await createRouter({
             mcaService,

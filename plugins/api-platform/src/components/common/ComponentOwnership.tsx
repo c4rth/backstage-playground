@@ -10,9 +10,12 @@ interface ComponentOwnershipProps {
 
 const chipStyle = { marginTop: '6px', cursor: 'pointer', marginRight: '8px' };
 
-export const ComponentOwnership = ({ storageKey, handleOwnershipChange }: ComponentOwnershipProps) => {
-  const [selectedType, setSelectedType] = useState<OwnershipType>(
-    () => (sessionStorage.getItem(storageKey) === 'owned' ? 'owned' : 'all')
+export const ComponentOwnership = ({
+  storageKey,
+  handleOwnershipChange,
+}: ComponentOwnershipProps) => {
+  const [selectedType, setSelectedType] = useState<OwnershipType>(() =>
+    sessionStorage.getItem(storageKey) === 'owned' ? 'owned' : 'all',
   );
 
   const handleSelectChange = (type: OwnershipType) => {
@@ -22,7 +25,7 @@ export const ComponentOwnership = ({ storageKey, handleOwnershipChange }: Compon
   };
 
   return (
-    <Box display='flex'>
+    <Box display="flex">
       <Chip
         label="All"
         color={selectedType === 'all' ? 'primary' : 'default'}

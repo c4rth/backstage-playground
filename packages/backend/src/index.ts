@@ -1,6 +1,9 @@
 import { createBackend } from '@backstage/backend-defaults';
 import { createGraphTransformerService } from './plugins/msgraph';
-import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
+import {
+  createBackendModule,
+  coreServices,
+} from '@backstage/backend-plugin-api';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { MyPermissionPolicy } from './plugins/policy';
 import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
@@ -21,26 +24,39 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'));
+backend.add(
+  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
+);
 backend.add(import('@backstage/plugin-catalog-backend-module-msgraph'));
-backend.add(createBackendModule({
-  pluginId: 'catalog',
-  moduleId: 'microsoft-graph-extensions',
-  register(env) {
-    env.registerInit({
-      deps: {
-        logger: coreServices.logger,
-        microsoftGraphTransformers: microsoftGraphOrgEntityProviderTransformExtensionPoint,
-      },
-      async init({ logger, microsoftGraphTransformers }) {
-        const graphTransformerService = await createGraphTransformerService({ logger });
-        microsoftGraphTransformers.setUserTransformer(graphTransformerService.userTransformer);
-        microsoftGraphTransformers.setGroupTransformer(graphTransformerService.groupTransformer);
-        microsoftGraphTransformers.setOrganizationTransformer(graphTransformerService.organizationTransformer);
-      }
-    });
-  },
-}));
+backend.add(
+  createBackendModule({
+    pluginId: 'catalog',
+    moduleId: 'microsoft-graph-extensions',
+    register(env) {
+      env.registerInit({
+        deps: {
+          logger: coreServices.logger,
+          microsoftGraphTransformers:
+            microsoftGraphOrgEntityProviderTransformExtensionPoint,
+        },
+        async init({ logger, microsoftGraphTransformers }) {
+          const graphTransformerService = await createGraphTransformerService({
+            logger,
+          });
+          microsoftGraphTransformers.setUserTransformer(
+            graphTransformerService.userTransformer,
+          );
+          microsoftGraphTransformers.setGroupTransformer(
+            graphTransformerService.groupTransformer,
+          );
+          microsoftGraphTransformers.setOrganizationTransformer(
+            graphTransformerService.organizationTransformer,
+          );
+        },
+      });
+    },
+  }),
+);
 backend.add(import('@backstage/plugin-catalog-backend-module-openapi'));
 
 // See https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
@@ -50,22 +66,24 @@ backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 backend.add(import('@backstage/plugin-permission-backend'));
 // backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
 
-backend.add(createBackendModule({
-  pluginId: 'permission',
-  moduleId: 'my-policy',
-  register(reg) {
-    reg.registerInit({
-      deps: {
-        policy: policyExtensionPoint,
-        config: coreServices.rootConfig,
-        logger: coreServices.logger
-      },
-      async init({ policy, logger, config }) {
-        policy.setPolicy(new MyPermissionPolicy(logger, config));
-      },
-    });
-  },
-}));
+backend.add(
+  createBackendModule({
+    pluginId: 'permission',
+    moduleId: 'my-policy',
+    register(reg) {
+      reg.registerInit({
+        deps: {
+          policy: policyExtensionPoint,
+          config: coreServices.rootConfig,
+          logger: coreServices.logger,
+        },
+        async init({ policy, logger, config }) {
+          policy.setPolicy(new MyPermissionPolicy(logger, config));
+        },
+      });
+    },
+  }),
+);
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));
@@ -86,11 +104,15 @@ backend.add(import('@internal/plugin-search-backend-module-mca'));
 
 // Azure DevOps
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
-backend.add(import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'));
+backend.add(
+  import('@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'),
+);
 
 // Scaffolder Actions
 backend.add(import('@backstage/plugin-scaffolder-backend-module-azure'));
-backend.add(import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'));
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'),
+);
 backend.add(import('@internal/plugin-scaffolder-extensions-backend'));
 
 // Kubernetes

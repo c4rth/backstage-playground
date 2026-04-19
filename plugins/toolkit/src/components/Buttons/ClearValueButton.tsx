@@ -1,6 +1,5 @@
-
 import { RiCloseCircleLine } from '@remixicon/react';
-import { Button, TooltipTrigger, Tooltip} from '@backstage/ui';
+import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
 
 type Props = {
   setValue: (input: string) => void;
@@ -12,14 +11,16 @@ export const ClearValueButton = (props: Props) => {
   return (
     <TooltipTrigger>
       <Button
-        size='medium'
+        size="medium"
         iconStart={<RiCloseCircleLine />}
         onClick={() => props.setValue(props.defaultValue || '')}
-        variant='tertiary'
+        variant="tertiary"
       >
         Clear
       </Button>
-      <Tooltip placement='bottom'>{props.tooltip || 'Clear the current value'}</Tooltip>
+      <Tooltip placement="bottom">
+        {props.tooltip || 'Clear the current value'}
+      </Tooltip>
     </TooltipTrigger>
   );
 };

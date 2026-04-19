@@ -70,8 +70,7 @@ export const IFramePage = iframePlugin.provide(
   createComponentExtension({
     name: 'IFramePage',
     component: {
-      lazy: () =>
-        import('./components').then(m => m.IFramePage),
+      lazy: () => import('./components').then(m => m.IFramePage),
     },
   }),
 );

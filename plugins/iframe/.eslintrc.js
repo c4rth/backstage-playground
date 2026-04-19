@@ -1,5 +1,5 @@
 module.exports = require('@backstage/cli/config/eslint-factory')(__dirname, {
-    rules: {
-      'notice/notice': 'off',
-    },
-  });
+  rules: {
+    'notice/notice': 'off',
+  },
+});

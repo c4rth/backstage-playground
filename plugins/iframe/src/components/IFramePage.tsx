@@ -1,6 +1,4 @@
-import {
-  Content,
-} from '@backstage/core-components';
+import { Content } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { determineError } from './utils/helpers';
 import { ErrorComponent } from './ErrorComponent';

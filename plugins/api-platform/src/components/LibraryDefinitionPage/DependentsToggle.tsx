@@ -10,7 +10,9 @@ interface DependentsToggleProps {
 
 const chipStyle = { marginTop: '6px', cursor: 'pointer', marginRight: '8px' };
 
-export const DependentsToggle = ({ handleDependentChange }: DependentsToggleProps) => {
+export const DependentsToggle = ({
+  handleDependentChange,
+}: DependentsToggleProps) => {
   const [selectedType, setSelectedType] = useState<DependentsType>('all');
 
   const handleSelectChange = (type: DependentsType) => {
@@ -19,7 +21,7 @@ export const DependentsToggle = ({ handleDependentChange }: DependentsToggleProp
   };
 
   return (
-    <Box display='flex'>
+    <Box display="flex">
       <Chip
         label="All services"
         color={selectedType === 'all' ? 'primary' : 'default'}

@@ -49,8 +49,11 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 // SonarQube
 import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
-// Spectral 
-import { EntityApiDocsSpectralLinterContent, isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
+// Spectral
+import {
+  EntityApiDocsSpectralLinterContent,
+  isApiDocsSpectralLinterAvailable,
+} from '@internal/plugin-api-docs-spectral-linter';
 // Techdocs
 import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 import { Grid } from '@backstage/ui';
@@ -67,9 +70,9 @@ const entityWarningContent = (
   <>
     <EntitySwitch>
       <EntitySwitch.Case if={isOrphan}>
-        <Grid.Root columns='1'>
+        <Grid.Root columns="1">
           <Grid.Item>
-          <EntityOrphanWarning />
+            <EntityOrphanWarning />
           </Grid.Item>
         </Grid.Root>
       </EntitySwitch.Case>
@@ -77,9 +80,9 @@ const entityWarningContent = (
 
     <EntitySwitch>
       <EntitySwitch.Case if={hasRelationWarnings}>
-        <Grid.Root columns='1'>
+        <Grid.Root columns="1">
           <Grid.Item>
-          <EntityRelationWarning />
+            <EntityRelationWarning />
           </Grid.Item>
         </Grid.Root>
       </EntitySwitch.Case>
@@ -87,7 +90,7 @@ const entityWarningContent = (
 
     <EntitySwitch>
       <EntitySwitch.Case if={hasCatalogProcessingErrors}>
-        <Grid.Root columns='1'>
+        <Grid.Root columns="1">
           <Grid.Item>
             <EntityProcessingErrorsPanel />
           </Grid.Item>
@@ -98,7 +101,7 @@ const entityWarningContent = (
 );
 
 const overviewContent = (
-  <Grid.Root columns='2'>
+  <Grid.Root columns="2">
     {entityWarningContent}
     <Grid.Item>
       <EntityAboutCard />
@@ -119,7 +122,7 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">
-      <Grid.Root columns='2'>
+      <Grid.Root columns="2">
         <Grid.Item>
           <EntityProvidedApisCard />
         </Grid.Item>
@@ -130,7 +133,7 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
-      <Grid.Root columns='2'>
+      <Grid.Root columns="2">
         <Grid.Item>
           <EntityDependsOnComponentsCard />
         </Grid.Item>
@@ -144,7 +147,11 @@ const serviceEntityPage = (
       {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route if={isSonarQubeAvailable} path="/sonarqube" title="SonarQube">
+    <EntityLayout.Route
+      if={isSonarQubeAvailable}
+      path="/sonarqube"
+      title="SonarQube"
+    >
       <EntitySonarQubeContentPage />
     </EntityLayout.Route>
   </EntityLayout>
@@ -157,7 +164,7 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
-      <Grid.Root columns='2'>
+      <Grid.Root columns="2">
         <Grid.Item>
           <EntityDependsOnComponentsCard />
         </Grid.Item>
@@ -209,7 +216,7 @@ const componentPage = (
 const apiPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid.Root columns='2'>
+      <Grid.Root columns="2">
         {entityWarningContent}
         <Grid.Item>
           <EntityAboutCard />
@@ -217,7 +224,7 @@ const apiPage = (
         <Grid.Item>
           <EntityCatalogGraphCard height={400} />
         </Grid.Item>
-        <Grid.Root columns='2'>
+        <Grid.Root columns="2">
           <Grid.Item>
             <EntityProvidingComponentsCard />
           </Grid.Item>
@@ -229,14 +236,18 @@ const apiPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/definition" title="Definition">
-      <Grid.Root columns='1'>
+      <Grid.Root columns="1">
         <Grid.Item>
           <EntityApiDefinitionCard />
         </Grid.Item>
       </Grid.Root>
     </EntityLayout.Route>
 
-    <EntityLayout.Route if={isApiDocsSpectralLinterAvailable} path="/linter" title="Linter">
+    <EntityLayout.Route
+      if={isApiDocsSpectralLinterAvailable}
+      path="/linter"
+      title="Linter"
+    >
       <EntityApiDocsSpectralLinterContent />
     </EntityLayout.Route>
   </EntityLayout>
@@ -245,7 +256,7 @@ const apiPage = (
 const userPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid.Root columns='2'>
+      <Grid.Root columns="2">
         {entityWarningContent}
         <Grid.Item>
           <EntityUserProfileCard />
@@ -258,11 +269,10 @@ const userPage = (
   </EntityLayout>
 );
 
-
 const groupPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid.Root columns='1'>
+      <Grid.Root columns="1">
         {entityWarningContent}
         <Grid.Item>
           <EntityGroupProfileCard />
@@ -281,7 +291,7 @@ const groupPage = (
 const systemPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid.Root columns='2'>
+      <Grid.Root columns="2">
         {entityWarningContent}
         <Grid.Item>
           <EntityAboutCard />
@@ -299,13 +309,12 @@ const systemPage = (
         tableOptions={{
           search: true,
           paging: true,
-          pageSize: 15
-        }
-        } />
+          pageSize: 15,
+        }}
+      />
     </EntityLayout.Route>
     <EntityLayout.Route path="/diagram" title="Diagram">
       <EntityCatalogGraphCard
-       
         direction={Direction.TOP_BOTTOM}
         title="System Diagram"
         height={700}
@@ -328,7 +337,7 @@ const systemPage = (
 const domainPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid.Root columns='2'>
+      <Grid.Root columns="2">
         {entityWarningContent}
         <Grid.Item>
           <EntityAboutCard />

@@ -1,4 +1,3 @@
-
 export type DbServicesRow = {
   id: string;
   service: string;

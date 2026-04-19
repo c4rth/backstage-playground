@@ -52,8 +52,12 @@ import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 // Admin Tools
-import { devToolsAdministerPermission, } from '@backstage/plugin-devtools-common';
-import { adminToolsPermission, notGuestPermission, healthDashboardPermission } from '@internal/plugin-permissions-common';
+import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+import {
+  adminToolsPermission,
+  notGuestPermission,
+  healthDashboardPermission,
+} from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
 import { FeatureFlagged } from '@backstage/core-app-api';
 
@@ -61,18 +65,24 @@ const SidebarLogo = () => {
   const { isOpen } = useSidebarOpenState();
 
   return (
-    <div style={{
-      width: sidebarConfig.drawerWidthClosed,
-      height: 3 * sidebarConfig.logoHeight,
-      display: 'flex',
-      flexFlow: 'row nowrap',
-      alignItems: 'center',
-      marginBottom: -14,
-    }}>
-      <Link to="/" underline="none" style={{
+    <div
+      style={{
         width: sidebarConfig.drawerWidthClosed,
-        marginLeft: 24,
-      }}>
+        height: 3 * sidebarConfig.logoHeight,
+        display: 'flex',
+        flexFlow: 'row nowrap',
+        alignItems: 'center',
+        marginBottom: -14,
+      }}
+    >
+      <Link
+        to="/"
+        underline="none"
+        style={{
+          width: sidebarConfig.drawerWidthClosed,
+          marginLeft: 24,
+        }}
+      >
         {isOpen ? <LogoFull /> : <LogoIcon />}
       </Link>
     </div>
@@ -84,35 +94,82 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
     <Sidebar>
       <SidebarLogo />
       <SidebarGroup to="/search">
-        <SidebarSearchModal icon={RiMenuSearchLine as IconComponent} resultItemComponents={[
-          <ApiSearchResultListItem icon={<CatalogIcon />} />,
-          <McaComponentSearchResultListItem icon={<RiBubbleChartLine />} />,
-          <CatalogSearchResultListItem icon={<CatalogIcon />} />,
-          <TechDocsSearchResultListItem icon={<DocsIcon />} />
-        ]} />
+        <SidebarSearchModal
+          icon={RiMenuSearchLine as IconComponent}
+          resultItemComponents={[
+            <ApiSearchResultListItem icon={<CatalogIcon />} />,
+            <McaComponentSearchResultListItem icon={<RiBubbleChartLine />} />,
+            <CatalogSearchResultListItem icon={<CatalogIcon />} />,
+            <TechDocsSearchResultListItem icon={<DocsIcon />} />,
+          ]}
+        />
       </SidebarGroup>
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<RiMenuFill />}>
         <SidebarItem icon={RiHome2Fill as IconComponent} to="/" text="Home" />
-        <SidebarItem icon={RiShapesFill as IconComponent} to="api-platform/system" text="Systems" />
-        <SidebarItem icon={RiCpuLine as IconComponent} to="api-platform/service" text="Services" />
-        <SidebarItem icon={RiPuzzleFill as IconComponent} to="api-platform/api" text="APIs" />
+        <SidebarItem
+          icon={RiShapesFill as IconComponent}
+          to="api-platform/system"
+          text="Systems"
+        />
+        <SidebarItem
+          icon={RiCpuLine as IconComponent}
+          to="api-platform/service"
+          text="Services"
+        />
+        <SidebarItem
+          icon={RiPuzzleFill as IconComponent}
+          to="api-platform/api"
+          text="APIs"
+        />
         <FeatureFlagged with="enable-api-platform-libraries">
-          <SidebarItem icon={RiBookShelfLine as IconComponent} to="api-platform/library" text="Libraries" />
+          <SidebarItem
+            icon={RiBookShelfLine as IconComponent}
+            to="api-platform/library"
+            text="Libraries"
+          />
         </FeatureFlagged>
-        <SidebarItem icon={RiBubbleChartLine as IconComponent} to="mca/components" text="MCA Operations" />
-        <SidebarItem icon={RiAlbumLine as IconComponent} to="mca/basetypes" text="MCA BaseTypes" />
-        <RequirePermission permission={healthDashboardPermission} errorPage={<div />} >
-          <SidebarItem icon={RiHeartPulseFill as IconComponent} to="health-dashboard" text="Health Dashboard" />
+        <SidebarItem
+          icon={RiBubbleChartLine as IconComponent}
+          to="mca/components"
+          text="MCA Operations"
+        />
+        <SidebarItem
+          icon={RiAlbumLine as IconComponent}
+          to="mca/basetypes"
+          text="MCA BaseTypes"
+        />
+        <RequirePermission
+          permission={healthDashboardPermission}
+          errorPage={<div />}
+        >
+          <SidebarItem
+            icon={RiHeartPulseFill as IconComponent}
+            to="health-dashboard"
+            text="Health Dashboard"
+          />
         </RequirePermission>
-        <SidebarItem icon={RiFileCopy2Line as IconComponent} to="docs" text="Docs" />
-        <SidebarItem icon={RiFileCopy2Line as IconComponent} to="external-docs" text="ExtDocs" />
-        <RequirePermission permission={taskCreatePermission} errorPage={<div />} >
+        <SidebarItem
+          icon={RiFileCopy2Line as IconComponent}
+          to="docs"
+          text="Docs"
+        />
+        <SidebarItem
+          icon={RiFileCopy2Line as IconComponent}
+          to="external-docs"
+          text="ExtDocs"
+        />
+        <RequirePermission
+          permission={taskCreatePermission}
+          errorPage={<div />}
+        >
           <SidebarItem
             icon={RiFolderAddLine as IconComponent}
-            to="create" text="Scaffolder" />
+            to="create"
+            text="Scaffolder"
+          />
         </RequirePermission>
-        <RequirePermission permission={notGuestPermission} errorPage={<div />} >
+        <RequirePermission permission={notGuestPermission} errorPage={<div />}>
           <SidebarItem icon={RiBookShelfLine as IconComponent} text="Catalog">
             <SidebarSubmenu title="Catalog">
               <SidebarSubmenuItem
@@ -120,17 +177,35 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
                 to="catalog"
                 icon={RiBookShelfLine as IconComponent}
               />
-              <RequirePermission permission={adminToolsPermission} errorPage={<div />} >
+              <RequirePermission
+                permission={adminToolsPermission}
+                errorPage={<div />}
+              >
                 <SidebarDivider />
-                <SidebarSubmenuItem icon={RiToolsFill as IconComponent} to="entity-validation" title="Entity Validator" />
-                <RequirePermission permission={catalogEntityCreatePermission} errorPage={<div />}>
-                  <SidebarSubmenuItem icon={RiToolsFill as IconComponent} to="catalog-import" title="Catalog Import" />
+                <SidebarSubmenuItem
+                  icon={RiToolsFill as IconComponent}
+                  to="entity-validation"
+                  title="Entity Validator"
+                />
+                <RequirePermission
+                  permission={catalogEntityCreatePermission}
+                  errorPage={<div />}
+                >
+                  <SidebarSubmenuItem
+                    icon={RiToolsFill as IconComponent}
+                    to="catalog-import"
+                    title="Catalog Import"
+                  />
                 </RequirePermission>
               </RequirePermission>
             </SidebarSubmenu>
           </SidebarItem>
         </RequirePermission>
-        <SidebarItem icon={RiWrenchFill as IconComponent} text="DevTools" to="tools" />
+        <SidebarItem
+          icon={RiWrenchFill as IconComponent}
+          text="DevTools"
+          to="tools"
+        />
         {/* End global nav */}
         <SidebarScrollWrapper>
           {/* Items in this group will be scrollable if they run out of space */}
@@ -139,8 +214,15 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarSpace />
       <Shortcuts />
       <SidebarDivider />
-      <RequirePermission permission={devToolsAdministerPermission} errorPage={<div />} >
-        <SidebarItem icon={RiAdminLine as IconComponent} to="admin" text="Admin" />
+      <RequirePermission
+        permission={devToolsAdministerPermission}
+        errorPage={<div />}
+      >
+        <SidebarItem
+          icon={RiAdminLine as IconComponent}
+          to="admin"
+          text="Admin"
+        />
       </RequirePermission>
 
       <SidebarGroup
@@ -152,5 +234,5 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
     </Sidebar>
     {children}
-  </SidebarPage >
+  </SidebarPage>
 );

@@ -1,2 +1,5 @@
 export type { McaComponentStore } from './types';
-export { McaComponentDbStore, mcaComponentStoreServiceRef } from './McaComponentDbStore';
+export {
+  McaComponentDbStore,
+  mcaComponentStoreServiceRef,
+} from './McaComponentDbStore';

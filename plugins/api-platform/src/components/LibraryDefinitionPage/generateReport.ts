@@ -6,7 +6,8 @@ import { fetchAllServices } from './fetchServicesByLibrary';
 export async function generateReport(
   apiPlatformApi: ApiPlatformBackendApi,
   libraryName: string,
-  libraryVersions: LibraryDefinition[] | undefined) {
+  libraryVersions: LibraryDefinition[] | undefined,
+) {
   if (!libraryVersions) {
     throw new Error('No library versions to generate report');
   }
@@ -21,33 +22,36 @@ export async function generateReport(
       service.versions
         .map(version => {
           // Check if any environment uses this library version
-          const envs = Object.entries(version.environments).filter(([_, env]) => 
-            env?.dependencies?.includes(libRef)
+          const envs = Object.entries(version.environments).filter(([_, env]) =>
+            env?.dependencies?.includes(libRef),
           );
-          
+
           if (envs.length === 0) return null;
-          
+
           // Build row with environment columns
           const row: any = {
             System: service.system || '-',
             ServiceName: service.serviceName || '-',
             ServiceVersion: version.version || '-',
           };
-          
+
           // Add environment columns
           ['tst', 'gtu', 'uat', 'ptp', 'prd'].forEach(env => {
-            const envData = version.environments[env as keyof typeof version.environments];
+            const envData =
+              version.environments[env as keyof typeof version.environments];
             const hasLibrary = envData?.dependencies?.includes(libRef);
-            row[env.toUpperCase()] = hasLibrary ? (envData?.imageVersion || '-') : '-';
+            row[env.toUpperCase()] = hasLibrary
+              ? envData?.imageVersion || '-'
+              : '-';
           });
-          
+
           return row;
         })
-        .filter(row => row !== null)
+        .filter(row => row !== null),
     );
-    
+
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-    
+
     // Set column widths for better readability
     worksheet['!cols'] = [
       { wch: 15 }, // System
@@ -59,13 +63,17 @@ export async function generateReport(
       { wch: 22 }, // PTP
       { wch: 22 }, // PRD
     ];
-    
-    XLSX.utils.book_append_sheet(workbook, worksheet, `${libraryName}-${libVersion.version}`);
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      `${libraryName}-${libVersion.version}`,
+    );
   }
 
   // By service - showing which library version is used in each environment
   const serviceMap = new Map<string, any>();
-  
+
   // Pre-populate with all services
   allServices.forEach(service => {
     service.versions.forEach(version => {
@@ -82,36 +90,36 @@ export async function generateReport(
       });
     });
   });
-  
+
   // Update with library versions where used
   allServices.forEach(service => {
     service.versions.forEach(version => {
       const serviceKey = `${service.system}|${service.serviceName}|${version.version}`;
       const row = serviceMap.get(serviceKey);
-      
+
       Object.entries(version.environments).forEach(([env, envData]) => {
         if (!envData?.dependencies) return;
-        
+
         // Check each dependency to find library version references
         const libVersionMatch = libraryVersions.find(lv => {
           const libRef = lv.entityRef.replace(/^component:default\//, '');
           return envData.dependencies.some(dep => dep === libRef);
         });
-        
+
         if (libVersionMatch) {
           row[env.toUpperCase()] = libVersionMatch.version || '-';
         }
       });
     });
   });
-  
+
   const byServiceData = Array.from(serviceMap.values()).sort((a, b) => {
     const systemCompare = (a.System || '').localeCompare(b.System || '');
     if (systemCompare !== 0) return systemCompare;
     return (a.ServiceName || '').localeCompare(b.ServiceName || '');
   });
   const byServiceSheet = XLSX.utils.json_to_sheet(byServiceData);
-  
+
   byServiceSheet['!cols'] = [
     { wch: 15 }, // System
     { wch: 30 }, // ServiceName
@@ -122,18 +130,18 @@ export async function generateReport(
     { wch: 15 }, // PTP
     { wch: 15 }, // PRD
   ];
-  
+
   XLSX.utils.book_append_sheet(workbook, byServiceSheet, 'By Service');
 
   const xlsBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
+    bookType: 'xlsx',
+    type: 'array',
   });
   const blob = new Blob([xlsBuffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   });
   const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = url;
   a.download = `${libraryName}-report.xlsx`;
   a.click();

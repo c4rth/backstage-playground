@@ -58,14 +58,22 @@ export class McaComponentsCollatorFactory implements DocumentCollatorFactory {
     const baseUrl = await this.discoveryApi.getBaseUrl('mca');
 
     const countUrl = new URL(`${baseUrl}/mca/count?type=all`);
-    const responseCount = await fetch(countUrl, { headers: { Authorization: `Bearer ${token}` } });
+    const responseCount = await fetch(countUrl, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const dataCount = (await responseCount.json()) as number;
     this.logger.debug(`mca/count: ${dataCount} - limit: ${this.limit}`);
 
     for (let offset = 0; offset < dataCount; offset += this.limit) {
-      const query = new URLSearchParams({ offset: String(offset), limit: String(this.limit), type: 'all' });
+      const query = new URLSearchParams({
+        offset: String(offset),
+        limit: String(this.limit),
+        type: 'all',
+      });
       const url = new URL(`${baseUrl}/mca/components?${query}`);
-      const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const { items = [] } = await response.json();
       for (const item of items) {
         yield this.getDocumentInfo(item);
@@ -79,10 +87,17 @@ export class McaComponentsCollatorFactory implements DocumentCollatorFactory {
     return {
       title: mcaComponent.component,
       text: `package: dexia.opmk.operation.${mcaComponent.packageName}`,
-      shortName: mcaComponent.component.replace(/^(Operation)/,"").replace(/^(Element)/,""),
+      shortName: mcaComponent.component
+        .replace(/^(Operation)/, '')
+        .replace(/^(Element)/, ''),
       applicationCode: mcaComponent.applicationCode,
       prdVersion: mcaComponent.prdVersion,
-      otherVersions: [mcaComponent.p1Version, mcaComponent.p2Version, mcaComponent.p3Version, mcaComponent.p4Version].filter(x => x) as string[],
+      otherVersions: [
+        mcaComponent.p1Version,
+        mcaComponent.p2Version,
+        mcaComponent.p3Version,
+        mcaComponent.p4Version,
+      ].filter(x => x) as string[],
       location: `/mca/components/${mcaComponent.component}`,
       kind: 'MCA Component',
     };

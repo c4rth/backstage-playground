@@ -1,9 +1,11 @@
+import { InfoCard, TabbedLayout } from '@backstage/core-components';
+import { getCompoundEntityRef } from '@backstage/catalog-model';
 import {
-  InfoCard,
-  TabbedLayout,
-} from '@backstage/core-components';
-import { getCompoundEntityRef } from "@backstage/catalog-model";
-import { catalogApiRef, EntityProvider, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+  catalogApiRef,
+  EntityProvider,
+  EntityRefLink,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import { SystemRelationCard } from './SystemPlatformRelationCard';
 import { EntityMembersListCard } from '@backstage/plugin-org';
@@ -20,18 +22,27 @@ interface SystemDefinitionCardProps {
   systemDefinition: SystemDefinition;
 }
 
-export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinitionCardProps) => {
+export const SystemDefinitionCard = ({
+  system,
+  systemDefinition,
+}: SystemDefinitionCardProps) => {
   const catalogApi = useApi(catalogApiRef);
   const featureFlagsApi = useApi(featureFlagsApiRef);
   const { entity } = useEntity();
-  const showLibraries = featureFlagsApi.isActive('enable-api-platform-libraries');
+  const showLibraries = featureFlagsApi.isActive(
+    'enable-api-platform-libraries',
+  );
 
   const entityRef = getCompoundEntityRef(entity);
-  const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+  const hasDocs = Boolean(
+    entity.metadata.annotations?.['backstage.io/techdocs-ref'],
+  );
 
   const ownedByGroup = useAsync(async () => {
     const ownedBy = entity.relations?.find(
-      rel => rel.type === 'ownedBy' && rel.targetRef.toLowerCase().startsWith('group')
+      rel =>
+        rel.type === 'ownedBy' &&
+        rel.targetRef.toLowerCase().startsWith('group'),
     );
     if (ownedBy) {
       return await catalogApi.getEntityByRef(ownedBy.targetRef);
@@ -42,12 +53,24 @@ export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinit
   return (
     <TabbedLayout>
       <TabbedLayout.Route path="/" title="Ownership">
-        <Flex gap='2' direction='column'>
-          <SystemRelationCard system={system} dependency="service" data={systemDefinition.services} />
-          <SystemRelationCard system={system} dependency="api" data={systemDefinition.apis} />
-          {showLibraries &&
-            <SystemRelationCard system={system} dependency="library" data={systemDefinition.libraries} />
-          }
+        <Flex gap="2" direction="column">
+          <SystemRelationCard
+            system={system}
+            dependency="service"
+            data={systemDefinition.services}
+          />
+          <SystemRelationCard
+            system={system}
+            dependency="api"
+            data={systemDefinition.apis}
+          />
+          {showLibraries && (
+            <SystemRelationCard
+              system={system}
+              dependency="library"
+              data={systemDefinition.libraries}
+            />
+          )}
         </Flex>
       </TabbedLayout.Route>
 
@@ -58,8 +81,8 @@ export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinit
       </TabbedLayout.Route>
 
       <TabbedLayout.Route path="/info" title="Info">
-        <Grid.Root columns='12'>
-          <Grid.Item colSpan='6'>
+        <Grid.Root columns="12">
+          <Grid.Item colSpan="6">
             <InfoCard
               title="About"
               divider
@@ -68,13 +91,13 @@ export const SystemDefinitionCard = ({ system, systemDefinition }: SystemDefinit
                 <ButtonLink
                   href={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
                   isDisabled={!hasDocs}
-                  size='medium'
-                  variant='tertiary'
+                  size="medium"
+                  variant="tertiary"
                   iconStart={<RiFileFill />}
-                  />
+                />
               }
             >
-              <Box mb='4'>
+              <Box mb="4">
                 <AboutField label="System reference">
                   <EntityRefLink entityRef={entity} />
                 </AboutField>

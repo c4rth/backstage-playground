@@ -8,13 +8,16 @@ import {
 } from '@backstage/backend-plugin-api';
 import { AnalyticsService } from './types';
 import { createHash } from 'node:crypto';
-import { Config } from "@backstage/config";
+import { Config } from '@backstage/config';
 import { AnalyticsScheduledTask } from '../task';
-import { AnalyticsStore, analyticsStoreServiceRef, TopFeature } from '../database';
+import {
+  AnalyticsStore,
+  analyticsStoreServiceRef,
+  TopFeature,
+} from '../database';
 import { DailyVisitor } from '../database/types';
 
 export class AnalyticsDbService implements AnalyticsService {
-
   private readonly logger: LoggerService;
   private readonly analyticsStore: AnalyticsStore;
 
@@ -29,11 +32,24 @@ export class AnalyticsDbService implements AnalyticsService {
 
     this.logger.info('Initializing AnalyticsService');
 
-    this.createScheduledTask(options.config, options.logger, options.analyticsStore, options.scheduler);
+    this.createScheduledTask(
+      options.config,
+      options.logger,
+      options.analyticsStore,
+      options.scheduler,
+    );
   }
 
-  async createScheduledTask(config: Config, logger: LoggerService, analyticsStore: AnalyticsStore, scheduler: SchedulerService) {
-    const scheduleOperations = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('analytics.schedule'));
+  async createScheduledTask(
+    config: Config,
+    logger: LoggerService,
+    analyticsStore: AnalyticsStore,
+    scheduler: SchedulerService,
+  ) {
+    const scheduleOperations =
+      readSchedulerServiceTaskScheduleDefinitionFromConfig(
+        config.getConfig('analytics.schedule'),
+      );
     await scheduler.scheduleTask({
       ...scheduleOperations,
       id: 'analytics-cleanup',
@@ -45,7 +61,7 @@ export class AnalyticsDbService implements AnalyticsService {
           config,
         }).runAsync();
       },
-    },)
+    });
   }
 
   getVisitorId(req: any) {
@@ -75,7 +91,10 @@ export class AnalyticsDbService implements AnalyticsService {
     return this.analyticsStore.getTotalDailyUniqueVisitors(days);
   }
 
-  async getTopFeaturesByUniqueVisitors(count: number, days: number): Promise<TopFeature[]> {
+  async getTopFeaturesByUniqueVisitors(
+    count: number,
+    days: number,
+  ): Promise<TopFeature[]> {
     return this.analyticsStore.getTopFeaturesByUniqueVisitors(count, days);
   }
 }

@@ -1,4 +1,3 @@
-
 export type DbServicesRow = {
   applicationCode: string;
   service: string;

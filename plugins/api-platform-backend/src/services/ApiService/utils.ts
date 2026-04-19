@@ -1,39 +1,57 @@
 import { InputError } from '@backstage/errors';
-import { OpenApiType, OPENAPITYPE_LIST } from '@internal/plugin-api-platform-common';
+import {
+  OpenApiType,
+  OPENAPITYPE_LIST,
+} from '@internal/plugin-api-platform-common';
 
 export const parseOrderByParam = <T extends readonly string[]>(
   str: unknown,
   allowedFields: T,
 ): { field: T[number]; direction: 'asc' | 'desc' } | undefined => {
   if (str === undefined) return undefined;
-  if (typeof str !== 'string') throw new InputError('invalid orderBy query, must be a string');
+  if (typeof str !== 'string')
+    throw new InputError('invalid orderBy query, must be a string');
   const [field, direction] = str.split('=');
-  if (!field) throw new InputError('invalid orderBy query, field name is empty');
+  if (!field)
+    throw new InputError('invalid orderBy query, field name is empty');
   if (!['asc', 'desc'].includes(direction)) {
-    throw new InputError("invalid orderBy query, order direction must be 'asc' or 'desc'");
+    throw new InputError(
+      "invalid orderBy query, order direction must be 'asc' or 'desc'",
+    );
   }
   if (!allowedFields.includes(field)) {
-    throw new InputError(`invalid orderBy field, must be one of ${allowedFields.join(', ')}`);
+    throw new InputError(
+      `invalid orderBy field, must be one of ${allowedFields.join(', ')}`,
+    );
   }
   return { field: field as T[number], direction: direction as 'asc' | 'desc' };
 };
 
 export const parseSearchParam = (str: unknown): string | undefined => {
   if (str === undefined) return undefined;
-  if (typeof str !== 'string') throw new InputError('invalid search query, must be a string');
+  if (typeof str !== 'string')
+    throw new InputError('invalid search query, must be a string');
   return str;
 };
 
-export const parseOwnershipParam = (str: unknown): 'all' | 'owned' | undefined => {
+export const parseOwnershipParam = (
+  str: unknown,
+): 'all' | 'owned' | undefined => {
   if (str === undefined) return undefined;
-  if (typeof str !== 'string') throw new InputError('invalid type query, must be a string');
-  if (!['all', 'owned'].includes(str)) throw new InputError("invalid type query, must be 'all' or 'owned'");
+  if (typeof str !== 'string')
+    throw new InputError('invalid type query, must be a string');
+  if (!['all', 'owned'].includes(str))
+    throw new InputError("invalid type query, must be 'all' or 'owned'");
   return str as 'all' | 'owned';
 };
 
 export const parseApiTypeParam = (str: unknown): OpenApiType | undefined => {
   if (str === undefined) return undefined;
-  if (typeof str !== 'string') throw new InputError('invalid type query, must be a string');
-  if (!OPENAPITYPE_LIST.includes(str as OpenApiType)) throw new InputError(`invalid type query, must be one of ${OPENAPITYPE_LIST.join(', ')}`);
+  if (typeof str !== 'string')
+    throw new InputError('invalid type query, must be a string');
+  if (!OPENAPITYPE_LIST.includes(str as OpenApiType))
+    throw new InputError(
+      `invalid type query, must be one of ${OPENAPITYPE_LIST.join(', ')}`,
+    );
   return str as OpenApiType;
 };

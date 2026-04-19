@@ -1,13 +1,12 @@
-
-import { AppRegistryEndpoint } from "../types";
+import { AppRegistryEndpoint } from '../types';
 
 export function dummyEmptyCall(): AppRegistryEndpoint[] {
-    const data = `[]`;
-    return JSON.parse(data) as AppRegistryEndpoint[];
+  const data = `[]`;
+  return JSON.parse(data) as AppRegistryEndpoint[];
 }
 
 export function dummyCall(): AppRegistryEndpoint[] {
-    const data = `
+  const data = `
         [
     {
         "id": "31d125ac-a229-43d0-a30d-c62ec24acd6f",
@@ -461,5 +460,5 @@ export function dummyCall(): AppRegistryEndpoint[] {
         ]
     }
 ]        `;
-    return JSON.parse(data) as AppRegistryEndpoint[];
+  return JSON.parse(data) as AppRegistryEndpoint[];
 }

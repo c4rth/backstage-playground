@@ -32,7 +32,7 @@ const getChipStyles = (
   variant: ChipProps['variant'],
   size: ChipProps['size'],
   clickable: boolean,
-  disabled: boolean
+  disabled: boolean,
 ): CSSProperties => {
   const baseStyles: CSSProperties = {
     display: 'inline-flex',
@@ -49,7 +49,8 @@ const getChipStyles = (
     padding: 0,
     verticalAlign: 'middle',
     position: 'relative',
-    transition: 'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    transition:
+      'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     height: size === 'small' ? '24px' : '32px',
     fontSize: size === 'small' ? '0.8125rem' : '0.875rem',
     borderRadius: size === 'small' ? '12px' : '16px',
@@ -65,21 +66,21 @@ const getChipStyles = (
     if (color === 'primary') {
       baseStyles.backgroundColor = 'var(--bui-bg-solid)';
       baseStyles.color = 'var(--bui-fg-solid)';
-      baseStyles.backgroundColor = "#C30045";
-      baseStyles.color = "#fff";
+      baseStyles.backgroundColor = '#C30045';
+      baseStyles.color = '#fff';
     } else if (color === 'secondary') {
       baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
       baseStyles.color = 'var(--bui-black)';
     } else if (color === 'default') {
       baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
       baseStyles.color = 'var(--bui-black)';
-      baseStyles.color = "#000";
+      baseStyles.color = '#000';
     } else {
       baseStyles.backgroundColor = color;
       baseStyles.color = textColor || '#fff';
     }
   } else {
-    // outlined variant 
+    // outlined variant
     baseStyles.border = '1px solid #0000003b';
   }
   return baseStyles;
@@ -120,7 +121,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       className = '',
       style,
     },
-    ref
+    ref,
   ) => {
     const isClickable = clickable || !!onClick;
 
@@ -131,10 +132,8 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
 
     const content = (
       <>
-        {icon && (
-          <span style={getIconStyles(size)}>{icon}</span>
-        )}
-        <span style={getLabelStyles(size)}>{label}</span>        
+        {icon && <span style={getIconStyles(size)}>{icon}</span>}
+        <span style={getLabelStyles(size)}>{label}</span>
       </>
     );
 
@@ -158,7 +157,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
         {content}
       </div>
     );
-  }
+  },
 );
 
 Chip.displayName = 'Chip';

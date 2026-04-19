@@ -1,4 +1,1 @@
-export { 
-    OpenApiDefinitionWidget,
-   } from './plugin';
-  
+export { OpenApiDefinitionWidget } from './plugin';

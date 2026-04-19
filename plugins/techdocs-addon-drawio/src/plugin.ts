@@ -10,7 +10,7 @@ export const techdocsAddonDrawIoPlugin = createPlugin({
   id: 'techdocs-addon-drawio',
 });
 
- export const DrawIo = techdocsAddonDrawIoPlugin.provide(
+export const DrawIo = techdocsAddonDrawIoPlugin.provide(
   createTechDocsAddonExtension<DrawIoProps>({
     name: 'DrawIoDiagram',
     location: TechDocsAddonLocations.Content,

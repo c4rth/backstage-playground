@@ -16,10 +16,10 @@ import { useState, memo } from 'react';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
-  id: number,
-  baseType: string,
-  packageName: string,
-}
+  id: number;
+  baseType: string;
+  packageName: string;
+};
 
 const columns: TableColumn<TableRow>[] = [
   {
@@ -28,10 +28,8 @@ const columns: TableColumn<TableRow>[] = [
     field: 'baseType',
     defaultSort: 'asc',
     highlight: true,
-    render: (row) => (
-      <Link to={`/mca/basetypes/${row.baseType}`}>
-        {row.baseType}
-      </Link>
+    render: row => (
+      <Link to={`/mca/basetypes/${row.baseType}`}>{row.baseType}</Link>
     ),
   },
   {
@@ -52,14 +50,18 @@ function toEntityRow(item: McaBaseType, idx: number) {
   };
 }
 
-async function getData(mcaApi: McaComponentsBackendApi, query: Query<TableRow>) {
+async function getData(
+  mcaApi: McaComponentsBackendApi,
+  query: Query<TableRow>,
+) {
   const page = query.page || 0;
   const pageSize = query.pageSize || PAGE_SIZE;
   const result = await mcaApi.listMcaBaseTypes({
     offset: page * pageSize,
     limit: pageSize,
     search: query.search,
-    orderBy: query?.orderBy &&
+    orderBy:
+      query?.orderBy &&
       ({
         field: query.orderBy.field,
         direction: query.orderDirection,
@@ -105,7 +107,7 @@ export const McaBaseTypeTable = memo(() => {
         data: [],
         totalCount: 0,
         page: 0,
-      }
+      };
     } finally {
       setLoading(false);
     }
@@ -122,11 +124,7 @@ export const McaBaseTypeTable = memo(() => {
     thirdSortClick: false,
     searchText: initialSearch,
   };
-  const tableTitle = (
-    <Flex align="center">
-      BaseTypes ({countRows})
-    </Flex>
-  );
+  const tableTitle = <Flex align="center">BaseTypes ({countRows})</Flex>;
 
   if (error) return <ResponseErrorPanel error={error} />;
 

@@ -92,17 +92,10 @@
         },
         "examples": {
           "Get name and the entire relations collection": {
-            "value": [
-              "metadata.name",
-              "relations"
-            ]
+            "value": ["metadata.name", "relations"]
           },
           "Get kind, name and namespace": {
-            "value": [
-              "kind",
-              "metadata.name",
-              "metadata.namespace"
-            ]
+            "value": ["kind", "metadata.name", "metadata.namespace"]
           }
         }
       },
@@ -120,9 +113,7 @@
         },
         "examples": {
           "Get groups": {
-            "value": [
-              "kind=group"
-            ]
+            "value": ["kind=group"]
           },
           "Get orphaned components": {
             "value": [
@@ -170,14 +161,10 @@
         "style": "form",
         "examples": {
           "Order ascending by name": {
-            "value": [
-              "metadata.name,asc"
-            ]
+            "value": ["metadata.name,asc"]
           },
           "Order descending by owner": {
-            "value": [
-              "spec.owner,desc"
-            ]
+            "value": ["spec.owner,desc"]
           }
         }
       }
@@ -215,10 +202,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "name",
-              "message"
-            ]
+            "required": ["name", "message"]
           },
           "request": {
             "type": "object",
@@ -230,10 +214,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "method",
-              "url"
-            ]
+            "required": ["method", "url"]
           },
           "response": {
             "type": "object",
@@ -242,15 +223,10 @@
                 "type": "number"
               }
             },
-            "required": [
-              "statusCode"
-            ]
+            "required": ["statusCode"]
           }
         },
-        "required": [
-          "error",
-          "response"
-        ],
+        "required": ["error", "response"],
         "additionalProperties": {}
       },
       "JsonObject": {
@@ -287,9 +263,7 @@
             "description": "The url to the external site, document, etc."
           }
         },
-        "required": [
-          "url"
-        ],
+        "required": ["url"],
         "description": "A link to external information that is related to the entity.",
         "additionalProperties": false
       },
@@ -341,9 +315,7 @@
             "description": "A globally unique ID for the entity.\nThis field can not be set by the user at creation time, and the server\nwill reject an attempt to do so. The field will be populated in read\noperations. The field can (optionally) be specified when performing\nupdate or delete operations, but the server is free to reject requests\nthat do so in such a way that it breaks semantics."
           }
         },
-        "required": [
-          "name"
-        ],
+        "required": ["name"],
         "description": "Metadata fields common to all versions/kinds of entity.",
         "additionalProperties": {}
       },
@@ -359,10 +331,7 @@
             "description": "The type of the relation."
           }
         },
-        "required": [
-          "targetRef",
-          "type"
-        ],
+        "required": ["targetRef", "type"],
         "description": "A relation of a specific type to another entity in the catalog.",
         "additionalProperties": false
       },
@@ -391,11 +360,7 @@
             "description": "The version of specification format for this particular entity that\nthis is written against."
           }
         },
-        "required": [
-          "metadata",
-          "kind",
-          "apiVersion"
-        ],
+        "required": ["metadata", "kind", "apiVersion"],
         "description": "The parts of the format that's common to all versions/kinds of entity."
       },
       "NullableEntity": {
@@ -423,11 +388,7 @@
             "description": "The version of specification format for this particular entity that\nthis is written against."
           }
         },
-        "required": [
-          "metadata",
-          "kind",
-          "apiVersion"
-        ],
+        "required": ["metadata", "kind", "apiVersion"],
         "description": "The parts of the format that's common to all versions/kinds of entity.",
         "nullable": true
       },
@@ -449,20 +410,14 @@
                   "$ref": "#/components/schemas/Entity"
                 }
               },
-              "required": [
-                "parentEntityRefs",
-                "entity"
-              ]
+              "required": ["parentEntityRefs", "entity"]
             }
           },
           "rootEntityRef": {
             "type": "string"
           }
         },
-        "required": [
-          "items",
-          "rootEntityRef"
-        ],
+        "required": ["items", "rootEntityRef"],
         "additionalProperties": false
       },
       "EntitiesBatchResponse": {
@@ -476,9 +431,7 @@
             "description": "The list of entities, in the same order as the refs in the request. Entries\nthat are null signify that no entity existed with that ref."
           }
         },
-        "required": [
-          "items"
-        ],
+        "required": ["items"],
         "additionalProperties": false
       },
       "EntityFacet": {
@@ -491,10 +444,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "value",
-          "count"
-        ],
+        "required": ["value", "count"],
         "additionalProperties": false
       },
       "EntityFacetsResponse": {
@@ -510,9 +460,7 @@
             }
           }
         },
-        "required": [
-          "facets"
-        ],
+        "required": ["facets"],
         "additionalProperties": false
       },
       "Location": {
@@ -528,11 +476,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "target",
-          "type",
-          "id"
-        ],
+        "required": ["target", "type", "id"],
         "description": "Entity location for a specific entity.",
         "additionalProperties": false
       },
@@ -546,10 +490,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "target",
-          "type"
-        ],
+        "required": ["target", "type"],
         "description": "Holds the entity location information.",
         "additionalProperties": false
       },
@@ -566,11 +507,7 @@
             "$ref": "#/components/schemas/LocationSpec"
           }
         },
-        "required": [
-          "entity",
-          "isRegistered",
-          "location"
-        ],
+        "required": ["entity", "isRegistered", "location"],
         "description": "If the folder pointed to already contained catalog info yaml files, they are\nread and emitted like this so that the frontend can inform the user that it\nlocated them and can make sure to register them as well if they weren't\nalready",
         "additionalProperties": false
       },
@@ -700,12 +637,7 @@
             "description": "e.g. \"spec.owner\"? The frontend needs to know how to \"inject\" the field into the\nentity again if the user wants to change it"
           }
         },
-        "required": [
-          "description",
-          "value",
-          "state",
-          "field"
-        ],
+        "required": ["description", "value", "state", "field"],
         "additionalProperties": false
       },
       "AnalyzeLocationGenerateEntity": {
@@ -721,10 +653,7 @@
             "$ref": "#/components/schemas/RecursivePartialEntity"
           }
         },
-        "required": [
-          "fields",
-          "entity"
-        ],
+        "required": ["fields", "entity"],
         "description": "This is some form of representation of what the analyzer could deduce.\nWe should probably have a chat about how this can best be conveyed to\nthe frontend. It'll probably contain a (possibly incomplete) entity, plus\nenough info for the frontend to know what form data to show to the user\nfor overriding/completing the info.",
         "additionalProperties": false
       },
@@ -744,10 +673,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "generateEntities",
-          "existingEntityFiles"
-        ],
+        "required": ["generateEntities", "existingEntityFiles"],
         "additionalProperties": false
       },
       "LocationInput": {
@@ -760,10 +686,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "type",
-          "target"
-        ],
+        "required": ["type", "target"],
         "additionalProperties": false
       },
       "EntitiesQueryResponse": {
@@ -793,11 +716,7 @@
             }
           }
         },
-        "required": [
-          "items",
-          "totalItems",
-          "pageInfo"
-        ],
+        "required": ["items", "totalItems", "pageInfo"],
         "additionalProperties": false
       }
     },
@@ -847,9 +766,7 @@
                     "description": "The reference to a single entity that should be refreshed"
                   }
                 },
-                "required": [
-                  "entityRef"
-                ],
+                "required": ["entityRef"],
                 "description": "Options for requesting a refresh of entities in the catalog.",
                 "additionalProperties": false
               }
@@ -1097,9 +1014,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "entityRefs"
-                ],
+                "required": ["entityRefs"],
                 "properties": {
                   "entityRefs": {
                     "type": "array",
@@ -1126,12 +1041,8 @@
                 },
                 "Fetch annotations for backstage entity": {
                   "value": {
-                    "entityRefs": [
-                      "component:default/backstage"
-                    ],
-                    "fields": [
-                      "metadata.annotations"
-                    ]
+                    "entityRefs": ["component:default/backstage"],
+                    "fields": ["metadata.annotations"]
                   }
                 }
               }
@@ -1259,14 +1170,10 @@
             },
             "examples": {
               "Entities by kind": {
-                "value": [
-                  "kind"
-                ]
+                "value": ["kind"]
               },
               "Entities by spec type": {
-                "value": [
-                  "spec.type"
-                ]
+                "value": ["spec.type"]
               }
             }
           },
@@ -1301,10 +1208,7 @@
                       "$ref": "#/components/schemas/Location"
                     }
                   },
-                  "required": [
-                    "entities",
-                    "location"
-                  ]
+                  "required": ["entities", "location"]
                 }
               }
             }
@@ -1347,10 +1251,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "target",
-                  "type"
-                ]
+                "required": ["target", "type"]
               }
             }
           }
@@ -1373,9 +1274,7 @@
                         "$ref": "#/components/schemas/Location"
                       }
                     },
-                    "required": [
-                      "data"
-                    ]
+                    "required": ["data"]
                   }
                 }
               }
@@ -1563,9 +1462,7 @@
                     "$ref": "#/components/schemas/LocationInput"
                   }
                 },
-                "required": [
-                  "location"
-                ]
+                "required": ["location"]
               }
             }
           }
@@ -1599,17 +1496,12 @@
                             "type": "string"
                           }
                         },
-                        "required": [
-                          "name",
-                          "message"
-                        ],
+                        "required": ["name", "message"],
                         "additionalProperties": {}
                       }
                     }
                   },
-                  "required": [
-                    "errors"
-                  ]
+                  "required": ["errors"]
                 }
               }
             }
@@ -1637,10 +1529,7 @@
                     "additionalProperties": {}
                   }
                 },
-                "required": [
-                  "location",
-                  "entity"
-                ]
+                "required": ["location", "entity"]
               }
             }
           }

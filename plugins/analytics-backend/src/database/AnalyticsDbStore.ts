@@ -9,16 +9,13 @@ import {
 import { Knex } from 'knex';
 import { AnalyticsStore, DailyVisitor, TopFeature } from './types';
 
-
 const migrationsDir = resolvePackagePath(
   '@internal/plugin-analytics-backend', // Package name
   'migrations', // Migrations directory
 );
 
 export class AnalyticsDbStore implements AnalyticsStore {
-  private constructor(
-    private readonly db: Knex,
-  ) { }
+  private constructor(private readonly db: Knex) {}
 
   static async create({
     database,
@@ -29,11 +26,11 @@ export class AnalyticsDbStore implements AnalyticsStore {
     skipMigrations: boolean;
     logger: LoggerService;
   }): Promise<AnalyticsStore> {
-    logger.info("Init Analytics database");
+    logger.info('Init Analytics database');
     const client = await database.getClient();
 
     if (!database.migrations?.skip && !skipMigrations) {
-      logger.info("Migrate analytics database");
+      logger.info('Migrate analytics database');
       await client.migrate.latest({
         directory: migrationsDir,
       });
@@ -61,10 +58,18 @@ export class AnalyticsDbStore implements AnalyticsStore {
 
   async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {
     const query = this.db('analytics_events')
-      .select(this.db.raw('to_char(created_at, \'YYYY-MM-DD\') as date'))
-      .select(this.db.raw("count(DISTINCT CASE WHEN visitor_id NOT LIKE 'guest%' THEN visitor_id ELSE NULL END) as visitors"))
-      .select(this.db.raw("count(DISTINCT CASE WHEN visitor_id LIKE 'guest%' THEN visitor_id ELSE NULL END) as guests"))
-      .groupBy(this.db.raw('to_char(created_at, \'YYYY-MM-DD\')'))
+      .select(this.db.raw("to_char(created_at, 'YYYY-MM-DD') as date"))
+      .select(
+        this.db.raw(
+          "count(DISTINCT CASE WHEN visitor_id NOT LIKE 'guest%' THEN visitor_id ELSE NULL END) as visitors",
+        ),
+      )
+      .select(
+        this.db.raw(
+          "count(DISTINCT CASE WHEN visitor_id LIKE 'guest%' THEN visitor_id ELSE NULL END) as guests",
+        ),
+      )
+      .groupBy(this.db.raw("to_char(created_at, 'YYYY-MM-DD')"))
       .orderBy('date', 'asc');
 
     if (days === 0) {
@@ -88,7 +93,10 @@ export class AnalyticsDbStore implements AnalyticsStore {
     }));
   }
 
-  async getTopFeaturesByUniqueVisitors(count: number, days: number): Promise<TopFeature[]> {
+  async getTopFeaturesByUniqueVisitors(
+    count: number,
+    days: number,
+  ): Promise<TopFeature[]> {
     const query = this.db('analytics_events')
       .select('subject as page_path')
       .count('id as total_views')
@@ -112,7 +120,7 @@ export class AnalyticsDbStore implements AnalyticsStore {
     }
 
     const results = await query;
-    
+
     return results.map((row: any) => ({
       featureName: row.page_path,
       uniqueVisitors: Number(row.unique_visitors ?? 0),
@@ -128,7 +136,6 @@ export class AnalyticsDbStore implements AnalyticsStore {
       .where('created_at', '<', thresholdDate.toISOString())
       .del();
   }
-
 }
 
 /**

@@ -21,8 +21,5 @@ import { EntityApiDocsSpectralLinterCard } from './EntityApiDocsSpectralLinterCa
  * @public
  */
 export const EntityApiDocsSpectralLinterContent = () => {
-
-  return (
-    <EntityApiDocsSpectralLinterCard/>
-  );
+  return <EntityApiDocsSpectralLinterCard />;
 };

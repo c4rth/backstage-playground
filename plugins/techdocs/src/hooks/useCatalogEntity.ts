@@ -1,4 +1,3 @@
-
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
@@ -10,10 +9,7 @@ export function useCatalogEntity(entityRef: string | CompoundEntityRef) {
     value: entity,
     error,
     loading,
-  } = useAsync(
-    () => catalogApi.getEntityByRef(entityRef),
-    [catalogApi],
-  );
+  } = useAsync(() => catalogApi.getEntityByRef(entityRef), [catalogApi]);
 
   return { entity, error, loading };
 }

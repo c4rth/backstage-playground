@@ -11,7 +11,6 @@ import { apiPlatformCatalogCollatorEntityTransformer } from './collators/apiPlat
  * @public
  */
 export const searchModuleApiPlatformCollator = createBackendModule({
-
   pluginId: 'search',
   moduleId: 'api-platform-catalog-collator-extension',
   register(env) {
@@ -22,8 +21,10 @@ export const searchModuleApiPlatformCollator = createBackendModule({
       },
       async init({ logger, entityTransformer }) {
         logger.info('Initializing API Platform catalog search collator');
-        entityTransformer.setEntityTransformer(apiPlatformCatalogCollatorEntityTransformer);
-      }
+        entityTransformer.setEntityTransformer(
+          apiPlatformCatalogCollatorEntityTransformer,
+        );
+      },
     });
   },
 });

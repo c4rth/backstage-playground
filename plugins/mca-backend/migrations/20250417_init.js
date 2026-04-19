@@ -1,5 +1,4 @@
 exports.up = async function up(knex) {
-
   await knex.schema.createTable('mca_components', table => {
     table.string('component').notNullable();
     table.string('type').notNullable();
@@ -30,11 +29,9 @@ exports.up = async function up(knex) {
     table.index(['base_type'], 'mca_basetypes_index');
     table.unique(['base_type'], 'mca_basetypes_unique');
   });
-
 };
 
 exports.down = async function down(knex) {
-
   await knex.schema.alterTable('mca_components', table => {
     table.dropIndex(['component'], 'mca_component_index');
     table.dropUnique(['component'], 'mca_component_unique');
@@ -52,5 +49,4 @@ exports.down = async function down(knex) {
     table.dropUnique(['base_type'], 'mca_basetypes_unique');
   });
   await knex.schema.dropTable('mca_basetypes');
-
 };

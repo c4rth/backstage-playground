@@ -1,2 +1,2 @@
 export { TechDocsTable } from './TechDocsTable';
-export { BackstageIcon} from './BackstageIcon';
+export { BackstageIcon } from './BackstageIcon';

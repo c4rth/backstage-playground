@@ -1,11 +1,11 @@
 # TechDocs
 
-
 ## General remarks
 
 ### MkDocs
 
 Only techdocs-cli generation is supported by Backstage.
+
 - use mkdocs
 - generate metadata
 
@@ -26,7 +26,6 @@ To take care of stability, scalability and speed, it is recommended to externali
 
 ![Recommended](https://backstage.io/assets/images/architecture-recommended.drawio-b90a644e7ae6f63987a9e5c50efdcb40.svg)
 
-
 ### Remarks
 
 #### Storage access
@@ -37,9 +36,9 @@ How to give access to devops teams?
 
 ```yaml
 techdocs:
-  builder: "external"
+  builder: 'external'
   publisher:
-    type: "azureBlobStorage"
+    type: 'azureBlobStorage'
     azureBlobStorage:
       containerName: ${AZURE_STORAGE_CONTAINER_NAME}
       credentials:
@@ -53,13 +52,14 @@ techdocs:
 Create a specific container based on python:3.12-alpine
 
 Add:
+
 - gcc, musl-dev, openjdk17-jdk, curl, graphviz, ttf-dejavu, fontconfig
 - plantuml.jar
 - mkdocs-techdocs-core + plugins
 
 !! nodejs, techdocs-cli
 
-###  Pipeline
+### Pipeline
 
 - checkout doc repo
 - generate site

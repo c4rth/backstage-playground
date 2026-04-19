@@ -1,7 +1,10 @@
 import { Content, PageWithHeader } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ServiceTable } from '../ServiceTable';
-import { InformationPopup, InformationPopupContent } from '@internal/plugin-api-platform-react';
+import {
+  InformationPopup,
+  InformationPopupContent,
+} from '@internal/plugin-api-platform-react';
 import { getStringForKey } from '../common';
 
 const INFO_POPUP_CONTENT = (
@@ -13,7 +16,8 @@ const INFO_POPUP_CONTENT = (
 
 export const ServiceExplorerPage = () => {
   const configApi = useApi(configApiRef);
-  const orgName = configApi.getOptionalString('organization.name') ?? 'Backstage';
+  const orgName =
+    configApi.getOptionalString('organization.name') ?? 'Backstage';
 
   return (
     <PageWithHeader

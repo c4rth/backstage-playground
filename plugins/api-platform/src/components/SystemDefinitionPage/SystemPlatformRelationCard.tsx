@@ -1,6 +1,6 @@
-import { Link, Table, TableColumn } from "@backstage/core-components";
-import { Flex } from "@backstage/ui";
-import { ComponentDisplayName } from "../common";
+import { Link, Table, TableColumn } from '@backstage/core-components';
+import { Flex } from '@backstage/ui';
+import { ComponentDisplayName } from '../common';
 
 type TableRow = {
   id: number;
@@ -67,7 +67,11 @@ interface SystemPlatformRelationCardProps {
   data: string[];
 }
 
-export const SystemRelationCard = ({ system, dependency, data }: SystemPlatformRelationCardProps) => {
+export const SystemRelationCard = ({
+  system,
+  dependency,
+  data,
+}: SystemPlatformRelationCardProps) => {
   let columns: TableColumn<TableRow>[];
   let title: string;
 
@@ -97,7 +101,7 @@ export const SystemRelationCard = ({ system, dependency, data }: SystemPlatformR
         thirdSortClick: false,
       }}
       title={
-        <Flex align='center'>
+        <Flex align="center">
           {title} ({rows.length})
         </Flex>
       }

@@ -1,1 +1,4 @@
-export { McaComponentsBackendClient, mcaComponentsBackendApiRef } from './McaComponentsBackendApi';
+export {
+  McaComponentsBackendClient,
+  mcaComponentsBackendApiRef,
+} from './McaComponentsBackendApi';

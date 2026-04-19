@@ -1,2 +1,4 @@
-
-export { ApiPlatformBackendClient, apiPlatformBackendApiRef } from './ApiPlatformBackendApi';
+export {
+  ApiPlatformBackendClient,
+  apiPlatformBackendApiRef,
+} from './ApiPlatformBackendApi';

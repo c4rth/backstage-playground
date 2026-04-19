@@ -1,4 +1,10 @@
-import { AuthService, coreServices, createServiceFactory, createServiceRef, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  coreServices,
+  createServiceFactory,
+  createServiceRef,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import { ServiceService } from './types';
 import {
   ANNOTATION_IMAGE_VERSION,
@@ -24,7 +30,10 @@ import {
 import { EntityFilterQuery } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
 import { getUserGroups, isUserGuest } from '../common/utils';
-import { CatalogService, catalogServiceRef } from '@backstage/plugin-catalog-node';
+import {
+  CatalogService,
+  catalogServiceRef,
+} from '@backstage/plugin-catalog-node';
 
 function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
   const filter: EntityFilterQuery = {
@@ -40,7 +49,13 @@ function getFilter(serviceName?: string, system?: string): EntityFilterQuery {
   return filter;
 }
 
-function getSortOrder(order: ServiceDefinitionsOptions | undefined): { field1: "serviceName" | "system"; field2: "serviceName" | "system"; order: 'asc' | 'desc'; } | undefined {
+function getSortOrder(order: ServiceDefinitionsOptions | undefined):
+  | {
+      field1: 'serviceName' | 'system';
+      field2: 'serviceName' | 'system';
+      order: 'asc' | 'desc';
+    }
+  | undefined {
   if (!order) return undefined;
   return {
     field1: order.field === 'name' ? 'serviceName' : 'system',
@@ -54,7 +69,7 @@ async function innerGetServices(
   auth: AuthService,
   orderBy: ServiceDefinitionsOptions | undefined,
   serviceName?: string,
-  system?: string
+  system?: string,
 ): Promise<ServiceDefinition[]> {
   const entities = await catalog.getEntities(
     {
@@ -73,10 +88,11 @@ async function innerGetServices(
       ],
       order: {
         field: CATALOG_METADATA_NAME,
-        order: 'asc'
+        order: 'asc',
       },
     },
-    { credentials: await auth.getOwnServiceCredentials() });
+    { credentials: await auth.getOwnServiceCredentials() },
+  );
 
   return processServiceEntities(entities.items, orderBy);
 }
@@ -89,7 +105,6 @@ async function fetchServiceEntities(
   ownership: OwnershipType,
   userEntityRef: string | undefined,
 ): Promise<Entity[]> {
-
   if (ownership === 'owned' && isUserGuest(userEntityRef)) {
     // Guest users have no owned Services
     return [];
@@ -97,13 +112,15 @@ async function fetchServiceEntities(
 
   // Fetch user groups in parallel with entities if needed
   const [entities, userGroupRefs] = await Promise.all([
-    catalog.getEntities(
-      {
-        filter: getFilter(undefined),
-        fields,
-      },
-      { credentials: await auth.getOwnServiceCredentials() }
-    ).then(res => res.items),
+    catalog
+      .getEntities(
+        {
+          filter: getFilter(undefined),
+          fields,
+        },
+        { credentials: await auth.getOwnServiceCredentials() },
+      )
+      .then(res => res.items),
     ownership === 'owned' && userEntityRef
       ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
@@ -135,7 +152,7 @@ function processServiceEntities(
   entities: Entity[],
   orderBy: ServiceDefinitionsOptions | undefined,
   dependsOn?: string,
-  search?: string
+  search?: string,
 ): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
   const searchLower = search?.toLowerCase();
@@ -143,9 +160,11 @@ function processServiceEntities(
   for (const entity of entities) {
     if (!entity.metadata || !entity.spec) continue;
 
-    const name = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+    const name =
+      entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
     const system = entity.spec.system?.toString() || '-';
-    const version = entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString();
+    const version =
+      entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString();
     if (!name || !version) continue;
 
     // Apply search filter during iteration to avoid second pass
@@ -172,7 +191,7 @@ function processServiceEntities(
         serviceName: name,
         owner: entity.spec.owner?.toString() || '',
         system,
-        versions: []
+        versions: [],
       };
       mapServices.set(mapKey, def);
     }
@@ -182,26 +201,31 @@ function processServiceEntities(
     if (!defVersion) {
       defVersion = {
         version,
-        environments: {}
+        environments: {},
       };
       def.versions.push(defVersion);
     }
 
     // Add environment info
-    const platforms = entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM]?.toString() || 'cloud';
+    const platforms =
+      entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM]?.toString() ||
+      'cloud';
 
-    defVersion.environments[lifecycle as keyof typeof defVersion.environments] = {
-      imageVersion: entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString() || '?',
-      entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
-      platform: platforms,
-      dependencies: parseDependencies(entity.spec.dependsOn),
-    };
+    defVersion.environments[lifecycle as keyof typeof defVersion.environments] =
+      {
+        imageVersion:
+          entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString() ||
+          '?',
+        entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
+        platform: platforms,
+        dependencies: parseDependencies(entity.spec.dependsOn),
+      };
   }
 
   // Sort versions once per service
   for (const def of mapServices.values()) {
     def.versions.sort((a, b) =>
-      a.version.localeCompare(b.version, undefined, { numeric: true })
+      a.version.localeCompare(b.version, undefined, { numeric: true }),
     );
   }
 
@@ -232,7 +256,6 @@ export interface ServiceServiceOptions {
 }
 
 export class ServiceServiceImpl implements ServiceService {
-
   private readonly catalog: CatalogService;
   private readonly auth: AuthService;
 
@@ -243,7 +266,10 @@ export class ServiceServiceImpl implements ServiceService {
     options.logger.info('Initializing ServiceService');
   }
 
-  async getServicesCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
+  async getServicesCount(
+    ownership: OwnershipType,
+    userEntityRef: string | undefined,
+  ): Promise<number> {
     const entities = await fetchServiceEntities(
       this.catalog,
       this.auth,
@@ -254,7 +280,8 @@ export class ServiceServiceImpl implements ServiceService {
     // Inline counting to avoid function call overhead
     const uniqueNames = new Set<string>();
     for (const entity of entities) {
-      const serviceName = entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+      const serviceName =
+        entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
       if (serviceName) {
         const system = entity.spec?.system?.toString() ?? '';
         uniqueNames.add(`${system}-${serviceName}`);
@@ -263,7 +290,9 @@ export class ServiceServiceImpl implements ServiceService {
     return uniqueNames.size;
   }
 
-  async listServices(request: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
+  async listServices(
+    request: ServiceDefinitionsListRequest,
+  ): Promise<ServiceDefinitionListResult> {
     const entities = await fetchServiceEntities(
       this.catalog,
       this.auth,
@@ -277,43 +306,58 @@ export class ServiceServiceImpl implements ServiceService {
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_SPEC_OWNER,
-        CATALOG_SPEC_DEPENDS_ON
+        CATALOG_SPEC_DEPENDS_ON,
       ],
       request.ownership ?? 'all',
       request.userEntityRef,
     );
 
     // Combine filtering and grouping in single pass
-    const services = processServiceEntities(entities, request.orderBy, request.dependsOn, request.search);
+    const services = processServiceEntities(
+      entities,
+      request.orderBy,
+      request.dependsOn,
+      request.search,
+    );
 
     const offset = request.offset ?? 0;
     const totalCount = services.length;
     const limit = request.limit ?? totalCount - offset;
 
     // Only slice if needed - avoid creating new array when returning all
-    const items = (offset === 0 && limit >= totalCount)
-      ? services
-      : services.slice(offset, offset + limit);
+    const items =
+      offset === 0 && limit >= totalCount
+        ? services
+        : services.slice(offset, offset + limit);
 
     return { items, offset, limit, totalCount };
   }
 
-  async getServiceVersions(request: { system: string, serviceName: string }): Promise<ServiceDefinition> {
+  async getServiceVersions(request: {
+    system: string;
+    serviceName: string;
+  }): Promise<ServiceDefinition> {
     const { system, serviceName } = request;
     // Filter by both serviceName and system at catalog level to minimize data fetched
-    const services = await innerGetServices(this.catalog, this.auth, undefined, serviceName, system);
-    // Return first match or empty definition
-    return services[0] ?? {
-      name: `${system}-${serviceName}`,
+    const services = await innerGetServices(
+      this.catalog,
+      this.auth,
+      undefined,
       serviceName,
-      owner: '',
       system,
-      versions: [],
-    };
+    );
+    // Return first match or empty definition
+    return (
+      services[0] ?? {
+        name: `${system}-${serviceName}`,
+        serviceName,
+        owner: '',
+        system,
+        versions: [],
+      }
+    );
   }
-
-};
-
+}
 
 export const serviceServiceRef = createServiceRef<ServiceService>({
   id: 'api-platform.service.service',
@@ -323,7 +367,7 @@ export const serviceServiceRef = createServiceRef<ServiceService>({
       deps: {
         logger: coreServices.logger,
         auth: coreServices.auth,
-        catalog: catalogServiceRef
+        catalog: catalogServiceRef,
       },
       async factory({ logger, catalog, auth }) {
         const systemService = new ServiceServiceImpl({

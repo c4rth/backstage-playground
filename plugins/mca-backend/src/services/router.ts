@@ -1,11 +1,15 @@
 import express from 'express';
 import Router from 'express-promise-router';
-import { MCABASETYPE_FIELDS, MCACOMPONENT_FIELDS, McaComponentType } from '@internal/plugin-mca-common';
+import {
+  MCABASETYPE_FIELDS,
+  MCACOMPONENT_FIELDS,
+  McaComponentType,
+} from '@internal/plugin-mca-common';
 import { parseOrderByParam, parseSearchParam } from './utils';
 import { McaService } from './types';
 
 export interface RouterOptions {
-  mcaService: McaService
+  mcaService: McaService;
 }
 
 export async function createRouter(
@@ -23,12 +27,20 @@ export async function createRouter(
     const orderBy = parseOrderByParam(req.query.orderBy, MCACOMPONENT_FIELDS);
     const search = parseSearchParam(req.query.search);
     const type = (req.query.type || 'all') as McaComponentType;
-    const result = await mcaService.listMcaComponents({ limit, offset, type, orderBy, search });
+    const result = await mcaService.listMcaComponents({
+      limit,
+      offset,
+      type,
+      orderBy,
+      search,
+    });
     res.json(result);
   });
 
   router.get('/mca/components/:component', async (req, res) => {
-    const result = await mcaService.getMcaComponent({ component: req.params.component });
+    const result = await mcaService.getMcaComponent({
+      component: req.params.component,
+    });
     if (!result) {
       res.status(404).json({ message: 'Component not found' });
       return;
@@ -57,12 +69,19 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, MCABASETYPE_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const result = await mcaService.listMcaBaseTypes({ limit, offset, orderBy, search });
+    const result = await mcaService.listMcaBaseTypes({
+      limit,
+      offset,
+      orderBy,
+      search,
+    });
     res.json(result);
   });
 
   router.get('/basetypes/components/:baseType', async (req, res) => {
-    const result = await mcaService.getMcaBaseType({ baseType: req.params.baseType });
+    const result = await mcaService.getMcaBaseType({
+      baseType: req.params.baseType,
+    });
     if (!result) {
       res.status(404).json({ message: 'Base type not found' });
       return;

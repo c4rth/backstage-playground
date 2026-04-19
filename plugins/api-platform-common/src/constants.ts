@@ -1,17 +1,17 @@
-export const ANNOTATION_API_NAME = "api.depo.be/name";
-export const ANNOTATION_API_PROJECT = "api.depo.be/project";
-export const ANNOTATION_API_VERSION = "api.depo.be/version";
-export const ANNOTATION_API_TYPE = "api.depo.be/type";
+export const ANNOTATION_API_NAME = 'api.depo.be/name';
+export const ANNOTATION_API_PROJECT = 'api.depo.be/project';
+export const ANNOTATION_API_VERSION = 'api.depo.be/version';
+export const ANNOTATION_API_TYPE = 'api.depo.be/type';
 
-export const ANNOTATION_IMAGE_VERSION = "service.depo.be/image";
-export const ANNOTATION_SERVICE_NAME = "service.depo.be/name";
-export const ANNOTATION_SERVICE_VERSION = "service.depo.be/version";
-export const ANNOTATION_SERVICE_PLATFORM = "service.depo.be/platform";
+export const ANNOTATION_IMAGE_VERSION = 'service.depo.be/image';
+export const ANNOTATION_SERVICE_NAME = 'service.depo.be/name';
+export const ANNOTATION_SERVICE_VERSION = 'service.depo.be/version';
+export const ANNOTATION_SERVICE_PLATFORM = 'service.depo.be/platform';
 
-export const ANNOTATION_LIBRARY_NAME = "library.depo.be/name";
-export const ANNOTATION_LIBRARY_VERSION = "library.depo.be/version";
+export const ANNOTATION_LIBRARY_NAME = 'library.depo.be/name';
+export const ANNOTATION_LIBRARY_VERSION = 'library.depo.be/version';
 
-export const CATALOG_METADATA = "metadata";
+export const CATALOG_METADATA = 'metadata';
 export const CATALOG_METADATA_NAME = `${CATALOG_METADATA}.name`;
 export const CATALOG_METADATA_NAMESPACE = `${CATALOG_METADATA}.namespace`;
 export const CATALOG_METADATA_DESCRIPTION = `${CATALOG_METADATA}.description`;
@@ -28,13 +28,12 @@ export const CATALOG_METADATA_SERVICE_PLATFORM = `${CATALOG_METADATA_ANNOTATIONS
 export const CATALOG_METADATA_LIBRARY_NAME = `${CATALOG_METADATA_ANNOTATIONS}.${ANNOTATION_LIBRARY_NAME}`;
 export const CATALOG_METADATA_LIBRARY_VERSION = `${CATALOG_METADATA_ANNOTATIONS}.${ANNOTATION_LIBRARY_VERSION}`;
 
-export const CATALOG_SPEC_LIFECYCLE = "spec.lifecycle";
-export const CATALOG_SPEC_OWNER = "spec.owner";
-export const CATALOG_SPEC_SYSTEM = "spec.system";
-export const CATALOG_SPEC_TYPE = "spec.type";
-export const CATALOG_SPEC_DEPENDS_ON = "spec.dependsOn";
-export const CATALOG_RELATIONS = "relations";
-export const CATALOG_KIND = "kind";
+export const CATALOG_SPEC_LIFECYCLE = 'spec.lifecycle';
+export const CATALOG_SPEC_OWNER = 'spec.owner';
+export const CATALOG_SPEC_SYSTEM = 'spec.system';
+export const CATALOG_SPEC_TYPE = 'spec.type';
+export const CATALOG_SPEC_DEPENDS_ON = 'spec.dependsOn';
+export const CATALOG_RELATIONS = 'relations';
+export const CATALOG_KIND = 'kind';
 
-export const API_NO_SYSTEM = "NOSYSTEM";
-
+export const API_NO_SYSTEM = 'NOSYSTEM';

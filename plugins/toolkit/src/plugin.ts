@@ -28,10 +28,9 @@ export const ToolkitCard = toolkitPlugin.provide(
 //-------------------------------------------------------------------------------------------------
 
 export const ToolsPage = toolkitPlugin.provide(
- createRoutableExtension({
+  createRoutableExtension({
     name: 'ToolsPage',
-    component: () =>
-      import('./components/ToolsPage').then(m => m.ToolsPage),
+    component: () => import('./components/ToolsPage').then(m => m.ToolsPage),
     mountPoint: rootRouteRef,
   }),
 );

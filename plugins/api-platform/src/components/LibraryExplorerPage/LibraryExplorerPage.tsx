@@ -4,7 +4,8 @@ import { LibraryTable } from '../LibraryTable';
 
 export const LibraryExplorerPage = () => {
   const configApi = useApi(configApiRef);
-  const orgName = configApi.getOptionalString('organization.name') ?? 'Backstage';
+  const orgName =
+    configApi.getOptionalString('organization.name') ?? 'Backstage';
 
   return (
     <PageWithHeader

@@ -1,18 +1,18 @@
+import { InfoCard, TabbedLayout, Link } from '@backstage/core-components';
 import {
-  InfoCard,
-  TabbedLayout,
-  Link,
-} from '@backstage/core-components';
-import { ComponentEntity, getCompoundEntityRef } from "@backstage/catalog-model";
+  ComponentEntity,
+  getCompoundEntityRef,
+} from '@backstage/catalog-model';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import {
-  AboutField,
-} from '@backstage/plugin-catalog';
+import { AboutField } from '@backstage/plugin-catalog';
 import {
   Direction,
   EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
-import { ANNOTATION_IMAGE_VERSION, ANNOTATION_SERVICE_PLATFORM } from '@internal/plugin-api-platform-common';
+import {
+  ANNOTATION_IMAGE_VERSION,
+  ANNOTATION_SERVICE_PLATFORM,
+} from '@internal/plugin-api-platform-common';
 // SonarQube
 import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
@@ -24,28 +24,50 @@ import { ComponentDisplayName } from '../common';
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 // Azure DevOps
-import { AzureDevOpsPipelinePage, AzureDevOpsGitTagsPage, AzureReadmeCard } from '@internal/plugin-azure-devops';
+import {
+  AzureDevOpsPipelinePage,
+  AzureDevOpsGitTagsPage,
+  AzureReadmeCard,
+} from '@internal/plugin-azure-devops';
 //
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
-import { configApiRef, featureFlagsApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  featureFlagsApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import styles from './ServiceDefinitionCard.module.css';
-import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '@internal/plugin-azure-devops';
+import {
+  isAzureDevOpsAvailable,
+  isAzurePipelinesAvailable,
+} from '@internal/plugin-azure-devops';
 
-export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) => {
+export const ServiceDefinitionCard = ({
+  entity,
+}: {
+  entity: ComponentEntity;
+}) => {
   const configApi = useApi(configApiRef);
   const featureFlagsApi = useApi(featureFlagsApiRef);
 
   const sonarQube = isSonarQubeAvailable(entity);
   const azureDevOps = isAzureDevOpsAvailable(entity);
   const azurePipelines = isAzurePipelinesAvailable(entity);
-  const showLibraries = featureFlagsApi.isActive('enable-api-platform-libraries');
+  const showLibraries = featureFlagsApi.isActive(
+    'enable-api-platform-libraries',
+  );
 
-  const platform = (entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] || 'cloud').toString();
-  const imageVersion = entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString();
+  const platform = (
+    entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] || 'cloud'
+  ).toString();
+  const imageVersion =
+    entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString();
   const entityRef = getCompoundEntityRef(entity);
-  const hasDocs = Boolean(entity.metadata.annotations?.['backstage.io/techdocs-ref']);
+  const hasDocs = Boolean(
+    entity.metadata.annotations?.['backstage.io/techdocs-ref'],
+  );
 
   let repositoryUrl: string | undefined;
   let repository: string | undefined;
@@ -60,66 +82,64 @@ export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) =
   return (
     <TabbedLayout>
       <TabbedLayout.Route path="/" title="Overview">
-        <Grid.Root columns='12'>
-          <Grid.Item colSpan='6'>
+        <Grid.Root columns="12">
+          <Grid.Item colSpan="6">
             <InfoCard
               title="About"
               divider
               className={styles.gridItemCard}
               action={
-                <Link to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}>
+                <Link
+                  to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+                >
                   <ButtonIcon
                     icon={<RiFileFill />}
                     isDisabled={!hasDocs}
-                    size='medium'
-                    variant='tertiary'
+                    size="medium"
+                    variant="tertiary"
                   />
                 </Link>
               }
             >
               <Box>
-                <Grid.Root columns='12'>
-                  <Grid.Item colSpan='4'>
+                <Grid.Root columns="12">
+                  <Grid.Item colSpan="4">
                     <AboutField label="Service reference">
                       <EntityRefLink entityRef={entity} />
                     </AboutField>
                   </Grid.Item>
 
-                  <Grid.Item colSpan='4'>
+                  <Grid.Item colSpan="4">
                     <AboutField label="Platform">
-                      <Text variant='body-medium'>
-                        {platform}
-                      </Text>
+                      <Text variant="body-medium">{platform}</Text>
                     </AboutField>
                   </Grid.Item>
 
-                  <Grid.Item colSpan='4'>
+                  <Grid.Item colSpan="4">
                     <AboutField label="Image version">
-                      <Text variant='body-medium'>
-                        {imageVersion || 'N/A'}
-                      </Text>
+                      <Text variant="body-medium">{imageVersion || 'N/A'}</Text>
                     </AboutField>
                   </Grid.Item>
 
-                  <Grid.Item colSpan='12'>
+                  <Grid.Item colSpan="12">
                     <AboutField label="Repository">
                       {repository && repositoryUrl ? (
                         <Link to={repositoryUrl}>
-                          <ComponentDisplayName text={repository} type='azdo' />
+                          <ComponentDisplayName text={repository} type="azdo" />
                         </Link>
                       ) : (
-                        <Text variant='body-medium'>
-                          -
-                        </Text>
+                        <Text variant="body-medium">-</Text>
                       )}
                     </AboutField>
                   </Grid.Item>
                 </Grid.Root>
               </Box>
-              <Box mt='6'><ComponentAboutContent entity={entity} /></Box>
+              <Box mt="6">
+                <ComponentAboutContent entity={entity} />
+              </Box>
             </InfoCard>
           </Grid.Item>
-          <Grid.Item colSpan='6'>
+          <Grid.Item colSpan="6">
             <EntityCatalogGraphCard
               height={400}
               kinds={['API', 'Component']}
@@ -133,11 +153,11 @@ export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) =
       <TabbedLayout.Route path="/dependencies" title="Dependencies">
         <TabbedLayout>
           <TabbedLayout.Route path="/apis" title="APIs">
-            <Grid.Root columns='12'>
-              <Grid.Item colSpan='6'>
+            <Grid.Root columns="12">
+              <Grid.Item colSpan="6">
                 <ServiceApiRelationCard dependency="provided" />
               </Grid.Item>
-              <Grid.Item colSpan='6'>
+              <Grid.Item colSpan="6">
                 <ServiceApiRelationCard dependency="consumed" />
               </Grid.Item>
             </Grid.Root>
@@ -177,7 +197,6 @@ export const ServiceDefinitionCard = ({ entity }: { entity: ComponentEntity }) =
           <EntitySonarQubeContentPage />
         </TabbedLayout.Route>
       )}
-
     </TabbedLayout>
   );
-}
+};

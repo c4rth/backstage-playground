@@ -2,9 +2,8 @@
 
 ## APIS
 
-
 | endpoint                                                 | method | type    | description                                            |
-|----------------------------------------------------------|--------|---------|--------------------------------------------------------|
+| -------------------------------------------------------- | ------ | ------- | ------------------------------------------------------ |
 | /apis/count                                              | GET    | inner   | used by api-platform front                             |
 | /apis/definitions                                        | GET    | inner   | used by api-platform front                             |
 | /apis/definitions/:apiName                               | GET    | inner   | used by api-platform front                             |
@@ -23,6 +22,7 @@ curl -H "Authorization: Bearer {token}" http://localhost:7007/api/api-platform/{
 ```
 
 ## Inner APIs
+
 ```
 curl -H "Authorization: Bearer my-access-token" http://localhost:7007/api/api-platform/apis
 ```

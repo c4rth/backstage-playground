@@ -1,20 +1,27 @@
 import { useCallback, useMemo } from 'react';
-import { Table, Cell, Card, CardHeader, CardBody, Text, Flex, CellText, useTable, ColumnConfig } from '@backstage/ui';
+import {
+  Table,
+  Cell,
+  Card,
+  CardHeader,
+  CardBody,
+  Text,
+  Flex,
+  CellText,
+  useTable,
+  ColumnConfig,
+} from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useAsyncGitTags } from '../../hooks';
-import {
-  Link,
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 import { Entity } from '@backstage/catalog-model';
 import styles from './AzureDevOpsGitTagsPage.module.css';
 
 type TableRow = {
-  id: number,
-  gitTag: GitTag,
-}
+  id: number;
+  gitTag: GitTag;
+};
 
 const emptyState = () => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
@@ -24,7 +31,9 @@ const emptyState = () => (
 
 const cardTitle = (
   <Flex style={{ paddingTop: '12px', paddingLeft: '4px' }}>
-    <Text variant='title-small' weight='bold'>Azure Repos - Git Tags</Text>
+    <Text variant="title-small" weight="bold">
+      Azure Repos - Git Tags
+    </Text>
   </Flex>
 );
 
@@ -46,53 +55,69 @@ export const AzureDevOpsGitTagsPage = () => {
 
   const getGitTags = useAsyncGitTags();
 
-  const columns: ColumnConfig<TableRow>[] = useMemo(() => [
-    {
-      id: 'tag',
-      label: 'Tag',
-      isRowHeader: true,
-      cell: item =>
-      (<Cell>
-        <Link to={item.gitTag.link ?? ''}>{item.gitTag.name}</Link>
-      </Cell>),
-      isSortable: true,
-    }, {
-      id: 'commit',
-      label: 'Commit',
-      cell: item =>
-      (<Cell>
-        <Link to={item.gitTag.commitLink ?? ''}>{item.gitTag.peeledObjectId ?? item.gitTag.objectId}</Link>
-      </Cell>),
-    }, {
-      id: 'createdBy',
-      label: 'Created By',
-      cell: item => <CellText title={item.gitTag.createdBy ?? '-'} />,
-    },
-  ], []);
+  const columns: ColumnConfig<TableRow>[] = useMemo(
+    () => [
+      {
+        id: 'tag',
+        label: 'Tag',
+        isRowHeader: true,
+        cell: item => (
+          <Cell>
+            <Link to={item.gitTag.link ?? ''}>{item.gitTag.name}</Link>
+          </Cell>
+        ),
+        isSortable: true,
+      },
+      {
+        id: 'commit',
+        label: 'Commit',
+        cell: item => (
+          <Cell>
+            <Link to={item.gitTag.commitLink ?? ''}>
+              {item.gitTag.peeledObjectId ?? item.gitTag.objectId}
+            </Link>
+          </Cell>
+        ),
+      },
+      {
+        id: 'createdBy',
+        label: 'Created By',
+        cell: item => <CellText title={item.gitTag.createdBy ?? '-'} />,
+      },
+    ],
+    [],
+  );
 
-  const getData = useCallback(() => fetchData(getGitTags, entity), [getGitTags, entity]);
+  const getData = useCallback(
+    () => fetchData(getGitTags, entity),
+    [getGitTags, entity],
+  );
 
   const { tableProps } = useTable({
     mode: 'complete',
     getData,
-    sortFn: (items, {
-      column,
-      direction
-    }) => {
+    sortFn: (items, { column, direction }) => {
       return [...items].sort((a, b) => {
         const desc = direction === 'descending' ? -1 : 1;
         switch (column) {
           case 'tag':
-            return desc * (a.gitTag.name?.localeCompare(b.gitTag.name ?? '') ?? 0);
+            return (
+              desc * (a.gitTag.name?.localeCompare(b.gitTag.name ?? '') ?? 0)
+            );
           default:
             return 0;
         }
       });
-    }
+    },
   });
 
   if (tableProps.error) {
-    return <ResponseErrorPanel title="Failed to call AzureDevOps" error={tableProps.error} />;
+    return (
+      <ResponseErrorPanel
+        title="Failed to call AzureDevOps"
+        error={tableProps.error}
+      />
+    );
   }
 
   if (tableProps.loading) {

@@ -72,9 +72,7 @@ export class LinterClient implements LinterApi {
 
     const fs = {
       promises: {
-        async readFile(
-          path: PathLike | FileHandle,
-        ): Promise<string> {
+        async readFile(path: PathLike | FileHandle): Promise<string> {
           if (path === '/.spectral.yaml') {
             return `
             extends:
@@ -93,7 +91,8 @@ export class LinterClient implements LinterApi {
     });
     spectral.setRuleset(ruleSet as Ruleset);
 
-    const formattedContent = countLines(content) === 1 ? prettyPrint(content) : content;
+    const formattedContent =
+      countLines(content) === 1 ? prettyPrint(content) : content;
 
     const spectralResult = await spectral.run(formattedContent);
 
@@ -110,9 +109,12 @@ export class LinterClient implements LinterApi {
           severity: diagnosticItem.severity,
           path: diagnosticItem.path.map(item => item.toString()),
           code: diagnosticItem.code,
-          ruleDocumentationUrl: ruleDocumentationUrl(spectral, diagnosticItem.code),
+          ruleDocumentationUrl: ruleDocumentationUrl(
+            spectral,
+            diagnosticItem.code,
+          ),
           ruleDescription: ruleDescription(spectral, diagnosticItem.code),
-          definition: formattedContent
+          definition: formattedContent,
         })),
     };
   }
@@ -135,12 +137,18 @@ export class LinterClient implements LinterApi {
   }
 }
 
-function ruleDocumentationUrl(spectral: Spectral, code: string | number): string | undefined {
-  return spectral.ruleset?.rules[code].documentationUrl || undefined
+function ruleDocumentationUrl(
+  spectral: Spectral,
+  code: string | number,
+): string | undefined {
+  return spectral.ruleset?.rules[code].documentationUrl || undefined;
 }
 
-function ruleDescription(spectral: Spectral, code: string | number): string | undefined {
-  return spectral.ruleset?.rules[code].description || undefined
+function ruleDescription(
+  spectral: Spectral,
+  code: string | number,
+): string | undefined {
+  return spectral.ruleset?.rules[code].description || undefined;
 }
 
 function countLines(str: string): number {

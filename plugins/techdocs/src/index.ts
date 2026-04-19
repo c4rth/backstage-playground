@@ -1,5 +1,1 @@
-export { 
-    TechDocsHome,
-    CustomDocsReaderPage,
-   } from './plugin';
-  
+export { TechDocsHome, CustomDocsReaderPage } from './plugin';

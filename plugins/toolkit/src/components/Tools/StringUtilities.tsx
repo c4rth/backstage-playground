@@ -28,10 +28,7 @@ export const StringUtilities = () => {
   };
 
   const transformString = useCallback(
-    (
-      inputString: string,
-      transformMode: string,
-    ) => {
+    (inputString: string, transformMode: string) => {
       switch (transformMode) {
         case 'Camel':
           return mapLinesAndJoin(inputString, camelCase);
@@ -54,20 +51,11 @@ export const StringUtilities = () => {
 
   useEffect(() => {
     try {
-      setOutput(
-        transformString(
-          input,
-          mode
-        ),
-      );
+      setOutput(transformString(input, mode));
     } catch (e) {
       setOutput((e as Error).message);
     }
-  }, [
-    input,
-    mode,
-    transformString,
-  ]);
+  }, [input, mode, transformString]);
 
   return (
     <DefaultEditor
@@ -76,14 +64,7 @@ export const StringUtilities = () => {
       setInput={setInput}
       setMode={setMode}
       output={output}
-      modes={[
-        'Camel',
-        'Snake',
-        'Kebab',
-        'Upper',
-        'Lower',
-        'Capitalize',
-      ]}
+      modes={['Camel', 'Snake', 'Kebab', 'Upper', 'Lower', 'Capitalize']}
       sample={sample}
     />
   );

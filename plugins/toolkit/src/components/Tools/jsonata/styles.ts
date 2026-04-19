@@ -10,7 +10,12 @@ export const dividerBaseStyle: React.CSSProperties = {
 };
 
 export const styles = {
-  container: { height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' as const },
+  container: {
+    height: '100%',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column' as const,
+  },
 
   // Main Grid Layout for Left/Right split
   mainGrid: (percentage: number) => ({
@@ -43,7 +48,10 @@ export const styles = {
 
   panelContent: {
     position: 'absolute' as const,
-    top: 0, left: 0, right: 0, bottom: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     overflow: 'hidden',
     border: '1px solid var(--bui-border-1)',
   },
@@ -63,5 +71,5 @@ export const styles = {
     backgroundColor: 'var(--bui-bg-neutral-1)',
     color: 'var(--bui-fg-primary)',
     boxSizing: 'border-box' as const,
-  }
+  },
 };

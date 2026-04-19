@@ -8,14 +8,11 @@ export const LibraryDefinitionPage = () => {
 
   return (
     <>
-      {queryVersion ?
-        (
-          <LibraryVersionDefinitionPage />
-        ) :
-        (
-          <LibraryOverviewDefinitionPage />
-        )
-      }
+      {queryVersion ? (
+        <LibraryVersionDefinitionPage />
+      ) : (
+        <LibraryOverviewDefinitionPage />
+      )}
     </>
   );
 };

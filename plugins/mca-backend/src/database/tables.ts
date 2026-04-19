@@ -1,4 +1,3 @@
-
 export type DbMcaRow = {
   component: string;
   type: string;

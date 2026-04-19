@@ -21,7 +21,7 @@ export const Base64Encode = () => {
       setInput={setInput}
       setMode={setMode}
       output={output}
-      modes={['Decode','Encode']}
+      modes={['Decode', 'Encode']}
       sample={mode === 'Encode' ? 'Hello world!' : 'SGVsbG8gd29ybGQh'}
     />
   );

@@ -1,15 +1,13 @@
-import {
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { McaComponent } from '@internal/plugin-mca-common';
 import { useGetMcaComponentDefinition } from '../../hooks';
 import { McaOperationDefinitionPage } from './McaOperationDefinitionPage';
 import { McaElementDefinitionPage } from './McaElementDefinitionPage';
 import { memo } from 'react';
 
-
-function getComponentType(componentName: string): 'operation' | 'element' | 'unknown' {
+function getComponentType(
+  componentName: string,
+): 'operation' | 'element' | 'unknown' {
   if (componentName?.startsWith('Operation')) return 'operation';
   if (componentName?.startsWith('Element')) return 'element';
   return 'unknown';
@@ -19,20 +17,29 @@ export interface McaComponentDefinitionCardProps {
   version: string;
 }
 
-export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(({ mca, version }) => {
-  const { data, loading, error } = useGetMcaComponentDefinition(mca.component, version);
-  
-  const componentType = getComponentType(mca.component);
+export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(
+  ({ mca, version }) => {
+    const { data, loading, error } = useGetMcaComponentDefinition(
+      mca.component,
+      version,
+    );
 
-  if (error) return <ResponseErrorPanel error={error} />;
-  if (loading || !data) return <Progress />;
+    const componentType = getComponentType(mca.component);
 
-  switch (componentType) {
-    case 'operation':
-      return <McaOperationDefinitionPage mcaComponent={data} />;
-    case 'element':
-      return <McaElementDefinitionPage mcaComponent={data} />;
-    default:
-      return <ResponseErrorPanel error={new Error(`Unknown MCA component type: ${mca.component}`)} />;
-  }
-});
+    if (error) return <ResponseErrorPanel error={error} />;
+    if (loading || !data) return <Progress />;
+
+    switch (componentType) {
+      case 'operation':
+        return <McaOperationDefinitionPage mcaComponent={data} />;
+      case 'element':
+        return <McaElementDefinitionPage mcaComponent={data} />;
+      default:
+        return (
+          <ResponseErrorPanel
+            error={new Error(`Unknown MCA component type: ${mca.component}`)}
+          />
+        );
+    }
+  },
+);

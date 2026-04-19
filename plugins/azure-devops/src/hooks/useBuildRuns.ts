@@ -25,15 +25,11 @@ import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useCallback } from 'react';
 
-
 export function useBuildRuns() {
   const api = useApi(azureDevOpsApiRef);
 
   return useCallback(
-    async function getBuildRuns(
-      entity: Entity,
-      defaultLimit?: number,
-    ) {
+    async function getBuildRuns(entity: Entity, defaultLimit?: number) {
       const top = defaultLimit ?? AZURE_DEVOPS_DEFAULT_TOP;
       const options: BuildRunOptions = {
         top: top,
@@ -49,5 +45,7 @@ export function useBuildRuns() {
         org,
         options,
       );
-    }, [api]);
+    },
+    [api],
+  );
 }

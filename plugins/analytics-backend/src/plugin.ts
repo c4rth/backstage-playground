@@ -16,10 +16,9 @@ export const analyticsPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
-        analyticsService: analyticsServiceRef
+        analyticsService: analyticsServiceRef,
       },
       async init({ httpRouter, analyticsService }) {
-
         httpRouter.use(
           await createRouter({
             analyticsService,

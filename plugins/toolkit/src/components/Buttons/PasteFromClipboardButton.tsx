@@ -1,5 +1,5 @@
 import { RiClipboardFill } from '@remixicon/react';
-import { Button, TooltipTrigger, Tooltip} from '@backstage/ui';
+import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
 
 type Props = {
   setInput: (input: string) => void;
@@ -17,14 +17,16 @@ export const PasteFromClipboardButton = (props: Props) => {
   return (
     <TooltipTrigger>
       <Button
-        size='medium'
+        size="medium"
         iconStart={<RiClipboardFill />}
         onClick={pasteFromClipboard}
-        variant='tertiary'
+        variant="tertiary"
       >
         Clipboard
       </Button>
-      <Tooltip placement='bottom'>{props.title ?? 'Paste input from clipboard'}</Tooltip>
+      <Tooltip placement="bottom">
+        {props.title ?? 'Paste input from clipboard'}
+      </Tooltip>
     </TooltipTrigger>
   );
 };

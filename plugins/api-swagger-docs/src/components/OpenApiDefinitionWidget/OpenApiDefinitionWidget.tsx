@@ -36,9 +36,12 @@ export type OpenApiDefinitionWidgetProps = {
 export const OpenApiDefinitionWidget = (
   props: OpenApiDefinitionWidgetProps,
 ) => {
-  const validSubmitMethods = props.supportedSubmitMethods?.map(method =>
-    method.toLocaleLowerCase(),
-  ) as Array<"head" | "delete" | "options" | "get" | "put" | "post" | "patch" | "trace"> || undefined;
+  const validSubmitMethods =
+    (props.supportedSubmitMethods?.map(method =>
+      method.toLocaleLowerCase(),
+    ) as Array<
+      'head' | 'delete' | 'options' | 'get' | 'put' | 'post' | 'patch' | 'trace'
+    >) || undefined;
   return (
     <Suspense fallback={<Progress />}>
       <LazyOpenApiDefinition

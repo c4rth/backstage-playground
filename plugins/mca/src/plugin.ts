@@ -8,8 +8,14 @@ import {
   fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';
-import { mcaComponentsBackendApiRef, McaComponentsBackendClient } from './api/McaComponentsBackendApi';
-import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import {
+  mcaComponentsBackendApiRef,
+  McaComponentsBackendClient,
+} from './api/McaComponentsBackendApi';
+import {
+  createSearchResultListItemExtension,
+  SearchResultListItemExtensionProps,
+} from '@backstage/plugin-search-react';
 import { McaComponentSearchResultListItemProps } from './components/McaComponentSearchResultListItem/McaComponentSearchResultListItem';
 
 export const mcaComponentPlugin = createPlugin({
@@ -17,7 +23,11 @@ export const mcaComponentPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: mcaComponentsBackendApiRef,
-      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef, configApi: configApiRef, },
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+        configApi: configApiRef,
+      },
       factory: ({ discoveryApi, fetchApi, configApi }) =>
         new McaComponentsBackendClient({ discoveryApi, fetchApi, configApi }),
     }),
@@ -28,7 +38,9 @@ export const McaComponentExplorerPage = mcaComponentPlugin.provide(
   createRoutableExtension({
     name: 'McaComponentExplorerPage',
     component: () =>
-      import('./components/McaComponentExplorerPage').then(m => m.McaComponentExplorerPage),
+      import('./components/McaComponentExplorerPage').then(
+        m => m.McaComponentExplorerPage,
+      ),
     mountPoint: rootRouteRef,
   }),
 );
@@ -38,8 +50,10 @@ export const McaComponentDefinitionPage = mcaComponentPlugin.provide(
     name: 'McaComponentDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/McaComponentDefinitionPage').then(m => m.McaComponentDefinitionPage),
-    }
+        import('./components/McaComponentDefinitionPage').then(
+          m => m.McaComponentDefinitionPage,
+        ),
+    },
   }),
 );
 
@@ -52,7 +66,8 @@ export const McaComponentSearchResultListItem: (
       import('./components/McaComponentSearchResultListItem').then(
         m => m.McaComponentSearchResultListItem,
       ),
-    predicate: result => result.type === 'mca-components' || result.type === 'mca-basetypes',
+    predicate: result =>
+      result.type === 'mca-components' || result.type === 'mca-basetypes',
   }),
 );
 
@@ -60,7 +75,9 @@ export const McaBaseTypeExplorerPage = mcaComponentPlugin.provide(
   createRoutableExtension({
     name: 'McaBaseTypeExplorerPage',
     component: () =>
-      import('./components/McaBaseTypeExplorerPage').then(m => m.McaBaseTypeExplorerPage),
+      import('./components/McaBaseTypeExplorerPage').then(
+        m => m.McaBaseTypeExplorerPage,
+      ),
     mountPoint: rootRouteRef,
   }),
 );
@@ -70,7 +87,9 @@ export const McaBaseTypeDefinitionPage = mcaComponentPlugin.provide(
     name: 'McaBaseTypeDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/McaBaseTypeDefinitionPage').then(m => m.McaBaseTypeDefinitionPage),
-    }
+        import('./components/McaBaseTypeDefinitionPage').then(
+          m => m.McaBaseTypeDefinitionPage,
+        ),
+    },
   }),
 );

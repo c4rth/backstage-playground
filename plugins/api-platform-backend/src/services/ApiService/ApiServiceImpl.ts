@@ -1,4 +1,10 @@
-import { AuthService, coreServices, createServiceFactory, createServiceRef, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  coreServices,
+  createServiceFactory,
+  createServiceRef,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import { ApiService } from './types';
 import {
   ANNOTATION_API_NAME,
@@ -22,25 +28,28 @@ import {
   OpenApiType,
   CATALOG_SPEC_OWNER,
   ANNOTATION_API_TYPE,
-  CATALOG_METADATA_API_TYPE
+  CATALOG_METADATA_API_TYPE,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
 import { Entity } from '@backstage/catalog-model';
 import { getUserGroups, isUserGuest } from '../common/utils';
-import { CatalogService, catalogServiceRef } from '@backstage/plugin-catalog-node';
+import {
+  CatalogService,
+  catalogServiceRef,
+} from '@backstage/plugin-catalog-node';
 
 function getFilter(apiName: string, system: string): EntityFilterQuery {
   if (system === API_NO_SYSTEM) {
     return {
       kind: ['API'],
       'metadata.annotations.api.depo.be/name': apiName, // use string, constant does not work here
-    }
+    };
   }
   return {
     kind: ['API'],
     'metadata.annotations.api.depo.be/name': apiName, // use string, constant does not work here
-    'spec.system': system
+    'spec.system': system,
   };
 }
 
@@ -49,35 +58,41 @@ async function innerGetApiVersions(
   auth: AuthService,
   system: string,
   apiName: string,
-  options?: { skipSort?: boolean; matchPrefix?: string }
+  options?: { skipSort?: boolean; matchPrefix?: string },
 ): Promise<ApiVersionDefinition[]> {
   const entities = await catalog.getEntities(
     {
       filter: getFilter(apiName, system),
       fields: [CATALOG_METADATA],
     },
-    { credentials: await auth.getOwnServiceCredentials() }
+    { credentials: await auth.getOwnServiceCredentials() },
   );
   const versions: ApiVersionDefinition[] = [];
   const matchPrefix = options?.matchPrefix?.toLowerCase();
 
   for (const entity of entities.items) {
-    const version = entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
+    const version =
+      entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
     if (!version) continue;
 
     // Early return if looking for a specific prefix match
     if (matchPrefix && version.toLowerCase().startsWith(matchPrefix)) {
-      return [{
-        entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
-        version,
-        project: entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
-      }];
+      return [
+        {
+          entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
+          version,
+          project:
+            entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() ||
+            '',
+        },
+      ];
     }
 
     versions.push({
       entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
       version,
-      project: entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
+      project:
+        entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
     });
   }
 
@@ -90,19 +105,22 @@ async function innerGetApiVersions(
 }
 
 function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
-  const latest = new Map<string, { entity: Entity, version: semver.SemVer }>();
+  const latest = new Map<string, { entity: Entity; version: semver.SemVer }>();
   const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
-    const apiName = item.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
-    const apiType = item.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() || '?';
+    const apiName =
+      item.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
+    const apiType =
+      item.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() || '?';
     const system = item.spec?.system?.toString();
     if (!apiName || !system) continue;
 
     // Apply search filter during iteration to avoid second pass
     if (searchLower) {
       const description = item.metadata.description?.toString() || '';
-      const project = item.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '';
+      const project =
+        item.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '';
       const matchesSearch =
         apiName.toLowerCase().includes(searchLower) ||
         system.toLowerCase().includes(searchLower) ||
@@ -112,7 +130,8 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
       if (!matchesSearch) continue;
     }
 
-    const versionStr = item.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
+    const versionStr =
+      item.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
     if (!versionStr) continue;
 
     let version: semver.SemVer;
@@ -133,9 +152,11 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
   return Array.from(latest.values(), ({ entity }) => entity);
 }
 
-function getOrder(order: ApiDefinitionsOptions | undefined): EntityOrderQuery | undefined {
+function getOrder(
+  order: ApiDefinitionsOptions | undefined,
+): EntityOrderQuery | undefined {
   if (!order) return undefined;
-  let field = "";
+  let field = '';
   switch (order?.field) {
     case 'name':
       field = CATALOG_METADATA_API_NAME;
@@ -174,7 +195,6 @@ async function fetchApiEntities(
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
-
   if (ownership === 'owned' && isUserGuest(userEntityRef)) {
     // Guest users have no owned APIs
     return [];
@@ -182,14 +202,16 @@ async function fetchApiEntities(
 
   // Fetch user groups in parallel with entities if needed
   const [entities, userGroupRefs] = await Promise.all([
-    catalog.getEntities(
-      {
-        filter: { kind: ['API'] },
-        fields,
-        order,
-      },
-      { credentials: await auth.getOwnServiceCredentials() },
-    ).then(res => res.items),
+    catalog
+      .getEntities(
+        {
+          filter: { kind: ['API'] },
+          fields,
+          order,
+        },
+        { credentials: await auth.getOwnServiceCredentials() },
+      )
+      .then(res => res.items),
     ownership === 'owned' && userEntityRef
       ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
@@ -199,7 +221,8 @@ async function fetchApiEntities(
   // Filter by API type if needed
   if (apiType !== 'all') {
     filteredEntities = filteredEntities.filter(entity => {
-      const type = entity.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() || '?';
+      const type =
+        entity.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() || '?';
       return type === apiType;
     });
   }
@@ -228,7 +251,11 @@ export class ApiServiceImpl implements ApiService {
     this.logger.info('ApiService initialized');
   }
 
-  async getApisCount(ownership: OwnershipType, apiType: OpenApiType, userEntityRef: string | undefined): Promise<number> {
+  async getApisCount(
+    ownership: OwnershipType,
+    apiType: OpenApiType,
+    userEntityRef: string | undefined,
+  ): Promise<number> {
     const entities = await fetchApiEntities(
       this.catalog,
       this.auth,
@@ -240,7 +267,8 @@ export class ApiServiceImpl implements ApiService {
     // Inline counting to avoid function call overhead
     const uniqueApiNames = new Set<string>();
     for (const entity of entities) {
-      const apiName = entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
+      const apiName =
+        entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
       if (apiName) {
         const system = entity.spec?.system?.toString() ?? '';
         uniqueApiNames.add(`${system}-${apiName}`);
@@ -249,7 +277,9 @@ export class ApiServiceImpl implements ApiService {
     return uniqueApiNames.size;
   }
 
-  async listApis(request: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult> {
+  async listApis(
+    request: ApiDefinitionsListRequest,
+  ): Promise<ApiDefinitionListResult> {
     const entities = await fetchApiEntities(
       this.catalog,
       this.auth,
@@ -277,32 +307,55 @@ export class ApiServiceImpl implements ApiService {
     const totalCount = latestEntities.length;
 
     // Only slice if needed - avoid creating new array when returning all
-    const items = (offset === 0 && limit >= totalCount)
-      ? latestEntities
-      : latestEntities.slice(offset, offset + limit);
+    const items =
+      offset === 0 && limit >= totalCount
+        ? latestEntities
+        : latestEntities.slice(offset, offset + limit);
 
     return { items, offset, limit, totalCount };
   }
 
-  async getApiVersions(request: { system: string, apiName: string }): Promise<ApiVersionDefinition[]> {
-    return innerGetApiVersions(this.catalog, this.auth, request.system, request.apiName);
+  async getApiVersions(request: {
+    system: string;
+    apiName: string;
+  }): Promise<ApiVersionDefinition[]> {
+    return innerGetApiVersions(
+      this.catalog,
+      this.auth,
+      request.system,
+      request.apiName,
+    );
   }
 
-  async getApiMatchingVersion(request: { system: string, apiName: string, apiVersion: string }): Promise<ApiVersionDefinition | undefined> {
+  async getApiMatchingVersion(request: {
+    system: string;
+    apiName: string;
+    apiVersion: string;
+  }): Promise<ApiVersionDefinition | undefined> {
     // Use matchPrefix option for early return - avoids sorting all versions
-    const versions = await innerGetApiVersions(this.catalog, this.auth, request.system, request.apiName, {
-      matchPrefix: request.apiVersion
-    });
+    const versions = await innerGetApiVersions(
+      this.catalog,
+      this.auth,
+      request.system,
+      request.apiName,
+      {
+        matchPrefix: request.apiVersion,
+      },
+    );
     return versions[0];
   }
 
-  async getApiRelations(request: { system: string, apiName: string, relationType: 'provider' | 'consumer' }): Promise<ApiRelationDefinition[]> {
+  async getApiRelations(request: {
+    system: string;
+    apiName: string;
+    relationType: 'provider' | 'consumer';
+  }): Promise<ApiRelationDefinition[]> {
     const entities = await this.catalog.getEntities(
       {
         filter: {
           kind: ['API'],
           'metadata.annotations."api.depo.be/name"': request.apiName,
-          'spec.system': request.system
+          'spec.system': request.system,
         },
         fields: [
           CATALOG_METADATA_NAME,
@@ -315,11 +368,13 @@ export class ApiServiceImpl implements ApiService {
     );
 
     // Map relationType to Backstage relation type
-    const relationTypeFilter = request.relationType === 'provider' ? 'apiProvidedBy' : 'apiConsumedBy';
+    const relationTypeFilter =
+      request.relationType === 'provider' ? 'apiProvidedBy' : 'apiConsumedBy';
 
     const relations: ApiRelationDefinition[] = [];
     for (const entity of entities.items) {
-      const apiVersion = entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
+      const apiVersion =
+        entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
       if (!apiVersion) continue;
 
       // Build services array directly without intermediate filter array
@@ -343,9 +398,7 @@ export class ApiServiceImpl implements ApiService {
     }
     return relations;
   }
-
-};
-
+}
 
 export const apiServiceRef = createServiceRef<ApiService>({
   id: 'api-platform.api.service',
@@ -355,7 +408,7 @@ export const apiServiceRef = createServiceRef<ApiService>({
       deps: {
         logger: coreServices.logger,
         auth: coreServices.auth,
-        catalog: catalogServiceRef
+        catalog: catalogServiceRef,
       },
       async factory({ logger, catalog, auth }) {
         const apiService = new ApiServiceImpl({

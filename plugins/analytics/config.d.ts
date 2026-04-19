@@ -1,8 +1,8 @@
 export interface Config {
   mcaComponents?: {
     /**
-    * @visibility frontend
-    */
+     * @visibility frontend
+     */
     serviceBaseUrl?: string;
     /**
      * @visibility frontend

@@ -18,4 +18,4 @@ export function deepMerge(target: AnyObject, source: AnyObject): AnyObject {
     }
   }
   return output;
-} 
+}

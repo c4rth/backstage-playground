@@ -1,10 +1,31 @@
-import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
-import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
-import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
-import { useApi } from "@backstage/core-plugin-api";
+import {
+  Link,
+  ResponseErrorPanel,
+  Table,
+  TableColumn,
+} from '@backstage/core-components';
+import {
+  Entity,
+  parseEntityRef,
+  RELATION_API_CONSUMED_BY,
+  RELATION_API_PROVIDED_BY,
+} from '@backstage/catalog-model';
+import {
+  CatalogApi,
+  catalogApiRef,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
+import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { ANNOTATION_SERVICE_NAME, ANNOTATION_SERVICE_VERSION, CATALOG_METADATA_SERVICE_NAME, CATALOG_METADATA_SERVICE_VERSION, CATALOG_SPEC_LIFECYCLE, CATALOG_SPEC_SYSTEM } from "@internal/plugin-api-platform-common";
-import { ComponentDisplayName } from "../common";
+import {
+  ANNOTATION_SERVICE_NAME,
+  ANNOTATION_SERVICE_VERSION,
+  CATALOG_METADATA_SERVICE_NAME,
+  CATALOG_METADATA_SERVICE_VERSION,
+  CATALOG_SPEC_LIFECYCLE,
+  CATALOG_SPEC_SYSTEM,
+} from '@internal/plugin-api-platform-common';
+import { ComponentDisplayName } from '../common';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
@@ -23,7 +44,9 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ system, name, version, environment }: TableRow) => (
-      <Link to={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}>
+      <Link
+        to={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
+      >
         <ComponentDisplayName text={name} type="service" />
       </Link>
     ),
@@ -44,7 +67,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     field: 'system',
     render: ({ system }: TableRow) =>
-      system === "-" ? (
+      system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
         <Link to={`/api-platform/system/${system}`}>
@@ -57,20 +80,33 @@ const serviceColumns: TableColumn<TableRow>[] = [
 const toRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
   system: entity.spec?.system?.toString() ?? '?',
-  name: entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
-  version: entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString() ?? '?',
+  name:
+    entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
+  version:
+    entity.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString() ??
+    '?',
   environment: entity.spec?.lifecycle?.toString().toUpperCase() ?? '?',
 });
 
-const fetchEntities = async (catalogApi: CatalogApi, entity: Entity, dependency: 'provider' | 'consumer') => {
-  const relationType = dependency === 'consumer' ? RELATION_API_CONSUMED_BY : RELATION_API_PROVIDED_BY;
-  const relations = entity.relations?.filter(relation => relation.type === relationType) ?? [];
+const fetchEntities = async (
+  catalogApi: CatalogApi,
+  entity: Entity,
+  dependency: 'provider' | 'consumer',
+) => {
+  const relationType =
+    dependency === 'consumer'
+      ? RELATION_API_CONSUMED_BY
+      : RELATION_API_PROVIDED_BY;
+  const relations =
+    entity.relations?.filter(relation => relation.type === relationType) ?? [];
 
   if (relations.length === 0) {
     return [];
   }
 
-  const targetNames = relations.map(relation => parseEntityRef(relation.targetRef).name);
+  const targetNames = relations.map(
+    relation => parseEntityRef(relation.targetRef).name,
+  );
 
   const response = await catalogApi.getEntities({
     fields: [
@@ -98,15 +134,24 @@ export const ApiRelationCard = ({ dependency }: ApiRelationCardProps) => {
   const catalogApi = useApi(catalogApiRef);
   const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
-  const { value: entities, loading, error } = useAsync(
+  const {
+    value: entities,
+    loading,
+    error,
+  } = useAsync(
     () => fetchEntities(catalogApi, entity, dependency),
-    [catalogApi, entity, dependency]
+    [catalogApi, entity, dependency],
   );
 
   const rows = entities?.map(toRow) ?? [];
 
   if (error) {
-    return <ResponseErrorPanel title={`Error loading ${title.toLowerCase()}`} error={error} />;
+    return (
+      <ResponseErrorPanel
+        title={`Error loading ${title.toLowerCase()}`}
+        error={error}
+      />
+    );
   }
 
   return (

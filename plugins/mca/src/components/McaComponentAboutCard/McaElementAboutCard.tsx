@@ -1,6 +1,6 @@
-import { InfoCard, MarkdownContent } from "@backstage/core-components";
-import { AboutField } from "@backstage/plugin-catalog";
-import { Grid, Text } from "@backstage/ui";
+import { InfoCard, MarkdownContent } from '@backstage/core-components';
+import { AboutField } from '@backstage/plugin-catalog';
+import { Grid, Text } from '@backstage/ui';
 import { memo } from 'react';
 import styles from './McaElementAboutCard.module.css';
 
@@ -14,29 +14,32 @@ const FieldDisplay = memo<{
   className: string;
 }>(({ label, value, className }) => (
   <AboutField label={label}>
-    <Text variant="body-medium" className={className} style={{ display: 'inline' }}>
+    <Text
+      variant="body-medium"
+      className={className}
+      style={{ display: 'inline' }}
+    >
       {value || '-'}
     </Text>
   </AboutField>
 ));
 
-
 export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
   const fieldConfigs = [
     {
-      label: "Package",
+      label: 'Package',
       value: element?.package,
     },
     {
-      label: "Extends",
+      label: 'Extends',
       value: element?.superClass,
     },
   ];
 
   return (
-    <InfoCard title='About' divider>
-      <Grid.Root columns='1'>
-        {fieldConfigs.map((config) => (
+    <InfoCard title="About" divider>
+      <Grid.Root columns="1">
+        {fieldConfigs.map(config => (
           <FieldDisplay
             key={config.label}
             label={config.label}
@@ -50,4 +53,4 @@ export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
       </Grid.Root>
     </InfoCard>
   );
-}
+};

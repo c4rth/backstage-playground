@@ -1,4 +1,4 @@
-import { Grid, Card, CardBody } from '@backstage/ui'
+import { Grid, Card, CardBody } from '@backstage/ui';
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import {
   catalogApiRef,
@@ -34,15 +34,15 @@ const SearchPage = () => {
     <Page themeId="home">
       <Header title="Search" />
       <Content>
-        <Grid.Root columns='12' >
-          <Grid.Item colSpan='12'>
-            <Card >
+        <Grid.Root columns="12">
+          <Grid.Item colSpan="12">
+            <Card>
               <CardBody>
                 <SearchBar />
               </CardBody>
             </Card>
           </Grid.Item>
-          <Grid.Item colSpan='3'>
+          <Grid.Item colSpan="3">
             <SearchType.Accordion
               name="Result Type"
               defaultValue=""
@@ -89,7 +89,7 @@ const SearchPage = () => {
               </Card>
             )}
           </Grid.Item>
-          <Grid.Item colSpan='9'>
+          <Grid.Item colSpan="9">
             <SearchPagination />
             <SearchResult>
               <ApiSearchResultListItem icon={<CatalogIcon />} />

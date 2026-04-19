@@ -26,20 +26,20 @@ services:
 #      - 7007:7007
 #    depends_on:
 #      - postgres-db
-  # opa:
-  #   image: openpolicyagent/opa:0.63.0-static
-  #   command:
-  #     - 'run'
-  #     - '--server'
-  #     - '--watch'
-  #     - '--log-format=json-pretty'
-  #     - '--set=decision_logs.console=true'
-  #     - '/policies/rbac_policy.rego'
-  #     - '/policies/entity_checker.rego'
-  #   ports:
-  #     - 8181:8181
-  #   volumes:
-  #     - ./opa-policies:/policies
+# opa:
+#   image: openpolicyagent/opa:0.63.0-static
+#   command:
+#     - 'run'
+#     - '--server'
+#     - '--watch'
+#     - '--log-format=json-pretty'
+#     - '--set=decision_logs.console=true'
+#     - '/policies/rbac_policy.rego'
+#     - '/policies/entity_checker.rego'
+#   ports:
+#     - 8181:8181
+#   volumes:
+#     - ./opa-policies:/policies
 
 volumes:
   postgres_data: {}

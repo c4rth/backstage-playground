@@ -1,4 +1,10 @@
-import { AuthService, coreServices, createServiceFactory, createServiceRef, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  coreServices,
+  createServiceFactory,
+  createServiceRef,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import { LibraryService } from './types';
 import {
   CATALOG_KIND,
@@ -16,13 +22,16 @@ import {
   LibraryDefinitionsOptions,
   ANNOTATION_LIBRARY_NAME,
   ANNOTATION_LIBRARY_VERSION,
-  CATALOG_RELATIONS
+  CATALOG_RELATIONS,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
 import { Entity, RELATION_DEPENDENCY_OF } from '@backstage/catalog-model';
 import { getUserGroups, isUserGuest } from '../common/utils';
-import { CatalogService, catalogServiceRef } from '@backstage/plugin-catalog-node';
+import {
+  CatalogService,
+  catalogServiceRef,
+} from '@backstage/plugin-catalog-node';
 
 function getFilter(system: string, libraryName?: string): EntityFilterQuery {
   if (libraryName) {
@@ -30,17 +39,23 @@ function getFilter(system: string, libraryName?: string): EntityFilterQuery {
       kind: ['Component'],
       'spec.type': ['library'],
       'metadata.annotations.library.depo.be/name': libraryName,
-      'spec.system': system
+      'spec.system': system,
     };
   }
   return {
     kind: ['Component'],
     'spec.type': ['library'],
-    'spec.system': system
+    'spec.system': system,
   };
 }
 
-async function innerGetLibraryVersions(catalog: CatalogService, auth: AuthService, system: string, libraryName: string, servicesCount: boolean): Promise<LibraryDefinition[]> {
+async function innerGetLibraryVersions(
+  catalog: CatalogService,
+  auth: AuthService,
+  system: string,
+  libraryName: string,
+  servicesCount: boolean,
+): Promise<LibraryDefinition[]> {
   const fields = servicesCount
     ? [CATALOG_METADATA, CATALOG_RELATIONS]
     : [CATALOG_METADATA];
@@ -49,12 +64,13 @@ async function innerGetLibraryVersions(catalog: CatalogService, auth: AuthServic
       filter: getFilter(system, libraryName),
       fields: fields,
     },
-    { credentials: await auth.getOwnServiceCredentials() }
+    { credentials: await auth.getOwnServiceCredentials() },
   );
 
   const versions: LibraryDefinition[] = [];
   for (const entity of entities.items) {
-    const version = entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
+    const version =
+      entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
     if (!version) continue;
 
     // Count dependencies inline without reduce overhead
@@ -74,7 +90,11 @@ async function innerGetLibraryVersions(catalog: CatalogService, auth: AuthServic
     });
   }
 
-  return versions.sort((a, b) => semver.valid(a.version) && semver.valid(b.version) ? semver.rcompare(a.version, b.version) : b.version.localeCompare(a.version));
+  return versions.sort((a, b) =>
+    semver.valid(a.version) && semver.valid(b.version)
+      ? semver.rcompare(a.version, b.version)
+      : b.version.localeCompare(a.version),
+  );
 }
 
 function isNewerVersion(current: string, existing: string): boolean {
@@ -87,11 +107,12 @@ function isNewerVersion(current: string, existing: string): boolean {
 }
 
 function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
-  const latest = new Map<string, { entity: Entity, version: string }>();
+  const latest = new Map<string, { entity: Entity; version: string }>();
   const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
-    const libraryName = item.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
+    const libraryName =
+      item.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
     const system = item.spec?.system?.toString();
     if (!libraryName || !system) continue;
 
@@ -105,7 +126,8 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
       if (!matchesSearch) continue;
     }
 
-    const versionStr = item.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
+    const versionStr =
+      item.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString();
     if (!versionStr) continue;
 
     const mapKey = `${system}-${libraryName}`;
@@ -118,9 +140,11 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
   return Array.from(latest.values(), ({ entity }) => entity);
 }
 
-function getOrder(order: LibraryDefinitionsOptions | undefined): EntityOrderQuery | undefined {
+function getOrder(
+  order: LibraryDefinitionsOptions | undefined,
+): EntityOrderQuery | undefined {
   if (!order) return undefined;
-  let field = "";
+  let field = '';
   switch (order?.field) {
     case 'name':
       field = CATALOG_METADATA_LIBRARY_NAME;
@@ -154,7 +178,6 @@ async function fetchLibraryEntities(
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
-
   if (ownership === 'owned' && isUserGuest(userEntityRef)) {
     // Guest users have no owned Libraries
     return [];
@@ -162,17 +185,19 @@ async function fetchLibraryEntities(
 
   // Fetch user groups in parallel with entities if needed
   const [entities, userGroupRefs] = await Promise.all([
-    catalog.getEntities(
-      {
-        filter: {
-          kind: ['Component'],
-          'spec.type': ['library']
+    catalog
+      .getEntities(
+        {
+          filter: {
+            kind: ['Component'],
+            'spec.type': ['library'],
+          },
+          fields,
+          order,
         },
-        fields,
-        order,
-      },
-      { credentials: await auth.getOwnServiceCredentials() }
-    ).then(res => res.items),
+        { credentials: await auth.getOwnServiceCredentials() },
+      )
+      .then(res => res.items),
     ownership === 'owned' && userEntityRef
       ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
@@ -191,7 +216,6 @@ async function fetchLibraryEntities(
 }
 
 export class LibraryServiceImpl implements LibraryService {
-
   private readonly catalog: CatalogService;
   private readonly auth: AuthService;
 
@@ -201,7 +225,9 @@ export class LibraryServiceImpl implements LibraryService {
 
     options.logger.info('Initializing LibraryService');
   }
-  async listLibraries(request: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult> {
+  async listLibraries(
+    request: LibraryDefinitionsListRequest,
+  ): Promise<LibraryDefinitionListResult> {
     const entities = await fetchLibraryEntities(
       this.catalog,
       this.auth,
@@ -227,17 +253,28 @@ export class LibraryServiceImpl implements LibraryService {
     const totalCount = latestEntities.length;
 
     // Only slice if needed - avoid creating new array when returning all
-    const items = (offset === 0 && limit >= totalCount)
-      ? latestEntities
-      : latestEntities.slice(offset, offset + limit);
+    const items =
+      offset === 0 && limit >= totalCount
+        ? latestEntities
+        : latestEntities.slice(offset, offset + limit);
 
     return { items, offset, limit, totalCount };
   }
 
-  async getLibraryVersions(request: { system: string, libraryName: string, servicesCount: boolean }): Promise<LibraryDefinition[]> {
-    return innerGetLibraryVersions(this.catalog, this.auth, request.system, request.libraryName, request.servicesCount);
+  async getLibraryVersions(request: {
+    system: string;
+    libraryName: string;
+    servicesCount: boolean;
+  }): Promise<LibraryDefinition[]> {
+    return innerGetLibraryVersions(
+      this.catalog,
+      this.auth,
+      request.system,
+      request.libraryName,
+      request.servicesCount,
+    );
   }
-};
+}
 
 export const libraryServiceRef = createServiceRef<LibraryService>({
   id: 'api-platform.library.service',
@@ -247,7 +284,7 @@ export const libraryServiceRef = createServiceRef<LibraryService>({
       deps: {
         logger: coreServices.logger,
         auth: coreServices.auth,
-        catalog: catalogServiceRef
+        catalog: catalogServiceRef,
       },
       async factory({ logger, auth, catalog }) {
         const libraryService = new LibraryServiceImpl({

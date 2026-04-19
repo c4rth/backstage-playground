@@ -45,7 +45,9 @@ export const AzureDevOpsPipelinePage = azdoPlugin.provide(
     name: 'AzureDevOpsPipelinePage',
     component: {
       lazy: () =>
-        import('./components/AzureDevOpsPipelinePage').then(m => m.AzureDevOpsPipelinePage),
+        import('./components/AzureDevOpsPipelinePage').then(
+          m => m.AzureDevOpsPipelinePage,
+        ),
     },
   }),
 );
@@ -55,7 +57,9 @@ export const AzureDevOpsGitTagsPage = azdoPlugin.provide(
     name: 'AzureDevOpsGitTagsPage',
     component: {
       lazy: () =>
-        import('./components/AzureDevOpsGitTagsPage').then(m => m.AzureDevOpsGitTagsPage),
+        import('./components/AzureDevOpsGitTagsPage').then(
+          m => m.AzureDevOpsGitTagsPage,
+        ),
     },
   }),
 );

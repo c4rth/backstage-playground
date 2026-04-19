@@ -1,6 +1,6 @@
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { RiClipboardLine } from '@remixicon/react';
-import { Button, TooltipTrigger, Tooltip} from '@backstage/ui';
+import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
 
 type Props = {
   output: string | number;
@@ -27,14 +27,14 @@ export const CopyToClipboardButton = (props: Props) => {
   return (
     <TooltipTrigger>
       <Button
-        size='medium'
+        size="medium"
         iconStart={<RiClipboardLine />}
         onClick={copyToClipboard}
-        variant='tertiary'
+        variant="tertiary"
       >
         Copy
       </Button>
-      <Tooltip placement='bottom'>{props.title || 'Copy to clipboard'}</Tooltip>
+      <Tooltip placement="bottom">{props.title || 'Copy to clipboard'}</Tooltip>
     </TooltipTrigger>
   );
 };

@@ -1,15 +1,31 @@
-import {
-  Link,
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box, Card, CardBody, CardHeader, Cell, CellText, ColumnConfig, Flex, SearchField, Table, Text, useTable } from '@backstage/ui';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Cell,
+  CellText,
+  ColumnConfig,
+  Flex,
+  SearchField,
+  Table,
+  Text,
+  useTable,
+} from '@backstage/ui';
 import { useCallback, useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
-import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
-import { OwnershipType, ANNOTATION_LIBRARY_NAME, ANNOTATION_LIBRARY_VERSION } from '@internal/plugin-api-platform-common';
+import {
+  ApiPlatformBackendApi,
+  apiPlatformBackendApiRef,
+} from '../../api/ApiPlatformBackendApi';
+import {
+  OwnershipType,
+  ANNOTATION_LIBRARY_NAME,
+  ANNOTATION_LIBRARY_VERSION,
+} from '@internal/plugin-api-platform-common';
 import styles from './LibraryTable.module.css';
 
 type TableRow = {
@@ -29,7 +45,7 @@ const columns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: ({ name, system }: TableRow) => (
       <Cell>
-        <Text weight='bold'>
+        <Text weight="bold">
           <Link to={`/api-platform/library/${system}/${name}`}>
             <ComponentDisplayName text={name} type="library" />
           </Link>
@@ -41,13 +57,17 @@ const columns: ColumnConfig<TableRow>[] = [
     id: 'latestVersion',
     label: 'Latest Version',
     width: '15%',
-    cell: ({ latestVersion }: TableRow) => <CellText title={latestVersion || '-'} />,
+    cell: ({ latestVersion }: TableRow) => (
+      <CellText title={latestVersion || '-'} />
+    ),
   },
   {
     id: 'description',
     label: 'Description',
     width: '50%',
-    cell: ({ description }: TableRow) => <CellText title={description || '-'} />,
+    cell: ({ description }: TableRow) => (
+      <CellText title={description || '-'} />
+    ),
   },
   {
     id: 'system',
@@ -55,10 +75,12 @@ const columns: ColumnConfig<TableRow>[] = [
     width: '10%',
     cell: ({ system }: TableRow) =>
       system === '-' ? (
-        <Cell><ComponentDisplayName text={system} type="system" /></Cell>
+        <Cell>
+          <ComponentDisplayName text={system} type="system" />
+        </Cell>
       ) : (
         <Cell>
-          <Text weight='bold'>
+          <Text weight="bold">
             <Link to={`/api-platform/system/${system}`}>
               <ComponentDisplayName text={system} type="system" />
             </Link>
@@ -73,16 +95,19 @@ const STORAGE_SEARCH_KEY = 'librariesTablePageSearch';
 
 const toEntityRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
-  name: entity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?',
+  name:
+    entity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString() ?? '?',
   description: entity.metadata.description ?? '',
   entityRef: stringifyEntityRef(entity),
-  latestVersion: entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString() ?? '-',
+  latestVersion:
+    entity.metadata.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString() ??
+    '-',
   system: entity.spec?.system?.toString() ?? '-',
 });
 
 const fetchData = async (
   apiPlatformApi: ApiPlatformBackendApi,
-  ownership: OwnershipType
+  ownership: OwnershipType,
 ) => {
   const result = await apiPlatformApi.listLibraries({
     ownership,
@@ -99,20 +124,17 @@ const emptyState = () => (
 
 export const LibraryTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const [ownership, setOwnership] = useState<OwnershipType>(
-    () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+    sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
 
-  const {
-    tableProps,
-    search
-  } = useTable({
+  const { tableProps, search } = useTable({
     mode: 'complete',
     getData: () => fetchData(apiPlatformApi, ownership),
     initialSort: {
       column: 'name',
-      direction: 'ascending'
+      direction: 'ascending',
     },
     paginationOptions: {
       type: 'none',
@@ -120,14 +142,17 @@ export const LibraryTable = () => {
     search: initialSearch,
     searchFn: (items, query) => {
       const lowerQuery = query.toLowerCase();
-      if (query.search !== undefined ) {
+      if (query.search !== undefined) {
         sessionStorage.setItem(STORAGE_SEARCH_KEY, lowerQuery);
       }
-      return items.filter(item => item.name.toLowerCase().includes(lowerQuery) ||
-        item.latestVersion.toLowerCase().includes(lowerQuery) ||
-        item.description.toLowerCase().includes(lowerQuery) ||
-        item.system.toLowerCase().includes(lowerQuery));
-    }
+      return items.filter(
+        item =>
+          item.name.toLowerCase().includes(lowerQuery) ||
+          item.latestVersion.toLowerCase().includes(lowerQuery) ||
+          item.description.toLowerCase().includes(lowerQuery) ||
+          item.system.toLowerCase().includes(lowerQuery),
+      );
+    },
   });
 
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
@@ -138,28 +163,46 @@ export const LibraryTable = () => {
     }
   }, []);
 
-
   if (tableProps.error) {
-    return <ResponseErrorPanel title="Failed to call AppRegistry" error={tableProps.error} />;
+    return (
+      <ResponseErrorPanel
+        title="Failed to call AppRegistry"
+        error={tableProps.error}
+      />
+    );
   }
   if (tableProps.loading) {
     return <Progress />;
   }
 
   return (
-
     <Card style={{ height: '100%' }}>
       <CardHeader>
         <Flex align="center" gap="2">
-          <Box ml='1'><Text variant='title-small' weight='bold'>{ownership === 'owned' ? 'Owned' : 'All'} Libraries</Text></Box>
-          <Box ml='2'><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
+          <Box ml="1">
+            <Text variant="title-small" weight="bold">
+              {ownership === 'owned' ? 'Owned' : 'All'} Libraries
+            </Text>
+          </Box>
+          <Box ml="2">
+            <ComponentOwnership
+              storageKey={STORAGE_OWNERSHIP_KEY}
+              handleOwnershipChange={setOwnership}
+            />
+          </Box>
           <Box style={{ marginLeft: 'auto', width: '250px' }}>
-            <SearchField placeholder='Filter...' {...search} />
+            <SearchField placeholder="Filter..." {...search} />
           </Box>
         </Flex>
       </CardHeader>
       <CardBody style={{ padding: '0' }}>
-        <Box ref={boxRef} style={{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: 'auto' }}>
+        <Box
+          ref={boxRef}
+          style={{
+            maxHeight: maxHeight ? `${maxHeight}px` : undefined,
+            overflow: 'auto',
+          }}
+        >
           <Table
             columnConfig={columns}
             {...tableProps}

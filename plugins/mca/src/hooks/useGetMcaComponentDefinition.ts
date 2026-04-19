@@ -22,7 +22,7 @@ export function useGetMcaComponentDefinition(component: string, refP: string) {
     const validationResult = XMLValidator.validate(result);
     if (validationResult !== true) {
       throw new Error(
-        `Invalid XML: ${validationResult.err.msg} (line ${validationResult.err.line})`
+        `Invalid XML: ${validationResult.err.msg} (line ${validationResult.err.line})`,
       );
     }
 

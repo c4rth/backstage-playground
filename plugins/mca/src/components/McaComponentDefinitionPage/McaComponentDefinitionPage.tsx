@@ -35,7 +35,10 @@ function mapMcaVersions(mca: McaComponent | undefined): SelectItem[] {
     }));
 }
 
-async function getMca(mcaApi: McaComponentsBackendApi, name: string,): Promise<McaComponent> {
+async function getMca(
+  mcaApi: McaComponentsBackendApi,
+  name: string,
+): Promise<McaComponent> {
   const mca = await mcaApi.getMcaComponent(name);
   if (!mca) {
     throw new Error(`MCA component ${name} not found`);
@@ -73,9 +76,13 @@ export const McaComponentDefinitionPage = () => {
     if (!selectedVersion && mca) {
       const data = mapMcaVersions(mca);
       setVersions(data);
-      
+
       let selVersion: string | undefined;
-      if (isInitialLoad.current && queryVersion && data.some(item => item.value === queryVersion)) {
+      if (
+        isInitialLoad.current &&
+        queryVersion &&
+        data.some(item => item.value === queryVersion)
+      ) {
         selVersion = queryVersion;
         isInitialLoad.current = false;
       } else if (data.length > 0) {
@@ -89,18 +96,15 @@ export const McaComponentDefinitionPage = () => {
   if (loading || !selectedVersion) return <Progress />;
 
   return (
-    <PageWithHeader
-      key={name}
-      themeId="apis"
-      title={name}
-      type='MCA Component'
-    >
+    <PageWithHeader key={name} themeId="apis" title={name} type="MCA Component">
       <Content>
-        <Box mb='1'>
-          <Grid.Root columns='2'>
+        <Box mb="1">
+          <Grid.Root columns="2">
             <Grid.Item>
               <Select
-                onChange={(selected: SelectedItems) => setSelectedVersion(selected.toString())}
+                onChange={(selected: SelectedItems) =>
+                  setSelectedVersion(selected.toString())
+                }
                 label="Versions"
                 items={versions}
                 selected={selectedVersion}
@@ -108,7 +112,7 @@ export const McaComponentDefinitionPage = () => {
             </Grid.Item>
           </Grid.Root>
         </Box>
-        <Box mb='-3'>
+        <Box mb="-3">
           <McaComponentDefinitionCard mca={mca!} version={selectedVersion} />
         </Box>
       </Content>

@@ -41,12 +41,17 @@ function isNotFoundError(error: any): boolean {
 const ReadmeCardError = ({ error }: ErrorProps) => {
   if (isNotFoundError(error)) {
     return (
-     <EmptyState
+      <EmptyState
         title="No README available for this service"
         missing="field"
         description="You can add a README to your service by following the Azure DevOps documentation."
         action={
-          <ButtonLink variant="primary" href='https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops' target="_blank" rel="noopener noreferrer">
+          <ButtonLink
+            variant="primary"
+            href="https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Read more
           </ButtonLink>
         }
@@ -79,5 +84,4 @@ export const ReadmeCard = (props: Props) => {
       </Box>
     </InfoCard>
   );
-  
 };

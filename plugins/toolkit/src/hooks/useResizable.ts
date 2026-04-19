@@ -15,7 +15,8 @@ export const useResizable = (
       e.preventDefault();
       dragging.current = true;
       document.body.style.userSelect = 'none';
-      document.body.style.cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';
+      document.body.style.cursor =
+        direction === 'horizontal' ? 'col-resize' : 'row-resize';
 
       const move = (ev: MouseEvent) => {
         if (!dragging.current || !containerRef.current) return;

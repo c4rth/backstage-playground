@@ -20,7 +20,7 @@ export class ApiPlatformDbStore implements ApiPlatformStore {
   private constructor(
     private readonly db: Knex,
     private readonly logger: LoggerService,
-  ) { }
+  ) {}
 
   static async create({
     database,
@@ -31,11 +31,11 @@ export class ApiPlatformDbStore implements ApiPlatformStore {
     skipMigrations: boolean;
     logger: LoggerService;
   }): Promise<ApiPlatformStore> {
-    logger.info("Init API platform database");
+    logger.info('Init API platform database');
     const client = await database.getClient();
 
     if (!database.migrations?.skip && !skipMigrations) {
-      logger.info("Migrate api-platform database");
+      logger.info('Migrate api-platform database');
       await client.migrate.latest({
         directory: migrationsDir,
       });
@@ -43,33 +43,39 @@ export class ApiPlatformDbStore implements ApiPlatformStore {
     return new ApiPlatformDbStore(client, logger);
   }
 
-  async storeServiceInformation(serviceInformation: ServiceInformation): Promise<void> {
+  async storeServiceInformation(
+    serviceInformation: ServiceInformation,
+  ): Promise<void> {
     this.logger.info(`Upsert service ${JSON.stringify(serviceInformation)}`);
-    await this.db('services').insert({
-      applicationCode: serviceInformation.applicationCode,
-      service: serviceInformation.serviceName,
-      version: serviceInformation.serviceVersion,
-      imageVersion: serviceInformation.imageVersion,
-      repository: serviceInformation.repository,
-      sonarQubeProjectKey: serviceInformation.sonarQubeProjectKey,
-      consumedApis: JSON.stringify(serviceInformation.apiDependencies.consumedApis ?? []),
-      providedApis: JSON.stringify(serviceInformation.apiDependencies.providedApis ?? []),
-      dependencies: JSON.stringify(serviceInformation.dependencies ?? []),
-    }).onConflict([
-      'applicationCode',
-      'service',
-      'version',
-      'imageVersion',
-    ]).merge();
+    await this.db('services')
+      .insert({
+        applicationCode: serviceInformation.applicationCode,
+        service: serviceInformation.serviceName,
+        version: serviceInformation.serviceVersion,
+        imageVersion: serviceInformation.imageVersion,
+        repository: serviceInformation.repository,
+        sonarQubeProjectKey: serviceInformation.sonarQubeProjectKey,
+        consumedApis: JSON.stringify(
+          serviceInformation.apiDependencies.consumedApis ?? [],
+        ),
+        providedApis: JSON.stringify(
+          serviceInformation.apiDependencies.providedApis ?? [],
+        ),
+        dependencies: JSON.stringify(serviceInformation.dependencies ?? []),
+      })
+      .onConflict(['applicationCode', 'service', 'version', 'imageVersion'])
+      .merge();
   }
 
   async getServiceInformation(
     system: string,
     service: string,
     version: string,
-    imageVersion: string
+    imageVersion: string,
   ): Promise<ServiceInformation | undefined> {
-    this.logger.info(`Fetch service ${system}-${service}-${version}-${imageVersion}`);
+    this.logger.info(
+      `Fetch service ${system}-${service}-${version}-${imageVersion}`,
+    );
     const result = await this.db<DbServicesRow>('services')
       .select('*')
       .where({
@@ -89,13 +95,16 @@ export class ApiPlatformDbStore implements ApiPlatformStore {
       repository: result.repository,
       sonarQubeProjectKey: result.sonarQubeProjectKey,
       apiDependencies: {
-        consumedApis: result.consumedApis ? JSON.parse(result.consumedApis) : [],
-        providedApis: result.providedApis ? JSON.parse(result.providedApis) : [],
+        consumedApis: result.consumedApis
+          ? JSON.parse(result.consumedApis)
+          : [],
+        providedApis: result.providedApis
+          ? JSON.parse(result.providedApis)
+          : [],
       },
       dependencies: result.dependencies ? JSON.parse(result.dependencies) : [],
     };
   }
-
 }
 
 /**

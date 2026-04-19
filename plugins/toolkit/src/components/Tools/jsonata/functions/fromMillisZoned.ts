@@ -16,7 +16,13 @@ const ianaToUtcOffset = (ms: number, timezone: string): string => {
 
 // $fromMillisZoned accepts an IANA timezone name and converts it to a UTC offset
 // before delegating to JSONata's built-in $fromMillis(ms, picture, offset).
-export const fromMillisZoned = async (ms: number, picture: string, timezone: string): Promise<string> => {
+export const fromMillisZoned = async (
+  ms: number,
+  picture: string,
+  timezone: string,
+): Promise<string> => {
   const offset = ianaToUtcOffset(ms, timezone);
-  return jsonata(`$fromMillis(${ms}, "${picture}", "${offset}")`).evaluate({}) as Promise<string>;
+  return jsonata(`$fromMillis(${ms}, "${picture}", "${offset}")`).evaluate(
+    {},
+  ) as Promise<string>;
 };

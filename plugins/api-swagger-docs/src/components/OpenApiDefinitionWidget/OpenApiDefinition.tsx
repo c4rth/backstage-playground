@@ -19,7 +19,6 @@ import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 import styles from './OpenApiDefinition.module.css';
 
-
 export type OpenApiDefinitionProps = {
   definition: string;
 } & Omit<React.ComponentProps<typeof SwaggerUI>, 'spec'>;
@@ -28,7 +27,6 @@ export const OpenApiDefinition = ({
   definition,
   ...swaggerUiProps
 }: OpenApiDefinitionProps) => {
-
   // Due to a bug in the swagger-ui-react component, the component needs
   // to be created without content first.
   const [def, setDef] = useState('');

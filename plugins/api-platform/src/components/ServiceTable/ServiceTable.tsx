@@ -5,11 +5,20 @@ import {
   TableColumn,
 } from '@backstage/core-components';
 import { ComponentChip } from '../common';
-import { OwnershipType, ServiceDefinition, ServiceDefinitionsListRequest, ServiceEnvironmentDefinitions, ServiceVersionDefinition } from '@internal/plugin-api-platform-common';
+import {
+  OwnershipType,
+  ServiceDefinition,
+  ServiceDefinitionsListRequest,
+  ServiceEnvironmentDefinitions,
+  ServiceVersionDefinition,
+} from '@internal/plugin-api-platform-common';
 import { useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
-import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
+import {
+  ApiPlatformBackendApi,
+  apiPlatformBackendApiRef,
+} from '../../api/ApiPlatformBackendApi';
 import { Box, Flex, Text } from '@backstage/ui';
 import { ListBox, ListBoxItem } from 'react-aria-components';
 import { Query } from '@material-table/core';
@@ -36,7 +45,10 @@ const LIST_ITEM_STYLE = {
 
 const EMPTY_STATE_STYLE = { pointerEvents: 'none' as const };
 
-const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => ({
+const toRow = (
+  serviceDefinition: ServiceDefinition,
+  idx: number,
+): TableRow => ({
   id: idx,
   name: serviceDefinition.name,
   system: serviceDefinition.system,
@@ -44,19 +56,46 @@ const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => (
   imageVersions: serviceDefinition.versions.map(version => {
     const envs: ServiceEnvironmentDefinitions = version.environments;
     const versions: string[] = [];
-    if (envs.prd) { versions.push(envs.prd.imageVersion); } else { versions.push(''); }
-    if (envs.ptp) { versions.push(envs.ptp.imageVersion); } else { versions.push(''); }
-    if (envs.uat) { versions.push(envs.uat.imageVersion); } else { versions.push(''); }
-    if (envs.gtu) { versions.push(envs.gtu.imageVersion); } else { versions.push(''); }
-    if (envs.tst) { versions.push(envs.tst.imageVersion); } else { versions.push(''); }
+    if (envs.prd) {
+      versions.push(envs.prd.imageVersion);
+    } else {
+      versions.push('');
+    }
+    if (envs.ptp) {
+      versions.push(envs.ptp.imageVersion);
+    } else {
+      versions.push('');
+    }
+    if (envs.uat) {
+      versions.push(envs.uat.imageVersion);
+    } else {
+      versions.push('');
+    }
+    if (envs.gtu) {
+      versions.push(envs.gtu.imageVersion);
+    } else {
+      versions.push('');
+    }
+    if (envs.tst) {
+      versions.push(envs.tst.imageVersion);
+    } else {
+      versions.push('');
+    }
     return versions;
   }),
 });
 
-const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
-  <ListBox aria-label='Services versions'>
+const renderVersionList = (
+  serviceDefinition: ServiceDefinition,
+  renderItem: (version: any, idx: number) => JSX.Element,
+) => (
+  <ListBox aria-label="Services versions">
     {serviceDefinition.versions?.map((version, idx) => (
-      <ListBoxItem key={`${serviceDefinition.name}-${version.version}-${idx}`} style={LIST_ITEM_STYLE} aria-label={`${serviceDefinition.name} version ${version.version}`}>
+      <ListBoxItem
+        key={`${serviceDefinition.name}-${version.version}-${idx}`}
+        style={LIST_ITEM_STYLE}
+        aria-label={`${serviceDefinition.name} version ${version.version}`}
+      >
         {renderItem(version, idx)}
       </ListBoxItem>
     ))}
@@ -74,29 +113,34 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
     if (!row.serviceDefinition?.versions) return false;
     const lowerQuery = query.toLowerCase();
     return row.serviceDefinition.versions.some(version => {
-      const envData = version.environments[env as keyof typeof version.environments];
+      const envData =
+        version.environments[env as keyof typeof version.environments];
       return envData?.imageVersion.toLowerCase().includes(lowerQuery);
     });
   },
   render: ({ serviceDefinition, imageVersions }) =>
-    renderVersionList(serviceDefinition, (version: ServiceVersionDefinition, idx) => {
-      const envData = version.environments[env as keyof typeof version.environments];
-      if (!envData) {
+    renderVersionList(
+      serviceDefinition,
+      (version: ServiceVersionDefinition, idx) => {
+        const envData =
+          version.environments[env as keyof typeof version.environments];
+        if (!envData) {
+          return (
+            <div style={EMPTY_STATE_STYLE}>
+              <Text variant="body-medium">-</Text>
+            </div>
+          );
+        }
+        const index = imageVersions[idx].indexOf(envData.imageVersion);
         return (
-          <div style={EMPTY_STATE_STYLE}>
-            <Text variant="body-medium">-</Text>
-          </div>
+          <ComponentChip
+            index={index}
+            service={envData}
+            link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
+          />
         );
-      }     
-      const index = imageVersions[idx].indexOf(envData.imageVersion);
-      return (
-        <ComponentChip
-          index={index}
-          service={envData}
-          link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}&env=${env}`}
-        />
-      );
-    }),
+      },
+    ),
 });
 
 const COLUMNS: TableColumn<TableRow>[] = [
@@ -107,8 +151,13 @@ const COLUMNS: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ serviceDefinition }) => (
-      <Link to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}>
-        <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
+      <Link
+        to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
+      >
+        <ComponentDisplayName
+          text={serviceDefinition.serviceName}
+          type="service"
+        />
       </Link>
     ),
   },
@@ -150,7 +199,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
 const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
   query: Query<TableRow>,
-  ownership: OwnershipType
+  ownership: OwnershipType,
 ) => {
   const page = query.page ?? 0;
   const pageSize = query.pageSize ?? PAGE_SIZE;
@@ -160,25 +209,25 @@ const getData = async (
     limit: pageSize,
     search: query.search,
     orderBy: query.orderBy
-      ? {
-        field: query.orderBy.field,
-        direction: query.orderDirection,
-      } as ServiceDefinitionsListRequest['orderBy']
+      ? ({
+          field: query.orderBy.field,
+          direction: query.orderDirection,
+        } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
   });
 
   return result
     ? {
-      data: result.items.map(toRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
 };
 
 export const ServiceTable = () => {
@@ -186,8 +235,8 @@ export const ServiceTable = () => {
   const [countRows, setCountRows] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [ownership, setOwnership] = useState<OwnershipType>(
-    () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+    sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
 
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
@@ -232,8 +281,17 @@ export const ServiceTable = () => {
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml="1"><b>{ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})</b></Box>
-          <Box ml="4"><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
+          <Box ml="1">
+            <b>
+              {ownership === 'owned' ? 'Owned' : 'All'} Services ({countRows})
+            </b>
+          </Box>
+          <Box ml="4">
+            <ComponentOwnership
+              storageKey={STORAGE_OWNERSHIP_KEY}
+              handleOwnershipChange={setOwnership}
+            />
+          </Box>
         </Flex>
       }
       data={fetchData}

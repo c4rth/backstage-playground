@@ -6,11 +6,21 @@ import {
   LoggerService,
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
-import { McaBaseType, McaBaseTypeListResult, McaComponent, McaComponentListResult, McaComponentType, McaVersions } from '@internal/plugin-mca-common';
+import {
+  McaBaseType,
+  McaBaseTypeListResult,
+  McaComponent,
+  McaComponentListResult,
+  McaComponentType,
+  McaVersions,
+} from '@internal/plugin-mca-common';
 
 import { Knex } from 'knex';
 import { DbBaseTypeRow, DbMcaRow } from './tables';
-import { McaBaseTypeOrderByOptions, McaComponentOrderByOptions } from '../services/types';
+import {
+  McaBaseTypeOrderByOptions,
+  McaComponentOrderByOptions,
+} from '../services/types';
 import { McaComponentStore } from './types';
 
 const migrationsDir = resolvePackagePath(
@@ -41,7 +51,6 @@ function mapMcaComponentOrderByField(field: string): string {
   }
 }
 
-
 function mapMcaBaseTypeOrderByField(field: string): string {
   switch (field) {
     case 'baseType':
@@ -57,7 +66,7 @@ export class McaComponentDbStore implements McaComponentStore {
   private constructor(
     private readonly db: Knex,
     private readonly logger: LoggerService,
-  ) { }
+  ) {}
 
   static async create({
     database,
@@ -68,11 +77,11 @@ export class McaComponentDbStore implements McaComponentStore {
     skipMigrations: boolean;
     logger: LoggerService;
   }): Promise<McaComponentStore> {
-    logger.info("Init Mca database");
+    logger.info('Init Mca database');
     const client = await database.getClient();
 
     if (!database.migrations?.skip && !skipMigrations) {
-      logger.info("Migrate mca database");
+      logger.info('Migrate mca database');
       await client.migrate.latest({
         directory: migrationsDir,
       });
@@ -91,7 +100,7 @@ export class McaComponentDbStore implements McaComponentStore {
         'p3_version',
         'p4_version',
         'application_code',
-        'package_name'
+        'package_name',
       ])
       .where({ component })
       .first();
@@ -111,9 +120,16 @@ export class McaComponentDbStore implements McaComponentStore {
     };
   }
 
-  async getMcaComponents(offset: number, limit: number, type: McaComponentType, orderBy?: McaComponentOrderByOptions, search?: string): Promise<McaComponentListResult> {
-
-    this.logger.debug(`Fetch mca components with offset: ${offset}, limit: ${limit}, type: ${type}, orderBy: ${orderBy}, search: ${search}`);
+  async getMcaComponents(
+    offset: number,
+    limit: number,
+    type: McaComponentType,
+    orderBy?: McaComponentOrderByOptions,
+    search?: string,
+  ): Promise<McaComponentListResult> {
+    this.logger.debug(
+      `Fetch mca components with offset: ${offset}, limit: ${limit}, type: ${type}, orderBy: ${orderBy}, search: ${search}`,
+    );
 
     // Build where conditions once
     const buildWhereConditions = (query: any) => {
@@ -134,8 +150,12 @@ export class McaComponentDbStore implements McaComponentStore {
           'application_code',
           'package_name',
         ];
-        const searchQuery = searchFields.map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
-        const searchValues = searchFields.map(() => `%${search.toLowerCase()}%`);
+        const searchQuery = searchFields
+          .map(field => `LOWER(${field}) LIKE ?`)
+          .join(' OR ');
+        const searchValues = searchFields.map(
+          () => `%${search.toLowerCase()}%`,
+        );
         query.whereRaw(`(${searchQuery})`, searchValues);
       }
     };
@@ -149,31 +169,32 @@ export class McaComponentDbStore implements McaComponentStore {
         'p3_version',
         'p4_version',
         'application_code',
-        'package_name'
+        'package_name',
       ])
       .offset(offset)
       .limit(limit);
 
-    const countQuery = this.db<DbMcaRow>('mca_components')
-      .count({ count: '*' });
+    const countQuery = this.db<DbMcaRow>('mca_components').count({
+      count: '*',
+    });
 
     // Apply conditions to both queries
     buildWhereConditions(baseQuery);
     buildWhereConditions(countQuery);
 
     if (orderBy) {
-      baseQuery.orderBy(mapMcaComponentOrderByField(orderBy.field), orderBy.direction);
+      baseQuery.orderBy(
+        mapMcaComponentOrderByField(orderBy.field),
+        orderBy.direction,
+      );
     }
 
     this.logger.debug(`Mca components query: ${baseQuery.toQuery()}`);
 
     // Execute queries in parallel
-    const [total, result] = await Promise.all([
-      countQuery,
-      baseQuery,
-    ]);
+    const [total, result] = await Promise.all([countQuery, baseQuery]);
 
-    const mcaComponents: McaComponent[] = (result ?? []).map((row) => ({
+    const mcaComponents: McaComponent[] = (result ?? []).map(row => ({
       component: row.component,
       prdVersion: row.prd_version,
       p1Version: row.p1_version,
@@ -194,8 +215,7 @@ export class McaComponentDbStore implements McaComponentStore {
 
   async getMcaComponentsCount(type: McaComponentType): Promise<number> {
     this.logger.debug(`Mca components count`);
-    const baseQuery = this.db<DbMcaRow>('mca_components')
-      .count({ count: '*' });
+    const baseQuery = this.db<DbMcaRow>('mca_components').count({ count: '*' });
     if (type === 'element') {
       baseQuery.where('type', 'e');
     } else if (type === 'operation') {
@@ -208,9 +228,7 @@ export class McaComponentDbStore implements McaComponentStore {
 
   async getMcaVersions(): Promise<McaVersions | undefined> {
     this.logger.debug(`Fetch mca versions`);
-    const row = await this.db('mca_versions')
-      .select('*')
-      .first();
+    const row = await this.db('mca_versions').select('*').first();
     if (row) {
       const mcaVersions: McaVersions = {
         p1Version: row.p1_version,
@@ -225,39 +243,53 @@ export class McaComponentDbStore implements McaComponentStore {
 
   async getMcaBaseTypesCount(): Promise<number> {
     this.logger.debug(`Mca basetypes count`);
-    const total = await this.db<DbBaseTypeRow>('mca_basetypes').count({ count: '*' });
+    const total = await this.db<DbBaseTypeRow>('mca_basetypes').count({
+      count: '*',
+    });
     this.logger.debug(`Mca basetypes count: ${JSON.stringify(total)}`);
     return Number(total[0].count);
   }
 
-  async getMcaBaseTypes(offset: number, limit: number, orderBy?: McaBaseTypeOrderByOptions, search?: string): Promise<McaBaseTypeListResult> {
-    this.logger.debug(`Fetch mca basetypes with offset: ${offset}, limit: ${limit}, orderBy: ${orderBy}, search: ${search}`);
+  async getMcaBaseTypes(
+    offset: number,
+    limit: number,
+    orderBy?: McaBaseTypeOrderByOptions,
+    search?: string,
+  ): Promise<McaBaseTypeListResult> {
+    this.logger.debug(
+      `Fetch mca basetypes with offset: ${offset}, limit: ${limit}, orderBy: ${orderBy}, search: ${search}`,
+    );
 
     const baseQuery = this.db<DbBaseTypeRow>('mca_basetypes')
       .select('*')
       .offset(offset)
       .limit(limit);
-    const countQuery = this.db<DbBaseTypeRow>('mca_basetypes')
-      .count({ count: '*' });
+    const countQuery = this.db<DbBaseTypeRow>('mca_basetypes').count({
+      count: '*',
+    });
 
     // Search logic
     if (search) {
       const fields = ['base_type', 'package_name'];
-      const searchQuery = fields.map(field => `LOWER(${field}) LIKE ?`).join(' OR ');
-      const searchValues = Array(fields.length).fill(`%${search.toLowerCase()}%`);
+      const searchQuery = fields
+        .map(field => `LOWER(${field}) LIKE ?`)
+        .join(' OR ');
+      const searchValues = Array(fields.length).fill(
+        `%${search.toLowerCase()}%`,
+      );
       baseQuery.and.whereRaw(`(${searchQuery})`, searchValues);
       countQuery.and.whereRaw(`(${searchQuery})`, searchValues);
     }
 
     // Order by logic
     if (orderBy) {
-      baseQuery.orderBy(mapMcaBaseTypeOrderByField(orderBy.field), orderBy.direction);
+      baseQuery.orderBy(
+        mapMcaBaseTypeOrderByField(orderBy.field),
+        orderBy.direction,
+      );
     }
 
-    const [total, result] = await Promise.all([
-      countQuery,
-      baseQuery,
-    ]);
+    const [total, result] = await Promise.all([countQuery, baseQuery]);
 
     const mcaBaseTypes: McaBaseType[] = (result ?? []).map(row => ({
       baseType: row.base_type,
@@ -318,7 +350,6 @@ export class McaComponentDbStore implements McaComponentStore {
       .merge();
   }
 
-
   async addOrUpdateBaseType(mcaBaseType: McaBaseType): Promise<void> {
     await this.db('mca_basetypes')
       .insert({
@@ -328,7 +359,6 @@ export class McaComponentDbStore implements McaComponentStore {
       .onConflict('base_type')
       .merge();
   }
-
 }
 
 /**

@@ -1,1 +1,4 @@
-export { healthDashboardBackendApiRef, HealthDashboardBackendClient } from './HealthDashboardBackendApi';
+export {
+  healthDashboardBackendApiRef,
+  HealthDashboardBackendClient,
+} from './HealthDashboardBackendApi';

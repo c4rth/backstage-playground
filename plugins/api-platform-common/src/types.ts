@@ -1,6 +1,6 @@
-import { Entity } from "@backstage/catalog-model";
+import { Entity } from '@backstage/catalog-model';
 
-// API 
+// API
 
 export const OPENAPITYPE_LIST = [
   'all',
@@ -10,9 +10,18 @@ export const OPENAPITYPE_LIST = [
   'inner',
   'third-party',
   'front',
-  'mca'] as const;
+  'mca',
+] as const;
 
-export type OpenApiType = 'all' | 'enterprise' | 'public' | 'experience' | 'inner' | 'third-party' | 'front' | 'mca';
+export type OpenApiType =
+  | 'all'
+  | 'enterprise'
+  | 'public'
+  | 'experience'
+  | 'inner'
+  | 'third-party'
+  | 'front'
+  | 'mca';
 
 export type ApiVersionDefinition = {
   entityRef: string;
@@ -41,7 +50,8 @@ export const APIDEFINITIONS_FIELDS = [
   'name',
   'description',
   'type',
-  'system'] as const;
+  'system',
+] as const;
 
 export type ApiDefinitionListResult = {
   items: Entity[];
@@ -56,10 +66,10 @@ export type ApiDefinitionsOptions = {
 };
 
 export type ApiDefinitionsListRequest = {
-  offset?: number,
-  limit?: number,
-  orderBy?: ApiDefinitionsOptions,
-  search?: string,
+  offset?: number;
+  limit?: number;
+  orderBy?: ApiDefinitionsOptions;
+  search?: string;
   ownership: OwnershipType;
   apiType: OpenApiType;
   userEntityRef?: string | undefined;
@@ -91,7 +101,7 @@ export type ServiceDefinition = {
   name: string;
   serviceName: string;
   owner: string;
-  system: string
+  system: string;
   versions: ServiceVersionDefinition[];
 };
 
@@ -118,13 +128,9 @@ export type ServiceInformation = {
   dependencies: string[];
 };
 
-export const SERVICEDEFINITIONS_FIELDS = [
-  'name',
-  'system'] as const;
+export const SERVICEDEFINITIONS_FIELDS = ['name', 'system'] as const;
 
-export type ServiceDefinitionsListFields =
-  | 'name'
-  | 'system';
+export type ServiceDefinitionsListFields = 'name' | 'system';
 
 export type ServiceDefinitionsOptions = {
   field: ServiceDefinitionsListFields;
@@ -132,10 +138,10 @@ export type ServiceDefinitionsOptions = {
 };
 
 export type ServiceDefinitionsListRequest = {
-  offset?: number,
-  limit?: number,
-  orderBy?: ServiceDefinitionsOptions,
-  search?: string,
+  offset?: number;
+  limit?: number;
+  orderBy?: ServiceDefinitionsOptions;
+  search?: string;
   ownership: OwnershipType;
   userEntityRef?: string | undefined;
   dependsOn?: string;
@@ -153,12 +159,10 @@ export type SystemDefinition = {
 export const SYSTEMDEFINITIONS_FIELDS = [
   'name',
   'description',
-  'owner'] as const;
+  'owner',
+] as const;
 
-export type SystemDefinitionsListFields =
-  | 'name'
-  | 'description'
-  | 'owner';
+export type SystemDefinitionsListFields = 'name' | 'description' | 'owner';
 
 export type SystemDefinitionsOptions = {
   field: SystemDefinitionsListFields;
@@ -194,12 +198,10 @@ export type LibraryDefinition = {
 export const LIBRARYDEFINITIONS_FIELDS = [
   'name',
   'description',
-  'system'] as const;
+  'system',
+] as const;
 
-export type LibraryDefinitionsListFields =
-  | 'name'
-  | 'description'
-  | 'system';
+export type LibraryDefinitionsListFields = 'name' | 'description' | 'system';
 
 export type LibraryDefinitionsOptions = {
   field: LibraryDefinitionsListFields;
@@ -221,4 +223,3 @@ export type LibraryDefinitionsListRequest = {
   ownership: OwnershipType;
   userEntityRef?: string | undefined;
 };
-

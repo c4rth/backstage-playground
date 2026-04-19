@@ -1,9 +1,7 @@
-
 export {
-    iframePlugin,
-    EntityIFrameCard,
-    IFramePage,
-    EntityIFrameContent,
-    HomePageIFrameCard,
-  } from './plugin';
-  
+  iframePlugin,
+  EntityIFrameCard,
+  IFramePage,
+  EntityIFrameContent,
+  HomePageIFrameCard,
+} from './plugin';

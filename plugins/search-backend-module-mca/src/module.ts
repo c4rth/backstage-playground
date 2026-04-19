@@ -41,12 +41,16 @@ export const searchModuleMcaComponentsCollator = createBackendModule({
           initialDelay: { seconds: 3 },
         };
 
-        const scheduleComponents = config.has('search.collators.mcaComponents.schedule')
+        const scheduleComponents = config.has(
+          'search.collators.mcaComponents.schedule',
+        )
           ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
-            config.getConfig('search.collators.mcaComponents.schedule'),
-          )
+              config.getConfig('search.collators.mcaComponents.schedule'),
+            )
           : defaultSchedule;
-        const limitComponents = config.getOptionalNumber('search.collators.mcaComponents.limit') ?? 100;
+        const limitComponents =
+          config.getOptionalNumber('search.collators.mcaComponents.limit') ??
+          100;
 
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(scheduleComponents),
@@ -58,13 +62,16 @@ export const searchModuleMcaComponentsCollator = createBackendModule({
           }),
         });
 
-
-        const scheduleBaseTypes = config.has('search.collators.mcaBaseTypes.schedule')
+        const scheduleBaseTypes = config.has(
+          'search.collators.mcaBaseTypes.schedule',
+        )
           ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
-            config.getConfig('search.collators.mcaBaseTypes.schedule'),
-          )
+              config.getConfig('search.collators.mcaBaseTypes.schedule'),
+            )
           : defaultSchedule;
-        const limitBaseTypes = config.getOptionalNumber('search.collators.mcaBaseTypes.limit') ?? 100;
+        const limitBaseTypes =
+          config.getOptionalNumber('search.collators.mcaBaseTypes.limit') ??
+          100;
 
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(scheduleBaseTypes),

@@ -1,1 +1,4 @@
-export { appRegistryBackendApiRef, AppRegistryBackendClient } from './AppRegistryBackendApi';
+export {
+  appRegistryBackendApiRef,
+  AppRegistryBackendClient,
+} from './AppRegistryBackendApi';

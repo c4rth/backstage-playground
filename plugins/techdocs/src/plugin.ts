@@ -20,21 +20,20 @@ export const CustomDocsReaderPage = externalDocsPlugin.provide(
     name: 'CustomDocsReaderPage',
     component: {
       lazy: () =>
-        import('./components/CustomDocsReaderPage').then(m => m.CustomDocsReaderPage),
+        import('./components/CustomDocsReaderPage').then(
+          m => m.CustomDocsReaderPage,
+        ),
     },
   }),
 );
 
 //-------------------------------------------------------------------------------------------------
 
-export const TechDocsHome =
-externalDocsPlugin.provide(
-      createRoutableExtension({
-        name: 'TechDocsHome',
-        component: () =>
-          import('./components/TechDocsHome').then(
-            m => m.TechDocsHome,
-          ),
-        mountPoint: rootDocsRouteRef,
-      }),
-    );
+export const TechDocsHome = externalDocsPlugin.provide(
+  createRoutableExtension({
+    name: 'TechDocsHome',
+    component: () =>
+      import('./components/TechDocsHome').then(m => m.TechDocsHome),
+    mountPoint: rootDocsRouteRef,
+  }),
+);

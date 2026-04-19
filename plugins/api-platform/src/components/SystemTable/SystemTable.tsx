@@ -10,9 +10,15 @@ import { Box, Flex } from '@backstage/ui';
 import { useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
-import { ApiPlatformBackendApi, apiPlatformBackendApiRef } from '../../api/ApiPlatformBackendApi';
+import {
+  ApiPlatformBackendApi,
+  apiPlatformBackendApiRef,
+} from '../../api/ApiPlatformBackendApi';
 import { Query } from '@material-table/core';
-import { SystemDefinitionsListRequest, OwnershipType } from '@internal/plugin-api-platform-common';
+import {
+  SystemDefinitionsListRequest,
+  OwnershipType,
+} from '@internal/plugin-api-platform-common';
 
 type TableRow = {
   id: number;
@@ -31,7 +37,7 @@ const columns: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     render: ({ name }: TableRow) => (
       <Link to={name}>
-        <ComponentDisplayName text={name} type='system' />
+        <ComponentDisplayName text={name} type="system" />
       </Link>
     ),
   },
@@ -67,7 +73,7 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
   ownership: OwnershipType,
-  query: Query<TableRow>
+  query: Query<TableRow>,
 ) => {
   const page = query.page ?? 0;
   const pageSize = query.pageSize ?? PAGE_SIZE;
@@ -76,10 +82,10 @@ const getData = async (
     limit: pageSize,
     search: query.search,
     orderBy: query.orderBy
-      ? {
+      ? ({
           field: query.orderBy.field,
           direction: query.orderDirection,
-        } as SystemDefinitionsListRequest['orderBy']
+        } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
   });
@@ -103,10 +109,9 @@ export const SystemTable = () => {
   const [countRows, setCountRows] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [ownership, setOwnership] = useState<OwnershipType>(
-    () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+    sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
-
 
   const fetchData = async (query: Query<TableRow>) => {
     setLoading(true);
@@ -149,8 +154,17 @@ export const SystemTable = () => {
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml='1'><b>{ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})</b></Box>
-          <Box ml='2'><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
+          <Box ml="1">
+            <b>
+              {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
+            </b>
+          </Box>
+          <Box ml="2">
+            <ComponentOwnership
+              storageKey={STORAGE_OWNERSHIP_KEY}
+              handleOwnershipChange={setOwnership}
+            />
+          </Box>
         </Flex>
       }
       data={fetchData}

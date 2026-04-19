@@ -1,9 +1,27 @@
-import { coreServices, createServiceFactory, createServiceRef, LoggerService, readSchedulerServiceTaskScheduleDefinitionFromConfig, SchedulerService } from "@backstage/backend-plugin-api";
-import { McaBaseTypeListRequest, McaComponentListRequest, McaService } from "./types";
-import { McaComponentStore, mcaComponentStoreServiceRef } from "../database";
-import { McaBaseType, McaBaseTypeListResult, McaComponent, McaComponentListResult, McaComponentType, McaVersions } from '@internal/plugin-mca-common';
-import { Config } from "@backstage/config";
-import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from "../task";
+import {
+  coreServices,
+  createServiceFactory,
+  createServiceRef,
+  LoggerService,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
+  SchedulerService,
+} from '@backstage/backend-plugin-api';
+import {
+  McaBaseTypeListRequest,
+  McaComponentListRequest,
+  McaService,
+} from './types';
+import { McaComponentStore, mcaComponentStoreServiceRef } from '../database';
+import {
+  McaBaseType,
+  McaBaseTypeListResult,
+  McaComponent,
+  McaComponentListResult,
+  McaComponentType,
+  McaVersions,
+} from '@internal/plugin-mca-common';
+import { Config } from '@backstage/config';
+import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from '../task';
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -20,7 +38,6 @@ const DEFAULT_MCA_VERSIONS: McaVersions = {
 };
 
 export class McaComponentService implements McaService {
-
   private readonly logger: LoggerService;
   private readonly mcaComponentsStore: McaComponentStore;
 
@@ -28,12 +45,24 @@ export class McaComponentService implements McaService {
     this.logger = options.logger;
     this.mcaComponentsStore = options.mcaComponentsStore;
     this.logger.info('Initializing McaService');
-    this.createScheduledTask(options.config, options.logger, options.mcaComponentsStore, options.scheduler);
+    this.createScheduledTask(
+      options.config,
+      options.logger,
+      options.mcaComponentsStore,
+      options.scheduler,
+    );
   }
 
-
-  async createScheduledTask(config: Config, logger: LoggerService, mcaComponentsStore: McaComponentStore, scheduler: SchedulerService) {
-    const scheduleOperations = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('mcaComponents.operations.schedule'));
+  async createScheduledTask(
+    config: Config,
+    logger: LoggerService,
+    mcaComponentsStore: McaComponentStore,
+    scheduler: SchedulerService,
+  ) {
+    const scheduleOperations =
+      readSchedulerServiceTaskScheduleDefinitionFromConfig(
+        config.getConfig('mcaComponents.operations.schedule'),
+      );
     await scheduler.scheduleTask({
       ...scheduleOperations,
       id: 'update-all-operations-csv',
@@ -44,9 +73,12 @@ export class McaComponentService implements McaService {
           config,
         }).runAsync();
       },
-    },);
+    });
 
-    const scheduleBaseTypes = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('mcaComponents.baseTypes.schedule'));
+    const scheduleBaseTypes =
+      readSchedulerServiceTaskScheduleDefinitionFromConfig(
+        config.getConfig('mcaComponents.baseTypes.schedule'),
+      );
     await scheduler.scheduleTask({
       ...scheduleBaseTypes,
       id: 'update-basetypes',
@@ -57,21 +89,35 @@ export class McaComponentService implements McaService {
           config,
         }).runAsync();
       },
-    },);
+    });
   }
 
-  async getMcaComponentsCount(request: { type: McaComponentType }): Promise<number> {
-    const count = await this.mcaComponentsStore.getMcaComponentsCount(request.type);
+  async getMcaComponentsCount(request: {
+    type: McaComponentType;
+  }): Promise<number> {
+    const count = await this.mcaComponentsStore.getMcaComponentsCount(
+      request.type,
+    );
     return count ?? 0;
   }
 
-  async listMcaComponents(request: McaComponentListRequest): Promise<McaComponentListResult> {
+  async listMcaComponents(
+    request: McaComponentListRequest,
+  ): Promise<McaComponentListResult> {
     const offset = request.offset ?? 0;
     const limit = request.limit ?? 20;
-    return await this.mcaComponentsStore.getMcaComponents(offset, limit, request.type, request.orderBy, request.search);
+    return await this.mcaComponentsStore.getMcaComponents(
+      offset,
+      limit,
+      request.type,
+      request.orderBy,
+      request.search,
+    );
   }
 
-  async getMcaComponent(request: { component: string }): Promise<McaComponent | undefined> {
+  async getMcaComponent(request: {
+    component: string;
+  }): Promise<McaComponent | undefined> {
     return this.mcaComponentsStore.getMcaComponent(request.component);
   }
 
@@ -80,22 +126,29 @@ export class McaComponentService implements McaService {
     return versions ?? DEFAULT_MCA_VERSIONS;
   }
 
-  async listMcaBaseTypes(request: McaBaseTypeListRequest): Promise<McaBaseTypeListResult> {
+  async listMcaBaseTypes(
+    request: McaBaseTypeListRequest,
+  ): Promise<McaBaseTypeListResult> {
     const offset = request.offset ?? 0;
     const limit = request.limit ?? 20;
-    return this.mcaComponentsStore.getMcaBaseTypes(offset, limit, request.orderBy, request.search);
+    return this.mcaComponentsStore.getMcaBaseTypes(
+      offset,
+      limit,
+      request.orderBy,
+      request.search,
+    );
   }
 
   async getMcaBaseTypesCount(): Promise<number> {
     return (await this.mcaComponentsStore.getMcaBaseTypesCount()) ?? 0;
   }
 
-  async getMcaBaseType(request: { baseType: string }): Promise<McaBaseType | undefined> {
+  async getMcaBaseType(request: {
+    baseType: string;
+  }): Promise<McaBaseType | undefined> {
     return this.mcaComponentsStore.getMcaBaseType(request.baseType);
   }
-
 }
-
 
 export const mcaComponentServiceRef = createServiceRef<McaService>({
   id: 'mca.component.service',

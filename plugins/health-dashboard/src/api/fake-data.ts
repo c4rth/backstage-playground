@@ -1,8 +1,7 @@
-
-import { EnvironmentHealthData } from "../types";
+import { EnvironmentHealthData } from '../types';
 
 export function dummyCall(): EnvironmentHealthData {
-    const data = `
+  const data = `
 {
   "tst": {
     "AAAA": {
@@ -776,5 +775,5 @@ export function dummyCall(): EnvironmentHealthData {
   }
 }
   `;
-    return JSON.parse(data) as EnvironmentHealthData;
+  return JSON.parse(data) as EnvironmentHealthData;
 }

@@ -38,7 +38,6 @@ export const createDebugXLogAction = () => {
     },
     supportsDryRun: true,
     async handler(ctx) {
-
       ctx.logger.info(JSON.stringify(ctx.input, null, 2));
 
       ctx.logger.info(`This is the workspace path: ${ctx.workspacePath}`);
@@ -65,16 +64,21 @@ export const createDebugXLogAction = () => {
       }
     },
   });
-}
+};
 
-export async function recursiveReadDir(logger: LoggerService, dir: string): Promise<string[]> {
+export async function recursiveReadDir(
+  logger: LoggerService,
+  dir: string,
+): Promise<string[]> {
   logger.info(`Reading directory ${dir}`);
   const subdirs = await readdir(dir);
   logger.info(`Found subdirs ${subdirs.join(', ')}`);
   const files = await Promise.all(
     subdirs.map(async subdir => {
       const res = join(dir, subdir);
-      return (await stat(res)).isDirectory() ? recursiveReadDir(logger, res) : [res];
+      return (await stat(res)).isDirectory()
+        ? recursiveReadDir(logger, res)
+        : [res];
     }),
   );
   logger.info(`Found files ${files.flat().join(', ')}`);

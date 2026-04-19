@@ -6,7 +6,10 @@ import {
   fetchApiRef,
   featureFlagsApiRef,
 } from '@backstage/core-plugin-api';
-import { healthDashboardBackendApiRef, HealthDashboardBackendClient } from './api';
+import {
+  healthDashboardBackendApiRef,
+  HealthDashboardBackendClient,
+} from './api';
 import { rootRouteRef } from './routes';
 
 export const healthDashboardPlugin = createPlugin({
@@ -14,9 +17,17 @@ export const healthDashboardPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: healthDashboardBackendApiRef,
-      deps: { configApi: configApiRef, fetchApi: fetchApiRef, featureFlagsApi: featureFlagsApiRef },
+      deps: {
+        configApi: configApiRef,
+        fetchApi: fetchApiRef,
+        featureFlagsApi: featureFlagsApiRef,
+      },
       factory: ({ configApi, fetchApi, featureFlagsApi }) =>
-        new HealthDashboardBackendClient({ configApi, fetchApi, featureFlagsApi }),
+        new HealthDashboardBackendClient({
+          configApi,
+          fetchApi,
+          featureFlagsApi,
+        }),
     }),
   ],
   routes: {
@@ -34,7 +45,9 @@ export const HealthDashboardPage = healthDashboardPlugin.provide(
     name: 'HealthDashboardPage',
     component: {
       lazy: () =>
-        import('./components/HealthDashboardPage').then(m => m.HealthDashboardPage),
+        import('./components/HealthDashboardPage').then(
+          m => m.HealthDashboardPage,
+        ),
     },
   }),
 );

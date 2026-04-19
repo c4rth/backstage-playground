@@ -14,15 +14,13 @@ import {
   identityApiRef,
   microsoftAuthApiRef,
 } from '@backstage/core-plugin-api';
-import {
-  CustomAnalyticsApi,
-} from '@internal/plugin-analytics';
+import { CustomAnalyticsApi } from '@internal/plugin-analytics';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({
     api: scmIntegrationsApiRef,
     deps: {
-      configApi: configApiRef
+      configApi: configApiRef,
     },
     factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
   }),

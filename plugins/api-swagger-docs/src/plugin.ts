@@ -19,7 +19,9 @@ export const OpenApiDefinitionWidget = apiSwaggerDocsPlugin.provide(
     name: 'OpenApiDefinitionWidget',
     component: {
       lazy: () =>
-        import('./components/OpenApiDefinitionWidget').then(m => m.OpenApiDefinitionWidget),
+        import('./components/OpenApiDefinitionWidget').then(
+          m => m.OpenApiDefinitionWidget,
+        ),
     },
   }),
 );

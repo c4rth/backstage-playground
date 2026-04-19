@@ -1,9 +1,21 @@
-import { Text, Flex, DialogTrigger, Dialog, DialogHeader, DialogBody, Box, } from '@backstage/ui';
 import {
-  Progress,
-} from '@backstage/core-components';
+  Text,
+  Flex,
+  DialogTrigger,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  Box,
+} from '@backstage/ui';
+import { Progress } from '@backstage/core-components';
 
-export const LogsDialog = ({ isOpen, onOpenChange, title: dialogTitle, loading, logs }: {
+export const LogsDialog = ({
+  isOpen,
+  onOpenChange,
+  title: dialogTitle,
+  loading,
+  logs,
+}: {
   isOpen: boolean;
   title: string;
   loading: boolean;
@@ -11,17 +23,15 @@ export const LogsDialog = ({ isOpen, onOpenChange, title: dialogTitle, loading, 
   onOpenChange: (isOpen: boolean) => void;
 }) => (
   <DialogTrigger isOpen={isOpen} onOpenChange={onOpenChange}>
-    <Dialog width='100%' height='100%'>
+    <Dialog width="100%" height="100%">
       <DialogHeader>
-        <Flex style={{ width: '100%' }}>
-          Logs - {dialogTitle}
-        </Flex>
+        <Flex style={{ width: '100%' }}>Logs - {dialogTitle}</Flex>
       </DialogHeader>
       <DialogBody>
         {loading ? (
           <Progress />
         ) : (
-          <Box as='pre' style={{ whiteSpace: 'pre-wrap', overflow: 'auto' }}>
+          <Box as="pre" style={{ whiteSpace: 'pre-wrap', overflow: 'auto' }}>
             <Text style={{ fontFamily: 'monospace' }}>
               {logs?.join('\n') ?? 'No logs available'}
             </Text>

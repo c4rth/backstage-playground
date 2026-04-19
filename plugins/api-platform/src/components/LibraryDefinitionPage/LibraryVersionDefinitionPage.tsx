@@ -8,14 +8,17 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { AsyncEntityProvider, catalogApiRef } from '@backstage/plugin-catalog-react';
+import {
+  AsyncEntityProvider,
+  catalogApiRef,
+} from '@backstage/plugin-catalog-react';
 import { useEffect, useState } from 'react';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common';
 import { Box, Flex, Text } from '@backstage/ui';
-import { ComponentDisplayName } from "../common";
-import { ServiceDefinition } from "@internal/plugin-api-platform-common";
+import { ComponentDisplayName } from '../common';
+import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import useAsync from 'react-use/esm/useAsync';
 import { fetchAllServicesByLibraryVersion } from './fetchServicesByLibrary';
 import { ListBox, ListBoxItem } from 'react-aria-components';
@@ -28,12 +31,21 @@ type TableRow = {
   serviceDefinition: ServiceDefinition;
 };
 
-const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
+const renderVersionList = (
+  serviceDefinition: ServiceDefinition,
+  renderItem: (version: any, idx: number) => JSX.Element,
+) => (
   <ListBox>
     {serviceDefinition.versions?.map((version, idx) => (
       <ListBoxItem
         key={`${serviceDefinition.name}-${version.version}-${idx}`}
-        style={{ margin: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '2.5rem' }}
+        style={{
+          margin: 2,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '2.5rem',
+        }}
       >
         {renderItem(version, idx)}
       </ListBoxItem>
@@ -52,14 +64,16 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
     if (!row.serviceDefinition?.versions) return false;
     const lowerQuery = query.toLowerCase();
     return row.serviceDefinition.versions.some(version => {
-      const envData = version.environments[env as keyof typeof version.environments];
+      const envData =
+        version.environments[env as keyof typeof version.environments];
       return envData?.imageVersion.toLowerCase().includes(lowerQuery);
     });
   },
   render: ({ serviceDefinition }) =>
-    renderVersionList(serviceDefinition, (version) => (
+    renderVersionList(serviceDefinition, version => (
       <Text variant="body-medium">
-        {version.environments[env as keyof typeof version.environments]?.imageVersion ?? '-'}
+        {version.environments[env as keyof typeof version.environments]
+          ?.imageVersion ?? '-'}
       </Text>
     )),
 });
@@ -72,8 +86,13 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ serviceDefinition }) => (
-      <Link to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}>
-        <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
+      <Link
+        to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
+      >
+        <ComponentDisplayName
+          text={serviceDefinition.serviceName}
+          type="service"
+        />
       </Link>
     ),
   },
@@ -95,7 +114,10 @@ const serviceColumns: TableColumn<TableRow>[] = [
   },
 ];
 
-const toRow = (serviceDefinition: ServiceDefinition, idx: number): TableRow => ({
+const toRow = (
+  serviceDefinition: ServiceDefinition,
+  idx: number,
+): TableRow => ({
   id: idx,
   name: serviceDefinition.name,
   system: serviceDefinition.system,
@@ -110,7 +132,9 @@ export const LibraryVersionDefinitionPage = () => {
   const catalogApi = useApi(catalogApiRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
 
-  const [libraryEntity, setLibraryEntity] = useState<ComponentEntity | undefined>(undefined);
+  const [libraryEntity, setLibraryEntity] = useState<
+    ComponentEntity | undefined
+  >(undefined);
   const [libEntityRef, setLibEntityRef] = useState<string | null>(null);
 
   useEffect(() => {
@@ -118,12 +142,20 @@ export const LibraryVersionDefinitionPage = () => {
 
     const fetchLibraryEntity = async () => {
       try {
-        const libVersions = await apiPlatformApi.getLibraryVersions(system!, name!, true);
-        const matchedVersion = libVersions.find(lv => lv.version === queryVersion);
+        const libVersions = await apiPlatformApi.getLibraryVersions(
+          system!,
+          name!,
+          true,
+        );
+        const matchedVersion = libVersions.find(
+          lv => lv.version === queryVersion,
+        );
 
         if (matchedVersion?.entityRef) {
           setLibEntityRef(matchedVersion.entityRef);
-          const entity = await catalogApi.getEntityByRef(matchedVersion.entityRef);
+          const entity = await catalogApi.getEntityByRef(
+            matchedVersion.entityRef,
+          );
           setLibraryEntity(entity as ComponentEntity);
         }
       } catch (error) {
@@ -135,15 +167,24 @@ export const LibraryVersionDefinitionPage = () => {
     fetchLibraryEntity();
   }, [apiPlatformApi, catalogApi, system, name, queryVersion]);
 
-  const { value: allServices = [], loading, error } = useAsync(async () => {
+  const {
+    value: allServices = [],
+    loading,
+    error,
+  } = useAsync(async () => {
     if (!name || !libraryEntity || !libEntityRef) return [];
-    const libVersionRef = libEntityRef.replace(/^component:/, '').replace(/^default\//, '');
-    const result = await fetchAllServicesByLibraryVersion(apiPlatformApi, libVersionRef);
+    const libVersionRef = libEntityRef
+      .replace(/^component:/, '')
+      .replace(/^default\//, '');
+    const result = await fetchAllServicesByLibraryVersion(
+      apiPlatformApi,
+      libVersionRef,
+    );
     return result.items;
   }, [libraryEntity, apiPlatformApi, libEntityRef]);
 
   if (error) {
-    return <ResponseErrorPanel title='Error loading Services' error={error} />;
+    return <ResponseErrorPanel title="Error loading Services" error={error} />;
   }
 
   const rows = allServices.map(toRow);
@@ -151,11 +192,16 @@ export const LibraryVersionDefinitionPage = () => {
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <Page themeId="libraries">
-        <Header title={`${name} - ${queryVersion}`} type='Library'>
-          <ComponentHeaderLabels entity={libraryEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
+        <Header title={`${name} - ${queryVersion}`} type="Library">
+          <ComponentHeaderLabels
+            entity={
+              libraryEntity ??
+              ({ metadata: { name, title: name } } as ComponentEntity)
+            }
+          />
         </Header>
         <Content>
-          <Box mb='1'>
+          <Box mb="1">
             <Table<TableRow>
               isLoading={loading}
               columns={serviceColumns}
@@ -166,11 +212,7 @@ export const LibraryVersionDefinitionPage = () => {
                 draggable: false,
                 thirdSortClick: false,
               }}
-              title={
-                <Flex align="center">
-                  Services ({rows.length})
-                </Flex>
-              }
+              title={<Flex align="center">Services ({rows.length})</Flex>}
               data={rows}
             />
           </Box>

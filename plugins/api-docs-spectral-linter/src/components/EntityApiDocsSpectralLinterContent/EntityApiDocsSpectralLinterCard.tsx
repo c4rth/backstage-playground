@@ -27,7 +27,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { linterApiRef } from '../../api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, Text } from '@backstage/ui';
-import { Link } from "@backstage/core-components";
+import { Link } from '@backstage/core-components';
 
 /**
  * Component for browsing API docs spectral linter on an entity page.
@@ -38,7 +38,7 @@ export const EntityApiDocsSpectralLinterCard = () => {
   const linterApi = useApi(linterApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    return linterApi.lint({ entity: (entity as ApiEntity) });
+    return linterApi.lint({ entity: entity as ApiEntity });
   }, [entity]);
 
   const getSeverity = (severity: number) => {
@@ -57,7 +57,7 @@ export const EntityApiDocsSpectralLinterCard = () => {
     startLine: number,
     endLine: number,
     path: string,
-    isPrettyPrinted: boolean
+    isPrettyPrinted: boolean,
   ) => {
     const textArray = text.split('\n');
     textArray.splice(0, startLine);
@@ -69,7 +69,9 @@ export const EntityApiDocsSpectralLinterCard = () => {
     textArray.push(`... line ${endLine + 1} in source`);
 
     if (isPrettyPrinted) {
-      textArray.unshift('# Notice: The API definition has been pretty printed for readability.\n# The line numbers will not match the actual definition.')
+      textArray.unshift(
+        '# Notice: The API definition has been pretty printed for readability.\n# The line numbers will not match the actual definition.',
+      );
     }
     return textArray.join('\n');
   };
@@ -95,27 +97,32 @@ export const EntityApiDocsSpectralLinterCard = () => {
         !error &&
         (value?.data?.length ? (
           value.data.map((ruleResult, idx) => (
-            <Grid.Root key={idx} columns='12'>
-              <Grid.Item colSpan='12' style={{ marginBottom: '12px'}}>
+            <Grid.Root key={idx} columns="12">
+              <Grid.Item colSpan="12" style={{ marginBottom: '12px' }}>
                 <WarningPanel
                   title={`${ruleResult.message} (${ruleResult.code})`}
                   severity={getSeverity(ruleResult.severity)}
                   message={
-                    <InfoCard deepLink={
-                      ruleResult.ruleDocumentationUrl ?
-                        {
-                          title: "Documentation",
-                          link: ruleResult.ruleDocumentationUrl
-                        } : undefined
-                    }>
-                      <MarkdownContent content={ruleResult.ruleDescription || ""} />
+                    <InfoCard
+                      deepLink={
+                        ruleResult.ruleDocumentationUrl
+                          ? {
+                              title: 'Documentation',
+                              link: ruleResult.ruleDocumentationUrl,
+                            }
+                          : undefined
+                      }
+                    >
+                      <MarkdownContent
+                        content={ruleResult.ruleDescription || ''}
+                      />
                       <CodeSnippet
                         text={previewContent(
                           ruleResult.definition,
                           ruleResult.linePosition.start,
                           ruleResult.linePosition.end,
                           ruleResult.path?.join(' / ') || 'unknown',
-                          entity.spec.definition !== ruleResult.definition
+                          entity.spec.definition !== ruleResult.definition,
                         )}
                         language="yaml"
                         customStyle={{

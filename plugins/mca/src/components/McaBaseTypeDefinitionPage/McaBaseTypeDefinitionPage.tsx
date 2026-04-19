@@ -61,7 +61,11 @@ export const McaBaseTypeDefinitionPage = () => {
   if (!baseTypesUrl) {
     return (
       <ResponseErrorPanel
-        error={new Error('Base types URL not configured. Please check mcaComponents.baseTypes.baseUrl in app-config.yaml')}
+        error={
+          new Error(
+            'Base types URL not configured. Please check mcaComponents.baseTypes.baseUrl in app-config.yaml',
+          )
+        }
       />
     );
   }
@@ -71,9 +75,9 @@ export const McaBaseTypeDefinitionPage = () => {
       key={name}
       themeId="apis"
       title={name || 'Unknown'}
-      type='MCA BaseType'
+      type="MCA BaseType"
     >
-      <IFramePage 
+      <IFramePage
         title={`BaseType :${baseTypeUrl}`}
         iframe={{
           src: baseTypeUrl || '',
@@ -83,4 +87,4 @@ export const McaBaseTypeDefinitionPage = () => {
       />
     </PageWithHeader>
   );
-}
+};

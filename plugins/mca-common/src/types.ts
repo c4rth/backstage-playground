@@ -34,7 +34,8 @@ export const MCACOMPONENT_FIELDS = [
   'p3Version',
   'p4Version',
   'applicationCode',
-  'packageName'] as const;
+  'packageName',
+] as const;
 
 export type McaComponentListOptions = {
   offset?: number;
@@ -61,14 +62,9 @@ export type McaBaseType = {
   packageName: string;
 };
 
-export type McaBaseTypeListFields =
-  | 'baseType'
-  | 'packageName';
+export type McaBaseTypeListFields = 'baseType' | 'packageName';
 
-
-export const MCABASETYPE_FIELDS = [
-  'baseType',
-  'packageName'] as const;
+export const MCABASETYPE_FIELDS = ['baseType', 'packageName'] as const;
 
 export type McaBaseTypeListOptions = {
   offset?: number;

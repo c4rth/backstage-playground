@@ -1,7 +1,21 @@
-import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
-import { Entity, parseEntityRef, RELATION_API_CONSUMED_BY, RELATION_API_PROVIDED_BY } from "@backstage/catalog-model";
-import { CatalogApi, catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
-import { useApi } from "@backstage/core-plugin-api";
+import {
+  Link,
+  ResponseErrorPanel,
+  Table,
+  TableColumn,
+} from '@backstage/core-components';
+import {
+  Entity,
+  parseEntityRef,
+  RELATION_API_CONSUMED_BY,
+  RELATION_API_PROVIDED_BY,
+} from '@backstage/catalog-model';
+import {
+  CatalogApi,
+  catalogApiRef,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
+import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import {
   ANNOTATION_API_NAME,
@@ -11,11 +25,11 @@ import {
   CATALOG_METADATA_SERVICE_NAME,
   CATALOG_METADATA_SERVICE_VERSION,
   CATALOG_SPEC_LIFECYCLE,
-  CATALOG_SPEC_SYSTEM
-} from "@internal/plugin-api-platform-common";
-import { useGetApiVersions } from "../../hooks";
+  CATALOG_SPEC_SYSTEM,
+} from '@internal/plugin-api-platform-common';
+import { useGetApiVersions } from '../../hooks';
 import semver from 'semver';
-import { ComponentDisplayName } from "../common";
+import { ComponentDisplayName } from '../common';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
@@ -34,8 +48,10 @@ const serviceColumns: TableColumn<TableRow>[] = [
     field: 'svcName',
     highlight: true,
     render: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
-      <Link to={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}>
-        <ComponentDisplayName text={svcName} type='service' />
+      <Link
+        to={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+      >
+        <ComponentDisplayName text={svcName} type="service" />
       </Link>
     ),
   },
@@ -77,7 +93,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     field: 'system',
     render: ({ svcSystem }: TableRow) =>
-      svcSystem === "-" ? (
+      svcSystem === '-' ? (
         <ComponentDisplayName text={svcSystem} type="system" />
       ) : (
         <Link to={`/api-platform/system/${svcSystem}`}>
@@ -87,11 +103,17 @@ const serviceColumns: TableColumn<TableRow>[] = [
   },
 ];
 
-const toRow = (service: Entity & { apiVersion: string }, idx: number): TableRow => ({
+const toRow = (
+  service: Entity & { apiVersion: string },
+  idx: number,
+): TableRow => ({
   id: idx,
   apiVersion: service.apiVersion || '?',
-  svcName: service.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString() ?? '-',
-  svcVersion: service.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString() ?? '-',
+  svcName:
+    service.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString() ?? '-',
+  svcVersion:
+    service.metadata.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString() ??
+    '-',
   svcEnvironment: service.spec?.lifecycle?.toString().toUpperCase() ?? '-',
   svcSystem: service.spec?.system?.toString() ?? '-',
 });
@@ -99,16 +121,22 @@ const toRow = (service: Entity & { apiVersion: string }, idx: number): TableRow 
 const fetchEntities = async (
   catalogApi: CatalogApi,
   entity: Entity,
-  dependency: 'provider' | 'consumer'
+  dependency: 'provider' | 'consumer',
 ): Promise<Entity[]> => {
-  const relationType = dependency === 'consumer' ? RELATION_API_CONSUMED_BY : RELATION_API_PROVIDED_BY;
-  const relations = entity.relations?.filter(relation => relation.type === relationType) ?? [];
+  const relationType =
+    dependency === 'consumer'
+      ? RELATION_API_CONSUMED_BY
+      : RELATION_API_PROVIDED_BY;
+  const relations =
+    entity.relations?.filter(relation => relation.type === relationType) ?? [];
 
   if (relations.length === 0) {
     return [];
   }
 
-  const targetNames = relations.map(relation => parseEntityRef(relation.targetRef).name);
+  const targetNames = relations.map(
+    relation => parseEntityRef(relation.targetRef).name,
+  );
 
   const response = await catalogApi.getEntities({
     fields: [
@@ -131,17 +159,28 @@ interface ApiAllRelationsCardProps {
   readonly dependency: 'provider' | 'consumer';
 }
 
-export const ApiAllRelationsCard = ({ dependency }: ApiAllRelationsCardProps) => {
+export const ApiAllRelationsCard = ({
+  dependency,
+}: ApiAllRelationsCardProps) => {
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
   const system = entity.spec?.system?.toString() ?? '';
-  const apiName = entity?.metadata?.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '';
+  const apiName =
+    entity?.metadata?.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '';
   const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
-  const { apiVersions, loading: versionsLoading, error: versionsError } = useGetApiVersions(system, apiName);
+  const {
+    apiVersions,
+    loading: versionsLoading,
+    error: versionsError,
+  } = useGetApiVersions(system, apiName);
 
-  const { value: allServices = [], loading: servicesLoading, error: servicesError } = useAsync(async () => {
+  const {
+    value: allServices = [],
+    loading: servicesLoading,
+    error: servicesError,
+  } = useAsync(async () => {
     if (!apiVersions?.length || !apiName) return [];
 
     const apiEntities = await catalogApi.getEntities({
@@ -152,11 +191,20 @@ export const ApiAllRelationsCard = ({ dependency }: ApiAllRelationsCardProps) =>
     });
 
     const servicePromises = apiEntities.items
-      .filter(apiEntity => apiEntity.metadata.annotations?.[ANNOTATION_API_VERSION])
+      .filter(
+        apiEntity => apiEntity.metadata.annotations?.[ANNOTATION_API_VERSION],
+      )
       .map(async apiEntity => {
-        const apiVersion = apiEntity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString() ?? '';
+        const apiVersion =
+          apiEntity.metadata.annotations?.[
+            ANNOTATION_API_VERSION
+          ]?.toString() ?? '';
         try {
-          const services = await fetchEntities(catalogApi, apiEntity, dependency);
+          const services = await fetchEntities(
+            catalogApi,
+            apiEntity,
+            dependency,
+          );
           return services.map(service => ({ ...service, apiVersion }));
         } catch {
           return [];
@@ -172,7 +220,12 @@ export const ApiAllRelationsCard = ({ dependency }: ApiAllRelationsCardProps) =>
   const error = versionsError || servicesError;
 
   if (error) {
-    return <ResponseErrorPanel title={`Error loading ${title.toLowerCase()}`} error={error} />;
+    return (
+      <ResponseErrorPanel
+        title={`Error loading ${title.toLowerCase()}`}
+        error={error}
+      />
+    );
   }
 
   return (

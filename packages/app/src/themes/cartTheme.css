@@ -1,48 +1,47 @@
 :root {
   --bui-fg-primary: rgba(0, 0, 0, 0.87);
-  --bui-fg-secondary: #6E6E6E;
-  --bui-fg-info: #C30045;
+  --bui-fg-secondary: #6e6e6e;
+  --bui-fg-info: #c30045;
   --bui-fg-disabled: rgba(0, 0, 0, 0.38);
   --bui-fg-solid: #fff;
   --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
   --bui-fg-danger: rgb(170, 46, 37);
   --bui-fg-warning: rgb(178, 106, 0);
   --bui-fg-success: rgb(53, 122, 56);
-  --bui-bg-app: #F8F8F8;
+  --bui-bg-app: #f8f8f8;
   --bui-bg-danger: rgb(246, 104, 94);
   --bui-bg-warning: rgb(255, 172, 51);
   --bui-bg-success: rgb(111, 191, 115);
   --bui-border-danger: #f44336;
   --bui-border-warning: #ff9800;
   --bui-border-success: #4caf50;
-  --bui-ring: #FFFBCC;
+  --bui-ring: #fffbcc;
 
-  --belui-chip-bg-color1: #C9D6FF;
-  --belui-chip-bg-color2: #FFD6E8;
-  --belui-chip-bg-color3: #CDEDE4;
-  --belui-chip-bg-color4: #E6D6FF;
-  --belui-chip-bg-color5: #DCE3EA;
+  --belui-chip-bg-color1: #c9d6ff;
+  --belui-chip-bg-color2: #ffd6e8;
+  --belui-chip-bg-color3: #cdede4;
+  --belui-chip-bg-color4: #e6d6ff;
+  --belui-chip-bg-color5: #dce3ea;
 
-  --belui-chip-fg-color1: #1C2F8A;
-  --belui-chip-fg-color2: #7A123E;
-  --belui-chip-fg-color3: #0F4A3C;
-  --belui-chip-fg-color4: #4A1C8A;
-  --belui-chip-fg-color5: #1F2933;
+  --belui-chip-fg-color1: #1c2f8a;
+  --belui-chip-fg-color2: #7a123e;
+  --belui-chip-fg-color3: #0f4a3c;
+  --belui-chip-fg-color4: #4a1c8a;
+  --belui-chip-fg-color5: #1f2933;
 
   [data-theme-mode='light'] {
-    --bui-font-regular: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-    --bui-bg-solid: #C30045;
+    --bui-font-regular: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+    --bui-bg-solid: #c30045;
     --bui-bg-solid-hover: rgb(166, 0, 59);
     --bui-bg-solid-pressed: rgb(136, 0, 48);
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
   }
 
   [data-theme-mode='dark'] {
-    --bui-font-regular: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-    --bui-bg-solid: #C30045;
+    --bui-font-regular: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+    --bui-bg-solid: #c30045;
     --bui-bg-solid-hover: rgb(166, 0, 59);
     --bui-bg-solid-pressed: rgb(136, 0, 48);
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
   }
-
 }

@@ -3,10 +3,11 @@ import { DefaultEditor } from '../DefaultEditor';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
-import ReactJson from 'react-json-view'
+import ReactJson from 'react-json-view';
 import { Box } from '@backstage/ui';
 
-const BASE64_REGEX = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+const BASE64_REGEX =
+  /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 const exampleJwt =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
 
@@ -15,7 +16,9 @@ export const JwtDecoder = () => {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [jwt, setJwt] = useState<any | undefined>(undefined);
-  const [signatureVerified, setSignatureVerified] = useState<boolean | null>(null);
+  const [signatureVerified, setSignatureVerified] = useState<boolean | null>(
+    null,
+  );
   const [verificationError, setVerificationError] = useState<string>('');
 
   const showError = useCallback(
@@ -74,37 +77,56 @@ export const JwtDecoder = () => {
     [showError],
   );
 
-
-  const JwtDecodeOutput = (props: { jwt?: any; signatureVerified?: boolean | null; verificationError?: string }) => {
+  const JwtDecodeOutput = (props: {
+    jwt?: any;
+    signatureVerified?: boolean | null;
+    verificationError?: string;
+  }) => {
     return (
-      <Box style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+      <Box
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {props.jwt ? (
           <>
             {props.signatureVerified !== null && (
-              <Box mb='2' p='1' style={{
-                backgroundColor: props.signatureVerified ? '#4caf50' : '#f44336',
-                color: 'white',
-                borderRadius: '4px',
-                textAlign: 'center'
-              }}>
-                Signature: {props.signatureVerified ? '✓ Verified' : `✗ Invalid${props.verificationError ? ` - ${props.verificationError}` : ''}`}
+              <Box
+                mb="2"
+                p="1"
+                style={{
+                  backgroundColor: props.signatureVerified
+                    ? '#4caf50'
+                    : '#f44336',
+                  color: 'white',
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                }}
+              >
+                Signature:{' '}
+                {props.signatureVerified
+                  ? '✓ Verified'
+                  : `✗ Invalid${props.verificationError ? ` - ${props.verificationError}` : ''}`}
               </Box>
             )}
             {props.signatureVerified === null && (
-              <Box mb='2' p='1' style={{
-                backgroundColor: '#2196f3',
-                color: 'white',
-                borderRadius: '4px',
-                textAlign: 'center'
-              }}>
+              <Box
+                mb="2"
+                p="1"
+                style={{
+                  backgroundColor: '#2196f3',
+                  color: 'white',
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                }}
+              >
                 Signature: Verification not performed
               </Box>
-            )} <ReactJson
+            )}{' '}
+            <ReactJson
               name={false}
               src={props.jwt || {}}
               style={{
@@ -112,7 +134,7 @@ export const JwtDecoder = () => {
                 boxSizing: 'border-box',
                 borderRadius: '4px',
                 flex: 1,
-                backgroundColor: 'var(--bui-bg-neutral-1)'
+                backgroundColor: 'var(--bui-bg-neutral-1)',
               }}
               enableClipboard
             />
@@ -131,7 +153,9 @@ export const JwtDecoder = () => {
               color: 'var(--bui-fg-primary)',
             }}
           >
-            <Box><i>No JWT data available</i></Box>
+            <Box>
+              <i>No JWT data available</i>
+            </Box>
           </div>
         )}
       </Box>
@@ -185,7 +209,8 @@ export const JwtDecoder = () => {
             setSignatureVerified(true);
           } catch (error) {
             setSignatureVerified(false);
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorMessage =
+              error instanceof Error ? error.message : 'Unknown error';
             setVerificationError(errorMessage);
           }
         })();
@@ -197,7 +222,6 @@ export const JwtDecoder = () => {
     }
   }, [input, headerExists, keyExists, payloadExists]);
 
-
   return (
     <DefaultEditor
       input={input}
@@ -205,7 +229,13 @@ export const JwtDecoder = () => {
       setInput={setInput}
       sample={exampleJwt}
       output={output}
-      rightContent={<JwtDecodeOutput jwt={jwt} signatureVerified={signatureVerified} verificationError={verificationError} />}
+      rightContent={
+        <JwtDecodeOutput
+          jwt={jwt}
+          signatureVerified={signatureVerified}
+          verificationError={verificationError}
+        />
+      }
     />
   );
 };

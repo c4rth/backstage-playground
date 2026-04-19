@@ -3,11 +3,10 @@ import Router from 'express-promise-router';
 import { AnalyticsService } from '.';
 
 export async function createRouter({
-  analyticsService
+  analyticsService,
 }: {
   analyticsService: AnalyticsService;
 }): Promise<express.Router> {
-
   const router = Router();
   router.use(express.json());
 
@@ -28,7 +27,10 @@ export async function createRouter({
     const count = Number.isNaN(parsedCount) ? 10 : parsedCount;
     const parsedDays = parseInt(req.query.days as string, 10);
     const days = Number.isNaN(parsedDays) ? 1 : parsedDays;
-    const features = await analyticsService.getTopFeaturesByUniqueVisitors(count, days);
+    const features = await analyticsService.getTopFeaturesByUniqueVisitors(
+      count,
+      days,
+    );
     res.json({ features });
   });
 

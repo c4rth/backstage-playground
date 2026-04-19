@@ -15,6 +15,7 @@
 - ADO_PERSONAL_ACCESS_TOKEN
 
 ## deploy
+
 ```
 kubectl apply 01-secrets.yaml
 kubectl apply 02-deploy-psql.yaml
@@ -22,7 +23,7 @@ kubectl apply 03-deploy-backstage.yaml
 ```
 
 ## services
+
 ```
 sudo kubectl port-forward svc/backstage -n backstage 80:80
 ```
-

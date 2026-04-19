@@ -1,5 +1,8 @@
 import { Route } from 'react-router-dom';
-import { apiDocsPlugin, ApiExplorerPage as BackstageApiExplorerPage } from '@backstage/plugin-api-docs';
+import {
+  apiDocsPlugin,
+  ApiExplorerPage as BackstageApiExplorerPage,
+} from '@backstage/plugin-api-docs';
 import {
   CatalogEntityPage,
   CatalogIndexPage,
@@ -64,8 +67,17 @@ import {
   LibraryDefinitionPage,
 } from '@internal/plugin-api-platform';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
-import { McaBaseTypeDefinitionPage, McaComponentDefinitionPage, McaComponentExplorerPage, McaBaseTypeExplorerPage } from '@internal/plugin-mca';
-import { adminToolsPermission, healthDashboardPermission, notGuestPermission } from '@internal/plugin-permissions-common';
+import {
+  McaBaseTypeDefinitionPage,
+  McaComponentDefinitionPage,
+  McaComponentExplorerPage,
+  McaBaseTypeExplorerPage,
+} from '@internal/plugin-mca';
+import {
+  adminToolsPermission,
+  healthDashboardPermission,
+  notGuestPermission,
+} from '@internal/plugin-permissions-common';
 // TechDocs
 import { Mermaid } from '@internal/plugin-techdocs-addon-mermaid';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
@@ -128,7 +140,10 @@ const routes = (
     <Route
       path="/catalog"
       element={
-        <RequirePermission permission={notGuestPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+        <RequirePermission
+          permission={notGuestPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
           <CatalogIndexPage pagination />
         </RequirePermission>
       }
@@ -136,7 +151,10 @@ const routes = (
     <Route
       path="/catalog/:namespace/:kind/:name"
       element={
-        <RequirePermission permission={notGuestPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+        <RequirePermission
+          permission={notGuestPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
           <CatalogEntityPage />
         </RequirePermission>
       }
@@ -148,26 +166,26 @@ const routes = (
     </Route>
     <Route
       path="/docs/:namespace/:kind/:name/*"
-      element={<TechDocsReaderPage />}>
+      element={<TechDocsReaderPage />}
+    >
       <TechDocsAddons>
         <Mermaid />
         <DrawIo />
       </TechDocsAddons>
     </Route>
-    <Route
-      path="/external-docs"
-      element={
-        <TechDocsHome />
-      }
-    />
+    <Route path="/external-docs" element={<TechDocsHome />} />
     <Route
       path="/external-docs/:namespace/:kind/:name/*"
-      element={<CustomDocsReaderPage />} />
+      element={<CustomDocsReaderPage />}
+    />
     <Route
       path="/create"
       element={
-        <RequirePermission permission={taskCreatePermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
-          <ScaffolderPage >
+        <RequirePermission
+          permission={taskCreatePermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
+          <ScaffolderPage>
             <ScaffolderFieldExtensions>
               <ProjectPickerFieldExtension />
             </ScaffolderFieldExtensions>
@@ -179,7 +197,10 @@ const routes = (
     <Route
       path="/catalog-import"
       element={
-        <RequirePermission permission={catalogEntityCreatePermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+        <RequirePermission
+          permission={catalogEntityCreatePermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
           <CatalogImportPage />
         </RequirePermission>
       }
@@ -192,7 +213,10 @@ const routes = (
     <Route
       path="/entity-validation"
       element={
-        <RequirePermission permission={adminToolsPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+        <RequirePermission
+          permission={adminToolsPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
           <EntityValidationPage />
         </RequirePermission>
       }
@@ -200,38 +224,67 @@ const routes = (
     <Route path="/api-platform/api" element={<ApiExplorerPage />} />
     {/* For compatibility with old URLs */}
     <Route path="/api-platform/api/:name" element={<ApiRedirectToNoSystem />} />
-    <Route path="/api-platform/api/:system/:name" element={<ApiDefinitionPage />} />
+    <Route
+      path="/api-platform/api/:system/:name"
+      element={<ApiDefinitionPage />}
+    />
     <Route path="/api-platform/service" element={<ServiceExplorerPage />} />
-    <Route path="/api-platform/service/:system/:name" element={<ServiceDefinitionPage />} />
+    <Route
+      path="/api-platform/service/:system/:name"
+      element={<ServiceDefinitionPage />}
+    />
     <Route path="/api-platform/system" element={<SystemExplorerPage />} />
-    <Route path="/api-platform/system/:name" element={<SystemDefinitionPage />} />
+    <Route
+      path="/api-platform/system/:name"
+      element={<SystemDefinitionPage />}
+    />
     <Route path="/api-platform/library" element={<LibraryExplorerPage />} />
-    <Route path="/api-platform/library/:system/:name" element={<LibraryDefinitionPage />} />
+    <Route
+      path="/api-platform/library/:system/:name"
+      element={<LibraryDefinitionPage />}
+    />
     <Route path="/mca/components" element={<McaComponentExplorerPage />} />
-    <Route path="/mca/components/:name" element={<McaComponentDefinitionPage />} />
+    <Route
+      path="/mca/components/:name"
+      element={<McaComponentDefinitionPage />}
+    />
     <Route path="/mca/basetypes" element={<McaBaseTypeExplorerPage />} />
-    <Route path="/mca/basetypes/:name" element={<McaBaseTypeDefinitionPage />} />
-    <Route path="/health-dashboard"
+    <Route
+      path="/mca/basetypes/:name"
+      element={<McaBaseTypeDefinitionPage />}
+    />
+    <Route
+      path="/health-dashboard"
       element={
-        <RequirePermission permission={healthDashboardPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+        <RequirePermission
+          permission={healthDashboardPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
           <HealthDashboardPage />
         </RequirePermission>
-      }>
+      }
+    >
       {customDevToolsPage}
     </Route>
     <Route path="/tools" element={<ToolsPage />} />
-    <Route path="/admin"
+    <Route
+      path="/admin"
       element={
-        <RequirePermission permission={devToolsAdministerPermission} errorPage={<ErrorPage statusMessage="RBAC access denied" />} >
+        <RequirePermission
+          permission={devToolsAdministerPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
           <DevToolsPage />
         </RequirePermission>
-      }>
+      }
+    >
       {customDevToolsPage}
     </Route>
     <Route
       path="/catalog-unprocessed-entities"
       element={<CatalogUnprocessedEntitiesPage />}
-    />;
+    />
+    ;
   </FlatRoutes>
 );
 

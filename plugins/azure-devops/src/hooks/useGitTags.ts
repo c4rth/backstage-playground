@@ -19,7 +19,6 @@ import { azureDevOpsApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 
-
 export function useAsyncGitTags() {
   const api = useApi(azureDevOpsApiRef);
 

@@ -7,9 +7,9 @@ import {
 } from '@backstage/core-components';
 import { useState } from 'react';
 import { Box, Button, Flex } from '@backstage/ui';
-import { ComponentDisplayName } from "../common";
+import { ComponentDisplayName } from '../common';
 import semver from 'semver';
-import { LibraryDefinition } from "@internal/plugin-api-platform-common";
+import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { generateReport } from './generateReport';
@@ -53,7 +53,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
   },
 ];
 
-const toRow = (libDef: LibraryDefinition, system: string, name: string, idx: number): TableRow => ({
+const toRow = (
+  libDef: LibraryDefinition,
+  system: string,
+  name: string,
+  idx: number,
+): TableRow => ({
   id: idx,
   version: libDef.version || '?',
   name,
@@ -67,12 +72,18 @@ interface LibraryVersionsCardProps {
   name: string;
 }
 
-export const LibraryVersionsCard = ({ system, name }: LibraryVersionsCardProps) => {
+export const LibraryVersionsCard = ({
+  system,
+  name,
+}: LibraryVersionsCardProps) => {
   const [generating, setGenerating] = useState(false);
   const [errorReport, setErrorReport] = useState<Error | null>(null);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
 
-  const { libraryVersions, loading, error } = useGetLibraryVersions(system!, name!);
+  const { libraryVersions, loading, error } = useGetLibraryVersions(
+    system!,
+    name!,
+  );
 
   const handleGenerateReport = async () => {
     setGenerating(true);
@@ -87,18 +98,25 @@ export const LibraryVersionsCard = ({ system, name }: LibraryVersionsCardProps) 
   };
 
   if (error || errorReport) {
-    return <ResponseErrorPanel title='Error loading Library Versions' error={error || errorReport!} />;
+    return (
+      <ResponseErrorPanel
+        title="Error loading Library Versions"
+        error={error || errorReport!}
+      />
+    );
   }
 
-  const rows = libraryVersions?.map((l, idx) => toRow(l, system, name, idx)) ?? [];
+  const rows =
+    libraryVersions?.map((l, idx) => toRow(l, system, name, idx)) ?? [];
 
   return (
     <Box>
-      <Flex mb='4' mt='-3' style={{ justifyContent: 'end' }}>
+      <Flex mb="4" mt="-3" style={{ justifyContent: 'end' }}>
         <Button
           style={{ backgroundColor: 'var(--bui-fg-info)' }}
           onClick={handleGenerateReport}
-          isDisabled={generating}>
+          isDisabled={generating}
+        >
           Generate report
         </Button>
       </Flex>
@@ -114,11 +132,7 @@ export const LibraryVersionsCard = ({ system, name }: LibraryVersionsCardProps) 
             draggable: false,
             thirdSortClick: false,
           }}
-          title={
-            <Flex align="center">
-              Versions
-            </Flex>
-          }
+          title={<Flex align="center">Versions</Flex>}
           data={rows}
         />
       </Box>

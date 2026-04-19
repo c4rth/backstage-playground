@@ -1,40 +1,51 @@
 # [Backstage](https://backstage.io)
 
-## node 
+## node
+
 version 24.11.1
 
 headers: https://nodejs.org/download/release/v24.11.1/
 
 ## bump versions
+
 ```sh
-yarn backstage-cli versions:bump 
+yarn backstage-cli versions:bump
 ```
 
 ## install packages
+
 ```sh
 yarn install
 ```
+
 ## outdated packages
+
 ```sh
 yarn upgrade-interactive
 ```
 
 ## compile
+
 ```sh
 yarn tsc
 ```
 
 ## run dev
+
 start db
+
 ```sh
 podman compose -f docker-db-compose.yml up -d
 ```
+
 start backstage
+
 ```sh
 ./run.sh
 ```
 
 ### .env
+
 ```
 AZURE_CLIENT_ID="..."
 AZURE_CLIENT_SECRET="..."
@@ -42,6 +53,7 @@ AZURE_TENANT_ID="..."
 ```
 
 ### app-config.local.yaml
+
 ```
 backend:
   auth:
@@ -66,11 +78,13 @@ permission:
 ```
 
 # Changelog
+
 ## Signals
+
 https://github.com/backstage/backstage/issues/23927
 
-
 # Send notifications
+
 # https://github.com/backstage/backstage/blob/master/beps/0001-notifications-system/README.md
 
 ```

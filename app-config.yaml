@@ -81,10 +81,10 @@ backend:
   listen:
     port: 7007
   csp:
-    connect-src: ["'self'", "http:", "https:"]
-    default-src: ["'self'", "http:", "https:"]
-    img-src: ["'self'", "http:", "https:", "data:", "blob:"]
-    script-src: ["'self'", "http:", "https:", "data:", "blob:", "'unsafe-eval'"]
+    connect-src: ["'self'", 'http:', 'https:']
+    default-src: ["'self'", 'http:', 'https:']
+    img-src: ["'self'", 'http:', 'https:', 'data:', 'blob:']
+    script-src: ["'self'", 'http:', 'https:', 'data:', 'blob:', "'unsafe-eval'"]
     upgrade-insecure-requests: []
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
@@ -94,7 +94,7 @@ backend:
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE, OPTIONS, CONNECT, TRACE]
     credentials: true
     Access-Control-Allow-Origin: '*'
-    
+
   database:
     client: pg
     connection:
@@ -139,9 +139,9 @@ permission:
   #     - qeta
 
 integrations:
-#  github:
-#    - host: github.com
-#      token: ${GITHUB_TOKEN}
+  #  github:
+  #    - host: github.com
+  #      token: ${GITHUB_TOKEN}
   azure:
     - host: dev.azure.com
       credentials:
@@ -156,7 +156,6 @@ integrations:
         #  clientSecret: ${AZDO_CLIENT_SECRET}
         #- clientId: ${MANAGED_IDENTITY_CLIENT_ID} # Use Managed Identity
         #  managedIdentity: true
-
 
 azureDevOps:
   host: dev.azure.com
@@ -194,20 +193,19 @@ proxy:
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
 
-
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
 # and an external cloud storage when deploying TechDocs for production use-case.
 # https://backstage.io/docs/features/techdocs/how-to-guides#how-to-migrate-from-techdocs-basic-to-recommended-deployment-approach
 techdocs:
-  builder: "external" # Alternatives - 'local', 'external'
+  builder: 'external' # Alternatives - 'local', 'external'
   generator:
-    runIn: "local" # Alternatives - 'local'
+    runIn: 'local' # Alternatives - 'local'
   publisher:
     #type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
     #local:
     #  publishDirectory: "../../publisher-docs"
-    type: "azureBlobStorage"
+    type: 'azureBlobStorage'
     azureBlobStorage:
       containerName: ${AZURE_STORAGE_CONTAINER_NAME}
       credentials:
@@ -228,31 +226,31 @@ search:
       fragmentDelimiter: ' ... ' # Delimiter string used to concatenate fragments. Defaults to " ... ".
   collators:
     catalog:
-      filter: 
+      filter:
         kind: ['component', 'system', 'api', 'template']
       batchSize: 5
       schedule:
         frequency: PT1M
         timeout: PT15M
-        initialDelay: PT5S        
+        initialDelay: PT5S
     apis:
       schedule:
-          frequency: PT5M
-          timeout: PT15M
-          initialDelay: PT5S
+        frequency: PT5M
+        timeout: PT15M
+        initialDelay: PT5S
     mcaComponents:
       schedule:
-          frequency: PT5M
-          timeout: PT15M
-          initialDelay: PT5S
+        frequency: PT5M
+        timeout: PT15M
+        initialDelay: PT5S
       limit: 1000
     mcaBaseTypes:
       schedule:
-          frequency: PT5M
-          timeout: PT15M
-          initialDelay: PT5S
+        frequency: PT5M
+        timeout: PT15M
+        initialDelay: PT5S
       limit: 1000
-      
+
 catalog:
   disableRelationsCompatibility: true
   # processingInterval: false
@@ -283,19 +281,19 @@ catalog:
         queryMode: advanced
         user:
           #filter: "accountEnabled eq true and userType eq 'member'"
-          select: 
-          - "id"
-          - "displayName"
-          - "description"
-          - "mail"
-          - "accountEnabled"
+          select:
+            - 'id'
+            - 'displayName'
+            - 'description'
+            - 'mail'
+            - 'accountEnabled'
         userGroupMember:
           filter: "startswith(displayName,'backstage')"
         group:
-          select: 
-          - "id"
-          - "displayName"
-          - "description"
+          select:
+            - 'id'
+            - 'displayName'
+            - 'description'
         rules:
           - allow: [User, Group, Domain]
         schedule:
@@ -312,9 +310,9 @@ sonarqube:
   instanceKey: mySonarqube
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
-  
+
 devTools:
-  externalDependencies: 
+  externalDependencies:
     endpoints:
       - name: 'Google'
         type: 'fetch'

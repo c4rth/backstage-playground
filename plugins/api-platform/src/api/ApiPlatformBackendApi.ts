@@ -1,4 +1,8 @@
-import { createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
+import {
+  createApiRef,
+  DiscoveryApi,
+  FetchApi,
+} from '@backstage/core-plugin-api';
 import {
   ApiDefinitionsListRequest,
   ApiDefinitionListResult,
@@ -13,36 +17,53 @@ import {
   LibraryDefinitionsListRequest,
   LibraryDefinitionListResult,
   LibraryDefinition,
-  OpenApiType
-} from "@internal/plugin-api-platform-common";
+  OpenApiType,
+} from '@internal/plugin-api-platform-common';
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
   id: 'plugin.api-platform.service',
 });
 
 export interface ApiPlatformBackendApi {
-  listApis(options: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult>;
+  listApis(
+    options: ApiDefinitionsListRequest,
+  ): Promise<ApiDefinitionListResult>;
 
   getApisCount(ownership: OwnershipType, apiType: OpenApiType): Promise<number>;
 
-  getApiVersions(system: string, apiName: string): Promise<(ApiVersionDefinition[])>;
+  getApiVersions(
+    system: string,
+    apiName: string,
+  ): Promise<ApiVersionDefinition[]>;
 
   getServicesCount(ownership: OwnershipType): Promise<number>;
 
-  listServices(options: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult>;
+  listServices(
+    options: ServiceDefinitionsListRequest,
+  ): Promise<ServiceDefinitionListResult>;
 
-  getServiceVersions(system: string, serviceName: string): Promise<(ServiceDefinition)>;
+  getServiceVersions(
+    system: string,
+    serviceName: string,
+  ): Promise<ServiceDefinition>;
 
   getSystemsCount(ownership: OwnershipType): Promise<number>;
 
-  listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult>;
+  listSystems(
+    options: SystemDefinitionsListRequest,
+  ): Promise<SystemDefinitionListResult>;
 
-  getSystem(systemName: string): Promise<(SystemDefinition)>;
+  getSystem(systemName: string): Promise<SystemDefinition>;
 
-  listLibraries(options: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult>;
+  listLibraries(
+    options: LibraryDefinitionsListRequest,
+  ): Promise<LibraryDefinitionListResult>;
 
-  getLibraryVersions(system: string, libraryName: string, servicesCount: boolean): Promise<(LibraryDefinition[])>;
-
+  getLibraryVersions(
+    system: string,
+    libraryName: string,
+    servicesCount: boolean,
+  ): Promise<LibraryDefinition[]>;
 }
 
 export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
@@ -72,7 +93,10 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return this.baseUrlCache;
   }
 
-  private async fetchJson<T>(path: string, searchParams?: URLSearchParams): Promise<T> {
+  private async fetchJson<T>(
+    path: string,
+    searchParams?: URLSearchParams,
+  ): Promise<T> {
     const baseUrl = await this.getBaseUrl();
     const url = new URL(`${baseUrl}${path}`);
 
@@ -89,7 +113,9 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return await response.json();
   }
 
-  private buildSearchParams(params: Record<string, string | number | undefined>): URLSearchParams {
+  private buildSearchParams(
+    params: Record<string, string | number | undefined>,
+  ): URLSearchParams {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
@@ -101,14 +127,24 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     return searchParams;
   }
 
-  private buildOrderByParam(orderBy?: { field: string; direction: string }): string | undefined {
+  private buildOrderByParam(orderBy?: {
+    field: string;
+    direction: string;
+  }): string | undefined {
     return orderBy ? `${orderBy.field}=${orderBy.direction}` : undefined;
   }
 
-  private buildListParams(
-    options: { offset?: number; limit?: number; search?: string; ownership?: OwnershipType; apiType?: OpenApiType; orderBy?: { field: string; direction: string }, dependsOn?: string }
-  ): URLSearchParams {
-    const { offset, limit, search, ownership, apiType, orderBy, dependsOn } = options;
+  private buildListParams(options: {
+    offset?: number;
+    limit?: number;
+    search?: string;
+    ownership?: OwnershipType;
+    apiType?: OpenApiType;
+    orderBy?: { field: string; direction: string };
+    dependsOn?: string;
+  }): URLSearchParams {
+    const { offset, limit, search, ownership, apiType, orderBy, dependsOn } =
+      options;
 
     const params: Record<string, string | number | undefined> = {
       offset,
@@ -130,16 +166,30 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // APIs
 
-  async getApisCount(ownership: OwnershipType, apiType: OpenApiType): Promise<number> {
-    return this.fetchJson<number>('/apis/count', this.buildSearchParams({ ownership, apiType }));
+  async getApisCount(
+    ownership: OwnershipType,
+    apiType: OpenApiType,
+  ): Promise<number> {
+    return this.fetchJson<number>(
+      '/apis/count',
+      this.buildSearchParams({ ownership, apiType }),
+    );
   }
 
-  async listApis(options: ApiDefinitionsListRequest): Promise<ApiDefinitionListResult> {
+  async listApis(
+    options: ApiDefinitionsListRequest,
+  ): Promise<ApiDefinitionListResult> {
     const searchParams = this.buildListParams(options);
-    return this.fetchJson<ApiDefinitionListResult>('/apis/definitions', searchParams);
+    return this.fetchJson<ApiDefinitionListResult>(
+      '/apis/definitions',
+      searchParams,
+    );
   }
 
-  async getApiVersions(system: string, apiName: string): Promise<ApiVersionDefinition[]> {
+  async getApiVersions(
+    system: string,
+    apiName: string,
+  ): Promise<ApiVersionDefinition[]> {
     if (!apiName?.trim()) throw new Error('API name is required');
     const path = `/apis/definitions/${encodeURIComponent(system)}/${encodeURIComponent(apiName)}`;
     const versions = await this.fetchJson<ApiVersionDefinition[]>(path);
@@ -149,33 +199,56 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   // Services
 
   async getServicesCount(ownership: OwnershipType): Promise<number> {
-    return this.fetchJson<number>('/services/count', this.buildSearchParams({ ownership }));
+    return this.fetchJson<number>(
+      '/services/count',
+      this.buildSearchParams({ ownership }),
+    );
   }
 
-  async listServices(options: ServiceDefinitionsListRequest): Promise<ServiceDefinitionListResult> {
+  async listServices(
+    options: ServiceDefinitionsListRequest,
+  ): Promise<ServiceDefinitionListResult> {
     const searchParams = this.buildListParams(options);
-    return this.fetchJson<ServiceDefinitionListResult>('/services/definitions', searchParams);
+    return this.fetchJson<ServiceDefinitionListResult>(
+      '/services/definitions',
+      searchParams,
+    );
   }
 
-  async getServiceVersions(system: string, serviceName: string): Promise<ServiceDefinition> {
+  async getServiceVersions(
+    system: string,
+    serviceName: string,
+  ): Promise<ServiceDefinition> {
     if (!system?.trim() || !serviceName?.trim()) {
-      throw new Error(`System and service name are required : '${system}' '${serviceName}'`);
+      throw new Error(
+        `System and service name are required : '${system}' '${serviceName}'`,
+      );
     }
 
     const encodedSystemName = encodeURIComponent(system);
     const encodedServiceName = encodeURIComponent(serviceName);
-    return this.fetchJson<ServiceDefinition>(`/services/definitions/${encodedSystemName}/${encodedServiceName}`);
+    return this.fetchJson<ServiceDefinition>(
+      `/services/definitions/${encodedSystemName}/${encodedServiceName}`,
+    );
   }
 
   // Systems
 
   async getSystemsCount(ownership: OwnershipType): Promise<number> {
-    return this.fetchJson<number>('/systems/count', this.buildSearchParams({ ownership }));
+    return this.fetchJson<number>(
+      '/systems/count',
+      this.buildSearchParams({ ownership }),
+    );
   }
 
-  async listSystems(options: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult> {
+  async listSystems(
+    options: SystemDefinitionsListRequest,
+  ): Promise<SystemDefinitionListResult> {
     const searchParams = this.buildListParams(options);
-    return this.fetchJson<SystemDefinitionListResult>('/systems/definitions', searchParams);
+    return this.fetchJson<SystemDefinitionListResult>(
+      '/systems/definitions',
+      searchParams,
+    );
   }
 
   async getSystem(systemName: string): Promise<SystemDefinition> {
@@ -184,21 +257,31 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     }
 
     const encodedSystemName = encodeURIComponent(systemName);
-    return this.fetchJson<SystemDefinition>(`/systems/definitions/${encodedSystemName}`);
+    return this.fetchJson<SystemDefinition>(
+      `/systems/definitions/${encodedSystemName}`,
+    );
   }
 
   // Libraries
-  
-  async listLibraries(options: LibraryDefinitionsListRequest): Promise<LibraryDefinitionListResult> {
+
+  async listLibraries(
+    options: LibraryDefinitionsListRequest,
+  ): Promise<LibraryDefinitionListResult> {
     const searchParams = this.buildListParams(options);
-    return this.fetchJson<LibraryDefinitionListResult>('/libraries/definitions', searchParams);
+    return this.fetchJson<LibraryDefinitionListResult>(
+      '/libraries/definitions',
+      searchParams,
+    );
   }
 
-  async getLibraryVersions(system: string, libraryName: string, servicesCount: boolean): Promise<LibraryDefinition[]> {
+  async getLibraryVersions(
+    system: string,
+    libraryName: string,
+    servicesCount: boolean,
+  ): Promise<LibraryDefinition[]> {
     if (!libraryName?.trim()) throw new Error('Library name is required');
     const path = `/libraries/definitions/${encodeURIComponent(system)}/${encodeURIComponent(libraryName)}?servicesCount=${servicesCount}`;
     const versions = await this.fetchJson<LibraryDefinition[]>(path);
     return Array.isArray(versions) ? versions : [];
   }
-
 }

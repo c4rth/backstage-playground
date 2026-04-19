@@ -15,7 +15,9 @@ export const CronDecoder = () => {
       const text = cronstrue.toString(input, { verbose: true });
       setOutput(text);
     } catch (error) {
-      setOutput(`Error: ${error instanceof Error ? error.message : 'Invalid cron expression'}`);
+      setOutput(
+        `Error: ${error instanceof Error ? error.message : 'Invalid cron expression'}`,
+      );
       return;
     }
   }, [input]);
@@ -25,7 +27,7 @@ export const CronDecoder = () => {
       input={input}
       setInput={setInput}
       output={output}
-      sample='0 0/10 * 1/1 * ? *'
+      sample="0 0/10 * 1/1 * ? *"
     />
   );
 };

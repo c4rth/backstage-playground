@@ -1,4 +1,10 @@
-import { AuthService, coreServices, createServiceFactory, createServiceRef, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  coreServices,
+  createServiceFactory,
+  createServiceRef,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import { EntityOrderQuery } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
 import { SystemService } from './types';
@@ -15,10 +21,13 @@ import {
   SystemDefinitionsListRequest,
   SystemDefinitionsOptions,
   OwnershipType,
-  ANNOTATION_LIBRARY_NAME
+  ANNOTATION_LIBRARY_NAME,
 } from '@internal/plugin-api-platform-common';
 import { getUserGroups, isUserGuest } from '../common/utils';
-import { CatalogService, catalogServiceRef } from '@backstage/plugin-catalog-node';
+import {
+  CatalogService,
+  catalogServiceRef,
+} from '@backstage/plugin-catalog-node';
 
 export interface SystemServiceOptions {
   logger: LoggerService;
@@ -26,7 +35,9 @@ export interface SystemServiceOptions {
   auth: AuthService;
 }
 
-function getOrder(order: SystemDefinitionsOptions | undefined): EntityOrderQuery | undefined {
+function getOrder(
+  order: SystemDefinitionsOptions | undefined,
+): EntityOrderQuery | undefined {
   if (!order) return undefined;
   const fieldMap: Record<string, string> = {
     name: CATALOG_METADATA_NAME,
@@ -48,7 +59,6 @@ async function fetchSystemEntities(
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
-
   if (ownership === 'owned' && isUserGuest(userEntityRef)) {
     // Guest users have no owned systems
     return [];
@@ -56,14 +66,16 @@ async function fetchSystemEntities(
 
   // Fetch entities and user groups in parallel if ownership filtering needed
   const [entities, userGroupRefs] = await Promise.all([
-    catalog.getEntities(
-      {
-        filter: { kind: ['System'] },
-        fields,
-        order,
-      },
-      { credentials: await auth.getOwnServiceCredentials() },
-    ).then(res => res.items),
+    catalog
+      .getEntities(
+        {
+          filter: { kind: ['System'] },
+          fields,
+          order,
+        },
+        { credentials: await auth.getOwnServiceCredentials() },
+      )
+      .then(res => res.items),
     ownership === 'owned' && userEntityRef
       ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
@@ -82,7 +94,6 @@ async function fetchSystemEntities(
 }
 
 export class SystemServiceImpl implements SystemService {
-
   private readonly catalog: CatalogService;
   private readonly auth: AuthService;
 
@@ -93,7 +104,10 @@ export class SystemServiceImpl implements SystemService {
     options.logger.info('Initializing SystemService');
   }
 
-  async getSystemsCount(ownership: OwnershipType, userEntityRef: string | undefined): Promise<number> {
+  async getSystemsCount(
+    ownership: OwnershipType,
+    userEntityRef: string | undefined,
+  ): Promise<number> {
     const entities = await fetchSystemEntities(
       this.catalog,
       this.auth,
@@ -104,7 +118,9 @@ export class SystemServiceImpl implements SystemService {
     return entities.length;
   }
 
-  async listSystems(request: SystemDefinitionsListRequest): Promise<SystemDefinitionListResult> {
+  async listSystems(
+    request: SystemDefinitionsListRequest,
+  ): Promise<SystemDefinitionListResult> {
     const entities = await fetchSystemEntities(
       this.catalog,
       this.auth,
@@ -124,10 +140,11 @@ export class SystemServiceImpl implements SystemService {
 
     const search = request.search?.toLowerCase();
     if (search) {
-      systems = systems.filter(system => (
-        system.metadata.name.toLowerCase().includes(search) ||
-        (system.spec?.owner?.toString() || '').toLowerCase().includes(search)
-      ));
+      systems = systems.filter(
+        system =>
+          system.metadata.name.toLowerCase().includes(search) ||
+          (system.spec?.owner?.toString() || '').toLowerCase().includes(search),
+      );
     }
 
     const offset = request.offset ?? 0;
@@ -145,9 +162,14 @@ export class SystemServiceImpl implements SystemService {
     const systemEntities = await this.catalog.getEntities(
       {
         filter: { kind: ['System'], 'metadata.name': systemName },
-        fields: [CATALOG_KIND, CATALOG_METADATA_NAME, CATALOG_METADATA_DESCRIPTION, CATALOG_RELATIONS],
+        fields: [
+          CATALOG_KIND,
+          CATALOG_METADATA_NAME,
+          CATALOG_METADATA_DESCRIPTION,
+          CATALOG_RELATIONS,
+        ],
       },
-      { credentials: await this.auth.getOwnServiceCredentials() }
+      { credentials: await this.auth.getOwnServiceCredentials() },
     );
 
     const entity = systemEntities.items[0];
@@ -168,7 +190,7 @@ export class SystemServiceImpl implements SystemService {
     // Batch fetch all related entities in a single query instead of N individual calls
     const relatedEntities = await this.catalog.getEntitiesByRefs(
       { entityRefs: targetRefs },
-      { credentials: await this.auth.getOwnServiceCredentials() }
+      { credentials: await this.auth.getOwnServiceCredentials() },
     );
 
     // Use Sets to collect unique names
@@ -180,15 +202,18 @@ export class SystemServiceImpl implements SystemService {
       if (!relEntity) continue;
 
       if (relEntity.kind === 'API') {
-        const name = relEntity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
+        const name =
+          relEntity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString();
         if (name) apiNames.add(name);
       } else if (relEntity.kind === 'Component') {
-        const name = relEntity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+        const name =
+          relEntity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
         if (name) {
           serviceNames.add(name);
           continue;
         }
-        const libName = relEntity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
+        const libName =
+          relEntity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
         if (libName) libraryNames.add(libName);
       }
     }
@@ -199,7 +224,7 @@ export class SystemServiceImpl implements SystemService {
 
     return system;
   }
-};
+}
 
 export const systemServiceRef = createServiceRef<SystemService>({
   id: 'api-platform.system.service',
@@ -209,7 +234,7 @@ export const systemServiceRef = createServiceRef<SystemService>({
       deps: {
         logger: coreServices.logger,
         auth: coreServices.auth,
-        catalog: catalogServiceRef
+        catalog: catalogServiceRef,
       },
       async factory({ logger, catalog, auth }) {
         const systemService = new SystemServiceImpl({

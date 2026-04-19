@@ -117,7 +117,7 @@ function printReport(results) {
     entries.forEach(([component, count]) => {
       console.log(`  - ${component}: ${count}`);
     });
-    console.log(''); 
+    console.log('');
   }
 }
 

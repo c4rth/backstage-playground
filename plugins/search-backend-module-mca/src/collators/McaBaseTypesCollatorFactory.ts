@@ -54,14 +54,21 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
     const baseUrl = await this.discoveryApi.getBaseUrl('mca');
 
     const countUrl = new URL(`${baseUrl}/basetypes/count`);
-    const responseCount = await fetch(countUrl, { headers: { Authorization: `Bearer ${token}` } });
+    const responseCount = await fetch(countUrl, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const dataCount = (await responseCount.json()) as number;
     this.logger.debug(`/basetypes/count: ${dataCount} - limit: ${this.limit}`);
 
     for (let offset = 0; offset < dataCount; offset += this.limit) {
-      const query = new URLSearchParams({ offset: String(offset), limit: String(this.limit) });
+      const query = new URLSearchParams({
+        offset: String(offset),
+        limit: String(this.limit),
+      });
       const url = new URL(`${baseUrl}/basetypes/components?${query}`);
-      const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const { items = [] } = await response.json();
       for (const item of items) {
         yield this.getDocumentInfo(item);
@@ -69,7 +76,9 @@ export class McaBaseTypesCollatorFactory implements DocumentCollatorFactory {
     }
   }
 
-  private getDocumentInfo(mcaBaseType: McaBaseType): IndexableMcaBaseTypeDocument {
+  private getDocumentInfo(
+    mcaBaseType: McaBaseType,
+  ): IndexableMcaBaseTypeDocument {
     return {
       title: mcaBaseType.baseType,
       text: `package: ${mcaBaseType.packageName}`,

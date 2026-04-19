@@ -151,7 +151,9 @@ const sorted = [...buiTokens].sort();
 const unknown = sorted.filter(t => !officialTokens.has(t));
 const known = sorted.filter(t => officialTokens.has(t));
 
-console.log(`Found ${sorted.length} unique --bui tokens (${known.length} official, ${unknown.length} unknown)\n`);
+console.log(
+  `Found ${sorted.length} unique --bui tokens (${known.length} official, ${unknown.length} unknown)\n`,
+);
 
 if (unknown.length > 0) {
   console.log(`--- Unknown tokens (${unknown.length}) ---\n`);

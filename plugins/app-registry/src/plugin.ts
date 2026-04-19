@@ -14,7 +14,11 @@ export const appRegistryPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: appRegistryBackendApiRef,
-      deps: { configApi: configApiRef, fetchApi: fetchApiRef, featureFlagsApi: featureFlagsApiRef },
+      deps: {
+        configApi: configApiRef,
+        fetchApi: fetchApiRef,
+        featureFlagsApi: featureFlagsApiRef,
+      },
       factory: ({ configApi, fetchApi, featureFlagsApi }) =>
         new AppRegistryBackendClient({ configApi, fetchApi, featureFlagsApi }),
     }),

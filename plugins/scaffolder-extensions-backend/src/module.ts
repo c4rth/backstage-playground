@@ -1,9 +1,6 @@
-import {
-  createBackendModule,
-} from '@backstage/backend-plugin-api';
+import { createBackendModule } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node';
 import { createDebugXLogAction } from './actions/debugx';
-
 
 export const scaffolderCustomModule = createBackendModule({
   moduleId: 'custom-extensions',
@@ -14,9 +11,7 @@ export const scaffolderCustomModule = createBackendModule({
         scaffolderActions: scaffolderActionsExtensionPoint,
       },
       async init({ scaffolderActions }) {
-        scaffolderActions.addActions(
-            createDebugXLogAction(),
-        );
+        scaffolderActions.addActions(createDebugXLogAction());
       },
     });
   },

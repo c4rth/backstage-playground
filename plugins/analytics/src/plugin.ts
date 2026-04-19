@@ -19,7 +19,6 @@ export const analyticsPlugin = createPlugin({
   ],
 });
 
-
 export const AnalyticsContent = analyticsPlugin.provide(
   createComponentExtension({
     name: 'AnalyticsContent',

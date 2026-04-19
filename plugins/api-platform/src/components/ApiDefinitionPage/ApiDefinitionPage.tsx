@@ -1,9 +1,4 @@
-import {
-  Content,
-  Header,
-  Page,
-  Select,
-} from '@backstage/core-components';
+import { Content, Header, Page, Select } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -21,17 +16,23 @@ export const ApiDefinitionPage = () => {
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
 
-  const { apiVersions, loading, error } = useGetApiVersions(system ?? API_NO_SYSTEM, name!);
+  const { apiVersions, loading, error } = useGetApiVersions(
+    system ?? API_NO_SYSTEM,
+    name!,
+  );
   const catalogApi = useApi(catalogApiRef);
 
   const versions = useMemo(
-    () => apiVersions?.map(apiVersion => ({
-      label: apiVersion.version,
-      value: apiVersion.entityRef
-    })) ?? [],
-    [apiVersions]
+    () =>
+      apiVersions?.map(apiVersion => ({
+        label: apiVersion.version,
+        value: apiVersion.entityRef,
+      })) ?? [],
+    [apiVersions],
   );
-  const [selectedVersion, setSelectedVersion] = useState<string | undefined>(undefined);
+  const [selectedVersion, setSelectedVersion] = useState<string | undefined>(
+    undefined,
+  );
   const [apiEntity, setApiEntity] = useState<ApiEntity | undefined>(undefined);
   const isInitialLoad = useRef(true);
 
@@ -47,7 +48,11 @@ export const ApiDefinitionPage = () => {
   useEffect(() => {
     if (!selectedVersion && versions.length > 0) {
       let selVersion = null;
-      if (isInitialLoad.current && queryVersion && versions.some(item => item.label === queryVersion)) {
+      if (
+        isInitialLoad.current &&
+        queryVersion &&
+        versions.some(item => item.label === queryVersion)
+      ) {
         selVersion = versions.find(item => item.label === queryVersion)?.value;
         isInitialLoad.current = false;
       } else {
@@ -61,33 +66,35 @@ export const ApiDefinitionPage = () => {
 
   useEffect(() => {
     if (selectedVersion) {
-      catalogApi.getEntityByRef(selectedVersion)
+      catalogApi
+        .getEntityByRef(selectedVersion)
         .then(entity => setApiEntity(entity as ApiEntity));
     }
   }, [selectedVersion, catalogApi]);
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
-      <Page
-        themeId="apis">
-        <Header
-          title={name}
-          type='API'>
-          <ComponentHeaderLabels entity={apiEntity ?? { metadata: { name, title: name } } as ApiEntity} />
+      <Page themeId="apis">
+        <Header title={name} type="API">
+          <ComponentHeaderLabels
+            entity={
+              apiEntity ?? ({ metadata: { name, title: name } } as ApiEntity)
+            }
+          />
         </Header>
 
         <Content>
-          <Box mb='1'>
-            <Select onChange={(selected) => {
-              setSelectedVersion(selected.toString());
-            }} label="Versions" items={versions} selected={selectedVersion} />
+          <Box mb="1">
+            <Select
+              onChange={selected => {
+                setSelectedVersion(selected.toString());
+              }}
+              label="Versions"
+              items={versions}
+              selected={selectedVersion}
+            />
           </Box>
-          <Box mb='-3'>
-            {apiEntity ?
-              <ApiDefinitionCard />
-              : <div />
-            }
-          </Box>
+          <Box mb="-3">{apiEntity ? <ApiDefinitionCard /> : <div />}</Box>
         </Content>
       </Page>
     </AsyncEntityProvider>

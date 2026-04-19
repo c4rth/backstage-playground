@@ -131,7 +131,10 @@
 
 .wrapper :global(.swagger-ui .json-schema-2020-12__title),
 .wrapper :global(.swagger-ui .json-schema-2020-12-keyword__name),
-.wrapper :global(.swagger-ui .json-schema-2020-12-property .json-schema-2020-12__title),
+.wrapper
+  :global(
+    .swagger-ui .json-schema-2020-12-property .json-schema-2020-12__title
+  ),
 .wrapper :global(.swagger-ui .json-schema-2020-12-keyword--description) {
   color: var(--bui-fg-primary);
 }
@@ -169,6 +172,13 @@
   color: var(--bui-bg-neutral-1);
 }
 
-.wrapper :global(.swagger-ui .json-schema-2020-12-property--required > .json-schema-2020-12:first-of-type > .json-schema-2020-12-head .json-schema-2020-12__title:after) {
+.wrapper
+  :global(
+    .swagger-ui
+      .json-schema-2020-12-property--required
+      > .json-schema-2020-12:first-of-type
+      > .json-schema-2020-12-head
+      .json-schema-2020-12__title:after
+  ) {
   color: var(--bui-fg-warning);
 }

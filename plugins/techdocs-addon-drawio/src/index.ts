@@ -1,1 +1,1 @@
-export { DrawIo, techdocsAddonDrawIoPlugin } from "./plugin";
+export { DrawIo, techdocsAddonDrawIoPlugin } from './plugin';

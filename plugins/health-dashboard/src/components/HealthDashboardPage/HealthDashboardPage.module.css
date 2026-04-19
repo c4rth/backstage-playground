@@ -1,55 +1,58 @@
 .contentRoot {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .contentScrollArea {
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
-    display: flex;
-    justify-content: stretch;
-    align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
 }
 
 .tableContainer {
-    width: 50%;
-    margin: 0 auto;
+  width: 50%;
+  margin: 0 auto;
 }
 
 .denseTable :global(.bui-TableRow) {
-    border-bottom: 0px;
-    transition: color 0.2s ease-in-out;
-    margin: 0;
-    padding: 0;
+  border-bottom: 0px;
+  transition: color 0.2s ease-in-out;
+  margin: 0;
+  padding: 0;
 }
 
 .denseTable :global(.bui-TableRow[data-react-aria-pressable='true']) {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .denseTable :global(.bui-TableRow:hover) {
-    background-color: #00000000;
+  background-color: #00000000;
 }
 
 .denseTable :global(.bui-TableRow:nth-child(even)) {
-    background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .denseTable :global(.bui-TableCell) {
-    padding-top: 0px;
-    padding-bottom: 0px;
-    font-size: var(--bui-font-size-3);
-    min-width: 0;
-    overflow: hidden;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  font-size: var(--bui-font-size-3);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .denseTable :global(.bui-TableHeader .bui-TableHead:not(:first-child)) {
-    text-align: center;
+  text-align: center;
 }
 
-.denseTable :global(.bui-TableHeader .bui-TableHead:not(:first-child) .bui-TableHeadContent) {
-    justify-content: center;
+.denseTable
+  :global(
+    .bui-TableHeader .bui-TableHead:not(:first-child) .bui-TableHeadContent
+  ) {
+  justify-content: center;
 }

@@ -7,12 +7,12 @@ import {
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo, useState } from 'react';
 import { Box, Flex, Text } from '@backstage/ui';
-import { ListBox, ListBoxItem, } from 'react-aria-components';
-import { ComponentDisplayName } from "../common";
+import { ListBox, ListBoxItem } from 'react-aria-components';
+import { ComponentDisplayName } from '../common';
 import {
   LibraryDefinition,
-  ServiceDefinition
-} from "@internal/plugin-api-platform-common";
+  ServiceDefinition,
+} from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { fetchAllServices } from './fetchServicesByLibrary';
@@ -32,13 +32,19 @@ const LIST_ITEM_STYLE = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '2.5rem'
+  minHeight: '2.5rem',
 };
 
-const renderVersionList = (serviceDefinition: ServiceDefinition, renderItem: (version: any, idx: number) => JSX.Element) => (
+const renderVersionList = (
+  serviceDefinition: ServiceDefinition,
+  renderItem: (version: any, idx: number) => JSX.Element,
+) => (
   <ListBox>
     {serviceDefinition.versions?.map((version, idx) => (
-      <ListBoxItem key={`${serviceDefinition.name}-${version.version}-${idx}`} style={LIST_ITEM_STYLE}>
+      <ListBoxItem
+        key={`${serviceDefinition.name}-${version.version}-${idx}`}
+        style={LIST_ITEM_STYLE}
+      >
         {renderItem(version, idx)}
       </ListBoxItem>
     ))}
@@ -52,8 +58,10 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
   cellStyle: { padding: 0 },
   sorting: false,
   render: ({ serviceDefinition }) =>
-    renderVersionList(serviceDefinition, (version) => {
-      const envData = version.environments[env as keyof typeof version.environments] as any;
+    renderVersionList(serviceDefinition, version => {
+      const envData = version.environments[
+        env as keyof typeof version.environments
+      ] as any;
       const dependencies = envData?.dependencies || [];
       const dependencyIndexes = envData?.dependencyIndexes || [];
 
@@ -74,8 +82,12 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
     if (!row.serviceDefinition?.versions) return false;
     const lowerQuery = query.toLowerCase();
     return row.serviceDefinition.versions.some(version => {
-      const envData = version.environments[env as keyof typeof version.environments];
-      return envData?.dependencies?.join(', ').toLowerCase().includes(lowerQuery);
+      const envData =
+        version.environments[env as keyof typeof version.environments];
+      return envData?.dependencies
+        ?.join(', ')
+        .toLowerCase()
+        .includes(lowerQuery);
     });
   },
 });
@@ -88,8 +100,13 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ serviceDefinition }) => (
-      <Link to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}>
-        <ComponentDisplayName text={serviceDefinition.serviceName} type="service" />
+      <Link
+        to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
+      >
+        <ComponentDisplayName
+          text={serviceDefinition.serviceName}
+          type="service"
+        />
       </Link>
     ),
   },
@@ -101,12 +118,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
     align: 'center',
     cellStyle: { padding: 0 },
     render: ({ serviceDefinition }) =>
-      renderVersionList(serviceDefinition, (version) => (
+      renderVersionList(serviceDefinition, version => (
         <ComponentChip
           index={0}
           text={version.version}
           clickable={false}
-          backgroundColor='#FFFFFF'
+          backgroundColor="#FFFFFF"
         />
       )),
   },
@@ -128,30 +145,39 @@ const serviceColumns: TableColumn<TableRow>[] = [
   },
 ];
 
-const toRow = (libraryVersions: LibraryDefinition[], serviceDefinition: ServiceDefinition, idx: number, libraryName: string): TableRow => {
+const toRow = (
+  libraryVersions: LibraryDefinition[],
+  serviceDefinition: ServiceDefinition,
+  idx: number,
+  libraryName: string,
+): TableRow => {
   const versions = serviceDefinition.versions.map(version => ({
     ...version,
     environments: Object.fromEntries(
       Object.entries(version.environments).map(([key, data]) => {
         if (!data) return [key, data];
 
-        const filtered = data.dependencies
-          ?.filter((dep: string) => dep.includes(libraryName))
-          .map(dep => {
-            const lib = libraryVersions.find(lv => dep.includes(lv.version));
-            return {
-              version: lib?.version || dep,
-              index: lib ? libraryVersions.indexOf(lib) : -1
-            };
-          }) || [];
+        const filtered =
+          data.dependencies
+            ?.filter((dep: string) => dep.includes(libraryName))
+            .map(dep => {
+              const lib = libraryVersions.find(lv => dep.includes(lv.version));
+              return {
+                version: lib?.version || dep,
+                index: lib ? libraryVersions.indexOf(lib) : -1,
+              };
+            }) || [];
 
-        return [key, {
-          ...data,
-          dependencies: filtered.map(d => d.version),
-          dependencyIndexes: filtered.map(d => d.index)
-        } as any];
-      })
-    ) as typeof version.environments
+        return [
+          key,
+          {
+            ...data,
+            dependencies: filtered.map(d => d.version),
+            dependencyIndexes: filtered.map(d => d.index),
+          } as any,
+        ];
+      }),
+    ) as typeof version.environments,
   }));
 
   return {
@@ -167,13 +193,25 @@ interface LibraryServicesCardProps {
   name: string;
 }
 
-export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) => {
+export const LibraryServicesCard = ({
+  system,
+  name,
+}: LibraryServicesCardProps) => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const [selectedDependency, setSelectedDependency] = useState<DependentsType>('all');
+  const [selectedDependency, setSelectedDependency] =
+    useState<DependentsType>('all');
 
-  const { libraryVersions, loading: loadingLibVersions, error: errorLibVersion } = useGetLibraryVersions(system!, name!, false);
+  const {
+    libraryVersions,
+    loading: loadingLibVersions,
+    error: errorLibVersion,
+  } = useGetLibraryVersions(system!, name!, false);
 
-  const { value: allServices = [], loading, error } = useAsync(async () => {
+  const {
+    value: allServices = [],
+    loading,
+    error,
+  } = useAsync(async () => {
     if (!name) return [];
     const result = await fetchAllServices(apiPlatformApi);
     return result.items;
@@ -185,8 +223,8 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
     const hasLibraryDependency = (service: ServiceDefinition) =>
       service.versions.some(version =>
         Object.values(version.environments).some(env =>
-          env?.dependencies?.some((dep: string) => dep.includes(name))
-        )
+          env?.dependencies?.some((dep: string) => dep.includes(name)),
+        ),
       );
 
     let filtered = allServices;
@@ -196,19 +234,28 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
       filtered = allServices.filter(s => !hasLibraryDependency(s));
     }
 
-    return filtered.map((service, idx) => toRow(libraryVersions, service, idx, name));
+    return filtered.map((service, idx) =>
+      toRow(libraryVersions, service, idx, name),
+    );
   }, [allServices, name, selectedDependency, libraryVersions]);
 
   if (error || errorLibVersion) {
-    return <ResponseErrorPanel title='Error loading Library Versions' error={error || errorLibVersion!} />;
+    return (
+      <ResponseErrorPanel
+        title="Error loading Library Versions"
+        error={error || errorLibVersion!}
+      />
+    );
   }
 
   if (!libraryVersions) return null;
 
   return (
     <>
-      <Box mb='4'>
-        <DependentsToggle handleDependentChange={(type) => setSelectedDependency(type)} />
+      <Box mb="4">
+        <DependentsToggle
+          handleDependentChange={type => setSelectedDependency(type)}
+        />
       </Box>
       <Box>
         <Table<TableRow>
@@ -222,11 +269,7 @@ export const LibraryServicesCard = ({ system, name }: LibraryServicesCardProps) 
             pageSize: 20,
             pageSizeOptions: [10, 20, 50],
           }}
-          title={
-            <Flex align="center">
-              Versions by services
-            </Flex>
-          }
+          title={<Flex align="center">Versions by services</Flex>}
           data={rows}
         />
       </Box>

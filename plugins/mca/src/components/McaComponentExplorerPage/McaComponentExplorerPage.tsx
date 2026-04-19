@@ -6,10 +6,13 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentTable } from '../McaComponentTable';
-import { InformationPopup, InformationPopupContent } from '@internal/plugin-api-platform-react';
+import {
+  InformationPopup,
+  InformationPopupContent,
+} from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Alert, Box, Flex, Grid, } from '@backstage/ui';
+import { Alert, Box, Flex, Grid } from '@backstage/ui';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
@@ -42,11 +45,12 @@ function normalizeComponentType(type: string): McaComponentType {
 export const McaComponentExplorerPage = () => {
   const configApi = useApi(configApiRef);
 
-  const organizationName = configApi.getOptionalString('organization.name') ?? 'Backstage';
+  const organizationName =
+    configApi.getOptionalString('organization.name') ?? 'Backstage';
   const subtitle = `${organizationName} MCA Components Explorer`;
 
   const [selectedType, setSelectedType] = useState<McaComponentType>(() =>
-    getInitialType()
+    getInitialType(),
   );
 
   const handleSelectChange = (selected: string) => {
@@ -56,10 +60,7 @@ export const McaComponentExplorerPage = () => {
   };
 
   const subtitleComponent = (
-    <InformationPopup
-      text={subtitle}
-      content={POPUP_CONTENT}
-    />
+    <InformationPopup text={subtitle} content={POPUP_CONTENT} />
   );
 
   return (
@@ -70,8 +71,8 @@ export const McaComponentExplorerPage = () => {
       pageTitleOverride="MCA Components"
     >
       <Content>
-        <Box mb='1'>
-          <Grid.Root columns='2'>
+        <Box mb="1">
+          <Grid.Root columns="2">
             <Grid.Item>
               <Select
                 onChange={selected => handleSelectChange(selected.toString())}
@@ -81,9 +82,19 @@ export const McaComponentExplorerPage = () => {
               />
             </Grid.Item>
             <Grid.Item>
-              <Flex style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <Flex
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                }}
+              >
                 <Flex align="center" gap="3">
-                  <Alert status="warning" icon title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible." />
+                  <Alert
+                    status="warning"
+                    icon
+                    title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
+                  />
                 </Flex>
               </Flex>
             </Grid.Item>
@@ -93,4 +104,4 @@ export const McaComponentExplorerPage = () => {
       </Content>
     </PageWithHeader>
   );
-}
+};

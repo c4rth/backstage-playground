@@ -1,11 +1,27 @@
-import { Link, ResponseErrorPanel, Table, TableColumn } from "@backstage/core-components";
-import { Flex } from "@backstage/ui";
-import { Entity, parseEntityRef, RELATION_CONSUMES_API, RELATION_PROVIDES_API } from "@backstage/catalog-model";
+import {
+  Link,
+  ResponseErrorPanel,
+  Table,
+  TableColumn,
+} from '@backstage/core-components';
+import { Flex } from '@backstage/ui';
+import {
+  Entity,
+  parseEntityRef,
+  RELATION_CONSUMES_API,
+  RELATION_PROVIDES_API,
+} from '@backstage/catalog-model';
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
-import { useApi } from "@backstage/core-plugin-api";
+import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { ANNOTATION_API_NAME, ANNOTATION_API_VERSION, CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, CATALOG_SPEC_SYSTEM } from "@internal/plugin-api-platform-common";
-import { ComponentDisplayName } from "../common";
+import {
+  ANNOTATION_API_NAME,
+  ANNOTATION_API_VERSION,
+  CATALOG_METADATA_API_NAME,
+  CATALOG_METADATA_API_VERSION,
+  CATALOG_SPEC_SYSTEM,
+} from '@internal/plugin-api-platform-common';
+import { ComponentDisplayName } from '../common';
 
 type TableRow = {
   id: number;
@@ -41,7 +57,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     field: 'system',
     render: ({ system }: TableRow) =>
-      system === "-" ? (
+      system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
         <Link to={`/api-platform/system/${system}`}>
@@ -54,21 +70,23 @@ const serviceColumns: TableColumn<TableRow>[] = [
 const toRow = (entity: Entity, idx: number): TableRow => ({
   id: idx,
   name: entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '?',
-  version: entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString() ?? '?',
+  version:
+    entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString() ?? '?',
   system: entity.spec?.system?.toString() ?? '-',
 });
 
-const createLocalEntity = (name: string): Entity => ({
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'API',
-  metadata: {
-    name,
-    annotations: {
-      [ANNOTATION_API_NAME]: name,
-      [ANNOTATION_API_VERSION]: 'local',
+const createLocalEntity = (name: string): Entity =>
+  ({
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'API',
+    metadata: {
+      name,
+      annotations: {
+        [ANNOTATION_API_NAME]: name,
+        [ANNOTATION_API_VERSION]: 'local',
+      },
     },
-  },
-} as Entity);
+  }) as Entity;
 
 const tableOptions = {
   search: true,
@@ -82,26 +100,44 @@ interface ServiceApiRelationCardProps {
   dependency: 'provided' | 'consumed';
 }
 
-export const ServiceApiRelationCard = ({ dependency }: ServiceApiRelationCardProps) => {
+export const ServiceApiRelationCard = ({
+  dependency,
+}: ServiceApiRelationCardProps) => {
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
-  const { value: entities = [], loading, error } = useAsync(async () => {
-    const relationType = dependency === 'consumed' ? RELATION_CONSUMES_API : RELATION_PROVIDES_API;
-    const allRelations = entity.relations?.filter(r => r.type === relationType) ?? [];
+  const {
+    value: entities = [],
+    loading,
+    error,
+  } = useAsync(async () => {
+    const relationType =
+      dependency === 'consumed' ? RELATION_CONSUMES_API : RELATION_PROVIDES_API;
+    const allRelations =
+      entity.relations?.filter(r => r.type === relationType) ?? [];
 
     if (allRelations.length === 0) return [];
 
-    const defaultRelations = allRelations.filter(r => r.targetRef.startsWith('api:default/'));
-    const localRelations = allRelations.filter(r => r.targetRef.startsWith('api:local/'));
+    const defaultRelations = allRelations.filter(r =>
+      r.targetRef.startsWith('api:default/'),
+    );
+    const localRelations = allRelations.filter(r =>
+      r.targetRef.startsWith('api:local/'),
+    );
 
     const relatedEntities: Entity[] = [];
 
     if (defaultRelations.length > 0) {
-      const targetNames = defaultRelations.map(r => parseEntityRef(r.targetRef).name);
+      const targetNames = defaultRelations.map(
+        r => parseEntityRef(r.targetRef).name,
+      );
       try {
         const response = await catalogApi.getEntities({
-          fields: [CATALOG_METADATA_API_NAME, CATALOG_METADATA_API_VERSION, CATALOG_SPEC_SYSTEM],
+          fields: [
+            CATALOG_METADATA_API_NAME,
+            CATALOG_METADATA_API_VERSION,
+            CATALOG_SPEC_SYSTEM,
+          ],
           filter: {
             kind: ['API'],
             'metadata.name': targetNames,
@@ -142,4 +178,4 @@ export const ServiceApiRelationCard = ({ dependency }: ServiceApiRelationCardPro
       data={rows}
     />
   );
-}
+};

@@ -5,7 +5,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const funcsDir = path.resolve(__dirname, '../src/components/Tools/jsonata/functions');
+const funcsDir = path.resolve(
+  __dirname,
+  '../src/components/Tools/jsonata/functions',
+);
 const outFile = path.join(funcsDir, 'func-strings.generated.ts');
 
 const files = fs.readdirSync(funcsDir).filter(f => f.endsWith('.func'));
@@ -15,7 +18,10 @@ const entries = files.map(file => {
   const name = path.basename(file, '.func');
   const content = fs.readFileSync(path.join(funcsDir, file), 'utf8');
   // Escape backticks and template literal placeholders
-  const escaped = content.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
+  const escaped = content
+    .replace(/\\/g, '\\\\')
+    .replace(/`/g, '\\`')
+    .replace(/\$\{/g, '\\${');
   return `  { name: '${name}', func: \`${escaped}\` }`;
 });
 

@@ -10,13 +10,18 @@ import { LibraryServicesCard } from './LibraryServicesCard';
 import { useEffect, useState } from 'react';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-import { AsyncEntityProvider, catalogApiRef } from '@backstage/plugin-catalog-react';
+import {
+  AsyncEntityProvider,
+  catalogApiRef,
+} from '@backstage/plugin-catalog-react';
 import { apiPlatformBackendApiRef } from '../../api';
 import { ComponentHeaderLabels } from '../common';
 
 export const LibraryOverviewDefinitionPage = () => {
   const { system, name } = useParams();
-  const [libraryEntity, setLibraryEntity] = useState<ComponentEntity | undefined>(undefined);
+  const [libraryEntity, setLibraryEntity] = useState<
+    ComponentEntity | undefined
+  >(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const catalogApi = useApi(catalogApiRef);
@@ -27,7 +32,11 @@ export const LibraryOverviewDefinitionPage = () => {
 
     const fetchLibraryEntity = async () => {
       try {
-        const libVersions = await apiPlatformApi.getLibraryVersions(system, name, true);
+        const libVersions = await apiPlatformApi.getLibraryVersions(
+          system,
+          name,
+          true,
+        );
         const lastVersion = libVersions[0];
         if (lastVersion?.entityRef) {
           const entity = await catalogApi.getEntityByRef(lastVersion.entityRef);
@@ -47,8 +56,13 @@ export const LibraryOverviewDefinitionPage = () => {
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <Page themeId="libraries">
-        <Header title={name} type='Library'>
-          <ComponentHeaderLabels entity={libraryEntity ?? { metadata: { name, title: name } } as ComponentEntity} />
+        <Header title={name} type="Library">
+          <ComponentHeaderLabels
+            entity={
+              libraryEntity ??
+              ({ metadata: { name, title: name } } as ComponentEntity)
+            }
+          />
         </Header>
         <Content>
           <TabbedLayout>

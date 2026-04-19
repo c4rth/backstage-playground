@@ -9,29 +9,80 @@ import { getCustomFunctions } from './jsonata-functions';
 
 const BUILTIN_FUNCTIONS = new Set([
   // String functions
-  '$string', '$length', '$substring', '$substringBefore', '$substringAfter',
-  '$uppercase', '$lowercase', '$trim', '$pad', '$contains', '$split',
-  '$join', '$match', '$replace', '$eval', '$base64encode', '$base64decode',
-  '$encodeUrlComponent', '$encodeUrl', '$decodeUrlComponent', '$decodeUrl',
+  '$string',
+  '$length',
+  '$substring',
+  '$substringBefore',
+  '$substringAfter',
+  '$uppercase',
+  '$lowercase',
+  '$trim',
+  '$pad',
+  '$contains',
+  '$split',
+  '$join',
+  '$match',
+  '$replace',
+  '$eval',
+  '$base64encode',
+  '$base64decode',
+  '$encodeUrlComponent',
+  '$encodeUrl',
+  '$decodeUrlComponent',
+  '$decodeUrl',
   // Numeric functions
-  '$number', '$abs', '$floor', '$ceil', '$round', '$power', '$sqrt',
-  '$random', '$formatNumber', '$formatBase', '$formatInteger',
+  '$number',
+  '$abs',
+  '$floor',
+  '$ceil',
+  '$round',
+  '$power',
+  '$sqrt',
+  '$random',
+  '$formatNumber',
+  '$formatBase',
+  '$formatInteger',
   '$parseInteger',
   // Aggregation functions
-  '$sum', '$max', '$min', '$average', '$count',
+  '$sum',
+  '$max',
+  '$min',
+  '$average',
+  '$count',
   // Boolean functions
-  '$boolean', '$not', '$exists',
+  '$boolean',
+  '$not',
+  '$exists',
   // Array functions
-  '$append', '$sort', '$reverse', '$shuffle', '$distinct', '$zip',
+  '$append',
+  '$sort',
+  '$reverse',
+  '$shuffle',
+  '$distinct',
+  '$zip',
   // Object functions
-  '$keys', '$values', '$spread', '$merge', '$sift', '$each', '$error',
-  '$assert', '$type',
+  '$keys',
+  '$values',
+  '$spread',
+  '$merge',
+  '$sift',
+  '$each',
+  '$error',
+  '$assert',
+  '$type',
   // Date/time functions
-  '$now', '$millis', '$fromMillis', '$toMillis',
+  '$now',
+  '$millis',
+  '$fromMillis',
+  '$toMillis',
   // Higher-order functions
-  '$map', '$filter', '$single', '$reduce',
+  '$map',
+  '$filter',
+  '$single',
+  '$reduce',
   // Misc
-  '$lookup', '$clone',
+  '$lookup',
+  '$clone',
 ]);
 
 const CUSTOM_FUNCTIONS = getCustomFunctions().map(name => `$${name}`);
@@ -109,7 +160,10 @@ function tokenBase(stream: StringStream, state: JSONataState): string | null {
     const varName = '$';
     if (stream.match(/^[a-zA-Z_][a-zA-Z0-9_]*/)) {
       const fullName = varName + stream.current().slice(1);
-      if (BUILTIN_FUNCTIONS.has(fullName) || CUSTOM_FUNCTIONS.includes(fullName)) {
+      if (
+        BUILTIN_FUNCTIONS.has(fullName) ||
+        CUSTOM_FUNCTIONS.includes(fullName)
+      ) {
         return 'keyword';
       }
       return 'variableName.definition';

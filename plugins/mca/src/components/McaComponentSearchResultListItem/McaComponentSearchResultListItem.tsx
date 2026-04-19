@@ -5,7 +5,7 @@ import {
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Link } from '@backstage/core-components';
-import { Box, Text, } from '@backstage/ui';
+import { Box, Text } from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
 import { RiAlbumLine } from '@remixicon/react';
 
@@ -24,8 +24,9 @@ export interface McaComponentSearchResultListItemProps {
   lineClamp?: number;
 }
 
-export const McaComponentSearchResultListItem = (props: McaComponentSearchResultListItemProps) => {
-
+export const McaComponentSearchResultListItem = (
+  props: McaComponentSearchResultListItemProps,
+) => {
   const result = props.result as any;
   const highlight = props.highlight as ResultHighlight;
 
@@ -34,14 +35,31 @@ export const McaComponentSearchResultListItem = (props: McaComponentSearchResult
   return (
     <Box style={{ display: 'flex' }}>
       {props.icon && (
-        <Box style={{ display: 'flex', alignItems: 'flex-start', marginRight: '1rem' }}>
-          {typeof props.icon === 'function' ? props.icon(result) : getIcon(result.kind, props.icon)}
+        <Box
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            marginRight: '1rem',
+          }}
+        >
+          {typeof props.icon === 'function'
+            ? props.icon(result)
+            : getIcon(result.kind, props.icon)}
         </Box>
       )}
       <Box style={{ flexWrap: 'wrap', flex: 1, marginLeft: '20px' }}>
-        <Box style={{ width: '100%', wordBreak: 'break-all', marginBottom: '1rem' }}>
+        <Box
+          style={{
+            width: '100%',
+            wordBreak: 'break-all',
+            marginBottom: '1rem',
+          }}
+        >
           <Link noTrack to={result.location}>
-            <Text weight='bold' style={{ color: 'var(--bui-fg-info)', fontSize: '20px' }}>
+            <Text
+              weight="bold"
+              style={{ color: 'var(--bui-fg-info)', fontSize: '20px' }}
+            >
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText
                   text={highlight.fields.title}
@@ -61,7 +79,7 @@ export const McaComponentSearchResultListItem = (props: McaComponentSearchResult
               overflow: 'hidden',
             }}
             color="secondary"
-            variant='body-medium'
+            variant="body-medium"
           >
             {highlight?.fields.text ? (
               <HighlightedSearchResultText
@@ -75,10 +93,33 @@ export const McaComponentSearchResultListItem = (props: McaComponentSearchResult
           </Text>
         </Box>
         <Box>
-          {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" style={{ marginRight: '0.5rem' }} />}
-          {result.applicationCode && <Chip label={`Application Code: ${result.applicationCode}`} size="small" style={{ marginRight: '0.5rem' }} />}
-          {result.prdVersion && <Chip label={`PRD: ${result.prdVersion}`} size="small" style={{ marginRight: '0.5rem' }} />}
-          {result.otherVersions && result.otherVersions.length > 0 && <Chip label={`Other versions: ${result.otherVersions}`} size="small" />}
+          {result.kind && (
+            <Chip
+              label={`Kind: ${result.kind}`}
+              size="small"
+              style={{ marginRight: '0.5rem' }}
+            />
+          )}
+          {result.applicationCode && (
+            <Chip
+              label={`Application Code: ${result.applicationCode}`}
+              size="small"
+              style={{ marginRight: '0.5rem' }}
+            />
+          )}
+          {result.prdVersion && (
+            <Chip
+              label={`PRD: ${result.prdVersion}`}
+              size="small"
+              style={{ marginRight: '0.5rem' }}
+            />
+          )}
+          {result.otherVersions && result.otherVersions.length > 0 && (
+            <Chip
+              label={`Other versions: ${result.otherVersions}`}
+              size="small"
+            />
+          )}
         </Box>
       </Box>
     </Box>

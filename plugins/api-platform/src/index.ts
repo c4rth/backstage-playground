@@ -1,15 +1,15 @@
-export { 
-  apiPlatformPlugin, 
-  ApiExplorerPage, 
-  ApiDefinitionPage, 
+export {
+  apiPlatformPlugin,
+  ApiExplorerPage,
+  ApiDefinitionPage,
   ApiRedirectToNoSystem,
-  ServiceExplorerPage, 
+  ServiceExplorerPage,
   ServiceDefinitionPage,
   SystemExplorerPage,
   SystemDefinitionPage,
   ApiSearchResultListItem,
   LibraryExplorerPage,
   LibraryDefinitionPage,
- } from './plugin';
+} from './plugin';
 
- export * from './hooks';
+export * from './hooks';

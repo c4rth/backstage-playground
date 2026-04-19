@@ -3,8 +3,8 @@ import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugi
 export interface Config {
   mcaComponents?: {
     /**
-    * @visibility frontend
-    */
+     * @visibility frontend
+     */
     serviceBaseUrl?: string;
     /**
      * @visibility frontend

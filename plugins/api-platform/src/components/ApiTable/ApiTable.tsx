@@ -49,7 +49,7 @@ const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
   query: Query<TableRow>,
   ownership: OwnershipType,
-  apiType: OpenApiType
+  apiType: OpenApiType,
 ) => {
   const page = query.page ?? 0;
   const pageSize = query.pageSize ?? PAGE_SIZE;
@@ -58,10 +58,10 @@ const getData = async (
     limit: pageSize,
     search: query.search,
     orderBy: query.orderBy
-      ? {
-        field: query.orderBy.field,
-        direction: query.orderDirection,
-      } as ApiDefinitionsListRequest['orderBy']
+      ? ({
+          field: query.orderBy.field,
+          direction: query.orderDirection,
+        } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
     apiType,
@@ -69,15 +69,15 @@ const getData = async (
 
   return result
     ? {
-      data: result.items.map(toEntityRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toEntityRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
 };
 
 const COLUMNS: TableColumn<TableRow>[] = [
@@ -97,7 +97,9 @@ const COLUMNS: TableColumn<TableRow>[] = [
     title: 'Description',
     field: 'description',
     width: '45%',
-    render: ({ description }: TableRow) => <OverflowTooltip text={description} line={2} />,
+    render: ({ description }: TableRow) => (
+      <OverflowTooltip text={description} line={2} />
+    ),
   },
   {
     title: 'Type',
@@ -122,11 +124,18 @@ const COLUMNS: TableColumn<TableRow>[] = [
 ];
 
 const API_TYPES = [
-  ...OPENAPITYPE_LIST.map((type) => ({ value: type, label: type.charAt(0).toUpperCase() + type.slice(1) })),
+  ...OPENAPITYPE_LIST.map(type => ({
+    value: type,
+    label: type.charAt(0).toUpperCase() + type.slice(1),
+  })),
 ];
 
-function getTitle(ownership: OwnershipType, apiType: OpenApiType, count: number): string {
-  return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : API_TYPES.find(t => t.value === apiType)?.label ?? ''} APIs (${count})`;
+function getTitle(
+  ownership: OwnershipType,
+  apiType: OpenApiType,
+  count: number,
+): string {
+  return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : (API_TYPES.find(t => t.value === apiType)?.label ?? '')} APIs (${count})`;
 }
 
 export const ApiTable = () => {
@@ -134,11 +143,13 @@ export const ApiTable = () => {
   const [countRows, setCountRows] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [ownership, setOwnership] = useState<OwnershipType>(
-    () => (sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all')
+  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+    sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
-  const [selectedType, setSelectedType] = useState<OpenApiType>(
-    () => (sessionStorage.getItem(STORAGE_TYPE_KEY) ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as OpenApiType) : 'all')
+  const [selectedType, setSelectedType] = useState<OpenApiType>(() =>
+    sessionStorage.getItem(STORAGE_TYPE_KEY)
+      ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as OpenApiType)
+      : 'all',
   );
 
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
@@ -150,7 +161,12 @@ export const ApiTable = () => {
       sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
     }
     try {
-      const result = await getData(apiPlatformApi, query, ownership, selectedType);
+      const result = await getData(
+        apiPlatformApi,
+        query,
+        ownership,
+        selectedType,
+      );
       setCountRows(result.totalCount);
       return result;
     } catch (e) {
@@ -179,12 +195,19 @@ export const ApiTable = () => {
         showEmptyDataSourceMessage: countRows === 0 && !loading,
         draggable: false,
         thirdSortClick: false,
-        searchText: initialSearch,  
+        searchText: initialSearch,
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml="1"><b>{getTitle(ownership, selectedType, countRows)}</b></Box>
-          <Box ml="4"><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
+          <Box ml="1">
+            <b>{getTitle(ownership, selectedType, countRows)}</b>
+          </Box>
+          <Box ml="4">
+            <ComponentOwnership
+              storageKey={STORAGE_OWNERSHIP_KEY}
+              handleOwnershipChange={setOwnership}
+            />
+          </Box>
         </Flex>
       }
       actions={[
@@ -193,16 +216,16 @@ export const ApiTable = () => {
           onClick: () => null,
           // @ts-ignore
           component: (
-            <Box mx="4" style={{ width: '10em'}}>
+            <Box mx="4" style={{ width: '10em' }}>
               <Select
                 name="apiType"
                 size="medium"
                 value={selectedType}
-                onChange={(v) => setSelectedType(v as OpenApiType)}
+                onChange={v => setSelectedType(v as OpenApiType)}
                 options={API_TYPES}
               />
             </Box>
-          )
+          ),
         },
       ]}
       components={{

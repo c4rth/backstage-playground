@@ -1,5 +1,5 @@
 import jsonata from 'jsonata';
-import { FunctionLibrary } from "./types";
+import { FunctionLibrary } from './types';
 import { funcEntries } from './functions/func-strings.generated';
 import { fromMillisZoned } from './functions/fromMillisZoned';
 
@@ -27,14 +27,16 @@ export const jsFunctions: FunctionLibrary = {
 
 // JSONata expressions loaded directly from .func files
 export const funcExpressions: Record<string, string> = Object.fromEntries(
-    funcEntries.map(({ name, func }) => [name, func])
+  funcEntries.map(({ name, func }) => [name, func]),
 );
 
 // Registers JS-implemented functions on the given expression (synchronous).
 export const registerCustomFunctions = (expr: jsonata.Expression): void => {
-  Object.entries(jsFunctions).forEach(([name, { implementation, signature }]) => {
-    expr.registerFunction(name, implementation, signature);
-  });
+  Object.entries(jsFunctions).forEach(
+    ([name, { implementation, signature }]) => {
+      expr.registerFunction(name, implementation, signature);
+    },
+  );
 };
 
 // Evaluates every .func expression string via JSONata and returns the resulting

@@ -1,14 +1,22 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Table, Cell, Card, CardHeader, CardBody, Text, Button, Flex, CellText, useTable, ColumnConfig } from '@backstage/ui';
+import {
+  Table,
+  Cell,
+  Card,
+  CardHeader,
+  CardBody,
+  Text,
+  Button,
+  Flex,
+  CellText,
+  useTable,
+  ColumnConfig,
+} from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useBuildRuns } from '../../hooks';
 import { getDurationFromDates } from '../../utils';
 import { DateTime } from 'luxon';
-import {
-  Link,
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import type { BuildRun } from '@backstage-community/plugin-azure-devops-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
@@ -19,9 +27,9 @@ import { LogsDialog } from './LogsDialog';
 import styles from './AzureDevOpsPipelinePage.module.css';
 
 type TableRow = {
-  id: number,
-  item: BuildRun,
-}
+  id: number;
+  item: BuildRun;
+};
 
 const toTableRow = (buildRun: BuildRun, idx: number): TableRow => ({
   id: idx,
@@ -30,7 +38,9 @@ const toTableRow = (buildRun: BuildRun, idx: number): TableRow => ({
 
 const cardTitle = (
   <Flex style={{ paddingTop: '12px', paddingLeft: '4px' }}>
-    <Text variant='title-small' weight='bold'>Azure DevOps Pipelines</Text>
+    <Text variant="title-small" weight="bold">
+      Azure DevOps Pipelines
+    </Text>
   </Flex>
 );
 
@@ -80,88 +90,121 @@ export const AzureDevOpsPipelinePage = () => {
 
   const getBuildRuns = useBuildRuns();
 
-  const fetchLogs = useCallback(async (buildId: number, buildTitle: string) => {
-    setLogsDialogState(prev => ({
-      ...prev,
-      loading: true,
-      logs: null,
-      title: buildTitle,
-      isOpen: true,
-    }));
+  const fetchLogs = useCallback(
+    async (buildId: number, buildTitle: string) => {
+      setLogsDialogState(prev => ({
+        ...prev,
+        loading: true,
+        logs: null,
+        title: buildTitle,
+        isOpen: true,
+      }));
 
-    if (!buildId) {
-      setLogsDialogState(prev => ({ ...prev, loading: false }));
-      return;
-    }
+      if (!buildId) {
+        setLogsDialogState(prev => ({ ...prev, loading: false }));
+        return;
+      }
 
-    try {
-      const { project, host, org } = getAnnotationValuesFromEntity(entity);
-      const response = await azureApi.getBuildRunLog(
-        project,
-        stringifyEntityRef(entity),
-        buildId,
-        host,
-        org,
-      );
-      setLogsDialogState(prev => ({ ...prev, logs: response.log }));
-    } catch (err) {
-      setLogsDialogState(prev => ({ ...prev, logs: ['Error fetching logs'] }));
-    } finally {
-      setLogsDialogState(prev => ({ ...prev, loading: false }));
-    }
-  }, [azureApi, entity]);
+      try {
+        const { project, host, org } = getAnnotationValuesFromEntity(entity);
+        const response = await azureApi.getBuildRunLog(
+          project,
+          stringifyEntityRef(entity),
+          buildId,
+          host,
+          org,
+        );
+        setLogsDialogState(prev => ({ ...prev, logs: response.log }));
+      } catch (err) {
+        setLogsDialogState(prev => ({
+          ...prev,
+          logs: ['Error fetching logs'],
+        }));
+      } finally {
+        setLogsDialogState(prev => ({ ...prev, loading: false }));
+      }
+    },
+    [azureApi, entity],
+  );
 
-  const columns: ColumnConfig<TableRow>[] = useMemo(() => [{
-    id: 'id',
-    label: 'ID',
-    isRowHeader: true,
-    cell: row => <CellText title={row.item.id?.toString() ?? '-'} />,
-    width: '3%'
-  }, {
-    id: 'build',
-    label: 'Build',
-    cell: row =>
-    (<Cell>
-      <Link to={row.item.link ?? ''}>{row.item.title}</Link>
-    </Cell>),
-    width: '25%'
-  }, {
-    id: 'source',
-    label: 'Source',
-    cell: row => <CellText title={row.item.source ?? '-'} />,
-    width: '20%'
-  }, {
-    id: 'state',
-    label: 'State',
-    cell: row => <Cell><BuildStateComponent status={row.item.status} result={row.item.result} /></Cell>,
-    width: '15%'
-  }, {
-    id: 'duration',
-    label: 'Duration',
-    cell: row => <CellText title={getDuration(row.item.finishTime, row.item.startTime)} />,
-    width: '10%'
-  }, {
-    id: 'age',
-    label: 'Age',
-    cell: row => <CellText title={getAge(row.item.queueTime)} />,
-    width: '15%'
-  }, {
-    id: 'actions',
-    label: 'Actions',
-    cell: row =>
-    (<Cell>
-      <Button
-        style={{ backgroundColor: 'var(--bui-fg-info)' }}
-        onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
-        isDisabled={!row.item.id}
-      >
-        View Logs
-      </Button>
-    </Cell>),
-    width: '12%'
-  }], [fetchLogs]);
+  const columns: ColumnConfig<TableRow>[] = useMemo(
+    () => [
+      {
+        id: 'id',
+        label: 'ID',
+        isRowHeader: true,
+        cell: row => <CellText title={row.item.id?.toString() ?? '-'} />,
+        width: '3%',
+      },
+      {
+        id: 'build',
+        label: 'Build',
+        cell: row => (
+          <Cell>
+            <Link to={row.item.link ?? ''}>{row.item.title}</Link>
+          </Cell>
+        ),
+        width: '25%',
+      },
+      {
+        id: 'source',
+        label: 'Source',
+        cell: row => <CellText title={row.item.source ?? '-'} />,
+        width: '20%',
+      },
+      {
+        id: 'state',
+        label: 'State',
+        cell: row => (
+          <Cell>
+            <BuildStateComponent
+              status={row.item.status}
+              result={row.item.result}
+            />
+          </Cell>
+        ),
+        width: '15%',
+      },
+      {
+        id: 'duration',
+        label: 'Duration',
+        cell: row => (
+          <CellText
+            title={getDuration(row.item.finishTime, row.item.startTime)}
+          />
+        ),
+        width: '10%',
+      },
+      {
+        id: 'age',
+        label: 'Age',
+        cell: row => <CellText title={getAge(row.item.queueTime)} />,
+        width: '15%',
+      },
+      {
+        id: 'actions',
+        label: 'Actions',
+        cell: row => (
+          <Cell>
+            <Button
+              style={{ backgroundColor: 'var(--bui-fg-info)' }}
+              onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
+              isDisabled={!row.item.id}
+            >
+              View Logs
+            </Button>
+          </Cell>
+        ),
+        width: '12%',
+      },
+    ],
+    [fetchLogs],
+  );
 
-  const getData = useCallback(() => fetchData(getBuildRuns, entity), [getBuildRuns, entity]);
+  const getData = useCallback(
+    () => fetchData(getBuildRuns, entity),
+    [getBuildRuns, entity],
+  );
 
   const { tableProps } = useTable({
     mode: 'complete',
@@ -169,7 +212,12 @@ export const AzureDevOpsPipelinePage = () => {
   });
 
   if (tableProps.error) {
-    return <ResponseErrorPanel title="Failed to call AzureDevOps" error={tableProps.error} />;
+    return (
+      <ResponseErrorPanel
+        title="Failed to call AzureDevOps"
+        error={tableProps.error}
+      />
+    );
   }
 
   if (tableProps.loading) {
@@ -195,7 +243,9 @@ export const AzureDevOpsPipelinePage = () => {
 
       <LogsDialog
         {...logsDialogState}
-        onOpenChange={(isOpen) => setLogsDialogState(prev => ({ ...prev, isOpen }))}
+        onOpenChange={isOpen =>
+          setLogsDialogState(prev => ({ ...prev, isOpen }))
+        }
       />
     </>
   );

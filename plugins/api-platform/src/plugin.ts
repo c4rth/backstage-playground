@@ -8,7 +8,10 @@ import {
 } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef, ApiPlatformBackendClient } from './api';
 import { apiPlatformRouteRef } from './routes';
-import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import {
+  createSearchResultListItemExtension,
+  SearchResultListItemExtensionProps,
+} from '@backstage/plugin-search-react';
 import { ApiSearchResultListItemProps } from './components/ApiSearchResultListItem';
 
 export const apiPlatformPlugin = createPlugin({
@@ -47,7 +50,9 @@ export const ApiRedirectToNoSystem = apiPlatformPlugin.provide(
     name: 'ApiRedirectToNoSystem',
     component: {
       lazy: () =>
-        import('./components/ApiDefinitionPage').then(m => m.ApiRedirectToNoSystem),
+        import('./components/ApiDefinitionPage').then(
+          m => m.ApiRedirectToNoSystem,
+        ),
     },
   }),
 );
@@ -58,7 +63,9 @@ export const ServiceExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
     name: 'ServiceExplorerPage',
     component: () =>
-      import('./components/ServiceExplorerPage').then(m => m.ServiceExplorerPage),
+      import('./components/ServiceExplorerPage').then(
+        m => m.ServiceExplorerPage,
+      ),
     mountPoint: apiPlatformRouteRef,
   }),
 );
@@ -68,7 +75,9 @@ export const ServiceDefinitionPage = apiPlatformPlugin.provide(
     name: 'ServiceDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/ServiceDefinitionPage').then(m => m.ServiceDefinitionPage),
+        import('./components/ServiceDefinitionPage').then(
+          m => m.ServiceDefinitionPage,
+        ),
     },
   }),
 );
@@ -79,7 +88,9 @@ export const LibraryExplorerPage = apiPlatformPlugin.provide(
   createRoutableExtension({
     name: 'LibraryExplorerPage',
     component: () =>
-      import('./components/LibraryExplorerPage').then(m => m.LibraryExplorerPage),
+      import('./components/LibraryExplorerPage').then(
+        m => m.LibraryExplorerPage,
+      ),
     mountPoint: apiPlatformRouteRef,
   }),
 );
@@ -89,7 +100,9 @@ export const LibraryDefinitionPage = apiPlatformPlugin.provide(
     name: 'LibraryDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/LibraryDefinitionPage').then(m => m.LibraryDefinitionPage),
+        import('./components/LibraryDefinitionPage').then(
+          m => m.LibraryDefinitionPage,
+        ),
     },
   }),
 );
@@ -110,7 +123,9 @@ export const SystemDefinitionPage = apiPlatformPlugin.provide(
     name: 'SystemDefinitionPage',
     component: {
       lazy: () =>
-        import('./components/SystemDefinitionPage').then(m => m.SystemDefinitionPage),
+        import('./components/SystemDefinitionPage').then(
+          m => m.SystemDefinitionPage,
+        ),
     },
   }),
 );
@@ -126,7 +141,8 @@ export const ApiSearchResultListItem: (
       import('./components/ApiSearchResultListItem').then(
         m => m.ApiSearchResultListItem,
       ),
-    predicate: result => result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.')
+    predicate: result =>
+      result.type === 'software-catalog' &&
+      (result.document as any).type.startsWith('api-platform.'),
   }),
 );
-

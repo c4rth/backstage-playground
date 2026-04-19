@@ -1,28 +1,49 @@
-import { ConfigApi, createApiRef, DiscoveryApi, FetchApi } from "@backstage/core-plugin-api";
-import { McaBaseType, McaBaseTypeListOptions, McaBaseTypeListResult, McaComponent, McaComponentListOptions, McaComponentListResult, McaComponentType, McaVersions } from '@internal/plugin-mca-common';
+import {
+  ConfigApi,
+  createApiRef,
+  DiscoveryApi,
+  FetchApi,
+} from '@backstage/core-plugin-api';
+import {
+  McaBaseType,
+  McaBaseTypeListOptions,
+  McaBaseTypeListResult,
+  McaComponent,
+  McaComponentListOptions,
+  McaComponentListResult,
+  McaComponentType,
+  McaVersions,
+} from '@internal/plugin-mca-common';
 
-export const mcaComponentsBackendApiRef = createApiRef<McaComponentsBackendApi>({
-  id: 'plugin.mca.service',
-});
+export const mcaComponentsBackendApiRef = createApiRef<McaComponentsBackendApi>(
+  {
+    id: 'plugin.mca.service',
+  },
+);
 
 export interface McaComponentsBackendApi {
-
   getMcaComponentsCount(type: McaComponentType): Promise<number>;
 
-  listMcaComponents(options: McaComponentListOptions): Promise<McaComponentListResult>;
+  listMcaComponents(
+    options: McaComponentListOptions,
+  ): Promise<McaComponentListResult>;
 
   getMcaComponent(component: string): Promise<McaComponent | undefined>;
 
-  getMcaComponentDefinition(component: string, refP: string): Promise<string | undefined>;
+  getMcaComponentDefinition(
+    component: string,
+    refP: string,
+  ): Promise<string | undefined>;
 
   getMcaVersions(): Promise<McaVersions | undefined>;
 
-  listMcaBaseTypes(options: McaBaseTypeListOptions): Promise<McaBaseTypeListResult>;
+  listMcaBaseTypes(
+    options: McaBaseTypeListOptions,
+  ): Promise<McaBaseTypeListResult>;
 
   getMcaBaseTypesCount(): Promise<number>;
 
   getMcaBaseType(baseType: string): Promise<McaBaseType | undefined>;
-
 }
 
 export class McaComponentsBackendClient implements McaComponentsBackendApi {
@@ -33,7 +54,11 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
   private baseUrlPromise: Promise<string> | null = null;
   private backendBaseUrl: string;
 
-  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi; configApi: ConfigApi, }) {
+  constructor(options: {
+    discoveryApi: DiscoveryApi;
+    fetchApi: FetchApi;
+    configApi: ConfigApi;
+  }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
     this.configApi = options.configApi;
@@ -54,7 +79,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     return this.baseUrlCache;
   }
 
-  private buildQueryParams(params: Record<string, string | number | undefined>): URLSearchParams {
+  private buildQueryParams(
+    params: Record<string, string | number | undefined>,
+  ): URLSearchParams {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
@@ -71,7 +98,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
       const response = await this.fetchApi.fetch(url);
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorBody || response.statusText  }`);
+        throw new Error(
+          `HTTP ${response.status}: ${errorBody || response.statusText}`,
+        );
       }
       return await response.json();
     } catch (error) {
@@ -102,7 +131,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     return this.fetchJson<number>(url);
   }
 
-  async listMcaComponents(options: McaComponentListOptions): Promise<McaComponentListResult> {
+  async listMcaComponents(
+    options: McaComponentListOptions,
+  ): Promise<McaComponentListResult> {
     const { offset, limit, orderBy, search, type } = options;
     const baseUrl = await this.getMcaBaseUrl();
     const params: Record<string, string | number | undefined> = {
@@ -130,39 +161,48 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     return this.fetchJson<McaComponent>(url);
   }
 
-  async getMcaComponentDefinition(component: string, refP: string): Promise<string | undefined> {
+  async getMcaComponentDefinition(
+    component: string,
+    refP: string,
+  ): Promise<string | undefined> {
     const extension = component.startsWith('Operation') ? 'osml' : 'esml';
     const encodedComponent = encodeURIComponent(component.trim());
-    const encodedRefP = encodeURIComponent(refP.trim().replace(/^P/, '').replace(/^0+/, ''));
-    
+    const encodedRefP = encodeURIComponent(
+      refP.trim().replace(/^P/, '').replace(/^0+/, ''),
+    );
+
     const searchParams = this.buildQueryParams({
       env: 'TST',
       myCurrentP: encodedRefP,
     });
-    
-    const url = new URL(`${this.backendBaseUrl}/api/proxy/operations-sources/api/v1/sources/OPER/${encodedComponent}.${extension}`);
+
+    const url = new URL(
+      `${this.backendBaseUrl}/api/proxy/operations-sources/api/v1/sources/OPER/${encodedComponent}.${extension}`,
+    );
     url.search = searchParams.toString();
-    
+
     return this.fetchOctetStreamAsText(url);
   }
 
   async getMcaVersions(): Promise<McaVersions> {
     const baseUrl = await this.getMcaBaseUrl();
     const url = new URL(`${baseUrl}/mca/versions`);
-    
+
     return this.fetchJson<McaVersions>(url);
   }
 
   async getMcaBaseTypesCount(): Promise<number> {
     const baseUrl = await this.getMcaBaseUrl();
     const url = new URL(`${baseUrl}/basetypes/count`);
-    
+
     return this.fetchJson<number>(url);
   }
 
-  async listMcaBaseTypes(options: McaBaseTypeListOptions): Promise<McaBaseTypeListResult> {
+  async listMcaBaseTypes(
+    options: McaBaseTypeListOptions,
+  ): Promise<McaBaseTypeListResult> {
     const { offset, limit, orderBy, search } = options;
-    
+
     const baseUrl = await this.getMcaBaseUrl();
     const params: Record<string, string | number | undefined> = {
       offset,
@@ -177,21 +217,20 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     const searchParams = this.buildQueryParams(params);
     const url = new URL(`${baseUrl}/basetypes/components`);
     url.search = searchParams.toString();
-    
+
     return this.fetchJson<McaBaseTypeListResult>(url);
   }
 
-  async getMcaBaseType(baseType: string): Promise<McaBaseType | undefined> {    
+  async getMcaBaseType(baseType: string): Promise<McaBaseType | undefined> {
     const baseUrl = await this.getMcaBaseUrl();
     const encodedBaseType = encodeURIComponent(baseType.trim());
     const url = new URL(`${baseUrl}/baseTypes/components/${encodedBaseType}`);
-    
+
     return this.fetchJson<McaBaseType>(url);
   }
-  
+
   clearCache(): void {
     this.baseUrlCache = null;
     this.baseUrlPromise = null;
   }
-
 }
