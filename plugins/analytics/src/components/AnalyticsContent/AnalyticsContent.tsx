@@ -11,7 +11,6 @@ import {
   TooltipProps
 } from 'recharts';
 import { Progress, ResponseErrorPanel, Select } from '@backstage/core-components';
-import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 type TableRow = {
   id: number;
