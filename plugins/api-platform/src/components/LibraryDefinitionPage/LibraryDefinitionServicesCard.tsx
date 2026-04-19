@@ -68,10 +68,11 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
       if (!dependencies.length) {
         return <Text variant="body-medium">-</Text>;
       }
-
+      const index =
+        (dependencyIndexes[0] >= 0 ? dependencyIndexes[0] + 1 : 0) * 2;
       return (
         <ComponentChip
-          index={(dependencyIndexes[0] >= 0 ? dependencyIndexes[0] + 1 : 0) * 2}
+          index={index}
           text={dependencies.join(', ')}
           clickable={false}
         />
@@ -193,7 +194,7 @@ interface LibraryServicesCardProps {
   name: string;
 }
 
-export const LibraryServicesCard = ({
+export const LibraryDefinitionServicesCard = ({
   system,
   name,
 }: LibraryServicesCardProps) => {

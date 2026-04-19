@@ -134,7 +134,7 @@ export const ComponentChip = ({
   );
 
   const content = tooltipContent ? (
-    <TooltipTrigger trigger="hover" delay={250}>
+    <TooltipTrigger trigger="hover" delay={500}>
       {chip}
       <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
         {tooltipContent}

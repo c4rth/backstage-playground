@@ -2,17 +2,12 @@ import {
   TableColumn,
   Table,
   Link,
-  Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { useState } from 'react';
-import { Box, Button, Flex } from '@backstage/ui';
+import { Box, Flex } from '@backstage/ui';
 import { ComponentDisplayName } from '../common';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
-import { useApi } from '@backstage/core-plugin-api';
-import { apiPlatformBackendApiRef } from '../../api';
-import { generateReport } from './generateReport';
 import { useGetLibraryVersions } from '../..';
 
 type TableRow = {
@@ -39,8 +34,10 @@ const serviceColumns: TableColumn<TableRow>[] = [
       }
       return a.version.localeCompare(b.version);
     },
-    render: ({ name, system, version }: TableRow) => (
-      <Link to={`/api-platform/library/${system}/${name}?version=${version}`}>
+    render: ({ version, entityRef }: TableRow) => (
+      <Link
+        to={`/catalog/default/component/${entityRef.replace(/^component:default\//, '')}`}
+      >
         <ComponentDisplayName text={`${version}`} type="library" />
       </Link>
     ),
@@ -72,36 +69,20 @@ interface LibraryVersionsCardProps {
   name: string;
 }
 
-export const LibraryVersionsCard = ({
+export const LibraryDefinitionVersionsCard = ({
   system,
   name,
 }: LibraryVersionsCardProps) => {
-  const [generating, setGenerating] = useState(false);
-  const [errorReport, setErrorReport] = useState<Error | null>(null);
-  const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-
   const { libraryVersions, loading, error } = useGetLibraryVersions(
     system!,
     name!,
   );
 
-  const handleGenerateReport = async () => {
-    setGenerating(true);
-    setErrorReport(null);
-    try {
-      await generateReport(apiPlatformApi, name, libraryVersions);
-    } catch (errGenerate) {
-      setErrorReport(errGenerate as Error);
-    } finally {
-      setGenerating(false);
-    }
-  };
-
-  if (error || errorReport) {
+  if (error) {
     return (
       <ResponseErrorPanel
         title="Error loading Library Versions"
-        error={error || errorReport!}
+        error={error!}
       />
     );
   }
@@ -111,16 +92,6 @@ export const LibraryVersionsCard = ({
 
   return (
     <Box>
-      <Flex mb="4" mt="-3" style={{ justifyContent: 'end' }}>
-        <Button
-          style={{ backgroundColor: 'var(--bui-fg-info)' }}
-          onClick={handleGenerateReport}
-          isDisabled={generating}
-        >
-          Generate report
-        </Button>
-      </Flex>
-      {generating && <Progress />}
       <Box>
         <Table<TableRow>
           isLoading={loading}

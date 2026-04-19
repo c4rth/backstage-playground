@@ -1,6 +1,11 @@
-import { Content, PageWithHeader } from '@backstage/core-components';
+import {
+  Content,
+  PageWithHeader,
+  TabbedLayout,
+} from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { LibraryTable } from '../LibraryTable';
+import { ServiceLibrariesTable } from '../ServiceTable';
 
 export const LibraryExplorerPage = () => {
   const configApi = useApi(configApiRef);
@@ -15,7 +20,16 @@ export const LibraryExplorerPage = () => {
       pageTitleOverride="Libraries"
     >
       <Content>
-        <LibraryTable />
+        <Content>
+          <TabbedLayout>
+            <TabbedLayout.Route path="/" title="Libraries">
+              <LibraryTable />
+            </TabbedLayout.Route>
+            <TabbedLayout.Route path="/services" title="By services">
+              <ServiceLibrariesTable />
+            </TabbedLayout.Route>
+          </TabbedLayout>
+        </Content>
       </Content>
     </PageWithHeader>
   );
