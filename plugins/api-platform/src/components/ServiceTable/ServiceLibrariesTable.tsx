@@ -53,7 +53,11 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
       return (
         <Flex direction="column" align="center" gap="0.5">
           {dependencies.map((dep: string, i: number) => (
-            <ComponentChip key={dep} index={i} text={dep} clickable={false} />
+            <ComponentChip 
+              key={dep} 
+              index={i} 
+              text={dep} 
+            />
           ))}
         </Flex>
       );

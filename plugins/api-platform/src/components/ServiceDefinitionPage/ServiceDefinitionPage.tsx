@@ -178,13 +178,11 @@ export const ServiceDefinitionPage = () => {
               </Grid.Item>
             </Grid.Root>
           </Box>
-          <Box mb="-3">
-            {serviceEntity ? (
-              <ServiceDefinitionCard entity={serviceEntity} />
-            ) : (
-              <div />
-            )}
-          </Box>
+          {serviceEntity ? (
+            <ServiceDefinitionCard entity={serviceEntity} />
+          ) : (
+            <div />
+          )}
         </Content>
       </Page>
     </AsyncEntityProvider>

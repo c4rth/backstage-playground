@@ -179,12 +179,12 @@ export const LibraryTable = () => {
     <Card style={{ height: '100%' }}>
       <CardHeader>
         <Flex align="center" gap="2">
-          <Box ml="1">
+          <Box>
             <Text variant="title-small" weight="bold">
               {ownership === 'owned' ? 'Owned' : 'All'} Libraries
             </Text>
           </Box>
-          <Box ml="2">
+          <Box ml="4">
             <ComponentOwnership
               storageKey={STORAGE_OWNERSHIP_KEY}
               handleOwnershipChange={setOwnership}
@@ -217,49 +217,4 @@ export const LibraryTable = () => {
     </Card>
   );
 
-  /*
-const fetchData = async (query: Query<TableRow>) => {
-  setLoading(true);
-  setCountRows(0);
-  try {
-    setError(null);
-    if (query.search !== undefined) {
-      sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
-    }
-    const result = await getData(apiPlatformApi, ownership, query);
-    setCountRows(result.totalCount);
-    return result;
-  } catch (err) {
-    setError(err as Error);
-    return { data: [], page: 0, totalCount: 0 };
-  } finally {
-    setLoading(false);
-  }
-};
-
-if (error) return <ResponseErrorPanel error={error} />;
-
-return (
-  <Table<TableRow>
-    key={ownership}
-    columns={columns}
-    options={{
-      search: true,
-      padding: 'dense' as const,
-      pageSize: PAGE_SIZE,
-      pageSizeOptions: [10, PAGE_SIZE, 50],
-      showEmptyDataSourceMessage: countRows === 0 && !loading,
-      draggable: false,
-      thirdSortClick: false,
-      searchText: initialSearch,
-    }}
-    title={
-      <Flex gap="0" align="center">
-        <Box ml='1'><b>{ownership === 'owned' ? 'Owned' : 'All'} Libraries</b></Box>
-        <Box ml='2'><ComponentOwnership storageKey={STORAGE_OWNERSHIP_KEY} handleOwnershipChange={setOwnership} /></Box>
-      </Flex>
-    }
-    data={fetchData}
-  />
-);*/
 };

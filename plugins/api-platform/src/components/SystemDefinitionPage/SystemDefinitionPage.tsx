@@ -20,14 +20,12 @@ export const SystemDefinitionPage = () => {
     >
       <PageWithHeader themeId="systems" title={name} type="System">
         <Content>
-          <Box mb="-3">
             {systemDefinition && name && (
               <SystemDefinitionCard
                 system={name}
                 systemDefinition={systemDefinition}
               />
             )}
-          </Box>
         </Content>
       </PageWithHeader>
     </AsyncEntityProvider>

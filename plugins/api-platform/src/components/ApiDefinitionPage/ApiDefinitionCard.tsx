@@ -110,7 +110,7 @@ export const ApiDefinitionCard = () => {
           <ComponentAboutContent entity={entity} />
           {!isMcaApi && !isDeadCommonComponents && (
             <>
-              <Box mt="5">
+              <Box mt="6">
                 <AboutField label="Azure Artifact">
                   <Link
                     to={artifactUrl}
@@ -121,7 +121,7 @@ export const ApiDefinitionCard = () => {
                   </Link>
                 </AboutField>
               </Box>
-              <Box mt="5">
+              <Box mt="6">
                 <AboutField label="Maven Snippet">
                   <CodeSnippet
                     text={mavenXml}
@@ -130,7 +130,7 @@ export const ApiDefinitionCard = () => {
                   />
                 </AboutField>
               </Box>
-              <Box mt="5">
+              <Box mt="6">
                 <AboutField label="API Platform URL">
                   <Link
                     to={platformUrl}
@@ -144,7 +144,7 @@ export const ApiDefinitionCard = () => {
             </>
           )}
           {isMcaApi && (
-            <Box mt="5">
+            <Box mt="6">
               <AboutField label="MCA Operation">
                 <Link
                   to={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`}
@@ -158,7 +158,7 @@ export const ApiDefinitionCard = () => {
             </Box>
           )}
           {isDeadCommonComponents && (
-            <Box mt="5">
+            <Box mt="6">
               <AboutField label="API Platform URL">
                 <Link
                   to={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`}

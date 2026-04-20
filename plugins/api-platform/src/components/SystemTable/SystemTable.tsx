@@ -6,7 +6,7 @@ import {
 } from '@backstage/core-components';
 import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box, Flex } from '@backstage/ui';
+import { Box, Flex, Text } from '@backstage/ui';
 import { useState } from 'react';
 import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
@@ -83,24 +83,24 @@ const getData = async (
     search: query.search,
     orderBy: query.orderBy
       ? ({
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as SystemDefinitionsListRequest['orderBy'])
+        field: query.orderBy.field,
+        direction: query.orderDirection,
+      } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
   });
 
   return result
     ? {
-        data: result.items.map(toEntityRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toEntityRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 };
 
 export const SystemTable = () => {
@@ -154,12 +154,12 @@ export const SystemTable = () => {
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml="1">
-            <b>
+          <Box>
+            <Text variant="title-small" weight="bold">
               {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
-            </b>
+            </Text>
           </Box>
-          <Box ml="2">
+          <Box ml="4">
             <ComponentOwnership
               storageKey={STORAGE_OWNERSHIP_KEY}
               handleOwnershipChange={setOwnership}

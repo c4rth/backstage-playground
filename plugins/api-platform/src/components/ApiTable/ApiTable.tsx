@@ -199,7 +199,7 @@ export const ApiTable = () => {
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml="1">
+          <Box>
             <b>{getTitle(ownership, selectedType, countRows)}</b>
           </Box>
           <Box ml="4">

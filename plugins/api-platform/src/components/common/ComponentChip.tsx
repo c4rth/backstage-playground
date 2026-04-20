@@ -5,13 +5,10 @@ import { Chip } from '@internal/plugin-api-platform-react';
 import { Text, TooltipTrigger, Tooltip, Flex, Box } from '@backstage/ui';
 
 export type ComponentChipProps = {
-  index: number;
-  icon?: React.JSX.Element;
+  index?: number;
   text?: string;
   link?: string;
   service?: ServiceEnvironmentDefinition;
-  disabled?: boolean;
-  clickable?: boolean;
   backgroundColor?: string;
 };
 
@@ -33,27 +30,39 @@ const backgroundColors = [
   'var(--belui-chip-bg-color5)',
 ];
 
-const textColors = [
-  'var(--belui-chip-fg-color1)',
-  'var(--belui-chip-fg-color2)',
-  'var(--belui-chip-fg-color3)',
-  'var(--belui-chip-fg-color4)',
-  'var(--belui-chip-fg-color5)',
-];
+const getContrastColor = (hexColor: string, alpha: number = 1) => {
+    const cleanHex = hexColor.replace('#', '');
+    const rSrc = parseInt(cleanHex.slice(0, 2), 16);
+    const gSrc = parseInt(cleanHex.slice(2, 4), 16);
+    const bSrc = parseInt(cleanHex.slice(4, 6), 16);
 
-const getChipStyles = (index: number, backgroundColor: string | undefined) => {
-  if (backgroundColor) {
-    const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
-    const textColor =
-      alphaValue <= 0.5 ? 'var(--bui-fg-primary)' : 'var(--bui-bg-solid)';
+    // Blend with white background (255)
+    const r = Math.round(rSrc * alpha + 255 * (1 - alpha));
+    const g = Math.round(gSrc * alpha + 255 * (1 - alpha));
+    const b = Math.round(bSrc * alpha + 255 * (1 - alpha));
+
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? 'var(--bui-fg-primary)' : 'var(--bui-fg-solid-disabled)';
+  };
+
+const getChipStyles = (index: number | undefined, backgroundColor: string) => {
+  if (backgroundColor === 'auto') {
+    const idx = index! % backgroundColors.length;
     return {
-      backgroundColor: applyAlpha(backgroundColor, alphaValue),
-      color: textColor,
+      backgroundColor: backgroundColors[idx],
+      color: 'var(--bui-black)',
     };
   }
+  if (index === undefined) {
+    return {
+      backgroundColor: backgroundColor,
+      color: getContrastColor(backgroundColor),
+    };
+  }
+  const alphaValue = Math.min(Math.max((index + 1) / 10, 0.1), 1);
   return {
-    backgroundColor: backgroundColors[index % backgroundColors.length],
-    color: textColors[index % textColors.length],
+    backgroundColor: applyAlpha(backgroundColor, alphaValue),
+    color: getContrastColor(backgroundColor, alphaValue),
   };
 };
 
@@ -76,19 +85,16 @@ const getPlatformIcon = (platform?: string): React.JSX.Element => {
 
 export const ComponentChip = ({
   index,
-  icon,
   text,
   link,
   service,
-  disabled = false,
-  clickable = true,
-  backgroundColor,
+  backgroundColor = 'auto',
 }: ComponentChipProps) => {
   const chipStyles = getChipStyles(index, backgroundColor);
 
   const platformIcon = getPlatformIcon(service?.platform);
   const chipLabel = text || service?.imageVersion || '?';
-  const chipIcon = text ? icon : platformIcon;
+  const chipIcon = text ? undefined : platformIcon;
 
   const tooltipContent = service ? (
     <Box>
@@ -117,13 +123,14 @@ export const ComponentChip = ({
     </Box>
   ) : null;
 
+  const clickable = !!link;
+
   const chip = (
     <Chip
       label={chipLabel}
       size="small"
       variant="outlined"
       clickable={clickable}
-      disabled={disabled}
       icon={chipIcon}
       style={{
         padding: tooltipContent ? 5 : 0,

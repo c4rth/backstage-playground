@@ -19,17 +19,15 @@ export const LibraryExplorerPage = () => {
       subtitle={`${orgName} Library Explorer`}
       pageTitleOverride="Libraries"
     >
-      <Content>
-        <Content>
-          <TabbedLayout>
-            <TabbedLayout.Route path="/" title="Libraries">
-              <LibraryTable />
-            </TabbedLayout.Route>
-            <TabbedLayout.Route path="/services" title="By services">
-              <ServiceLibrariesTable />
-            </TabbedLayout.Route>
-          </TabbedLayout>
-        </Content>
+      <Content >
+        <TabbedLayout>
+          <TabbedLayout.Route path="/" title="Libraries">
+            <LibraryTable />
+          </TabbedLayout.Route>
+          <TabbedLayout.Route path="/services" title="By services">
+            <ServiceLibrariesTable />
+          </TabbedLayout.Route>
+        </TabbedLayout>
       </Content>
     </PageWithHeader>
   );

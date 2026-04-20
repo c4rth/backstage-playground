@@ -7,7 +7,6 @@ import {
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo, useState } from 'react';
 import { Box, Flex, Text } from '@backstage/ui';
-import { ListBox, ListBoxItem } from 'react-aria-components';
 import { ComponentDisplayName } from '../common';
 import {
   LibraryDefinition,
@@ -39,16 +38,16 @@ const renderVersionList = (
   serviceDefinition: ServiceDefinition,
   renderItem: (version: any, idx: number) => JSX.Element,
 ) => (
-  <ListBox>
+  <>
     {serviceDefinition.versions?.map((version, idx) => (
-      <ListBoxItem
+      <Box
         key={`${serviceDefinition.name}-${version.version}-${idx}`}
         style={LIST_ITEM_STYLE}
       >
         {renderItem(version, idx)}
-      </ListBoxItem>
+      </Box>
     ))}
-  </ListBox>
+  </  >
 );
 
 const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
@@ -74,7 +73,6 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
         <ComponentChip
           index={index}
           text={dependencies.join(', ')}
-          clickable={false}
         />
       );
     }),
@@ -123,7 +121,6 @@ const serviceColumns: TableColumn<TableRow>[] = [
         <ComponentChip
           index={0}
           text={version.version}
-          clickable={false}
           backgroundColor="#FFFFFF"
         />
       )),

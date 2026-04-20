@@ -18,8 +18,7 @@ import {
   ApiPlatformBackendApi,
   apiPlatformBackendApiRef,
 } from '../../api/ApiPlatformBackendApi';
-import { Box, Flex } from '@backstage/ui';
-import { ListBox, ListBoxItem } from 'react-aria-components';
+import { Box, Flex, Text } from '@backstage/ui';
 import { Query } from '@material-table/core';
 
 export type BaseTableRow = {
@@ -36,24 +35,24 @@ export const LIST_ITEM_STYLE = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '2.5rem',
+  minHeight: '2.5rem'
 };
 
 export const renderVersionList = (
   serviceDefinition: ServiceDefinition,
   renderItem: (version: ServiceVersionDefinition, idx: number) => JSX.Element,
 ) => (
-  <ListBox aria-label="Services versions">
+  <>
     {serviceDefinition.versions?.map((version, idx) => (
-      <ListBoxItem
+      <Box
         key={`${serviceDefinition.name}-${version.version}-${idx}`}
         style={LIST_ITEM_STYLE}
         aria-label={`${serviceDefinition.name} version ${version.version}`}
       >
         {renderItem(version, idx)}
-      </ListBoxItem>
+      </Box>
     ))}
-  </ListBox>
+  </>
 );
 
 const createNameColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
@@ -138,24 +137,24 @@ const getData = async <T extends BaseTableRow>(
     search: query.search,
     orderBy: query.orderBy
       ? ({
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as ServiceDefinitionsListRequest['orderBy'])
+        field: query.orderBy.field,
+        direction: query.orderDirection,
+      } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
   });
 
   return result
     ? {
-        data: result.items.map(toRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 };
 
 export function BaseServiceTable<T extends BaseTableRow>({
@@ -215,11 +214,10 @@ export function BaseServiceTable<T extends BaseTableRow>({
       }}
       title={
         <Flex gap="0" align="center">
-          <Box ml="1">
-            <b>
-              {ownership === 'owned' ? 'Owned' : 'All'} {titleLabel} (
-              {countRows})
-            </b>
+          <Box>
+            <Text variant="title-small" weight="bold">
+              {ownership === 'owned' ? 'Owned' : 'All'} {titleLabel} ({countRows})
+            </Text>
           </Box>
           <Box ml="4">
             <ComponentOwnership

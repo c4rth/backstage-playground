@@ -98,7 +98,7 @@ export const McaComponentDefinitionPage = () => {
   return (
     <PageWithHeader key={name} themeId="apis" title={name} type="MCA Component">
       <Content>
-        <Box mb="1">
+        <Box mb="1" >
           <Grid.Root columns="2">
             <Grid.Item>
               <Select
@@ -112,9 +112,7 @@ export const McaComponentDefinitionPage = () => {
             </Grid.Item>
           </Grid.Root>
         </Box>
-        <Box mb="-3">
-          <McaComponentDefinitionCard mca={mca!} version={selectedVersion} />
-        </Box>
+        <McaComponentDefinitionCard mca={mca!} version={selectedVersion} />
       </Content>
     </PageWithHeader>
   );

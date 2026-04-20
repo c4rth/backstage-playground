@@ -23,12 +23,6 @@
   --belui-chip-bg-color4: #e6d6ff;
   --belui-chip-bg-color5: #dce3ea;
 
-  --belui-chip-fg-color1: #1c2f8a;
-  --belui-chip-fg-color2: #7a123e;
-  --belui-chip-fg-color3: #0f4a3c;
-  --belui-chip-fg-color4: #4a1c8a;
-  --belui-chip-fg-color5: #1f2933;
-
   [data-theme-mode='light'] {
     --bui-font-regular: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
     --bui-bg-solid: #c30045;

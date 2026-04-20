@@ -94,7 +94,7 @@ export const ApiDefinitionPage = () => {
               selected={selectedVersion}
             />
           </Box>
-          <Box mb="-3">{apiEntity ? <ApiDefinitionCard /> : <div />}</Box>
+          {apiEntity ? <ApiDefinitionCard /> : <div />}
         </Content>
       </Page>
     </AsyncEntityProvider>
