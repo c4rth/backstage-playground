@@ -1,2 +1,3 @@
 export { ServiceTable } from './ServiceTable';
-export { ServiceLibrariesTable } from './ServiceLibrariesTable';
+export { BaseServiceTable, buildColumns, renderVersionList } from './BaseServiceTable';
+export type { BaseTableRow } from './BaseServiceTable';

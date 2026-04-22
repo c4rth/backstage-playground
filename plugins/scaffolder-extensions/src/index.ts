@@ -1,1 +1,1 @@
-export { ProjectPickerFieldExtension } from './scaffolder/ProjectPickerExtension';
+export { ProjectPickerFieldExtension } from './scaffolder';

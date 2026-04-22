@@ -5,7 +5,6 @@ import {
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
 import { useGetSystem } from '../../hooks';
-import { Box } from '@backstage/ui';
 import { SystemDefinitionCard } from './SystemDefinitionCard';
 
 export const SystemDefinitionPage = () => {

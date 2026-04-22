@@ -1,0 +1,1 @@
+export { AlertMessageExtension } from './AlertMessageExtension';

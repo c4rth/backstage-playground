@@ -17,8 +17,11 @@ spec:
         - name
         - owner
       properties:
-        warningBlock:
-            type: string
+        message:
+          title: Message
+          type: string
+          description: A message to display on screen
+          ui:field: AlertMessage
         name:
           title: Project name
           type: string
@@ -33,13 +36,6 @@ spec:
           ui:options:
             allowedKinds:
               - Group
-      uiSchema:
-        warningBlock:
-          "ui:field": DescriptionField
-          "ui:options":
-            text: |
-              ## ⚠️ Maintenance Window
-              The production environment is currently under maintenance. Deployments may fail.
     - title: Choose a location
       description: >-
         Organization is an Azure DevOps organization. Owner is an Azure DevOps project.

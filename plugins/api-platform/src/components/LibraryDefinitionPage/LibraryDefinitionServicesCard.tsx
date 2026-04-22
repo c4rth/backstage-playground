@@ -1,13 +1,11 @@
 import {
   TableColumn,
   Table,
-  Link,
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo, useState } from 'react';
 import { Box, Flex, Text } from '@backstage/ui';
-import { ComponentDisplayName } from '../common';
 import {
   LibraryDefinition,
   ServiceDefinition,
@@ -18,37 +16,13 @@ import { fetchAllServices } from './fetchServicesByLibrary';
 import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
 import { DependentsToggle, DependentsType } from './DependentsToggle';
+import {
+  BaseTableRow,
+  buildColumns,
+  renderVersionList,
+} from '../ServiceTable';
 
-type TableRow = {
-  id: number;
-  name: string;
-  system: string;
-  serviceDefinition: ServiceDefinition;
-};
-
-const LIST_ITEM_STYLE = {
-  margin: 2,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '2.5rem',
-};
-
-const renderVersionList = (
-  serviceDefinition: ServiceDefinition,
-  renderItem: (version: any, idx: number) => JSX.Element,
-) => (
-  <>
-    {serviceDefinition.versions?.map((version, idx) => (
-      <Box
-        key={`${serviceDefinition.name}-${version.version}-${idx}`}
-        style={LIST_ITEM_STYLE}
-      >
-        {renderItem(version, idx)}
-      </Box>
-    ))}
-  </  >
-);
+type TableRow = BaseTableRow;
 
 const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
   title: env.toUpperCase(),
@@ -91,57 +65,15 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
   },
 });
 
-const serviceColumns: TableColumn<TableRow>[] = [
-  {
-    title: 'Name',
-    width: '25%',
-    field: 'serviceDefinition.serviceName',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ serviceDefinition }) => (
-      <Link
-        to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
-      >
-        <ComponentDisplayName
-          text={serviceDefinition.serviceName}
-          type="service"
-        />
-      </Link>
-    ),
-  },
-  {
-    title: 'Service Version',
-    width: '5%',
-    field: 'version',
-    sorting: false,
-    align: 'center',
-    cellStyle: { padding: 0 },
-    render: ({ serviceDefinition }) =>
-      renderVersionList(serviceDefinition, version => (
-        <ComponentChip
-          index={0}
-          text={version.version}
-          backgroundColor="#FFFFFF"
-        />
-      )),
-  },
+const ENV_COLUMNS: TableColumn<TableRow>[] = [
   createEnvironmentColumn('tst'),
   createEnvironmentColumn('gtu'),
   createEnvironmentColumn('uat'),
   createEnvironmentColumn('ptp'),
   createEnvironmentColumn('prd'),
-  {
-    title: 'System',
-    width: '10%',
-    highlight: true,
-    field: 'system',
-    render: ({ serviceDefinition }) => (
-      <Link to={`/api-platform/system/${serviceDefinition.system}`}>
-        <ComponentDisplayName text={serviceDefinition.system} type="system" />
-      </Link>
-    ),
-  },
 ];
+
+const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
 
 const toRow = (
   libraryVersions: LibraryDefinition[],
@@ -258,7 +190,7 @@ export const LibraryDefinitionServicesCard = ({
       <Box>
         <Table<TableRow>
           isLoading={loading || loadingLibVersions}
-          columns={serviceColumns}
+          columns={COLUMNS}
           options={{
             search: true,
             padding: 'dense' as const,

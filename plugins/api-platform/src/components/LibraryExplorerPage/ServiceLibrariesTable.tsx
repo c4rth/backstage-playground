@@ -7,7 +7,7 @@ import {
   BaseTableRow,
   buildColumns,
   renderVersionList,
-} from './BaseServiceTable';
+} from '../ServiceTable';
 
 type TableRow = BaseTableRow;
 

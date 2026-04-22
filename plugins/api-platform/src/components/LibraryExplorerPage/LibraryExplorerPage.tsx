@@ -5,7 +5,7 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { LibraryTable } from '../LibraryTable';
-import { ServiceLibrariesTable } from '../ServiceTable';
+import { ServiceLibrariesTable } from './ServiceLibrariesTable';
 
 export const LibraryExplorerPage = () => {
   const configApi = useApi(configApiRef);
