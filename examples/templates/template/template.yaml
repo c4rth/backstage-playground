@@ -18,6 +18,11 @@ spec:
         # - repoUrl
         - mode
       properties:
+        message:
+          title: Message
+          type: string
+          description: A message to display on screen
+          ui:field: AlertMessage
         name:
           title: Name
           type: string
