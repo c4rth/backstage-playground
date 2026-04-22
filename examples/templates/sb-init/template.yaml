@@ -15,11 +15,11 @@ spec:
     - title: Fill in some steps
       required:
         - name
-        - owner
+        - owner 
       properties:
         message:
           title: Message
-          type: string
+          type: danger
           description: A message to display on screen
           ui:field: AlertMessage
         name:
