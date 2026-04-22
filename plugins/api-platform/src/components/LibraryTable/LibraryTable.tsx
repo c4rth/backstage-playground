@@ -216,5 +216,4 @@ export const LibraryTable = () => {
       </CardBody>
     </Card>
   );
-
 };

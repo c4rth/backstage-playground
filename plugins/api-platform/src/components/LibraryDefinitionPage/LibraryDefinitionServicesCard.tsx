@@ -16,11 +16,7 @@ import { fetchAllServices } from './fetchServicesByLibrary';
 import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
 import { DependentsToggle, DependentsType } from './DependentsToggle';
-import {
-  BaseTableRow,
-  buildColumns,
-  renderVersionList,
-} from '../ServiceTable';
+import { BaseTableRow, buildColumns, renderVersionList } from '../ServiceTable';
 
 type TableRow = BaseTableRow;
 
@@ -43,12 +39,7 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
       }
       const index =
         (dependencyIndexes[0] >= 0 ? dependencyIndexes[0] + 1 : 0) * 2;
-      return (
-        <ComponentChip
-          index={index}
-          text={dependencies.join(', ')}
-        />
-      );
+      return <ComponentChip index={index} text={dependencies.join(', ')} />;
     }),
   searchable: true,
   customFilterAndSearch: (query, row) => {

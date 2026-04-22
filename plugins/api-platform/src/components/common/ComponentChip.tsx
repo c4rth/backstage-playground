@@ -31,19 +31,19 @@ const backgroundColors = [
 ];
 
 const getContrastColor = (hexColor: string, alpha: number = 1) => {
-    const cleanHex = hexColor.replace('#', '');
-    const rSrc = parseInt(cleanHex.slice(0, 2), 16);
-    const gSrc = parseInt(cleanHex.slice(2, 4), 16);
-    const bSrc = parseInt(cleanHex.slice(4, 6), 16);
+  const cleanHex = hexColor.replace('#', '');
+  const rSrc = parseInt(cleanHex.slice(0, 2), 16);
+  const gSrc = parseInt(cleanHex.slice(2, 4), 16);
+  const bSrc = parseInt(cleanHex.slice(4, 6), 16);
 
-    // Blend with white background (255)
-    const r = Math.round(rSrc * alpha + 255 * (1 - alpha));
-    const g = Math.round(gSrc * alpha + 255 * (1 - alpha));
-    const b = Math.round(bSrc * alpha + 255 * (1 - alpha));
+  // Blend with white background (255)
+  const r = Math.round(rSrc * alpha + 255 * (1 - alpha));
+  const g = Math.round(gSrc * alpha + 255 * (1 - alpha));
+  const b = Math.round(bSrc * alpha + 255 * (1 - alpha));
 
-    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-    return yiq >= 128 ? 'var(--bui-fg-primary)' : 'var(--bui-fg-solid-disabled)';
-  };
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? 'var(--bui-fg-primary)' : 'var(--bui-fg-solid-disabled)';
+};
 
 const getChipStyles = (index: number | undefined, backgroundColor: string) => {
   if (backgroundColor === 'auto') {

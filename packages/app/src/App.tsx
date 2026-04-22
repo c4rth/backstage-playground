@@ -89,7 +89,10 @@ import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common'
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
 import { ToolsPage } from '@internal/plugin-toolkit';
 // Scaffolder Extensions
-import { ProjectPickerFieldExtension, AlertMessageExtension } from '@internal/plugin-scaffolder-extensions';
+import {
+  ProjectPickerFieldExtension,
+  AlertMessageExtension,
+} from '@internal/plugin-scaffolder-extensions';
 import { HealthDashboardPage } from '@internal/plugin-health-dashboard';
 
 const app = createApp({
