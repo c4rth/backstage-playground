@@ -30,7 +30,7 @@
     "@backstage/plugin-catalog-react": "^2.1.4",
     "@backstage/plugin-techdocs": "^1.17.5",
     "@backstage/theme": "^0.7.3",
-    "@backstage/ui": "^0.14.2",
+    "@backstage/ui": "^0.14.3",
     "@internal/plugin-iframe": "workspace:^",
     "@internal/plugin-techdocs-addon-mermaid": "workspace:^",
     "@remixicon/react": "^4.9.0",

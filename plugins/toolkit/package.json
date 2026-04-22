@@ -26,9 +26,9 @@
   "dependencies": {
     "@backstage/core-components": "^0.18.9",
     "@backstage/core-plugin-api": "^1.12.5",
-    "@backstage/plugin-home": "^0.9.4",
+    "@backstage/plugin-home": "^0.9.5",
     "@backstage/theme": "^0.7.3",
-    "@backstage/ui": "^0.14.2",
+    "@backstage/ui": "^0.14.3",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/language": "^6.0.0",
     "@faker-js/faker": "^10.4.0",
