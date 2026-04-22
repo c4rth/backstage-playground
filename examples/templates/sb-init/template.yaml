@@ -17,10 +17,25 @@ spec:
         - name
         - owner 
       properties:
-        message:
+        message1:
           title: Message
           type: danger
-          description: A message to display on screen
+          description: A message to display a danger on screen
+          ui:field: AlertMessage
+        message2:
+          title: Message
+          type: info
+          description: A message to display an info on screen
+          ui:field: AlertMessage
+        message3:
+          title: Message
+          type: warning
+          description: A message to display a warning on screen
+          ui:field: AlertMessage
+        message4:
+          title: Message
+          type: success
+          description: A message to display a success on screen
           ui:field: AlertMessage
         name:
           title: Project name
