@@ -62,6 +62,16 @@ spec:
       required:
         - repoUrl
       properties:
+        repoOwner:
+          title: Repository Owner
+          type: string
+          description: The owner of the repository.
+          ui:field: RepoOwnerPicker
+          ui:options:
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                azure: []
         repoBranch:
           title: Repository Branch readonly set to main
           type: string
