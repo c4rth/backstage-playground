@@ -3,7 +3,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: spring-boot-init-template
-  title: Spring Boot Init Template 2
+  title: Spring Boot Init Template 3
   description: Scaffold a new Spring Boot project
 spec:
   owner: user:guest
@@ -62,6 +62,24 @@ spec:
       required:
         - repoUrl
       properties:
+        repoOwner:
+          title: Repository Owner
+          type: string
+          ui:field: RepoOwnerPicker
+          ui:options:
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                azure: []
+        repoBranch:
+          title: Repository Branch
+          type: string
+          ui:field: RepoBranchPicker
+          ui:options:
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                azure: []
         repoUrl:
           title: Repository Location
           type: string
