@@ -63,7 +63,7 @@ spec:
         - repoUrl
       properties:
         repoBranch:
-          title: Repository Branch
+          title: Repository Branch readonly set to main
           type: string
           default: main
           ui:readonly: true
