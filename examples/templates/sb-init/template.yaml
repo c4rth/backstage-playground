@@ -62,6 +62,12 @@ spec:
       required:
         - repoUrl
       properties:
+        test:
+          title: Test
+          type: string
+          description: This is a test parameter to test the UI
+          default: "test"
+          ui:readonly: true
         repoBranch:
           title: Repository Branch readonly set to main
           type: string
