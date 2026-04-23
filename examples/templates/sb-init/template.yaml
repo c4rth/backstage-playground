@@ -20,7 +20,7 @@ spec:
         message1:
           title: Message
           type: danger
-          description: A message to display a danger on screen
+          description: A message to display a danger on screen 2
           ui:field: AlertMessage
           ui:readOnly: true
         message2:
