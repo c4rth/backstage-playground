@@ -66,26 +66,25 @@ spec:
           title: Repository Branch readonly set to main
           type: string
           default: main
-          ui:disabled: true
           ui:field: RepoBranchPicker
           ui:options:
             requestUserCredentials:
               secretsKey: USER_OAUTH_TOKEN
               additionalScopes:
                 azure: []
-        repoUrl:
-          title: Repository Location
-          type: string
-          ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - dev.azure.com  
-            allowedOrganizations:
-              - thierrycarels0265
-            requestUserCredentials:
-              secretsKey: USER_OAUTH_TOKEN
-              additionalScopes:
-                azure: []
+        # repoUrl:
+        #   title: Repository Location
+        #   type: string
+        #   ui:field: RepoUrlPicker
+        #   ui:options:
+        #     allowedHosts:
+        #       - dev.azure.com  
+        #     allowedOrganizations:
+        #       - thierrycarels0265
+        #     requestUserCredentials:
+        #       secretsKey: USER_OAUTH_TOKEN
+        #       additionalScopes:
+        #         azure: []
     - definitions: {}
       title: "General Information"
       ui:order:

@@ -184,17 +184,12 @@ const routes = (
     <Route
       path="/create"
       element={
-        <RequirePermission
-          permission={taskCreatePermission}
-          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
-        >
           <ScaffolderPage>
             <ScaffolderFieldExtensions>
               <ProjectPickerFieldExtension />
               <AlertMessageExtension />
             </ScaffolderFieldExtensions>
           </ScaffolderPage>
-        </RequirePermission>
       }
     />
     <Route path="/api-docs" element={<BackstageApiExplorerPage />} />
