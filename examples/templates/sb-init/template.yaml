@@ -56,6 +56,9 @@ spec:
             allowedKinds:
               - Group
     - title: Choose a location
+      dependencies:
+        - owner
+        - name
       description: >-
         Organization is an Azure DevOps organization. Owner is an Azure DevOps project.
         Repository is the name of the repository Backstage will create for you.
@@ -80,7 +83,7 @@ spec:
             allowedHosts:
               - dev.azure.com  
             allowedOrganizations:
-              - thierrycarels0265
+              - org
             allowedProjects:
               - ${{ parameters.owner }}
             allowedRepos:
