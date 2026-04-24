@@ -45,3 +45,10 @@ auth:
         signIn:
           resolvers:
             - resolver: emailMatchingUserEntityProfileEmail
+
+catalog:
+  locations:
+    - type: file
+      target: ../../examples/templates/sb-init/template.yaml
+    - type: file
+      target: ../../examples/templates/template/template.yaml

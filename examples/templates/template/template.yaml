@@ -1,136 +1,111 @@
 apiVersion: scaffolder.backstage.io/v1beta3
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
 kind: Template
 metadata:
-  name: example-nodejs-template
-  title: Example Template 1
-  description: An example template for the scaffolder
+  name: depo-test-template
+  title: Test repo init
+  description: Create a test API repository 7
 spec:
-  owner: user:guest
-  type: service
-
-  # These parameters are used to generate the input form in the frontend, and are
-  # used to gather input data for the execution of the template.
+  owner: group:default/prd.10.gemz.depo.ado.o
+  type: repository
+ 
   parameters:
-    - title: Fill in some steps
-      required:
-        - name
-        # - repoUrl
-        - mode
+    - title: "General Information"
       properties:
-        message:
-          title: Message
+        dryRun:
+          title: "Dry Run"
+          type: boolean
+          default: false
+          description: "Enable dry run mode"
+        project:
+          title: "DEFL code"
+          description: What is the DEFL code for the project?
           type: string
-          description: A message to display on screen
-          ui:field: AlertMessage
-        name:
-          title: Name
+          default: "java-playground"
+        repo_name:
+          title: "Repository Name"
+          description: What is the name of the repository to create?
           type: string
-          description: Unique name of the component
-          ui:autofocus: true
+      required:
+        - dryRun
+        - project
+        - repo_name
+      ui:order:
+        - dryRun
+        - project
+        - repo_name
+    - title: "Repository Location"
+      dependencies:
+        - project
+        - repo_name
+      properties:
+        repo_url:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
           ui:options:
-            rows: 5
-        owner:
-          title: Owner
+            allowedHosts:
+              - dev.azure.com  
+            allowedOrganizations:
+              - thierrycarels0265
+            allowedProjects:
+              - ${{ parameters.project }}
+            allowedRepos:
+              - ${{ parameters.repo_name }}
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                azure: []
+        repo_branch:
+          title: Repository Branch readonly set to main
           type: string
-          ui:field: OwnerPicker
+          default: main
+          ui:field: RepoBranchPicker
           ui:options:
-            allowedKinds:
-              - Group
-        # repoUrl:
-        #   title: Repository Location
-        #   type: string
-        #   ui:field: RepoUrlPicker
-        #   ui:options:
-        #     allowedHosts:
-        #       - github.com
-        mode:
-          title: Creation mode
-          type: string
-          default: repo
-          enum:
-            - repo
-            - pr
-          enumNames:
-            - 'Create new repo'
-            - 'Create PR'
-
-  # These steps are executed in the scaffolder backend, using data that we gathered
-  # via the parameters above.
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                azure: []
   steps:
-    # Each step executes an action, in this case one templates files into the working directory.
-    # - id: fetch-base
-    #   name: Fetch Base
-    #   action: fetch:template
-    #   input:
-    #     url: ./content
-    #     values:
-    #       name: ${{ parameters.name }}
-    
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          project: ${{ parameters.project }}
+          repo_name: ${{ parameters.repo_name }}
+          repo_url: ${{ parameters.repo_url }}
+ 
+    - action: debug:log
+      id: write-all-workspace-directory
+      name: List the workspace directory with file contents
+      input:
+        listWorkspace: with-contents
+ 
     - action: debug:log
       id: write-workspace-directory
       name: List the workspace directory
       input:
         listWorkspace: true
-
-#    - action: debug:wait
-#      id: wait-1min
-#      name: Waiting for 1 minutes
-#      input:
-#        minutes: 1
-
-    - action: debug:log
-      id: message
-      name: Message
+ 
+    - id: publish
+      name: Publish
+      action: publish:azure
+      if: ${{ parameters.dryRun !== true }}
       input:
-        message: ${{ parameters.put('realOwner', parameters.owner.split('/')[1].split('.')[0]) }}
-
-
-    - action: debug:log
-      id: message
-      name: Message
-      input:
-        message: ${{ parameters.realOwner }}
-
-    - action: debug:log
-      id: debugCreateRepo
-      name: Create Repo
-      if: ${{ parameters.mode == 'repo' }}
-      input:
-        message: Create new repo
-
-    - action: debug:log
-      id: debugCreatePR
-      name: Create PR
-      if: ${{ parameters.mode == 'pr' }}
-      input:
-        message: Create PR
-
-
-    # This step publishes the contents of the working directory to GitHub.
-    # - id: publish
-    #   name: Publish
-    #   if: ${{ parameters.createRepo }}
-    #   action: publish:github
-    #   input:
-    #     allowedHosts: ['github.com']
-    #     description: This is ${{ parameters.name }}
-    #     repoUrl: ${{ parameters.repoUrl }}
-        
-
-    # The final step is to register our new component in the catalog.
-#    - id: register
-#      name: Register
-#      action: catalog:register
-#     input:
-#        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-#        catalogInfoPath: '/catalog-info.yaml'
-
-  # Outputs are displayed to the user after a successful execution of the template.
-#  output:
-#    links:
-#      - title: Repository
-#        url: ${{ steps['publish'].output.remoteUrl }}
-#      - title: Open in catalog
-#        icon: catalog
-#        entityRef: ${{ steps['register'].output.entityRef }}
+        repoUrl: "dev.azure.com?organization=thierrycarels0265&project=${{ parameters.project }}&repo=${{ parameters.repo_name }}"
+        defaultBranch: main
+        gitCommitMessage: 'Scaffolded by ${{ user.entity.spec.profile.email }}'
+        gitAuthorName: 'Backstage'
+        gitAuthorEmail: ''
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+ 
+  output:
+    text:
+      - title: Summary
+        content: |
+          ## Completed
+          - Created repo ${{ parameters.repo_name }} at ${{ steps['publish'].output.remoteUrl }}
+ 
+          ## Next steps
+          - Configure your local development environment
