@@ -31,7 +31,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops-common": "^0.21.0",
+    "@backstage-community/plugin-azure-devops-common": "^0.22.0",
     "@backstage-community/plugin-sonarqube": "^1.1.0",
     "@backstage-community/plugin-sonarqube-react": "^1.1.0",
     "@backstage/catalog-model": "^1.8.0",
@@ -44,7 +44,6 @@
     "@backstage/plugin-org": "^0.7.3",
     "@backstage/plugin-search-common": "^1.2.23",
     "@backstage/plugin-search-react": "^1.11.3",
-    "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.14.3",
     "@internal/plugin-api-docs-spectral-linter": "workspace:^",
     "@internal/plugin-api-platform-common": "workspace:^",
@@ -52,10 +51,8 @@
     "@internal/plugin-api-swagger-docs": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
     "@internal/plugin-azure-devops": "workspace:^",
-    "@internal/plugin-mca": "workspace:^",
     "@material-table/core": "3.2.5",
-    "@remixicon/react": "^4.9.0",
-    "react-aria-components": "^1.17.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "react-use": "^17.6.0",
     "semver": "^7.7.4",
     "xlsx": "^0.18.5"
@@ -69,7 +66,7 @@
     "@types/react": "^17.0.0 || ^18.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.30.2"
+    "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",

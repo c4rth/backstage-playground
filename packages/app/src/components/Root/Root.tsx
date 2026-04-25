@@ -159,11 +159,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           to="external-docs"
           text="ExtDocs"
         />
+        <RequirePermission
+          permission={taskCreatePermission}
+          errorPage={<div />}
+        >
           <SidebarItem
             icon={RiFolderAddLine as IconComponent}
             to="create"
             text="Scaffolder"
           />
+        </RequirePermission>
         <RequirePermission permission={notGuestPermission} errorPage={<div />}>
           <SidebarItem icon={RiBookShelfLine as IconComponent} text="Catalog">
             <SidebarSubmenu title="Catalog">

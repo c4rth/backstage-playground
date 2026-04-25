@@ -87,8 +87,12 @@ export class MyPermissionPolicy implements PermissionPolicy {
         }
       }
       return {
-            result: AuthorizeResult.ALLOW,
-          };
+        result:
+          isPermission(request.permission, catalogEntityReadPermission) &&
+          !isPermission(request.permission, notGuestPermission)
+            ? AuthorizeResult.ALLOW
+            : AuthorizeResult.DENY,
+      };
     }
 
     // SuperUsers: allow all if in adminGroups

@@ -35,15 +35,14 @@
     "@backstage/plugin-catalog": "^2.0.4",
     "@backstage/plugin-search-common": "^1.2.23",
     "@backstage/plugin-search-react": "^1.11.3",
-    "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.14.3",
     "@internal/plugin-api-platform-react": "workspace:^",
     "@internal/plugin-iframe": "workspace:^",
     "@internal/plugin-mca-common": "workspace:^",
     "@material-table/core": "3.2.5",
-    "@remixicon/react": "^4.9.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "fast-xml-parser": "^5.7.1",
-    "react-use": "^17.2.4"
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.1",
@@ -54,7 +53,7 @@
     "@types/react": "^17.0.0 || ^18.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.30.2"
+    "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",

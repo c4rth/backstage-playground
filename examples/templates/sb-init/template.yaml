@@ -17,30 +17,34 @@ spec:
         - name
         - owner 
       properties:
-        # message1:
-        #   title: Message
-        #   type: danger
-        #   description: A message to display a danger on screen 2
-        #   ui:field: AlertMessage
-        #   ui:readOnly: true
-        # message2:
-        #   title: Message
-        #   type: info
-        #   description: A message to display an info on screen
-        #   ui:field: AlertMessage
-        #   ui:readOnly: true
-        # message3:
-        #   title: Message
-        #   type: warning
-        #   description: A message to display a warning on screen
-        #   ui:field: AlertMessage
-        #   ui:readOnly: true
-        # message4:
-        #   title: Message
-        #   type: success
-        #   description: A message to display a success on screen
-        #   ui:field: AlertMessage
-        #   ui:readOnly: true
+        message1:
+          title: Message
+          type: string
+          ui:field: AlertMessage
+          ui:options:
+            severity: danger
+            message: "This is a danger alert message"
+        message2:
+          title: Message
+          type: string
+          ui:field: AlertMessage
+          ui:options:
+            severity: info
+            message: "This is an info alert message"
+        message3:
+          title: Message
+          type: string
+          ui:field: AlertMessage
+          ui:options:
+            severity: warning
+            message: "This is a warning alert message"
+        message4:
+          title: Message
+          type: string
+          ui:field: AlertMessage
+          ui:options:
+            severity: success
+            message: "This is a success alert message"
         name:
           title: Project name
           type: string
