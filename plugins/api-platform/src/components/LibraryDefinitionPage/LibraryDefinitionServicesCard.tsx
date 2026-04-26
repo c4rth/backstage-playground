@@ -15,7 +15,7 @@ import { apiPlatformBackendApiRef } from '../../api';
 import { fetchAllServices } from './fetchServicesByLibrary';
 import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
-import { DependentsToggle, DependentsType } from './DependentsToggle';
+import { DependentsToggle, DependentsType } from '../common';
 import { BaseTableRow, buildColumns, renderVersionList } from '../ServiceTable';
 
 type TableRow = BaseTableRow;

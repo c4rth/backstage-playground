@@ -6,14 +6,16 @@ export type DependentsType = 'all' | 'yes' | 'no';
 
 interface DependentsToggleProps {
   handleDependentChange: (selected: DependentsType) => void;
+  selectedType?: DependentsType;
 }
 
 const chipStyle = { marginTop: '6px', cursor: 'pointer', marginRight: '8px' };
 
 export const DependentsToggle = ({
   handleDependentChange,
+  selectedType: initialSelectedType = 'all',
 }: DependentsToggleProps) => {
-  const [selectedType, setSelectedType] = useState<DependentsType>('all');
+  const [selectedType, setSelectedType] = useState<DependentsType>(initialSelectedType);
 
   const handleSelectChange = (type: DependentsType) => {
     setSelectedType(type);
