@@ -181,7 +181,7 @@ function processServiceEntities(
     if (dependsOn && !dependsOnList.includes(dependsOn)) {
       continue;
     }
-    
+
     if (dependentsType && dependentsType !== 'all') {
       const hasDependents = dependsOnList.length > 0;
       if (
