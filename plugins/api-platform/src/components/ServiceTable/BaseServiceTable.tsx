@@ -4,7 +4,12 @@ import {
   Table,
   TableColumn,
 } from '@backstage/core-components';
-import { ComponentChip, DependentsToggle,ComponentDisplayName, ComponentOwnership } from '../common';
+import {
+  ComponentChip,
+  DependentsToggle,
+  ComponentDisplayName,
+  ComponentOwnership,
+} from '../common';
 import {
   OwnershipType,
   ServiceDefinition,
@@ -167,7 +172,7 @@ const getTitleLabel = (toggleType: ToggleType, ownership: OwnershipType) => {
     return `${ownership === 'owned' ? 'Owned' : 'All'} Services`;
   }
   return 'Services';
-}
+};
 
 export function BaseServiceTable<T extends BaseTableRow>({
   columns,
@@ -194,7 +199,14 @@ export function BaseServiceTable<T extends BaseTableRow>({
       sessionStorage.setItem(storageSearchKey, query.search);
     }
     try {
-      const result = await getData(apiPlatformApi, query, toggleType, ownershipType, dependentsType, toRow);
+      const result = await getData(
+        apiPlatformApi,
+        query,
+        toggleType,
+        ownershipType,
+        dependentsType,
+        toRow,
+      );
       setCountRows(result.totalCount);
       return result;
     } catch (e) {
@@ -233,18 +245,18 @@ export function BaseServiceTable<T extends BaseTableRow>({
             </Text>
           </Box>
           <Box ml="4">
-            {toggleType === 'ownership' &&
+            {toggleType === 'ownership' && (
               <ComponentOwnership
                 storageKey={storageOwnershipKey}
                 handleOwnershipChange={setOwnershipType}
               />
-            }
-            {toggleType === 'dependents' &&
+            )}
+            {toggleType === 'dependents' && (
               <DependentsToggle
                 handleDependentChange={setDependentsType}
                 selectedType={dependentsType}
               />
-            }
+            )}
           </Box>
         </Flex>
       }

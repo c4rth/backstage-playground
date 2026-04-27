@@ -1,14 +1,14 @@
 import { TableColumn } from '@backstage/core-components';
 import { ComponentChip } from '../common';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { Flex, Text } from '@backstage/ui';
+import { Flex } from '@backstage/ui';
 import {
   BaseServiceTable,
   BaseTableRow,
   buildColumns,
   renderVersionList,
 } from '../ServiceTable';
-import { RiCloseCircleFill, RiCloseCircleLine } from '@remixicon/react';
+import { RiCloseCircleLine } from '@remixicon/react';
 
 type TableRow = BaseTableRow;
 
@@ -48,10 +48,10 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
       ] as any;
       const dependencies = envData?.dependencies || [];
       if (!envData) {
-        return <></>; 
-     }
-      if (!dependencies.length) { 
-        return <RiCloseCircleLine size='20' />;
+        return <></>;
+      }
+      if (!dependencies.length) {
+        return <RiCloseCircleLine size="20" />;
       }
       return (
         <Flex direction="column" align="center" gap="0.5">

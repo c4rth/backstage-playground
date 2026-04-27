@@ -145,8 +145,16 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     dependsOn?: string;
     dependentsType?: DependentsType;
   }): URLSearchParams {
-    const { offset, limit, search, ownershipType, apiType, orderBy, dependsOn, dependentsType} =
-      options;
+    const {
+      offset,
+      limit,
+      search,
+      ownershipType,
+      apiType,
+      orderBy,
+      dependsOn,
+      dependentsType,
+    } = options;
 
     const params: Record<string, string | number | undefined> = {
       offset,
@@ -156,7 +164,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
       apiType,
       orderBy: this.buildOrderByParam(orderBy),
       dependsOn,
-      dependentsType
+      dependentsType,
     };
 
     return this.buildSearchParams(params);

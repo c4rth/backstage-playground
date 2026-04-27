@@ -13,7 +13,6 @@ export const DependentsToggle = ({
   handleDependentChange,
   selectedType = 'all',
 }: DependentsToggleProps) => {
-
   const handleSelectChange = (type: DependentsType) => {
     handleDependentChange(type);
   };

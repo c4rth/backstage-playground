@@ -10,7 +10,6 @@ import { ServiceService } from './ServiceService';
 import { SystemService } from './SystemService';
 import {
   APIDEFINITIONS_FIELDS,
-  DependentsType,
   LIBRARYDEFINITIONS_FIELDS,
   SERVICEDEFINITIONS_FIELDS,
   ServiceInformation,
@@ -202,7 +201,7 @@ export async function createRouter(
         ownershipType,
         userEntityRef,
         dependsOn,
-        dependentsType
+        dependentsType,
       }),
     );
   });

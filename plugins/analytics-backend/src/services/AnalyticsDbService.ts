@@ -88,10 +88,11 @@ export class AnalyticsDbService implements AnalyticsService {
   }
 
   async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {
-    const visitors = await this.analyticsStore.getTotalDailyUniqueVisitors(days);
+    const visitors =
+      await this.analyticsStore.getTotalDailyUniqueVisitors(days);
     const visitorsByDate = new Map(visitors.map(v => [v.date, v]));
     const result: DailyVisitor[] = [];
-    
+
     const date = new Date();
     date.setDate(date.getDate() - days + 1);
 
@@ -101,7 +102,9 @@ export class AnalyticsDbService implements AnalyticsService {
       if (visitorData) {
         visitorData.total = visitorData.visitors + visitorData.guests;
       }
-      result.push(visitorData ?? { date: dateStr, visitors: 0, guests: 0, total: 0 });
+      result.push(
+        visitorData ?? { date: dateStr, visitors: 0, guests: 0, total: 0 },
+      );
       date.setDate(date.getDate() + 1);
     }
     return result;

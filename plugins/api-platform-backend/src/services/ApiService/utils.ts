@@ -58,7 +58,6 @@ export const parseApiTypeParam = (str: unknown): OpenApiType | undefined => {
   return str as OpenApiType;
 };
 
-
 export const parseDependentsParam = (
   str: unknown,
 ): DependentsType | undefined => {

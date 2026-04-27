@@ -154,7 +154,7 @@ function processServiceEntities(
   orderBy: ServiceDefinitionsOptions | undefined,
   dependsOn?: string,
   search?: string,
-  dependentsType?: DependentsType
+  dependentsType?: DependentsType,
 ): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
   const searchLower = search?.toLowerCase();
@@ -182,6 +182,16 @@ function processServiceEntities(
       continue;
     }
     
+    if (dependentsType && dependentsType !== 'all') {
+      const hasDependents = dependsOnList.length > 0;
+      if (
+        (dependentsType === 'yes' && !hasDependents) ||
+        (dependentsType === 'no' && hasDependents)
+      ) {
+        continue;
+      }
+    }
+
     if (dependentsType && dependentsType !== 'all') {
       const hasDependents = dependsOnList.length > 0;
       if (
@@ -330,7 +340,7 @@ export class ServiceServiceImpl implements ServiceService {
       request.orderBy,
       request.dependsOn,
       request.search,
-      request.dependentsType
+      request.dependentsType,
     );
 
     const offset = request.offset ?? 0;
