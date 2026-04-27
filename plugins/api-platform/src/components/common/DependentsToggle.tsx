@@ -1,24 +1,20 @@
 import { Box } from '@backstage/ui';
+import { DependentsType } from '@internal/plugin-api-platform-common';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { useState } from 'react';
-
-export type DependentsType = 'all' | 'yes' | 'no';
 
 interface DependentsToggleProps {
   handleDependentChange: (selected: DependentsType) => void;
-  selectedType?: DependentsType;
+  selectedType: DependentsType;
 }
 
 const chipStyle = { marginTop: '6px', cursor: 'pointer', marginRight: '8px' };
 
 export const DependentsToggle = ({
   handleDependentChange,
-  selectedType: initialSelectedType = 'all',
+  selectedType = 'all',
 }: DependentsToggleProps) => {
-  const [selectedType, setSelectedType] = useState<DependentsType>(initialSelectedType);
 
   const handleSelectChange = (type: DependentsType) => {
-    setSelectedType(type);
     handleDependentChange(type);
   };
 

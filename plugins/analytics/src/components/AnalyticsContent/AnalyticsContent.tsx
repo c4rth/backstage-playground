@@ -127,7 +127,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
             marginBottom: '4px',
           }}
         >
-          Date: <i>{label}</i>
+          <i>{label}</i>
         </p>
         {payload.map((entry, index) => (
           <div key={index} style={{ color: entry.color, fontSize: '14px' }}>

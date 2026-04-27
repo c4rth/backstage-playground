@@ -4,15 +4,15 @@ import {
   Table,
   TableColumn,
 } from '@backstage/core-components';
-import { ComponentChip } from '../common';
+import { ComponentChip, DependentsToggle,ComponentDisplayName, ComponentOwnership } from '../common';
 import {
   OwnershipType,
   ServiceDefinition,
   ServiceDefinitionsListRequest,
   ServiceVersionDefinition,
+  DependentsType,
 } from '@internal/plugin-api-platform-common';
 import { useState } from 'react';
-import { ComponentDisplayName, ComponentOwnership } from '../common';
 import { useApi } from '@backstage/core-plugin-api';
 import {
   ApiPlatformBackendApi,
@@ -27,6 +27,8 @@ export type BaseTableRow = {
   system: string;
   serviceDefinition: ServiceDefinition;
 };
+
+export type ToggleType = 'ownership' | 'dependents';
 
 const PAGE_SIZE = 20;
 
@@ -117,15 +119,17 @@ export function buildColumns<T extends BaseTableRow>(
 type BaseServiceTableProps<T extends BaseTableRow> = {
   columns: TableColumn<T>[];
   toRow: (serviceDefinition: ServiceDefinition, idx: number) => T;
-  titleLabel: string;
   storageOwnershipKey: string;
   storageSearchKey: string;
+  toggleType?: ToggleType;
 };
 
 const getData = async <T extends BaseTableRow>(
   apiPlatformApi: ApiPlatformBackendApi,
   query: Query<T>,
-  ownership: OwnershipType,
+  toggleType: ToggleType,
+  ownershipType: OwnershipType,
+  dependentsType: DependentsType,
   toRow: (serviceDefinition: ServiceDefinition, idx: number) => T,
 ) => {
   const page = query.page ?? 0;
@@ -137,40 +141,49 @@ const getData = async <T extends BaseTableRow>(
     search: query.search,
     orderBy: query.orderBy
       ? ({
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as ServiceDefinitionsListRequest['orderBy'])
+        field: query.orderBy.field,
+        direction: query.orderDirection,
+      } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
-    ownership,
+    ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
+    dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
   });
 
   return result
     ? {
-        data: result.items.map(toRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 };
+
+const getTitleLabel = (toggleType: ToggleType, ownership: OwnershipType) => {
+  if (toggleType === 'ownership') {
+    return `${ownership === 'owned' ? 'Owned' : 'All'} Services`;
+  }
+  return 'Services';
+}
 
 export function BaseServiceTable<T extends BaseTableRow>({
   columns,
   toRow,
-  titleLabel,
   storageOwnershipKey,
   storageSearchKey,
+  toggleType = 'ownership',
 }: BaseServiceTableProps<T>) {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
     sessionStorage.getItem(storageOwnershipKey) === 'owned' ? 'owned' : 'all',
   );
+  const [dependentsType, setDependentsType] = useState<DependentsType>('all');
 
   const initialSearch = sessionStorage.getItem(storageSearchKey) ?? '';
 
@@ -181,7 +194,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
       sessionStorage.setItem(storageSearchKey, query.search);
     }
     try {
-      const result = await getData(apiPlatformApi, query, ownership, toRow);
+      const result = await getData(apiPlatformApi, query, toggleType, ownershipType, dependentsType, toRow);
       setCountRows(result.totalCount);
       return result;
     } catch (e) {
@@ -200,7 +213,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
 
   return (
     <Table<T>
-      key={ownership}
+      key={`${ownershipType}-${dependentsType}`}
       columns={columns}
       options={{
         search: true,
@@ -216,15 +229,22 @@ export function BaseServiceTable<T extends BaseTableRow>({
         <Flex gap="0" align="center">
           <Box>
             <Text variant="title-small" weight="bold">
-              {ownership === 'owned' ? 'Owned' : 'All'} {titleLabel} (
-              {countRows})
+              {getTitleLabel(toggleType, ownershipType)} ({countRows})
             </Text>
           </Box>
           <Box ml="4">
-            <ComponentOwnership
-              storageKey={storageOwnershipKey}
-              handleOwnershipChange={setOwnership}
-            />
+            {toggleType === 'ownership' &&
+              <ComponentOwnership
+                storageKey={storageOwnershipKey}
+                handleOwnershipChange={setOwnershipType}
+              />
+            }
+            {toggleType === 'dependents' &&
+              <DependentsToggle
+                handleDependentChange={setDependentsType}
+                selectedType={dependentsType}
+              />
+            }
           </Box>
         </Flex>
       }

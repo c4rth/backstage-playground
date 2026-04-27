@@ -142,9 +142,10 @@ export type ServiceDefinitionsListRequest = {
   limit?: number;
   orderBy?: ServiceDefinitionsOptions;
   search?: string;
-  ownership: OwnershipType;
+  ownershipType: OwnershipType;
   userEntityRef?: string | undefined;
   dependsOn?: string;
+  dependentsType?: DependentsType;
 };
 
 // Systems
@@ -170,6 +171,8 @@ export type SystemDefinitionsOptions = {
 };
 
 export type OwnershipType = 'all' | 'owned';
+
+export type DependentsType = 'all' | 'yes' | 'no';
 
 export type SystemDefinitionsListRequest = {
   offset?: number;

@@ -114,7 +114,6 @@ export const ServiceTable = () => (
   <BaseServiceTable<TableRow>
     columns={COLUMNS}
     toRow={toRow}
-    titleLabel="Services"
     storageOwnershipKey="servicesTablePageOwner"
     storageSearchKey="servicesTablePageSearch"
   />

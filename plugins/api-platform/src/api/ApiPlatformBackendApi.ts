@@ -18,6 +18,7 @@ import {
   LibraryDefinitionListResult,
   LibraryDefinition,
   OpenApiType,
+  DependentsType,
 } from '@internal/plugin-api-platform-common';
 
 export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
@@ -138,22 +139,24 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     offset?: number;
     limit?: number;
     search?: string;
-    ownership?: OwnershipType;
+    ownershipType?: OwnershipType;
     apiType?: OpenApiType;
     orderBy?: { field: string; direction: string };
     dependsOn?: string;
+    dependentsType?: DependentsType;
   }): URLSearchParams {
-    const { offset, limit, search, ownership, apiType, orderBy, dependsOn } =
+    const { offset, limit, search, ownershipType, apiType, orderBy, dependsOn, dependentsType} =
       options;
 
     const params: Record<string, string | number | undefined> = {
       offset,
       limit,
       search,
-      ownership,
+      ownershipType,
       apiType,
       orderBy: this.buildOrderByParam(orderBy),
       dependsOn,
+      dependentsType
     };
 
     return this.buildSearchParams(params);

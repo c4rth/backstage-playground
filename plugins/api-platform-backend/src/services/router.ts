@@ -10,6 +10,7 @@ import { ServiceService } from './ServiceService';
 import { SystemService } from './SystemService';
 import {
   APIDEFINITIONS_FIELDS,
+  DependentsType,
   LIBRARYDEFINITIONS_FIELDS,
   SERVICEDEFINITIONS_FIELDS,
   ServiceInformation,
@@ -20,6 +21,7 @@ import {
   parseSearchParam,
   parseOwnershipParam,
   parseApiTypeParam,
+  parseDependentsParam,
 } from './ApiService/utils';
 import { RelationType } from './ApiService/types';
 import { LibraryService } from './LibraryService';
@@ -182,23 +184,25 @@ export async function createRouter(
       SERVICEDEFINITIONS_FIELDS,
     );
     const search = parseSearchParam(req.query.search);
-    const ownership = parseOwnershipParam(req.query.ownership) || 'all';
+    const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
     const userEntityRef = await getUserEntityRef(
-      ownership,
+      ownershipType,
       httpAuth,
       req,
       userInfo,
     );
     const dependsOn = parseSearchParam(req.query.dependsOn);
+    const dependentsType = parseDependentsParam(req.query.dependentsType);
     res.json(
       await serviceService.listServices({
         limit,
         offset,
         orderBy,
         search,
-        ownership,
+        ownershipType,
         userEntityRef,
         dependsOn,
+        dependentsType
       }),
     );
   });

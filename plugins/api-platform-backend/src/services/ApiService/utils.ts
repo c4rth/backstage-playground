@@ -1,7 +1,9 @@
 import { InputError } from '@backstage/errors';
 import {
+  DependentsType,
   OpenApiType,
   OPENAPITYPE_LIST,
+  OwnershipType,
 } from '@internal/plugin-api-platform-common';
 
 export const parseOrderByParam = <T extends readonly string[]>(
@@ -36,7 +38,7 @@ export const parseSearchParam = (str: unknown): string | undefined => {
 
 export const parseOwnershipParam = (
   str: unknown,
-): 'all' | 'owned' | undefined => {
+): OwnershipType | undefined => {
   if (str === undefined) return undefined;
   if (typeof str !== 'string')
     throw new InputError('invalid type query, must be a string');
@@ -54,4 +56,16 @@ export const parseApiTypeParam = (str: unknown): OpenApiType | undefined => {
       `invalid type query, must be one of ${OPENAPITYPE_LIST.join(', ')}`,
     );
   return str as OpenApiType;
+};
+
+
+export const parseDependentsParam = (
+  str: unknown,
+): DependentsType | undefined => {
+  if (str === undefined) return undefined;
+  if (typeof str !== 'string')
+    throw new InputError('invalid type query, must be a string');
+  if (!['all', 'yes', 'no'].includes(str))
+    throw new InputError("invalid type query, must be 'all' or 'owned'");
+  return str as 'all' | 'yes' | 'no';
 };

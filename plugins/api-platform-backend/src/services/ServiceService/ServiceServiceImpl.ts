@@ -21,6 +21,7 @@ import {
   CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_OWNER,
   CATALOG_SPEC_SYSTEM,
+  DependentsType,
   OwnershipType,
   ServiceDefinition,
   ServiceDefinitionListResult,
@@ -153,6 +154,7 @@ function processServiceEntities(
   orderBy: ServiceDefinitionsOptions | undefined,
   dependsOn?: string,
   search?: string,
+  dependentsType?: DependentsType
 ): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
   const searchLower = search?.toLowerCase();
@@ -178,6 +180,16 @@ function processServiceEntities(
     const dependsOnList = parseDependencies(entity.spec.dependsOn);
     if (dependsOn && !dependsOnList.includes(dependsOn)) {
       continue;
+    }
+    
+    if (dependentsType && dependentsType !== 'all') {
+      const hasDependents = dependsOnList.length > 0;
+      if (
+        (dependentsType === 'yes' && !hasDependents) ||
+        (dependentsType === 'no' && hasDependents)
+      ) {
+        continue;
+      }
     }
 
     const lifecycle = entity.spec.lifecycle?.toString().toLowerCase() || '-';
@@ -308,7 +320,7 @@ export class ServiceServiceImpl implements ServiceService {
         CATALOG_SPEC_OWNER,
         CATALOG_SPEC_DEPENDS_ON,
       ],
-      request.ownership ?? 'all',
+      request.ownershipType ?? 'all',
       request.userEntityRef,
     );
 
@@ -318,6 +330,7 @@ export class ServiceServiceImpl implements ServiceService {
       request.orderBy,
       request.dependsOn,
       request.search,
+      request.dependentsType
     );
 
     const offset = request.offset ?? 0;

@@ -19,4 +19,5 @@ export type DailyVisitor = {
   date: string;
   visitors: number;
   guests: number;
+  total: number;
 };

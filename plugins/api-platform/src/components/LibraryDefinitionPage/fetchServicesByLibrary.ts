@@ -5,7 +5,7 @@ export const fetchAllServices = async (
   apiPlatformApi: ApiPlatformBackendApi,
 ): Promise<ServiceDefinitionListResult> => {
   const result = await apiPlatformApi.listServices({
-    ownership: 'all',
+    ownershipType: 'all',
   });
   return result ?? [];
 };

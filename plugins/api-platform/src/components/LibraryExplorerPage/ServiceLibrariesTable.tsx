@@ -8,6 +8,7 @@ import {
   buildColumns,
   renderVersionList,
 } from '../ServiceTable';
+import { RiCloseCircleFill, RiCloseCircleLine } from '@remixicon/react';
 
 type TableRow = BaseTableRow;
 
@@ -46,9 +47,11 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
         env as keyof typeof version.environments
       ] as any;
       const dependencies = envData?.dependencies || [];
-
-      if (!dependencies.length) {
-        return <Text variant="body-medium">-</Text>;
+      if (!envData) {
+        return <></>; 
+     }
+      if (!dependencies.length) { 
+        return <RiCloseCircleLine size='20' />;
       }
       return (
         <Flex direction="column" align="center" gap="0.5">
@@ -74,7 +77,7 @@ export const ServiceLibrariesTable = () => (
   <BaseServiceTable<TableRow>
     columns={COLUMNS}
     toRow={toRow}
-    titleLabel="Services - Libraries"
+    toggleType="dependents"
     storageOwnershipKey="serviceLibrariesTablePageOwner"
     storageSearchKey="serviceLibrariesTablePageSearch"
   />

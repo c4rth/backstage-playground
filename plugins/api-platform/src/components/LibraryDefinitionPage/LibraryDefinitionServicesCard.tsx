@@ -9,13 +9,14 @@ import { Box, Flex, Text } from '@backstage/ui';
 import {
   LibraryDefinition,
   ServiceDefinition,
+  DependentsType,
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../api';
 import { fetchAllServices } from './fetchServicesByLibrary';
 import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
-import { DependentsToggle, DependentsType } from '../common';
+import { DependentsToggle } from '../common';
 import { BaseTableRow, buildColumns, renderVersionList } from '../ServiceTable';
 
 type TableRow = BaseTableRow;
@@ -176,6 +177,7 @@ export const LibraryDefinitionServicesCard = ({
       <Box mb="4">
         <DependentsToggle
           handleDependentChange={type => setSelectedDependency(type)}
+          selectedType={selectedDependency}
         />
       </Box>
       <Box>
