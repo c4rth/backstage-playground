@@ -4,10 +4,16 @@ import useAsync from 'react-use/esm/useAsync';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 const xmlParser = new XMLParser({
-  ignoreAttributes: false,
+  ignoreAttributes: false,  
   attributeNamePrefix: '',
   allowBooleanAttributes: true,
   trimValues: true,
+  transformTagName: (tagName) => {
+    if (tagName === 'constructor') {
+      return '_constructor';
+    }
+    return tagName;
+  }, 
 });
 
 export function useGetMcaComponentDefinition(component: string, refP: string) {

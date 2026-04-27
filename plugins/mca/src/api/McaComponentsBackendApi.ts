@@ -116,7 +116,7 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const buffer = await response.arrayBuffer();
-      return new TextDecoder('latin1').decode(buffer);
+      return new TextDecoder('cp1252').decode(buffer);
     } catch (error) {
       throw error;
     }

@@ -77,7 +77,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
     );
   }
 
-  return <div>QQQ {field.name}</div>;
+  return <div>{field.name}</div>;
 });
 
 const mandatoryColumn: TableColumn<TableRow> = {
@@ -119,6 +119,12 @@ const commonColumns: TableColumn<TableRow>[] = [
     title: 'Description',
     width: '55%',
     field: 'description',
+    render: ({ description }) => (
+      <div
+        style={{ whiteSpace: 'pre-wrap' }}
+        dangerouslySetInnerHTML={{ __html: description }}
+      />
+    ),
   },
 ];
 
