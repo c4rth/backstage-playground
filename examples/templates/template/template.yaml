@@ -20,7 +20,25 @@ spec:
           title: "DEFL code"
           description: What is the DEFL code for the project?
           type: string
-          default: "java-playground"
+          default: "java-playground"      
+        volume_type:
+          title: Volume Type
+          type: string
+          description: The volume type to be used
+          default: gp2
+          enum:
+            - gp2
+            - gp3
+            - io1
+            - io2
+            - sc1
+            - st1
+            - standard
+        app_code:
+          title: "Application Code"
+          description: What is the application code for the repository to create?
+          type: string
+          ui:field: ProjectPicker
         repo_name:
           title: "Repository Name"
           description: What is the name of the repository to create?
@@ -28,10 +46,14 @@ spec:
       required:
         - dryRun
         - project
+        - app_code
+        - volume_type
         - repo_name
       ui:order:
         - dryRun
         - project
+        - app_code
+        - volume_type
         - repo_name
     - title: "Repository Location"
       dependencies:

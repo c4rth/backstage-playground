@@ -14,7 +14,9 @@ import useDebounce from 'react-use/esm/useDebounce';
 import { useTemplateSecrets } from '@backstage/plugin-scaffolder-react';
 import { scmAuthApiRef } from '@backstage/integration-react';
 import { ProjectPickerFieldSchema } from './schemas';
-import { Select } from '@backstage/ui';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import { MenuItem } from '@material-ui/core';
 
 export { ProjectPickerSchema } from './schemas';
 
@@ -109,16 +111,25 @@ const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
       required={required}
       errors={errors}
     >
+      <InputLabel id="project-label">
+        {uiSchema['ui:title'] ?? schema.title}
+      </InputLabel>
       <Select
+        labelId="project-label"
         value={selectedProject}
-        options={projects}
         label={uiSchema['ui:title'] ?? schema.title}
         onChange={value => {
           const newValue = value?.toString() ?? undefined;
           setSelectedProject(newValue);
           onChange(newValue);
         }}
-      />
+      >
+        {projects.map(project => (
+          <MenuItem key={project.value} value={project.value}>
+            {project.label}
+          </MenuItem>
+        ))}
+      </Select>
     </ScaffolderField>
   );
 };
