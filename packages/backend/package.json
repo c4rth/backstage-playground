@@ -34,7 +34,7 @@
     "@backstage/plugin-catalog-backend-module-msgraph": "^0.9.2",
     "@backstage/plugin-catalog-backend-module-openapi": "^0.2.21",
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.19",
-    "@backstage/plugin-catalog-backend-module-unprocessed": "^0.6.10",
+    "@backstage/plugin-catalog-backend-module-unprocessed": "^0.6.11",
     "@backstage/plugin-catalog-common": "^1.1.9",
     "@backstage/plugin-devtools-backend": "^0.5.16",
     "@backstage/plugin-devtools-common": "^0.1.24",

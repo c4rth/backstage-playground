@@ -3359,20 +3359,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-backend-module-unprocessed@npm:^0.6.10":
-  version: 0.6.10
-  resolution: "@backstage/plugin-catalog-backend-module-unprocessed@npm:0.6.10"
+"@backstage/plugin-catalog-backend-module-unprocessed@npm:^0.6.11":
+  version: 0.6.11
+  resolution: "@backstage/plugin-catalog-backend-module-unprocessed@npm:0.6.11"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.9.0"
     "@backstage/catalog-model": "npm:^1.8.0"
     "@backstage/errors": "npm:^1.3.0"
     "@backstage/plugin-auth-node": "npm:^0.7.0"
     "@backstage/plugin-catalog-node": "npm:^2.2.0"
-    "@backstage/plugin-catalog-unprocessed-entities-common": "npm:^0.0.14"
+    "@backstage/plugin-catalog-unprocessed-entities-common": "npm:^0.0.15"
     "@backstage/plugin-permission-common": "npm:^0.9.8"
     express-promise-router: "npm:^4.1.1"
     knex: "npm:^3.0.0"
-  checksum: 10/6aa93df49d0a9ae7918738f7520ba4db9e08425628a82ebe8c3ff18e9cd1d627fce1b7c4ecb3999e555a1097e660911fc02f9c42611e4f7318bbc04d13fc15a8
+  checksum: 10/b57ae73c135f33f1c840a8a77774f7b1e988241ede05c925c01287b0da52585668e0dab77c5192cdb665d240703169b78fa67df63aab0b5bad1154120620379c
   languageName: node
   linkType: hard
 
@@ -3574,28 +3574,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-unprocessed-entities-common@npm:^0.0.14":
-  version: 0.0.14
-  resolution: "@backstage/plugin-catalog-unprocessed-entities-common@npm:0.0.14"
+"@backstage/plugin-catalog-unprocessed-entities-common@npm:^0.0.15":
+  version: 0.0.15
+  resolution: "@backstage/plugin-catalog-unprocessed-entities-common@npm:0.0.15"
   dependencies:
     "@backstage/catalog-model": "npm:^1.8.0"
     "@backstage/errors": "npm:^1.3.0"
     "@backstage/plugin-permission-common": "npm:^0.9.8"
-  checksum: 10/37fef6d537e6511700f318c965fd14a86a821bd62f7c0a288eabd97875263a8facb3f503b82c5741d5fc44ca402207efb63a43603855dbbec9ba6f1ee05761cf
+  checksum: 10/8609337c02c27daff495f206b6b50c086cea9f20c08f2c71ebc3ff4b0a8214914340c0d8f944cfdc28d0ab6fb7739c12f416ddd928d655db89393e4a7688be51
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-unprocessed-entities@npm:^0.2.29":
-  version: 0.2.29
-  resolution: "@backstage/plugin-catalog-unprocessed-entities@npm:0.2.29"
+"@backstage/plugin-catalog-unprocessed-entities@npm:^0.2.30":
+  version: 0.2.30
+  resolution: "@backstage/plugin-catalog-unprocessed-entities@npm:0.2.30"
   dependencies:
     "@backstage/core-compat-api": "npm:^0.5.10"
     "@backstage/core-components": "npm:^0.18.9"
     "@backstage/core-plugin-api": "npm:^1.12.5"
     "@backstage/errors": "npm:^1.3.0"
-    "@backstage/frontend-plugin-api": "npm:^0.16.0"
-    "@backstage/plugin-catalog-unprocessed-entities-common": "npm:^0.0.14"
-    "@backstage/ui": "npm:^0.14.0"
+    "@backstage/frontend-plugin-api": "npm:^0.16.2"
+    "@backstage/plugin-catalog-unprocessed-entities-common": "npm:^0.0.15"
+    "@backstage/ui": "npm:^0.14.3"
     "@material-ui/core": "npm:^4.9.13"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:^4.0.0-alpha.60"
@@ -3609,7 +3609,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/cc3fdb05d3f3bf935bb1621e6a1237b48be2a740f95e020f1107da8072749dfa66d50155aafe48d273ba7325063f97e3c0b4d14e43384ddf2c797d4ed1db268c
+  checksum: 10/0f3a9edef94aa4a49441e9fd04fe260b0cf7e5f6860af3bcc43a4614296c75d4eb7cffa708a4cd9608fe7aa0dee36c7b252ffe6ddf6e0cca230801e81223425c
   languageName: node
   linkType: hard
 
@@ -14378,7 +14378,7 @@ __metadata:
     "@backstage/plugin-catalog-graph": "npm:^0.6.3"
     "@backstage/plugin-catalog-import": "npm:^0.13.12"
     "@backstage/plugin-catalog-react": "npm:^2.1.4"
-    "@backstage/plugin-catalog-unprocessed-entities": "npm:^0.2.29"
+    "@backstage/plugin-catalog-unprocessed-entities": "npm:^0.2.30"
     "@backstage/plugin-devtools": "npm:^0.1.38"
     "@backstage/plugin-devtools-common": "npm:^0.1.24"
     "@backstage/plugin-home": "npm:^0.9.5"
@@ -15048,7 +15048,7 @@ __metadata:
     "@backstage/plugin-catalog-backend-module-msgraph": "npm:^0.9.2"
     "@backstage/plugin-catalog-backend-module-openapi": "npm:^0.2.21"
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "npm:^0.2.19"
-    "@backstage/plugin-catalog-backend-module-unprocessed": "npm:^0.6.10"
+    "@backstage/plugin-catalog-backend-module-unprocessed": "npm:^0.6.11"
     "@backstage/plugin-catalog-common": "npm:^1.1.9"
     "@backstage/plugin-devtools-backend": "npm:^0.5.16"
     "@backstage/plugin-devtools-common": "npm:^0.1.24"
