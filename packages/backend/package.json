@@ -19,7 +19,7 @@
     "@backstage-community/plugin-azure-devops-backend": "^0.29.0",
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.19.1",
     "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.24.0",
-    "@backstage-community/plugin-sonarqube-backend": "^1.1.0",
+    "@backstage-community/plugin-sonarqube-backend": "^1.1.1",
     "@backstage/backend-defaults": "^0.17.0",
     "@backstage/backend-plugin-api": "^1.9.0",
     "@backstage/catalog-model": "^1.8.0",

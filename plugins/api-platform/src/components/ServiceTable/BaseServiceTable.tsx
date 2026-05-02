@@ -47,7 +47,7 @@ export const LIST_ITEM_STYLE = {
 
 export const renderVersionList = (
   serviceDefinition: ServiceDefinition,
-  renderItem: (version: ServiceVersionDefinition, idx: number) => JSX.Element,
+  renderItem: (version: ServiceVersionDefinition, idx: number) => React.JSX.Element,
 ) => (
   <>
     {serviceDefinition.versions?.map((version, idx) => (

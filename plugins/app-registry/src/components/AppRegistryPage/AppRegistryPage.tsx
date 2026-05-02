@@ -61,7 +61,7 @@ const AbacTooltip = ({
   icon,
   children,
 }: {
-  icon: JSX.Element;
+  icon: React.JSX.Element;
   children: React.ReactNode;
 }) => (
   <TooltipTrigger delay={250}>
