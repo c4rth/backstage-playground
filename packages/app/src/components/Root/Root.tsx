@@ -57,9 +57,9 @@ import {
   adminToolsPermission,
   notGuestPermission,
   healthDashboardPermission,
+  advancedUserPermission,
 } from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
-import { FeatureFlagged } from '@backstage/core-app-api';
 
 const SidebarLogo = () => {
   const { isOpen } = useSidebarOpenState();
@@ -122,13 +122,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           to="api-platform/api"
           text="APIs"
         />
-        <FeatureFlagged with="enable-api-platform-libraries">
+        <RequirePermission
+          permission={advancedUserPermission}
+          errorPage={<div />}
+        >
           <SidebarItem
             icon={RiBookShelfLine as IconComponent}
             to="api-platform/library"
             text="Libraries"
           />
-        </FeatureFlagged>
+        </RequirePermission>
         <SidebarItem
           icon={RiBubbleChartLine as IconComponent}
           to="mca/components"

@@ -75,6 +75,7 @@ import {
 } from '@internal/plugin-mca';
 import {
   adminToolsPermission,
+  advancedUserPermission,
   healthDashboardPermission,
   notGuestPermission,
 } from '@internal/plugin-permissions-common';
@@ -126,13 +127,6 @@ const app = createApp({
     ),
   },
   themes: carthThemes,
-  featureFlags: [
-    {
-      pluginId: 'api-platform',
-      name: 'enable-api-platform-libraries',
-      description: 'Enable API Platform libraries',
-    },
-  ],
 });
 
 const routes = (
@@ -242,10 +236,27 @@ const routes = (
       path="/api-platform/system/:name"
       element={<SystemDefinitionPage />}
     />
-    <Route path="/api-platform/library" element={<LibraryExplorerPage />} />
+    <Route
+      path="/api-platform/library"
+      element={
+        <RequirePermission
+          permission={advancedUserPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
+          <LibraryExplorerPage />
+        </RequirePermission>
+      }
+    />
     <Route
       path="/api-platform/library/:system/:name"
-      element={<LibraryDefinitionPage />}
+      element={
+        <RequirePermission
+          permission={advancedUserPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
+          <LibraryDefinitionPage />
+        </RequirePermission>
+      }
     />
     <Route path="/mca/components" element={<McaComponentExplorerPage />} />
     <Route

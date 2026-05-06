@@ -20,3 +20,10 @@ export const healthDashboardPermission = createPermission({
     action: 'read',
   },
 });
+
+export const advancedUserPermission = createPermission({
+  name: 'advancedUser.read',
+  attributes: {
+    action: 'read',
+  },
+});

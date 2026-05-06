@@ -129,6 +129,9 @@ permission:
         allowed:
           - group:default/team-a.X
           - user:default/guest
+      - name: advancedUser.read
+        allowed:
+          - group:default/team-a.Y
   # rbac:
   #   pluginsWithPermission:
   #     - catalog

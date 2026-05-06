@@ -33,7 +33,6 @@ import {
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import {
   configApiRef,
-  featureFlagsApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
@@ -50,14 +49,10 @@ export const ServiceDefinitionCard = ({
   entity: ComponentEntity;
 }) => {
   const configApi = useApi(configApiRef);
-  const featureFlagsApi = useApi(featureFlagsApiRef);
 
   const sonarQube = isSonarQubeAvailable(entity);
   const azureDevOps = isAzureDevOpsAvailable(entity);
   const azurePipelines = isAzurePipelinesAvailable(entity);
-  const showLibraries = featureFlagsApi.isActive(
-    'enable-api-platform-libraries',
-  );
 
   const platform = (
     entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] || 'cloud'
@@ -162,11 +157,9 @@ export const ServiceDefinitionCard = ({
               </Grid.Item>
             </Grid.Root>
           </TabbedLayout.Route>
-          {showLibraries && (
-            <TabbedLayout.Route path="/libraries" title="Libraries">
-              <ServiceLibraryRelationCard />
-            </TabbedLayout.Route>
-          )}
+          <TabbedLayout.Route path="/libraries" title="Libraries">
+            <ServiceLibraryRelationCard />
+          </TabbedLayout.Route>
         </TabbedLayout>
       </TabbedLayout.Route>
 

@@ -85,7 +85,7 @@ const toRow = (
             .map(dep => {
               const lib = libraryVersions.find(lv => dep.includes(lv.version));
               return {
-                version: lib?.version || dep,
+                version: lib?.version || dep.replace(`${libraryName  }-v`, '').trim(),
                 index: lib ? libraryVersions.indexOf(lib) : -1,
               };
             }) || [];

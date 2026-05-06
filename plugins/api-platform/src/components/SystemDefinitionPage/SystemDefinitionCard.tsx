@@ -9,7 +9,7 @@ import {
 import { AboutField } from '@backstage/plugin-catalog';
 import { SystemRelationCard } from './SystemPlatformRelationCard';
 import { EntityMembersListCard } from '@backstage/plugin-org';
-import { featureFlagsApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
@@ -27,11 +27,7 @@ export const SystemDefinitionCard = ({
   systemDefinition,
 }: SystemDefinitionCardProps) => {
   const catalogApi = useApi(catalogApiRef);
-  const featureFlagsApi = useApi(featureFlagsApiRef);
   const { entity } = useEntity();
-  const showLibraries = featureFlagsApi.isActive(
-    'enable-api-platform-libraries',
-  );
 
   const entityRef = getCompoundEntityRef(entity);
   const hasDocs = Boolean(
@@ -64,7 +60,7 @@ export const SystemDefinitionCard = ({
             dependency="api"
             data={systemDefinition.apis}
           />
-          {showLibraries && (
+          {systemDefinition.libraries && systemDefinition.libraries.length > 0 && (
             <SystemRelationCard
               system={system}
               dependency="library"
