@@ -25,7 +25,7 @@ export const AnalyticsContent = () => {
   const [topFeatures, setTopFeatures] = useState<TableRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [daysToShow, setDaysToShow] = useState(0);
+  const [daysToShow, setDaysToShow] = useState(7);
 
   useEffect(() => {
     let isMounted = true;

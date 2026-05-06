@@ -73,6 +73,7 @@ const toRow = (
   idx: number,
   libraryName: string,
 ): TableRow => {
+  const regexp = new RegExp(`.*${libraryName}-v`);
   const versions = serviceDefinition.versions.map(version => ({
     ...version,
     environments: Object.fromEntries(
@@ -85,7 +86,7 @@ const toRow = (
             .map(dep => {
               const lib = libraryVersions.find(lv => dep.includes(lv.version));
               return {
-                version: lib?.version || dep.replace(`${libraryName  }-v`, '').trim(),
+                version: lib?.version || dep.replace(regexp, '').trim(),
                 index: lib ? libraryVersions.indexOf(lib) : -1,
               };
             }) || [];
