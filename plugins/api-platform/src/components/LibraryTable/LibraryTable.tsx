@@ -43,6 +43,7 @@ const columns: ColumnConfig<TableRow>[] = [
     label: 'Name',
     width: '25%',
     isRowHeader: true,
+    isSortable: true,
     cell: ({ name, system }: TableRow) => (
       <Cell>
         <Text weight="bold">
@@ -152,6 +153,17 @@ export const LibraryTable = () => {
           item.description.toLowerCase().includes(lowerQuery) ||
           item.system.toLowerCase().includes(lowerQuery),
       );
+    },
+    sortFn: (items, { column, direction }) => {
+      return [...items].sort((a, b) => {
+        const desc = direction === 'descending' ? -1 : 1;
+        switch (column) {
+          case 'name':
+            return desc * a.name.localeCompare(b.name);
+          default:
+            return 0;
+        }
+      });
     },
   });
 
