@@ -34,4 +34,7 @@ export interface McaComponentStore {
   addOrUpdateMcaVersions(mcaVersions: McaVersions): Promise<void>;
   addOrUpdateMcaComponent(mcaComponent: McaComponent): Promise<void>;
   addOrUpdateBaseType(baseType: McaBaseType): Promise<void>;
+
+  setLastModifiedDate(date: Date): Promise<void>;
+  getLastModifiedDate(): Promise<Date | undefined>;
 }

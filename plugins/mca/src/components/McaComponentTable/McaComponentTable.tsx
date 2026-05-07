@@ -11,9 +11,8 @@ import {
   McaVersions,
 } from '@internal/plugin-mca-common';
 import { useApi } from '@backstage/core-plugin-api';
-import { mcaComponentsBackendApiRef } from '../../api';
+import { mcaComponentsBackendApiRef, McaComponentsBackendApi } from '../../api';
 import { Query } from '@material-table/core';
-import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { memo, useEffect, useState } from 'react';
 import { Flex } from '@backstage/ui';
 

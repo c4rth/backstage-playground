@@ -59,6 +59,15 @@ export async function createRouter(
     res.json(result);
   });
 
+  router.get('/mca/last-modified', async (_req, res) => {
+    const result = await mcaService.getLastModifiedDate();
+    if (!result) {
+      res.status(404).json({ message: 'Last modified date not found' });
+      return;
+    }
+    res.json({ lastModifiedDate: result });
+  });
+
   router.get('/basetypes/count', async (_req, res) => {
     const result = await mcaService.getMcaBaseTypesCount();
     res.json(result);

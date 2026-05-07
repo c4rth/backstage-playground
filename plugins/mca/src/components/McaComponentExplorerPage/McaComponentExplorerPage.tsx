@@ -13,6 +13,8 @@ import {
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 import { Alert, Box, Flex, Grid } from '@backstage/ui';
+import { mcaComponentsBackendApiRef } from '../../api';
+import useAsync from 'react-use/esm/useAsync';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
@@ -44,9 +46,15 @@ function normalizeComponentType(type: string): McaComponentType {
 
 export const McaComponentExplorerPage = () => {
   const configApi = useApi(configApiRef);
+  const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const organizationName =
     configApi.getOptionalString('organization.name') ?? 'Backstage';
+  
+  const { value: lastModifiedDate } = useAsync(async () => {
+    return mcaApi.getCsvLastModifiedDate();
+  }, [mcaApi]);
+
   const subtitle = `${organizationName} MCA Components Explorer`;
 
   const [selectedType, setSelectedType] = useState<McaComponentType>(() =>
@@ -85,15 +93,22 @@ export const McaComponentExplorerPage = () => {
               <Flex
                 style={{
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'flex-end',
+                  marginBottom: '16px',
                   height: '100%',
                 }}
               >
-                <Flex align="center" gap="3">
+                <Flex direction="column" gap="1">
                   <Alert
                     status="warning"
                     icon
                     title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
+                  />
+                  <Alert
+                    status='info'
+                    icon
+                    title={`Last updated: ${lastModifiedDate?.toLocaleString('fr-BE') || 'Unknown'}`}
+                    style={{ width: 'fit-content', alignSelf: 'flex-end' }}
                   />
                 </Flex>
               </Flex>

@@ -148,6 +148,10 @@ export class McaComponentService implements McaService {
   }): Promise<McaBaseType | undefined> {
     return this.mcaComponentsStore.getMcaBaseType(request.baseType);
   }
+
+  async getLastModifiedDate(): Promise<Date | undefined> {
+    return this.mcaComponentsStore.getLastModifiedDate();
+  }
 }
 
 export const mcaComponentServiceRef = createServiceRef<McaService>({

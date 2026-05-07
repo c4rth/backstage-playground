@@ -54,6 +54,20 @@ export class McaOperationScheduledTask {
         throw new Error(`Failed to fetch CSV: ${response.statusText}`);
       }
 
+      const lastModified = response.headers.get('Last-Modified');
+      if (lastModified) {
+        try {
+          this.logger.info(`CSV last modified: ${lastModified}`);
+          const lastModifiedDate = new Date(lastModified);
+          await this.mcaComponentsStore.setLastModifiedDate(lastModifiedDate);
+          const now = new Date();
+          const ageHours = ((now.getTime() - lastModifiedDate.getTime()) / 60000) / 60;
+          this.logger.info(`CSV age: ${ageHours} hours`);
+        } catch (error) {
+          this.logger.warn(`Failed to parse Last-Modified header: ${error}`);
+        }
+      }
+
       const csvData = await response.text();
       this.logger.info('CSV data fetched successfully');
 

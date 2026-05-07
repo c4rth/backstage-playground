@@ -56,4 +56,6 @@ export interface McaService {
   getMcaBaseType(request: {
     baseType: string;
   }): Promise<McaBaseType | undefined>;
+
+  getLastModifiedDate(): Promise<Date | undefined>;
 }

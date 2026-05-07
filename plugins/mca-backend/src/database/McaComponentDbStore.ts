@@ -68,6 +68,27 @@ export class McaComponentDbStore implements McaComponentStore {
     private readonly logger: LoggerService,
   ) {}
 
+  async setLastModifiedDate(date: Date): Promise<void> {
+    await this.db('mca_metadata')
+      .insert({
+        key: 'last_modified',
+        value: date.toISOString(),
+      })
+      .onConflict('key')
+      .merge();
+  }
+
+  async getLastModifiedDate(): Promise<Date | undefined> {
+    const row = await this.db('mca_metadata')
+      .where({ key: 'last_modified' })
+      .first();
+
+    if (row && row.value) {
+      return new Date(row.value);
+    }
+    return undefined;
+  }
+
   static async create({
     database,
     skipMigrations,
