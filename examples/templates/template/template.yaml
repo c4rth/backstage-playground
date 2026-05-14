@@ -86,7 +86,9 @@ spec:
             requestUserCredentials:
               secretsKey: USER_OAUTH_TOKEN
               additionalScopes:
-                azure: []
+                azure:
+                 -  '499b84ac-1321-427f-aa17-267ca6975798/vso.pipelineresources_manage'
+                 -  '499b84ac-1321-427f-aa17-267ca6975798/vso.build_execute'
   steps:
     - id: fetch-base
       name: Fetch Base
@@ -120,6 +122,20 @@ spec:
         gitCommitMessage: 'Scaffolded by ${{ user.entity.spec.profile.email }}'
         gitAuthorName: 'Backstage'
         gitAuthorEmail: ''
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+
+    - id: createAzurePipeline
+      name: Create Pipeline
+      action: azure:pipeline:create
+      if: ${{ parameters.dryRun !== true }}
+      input:
+        organization: thierrycarels0265
+        project: ${{ parameters.project }}
+        repository: ${{ parameters.repo_name }}
+        pipelineName: MyNewPipeline
+        pipelineYamlFile: test-pipeline.yaml
+        pipelineFolder: test-scaffolder
+        branch: main
         token: ${{ secrets.USER_OAUTH_TOKEN }}
  
   output:
