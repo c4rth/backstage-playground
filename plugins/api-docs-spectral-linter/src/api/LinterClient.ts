@@ -85,11 +85,11 @@ export class LinterClient implements LinterApi {
       },
     } as any;
     const spectral = new Spectral();
-    const ruleSet = await bundleAndLoadRuleset('/.spectral.yaml', {
+    const ruleSet: Ruleset = await bundleAndLoadRuleset('/.spectral.yaml', {
       fs,
       fetch,
     });
-    spectral.setRuleset(ruleSet as Ruleset);
+    spectral.setRuleset(ruleSet);
 
     const formattedContent =
       countLines(content) === 1 ? prettyPrint(content) : content;
