@@ -118,8 +118,8 @@ const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
         labelId="project-label"
         value={selectedProject}
         label={uiSchema['ui:title'] ?? schema.title}
-        onChange={value => {
-          const newValue = value?.toString() ?? undefined;
+        onChange={event => {
+          const newValue = event.target.value?.toString() ?? undefined;
           setSelectedProject(newValue);
           onChange(newValue);
         }}
