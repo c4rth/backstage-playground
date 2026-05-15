@@ -71,6 +71,7 @@ const createNameColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
   field: 'name',
   highlight: true,
   defaultSort: 'asc',
+  sorting: true,
   render: ({ serviceDefinition }) => (
     <Link
       to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
