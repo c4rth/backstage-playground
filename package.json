@@ -33,9 +33,9 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.1",
-    "@backstage/cli-defaults": "^0.1.1",
-    "@backstage/eslint-plugin": "^0.2.3",
+    "@backstage/cli": "^0.36.2",
+    "@backstage/cli-defaults": "^0.1.2",
+    "@backstage/eslint-plugin": "^0.3.0",
     "@jest/environment-jsdom-abstract": "^30.2.0",
     "@playwright/test": "^1.32.3",
     "@spotify/eslint-config-base": "^15.0.0",
@@ -72,5 +72,5 @@
       "@asyncapi/react-component"
     ]
   },
-  "packageManager": "yarn@4.8.1"
+  "packageManager": "yarn@4.15.0"
 }

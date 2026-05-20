@@ -1,4 +1,3 @@
-import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   catalogEntityCreatePermission,
@@ -13,6 +12,7 @@ import {
 import {
   PermissionPolicy,
   PolicyQuery,
+  PolicyQueryUser,
 } from '@backstage/plugin-permission-node';
 import { Config } from '@backstage/config';
 import {
@@ -51,14 +51,14 @@ export class MyPermissionPolicy implements PermissionPolicy {
 
   checkCustomPermission(
     permissionName: string,
-    user?: BackstageIdentityResponse,
+    user?: PolicyQueryUser,
   ): boolean {
     const customPermission = this.permissions.find(
       perm => perm.name === permissionName,
     );
     if (customPermission) {
       return (
-        user?.identity?.ownershipEntityRefs.some(entityRef =>
+        user?.info?.ownershipEntityRefs.some(entityRef =>
           customPermission.allowed.includes(entityRef),
         ) ?? false
       );
@@ -66,12 +66,9 @@ export class MyPermissionPolicy implements PermissionPolicy {
     return false;
   }
 
-  async handle(
-    request: PolicyQuery,
-    user?: BackstageIdentityResponse,
-  ): Promise<PolicyDecision> {
+  async handle(request: PolicyQuery, user?: PolicyQueryUser): Promise<PolicyDecision> {
     // Guest: allow only catalog.read, deny all others
-    if (user?.identity?.userEntityRef === 'user:default/guest') {
+    if (user?.info?.userEntityRef === 'user:default/guest') {
       const customPermission = this.permissions.find(
         perm => perm.name === request.permission.name,
       );
@@ -98,7 +95,7 @@ export class MyPermissionPolicy implements PermissionPolicy {
     // SuperUsers: allow all if in adminGroups
     const isSuperUser =
       this.superUserGroups.length !== 0 &&
-      user?.identity?.ownershipEntityRefs.some(entityRef =>
+      user?.info?.ownershipEntityRefs.some(entityRef =>
         this.superUserGroups.includes(entityRef),
       );
     if (isSuperUser) {

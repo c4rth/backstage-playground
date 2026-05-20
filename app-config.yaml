@@ -163,6 +163,10 @@ integrations:
 azureDevOps:
   host: dev.azure.com
   organization: thierrycarels0265
+  pullRequestDashboard:
+    organizations:
+        - organization: thierrycarels0265
+          host: dev.azure.com
 
 proxy:
   # skipInvalidProxies: true
