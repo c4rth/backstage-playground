@@ -1,0 +1,27 @@
+ARG imagename=node:24-bookworm-slim
+
+FROM ${imagename}
+# Stage 1 - Create yarn install skeleton layer
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates python3 python3-pip python3-venv g++ build-essential curl graphviz fonts-dejavu fontconfig gnupg git && \
+    yarn config set python /usr/bin/python3 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* 
+
+# Install Azul Zulu 21
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN curl -s https://repos.azul.com/azul-repo.key | gpg --dearmor -o /usr/share/keyrings/azul.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/azul.gpg] https://repos.azul.com/zulu/deb stable main" | tee /etc/apt/sources.list.d/zulu.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends zulu21-jre-headless && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* 
+
+# Set up a virtual environment for mkdocs-techdocs-core.
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH" 
+
+# Install MkDocs + Plugins + CookieCutter
+RUN pip3 install --no-cache-dir mkdocs-techdocs-core mkdocs-section-index mkdocs-git-revision-date-localized-plugin cookiecutter 
