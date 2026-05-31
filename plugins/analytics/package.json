@@ -31,7 +31,7 @@
   "dependencies": {
     "@backstage/core-components": "^0.18.10",
     "@backstage/core-plugin-api": "^1.12.6",
-    "@backstage/frontend-plugin-api": "^0.17.0",
+    "@backstage/frontend-plugin-api": "^0.17.1",
     "@backstage/ui": "^0.15.0",
     "recharts": "^3.8.1"
   },
