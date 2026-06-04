@@ -16,38 +16,82 @@ export type UrlLocations = {
 
 const FieldDisplay = memo<{
   label: string;
-  value: string | undefined;
+  value: string | number | boolean | { url: string; originalUrl?: string } | undefined;
   className: string;
   showCopyButton?: boolean;
-}>(({ label, value, className, showCopyButton = false }) => (
-  <Grid.Item>
-    <AboutField label={label}>
-      <Text
-        variant="body-medium"
-        className={className}
-        style={{ display: 'inline' }}
-      >
-        {typeof value === 'string' && value.startsWith('https://') ? (
-          <Link to={value} target="_blank">
-            {value}
-          </Link>
-        ) : (
-          value || '-'
-        )}
-      </Text>
-      {showCopyButton && value && <CopyTextButton text={String(value)} />}
-    </AboutField>
-  </Grid.Item>
-));
+}>(({ label, value, className, showCopyButton = false }) => {
+  let displayValue: string | number | boolean = '-';
+  let isLink = false;
+  let href = '';
+  let copyValue = '';
+  let originalUrl: string | undefined = undefined;
 
-function getDecodedURI(url: string | undefined, urlLocations: UrlLocations): string {
+  if (value !== undefined && value !== null) {
+    if (typeof value === 'object' && 'url' in value) {
+      displayValue = value.url;
+      originalUrl = value.originalUrl;
+      copyValue = value.url;
+      if (typeof value.url === 'string' && value.url.startsWith('https://')) {
+        isLink = true;
+        href = value.url;
+      }
+    } else {
+      displayValue = value;
+      copyValue = String(value);
+      if (typeof value === 'string' && value.startsWith('https://')) {
+        isLink = true;
+        href = value;
+      }
+    }
+  }
+
+  return (
+    <Grid.Item>
+      <AboutField label={label}>
+        <Text
+          variant="body-medium"
+          className={className}
+          style={{ display: 'inline' }}
+        >
+          {isLink ? (
+            <Link to={href} target="_blank">
+              {String(displayValue)}
+            </Link>
+          ) : (
+            String(displayValue)
+          )}
+        </Text>
+        {showCopyButton && copyValue && copyValue !== '-' && <CopyTextButton text={copyValue} />}
+        {originalUrl && originalUrl !== displayValue && (
+          <>
+          <br/>
+          <Text
+            variant="body-small"
+            style={{ fontSize: '0.85em', color: 'gray' }}
+          >
+            original: {originalUrl}
+          </Text>
+          </>
+        )}
+      </AboutField>
+    </Grid.Item>
+  );
+});
+
+function getDecodedURI(
+  url: string | undefined,
+  urlLocations: UrlLocations,
+): { url: string; originalUrl?: string } {
   if (!url) {
-    return '-';
+    return { url: '-' };
   }
   if (url.startsWith(urlLocations.oldDns)) {
-    url = url.replace(urlLocations.oldDns, urlLocations.newDns);
+    return {
+      url: url.replace(urlLocations.oldDns, urlLocations.newDns),
+      originalUrl: url,
+    };
   }
-  return url;
+  return { url };
 }
 
 export interface McaOperationAboutCardProps {
