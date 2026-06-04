@@ -1461,19 +1461,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-entity-validation@npm:^0.19.0":
-  version: 0.19.0
-  resolution: "@backstage-community/plugin-entity-validation@npm:0.19.0"
+"@backstage-community/plugin-entity-validation@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "@backstage-community/plugin-entity-validation@npm:0.20.0"
   dependencies:
-    "@backstage/catalog-client": "npm:^1.15.0"
-    "@backstage/catalog-model": "npm:^1.8.0"
-    "@backstage/core-compat-api": "npm:^0.5.10"
-    "@backstage/core-components": "npm:^0.18.9"
-    "@backstage/core-plugin-api": "npm:^1.12.5"
-    "@backstage/errors": "npm:^1.3.0"
-    "@backstage/frontend-plugin-api": "npm:^0.16.2"
-    "@backstage/plugin-catalog-common": "npm:^1.1.9"
-    "@backstage/plugin-catalog-react": "npm:^2.1.4"
+    "@backstage/catalog-client": "npm:^1.15.1"
+    "@backstage/catalog-model": "npm:^1.9.0"
+    "@backstage/core-compat-api": "npm:^0.5.11"
+    "@backstage/core-components": "npm:^0.18.10"
+    "@backstage/core-plugin-api": "npm:^1.12.6"
+    "@backstage/errors": "npm:^1.3.1"
+    "@backstage/frontend-plugin-api": "npm:^0.17.0"
+    "@backstage/plugin-catalog-common": "npm:^1.1.10"
+    "@backstage/plugin-catalog-react": "npm:^3.0.0"
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
     "@codemirror/view": "npm:^6.0.0"
@@ -1490,7 +1490,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/7c8b1f484cc357062a8e2e1d57eb230812fcd1e5ea5efd6ebea151c9b39bbded5a6194c6a649cc76ae444eb014a20cbe50c8e551941de257a367232a45e4020f
+  checksum: 10/97be1e521d53e4a5a28e99755e2d53a1e8fe437b6444586f003ab9c8194bc8bea97d5433e6fb643e8b5d8d5ef8b05c82d1cf757acbbacbf0c8f54ef464461942
   languageName: node
   linkType: hard
 
@@ -3414,7 +3414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:^2.1.1, @backstage/plugin-catalog-react@npm:^2.1.4":
+"@backstage/plugin-catalog-react@npm:^2.1.1":
   version: 2.1.4
   resolution: "@backstage/plugin-catalog-react@npm:2.1.4"
   dependencies:
@@ -13829,7 +13829,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@backstage-community/plugin-entity-validation": "npm:^0.19.0"
+    "@backstage-community/plugin-entity-validation": "npm:^0.20.0"
     "@backstage-community/plugin-shortcuts": "npm:^0.20.0"
     "@backstage-community/plugin-sonarqube": "npm:^1.1.0"
     "@backstage-community/plugin-sonarqube-react": "npm:^1.1.0"

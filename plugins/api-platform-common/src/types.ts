@@ -9,7 +9,6 @@ export const OPENAPITYPE_LIST = [
   'experience',
   'inner',
   'third-party',
-  'front',
   'mca',
 ] as const;
 
@@ -20,7 +19,6 @@ export type OpenApiType =
   | 'experience'
   | 'inner'
   | 'third-party'
-  | 'front'
   | 'mca';
 
 export type ApiVersionDefinition = {
