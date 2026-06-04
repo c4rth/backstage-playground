@@ -47,6 +47,9 @@ mcaComponents:
       frequency: PT2M
       timeout: PT30S
       initialDelay: PT1M
+  urlLocations:
+    oldDns: https://old.carth.net
+    newDns: https://new.c4rth.net
 
 analytics:
   threshold: PT30D # Threshold in days for deleting old analytics data

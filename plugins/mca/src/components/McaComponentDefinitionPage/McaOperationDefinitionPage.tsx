@@ -1,8 +1,9 @@
 import { ResponseErrorPanel, TabbedLayout } from '@backstage/core-components';
-import { McaOperationAboutCard } from '../McaComponentAboutCard';
+import { McaOperationAboutCard, UrlLocations } from '../McaComponentAboutCard';
 import { memo, useMemo } from 'react';
 import { McaComponentFieldsCard } from './McaComponentFieldsCard';
 import { McaComponentMethodsCard } from './McaComponentMethodsCard';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 export interface McaOperationDefinitionPageProps {
   mcaComponent: any;
@@ -14,6 +15,7 @@ type NodesType = {
   operationAnalyze: any;
   operation: any;
   operationType: OperationType;
+  urlLocations: UrlLocations;
 };
 
 function getOperationNodes(mcaComponent: any): NodesType {
@@ -21,9 +23,14 @@ function getOperationNodes(mcaComponent: any): NodesType {
   const operationAnalyze = root.SPECIFICATION.OperationAnalyse;
   const { type } = operationAnalyze;
   const { JAVA: java } = root;
+  const configApi = useApi(configApiRef);
+  const urlLocations = {
+    oldDns: configApi.getString('mcaComponents.urlLocations.oldDns'),
+    newDns: configApi.getString('mcaComponents.urlLocations.newDns'),
+  };
 
   if (!java) {
-    return { operationAnalyze, operation: undefined, operationType: undefined };
+    return { operationAnalyze, operation: undefined, operationType: undefined, urlLocations };
   }
 
   let operationType: OperationType;
@@ -40,12 +47,12 @@ function getOperationNodes(mcaComponent: any): NodesType {
     operation = undefined;
   }
 
-  return { operationAnalyze, operation, operationType };
+  return { operationAnalyze, operation, operationType, urlLocations };
 }
 
 export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
   ({ mcaComponent }) => {
-    const { operationAnalyze, operation, error } = useMemo(() => {
+    const { operationAnalyze, operation, urlLocations, error } = useMemo(() => {
       try {
         const nodes = getOperationNodes(mcaComponent);
 
@@ -80,6 +87,7 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
           operationAnalyze: null,
           operation: null,
           operationType: undefined,
+          urlLocations: null,
           error: e instanceof Error ? e : new Error(String(e)),
         };
       }
@@ -95,6 +103,7 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
           <McaOperationAboutCard
             operationAnalyze={operationAnalyze}
             operation={operation}
+            urlLocations={urlLocations}
           />
         </TabbedLayout.Route>
         <TabbedLayout.Route path="/inputfields" title="Input Fields">

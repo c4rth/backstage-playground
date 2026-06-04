@@ -16,5 +16,15 @@ export interface Config {
     /**
      * @visibility frontend
      */
+    urlLocations?: {
+      /**
+       * @visibility frontend
+       */
+      oldDns?: string;
+      /**
+       * @visibility frontend
+       */
+      newDns?: string;
+    }
   };
 }
