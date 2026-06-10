@@ -13,14 +13,13 @@ import {
   ColumnConfig,
 } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useBuildRuns } from '../../hooks';
 import { getDurationFromDates } from '../../utils';
 import { DateTime } from 'luxon';
 import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
-import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
+import { AZURE_DEVOPS_DEFAULT_TOP, getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import type { BuildRun } from '@backstage-community/plugin-azure-devops-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { azureDevOpsApiRef } from '../../api';
+import { AzureDevOpsApi, azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildStateComponent } from './BuildStateComponent';
 import { LogsDialog } from './LogsDialog';
@@ -70,10 +69,20 @@ function getDuration(finishTime?: string, startTime?: string): string {
 }
 
 async function fetchData(
-  getBuildRuns: (entity: Entity) => Promise<{ items: BuildRun[] }>,
+  api: AzureDevOpsApi,
   entity: Entity,
-) {
-  const data = await getBuildRuns(entity);
+): Promise<TableRow[]> {
+  const { project, repo, definition, host, org } =
+    getAnnotationValuesFromEntity(entity);
+  const data = await api.getBuildRuns(
+    project,
+    stringifyEntityRef(entity),
+    repo,
+    definition,
+    host,
+    org,
+    { top: AZURE_DEVOPS_DEFAULT_TOP },
+  );
   return data?.items.map(toTableRow) ?? [];
 }
 
@@ -87,8 +96,6 @@ export const AzureDevOpsPipelinePage = () => {
 
   const azureApi = useApi(azureDevOpsApiRef);
   const { entity } = useEntity();
-
-  const getBuildRuns = useBuildRuns();
 
   const fetchLogs = useCallback(
     async (buildId: number, buildTitle: string) => {
@@ -201,9 +208,9 @@ export const AzureDevOpsPipelinePage = () => {
     [fetchLogs],
   );
 
-  const getData = useCallback(
-    () => fetchData(getBuildRuns, entity),
-    [getBuildRuns, entity],
+const getData = useCallback(
+    () => fetchData(azureApi, entity),
+    [azureApi, entity],
   );
 
   const { tableProps } = useTable({

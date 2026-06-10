@@ -23,6 +23,12 @@ backend:
       - matchers:
           plugin: analytics
         level: debug
+      - matchers:
+          plugin: azure-devops
+        level: debug
+      - matchers:
+          plugin: azdo
+        level: debug
       #- matchers:
       #    plugin: search
       # level: debug

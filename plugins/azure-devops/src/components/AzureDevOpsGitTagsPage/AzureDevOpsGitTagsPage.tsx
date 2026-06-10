@@ -12,10 +12,14 @@ import {
   ColumnConfig,
 } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useAsyncGitTags } from '../../hooks';
 import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
-import { GitTag } from '@backstage-community/plugin-azure-devops-common';
-import { Entity } from '@backstage/catalog-model';
+import {
+  GitTag,
+  getAnnotationValuesFromEntity,
+} from '@backstage-community/plugin-azure-devops-common';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import { useApi } from '@backstage/core-plugin-api';
+import { azureDevOpsApiRef, AzureDevOpsApi } from '../../api';
 import styles from './AzureDevOpsGitTagsPage.module.css';
 
 type TableRow = {
@@ -43,17 +47,23 @@ const toTableRow = (gitTag: GitTag, idx: number): TableRow => ({
 });
 
 async function fetchData(
-  getGitTags: (entity: Entity) => Promise<{ items: GitTag[] }>,
+  api: AzureDevOpsApi,
   entity: Entity,
-) {
-  const data = await getGitTags(entity);
+): Promise<TableRow[]> {
+  const { project, repo, host, org } = getAnnotationValuesFromEntity(entity);
+  const data = await api.getGitTags(
+    project,
+    repo as string,
+    stringifyEntityRef(entity),
+    host,
+    org,
+  );
   return data?.items.map(toTableRow) ?? [];
-}
+} 
 
 export const AzureDevOpsGitTagsPage = () => {
   const { entity } = useEntity();
-
-  const getGitTags = useAsyncGitTags();
+  const api = useApi(azureDevOpsApiRef);
 
   const columns: ColumnConfig<TableRow>[] = useMemo(
     () => [
@@ -89,8 +99,8 @@ export const AzureDevOpsGitTagsPage = () => {
   );
 
   const getData = useCallback(
-    () => fetchData(getGitTags, entity),
-    [getGitTags, entity],
+    () => fetchData(api, entity),
+    [api, entity],
   );
 
   const { tableProps } = useTable({
