@@ -236,7 +236,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     const url = new URL(`${baseUrl}/mca/last-modified`);
 
     const response = await this.fetchJson<{ lastModifiedDate: string }>(url);
-    return response.lastModifiedDate ? new Date(response.lastModifiedDate) : undefined;
+    return response.lastModifiedDate
+      ? new Date(response.lastModifiedDate)
+      : undefined;
   }
 
   clearCache(): void {

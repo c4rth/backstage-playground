@@ -50,7 +50,7 @@ export const McaComponentExplorerPage = () => {
 
   const organizationName =
     configApi.getOptionalString('organization.name') ?? 'Backstage';
-  
+
   const { value: lastModifiedDate } = useAsync(async () => {
     return mcaApi.getCsvLastModifiedDate();
   }, [mcaApi]);
@@ -105,7 +105,7 @@ export const McaComponentExplorerPage = () => {
                     title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
                   />
                   <Alert
-                    status='info'
+                    status="info"
                     icon
                     title={`Last updated: ${lastModifiedDate?.toLocaleString('fr-BE') || 'Unknown'}`}
                     style={{ width: 'fit-content', alignSelf: 'flex-end' }}

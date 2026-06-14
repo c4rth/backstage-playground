@@ -10,6 +10,7 @@ export {
   ApiSearchResultListItem,
   LibraryExplorerPage,
   LibraryDefinitionPage,
+  LibraryDefinitionServicesPage,
 } from './plugin';
 
 export * from './hooks';

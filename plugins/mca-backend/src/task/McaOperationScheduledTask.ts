@@ -61,7 +61,8 @@ export class McaOperationScheduledTask {
           const lastModifiedDate = new Date(lastModified);
           await this.mcaComponentsStore.setLastModifiedDate(lastModifiedDate);
           const now = new Date();
-          const ageHours = ((now.getTime() - lastModifiedDate.getTime()) / 60000) / 60;
+          const ageHours =
+            (now.getTime() - lastModifiedDate.getTime()) / 60000 / 60;
           this.logger.info(`CSV age: ${ageHours} hours`);
         } catch (error) {
           this.logger.warn(`Failed to parse Last-Modified header: ${error}`);

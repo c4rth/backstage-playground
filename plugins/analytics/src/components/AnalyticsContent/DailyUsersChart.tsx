@@ -80,7 +80,15 @@ const formatDisplayDate = (dateStr: string) => {
 
 export const DailyUsersChart = ({ data }: { data: DailyVisitor[] }) => {
   return (
-    <Card style={{ marginBottom: '16px', width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Card
+      style={{
+        marginBottom: '16px',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <CardHeader>
         <Text variant="title-x-small">Daily unique users</Text>
       </CardHeader>
@@ -90,25 +98,21 @@ export const DailyUsersChart = ({ data }: { data: DailyVisitor[] }) => {
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="date" tickFormatter={formatDisplayDate} />
-                <YAxis
-                  allowDecimals={false}
-                  domain={[0, dataMax => Math.max(2, Math.ceil(dataMax))]}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar
-                  dataKey="visitors"
-                  stackId="a"
-                  fill="var(--bui-bg-solid)"
-                />
-                <Bar
-                  dataKey="guests"
-                  stackId="a"
-                  fill="color-mix(in srgb, var(--bui-bg-solid) 50%, transparent)"
-                />
-              </BarChart>
-            </ResponsiveContainer>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="date" tickFormatter={formatDisplayDate} />
+              <YAxis
+                allowDecimals={false}
+                domain={[0, dataMax => Math.max(2, Math.ceil(dataMax))]}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="visitors" stackId="a" fill="var(--bui-bg-solid)" />
+              <Bar
+                dataKey="guests"
+                stackId="a"
+                fill="color-mix(in srgb, var(--bui-bg-solid) 50%, transparent)"
+              />
+            </BarChart>
+          </ResponsiveContainer>
         )}
       </CardBody>
     </Card>

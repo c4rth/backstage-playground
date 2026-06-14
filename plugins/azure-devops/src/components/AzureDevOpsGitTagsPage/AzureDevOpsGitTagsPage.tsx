@@ -59,7 +59,7 @@ async function fetchData(
     org,
   );
   return data?.items.map(toTableRow) ?? [];
-} 
+}
 
 export const AzureDevOpsGitTagsPage = () => {
   const { entity } = useEntity();
@@ -98,10 +98,7 @@ export const AzureDevOpsGitTagsPage = () => {
     [],
   );
 
-  const getData = useCallback(
-    () => fetchData(api, entity),
-    [api, entity],
-  );
+  const getData = useCallback(() => fetchData(api, entity), [api, entity]);
 
   const { tableProps } = useTable({
     mode: 'complete',

@@ -16,7 +16,10 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { getDurationFromDates } from '../../utils';
 import { DateTime } from 'luxon';
 import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
-import { AZURE_DEVOPS_DEFAULT_TOP, getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
+import {
+  AZURE_DEVOPS_DEFAULT_TOP,
+  getAnnotationValuesFromEntity,
+} from '@backstage-community/plugin-azure-devops-common';
 import type { BuildRun } from '@backstage-community/plugin-azure-devops-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { AzureDevOpsApi, azureDevOpsApiRef } from '../../api';
@@ -208,7 +211,7 @@ export const AzureDevOpsPipelinePage = () => {
     [fetchLogs],
   );
 
-const getData = useCallback(
+  const getData = useCallback(
     () => fetchData(azureApi, entity),
     [azureApi, entity],
   );

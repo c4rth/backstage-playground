@@ -3159,9 +3159,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-backend-module-msgraph@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "@backstage/plugin-catalog-backend-module-msgraph@npm:0.10.1"
+"@backstage/plugin-catalog-backend-module-msgraph@npm:^0.10.2":
+  version: 0.10.2
+  resolution: "@backstage/plugin-catalog-backend-module-msgraph@npm:0.10.2"
   dependencies:
     "@azure/identity": "npm:^4.0.0"
     "@backstage/backend-plugin-api": "npm:^1.9.1"
@@ -3173,7 +3173,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.0.2"
     qs: "npm:^6.9.4"
-  checksum: 10/9afbab601b861076072a8f8887ff2394e5c3fa2757ffb1981e128adb02fc0ec64202614ba6ec3d3e5f227fccf61f152eed47d83e92761a94d753bdd3e53c7686
+  checksum: 10/55be4e9fab8bf8b0a77fe5c1c752c7113858f21db14b927fed470370d3ead1d734e9876c47c4e9bf1d86e075562f3a9a4dd03a72537794b9d09b4d2e2cf78a57
   languageName: node
   linkType: hard
 
@@ -14514,7 +14514,7 @@ __metadata:
     "@backstage/plugin-auth-node": "npm:^0.7.1"
     "@backstage/plugin-catalog-backend": "npm:^3.7.1"
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.22"
-    "@backstage/plugin-catalog-backend-module-msgraph": "npm:^0.10.1"
+    "@backstage/plugin-catalog-backend-module-msgraph": "npm:^0.10.2"
     "@backstage/plugin-catalog-backend-module-openapi": "npm:^0.2.22"
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "npm:^0.2.20"
     "@backstage/plugin-catalog-backend-module-unprocessed": "npm:^0.6.12"

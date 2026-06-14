@@ -60,13 +60,14 @@ export const SystemDefinitionCard = ({
             dependency="api"
             data={systemDefinition.apis}
           />
-          {systemDefinition.libraries && systemDefinition.libraries.length > 0 && (
-            <SystemRelationCard
-              system={system}
-              dependency="library"
-              data={systemDefinition.libraries}
-            />
-          )}
+          {systemDefinition.libraries &&
+            systemDefinition.libraries.length > 0 && (
+              <SystemRelationCard
+                system={system}
+                dependency="library"
+                data={systemDefinition.libraries}
+              />
+            )}
         </Flex>
       </TabbedLayout.Route>
 

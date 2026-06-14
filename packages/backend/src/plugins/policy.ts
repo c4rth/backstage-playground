@@ -66,7 +66,10 @@ export class MyPermissionPolicy implements PermissionPolicy {
     return false;
   }
 
-  async handle(request: PolicyQuery, user?: PolicyQueryUser): Promise<PolicyDecision> {
+  async handle(
+    request: PolicyQuery,
+    user?: PolicyQueryUser,
+  ): Promise<PolicyDecision> {
     // Guest: allow only catalog.read, deny all others
     if (user?.info?.userEntityRef === 'user:default/guest') {
       const customPermission = this.permissions.find(

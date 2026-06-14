@@ -30,7 +30,12 @@ function getOperationNodes(mcaComponent: any): NodesType {
   };
 
   if (!java) {
-    return { operationAnalyze, operation: undefined, operationType: undefined, urlLocations };
+    return {
+      operationAnalyze,
+      operation: undefined,
+      operationType: undefined,
+      urlLocations,
+    };
   }
 
   let operationType: OperationType;

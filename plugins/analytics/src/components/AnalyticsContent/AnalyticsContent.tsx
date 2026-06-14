@@ -21,7 +21,9 @@ const daysToShowOptions = [
 
 export const AnalyticsContent = () => {
   const analyticsApi = useApi(analyticsBackendApiRef);
-  const [dailyUniqueVisitors, setDailyUniqueVisitors] = useState<DailyVisitor[]>([]);
+  const [dailyUniqueVisitors, setDailyUniqueVisitors] = useState<
+    DailyVisitor[]
+  >([]);
   const [topFeatures, setTopFeatures] = useState<TableRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

@@ -31,10 +31,7 @@ import {
 } from '@internal/plugin-azure-devops';
 //
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
-import {
-  configApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import styles from './ServiceDefinitionCard.module.css';

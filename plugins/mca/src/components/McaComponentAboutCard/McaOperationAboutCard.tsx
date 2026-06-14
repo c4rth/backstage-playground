@@ -2,7 +2,7 @@ import {
   CopyTextButton,
   InfoCard,
   MarkdownContent,
-  Link
+  Link,
 } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
 import { Grid, Text } from '@backstage/ui';
@@ -16,7 +16,12 @@ export type UrlLocations = {
 
 const FieldDisplay = memo<{
   label: string;
-  value: string | number | boolean | { url: string; originalUrl?: string } | undefined;
+  value:
+    | string
+    | number
+    | boolean
+    | { url: string; originalUrl?: string }
+    | undefined;
   className: string;
   showCopyButton?: boolean;
 }>(({ label, value, className, showCopyButton = false }) => {
@@ -61,16 +66,18 @@ const FieldDisplay = memo<{
             String(displayValue)
           )}
         </Text>
-        {showCopyButton && copyValue && copyValue !== '-' && <CopyTextButton text={copyValue} />}
+        {showCopyButton && copyValue && copyValue !== '-' && (
+          <CopyTextButton text={copyValue} />
+        )}
         {originalUrl && originalUrl !== displayValue && (
           <>
-          <br/>
-          <Text
-            variant="body-small"
-            style={{ fontSize: '0.85em', color: 'gray' }}
-          >
-            original: {originalUrl}
-          </Text>
+            <br />
+            <Text
+              variant="body-small"
+              style={{ fontSize: '0.85em', color: 'gray' }}
+            >
+              original: {originalUrl}
+            </Text>
           </>
         )}
       </AboutField>

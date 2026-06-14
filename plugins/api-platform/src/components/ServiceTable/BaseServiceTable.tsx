@@ -47,10 +47,7 @@ export const LIST_ITEM_STYLE = {
 
 export const renderVersionList = (
   serviceDefinition: ServiceDefinition,
-  renderItem: (
-    version: ServiceVersionDefinition,
-    idx: number,
-  ) => JSX.Element,
+  renderItem: (version: ServiceVersionDefinition, idx: number) => JSX.Element,
 ) => (
   <>
     {serviceDefinition.versions?.map((version, idx) => (
@@ -83,7 +80,9 @@ const createNameColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
     </Link>
   ),
   customSort: (a, b) => {
-    return a.serviceDefinition.serviceName.localeCompare(b.serviceDefinition.serviceName);
+    return a.serviceDefinition.serviceName.localeCompare(
+      b.serviceDefinition.serviceName,
+    );
   },
 });
 
@@ -153,9 +152,9 @@ const getData = async <T extends BaseTableRow>(
     search: query.search,
     orderBy: query.orderBy
       ? ({
-        field: query.orderBy.field,
-        direction: query.orderDirection,
-      } as ServiceDefinitionsListRequest['orderBy'])
+          field: query.orderBy.field,
+          direction: query.orderDirection,
+        } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -163,15 +162,15 @@ const getData = async <T extends BaseTableRow>(
 
   return result
     ? {
-      data: result.items.map(toRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
 };
 
 const getTitleLabel = (toggleType: ToggleType, ownership: OwnershipType) => {

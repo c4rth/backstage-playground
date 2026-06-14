@@ -31,7 +31,7 @@
     "@backstage/plugin-auth-node": "^0.7.1",
     "@backstage/plugin-catalog-backend": "^3.7.1",
     "@backstage/plugin-catalog-backend-module-logs": "^0.1.22",
-    "@backstage/plugin-catalog-backend-module-msgraph": "^0.10.1",
+    "@backstage/plugin-catalog-backend-module-msgraph": "^0.10.2",
     "@backstage/plugin-catalog-backend-module-openapi": "^0.2.22",
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.20",
     "@backstage/plugin-catalog-backend-module-unprocessed": "^0.6.12",

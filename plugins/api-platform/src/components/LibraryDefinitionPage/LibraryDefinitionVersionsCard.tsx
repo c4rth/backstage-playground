@@ -34,10 +34,8 @@ const serviceColumns: TableColumn<TableRow>[] = [
       }
       return a.version.localeCompare(b.version);
     },
-    render: ({ version, entityRef }: TableRow) => (
-      <Link
-        to={`/catalog/default/component/${entityRef.replace(/^component:default\//, '')}`}
-      >
+    render: ({ system, name, version }: TableRow) => (
+      <Link to={`/api-platform/library/${system}/${name}/${version}`}>
         <ComponentDisplayName text={`${version}`} type="library" />
       </Link>
     ),

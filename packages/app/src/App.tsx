@@ -65,6 +65,7 @@ import {
   SystemDefinitionPage,
   LibraryExplorerPage,
   LibraryDefinitionPage,
+  LibraryDefinitionServicesPage,
 } from '@internal/plugin-api-platform';
 import { CustomDocsReaderPage, TechDocsHome } from '@internal/plugin-techdocs';
 import {
@@ -255,6 +256,17 @@ const routes = (
           errorPage={<ErrorPage statusMessage="RBAC access denied" />}
         >
           <LibraryDefinitionPage />
+        </RequirePermission>
+      }
+    />
+    <Route
+      path="/api-platform/library/:system/:name/:version"
+      element={
+        <RequirePermission
+          permission={advancedUserPermission}
+          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
+        >
+          <LibraryDefinitionServicesPage />
         </RequirePermission>
       }
     />

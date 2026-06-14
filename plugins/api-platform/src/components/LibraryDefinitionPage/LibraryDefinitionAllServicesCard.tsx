@@ -69,6 +69,7 @@ const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
 
 const toRow = (
   libraryVersions: LibraryDefinition[],
+  libraryVersionIndex: Map<string, number>,
   serviceDefinition: ServiceDefinition,
   idx: number,
   libraryName: string,
@@ -87,7 +88,7 @@ const toRow = (
               const lib = libraryVersions.find(lv => dep.includes(lv.version));
               return {
                 version: lib?.version || dep.replace(regexp, '').trim(),
-                index: lib ? libraryVersions.indexOf(lib) : -1,
+                index: lib ? (libraryVersionIndex.get(lib.version) ?? -1) : -1,
               };
             }) || [];
 
@@ -114,11 +115,15 @@ const toRow = (
 interface LibraryServicesCardProps {
   system: string;
   name: string;
+  version?: string;
+  componentName?: string;
 }
 
-export const LibraryDefinitionServicesCard = ({
+export const LibraryDefinitionAllServicesCard = ({
   system,
   name,
+  version,
+  componentName,
 }: LibraryServicesCardProps) => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [selectedDependency, setSelectedDependency] =
@@ -140,15 +145,34 @@ export const LibraryDefinitionServicesCard = ({
     return result.items;
   }, [apiPlatformApi, name]);
 
+  const title = version
+    ? `Services depending on ${name} ${version}`
+    : 'All services';
+
   const rows = useMemo(() => {
     if (!libraryVersions) return [];
 
-    const hasLibraryDependency = (service: ServiceDefinition) =>
-      service.versions.some(version =>
-        Object.values(version.environments).some(env =>
-          env?.dependencies?.some((dep: string) => dep.includes(name)),
+    const libraryVersionIndex = new Map(
+      libraryVersions.map((libraryVersion, idx) => [
+        libraryVersion.version,
+        idx,
+      ]),
+    );
+
+    const serviceHasDependency = (
+      service: ServiceDefinition,
+      dependencyName: string,
+    ) =>
+      service.versions.some(v =>
+        Object.values(v.environments).some(env =>
+          env?.dependencies?.some((dep: string) =>
+            dep.includes(dependencyName),
+          ),
         ),
       );
+
+    const hasLibraryDependency = (service: ServiceDefinition) =>
+      serviceHasDependency(service, name);
 
     let filtered = allServices;
     if (selectedDependency === 'yes') {
@@ -157,10 +181,23 @@ export const LibraryDefinitionServicesCard = ({
       filtered = allServices.filter(s => !hasLibraryDependency(s));
     }
 
+    if (version && componentName) {
+      filtered = filtered.filter(service =>
+        serviceHasDependency(service, componentName),
+      );
+    }
+
     return filtered.map((service, idx) =>
-      toRow(libraryVersions, service, idx, name),
+      toRow(libraryVersions, libraryVersionIndex, service, idx, name),
     );
-  }, [allServices, name, selectedDependency, libraryVersions]);
+  }, [
+    allServices,
+    name,
+    selectedDependency,
+    libraryVersions,
+    version,
+    componentName,
+  ]);
 
   if (error || errorLibVersion) {
     return (
@@ -175,12 +212,14 @@ export const LibraryDefinitionServicesCard = ({
 
   return (
     <>
-      <Box mb="4">
-        <DependentsToggle
-          handleDependentChange={type => setSelectedDependency(type)}
-          selectedType={selectedDependency}
-        />
-      </Box>
+      {!version && (
+        <Box mb="4">
+          <DependentsToggle
+            handleDependentChange={type => setSelectedDependency(type)}
+            selectedType={selectedDependency}
+          />
+        </Box>
+      )}
       <Box>
         <Table<TableRow>
           isLoading={loading || loadingLibVersions}
@@ -193,7 +232,7 @@ export const LibraryDefinitionServicesCard = ({
             pageSize: 20,
             pageSizeOptions: [10, 20, 50],
           }}
-          title={<Flex align="center">Versions by services</Flex>}
+          title={<Flex align="center">{title}</Flex>}
           data={rows}
         />
       </Box>

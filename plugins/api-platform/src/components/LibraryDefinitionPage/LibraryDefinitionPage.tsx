@@ -9,7 +9,7 @@ import {
 } from '@backstage/core-components';
 import { useParams } from 'react-router-dom';
 import { LibraryDefinitionVersionsCard } from './LibraryDefinitionVersionsCard';
-import { LibraryDefinitionServicesCard } from './LibraryDefinitionServicesCard';
+import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
 import { useEffect, useState } from 'react';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
@@ -109,7 +109,7 @@ export const LibraryDefinitionPage = () => {
               <LibraryDefinitionVersionsCard system={system!} name={name!} />
             </TabbedLayout.Route>
             <TabbedLayout.Route path="/services" title="By services">
-              <LibraryDefinitionServicesCard system={system!} name={name!} />
+              <LibraryDefinitionAllServicesCard system={system!} name={name!} />
             </TabbedLayout.Route>
           </TabbedLayout>
         </Content>
