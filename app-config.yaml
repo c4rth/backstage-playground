@@ -30,9 +30,9 @@ appRegistry:
   version: v2
 
 healthProbes:
-  probesUrl: 
-    - &healthProbesPrdUrl http://localhost:8080/health-probes-prd
-    - &healthProbesNonPrdUrl http://localhost:8080/health-probes-nonprd
+  proxyEndpoints: 
+    - /health-probes-prd
+    - /health-probes-nonprd
 
 mcaComponents:
   serviceBaseUrl: &mcaComponentsServiceUrl http://localhost:8080
@@ -198,14 +198,14 @@ proxy:
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
     '/health-probes-prd':
-      target: *healthProbesPrdUrl
+      target: 'http://localhost:8080/health-probes-prd'
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
     '/health-probes-nonprd':
-      target: *healthProbesNonPrdUrl
+      target: 'http://localhost:8080/health-probes-nonprd'
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true

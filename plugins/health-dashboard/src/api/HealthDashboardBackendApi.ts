@@ -27,7 +27,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
   private readonly fetchApi: FetchApi;
   private readonly featureFlagsApi: FeatureFlagsApi;
   private readonly baseUrl: string;
-  private readonly probesUrl: string[];
+  private readonly proxyEndpoints: string[];
 
   constructor(options: {
     configApi: ConfigApi;
@@ -38,7 +38,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
     this.fetchApi = options.fetchApi;
     this.featureFlagsApi = options.featureFlagsApi;
     this.baseUrl = this.configApi.getString('backend.baseUrl');
-    this.probesUrl = this.configApi.getStringArray('healthProbes.probesUrl');
+    this.proxyEndpoints = this.configApi.getStringArray('healthProbes.proxyEndpoints');
   }
 
   private createHeaders(): Headers {
@@ -81,7 +81,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
           !endpointPath.toLowerCase().includes('nonprd');
         data = dummyCall(isPrdProbe);
       } else {
-        const url = new URL(`${this.baseUrl}${endpointPath}`);
+        const url = new URL(`${this.baseUrl}/api/proxy${endpointPath}`);
         const response = await this.fetchApi.fetch(url, {
           method: 'GET',
           headers: this.createHeaders(),
@@ -124,12 +124,12 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
   }
 
   async getHealthData(): Promise<HealthDataResponse> {
-    if (this.probesUrl.length === 0) {
+    if (this.proxyEndpoints.length === 0) {
       return {
         healthData: [],
         errors: [
           {
-            source: 'healthProbes.probesUrl',
+            source: 'healthProbes.proxyEndpoints',
             message: 'No probe endpoints configured',
           },
         ],
@@ -137,12 +137,12 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
     }
 
     const results = await Promise.allSettled(
-      this.probesUrl.map(endpointPath => this.fetchHealthData(endpointPath)),
+      this.proxyEndpoints.map(endpointPath => this.fetchHealthData(endpointPath)),
     );
 
     const errors: HealthDataResponse['errors'] = [];
     const healthDataByEndpoint = results.map((result, index) => {
-      const endpointPath = this.probesUrl[index];
+      const endpointPath = this.proxyEndpoints[index];
 
       if (result.status === 'fulfilled') {
         return result.value;

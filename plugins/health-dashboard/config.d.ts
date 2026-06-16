@@ -6,6 +6,6 @@ export interface Config {
     /**
      * @visibility frontend
      */
-    probesUrl: string[];
+    proxyEndpoints: string[];
   };
 }
