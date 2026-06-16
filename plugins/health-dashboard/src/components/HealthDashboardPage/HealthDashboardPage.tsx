@@ -5,9 +5,13 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { Box, Cell, ColumnConfig, useTable, Table } from '@backstage/ui';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGetHealthData } from '../../hooks';
-import { ApplicationHealthData, HealthData } from '../../types';
+import {
+  ApplicationHealthData,
+  HealthDataError,
+  HealthDataResponse,
+} from '../../types';
 import { HealthProbeCell } from './HealthProbeCell';
 import styles from './HealthDashboardPage.module.css';
 
@@ -30,9 +34,13 @@ const toTableRow = (
   healthData,
 });
 
-async function fetchData(getHealthData: () => Promise<HealthData | undefined>) {
-  const data = await getHealthData();
-  return data?.map(toTableRow) ?? [];
+async function fetchData(
+  getHealthData: () => Promise<HealthDataResponse | undefined>,
+  setErrors: (errors: HealthDataError[]) => void,
+) {
+  const response = await getHealthData();
+  setErrors(response?.errors ?? []);
+  return response?.healthData.map(toTableRow) ?? [];
 }
 
 const getEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
@@ -67,10 +75,11 @@ const columns: ColumnConfig<TableRow>[] = [
 export const HealthDashboardPage = () => {
   const getHealthData = useGetHealthData();
   const isFirstRender = useRef(true);
+  const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>([]);
 
   const { tableProps, reload } = useTable({
     mode: 'complete',
-    getData: () => fetchData(getHealthData),
+    getData: () => fetchData(getHealthData, setHealthDataErrors),
     paginationOptions: {
       type: 'none',
     },
@@ -93,24 +102,30 @@ export const HealthDashboardPage = () => {
       <Content className={styles.contentRoot}>
         <Box bg="neutral" className={styles.contentScrollArea}>
           <Box className={styles.tableContainer}>
+            {healthDataErrors.map((sourceError, index) => (
+              <Box mb="4" key={`${sourceError.source}-${index}`}>
+                <ResponseErrorPanel
+                  title={`Failed to get ${sourceError.source} health data`}
+                  error={new Error(sourceError.message)}
+                />
+              </Box>
+            ))}
             {tableProps.error && (
               <ResponseErrorPanel
-                title="Failed to get Health data"
+                title="Failed to render Health data"
                 error={tableProps.error}
               />
             )}
-            {!tableProps.error && tableProps.loading && <Progress />}
-            {!tableProps.error && !tableProps.loading && (
-              <Table
-                columnConfig={columns}
-                {...tableProps}
-                pagination={{
-                  type: 'none',
-                }}
-                emptyState={emptyState()}
-                className={styles.denseTable}
-              />
-            )}
+            {tableProps.isPending && <Progress />}
+            <Table
+              columnConfig={columns}
+              {...tableProps}
+              pagination={{
+                type: 'none',
+              }}
+              emptyState={emptyState()}
+              className={styles.denseTable}
+            />
           </Box>
         </Box>
       </Content>

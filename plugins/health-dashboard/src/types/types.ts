@@ -20,3 +20,15 @@ export type ApplicationHealthData = {
 };
 
 export type HealthData = ApplicationHealthData[];
+
+export type HealthDataSource = string;
+
+export type HealthDataError = {
+  source: HealthDataSource;
+  message: string;
+};
+
+export type HealthDataResponse = {
+  healthData: HealthData;
+  errors: HealthDataError[];
+};

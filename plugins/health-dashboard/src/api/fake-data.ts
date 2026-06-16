@@ -1,7 +1,6 @@
 import { EnvironmentHealthData } from '../types';
 
-export function dummyCall(): EnvironmentHealthData {
-  const data = `
+  const nonPrdData = `
 {
   "tst": {
     "AAAA": {
@@ -666,7 +665,11 @@ export function dummyCall(): EnvironmentHealthData {
         "errorMessage": "503 SERVICE_UNAVAILABLE"
       }
     }
-  },
+  }
+}
+  `;
+  const prdData = `
+{
   "prd": {
     "A7K2": {
       "defl": "A7K2",
@@ -775,5 +778,9 @@ export function dummyCall(): EnvironmentHealthData {
   }
 }
   `;
+
+
+export function dummyCall(prd: boolean): EnvironmentHealthData {
+  const data = prd ? prdData : nonPrdData;
   return JSON.parse(data) as EnvironmentHealthData;
 }
