@@ -25,14 +25,14 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.10",
-    "@backstage/core-plugin-api": "^1.12.6",
+    "@backstage/core-components": "^0.18.11",
+    "@backstage/core-plugin-api": "^1.12.7",
     "@backstage/errors": "^1.3.1",
-    "@backstage/integration-react": "^1.2.18",
-    "@backstage/plugin-catalog-react": "^3.0.0",
-    "@backstage/plugin-scaffolder": "^1.37.0",
-    "@backstage/plugin-scaffolder-react": "^2.0.0",
-    "@backstage/ui": "^0.15.0",
+    "@backstage/integration-react": "^1.2.19",
+    "@backstage/plugin-catalog-react": "^3.1.0",
+    "@backstage/plugin-scaffolder": "^1.38.0",
+    "@backstage/plugin-scaffolder-react": "^2.0.1",
+    "@backstage/ui": "^0.16.0",
     "@material-ui/core": "^4.12.2",
     "react-use": "^17.6.0"
   },

@@ -25,18 +25,18 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.9.0",
-    "@backstage/core-components": "^0.18.10",
-    "@backstage/core-plugin-api": "^1.12.6",
-    "@backstage/plugin-catalog-react": "^3.0.0",
-    "@backstage/plugin-techdocs": "^1.17.6",
-    "@backstage/ui": "^0.15.0",
+    "@backstage/core-components": "^0.18.11",
+    "@backstage/core-plugin-api": "^1.12.7",
+    "@backstage/plugin-catalog-react": "^3.1.0",
+    "@backstage/plugin-techdocs": "^1.17.7",
+    "@backstage/ui": "^0.16.0",
     "@internal/plugin-iframe": "workspace:^",
     "@internal/plugin-techdocs-addon-mermaid": "workspace:^",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "react-use": "^17.6.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.2",
+    "@backstage/cli": "^0.36.3",
     "@types/react": "^18.0.0",
     "react": "^18.0.2"
   },
