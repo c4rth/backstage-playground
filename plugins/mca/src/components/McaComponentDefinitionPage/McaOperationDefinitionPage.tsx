@@ -4,9 +4,11 @@ import { memo, useMemo } from 'react';
 import { McaComponentFieldsCard } from './McaComponentFieldsCard';
 import { McaComponentMethodsCard } from './McaComponentMethodsCard';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { McaComponentSnippet } from '../McaComponentSnippet';
 
 export interface McaOperationDefinitionPageProps {
-  mcaComponent: any;
+  parsedDefinition: any;
+  rawXml: string;
 }
 
 type OperationType = 'atomic' | 'list' | undefined;
@@ -15,26 +17,19 @@ type NodesType = {
   operationAnalyze: any;
   operation: any;
   operationType: OperationType;
-  urlLocations: UrlLocations;
 };
 
-function getOperationNodes(mcaComponent: any): NodesType {
-  const { OPERATION: root } = mcaComponent;
+function getOperationNodes(parsedDefinition: any): NodesType {
+  const { OPERATION: root } = parsedDefinition;
   const operationAnalyze = root.SPECIFICATION.OperationAnalyse;
   const { type } = operationAnalyze;
   const { JAVA: java } = root;
-  const configApi = useApi(configApiRef);
-  const urlLocations = {
-    oldDns: configApi.getString('mcaComponents.urlLocations.oldDns'),
-    newDns: configApi.getString('mcaComponents.urlLocations.newDns'),
-  };
 
   if (!java) {
     return {
       operationAnalyze,
       operation: undefined,
       operationType: undefined,
-      urlLocations,
     };
   }
 
@@ -52,14 +47,23 @@ function getOperationNodes(mcaComponent: any): NodesType {
     operation = undefined;
   }
 
-  return { operationAnalyze, operation, operationType, urlLocations };
+  return { operationAnalyze, operation, operationType };
 }
 
 export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
-  ({ mcaComponent }) => {
-    const { operationAnalyze, operation, urlLocations, error } = useMemo(() => {
+  ({ parsedDefinition, rawXml }) => {
+    const configApi = useApi(configApiRef);
+    const urlLocations = useMemo<UrlLocations>(
+      () => ({
+        oldDns: configApi.getString('mcaComponents.urlLocations.oldDns'),
+        newDns: configApi.getString('mcaComponents.urlLocations.newDns'),
+      }),
+      [configApi],
+    );
+
+    const { operationAnalyze, operation, error } = useMemo(() => {
       try {
-        const nodes = getOperationNodes(mcaComponent);
+        const nodes = getOperationNodes(parsedDefinition);
 
         if (!nodes.operationAnalyze) {
           return {
@@ -92,11 +96,10 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
           operationAnalyze: null,
           operation: null,
           operationType: undefined,
-          urlLocations: null,
           error: e instanceof Error ? e : new Error(String(e)),
         };
       }
-    }, [mcaComponent]);
+    }, [parsedDefinition]);
 
     if (error) {
       return <ResponseErrorPanel error={error} />;
@@ -119,6 +122,12 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
         </TabbedLayout.Route>
         <TabbedLayout.Route path="/methods" title="Methods">
           <McaComponentMethodsCard data={operation} componentType="operation" />
+        </TabbedLayout.Route>
+        <TabbedLayout.Route path="/raw" title="Raw">
+          <McaComponentSnippet
+            filename={`${operationAnalyze.id}.osml`}
+            data={rawXml}
+          />
         </TabbedLayout.Route>
       </TabbedLayout>
     );

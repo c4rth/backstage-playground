@@ -6007,8 +6007,10 @@ __metadata:
     "@material-table/core": "npm:3.2.5"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
+    "@types/react-syntax-highlighter": "npm:^15.0.0"
     fast-xml-parser: "npm:^5.8.0"
     react: "npm:^18.0.2"
+    react-syntax-highlighter: "npm:^15.4.5"
     react-use: "npm:^17.6.0"
   peerDependencies:
     "@types/react": ^17.0.0 || ^18.0.0
@@ -12523,6 +12525,15 @@ __metadata:
   dependencies:
     "@types/react": "npm:*"
   checksum: 10/e79755fb1ed504d36ca0b6aec4e7ef54eba30448a27c275ef56b55132c37761c11d693f885e248e2e8ba80f294bf9475e7d0e15ce5f5bb2a2219f07f18488409
+  languageName: node
+  linkType: hard
+
+"@types/react-syntax-highlighter@npm:^15.0.0":
+  version: 15.5.13
+  resolution: "@types/react-syntax-highlighter@npm:15.5.13"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10/0cc47785326aea5effac9ee68c263abc6448c63b6a084eec3084fd13c08da93addfdc3102ff919cbe420aa71fbded9bf041cc2c51fe625c6ee0751e8a131bd38
   languageName: node
   linkType: hard
 

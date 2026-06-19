@@ -1,20 +1,7 @@
 import { mcaComponentsBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
-
-const xmlParser = new XMLParser({
-  ignoreAttributes: false,
-  attributeNamePrefix: '',
-  allowBooleanAttributes: true,
-  trimValues: true,
-  transformTagName: tagName => {
-    if (tagName === 'constructor') {
-      return '_constructor';
-    }
-    return tagName;
-  },
-});
+import { XMLValidator } from 'fast-xml-parser';
 
 export function useGetMcaComponentDefinition(component: string, refP: string) {
   const api = useApi(mcaComponentsBackendApiRef);
@@ -32,11 +19,11 @@ export function useGetMcaComponentDefinition(component: string, refP: string) {
       );
     }
 
-    return xmlParser.parse(result);
+    return result;
   }, [api, component, refP]);
 
   return {
-    data: value,
+    rawXml: value,
     loading: loading || (!value && !error),
     error,
   };

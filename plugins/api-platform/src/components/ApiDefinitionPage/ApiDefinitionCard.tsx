@@ -1,11 +1,10 @@
 import {
-  CodeSnippet,
   InfoCard,
   TabbedLayout,
   Link,
+  CodeSnippet,
 } from '@backstage/core-components';
 import { ApiEntity } from '@backstage/catalog-model';
-import { PlainApiDefinitionWidget } from '@backstage/plugin-api-docs';
 import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import {
@@ -69,7 +68,7 @@ export const ApiDefinitionCard = () => {
         <OpenApiDefinitionWidget definition={definition} />
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/raw" title="Raw">
-        <PlainApiDefinitionWidget definition={definition} language="yaml" />
+          <CodeSnippet text={definition} language="yaml" showCopyCodeButton/>
       </TabbedLayout.Route>
       {isLinterAvailable && !isMcaApi && (
         <TabbedLayout.Route path="/linter" title="Linter">

@@ -3,13 +3,15 @@ import { McaElementAboutCard } from '../McaComponentAboutCard';
 import { McaComponentFieldsCard } from './McaComponentFieldsCard';
 import { McaComponentMethodsCard } from './McaComponentMethodsCard';
 import { memo, useMemo } from 'react';
+import { McaComponentSnippet } from '../McaComponentSnippet';
 
 export interface McaElementDefinitionPageProps {
-  mcaComponent: any;
+  parsedDefinition: any;
+  rawXml: string;
 }
 
-function getElement(mcaComponent: any) {
-  const element = mcaComponent?.element;
+function getElement(parsedDefinition: any) {
+  const element = parsedDefinition?.element;
   if (!element) {
     throw new Error('Invalid element definition: required node not found');
   }
@@ -17,17 +19,17 @@ function getElement(mcaComponent: any) {
 }
 
 export const McaElementDefinitionPage = memo<McaElementDefinitionPageProps>(
-  ({ mcaComponent }) => {
+  ({ parsedDefinition, rawXml }) => {
     const { element, error } = useMemo(() => {
       try {
-        return { element: getElement(mcaComponent), error: null };
+        return { element: getElement(parsedDefinition), error: null };
       } catch (e) {
         return {
           element: null,
           error: e instanceof Error ? e : new Error(String(e)),
         };
       }
-    }, [mcaComponent]);
+    }, [parsedDefinition]);
 
     if (error) {
       return <ResponseErrorPanel error={error} />;
@@ -43,6 +45,9 @@ export const McaElementDefinitionPage = memo<McaElementDefinitionPageProps>(
         </TabbedLayout.Route>
         <TabbedLayout.Route path="/methods" title="Methods">
           <McaComponentMethodsCard data={element} componentType="element" />
+        </TabbedLayout.Route>
+        <TabbedLayout.Route path="/raw" title="Raw">
+          <McaComponentSnippet filename={`${element.name}.esml`} data={rawXml} />
         </TabbedLayout.Route>
       </TabbedLayout>
     );
