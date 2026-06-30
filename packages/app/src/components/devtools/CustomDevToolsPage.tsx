@@ -7,6 +7,7 @@ import {
 import { DevToolsLayout } from '@backstage/plugin-devtools';
 import { UnprocessedEntitiesContent } from '@backstage/plugin-catalog-unprocessed-entities';
 import { AnalyticsContent } from '@internal/plugin-analytics';
+import { CatalogAdminPage } from '@internal/plugin-catalog-admin';
 
 export const DevToolsPage = () => {
   return (
@@ -34,6 +35,9 @@ export const DevToolsPage = () => {
       </DevToolsLayout.Route>
       <DevToolsLayout.Route path="analytics" title="Analytics">
         <AnalyticsContent />
+      </DevToolsLayout.Route>
+      <DevToolsLayout.Route path="catalog" title="Catalog">
+        <CatalogAdminPage />
       </DevToolsLayout.Route>
     </DevToolsLayout>
   );

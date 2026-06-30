@@ -3,7 +3,8 @@ $headers = @{
     "Content-Type"  = "application/json"
 }
 
-$baseUrl = "https://github.com/c4rth/playground-openapi/blob/main/"
+#$baseUrl = "https://github.com/c4rth/playground-openapi/blob/main/"
+$baseUrl = "https://raw.githubusercontent.com/c4rth/playground-openapi/refs/heads/main/"
 $suffix = "/catalog-info.yaml"
 
 $entries = @(
@@ -34,7 +35,7 @@ $entries = @(
     @{ kind = "System"; target = "system/system-a" },
     @{ kind = "System"; target = "system/system-b" },
     @{ kind = "System"; target = "system/system-c" },
-    @{ kind = "System"; target = "system/system-d" };
+    @{ kind = "System"; target = "system/system-d" },
     # Service
     @{ kind = "Component"; target = "service/istio-system/1/TST" },
     @{ kind = "Component"; target = "service/service-dummy/1/TST" },
@@ -48,20 +49,26 @@ $entries = @(
     @{ kind = "Component"; target = "service/service-product/2/TST" },
     @{ kind = "Component"; target = "service/service-product/2/GTU" },
     @{ kind = "Component"; target = "service/service-product/2/UAT" },
+    # Library
+    @{ kind = "Component"; target = "library/lib-core/1.0.0" },
+    @{ kind = "Component"; target = "library/lib-core/2.0.0" },
+    @{ kind = "Component"; target = "library/pipelines/2" },
+    @{ kind = "Component"; target = "library/pipelines/3" },
     # TechDocs
-    @{ kind = "Component"; target = "https://github.com/c4rth/playground-techdocs/blob/main/sample001" }
+    @{ kind = "Component"; target = "https://raw.githubusercontent.com/c4rth/playground-techdocs/refs/heads/main/sample001" }
 )
 
 $backstageUrl = "http://localhost:7007" # local
 #$backstageUrl = "http://localhost" # k8s
 
 foreach ($entry in $entries) {
+    $workbaseUrl = $baseUrl
     if ($entry.target.StartsWith("http")) {
-        $baseUrl = ""
+        $workbaseUrl = ""
     }
     $body = @{
         kind = $entry.kind
-        target = "$($baseUrl)$($entry.target)$($suffix)"
+        target = "$($workbaseUrl)$($entry.target)$($suffix)"
     } | ConvertTo-Json -Depth 3
 
     try {
