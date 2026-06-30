@@ -7,8 +7,8 @@
     "role": "frontend"
   },
   "dependencies": {
-    "@backstage-community/plugin-entity-validation": "^0.20.0",
-    "@backstage-community/plugin-shortcuts": "^0.21.0",
+    "@backstage-community/plugin-entity-validation": "^0.21.0",
+    "@backstage-community/plugin-shortcuts": "^0.22.0",
     "@backstage-community/plugin-sonarqube": "^1.1.0",
     "@backstage-community/plugin-sonarqube-react": "^1.1.0",
     "@backstage/app-defaults": "^1.7.9",
@@ -45,6 +45,7 @@
     "@internal/plugin-api-platform": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
     "@internal/plugin-azure-devops": "workspace:^",
+    "@internal/plugin-catalog-admin": "workspace:^",
     "@internal/plugin-health-dashboard": "workspace:^",
     "@internal/plugin-mca": "workspace:^",
     "@internal/plugin-permissions-common": "workspace:^",
