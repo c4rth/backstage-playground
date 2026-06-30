@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { DefaultEditor } from '../DefaultEditor';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import ReactJson from 'react-json-view';
 import { Box } from '@backstage/ui';
 
@@ -12,7 +13,7 @@ const exampleJwt =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
 
 export const JwtDecoder = () => {
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [jwt, setJwt] = useState<any | undefined>(undefined);
@@ -25,14 +26,14 @@ export const JwtDecoder = () => {
     (attribute: string) => {
       const errorMessage = `Couldn't encode JWT token: missing attribute ${attribute}`;
       setOutput(errorMessage);
-      alertApi.post({
-        message: errorMessage,
-        severity: 'error',
-        display: 'transient',
+      toastApi.post({
+        title: errorMessage,
+        status: 'warning',
+        timeout: 2000,
       });
       return false;
     },
-    [alertApi],
+    [toastApi],
   );
 
   const keyExists = useCallback(

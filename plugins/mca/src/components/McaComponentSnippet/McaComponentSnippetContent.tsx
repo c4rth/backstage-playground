@@ -4,8 +4,9 @@ import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
 import { Box, ButtonIcon, Flex } from '@backstage/ui';
 import { RiFileCopy2Line, RiFileDownloadFill } from '@remixicon/react';
 import { MouseEventHandler, useEffect } from 'react';
-import { alertApiRef, errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 export interface McaComponentSnippetProps {
     filename: string,
@@ -14,7 +15,7 @@ export interface McaComponentSnippetProps {
 
 export function McaComponentSnippet(props: McaComponentSnippetProps) {
     const { filename, data } = props;
-    const alertApi = useApi(alertApiRef);
+    const toastApi = useApi(toastApiRef);
     const errorApi = useApi(errorApiRef);
     const [{ error }, copyToClipboard] = useCopyToClipboard();
 
@@ -27,7 +28,7 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
     const handleCopyClick: MouseEventHandler = e => {
         e.stopPropagation();
         copyToClipboard(data);
-        alertApi.post({ message: 'Copied to clipboard!', severity: 'success' });
+        toastApi.post({ title: 'Copied to clipboard!', status: 'success', timeout: 2000 });
     };
 
     const handleDownloadClick: MouseEventHandler = e => {

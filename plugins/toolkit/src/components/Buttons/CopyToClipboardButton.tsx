@@ -1,6 +1,7 @@
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { RiClipboardLine } from '@remixicon/react';
 import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 type Props = {
   output: string | number;
@@ -8,18 +9,18 @@ type Props = {
 };
 
 export const CopyToClipboardButton = (props: Props) => {
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
 
   const copyToClipboard = () => {
     navigator.clipboard
       .writeText(props.output.toString())
       .then(() => {
-        alertApi.post({ message: 'Copied to clipboard!', severity: 'success' });
+        toastApi.post({ title: 'Copied to clipboard!', status: 'success' });
       })
       .catch(() => {
-        alertApi.post({
-          message: 'Failed to copy to clipboard!',
-          severity: 'error',
+        toastApi.post({
+          title: 'Failed to copy to clipboard!',
+          status: 'warning',
         });
       });
   };
