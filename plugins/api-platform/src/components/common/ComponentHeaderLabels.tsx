@@ -1,6 +1,6 @@
 import { HeaderLabel, Link } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
-import { ComponentDisplayName } from './ComponentDisplayName';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 export type EntityLabelsProps = {
   entity: Entity;

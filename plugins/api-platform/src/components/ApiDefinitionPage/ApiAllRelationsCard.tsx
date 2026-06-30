@@ -29,7 +29,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { useGetApiVersions } from '../../hooks';
 import semver from 'semver';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {

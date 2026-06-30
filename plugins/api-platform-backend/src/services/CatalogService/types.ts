@@ -1,5 +1,10 @@
 import { Entity } from '@backstage/catalog-model';
 
+export type UnregisterResponse = {
+  message: string;
+  returnCode: number;
+};
+
 export interface ApiPlatformCatalogService {
   registerCatalogInfo(request: {
     target: string;
@@ -9,5 +14,8 @@ export interface ApiPlatformCatalogService {
     name: string;
     kind: string;
   }): Promise<Entity | undefined>;
-  unregisterCatalogInfo(entity: Entity): Promise<String>;
+  unregisterCatalogInfo(request: {
+    name: string;
+    kind: string;
+  }): Promise<UnregisterResponse>;
 }

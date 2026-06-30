@@ -12,7 +12,7 @@ import {
   DependentsType,
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
-import { apiPlatformBackendApiRef } from '../../api';
+import { apiPlatformBackendApiRef } from '../../plugin';
 import { fetchAllServices } from './fetchServicesByLibrary';
 import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';

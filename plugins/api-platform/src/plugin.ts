@@ -1,18 +1,24 @@
 import {
   createApiFactory,
+  createApiRef,
   createComponentExtension,
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-import { apiPlatformBackendApiRef, ApiPlatformBackendClient } from './api';
+import { ApiPlatformBackendClient } from './api';
 import { apiPlatformRouteRef } from './routes';
 import {
   createSearchResultListItemExtension,
   SearchResultListItemExtensionProps,
 } from '@backstage/plugin-search-react';
 import { ApiSearchResultListItemProps } from './components/ApiSearchResultListItem';
+import { ApiPlatformBackendApi } from './api/ApiPlatformBackendApi';
+
+export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
+  id: 'plugin.api-platform.service',
+});
 
 export const apiPlatformPlugin = createPlugin({
   id: 'api-platform',

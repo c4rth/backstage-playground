@@ -143,22 +143,15 @@ export async function createRouter(
   });
 
   router.delete('/catalog/:kind/:name', async (req, res) => {
-    const entity = await catalogService.getEntityByName({
+    const response = await catalogService.unregisterCatalogInfo({
       name: req.params.name,
       kind: req.params.kind,
     });
-    if (entity) {
-      try {
-        res
-          .status(204)
-          .json(await catalogService.unregisterCatalogInfo(entity));
-      } catch (error) {
-        res.status(500).json({ error: error });
-      }
-    } else {
-      res.status(404).json();
-    }
-  });
+    res
+      .status(response.returnCode)
+      .json({ message: response.message });
+  }
+  );
 
   // Endpoints: /services
 

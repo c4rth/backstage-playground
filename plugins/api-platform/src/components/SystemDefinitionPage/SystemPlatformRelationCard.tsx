@@ -1,6 +1,6 @@
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import { Flex } from '@backstage/ui';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number;

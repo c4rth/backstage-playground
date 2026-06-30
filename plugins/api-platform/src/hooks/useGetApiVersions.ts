@@ -1,4 +1,4 @@
-import { apiPlatformBackendApiRef } from '../api';
+import { apiPlatformBackendApiRef } from '../plugin';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 

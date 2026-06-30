@@ -5,7 +5,7 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { Box, Flex } from '@backstage/ui';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { useGetLibraryVersions } from '../..';

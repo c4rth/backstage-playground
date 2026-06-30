@@ -7,9 +7,9 @@ import {
 import {
   ComponentChip,
   DependentsToggle,
-  ComponentDisplayName,
   ComponentOwnership,
 } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import {
   OwnershipType,
   ServiceDefinition,
@@ -21,8 +21,8 @@ import { useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import {
   ApiPlatformBackendApi,
-  apiPlatformBackendApiRef,
-} from '../../api/ApiPlatformBackendApi';
+} from '../../api';
+import { apiPlatformBackendApiRef } from '../../plugin';
 import { Box, Flex, Text } from '@backstage/ui';
 import { Query } from '@material-table/core';
 

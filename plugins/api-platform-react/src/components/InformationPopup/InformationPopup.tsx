@@ -17,6 +17,31 @@ export interface InformationPopupProps {
   content: ReactNode;
 }
 
+export const IconInformationPopup = (props: InformationPopupProps) => {
+  const { title, content } = props;
+
+  return (
+    <DialogTrigger>
+        <ButtonIcon
+          variant="tertiary"
+          size="medium"
+          style={{ width: 'auto', background: 'transparent' }}
+          icon={
+            <RiInformationLine
+              aria-label="More information"
+            />
+          }
+        />
+        <Popover placement="bottom" style={{ maxWidth: '50em' }}>
+          <Text variant="title-x-small">
+            <b>{title}</b>
+          </Text>
+          {content}
+        </Popover>
+      </DialogTrigger>
+  );
+}
+
 export const InformationPopup = (props: InformationPopupProps) => {
   const { text, title, variant = 'body-medium', content } = props;
 

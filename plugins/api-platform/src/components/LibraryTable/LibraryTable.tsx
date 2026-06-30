@@ -15,12 +15,13 @@ import {
   useTable,
 } from '@backstage/ui';
 import { useCallback, useState } from 'react';
-import { ComponentDisplayName, ComponentOwnership } from '../common';
+import { ComponentOwnership } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
 import {
   ApiPlatformBackendApi,
-  apiPlatformBackendApiRef,
-} from '../../api/ApiPlatformBackendApi';
+} from '../../api';
+import { apiPlatformBackendApiRef } from '../../plugin';
 import {
   OwnershipType,
   ANNOTATION_LIBRARY_NAME,

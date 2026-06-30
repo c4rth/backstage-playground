@@ -1,4 +1,4 @@
 export {
   ApiPlatformBackendClient,
-  apiPlatformBackendApiRef,
 } from './ApiPlatformBackendApi';
+export type { ApiPlatformBackendApi } from './ApiPlatformBackendApi';

@@ -1,5 +1,4 @@
 import {
-  createApiRef,
   DiscoveryApi,
   FetchApi,
 } from '@backstage/core-plugin-api';
@@ -20,10 +19,6 @@ import {
   OpenApiType,
   DependentsType,
 } from '@internal/plugin-api-platform-common';
-
-export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>({
-  id: 'plugin.api-platform.service',
-});
 
 export interface ApiPlatformBackendApi {
   listApis(
@@ -65,6 +60,11 @@ export interface ApiPlatformBackendApi {
     libraryName: string,
     servicesCount: boolean,
   ): Promise<LibraryDefinition[]>;
+
+  unregisterEntity(
+    kind: string,
+    name: string,
+  ): Promise<void>;
 }
 
 export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
@@ -294,5 +294,22 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     const path = `/libraries/definitions/${encodeURIComponent(system)}/${encodeURIComponent(libraryName)}?servicesCount=${servicesCount}`;
     const versions = await this.fetchJson<LibraryDefinition[]>(path);
     return Array.isArray(versions) ? versions : [];
+  }
+
+  // Catalog Entity Unregister
+
+  async unregisterEntity(
+    kind: string,
+    name: string,
+  ): Promise<void> {
+    const encodedKind = encodeURIComponent(kind);
+    const encodedName = encodeURIComponent(name);
+    const baseUrl = await this.getBaseUrl();
+    const url = new URL(`${baseUrl}/catalog/${encodedKind}/${encodedName}`);
+
+    const response = await this.fetchApi.fetch(url, { method: 'DELETE' });
+    if (!response.ok) {
+      throw new Error(`Failed to unregister entity: HTTP ${response.status} - ${response.statusText}`);
+    }
   }
 }

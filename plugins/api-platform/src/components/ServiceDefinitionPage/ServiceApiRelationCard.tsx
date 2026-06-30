@@ -21,7 +21,7 @@ import {
   CATALOG_METADATA_API_VERSION,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number;

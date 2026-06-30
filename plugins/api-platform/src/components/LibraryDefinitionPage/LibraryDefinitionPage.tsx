@@ -17,7 +17,7 @@ import {
   AsyncEntityProvider,
   catalogApiRef,
 } from '@backstage/plugin-catalog-react';
-import { apiPlatformBackendApiRef } from '../../api';
+import { apiPlatformBackendApiRef } from '../../plugin';
 import { ComponentHeaderLabels } from '../common';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { generateReport } from './generateReport';

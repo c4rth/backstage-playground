@@ -22,7 +22,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiAllRelationsCard } from './ApiAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { Box, Grid } from '@backstage/ui';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 export const ApiDefinitionCard = () => {
   const { entity } = useEntity<ApiEntity>();

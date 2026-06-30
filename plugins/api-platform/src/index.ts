@@ -1,5 +1,6 @@
 export {
   apiPlatformPlugin,
+  apiPlatformBackendApiRef,
   ApiExplorerPage,
   ApiDefinitionPage,
   ApiRedirectToNoSystem,
@@ -12,5 +13,6 @@ export {
   LibraryDefinitionPage,
   LibraryDefinitionServicesPage,
 } from './plugin';
+export type { ApiPlatformBackendApi } from './api/ApiPlatformBackendApi';
 
 export * from './hooks';

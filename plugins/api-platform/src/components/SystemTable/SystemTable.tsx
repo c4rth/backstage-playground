@@ -8,12 +8,13 @@ import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Box, Flex, Text } from '@backstage/ui';
 import { useState } from 'react';
-import { ComponentDisplayName, ComponentOwnership } from '../common';
+import { ComponentOwnership } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
 import {
   ApiPlatformBackendApi,
-  apiPlatformBackendApiRef,
 } from '../../api/ApiPlatformBackendApi';
+import { apiPlatformBackendApiRef } from '../../plugin';
 import { Query } from '@material-table/core';
 import {
   SystemDefinitionsListRequest,

@@ -15,11 +15,12 @@ import {
   OwnershipType,
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
-import { apiPlatformBackendApiRef } from '../../api';
+import { apiPlatformBackendApiRef } from '../../plugin';
 import { useState } from 'react';
 import { Query, MTableAction } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
-import { ComponentDisplayName, ComponentOwnership } from '../common';
+import { ComponentOwnership } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { Box, Flex, Select } from '@backstage/ui';
 
 type TableRow = {

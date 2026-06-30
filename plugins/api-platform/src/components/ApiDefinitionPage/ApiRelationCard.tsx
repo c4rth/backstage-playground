@@ -25,7 +25,7 @@ import {
   CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
-import { ComponentDisplayName } from '../common';
+import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { Flex } from '@backstage/ui';
 
 type TableRow = {
