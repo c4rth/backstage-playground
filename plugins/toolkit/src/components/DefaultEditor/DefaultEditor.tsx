@@ -51,6 +51,7 @@ export const DefaultEditor = (props: Props) => {
           direction="row"
           style={{
             alignItems: 'center',
+            marginLeft: '8px',
             marginRight: '24px',
             flexWrap: 'wrap',
           }}

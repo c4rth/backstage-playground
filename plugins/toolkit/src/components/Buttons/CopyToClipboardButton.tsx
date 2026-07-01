@@ -28,7 +28,7 @@ export const CopyToClipboardButton = (props: Props) => {
   return (
     <TooltipTrigger>
       <Button
-        size="medium"
+        size="small"
         iconStart={<RiClipboardLine />}
         onClick={copyToClipboard}
         variant="tertiary"

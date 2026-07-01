@@ -17,7 +17,7 @@ export const PasteFromClipboardButton = (props: Props) => {
   return (
     <TooltipTrigger>
       <Button
-        size="medium"
+        size="small"
         iconStart={<RiClipboardFill />}
         onClick={pasteFromClipboard}
         variant="tertiary"

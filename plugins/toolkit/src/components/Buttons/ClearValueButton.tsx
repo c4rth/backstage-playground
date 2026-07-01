@@ -11,7 +11,7 @@ export const ClearValueButton = (props: Props) => {
   return (
     <TooltipTrigger>
       <Button
-        size="medium"
+        size="small"
         iconStart={<RiCloseCircleLine />}
         onClick={() => props.setValue(props.defaultValue || '')}
         variant="tertiary"

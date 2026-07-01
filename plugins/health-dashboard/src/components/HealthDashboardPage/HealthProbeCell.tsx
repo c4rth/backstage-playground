@@ -42,12 +42,12 @@ const StatusTable = memo(
 );
 
 const STATUS_COLORS: Record<number, string> = {
-  200: 'green',
-  202: 'blue',
-  404: 'gray',
+  200: '#4caf50',
+  202: '#2196f3',
+  404: '#9e9e9e',
 };
 const getBulletColor = (status: number): string =>
-  STATUS_COLORS[status] ?? 'red';
+  STATUS_COLORS[status] ?? '#f44336';
 
 const getHealthUrl = (probeUrl: string | undefined): string => {
   if (!probeUrl) {

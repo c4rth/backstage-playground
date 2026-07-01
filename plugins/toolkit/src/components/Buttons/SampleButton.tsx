@@ -10,7 +10,7 @@ export const SampleButton = (props: Props) => {
   return (
     <TooltipTrigger>
       <Button
-        size="medium"
+        size="small"
         iconStart={<RiEditBoxLine />}
         onClick={() => props.setInput(props.sample)}
         variant="tertiary"
