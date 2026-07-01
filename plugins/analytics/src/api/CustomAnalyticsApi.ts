@@ -34,8 +34,8 @@ export class CustomAnalyticsApi implements CustomAnalytics {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
   private readonly identityApi: IdentityApi;
-  private baseUrlCache: string | null = null;
-  private baseUrlPromise: Promise<string> | null = null;
+  private eventUrlCache: URL | null = null;
+  private eventUrlPromise: Promise<URL> | null = null;
   private userHashCache: string | null = sessionStorage.getItem(ANALYTICS_KEY);
   private userHashPromise: Promise<string> | null = null;
 
@@ -49,18 +49,22 @@ export class CustomAnalyticsApi implements CustomAnalytics {
     this.identityApi = options.identityApi;
   }
 
-  private async getAnalyticsBaseUrl(): Promise<string> {
-    if (this.baseUrlCache) {
-      return this.baseUrlCache;
+  private async getEventUrl(): Promise<URL> {
+    if (this.eventUrlCache) {
+      return this.eventUrlCache;
     }
-    if (this.baseUrlPromise) {
-      return this.baseUrlPromise;
+    if (this.eventUrlPromise) {
+      return this.eventUrlPromise;
     }
-    this.baseUrlPromise = this.discoveryApi.getBaseUrl('analytics');
-    this.baseUrlCache = await this.baseUrlPromise;
-    this.baseUrlPromise = null;
 
-    return this.baseUrlCache;
+    this.eventUrlPromise = (async () => {
+      const baseUrl = await this.discoveryApi.getBaseUrl('analytics');
+      this.eventUrlCache = new URL(`${baseUrl}/event`);
+      this.eventUrlPromise = null;
+      return this.eventUrlCache;
+    })();
+
+    return this.eventUrlPromise;
   }
 
   static create(options: {
@@ -121,10 +125,8 @@ export class CustomAnalyticsApi implements CustomAnalytics {
       return;
     }
 
-    const baseUrl = await this.getAnalyticsBaseUrl();
-    const url = new URL(`${baseUrl}/event`);
-
     try {
+      const url = await this.getEventUrl();
       const userHash = await this.getUserHash();
       const enrichedEvent = {
         ...event,
@@ -138,7 +140,7 @@ export class CustomAnalyticsApi implements CustomAnalytics {
         body: JSON.stringify(enrichedEvent),
       });
     } catch (error) {
-      // ignore errors, as analytics should not impact user experience
+      console.error('Failed to capture analytics event', error);
     }
   }
 }

@@ -153,20 +153,6 @@ const getData = async (
 
 const columns: ColumnConfig<TableRow>[] = [
     {
-        id: 'id',
-        label: 'ID',
-        width: '5%',
-        isRowHeader: true,
-        isSortable: true,
-        cell: ({ id }: TableRow) => (
-            <Cell>
-                <Text weight="bold" >
-                    {id}
-                </Text>
-            </Cell>
-        ),
-    },
-    {
         id: 'name',
         label: 'Name',
         width: '25%',

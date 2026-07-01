@@ -51,42 +51,40 @@ export const CatalogAdminPage = () => {
   }, [catalogApi]);
 
   return (
-    <>
-      <FullPage>
-        <Container>
-          <Grid.Root columns="2" gap="4" mb="4">
-            <Grid.Item>
-              <Select
-                onChange={selected => {
-                  setSystem(selected ? selected.toString() : null);
-                }}
-                search
-                label="System"
-                options={systemOptions}
-                value={system ?? ''}
-              />
-            </Grid.Item>
-            <Grid.Item>
-              <Select
-                onChange={selected => {
-                  setKind(selected!.toString());
-                }}
-                label="Kind"
-                options={kindOptions}
-                value={kind.toString()}
-              />
-            </Grid.Item>
-          </Grid.Root>
-          {!system && (
-            <p>
-              Please select a system to view the entities associated with it.
-            </p>
-          )}
-          {system && system !== '' && (
-            <EntityTable kind={kind} system={system} />
-          )}
-        </Container>
-      </FullPage>
-    </>
+    <FullPage>
+      <Container>
+        <Grid.Root columns="2" gap="4" mb="4">
+          <Grid.Item>
+            <Select
+              onChange={selected => {
+                setSystem(selected ? selected.toString() : null);
+              }}
+              search
+              label="System"
+              options={systemOptions}
+              value={system ?? ''}
+            />
+          </Grid.Item>
+          <Grid.Item>
+            <Select
+              onChange={selected => {
+                setKind(selected!.toString());
+              }}
+              label="Kind"
+              options={kindOptions}
+              value={kind.toString()}
+            />
+          </Grid.Item>
+        </Grid.Root>
+        {!system && (
+          <p>
+            Please select a system to view the entities associated with it.
+          </p>
+        )}
+        {system && system !== '' && (
+          <EntityTable kind={kind} system={system} />
+        )}
+      </Container>
+    </FullPage>
   );
 };
