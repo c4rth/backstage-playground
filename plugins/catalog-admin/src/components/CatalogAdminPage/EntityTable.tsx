@@ -1,4 +1,4 @@
-import { Entity } from '@backstage/catalog-model';
+import { ANNOTATION_LOCATION, Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { useState, useEffect, useRef } from 'react';
@@ -40,6 +40,7 @@ type TableRow = {
     system: string;
     version: string;
     entityName: string;
+    location: string;
 };
 
 function getFilter(kind: string, system: string): EntityFilterQuery {
@@ -60,6 +61,12 @@ function getFilter(kind: string, system: string): EntityFilterQuery {
             'spec.type': ['service'],
             'spec.system': system,
         };
+    } else if (kind === 'techdocs') {
+        return {
+            kind: ['Component'],
+            'spec.type': ['documentation'],
+            'spec.system': system,
+        };
     } else {
         throw new Error(`Unsupported kind: ${kind}`);
     }
@@ -73,6 +80,7 @@ function mapEntityToTableRow(kind: string, idx: number, entity: Entity): TableRo
             system: entity.spec?.system?.toString() ?? '-',
             version: entity.metadata?.annotations?.[ANNOTATION_API_VERSION]?.toString() ?? '-',
             entityName: entity.metadata.name,
+            location: entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',
         };
     } else if (kind === 'library') {
         return {
@@ -81,6 +89,7 @@ function mapEntityToTableRow(kind: string, idx: number, entity: Entity): TableRo
             system: entity.spec?.system?.toString() ?? '-',
             version: entity.metadata?.annotations?.[ANNOTATION_LIBRARY_VERSION]?.toString() ?? '-',
             entityName: entity.metadata.name,
+            location: entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',
         };
     } else if (kind === 'service') {
         const names = [
@@ -94,6 +103,16 @@ function mapEntityToTableRow(kind: string, idx: number, entity: Entity): TableRo
             system: entity.spec?.system?.toString() ?? '-',
             version: entity.metadata?.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString() ?? '?',
             entityName: entity.metadata.name,
+            location: entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',
+        };
+    } else if (kind === 'techdocs') {
+        return {
+            id: idx,
+            name: entity.metadata.name,
+            system: entity.spec?.system?.toString() ?? '-',
+            version: '-',
+            entityName: entity.metadata.name,
+            location: entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',
         };
     } else {
         throw new Error(`Unsupported kind: ${kind}`);
@@ -155,7 +174,7 @@ const columns: ColumnConfig<TableRow>[] = [
     {
         id: 'name',
         label: 'Name',
-        width: '25%',
+        width: '20%',
         isRowHeader: true,
         isSortable: true,
         cell: ({ name }: TableRow) => (
@@ -169,7 +188,7 @@ const columns: ColumnConfig<TableRow>[] = [
     {
         id: 'version',
         label: 'Version',
-        width: '25%',
+        width: '10%',
         isSortable: true,
         cell: ({ version }: TableRow) => (
             <CellText title={version || '-'} />
@@ -178,9 +197,17 @@ const columns: ColumnConfig<TableRow>[] = [
     {
         id: 'entityName',
         label: 'Entity',
-        width: '50%',
+        width: '20%',
         cell: ({ entityName }: TableRow) => (
             <CellText title={entityName || '-'} />
+        ),
+    },
+    {
+        id: 'location',
+        label: 'Location',
+        width: '50%',
+        cell: ({ location }: TableRow) => (
+            <CellText title={location || '-'} />
         ),
     }
 ];

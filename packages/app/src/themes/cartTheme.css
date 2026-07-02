@@ -23,6 +23,11 @@
   --belui-chip-bg-color4: #e6d6ff;
   --belui-chip-bg-color5: #dce3ea;
 
+  .bui-FieldLabel {
+    font-weight: var(--bui-font-weight-bold);
+    font-size: var(--bui-font-size-3);
+  }
+
   [data-theme-mode='light'] {
     --bui-font-regular: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
     --bui-bg-solid: #c30045;
