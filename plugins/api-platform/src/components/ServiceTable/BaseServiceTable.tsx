@@ -4,11 +4,7 @@ import {
   Table,
   TableColumn,
 } from '@backstage/core-components';
-import {
-  ComponentChip,
-  DependentsToggle,
-  ComponentOwnership,
-} from '../common';
+import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import {
   OwnershipType,
@@ -19,9 +15,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
-import {
-  ApiPlatformBackendApi,
-} from '../../api';
+import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
 import { Box, Flex, Text } from '@backstage/ui';
 import { Query } from '@material-table/core';

@@ -38,7 +38,9 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
     this.fetchApi = options.fetchApi;
     this.featureFlagsApi = options.featureFlagsApi;
     this.baseUrl = this.configApi.getString('backend.baseUrl');
-    this.proxyEndpoints = this.configApi.getStringArray('healthProbes.proxyEndpoints');
+    this.proxyEndpoints = this.configApi.getStringArray(
+      'healthProbes.proxyEndpoints',
+    );
   }
 
   private createHeaders(): Headers {
@@ -98,9 +100,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
       }
 
       if (!data) {
-        throw new Error(
-          'Invalid response: expected health data object',
-        );
+        throw new Error('Invalid response: expected health data object');
       }
 
       return this.sortHealthDataByApplication(data);
@@ -137,7 +137,9 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
     }
 
     const results = await Promise.allSettled(
-      this.proxyEndpoints.map(endpointPath => this.fetchHealthData(endpointPath)),
+      this.proxyEndpoints.map(endpointPath =>
+        this.fetchHealthData(endpointPath),
+      ),
     );
 
     const errors: HealthDataResponse['errors'] = [];
@@ -161,8 +163,8 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
       ApplicationHealthData['environments']
     >();
 
-    healthDataByEndpoint.forEach((healthData) => {
-      healthData.forEach((appHealth) => {
+    healthDataByEndpoint.forEach(healthData => {
+      healthData.forEach(appHealth => {
         const existingEnvironments =
           mergedHealthDataMap.get(appHealth.application) ?? {};
 

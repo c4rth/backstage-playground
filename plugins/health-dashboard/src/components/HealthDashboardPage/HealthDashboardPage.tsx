@@ -75,7 +75,9 @@ const columns: ColumnConfig<TableRow>[] = [
 export const HealthDashboardPage = () => {
   const getHealthData = useGetHealthData();
   const isFirstRender = useRef(true);
-  const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>([]);
+  const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
+    [],
+  );
 
   const { tableProps, reload } = useTable({
     mode: 'complete',

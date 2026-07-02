@@ -1,4 +1,3 @@
-import { AzureDevOpsIcon } from '@internal/plugin-api-platform-react';
 import {
   RiPuzzleFill,
   RiShapesFill,
@@ -7,6 +6,7 @@ import {
   RiBookShelfLine,
 } from '@remixicon/react';
 import { Flex, Box } from '@backstage/ui';
+import { AzureDevOpsIcon } from '../AzureDevOpsIcon';
 
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 

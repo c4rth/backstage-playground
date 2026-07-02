@@ -68,7 +68,7 @@ export const ApiDefinitionCard = () => {
         <OpenApiDefinitionWidget definition={definition} />
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/raw" title="Raw">
-          <CodeSnippet text={definition} language="yaml" showCopyCodeButton/>
+        <CodeSnippet text={definition} language="yaml" showCopyCodeButton />
       </TabbedLayout.Route>
       {isLinterAvailable && !isMcaApi && (
         <TabbedLayout.Route path="/linter" title="Linter">

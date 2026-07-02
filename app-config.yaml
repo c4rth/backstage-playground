@@ -30,7 +30,7 @@ appRegistry:
   version: v2
 
 healthProbes:
-  proxyEndpoints: 
+  proxyEndpoints:
     - /health-probes-prd
     - /health-probes-nonprd
 

@@ -9,6 +9,7 @@ Manage catalog: delete, refresh, register
 ## plugins
 
 custom:
+
 - analytics
 - api-platform
 - app-registry
@@ -19,6 +20,7 @@ custom:
 - toolkit
 
 backstage:
+
 - api-docs
 - catalog
 - devtools
@@ -29,6 +31,7 @@ backstage:
 - user-settings
 
 community:
+
 - entity-validation
 - shortcuts
 - sonarqube

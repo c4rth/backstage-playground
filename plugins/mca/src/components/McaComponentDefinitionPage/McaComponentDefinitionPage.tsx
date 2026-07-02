@@ -3,9 +3,6 @@ import {
   PageWithHeader,
   Progress,
   ResponseErrorPanel,
-  Select,
-  SelectedItems,
-  SelectItem,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useRef, useState } from 'react';
@@ -14,9 +11,9 @@ import { McaComponent } from '@internal/plugin-mca-common';
 import { McaComponentDefinitionCard } from './McaComponentDefinitionCard';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { Box, Grid } from '@backstage/ui';
+import { Box, Grid, Select, Option, } from '@backstage/ui';
 
-function mapMcaVersions(mca: McaComponent | undefined): SelectItem[] {
+function mapMcaVersions(mca: McaComponent | undefined): Option[] {
   if (!mca) return [];
 
   const versions = [
@@ -31,7 +28,7 @@ function mapMcaVersions(mca: McaComponent | undefined): SelectItem[] {
     .filter(({ version }) => version)
     .map(({ version, suffix }) => ({
       label: `${version}${suffix}`,
-      value: version!,
+      id: version!,
     }));
 }
 
@@ -55,7 +52,7 @@ export const McaComponentDefinitionPage = () => {
   const [error, setError] = useState<Error | null>(null);
   const [mca, setMca] = useState<McaComponent>();
   const [selectedVersion, setSelectedVersion] = useState<string>();
-  const [versions, setVersions] = useState<SelectItem[]>([]);
+  const [versions, setVersions] = useState<Option[]>([]);
   const isInitialLoad = useRef(true);
 
   const queryVersion = searchParams.get('version');
@@ -81,12 +78,12 @@ export const McaComponentDefinitionPage = () => {
       if (
         isInitialLoad.current &&
         queryVersion &&
-        data.some(item => item.value === queryVersion)
+        data.some(item => item.id === queryVersion)
       ) {
         selVersion = queryVersion;
         isInitialLoad.current = false;
       } else if (data.length > 0) {
-        selVersion = String(data[0].value);
+        selVersion = String(data[0].id);
       }
       if (selVersion) setSelectedVersion(selVersion);
     }
@@ -98,16 +95,18 @@ export const McaComponentDefinitionPage = () => {
   return (
     <PageWithHeader key={name} themeId="apis" title={name} type="MCA Component">
       <Content>
-        <Box mb="1">
+        <Box mb="4">
           <Grid.Root columns="2">
             <Grid.Item>
               <Select
-                onChange={(selected: SelectedItems) =>
-                  setSelectedVersion(selected.toString())
-                }
+                onChange={selected => {
+                  setSelectedVersion(
+                    selected ? selected.toString() : undefined,
+                  );
+                }}
                 label="Versions"
-                items={versions}
-                selected={selectedVersion}
+                options={versions}
+                value={selectedVersion}
               />
             </Grid.Item>
           </Grid.Root>

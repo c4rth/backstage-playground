@@ -64,8 +64,8 @@ const getChipStyles = (
   // Color and variant styles
   if (variant === 'filled') {
     if (color === 'primary') {
-      baseStyles.backgroundColor = 'var(--bui-bg-solid)';
-      baseStyles.color = 'var(--bui-fg-solid)';
+      baseStyles.backgroundColor = 'var(--bui-accent-bg)';
+      baseStyles.color = 'var(--bui-accent-fg)';
       baseStyles.backgroundColor = '#C30045';
       baseStyles.color = '#fff';
     } else if (color === 'secondary') {

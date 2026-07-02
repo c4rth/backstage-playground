@@ -11,9 +11,7 @@ import { useState } from 'react';
 import { ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
-import {
-  ApiPlatformBackendApi,
-} from '../../api/ApiPlatformBackendApi';
+import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { apiPlatformBackendApiRef } from '../../plugin';
 import { Query } from '@material-table/core';
 import {

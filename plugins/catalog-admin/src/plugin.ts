@@ -6,8 +6,7 @@ import { rootRouteRef } from './routes';
 
 export const catalogAdminPlugin = createPlugin({
   id: 'catalog-admin',
-  apis: [
-  ],
+  apis: [],
   routes: {
     root: rootRouteRef,
   },
@@ -18,9 +17,7 @@ export const CatalogAdminPage = catalogAdminPlugin.provide(
     name: 'CatalogAdminPage',
     component: {
       lazy: () =>
-        import('./components/CatalogAdminPage').then(
-          m => m.CatalogAdminPage,
-        ),
+        import('./components/CatalogAdminPage').then(m => m.CatalogAdminPage),
     },
   }),
 );

@@ -2,9 +2,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
 import { TextField, TextArea } from 'react-aria-components';
-import { SelectItem, Select } from '@backstage/core-components';
 import { RiEditBoxLine } from '@remixicon/react';
-import { Button, Flex, Grid } from '@backstage/ui';
+import { Button, Flex, Grid, Select, Option } from '@backstage/ui';
 
 const randomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * max) + min;
@@ -139,52 +138,52 @@ export const LoremIpsum = () => {
     [multiplier],
   );
 
-  const multipliers: SelectItem[] = useMemo(
+  const multipliers: Option[] = useMemo(
     () => [
-      { label: '1', value: '1' },
-      { label: '5', value: '5' },
-      { label: '10', value: '10' },
-      { label: '25', value: '25' },
-      { label: '50', value: '50' },
-      { label: '100', value: '100' },
-      { label: '250', value: '250' },
-      { label: '500', value: '500' },
-      { label: '1000', value: '1000' },
+      { label: '1', id: '1' },
+      { label: '5', id: '5' },
+      { label: '10', id: '10' },
+      { label: '25', id: '25' },
+      { label: '50', id: '50' },
+      { label: '100', id: '100' },
+      { label: '250', id: '250' },
+      { label: '500', id: '500' },
+      { label: '1000', id: '1000' },
     ],
     [],
   );
 
-  const fakerTypes: SelectItem[] = useMemo(
+  const fakerTypes: Option[] = useMemo(
     () => [
-      { label: 'Address', value: 'address' },
-      { label: 'BIC', value: 'bic' },
-      { label: 'Catch phrase', value: 'catch-phrase' },
-      { label: 'Credit card', value: 'credit-card' },
-      { label: 'Cron', value: 'cron' },
-      { label: 'Datetime', value: 'datetime' },
-      { label: 'Domain', value: 'domain' },
-      { label: 'Emoji', value: 'emoji' },
-      { label: 'Hack', value: 'hack' },
-      { label: 'Hex', value: 'hex' },
-      { label: 'IBAN', value: 'iban' },
-      { label: 'IMEI', value: 'imei' },
-      { label: 'IPv4', value: 'ipv4' },
-      { label: 'IPv6', value: 'ipv6' },
-      { label: 'Job title', value: 'job-title' },
-      { label: 'Line', value: 'line' },
-      { label: 'MAC', value: 'mac' },
-      { label: 'Name', value: 'name' },
-      { label: 'Number', value: 'number' },
-      { label: 'Paragraph', value: 'paragraph' },
-      { label: 'Password', value: 'password' },
-      { label: 'Product description', value: 'product-description' },
-      { label: 'Product name', value: 'product-name' },
-      { label: 'Slug', value: 'slug' },
-      { label: 'String', value: 'string' },
-      { label: 'URL', value: 'url' },
-      { label: 'User agent', value: 'user-agent' },
-      { label: 'UUID', value: 'uuid' },
-      { label: 'Word', value: 'word' },
+      { label: 'Address', id: 'address' },
+      { label: 'BIC', id: 'bic' },
+      { label: 'Catch phrase', id: 'catch-phrase' },
+      { label: 'Credit card', id: 'credit-card' },
+      { label: 'Cron', id: 'cron' },
+      { label: 'Datetime', id: 'datetime' },
+      { label: 'Domain', id: 'domain' },
+      { label: 'Emoji', id: 'emoji' },
+      { label: 'Hack', id: 'hack' },
+      { label: 'Hex', id: 'hex' },
+      { label: 'IBAN', id: 'iban' },
+      { label: 'IMEI', id: 'imei' },
+      { label: 'IPv4', id: 'ipv4' },
+      { label: 'IPv6', id: 'ipv6' },
+      { label: 'Job title', id: 'job-title' },
+      { label: 'Line', id: 'line' },
+      { label: 'MAC', id: 'mac' },
+      { label: 'Name', id: 'name' },
+      { label: 'Number', id: 'number' },
+      { label: 'Paragraph', id: 'paragraph' },
+      { label: 'Password', id: 'password' },
+      { label: 'Product description', id: 'product-description' },
+      { label: 'Product name', id: 'product-name' },
+      { label: 'Slug', id: 'slug' },
+      { label: 'String', id: 'string' },
+      { label: 'URL', id: 'url' },
+      { label: 'User agent', id: 'user-agent' },
+      { label: 'UUID', id: 'uuid' },
+      { label: 'Word', id: 'word' },
     ],
     [],
   );
@@ -200,8 +199,8 @@ export const LoremIpsum = () => {
             <Select
               onChange={selected => setFakerType(selected as string)}
               label="Fake Data"
-              selected={fakerType.toString()}
-              items={fakerTypes}
+              value={fakerType.toString()}
+              options={fakerTypes}
             />
           </Grid.Item>
           <Grid.Item colSpan="1">
@@ -210,8 +209,8 @@ export const LoremIpsum = () => {
                 setMultiplier(Number.parseInt(selected as string, 10))
               }
               label="Count"
-              selected={multiplier.toString()}
-              items={multipliers}
+              value={multiplier.toString()}
+              options={multipliers}
             />
           </Grid.Item>
           <Grid.Item

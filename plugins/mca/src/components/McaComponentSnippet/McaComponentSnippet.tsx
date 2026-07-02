@@ -4,7 +4,9 @@ import type { McaComponentSnippetProps } from './McaComponentSnippetContent';
 export type { McaComponentSnippetProps } from './McaComponentSnippetContent';
 
 const LazyMcaComponentSnippetContent = lazy(() =>
-  import('./McaComponentSnippetContent').then(m => ({ default: m.McaComponentSnippet })),
+  import('./McaComponentSnippetContent').then(m => ({
+    default: m.McaComponentSnippet,
+  })),
 );
 
 /**

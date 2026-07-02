@@ -1,9 +1,4 @@
-import {
-  Container,
-  FullPage,
-  Grid,
-  Select,
-} from '@backstage/ui';
+import { Container, FullPage, Grid, Select } from '@backstage/ui';
 import { useState, useEffect } from 'react';
 import { EntityTable } from './EntityTable';
 import { useApi } from '@backstage/core-plugin-api';
@@ -20,24 +15,24 @@ const kindOptions = [
 export const CatalogAdminPage = () => {
   const [kind, setKind] = useState('api');
   const [system, setSystem] = useState<string | null>(null);
-  const [systemOptions, setSystemOptions] = useState<{ label: string; id: string }[]>([]);
+  const [systemOptions, setSystemOptions] = useState<
+    { label: string; id: string }[]
+  >([]);
 
   const catalogApi = useApi(catalogApiRef);
 
   useEffect(() => {
-
-    catalogApi.getEntities({
-      fields: [
-        CATALOG_METADATA_NAME,
-      ],
-      filter: {
-        kind: ['System'],
-      },
-      order: {
-        field: CATALOG_METADATA_NAME,
-        order: 'asc',
-      },
-    })
+    catalogApi
+      .getEntities({
+        fields: [CATALOG_METADATA_NAME],
+        filter: {
+          kind: ['System'],
+        },
+        order: {
+          field: CATALOG_METADATA_NAME,
+          order: 'asc',
+        },
+      })
       .then(result => {
         const loaded = result.items.map(entity => ({
           label: entity.metadata.name,
@@ -77,13 +72,9 @@ export const CatalogAdminPage = () => {
           </Grid.Item>
         </Grid.Root>
         {!system && (
-          <p>
-            Please select a system to view the entities associated with it.
-          </p>
+          <p>Please select a system to view the entities associated with it.</p>
         )}
-        {system && system !== '' && (
-          <EntityTable kind={kind} system={system} />
-        )}
+        {system && system !== '' && <EntityTable kind={kind} system={system} />}
       </Container>
     </FullPage>
   );

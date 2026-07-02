@@ -1,9 +1,4 @@
-import {
-  Content,
-  PageWithHeader,
-  Select,
-  SelectItem,
-} from '@backstage/core-components';
+import { Content, PageWithHeader } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentTable } from '../McaComponentTable';
 import {
@@ -12,7 +7,7 @@ import {
 } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Alert, Box, Flex, Grid } from '@backstage/ui';
+import { Alert, Box, Flex, Grid, Select, Option } from '@backstage/ui';
 import { mcaComponentsBackendApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 
@@ -26,10 +21,10 @@ const POPUP_CONTENT = (
   />
 );
 
-const componentTypes: SelectItem[] = [
-  { label: 'Operations', value: 'operation' },
-  { label: 'Elements', value: 'element' },
-  { label: 'All components', value: 'all' },
+const componentTypes: Option[] = [
+  { label: 'Operations', id: 'operation' },
+  { label: 'Elements', id: 'element' },
+  { label: 'All components', id: 'all' },
 ];
 
 function getInitialType(): McaComponentType {
@@ -79,14 +74,14 @@ export const McaComponentExplorerPage = () => {
       pageTitleOverride="MCA Components"
     >
       <Content>
-        <Box mb="1">
+        <Box mb="4">
           <Grid.Root columns="2">
             <Grid.Item>
               <Select
-                onChange={selected => handleSelectChange(selected.toString())}
+                onChange={selected => handleSelectChange(selected!.toString())}
                 label="Type"
-                items={componentTypes}
-                selected={selectedType}
+                options={componentTypes}
+                value={selectedType}
               />
             </Grid.Item>
             <Grid.Item>
@@ -94,23 +89,21 @@ export const McaComponentExplorerPage = () => {
                 style={{
                   alignItems: 'center',
                   justifyContent: 'flex-end',
-                  marginBottom: '16px',
                   height: '100%',
                 }}
               >
-                <Flex direction="column" gap="1">
-                  <Alert
-                    status="warning"
-                    icon
-                    title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
-                  />
-                  <Alert
-                    status="info"
-                    icon
-                    title={`Last updated: ${lastModifiedDate?.toLocaleString('fr-BE') || 'Unknown'}`}
-                    style={{ width: 'fit-content', alignSelf: 'flex-end' }}
-                  />
-                </Flex>
+                <Alert
+                  status="warning"
+                  icon
+                  title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
+                  style={{ width: 'fit-content', alignSelf: 'flex-end' }}
+                />
+                <Alert
+                  status="info"
+                  icon
+                  title={`Last updated: ${lastModifiedDate?.toLocaleString('fr-BE') || 'Unknown'}`}
+                  style={{ width: 'fit-content', alignSelf: 'flex-end' }}
+                />
               </Flex>
             </Grid.Item>
           </Grid.Root>

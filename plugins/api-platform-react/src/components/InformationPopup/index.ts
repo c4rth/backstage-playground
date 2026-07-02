@@ -1,1 +1,5 @@
-export { InformationPopup, InformationPopupContent, IconInformationPopup } from './InformationPopup';
+export {
+  InformationPopup,
+  InformationPopupContent,
+  IconInformationPopup,
+} from './InformationPopup';

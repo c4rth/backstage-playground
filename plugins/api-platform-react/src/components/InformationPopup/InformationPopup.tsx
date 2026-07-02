@@ -22,25 +22,21 @@ export const IconInformationPopup = (props: InformationPopupProps) => {
 
   return (
     <DialogTrigger>
-        <ButtonIcon
-          variant="tertiary"
-          size="medium"
-          style={{ width: 'auto', background: 'transparent' }}
-          icon={
-            <RiInformationLine
-              aria-label="More information"
-            />
-          }
-        />
-        <Popover placement="bottom" style={{ maxWidth: '50em' }}>
-          <Text variant="title-x-small">
-            <b>{title}</b>
-          </Text>
-          {content}
-        </Popover>
-      </DialogTrigger>
+      <ButtonIcon
+        variant="tertiary"
+        size="medium"
+        style={{ width: 'auto', background: 'transparent' }}
+        icon={<RiInformationLine aria-label="More information" />}
+      />
+      <Popover placement="bottom" style={{ maxWidth: '50em' }}>
+        <Text variant="title-x-small">
+          <b>{title}</b>
+        </Text>
+        {content}
+      </Popover>
+    </DialogTrigger>
   );
-}
+};
 
 export const InformationPopup = (props: InformationPopupProps) => {
   const { text, title, variant = 'body-medium', content } = props;
@@ -48,7 +44,7 @@ export const InformationPopup = (props: InformationPopupProps) => {
   return (
     <Flex align="center" mt="2" gap="xs">
       <Box as="span">
-        <Text variant={variant} style={{ color: 'var(--bui-fg-solid)' }}>
+        <Text variant={variant} style={{ color: 'var(--bui-accent-fg)' }}>
           {text}
         </Text>
       </Box>
@@ -59,7 +55,7 @@ export const InformationPopup = (props: InformationPopupProps) => {
           style={{ width: 'auto', background: 'transparent' }}
           icon={
             <RiInformationLine
-              style={{ color: 'var(--bui-fg-solid)' }}
+              style={{ color: 'var(--bui-accent-fg)' }}
               aria-label="More information"
             />
           }

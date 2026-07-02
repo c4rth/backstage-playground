@@ -1,4 +1,4 @@
-import { Content, Header, Page, Select } from '@backstage/core-components';
+import { Content, Header, Page } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
@@ -11,7 +11,7 @@ import {
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { ComponentHeaderLabels } from '../common';
-import { Box, Grid } from '@backstage/ui';
+import { Box, Grid, Select } from '@backstage/ui';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>;
 
@@ -70,7 +70,7 @@ export const ServiceDefinitionPage = () => {
     () =>
       serviceDefinition?.versions?.map(v => ({
         label: v.version,
-        value: v.version,
+        id: v.version,
       })) || [],
     [serviceDefinition],
   );
@@ -92,11 +92,11 @@ export const ServiceDefinitionPage = () => {
       if (
         isInitialLoad.current &&
         queryVersion &&
-        versions.some(item => item.value === queryVersion)
+        versions.some(item => item.id === queryVersion)
       ) {
         selVersion = queryVersion;
       } else {
-        selVersion = versions[0].value;
+        selVersion = versions[0].id;
       }
       if (selVersion) setSelectedVersion(selVersion);
     }
@@ -106,7 +106,7 @@ export const ServiceDefinitionPage = () => {
     if (!selectedVersion) return [];
     const selectedSvc = mapVersionEnv.get(selectedVersion);
     return selectedSvc
-      ? Array.from(selectedSvc.keys()).map(s => ({ label: s, value: s }))
+      ? Array.from(selectedSvc.keys()).map(s => ({ label: s, id: s }))
       : [];
   }, [selectedVersion, mapVersionEnv]);
 
@@ -116,17 +116,17 @@ export const ServiceDefinitionPage = () => {
       if (
         isInitialLoad.current &&
         queryEnv &&
-        environments.some(item => item.value === queryEnv.toUpperCase())
+        environments.some(item => item.id === queryEnv.toUpperCase())
       ) {
         selEnv = queryEnv.toUpperCase();
         isInitialLoad.current = false;
       } else {
-        selEnv = environments[0].value;
+        selEnv = environments[0].id;
       }
       if (selEnv) setSelectedEnvironment(selEnv);
     } else {
-      if (!environments.some(item => item.value === selectedEnvironment)) {
-        setSelectedEnvironment(environments[0]?.value);
+      if (!environments.some(item => item.id === selectedEnvironment)) {
+        setSelectedEnvironment(environments[0]?.id);
       }
     }
   }, [selectedVersion, environments, queryEnv, selectedEnvironment]);
@@ -156,24 +156,30 @@ export const ServiceDefinitionPage = () => {
           />
         </Header>
         <Content>
-          <Box mb="1">
+          <Box mb="4">
             <Grid.Root columns="12">
               <Grid.Item colSpan="6">
                 <Select
-                  onChange={selected => setSelectedVersion(selected.toString())}
+                  onChange={selected =>
+                    setSelectedVersion(
+                      selected ? selected.toString() : undefined,
+                    )
+                  }
                   label="Versions"
-                  items={versions}
-                  selected={selectedVersion}
+                  options={versions}
+                  value={selectedVersion}
                 />
               </Grid.Item>
               <Grid.Item colSpan="6">
                 <Select
                   onChange={selected =>
-                    setSelectedEnvironment(selected.toString())
+                    setSelectedEnvironment(
+                      selected ? selected.toString() : undefined,
+                    )
                   }
                   label="Environments"
-                  items={environments}
-                  selected={selectedEnvironment}
+                  options={environments}
+                  value={selectedEnvironment}
                 />
               </Grid.Item>
             </Grid.Root>

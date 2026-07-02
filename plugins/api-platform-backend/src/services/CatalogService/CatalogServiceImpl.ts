@@ -98,10 +98,7 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
     if (entity) {
       try {
         const annotations = entity.metadata.annotations;
-        if (
-          !annotations ||
-          !annotations['backstage.io/managed-by-location']
-        ) {
+        if (!annotations || !annotations['backstage.io/managed-by-location']) {
           this.logger.error('Metadata location not found for entity:', entity);
           throw new Error('Metadata location not found');
         }
@@ -116,13 +113,22 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
         await this.catalog.removeLocationById(location.id, {
           credentials: await this.auth.getOwnServiceCredentials(),
         });
-        return { message: `unregistered "${entity.metadata.name}"`, returnCode: 204 };
+        return {
+          message: `unregistered "${entity.metadata.name}"`,
+          returnCode: 204,
+        };
       } catch (error) {
-        return { message: `failed to unregister "${entity.metadata.name}" - ${error}`, returnCode: 500 };
+        return {
+          message: `failed to unregister "${entity.metadata.name}" - ${error}`,
+          returnCode: 500,
+        };
       }
     } else {
       this.logger.error('Entity not found for unregistration:', request);
-      return { message: `entity not found: "${request.name}"`, returnCode: 404 };
+      return {
+        message: `entity not found: "${request.name}"`,
+        returnCode: 404,
+      };
     }
   }
 }

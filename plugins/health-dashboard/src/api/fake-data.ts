@@ -1,6 +1,6 @@
 import { EnvironmentHealthData } from '../types';
 
-  const nonPrdData = `
+const nonPrdData = `
 {
   "tst": {
     "AAAA": {
@@ -668,7 +668,7 @@ import { EnvironmentHealthData } from '../types';
   }
 }
   `;
-  const prdData = `
+const prdData = `
 {
   "prd": {
     "A7K2": {
@@ -778,7 +778,6 @@ import { EnvironmentHealthData } from '../types';
   }
 }
   `;
-
 
 export function dummyCall(prd: boolean): EnvironmentHealthData {
   const data = prd ? prdData : nonPrdData;

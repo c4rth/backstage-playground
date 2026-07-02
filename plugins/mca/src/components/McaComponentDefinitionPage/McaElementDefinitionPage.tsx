@@ -47,7 +47,10 @@ export const McaElementDefinitionPage = memo<McaElementDefinitionPageProps>(
           <McaComponentMethodsCard data={element} componentType="element" />
         </TabbedLayout.Route>
         <TabbedLayout.Route path="/raw" title="Raw">
-          <McaComponentSnippet filename={`${element.name}.esml`} data={rawXml} />
+          <McaComponentSnippet
+            filename={`${element.name}.esml`}
+            data={rawXml}
+          />
         </TabbedLayout.Route>
       </TabbedLayout>
     );

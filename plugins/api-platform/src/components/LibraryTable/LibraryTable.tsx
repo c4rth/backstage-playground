@@ -18,9 +18,7 @@ import { useCallback, useState } from 'react';
 import { ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
-import {
-  ApiPlatformBackendApi,
-} from '../../api';
+import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
 import {
   OwnershipType,

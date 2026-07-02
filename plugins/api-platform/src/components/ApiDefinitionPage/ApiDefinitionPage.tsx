@@ -1,4 +1,4 @@
-import { Content, Header, Page, Select } from '@backstage/core-components';
+import { Content, Header, Page } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -9,7 +9,7 @@ import { ApiDefinitionCard } from './ApiDefinitionCard';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ComponentHeaderLabels } from '../common';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
-import { Box } from '@backstage/ui';
+import { Box, Select } from '@backstage/ui';
 
 export const ApiDefinitionPage = () => {
   const { system, name } = useParams();
@@ -26,7 +26,7 @@ export const ApiDefinitionPage = () => {
     () =>
       apiVersions?.map(apiVersion => ({
         label: apiVersion.version,
-        value: apiVersion.entityRef,
+        id: apiVersion.entityRef,
       })) ?? [],
     [apiVersions],
   );
@@ -53,10 +53,10 @@ export const ApiDefinitionPage = () => {
         queryVersion &&
         versions.some(item => item.label === queryVersion)
       ) {
-        selVersion = versions.find(item => item.label === queryVersion)?.value;
+        selVersion = versions.find(item => item.label === queryVersion)?.id;
         isInitialLoad.current = false;
       } else {
-        selVersion = versions[0].value;
+        selVersion = versions[0].id;
       }
       if (selVersion) {
         setSelectedVersion(selVersion);
@@ -84,14 +84,14 @@ export const ApiDefinitionPage = () => {
         </Header>
 
         <Content>
-          <Box mb="1">
+          <Box mb="4">
             <Select
               onChange={selected => {
-                setSelectedVersion(selected.toString());
+                setSelectedVersion(selected ? selected.toString() : undefined);
               }}
               label="Versions"
-              items={versions}
-              selected={selectedVersion}
+              options={versions}
+              value={selectedVersion}
             />
           </Box>
           {apiEntity ? <ApiDefinitionCard /> : <div />}

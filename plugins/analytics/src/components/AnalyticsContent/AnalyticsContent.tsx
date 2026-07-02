@@ -1,18 +1,9 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useState } from 'react';
 import { analyticsBackendApiRef } from '../../api';
-import {
-  Box, 
-  Container, 
-  Flex, 
-  FullPage,
-  Select,
-} from '@backstage/ui';
+import { Box, Container, Flex, FullPage, Select } from '@backstage/ui';
 import { DailyVisitor } from '../../api/CustomAnalyticsApi';
-import {
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { DailyUsersChart } from './DailyUsersChart';
 import { TopFeaturesTable, TableRow, toRow } from './TopFeaturesTable';
 
@@ -78,7 +69,10 @@ export const AnalyticsContent = () => {
       <Container>
         {isLoading && <Progress />}
         {error && (
-          <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />
+          <ResponseErrorPanel
+            title="Failed to call AppRegistry"
+            error={error}
+          />
         )}
 
         {!isLoading && !error && (

@@ -147,11 +147,8 @@ export async function createRouter(
       name: req.params.name,
       kind: req.params.kind,
     });
-    res
-      .status(response.returnCode)
-      .json({ message: response.message });
-  }
-  );
+    res.status(response.returnCode).json({ message: response.message });
+  });
 
   // Endpoints: /services
 

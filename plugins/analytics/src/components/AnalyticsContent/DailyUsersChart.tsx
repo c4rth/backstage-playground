@@ -105,11 +105,11 @@ export const DailyUsersChart = ({ data }: { data: DailyVisitor[] }) => {
                 domain={[0, dataMax => Math.max(2, Math.ceil(dataMax))]}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="visitors" stackId="a" fill="var(--bui-bg-solid)" />
+              <Bar dataKey="visitors" stackId="a" fill="var(--bui-accent-bg)" />
               <Bar
                 dataKey="guests"
                 stackId="a"
-                fill="color-mix(in srgb, var(--bui-bg-solid) 50%, transparent)"
+                fill="color-mix(in srgb, var(--bui-accent-bg) 50%, transparent)"
               />
             </BarChart>
           </ResponsiveContainer>

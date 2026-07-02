@@ -1,7 +1,4 @@
-import {
-  DiscoveryApi,
-  FetchApi,
-} from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import {
   ApiDefinitionsListRequest,
   ApiDefinitionListResult,
@@ -61,10 +58,7 @@ export interface ApiPlatformBackendApi {
     servicesCount: boolean,
   ): Promise<LibraryDefinition[]>;
 
-  unregisterEntity(
-    kind: string,
-    name: string,
-  ): Promise<void>;
+  unregisterEntity(kind: string, name: string): Promise<void>;
 }
 
 export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
@@ -298,10 +292,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // Catalog Entity Unregister
 
-  async unregisterEntity(
-    kind: string,
-    name: string,
-  ): Promise<void> {
+  async unregisterEntity(kind: string, name: string): Promise<void> {
     const encodedKind = encodeURIComponent(kind);
     const encodedName = encodeURIComponent(name);
     const baseUrl = await this.getBaseUrl();
@@ -309,7 +300,9 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
     const response = await this.fetchApi.fetch(url, { method: 'DELETE' });
     if (!response.ok) {
-      throw new Error(`Failed to unregister entity: HTTP ${response.status} - ${response.statusText}`);
+      throw new Error(
+        `Failed to unregister entity: HTTP ${response.status} - ${response.statusText}`,
+      );
     }
   }
 }
