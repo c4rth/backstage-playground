@@ -82,7 +82,7 @@ const renderAbacCell = (operation: AppRegistryOperation) => {
     return (
       <AbacTooltip
         icon={
-          <RiIndeterminateCircleLine color="var(--bui-fg-solid-disabled)" />
+          <RiIndeterminateCircleLine color="var(--bui-accent-fg-disabled)" />
         }
       >
         No ABAC

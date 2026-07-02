@@ -64,7 +64,7 @@ export const ApiSearchResultListItem = (
           <Link noTrack to={result.apiPlatformLocation}>
             <Text
               weight="bold"
-              style={{ color: 'var(--bui-fg-info)', fontSize: '20px' }}
+              style={{ color: 'var(--bui-fg-announcement)', fontSize: '20px' }}
             >
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText

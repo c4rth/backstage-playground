@@ -24,7 +24,8 @@
     "mui-to-bui": "node ./scripts/mui-to-bui/backstage-migration-analytics.js",
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "build:lint": "backstage-repo-tools lint",
-    "mui-usage": "node ./scripts/mui-to-bui/analyze-react-component-usage.js"
+    "mui-usage": "node ./scripts/mui-to-bui/analyze-react-component-usage.js",
+    "check-bui": "node ./scripts/check-bui/check-bui.js"
   },
   "workspaces": {
     "packages": [

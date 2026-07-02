@@ -58,7 +58,7 @@ export const McaComponentSearchResultListItem = (
           <Link noTrack to={result.location}>
             <Text
               weight="bold"
-              style={{ color: 'var(--bui-fg-info)', fontSize: '20px' }}
+              style={{ color: 'var(--bui-fg-announcement)', fontSize: '20px' }}
             >
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText

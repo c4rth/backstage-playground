@@ -197,7 +197,7 @@ export const AzureDevOpsPipelinePage = () => {
         cell: row => (
           <Cell>
             <Button
-              style={{ backgroundColor: 'var(--bui-fg-info)' }}
+              style={{ backgroundColor: 'var(--bui-fg-announcement)' }}
               onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
               isDisabled={!row.item.id}
             >

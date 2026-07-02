@@ -16,7 +16,7 @@ export const ComponentHeaderLabels = (props: EntityLabelsProps) => {
           label="Owner"
           value={
             <Link to={`/api-platform/system/${system}`}>
-              <div style={{ color: 'var(--bui-fg-solid)' }}>
+              <div style={{ color: 'var(--bui-accent-fg)' }}>
                 <ComponentDisplayName text={system} type="system" />
               </div>
             </Link>

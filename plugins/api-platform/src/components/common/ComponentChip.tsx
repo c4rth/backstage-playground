@@ -42,7 +42,7 @@ const getContrastColor = (hexColor: string, alpha: number = 1) => {
   const b = Math.round(bSrc * alpha + 255 * (1 - alpha));
 
   const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-  return yiq >= 128 ? 'var(--bui-fg-primary)' : 'var(--bui-fg-solid-disabled)';
+  return yiq >= 128 ? 'var(--bui-fg-primary)' : 'var(--bui-accent-fg-disabled)';
 };
 
 const getChipStyles = (index: number | undefined, backgroundColor: string) => {

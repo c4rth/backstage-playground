@@ -109,7 +109,7 @@
 }
 
 .wrapper :global(.swagger-ui a) {
-  color: var(--bui-fg-info);
+  color: var(--bui-fg-announcement);
 }
 
 .wrapper :global(.swagger-ui .renderedMarkdown code) {
@@ -121,7 +121,7 @@
 }
 
 .wrapper :global(.swagger-ui span.prop-type) {
-  color: var(--bui-fg-success);
+  color: var(--bui-fg-positive);
 }
 
 .wrapper :global(.swagger-ui .opblock-control-arrow svg),
