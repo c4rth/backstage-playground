@@ -5,7 +5,7 @@ ARG imagename=localhost/carth-backstage-base:0.0.1
 FROM ${imagename} AS packages
 
 WORKDIR /app
-COPY backstage.json package.json yarn.lock ./
+COPY backstage.json package.json yarn.lock backstage-manifest.json ./
 COPY .yarn ./.yarn
 COPY .yarnrc.yml ./
 
@@ -17,7 +17,7 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs
 
 # Stage 2 - Install dependencies and build packages
 FROM ${imagename} AS build
-
+    
 USER node
 WORKDIR /app
 
@@ -25,9 +25,10 @@ COPY --from=packages --chown=node:node /app .
 COPY --from=packages --chown=node:node /app/.yarn ./.yarn
 COPY --from=packages --chown=node:node /app/.yarnrc.yml  ./
 COPY --from=packages --chown=node:node /app/backstage.json  ./
+COPY --from=packages --chown=node:node /app/backstage-manifest.json  ./
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
-    yarn install
+    BACKSTAGE_MANIFEST_FILE=./backstage-manifest.json yarn install
     #yarn install --immutable
 
 COPY --chown=node:node . .
