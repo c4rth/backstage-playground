@@ -24,15 +24,15 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.11",
-    "@backstage/core-plugin-api": "^1.12.7",
-    "@backstage/plugin-catalog-react": "^3.1.0",
-    "@backstage/plugin-home": "^0.9.7",
-    "@backstage/plugin-home-react": "^0.1.39",
-    "@backstage/ui": "^0.16.0"
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-home": "backstage:^",
+    "@backstage/plugin-home-react": "backstage:^",
+    "@backstage/ui": "backstage:^"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.3",
+    "@backstage/cli": "backstage:^",
     "@types/react": "^18.0.0",
     "react": "^18.0.2"
   },

@@ -24,11 +24,11 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.11",
-    "@backstage/core-plugin-api": "^1.12.7",
-    "@backstage/frontend-plugin-api": "^0.17.2",
-    "@backstage/plugin-home": "^0.9.7",
-    "@backstage/ui": "^0.16.0",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-home": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/language": "^6.12.3",
     "@faker-js/faker": "^10.5.0",
@@ -47,7 +47,7 @@
     "react-json-view": "^1.21.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.3",
+    "@backstage/cli": "backstage:^",
     "@types/lodash": "^4.14.202",
     "@types/react": "^18.0.0",
     "react": "^18.0.2"

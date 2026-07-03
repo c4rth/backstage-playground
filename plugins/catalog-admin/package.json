@@ -24,20 +24,20 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/catalog-client": "^1.16.0",
-    "@backstage/catalog-model": "^1.9.0",
-    "@backstage/core-components": "^0.18.11",
-    "@backstage/core-plugin-api": "^1.12.7",
-    "@backstage/frontend-plugin-api": "^0.17.2",
-    "@backstage/plugin-catalog-react": "^3.1.0",
-    "@backstage/ui": "^0.16.0",
+    "@backstage/catalog-client": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@internal/plugin-api-platform": "workspace:^",
     "@internal/plugin-api-platform-common": "workspace:^",
     "@internal/plugin-api-platform-react": "workspace:^",
     "@remixicon/react": ">=4.6.0 <4.9.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.3",
+    "@backstage/cli": "backstage:^",
     "@types/react": "^18.0.0",
     "react": "^18.0.2"
   },

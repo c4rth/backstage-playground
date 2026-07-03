@@ -29,15 +29,15 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.11",
-    "@backstage/core-plugin-api": "^1.12.7",
-    "@backstage/frontend-plugin-api": "^0.17.2",
-    "@backstage/ui": "^0.16.0",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "recharts": "^3.9.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.3",
-    "@types/react": "^18.0.0",
+    "@backstage/cli": "backstage:^",
+    "@types/react": "backstage:^",
     "react": "^18.0.2"
   },
   "peerDependencies": {

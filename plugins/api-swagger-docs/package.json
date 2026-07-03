@@ -24,12 +24,12 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.11",
-    "@backstage/core-plugin-api": "^1.12.7",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
     "swagger-ui-react": "^5.32.8"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.3",
+    "@backstage/cli": "backstage:^",
     "@types/react": "^18.0.0",
     "@types/swagger-ui-react": "^5.18.0",
     "react": "^18.0.2"

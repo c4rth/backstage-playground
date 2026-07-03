@@ -1,0 +1,1 @@
+BACKSTAGE_MANIFEST_FILE=~/Development/github.c4rth/backstage-playground/backstage-manifest.json yarn install
