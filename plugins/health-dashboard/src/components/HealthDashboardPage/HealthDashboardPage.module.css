@@ -19,6 +19,11 @@
   margin: 0 auto;
 }
 
+.denseTable :global(.bui-TableResizableContainer),
+.denseTable :global(.bui-TableScrollContainer) {
+  overflow: visible;
+}
+
 .denseTable :global(.bui-TableRow) {
   border-bottom: 0px;
   transition: color 0.2s ease-in-out;
@@ -44,6 +49,13 @@
   font-size: var(--bui-font-size-3);
   min-width: 0;
   overflow: hidden;
+}
+
+.denseTable :global(.bui-TableHeader .bui-TableHead) {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--bui-bg-neutral-1);
 }
 
 .denseTable :global(.bui-TableHeader .bui-TableHead:not(:first-child)) {

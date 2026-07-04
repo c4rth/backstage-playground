@@ -98,8 +98,7 @@ export const HealthDashboardPage = () => {
   return (
     <PageWithHeader
       themeId="dashboard"
-      title="Health Dashboard"
-      pageTitleOverride="Health Dashboard"
+      title="Health Dashboard OPP"
     >
       <Content className={styles.contentRoot}>
         <Box bg="neutral" className={styles.contentScrollArea}>
