@@ -1,12 +1,20 @@
 import type {} from 'react-syntax-highlighter';
-import LightAsync from 'react-syntax-highlighter/dist/esm/light-async';
+import type { SyntaxHighlighterProps } from 'react-syntax-highlighter';
+import { Progress } from '@backstage/core-components';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
-import { Box, ButtonIcon, Flex } from '@backstage/ui';
+import { Box, ButtonIcon, Flex, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { RiFileCopy2Line, RiFileDownloadFill } from '@remixicon/react';
-import { MouseEventHandler, useEffect } from 'react';
+import { MouseEventHandler, Suspense, lazy, useEffect } from 'react';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
+
+const LightAsync = lazy(async () => {
+  const module = await import('react-syntax-highlighter/dist/esm/light-async');
+  return {
+    default: module.default as React.ComponentType<SyntaxHighlighterProps>,
+  };
+});
 
 export interface McaComponentSnippetProps {
   filename: string;
@@ -51,9 +59,17 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
 
   return (
     <Box position="relative">
-      <LightAsync language="xml" style={docco}>
-        {data}
-      </LightAsync>
+      <Suspense
+        fallback={
+          <Box py="4" style={{ display: 'flex', justifyContent: 'center' }} aria-busy>
+            <Progress />
+          </Box>
+        }
+      >
+        <LightAsync language="xml" style={docco}>
+          {data}
+        </LightAsync>
+      </Suspense>
       <Flex
         style={{
           gap: '4px',
@@ -63,20 +79,33 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
           right: '0px',
         }}
       >
-        <ButtonIcon
-          variant="tertiary"
-          size="medium"
-          onClick={handleCopyClick}
-          icon={<RiFileCopy2Line style={{ width: '2em', height: '2em' }} />}
-          aria-label="Copy XML to clipboard"
-        />
-        <ButtonIcon
-          variant="tertiary"
-          size="medium"
-          onClick={handleDownloadClick}
-          icon={<RiFileDownloadFill style={{ width: '2em', height: '2em' }} />}
-          aria-label="Download XML"
-        />
+        <TooltipTrigger trigger="hover" delay={500}>
+          <ButtonIcon
+            variant="tertiary"
+            size="medium"
+            onClick={handleCopyClick}
+            icon={<RiFileCopy2Line style={{ width: '2em', height: '2em' }} />}
+            style={{ color: 'rgba(0,0,0,0.54)' }}
+            aria-label="Copy XML to clipboard"
+          />
+          <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
+            Copy XML to clipboard
+          </Tooltip>
+        </TooltipTrigger>
+        <TooltipTrigger trigger="hover" delay={500}>
+          <ButtonIcon
+            variant="tertiary"
+            size="medium"
+            onClick={handleDownloadClick}
+            icon={<RiFileDownloadFill style={{ width: '2em', height: '2em' }} />}
+            style={{ color: 'rgba(0,0,0,0.54)' }}
+            aria-label="Download XML"
+          />
+          <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
+            Download XML
+          </Tooltip>
+        </TooltipTrigger>
+
       </Flex>
     </Box>
   );
