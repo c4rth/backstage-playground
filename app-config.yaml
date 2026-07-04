@@ -130,10 +130,6 @@ permission:
         - group:default/team-a.c
         #- group:default/team-x.c
     permissions:
-      - name: healthDashboard.read
-        allowed:
-          - group:default/team-a.X
-          - user:default/guest
       - name: advancedUser.read
         allowed:
           - group:default/team-a.Y

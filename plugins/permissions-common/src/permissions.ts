@@ -14,13 +14,6 @@ export const notGuestPermission = createPermission({
   },
 });
 
-export const healthDashboardPermission = createPermission({
-  name: 'healthDashboard.read',
-  attributes: {
-    action: 'read',
-  },
-});
-
 export const advancedUserPermission = createPermission({
   name: 'advancedUser.read',
   attributes: {

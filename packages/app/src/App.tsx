@@ -77,7 +77,6 @@ import {
 import {
   adminToolsPermission,
   advancedUserPermission,
-  healthDashboardPermission,
   notGuestPermission,
 } from '@internal/plugin-permissions-common';
 // TechDocs
@@ -280,19 +279,7 @@ const routes = (
       path="/mca/basetypes/:name"
       element={<McaBaseTypeDefinitionPage />}
     />
-    <Route
-      path="/health-dashboard"
-      element={
-        <RequirePermission
-          permission={healthDashboardPermission}
-          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
-        >
-          <HealthDashboardPage />
-        </RequirePermission>
-      }
-    >
-      {customDevToolsPage}
-    </Route>
+    <Route path="/health-dashboard" element={<HealthDashboardPage />} />
     <Route path="/tools" element={<ToolsPage />} />
     <Route
       path="/admin"

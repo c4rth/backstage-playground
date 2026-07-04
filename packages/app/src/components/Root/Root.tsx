@@ -56,7 +56,6 @@ import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common'
 import {
   adminToolsPermission,
   notGuestPermission,
-  healthDashboardPermission,
   advancedUserPermission,
 } from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
@@ -142,16 +141,11 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           to="mca/basetypes"
           text="MCA BaseTypes"
         />
-        <RequirePermission
-          permission={healthDashboardPermission}
-          errorPage={<div />}
-        >
-          <SidebarItem
-            icon={RiHeartPulseFill as IconComponent}
-            to="health-dashboard"
-            text="Health Dashboard"
-          />
-        </RequirePermission>
+        <SidebarItem
+          icon={RiHeartPulseFill as IconComponent}
+          to="health-dashboard"
+          text="Health Dashboard"
+        />
         <SidebarItem
           icon={RiFileCopy2Line as IconComponent}
           to="docs"

@@ -17,7 +17,6 @@ import {
 import { Config } from '@backstage/config';
 import {
   adminToolsPermission,
-  healthDashboardPermission,
   notGuestPermission,
 } from '@internal/plugin-permissions-common';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
@@ -123,7 +122,6 @@ export class MyPermissionPolicy implements PermissionPolicy {
       adminToolsPermission,
       devToolsAdministerPermission,
       templateManagementPermission,
-      healthDashboardPermission,
     ];
     if (denyPermissions.some(perm => isPermission(request.permission, perm))) {
       return { result: AuthorizeResult.DENY };
