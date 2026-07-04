@@ -257,8 +257,8 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
     mode: 'offset',
     getData: ({ offset, pageSize, sort }) => fetchData(offset, pageSize, sort),
     paginationOptions: {
-      pageSize: 5,
-      pageSizeOptions: [5, 10, 20, 50],
+      pageSize: 10,
+      pageSizeOptions: [10, 20, 50],
     },
     initialSort: { column: 'name', direction: 'ascending' },
   });

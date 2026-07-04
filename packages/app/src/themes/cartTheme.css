@@ -1,36 +1,5 @@
 :root {
-  --bui-fg-primary: rgba(0, 0, 0, 0.87);
-  --bui-fg-secondary: #6e6e6e;
-  --bui-fg-disabled: rgba(0, 0, 0, 0.38);
-  --bui-accent-fg: #fff;
-  --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
-  --bui-fg-positive: rgb(170, 46, 37);
-  --bui-fg-warning: rgb(178, 106, 0);
-  --bui-fg-positive: rgb(53, 122, 56);
-  --bui-bg-app: #f8f8f8;
-  --bui-negative-bg-subdued: rgb(246, 104, 94);
-  --bui-warning-bg-subdued: rgb(255, 172, 51);
-  --bui-positive-bg-subdued: rgb(111, 191, 115);
-  --bui-negative-border: #f44336;
-  --bui-warning-border: #ff9800;
-  --bui-positive-border: #4caf50;
-  --bui-ring: #fffbcc;
 
-  /* Deprecated */
-  --bui-fg-info: #c30045;
-  --bui-fg-disabled: rgba(0, 0, 0, 0.38);
-  --bui-fg-solid: #fff;
-  --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
-  --bui-fg-danger: rgb(170, 46, 37);
-  --bui-fg-warning: rgb(178, 106, 0);
-  --bui-fg-success: rgb(53, 122, 56);
-  --bui-bg-danger: rgb(246, 104, 94);
-  --bui-bg-warning: rgb(255, 172, 51);
-  --bui-bg-success: rgb(111, 191, 115);
-  --bui-border-danger: #f44336;
-  --bui-border-warning: #ff9800;
-  --bui-border-success: #4caf50;
- 
   /* Chip colors */
   --belui-chip-bg-color1: #c9d6ff;
   --belui-chip-bg-color2: #ffd6e8;
@@ -50,7 +19,38 @@
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);
     --bui-fg-announcement: #c30045;
 
+
+    --bui-fg-primary: rgba(0, 0, 0, 0.87);
+    --bui-fg-secondary: #6e6e6e;
+    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
+    --bui-accent-fg: #fff;
+    --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
+    --bui-fg-positive: rgb(170, 46, 37);
+    --bui-fg-warning: rgb(178, 106, 0);
+    --bui-fg-positive: rgb(53, 122, 56);
+    --bui-bg-app: #f8f8f8;
+    --bui-negative-bg-subdued: rgb(246, 104, 94);
+    --bui-warning-bg-subdued: rgb(255, 172, 51);
+    --bui-positive-bg-subdued: rgb(111, 191, 115);
+    --bui-negative-border: #f44336;
+    --bui-warning-border: #ff9800;
+    --bui-positive-border: #4caf50;
+    --bui-ring: #c30045;
+
     /* Deprecated */
+    --bui-fg-info: #c30045;
+    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
+    --bui-fg-solid: #fff;
+    --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
+    --bui-fg-danger: rgb(170, 46, 37);
+    --bui-fg-warning: rgb(178, 106, 0);
+    --bui-fg-success: rgb(53, 122, 56);
+    --bui-bg-danger: rgb(246, 104, 94);
+    --bui-bg-warning: rgb(255, 172, 51);
+    --bui-bg-success: rgb(111, 191, 115);
+    --bui-border-danger: #f44336;
+    --bui-border-warning: #ff9800;
+    --bui-border-success: #4caf50;
     --bui-bg-solid: #c30045;
     --bui-bg-solid-hover: rgb(166, 0, 59);
     --bui-bg-solid-pressed: rgb(136, 0, 48);
@@ -64,7 +64,37 @@
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);
     --bui-fg-announcement: #c30045;
 
+    --bui-fg-primary: rgba(0, 0, 0, 0.87);
+    --bui-fg-secondary: #6e6e6e;
+    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
+    --bui-accent-fg: #fff;
+    --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
+    --bui-fg-positive: rgb(170, 46, 37);
+    --bui-fg-warning: rgb(178, 106, 0);
+    --bui-fg-positive: rgb(53, 122, 56);
+    --bui-bg-app: #f8f8f8;
+    --bui-negative-bg-subdued: rgb(246, 104, 94);
+    --bui-warning-bg-subdued: rgb(255, 172, 51);
+    --bui-positive-bg-subdued: rgb(111, 191, 115);
+    --bui-negative-border: #f44336;
+    --bui-warning-border: #ff9800;
+    --bui-positive-border: #4caf50;
+    --bui-ring: #c30045;
+
     /* Deprecated */
+    --bui-fg-info: #c30045;
+    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
+    --bui-fg-solid: #fff;
+    --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
+    --bui-fg-danger: rgb(170, 46, 37);
+    --bui-fg-warning: rgb(178, 106, 0);
+    --bui-fg-success: rgb(53, 122, 56);
+    --bui-bg-danger: rgb(246, 104, 94);
+    --bui-bg-warning: rgb(255, 172, 51);
+    --bui-bg-success: rgb(111, 191, 115);
+    --bui-border-danger: #f44336;
+    --bui-border-warning: #ff9800;
+    --bui-border-success: #4caf50;
     --bui-bg-solid: #c30045;
     --bui-bg-solid-hover: rgb(166, 0, 59);
     --bui-bg-solid-pressed: rgb(136, 0, 48);
