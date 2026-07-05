@@ -1,5 +1,5 @@
-import { AppTheme } from '@backstage/core-plugin-api';
-import { RiSunFill, RiMoonLine } from '@remixicon/react';
+import { ReactNode, } from 'react';
+
 import {
   PageTheme,
   UnifiedTheme,
@@ -108,14 +108,8 @@ const darkPageTheme = genPageTheme({
   shape: shapes.round,
 });
 
-export const carthThemes: AppTheme[] = [
-  {
-    id: 'light-theme',
-    title: 'Light Theme',
-    variant: 'light',
-    icon: <RiSunFill />,
-    Provider: ({ children }) => (
-      <UnifiedThemeProvider
+export const LightThemeProvider = ({ children }: { children: ReactNode }) => (
+  <UnifiedThemeProvider
         theme={createCustomBaseTheme(
           palettes.light,
           colors.rubyRed,
@@ -124,15 +118,10 @@ export const carthThemes: AppTheme[] = [
         )}
         children={children}
       />
-    ),
-  },
-  {
-    id: 'dark-theme',
-    title: 'Dark Theme',
-    variant: 'dark',
-    icon: <RiMoonLine />,
-    Provider: ({ children }) => (
-      <UnifiedThemeProvider
+);
+
+export const DarkThemeProvider = ({ children }: { children: ReactNode }) => (
+  <UnifiedThemeProvider
         theme={createCustomBaseTheme(
           palettes.dark,
           colors.roseRed,
@@ -141,6 +130,4 @@ export const carthThemes: AppTheme[] = [
         )}
         children={children}
       />
-    ),
-  },
-];
+);

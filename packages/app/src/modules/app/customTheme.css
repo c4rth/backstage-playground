@@ -7,28 +7,24 @@
   --belui-chip-bg-color4: #e6d6ff;
   --belui-chip-bg-color5: #dce3ea;
 
+  /* Field label */
   .bui-FieldLabel {
     font-weight: var(--bui-font-weight-bold);
     font-size: var(--bui-font-size-3);
   }
 
+  /* Themes */
   [data-theme-mode='light'] {
-    --bui-font-regular: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
     --bui-accent-bg: #c30045;
     --bui-accent-bg-hover: rgb(166, 0, 59);
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);
     --bui-fg-announcement: #c30045;
 
-
-    --bui-fg-primary: rgba(0, 0, 0, 0.87);
-    --bui-fg-secondary: #6e6e6e;
-    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-accent-fg: #fff;
     --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-fg-positive: rgb(170, 46, 37);
     --bui-fg-warning: rgb(178, 106, 0);
     --bui-fg-positive: rgb(53, 122, 56);
-    --bui-bg-app: #f8f8f8;
     --bui-negative-bg-subdued: rgb(246, 104, 94);
     --bui-warning-bg-subdued: rgb(255, 172, 51);
     --bui-positive-bg-subdued: rgb(111, 191, 115);
@@ -58,21 +54,16 @@
   }
 
   [data-theme-mode='dark'] {
-    --bui-font-regular: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
     --bui-accent-bg: #c30045;
     --bui-accent-bg-hover: rgb(166, 0, 59);
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);
     --bui-fg-announcement: #c30045;
 
-    --bui-fg-primary: rgba(0, 0, 0, 0.87);
-    --bui-fg-secondary: #6e6e6e;
-    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-accent-fg: #fff;
     --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-fg-positive: rgb(170, 46, 37);
     --bui-fg-warning: rgb(178, 106, 0);
     --bui-fg-positive: rgb(53, 122, 56);
-    --bui-bg-app: #f8f8f8;
     --bui-negative-bg-subdued: rgb(246, 104, 94);
     --bui-warning-bg-subdued: rgb(255, 172, 51);
     --bui-positive-bg-subdued: rgb(111, 191, 115);

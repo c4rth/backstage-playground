@@ -4,6 +4,7 @@ app:
   extensions:
     - api:home/visits
     - app-root-element:home/visit-listener
+    - page:catalog-unprocessed-entities
   support:
     url: https://github.com/c4rth # Used by common ErrorPage
     items: # Used by common SupportButton component

@@ -66,15 +66,12 @@ const getChipStyles = (
     if (color === 'primary') {
       baseStyles.backgroundColor = 'var(--bui-accent-bg)';
       baseStyles.color = 'var(--bui-accent-fg)';
-      baseStyles.backgroundColor = '#C30045';
-      baseStyles.color = '#fff';
     } else if (color === 'secondary') {
       baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
-      baseStyles.color = 'var(--bui-black)';
+      //baseStyles.color = 'var(--bui-black)';
     } else if (color === 'default') {
       baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
-      baseStyles.color = 'var(--bui-black)';
-      baseStyles.color = '#000';
+      //baseStyles.color = 'var(--bui-black)';
     } else {
       baseStyles.backgroundColor = color;
       baseStyles.color = textColor || '#fff';
