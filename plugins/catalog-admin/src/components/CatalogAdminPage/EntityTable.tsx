@@ -283,13 +283,13 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
         toastApi.post({
           title: `Successfully deleted entity: ${entityName}`,
           status: 'success',
-          timeout: 1500,
+          timeout: 2000,
         });
       } catch (error) {
         toastApi.post({
           title: `Failed to delete entity: ${entityName} - ${error}`,
           status: 'danger',
-          timeout: 1500,
+          timeout: 2000,
         });
         console.error(`Failed to delete entity: ${entityName}`, error);
       }

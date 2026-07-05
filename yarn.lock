@@ -2264,7 +2264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-compat-api@npm:^0.5.10, @backstage/core-compat-api@npm:^0.5.12, @backstage/core-compat-api@npm:^0.5.9":
+"@backstage/core-compat-api@backstage:^::backstage=1.52.1&npm=0.5.12, @backstage/core-compat-api@npm:^0.5.10, @backstage/core-compat-api@npm:^0.5.12, @backstage/core-compat-api@npm:^0.5.9":
   version: 0.5.12
   resolution: "@backstage/core-compat-api@npm:0.5.12"
   dependencies:
@@ -2430,7 +2430,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-defaults@npm:^0.5.3":
+"@backstage/frontend-defaults@backstage:^::backstage=1.52.1&npm=0.5.3, @backstage/frontend-defaults@npm:^0.5.3":
   version: 0.5.3
   resolution: "@backstage/frontend-defaults@npm:0.5.3"
   dependencies:
@@ -13507,8 +13507,10 @@ __metadata:
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
+    "@backstage/core-compat-api": "backstage:^"
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/frontend-defaults": "backstage:^"
     "@backstage/integration-react": "backstage:^"
     "@backstage/plugin-api-docs": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"

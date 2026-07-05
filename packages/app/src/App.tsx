@@ -6,7 +6,6 @@ import {
 import {
   CatalogEntityPage,
   CatalogIndexPage,
-  catalogPlugin,
 } from '@backstage/plugin-catalog';
 import {
   CatalogImportPage,
@@ -22,18 +21,16 @@ import {
 } from '@backstage/plugin-techdocs';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 import { apis } from './apis';
-import { entityPage } from './components/catalog/EntityPage';
-import { searchPage } from './components/search/SearchPage';
-import { Root } from './components/Root';
+import { entityPage } from './modules/catalog/EntityPage';
+import { searchPage } from './modules/search/SearchPage';
 
 import {
-  AlertDisplay,
   ErrorPage,
-  OAuthRequestDialog,
   SignInPage,
 } from '@backstage/core-components';
-import { createApp } from '@backstage/app-defaults';
-import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
+import { createApp } from '@backstage/frontend-defaults';
+import { convertLegacyAppOptions, convertLegacyAppRoot, } from '@backstage/core-compat-api';
+import { FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
@@ -43,15 +40,15 @@ import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { ScaffolderFieldExtensions } from '@backstage/plugin-scaffolder-react';
 // Theme
 import { carthThemes } from './themes/carthTheme';
-// Home
-import { HomepageCompositionRoot, VisitListener } from '@backstage/plugin-home';
-import { HomePage } from './components/home/HomePage';
 // Identity Providers
 import { providers } from './identityProviders';
-// Plugins
-import * as plugins from './plugins';
-// Auto-logout
-import { AutoLogout } from '@backstage/core-components';
+// Legacy Plugins
+import {
+  appRegistryNfsPlugin,
+  azdoNfsPlugin,
+  analyticsNfsPlugin,
+  shortcutsNfsPlugin,
+} from './legacyPlugins';
 // Entity Validation
 import { EntityValidationPage } from '@backstage-community/plugin-entity-validation';
 // API platform
@@ -85,7 +82,7 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { DrawIo } from '@internal/plugin-techdocs-addon-drawio';
 // DevTools
 import { DevToolsPage } from '@backstage/plugin-devtools';
-import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
+import { customDevToolsPage } from './modules/devtools/CustomDevToolsPage';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
 import { ToolsPage } from '@internal/plugin-toolkit';
@@ -95,45 +92,15 @@ import {
   AlertMessageExtension,
 } from '@internal/plugin-scaffolder-extensions';
 import { HealthDashboardPage } from '@internal/plugin-health-dashboard';
-
-const app = createApp({
-  apis,
-  plugins: Object.values(plugins),
-  bindRoutes({ bind }) {
-    bind(catalogPlugin.externalRoutes, {
-      createComponent: scaffolderPlugin.routes.root,
-      viewTechDoc: techdocsPlugin.routes.docRoot,
-      createFromTemplate: scaffolderPlugin.routes.selectedTemplate,
-    });
-    bind(apiDocsPlugin.externalRoutes, {
-      registerApi: catalogImportPlugin.routes.importPage,
-    });
-    bind(scaffolderPlugin.externalRoutes, {
-      registerComponent: false,
-      viewTechDoc: techdocsPlugin.routes.docRoot,
-    });
-    bind(orgPlugin.externalRoutes, {
-      catalogIndex: catalogPlugin.routes.catalogIndex,
-    });
-  },
-  components: {
-    SignInPage: props => (
-      <SignInPage
-        {...props}
-        providers={providers}
-        title="Select a sign-in method"
-        align="center"
-      />
-    ),
-  },
-  themes: carthThemes,
-});
+// NFS
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import { navModule } from './modules/nav';
+import homePlugin from '@backstage/plugin-home/alpha';
+import { homePluginOverrides } from './modules/home';
+import devToolsPlugin from '@backstage/plugin-devtools/alpha';
 
 const routes = (
   <FlatRoutes>
-    <Route path="/" element={<HomepageCompositionRoot />}>
-      <HomePage />
-    </Route>
     <Route
       path="/catalog"
       element={
@@ -298,18 +265,62 @@ const routes = (
       path="/catalog-unprocessed-entities"
       element={<CatalogUnprocessedEntitiesPage />}
     />
-    ;
   </FlatRoutes>
 );
 
+const convertedOptionsModule = convertLegacyAppOptions({
+  apis,
+  components: {
+    SignInPage: props => (
+      <SignInPage
+        {...props}
+        providers={providers}
+        title="Select a sign-in method"
+        align="center"
+      />
+    ),
+  },
+  themes: carthThemes,
+});
+
+const convertedRootFeatures = convertLegacyAppRoot(routes, { entityPage });
+
+const app = createApp({
+  bindRoutes({ bind }) {
+    bind(catalogPlugin.externalRoutes, {
+      createComponent: scaffolderPlugin.routes.root,
+      viewTechDoc: techdocsPlugin.routes.docRoot,
+      createFromTemplate: scaffolderPlugin.routes.selectedTemplate,
+    });
+    bind(apiDocsPlugin.externalRoutes, {
+      registerApi: catalogImportPlugin.routes.importPage,
+    });
+    bind(scaffolderPlugin.externalRoutes, {
+      registerComponent: false,
+      viewTechDoc: techdocsPlugin.routes.docRoot,
+    });
+    bind(orgPlugin.externalRoutes, {
+      catalogIndex: catalogPlugin.routes.catalogIndex,
+    });
+  },
+  features: [
+    // Legacy
+    convertedOptionsModule,
+    ...convertedRootFeatures,
+    // Nav
+    navModule,
+    // Nfs plugins
+    homePlugin,
+    homePluginOverrides,
+    catalogPlugin,
+    devToolsPlugin,
+    // Legacy plugins
+    appRegistryNfsPlugin,
+    azdoNfsPlugin,
+    analyticsNfsPlugin,
+    shortcutsNfsPlugin,
+  ],
+});
+
 export default app.createRoot(
-  <>
-    <AlertDisplay />
-    <OAuthRequestDialog />
-    <AutoLogout />
-    <AppRouter>
-      <VisitListener />
-      <Root>{routes}</Root>
-    </AppRouter>
-  </>,
 );

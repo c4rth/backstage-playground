@@ -1,8 +1,8 @@
 # Plugins
 
-## Catalog admin plugin
+# To check
 
-Manage catalog: delete, refresh, register
+- AutoLogout
 
 # NFS
 

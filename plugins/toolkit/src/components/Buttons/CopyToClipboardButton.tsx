@@ -19,6 +19,7 @@ export const CopyToClipboardButton = (props: Props) => {
           {
             title: 'Copied to clipboard!',
             status: 'success',
+            timeout: 2000,
           }
         );
       })
@@ -26,6 +27,7 @@ export const CopyToClipboardButton = (props: Props) => {
         toastApi.post({
           title: 'Failed to copy to clipboard!',
           status: 'warning',
+          timeout: 2000,
         });
       });
   };
