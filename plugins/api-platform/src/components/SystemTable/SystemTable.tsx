@@ -88,15 +88,11 @@ const getData = async (
   });
 
   if (result) {
-    const res = {
+    return {
       data: result.items.map(toEntityRow),
       totalCount: result.totalCount,
       page: Math.floor(result.offset / result.limit),
     };
-
-    console.log('getData', res);
-
-    return res;
   }
   return {
     data: [],

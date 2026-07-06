@@ -68,10 +68,10 @@ const getChipStyles = (
       baseStyles.color = 'var(--bui-accent-fg)';
     } else if (color === 'secondary') {
       baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
-      //baseStyles.color = 'var(--bui-black)';
+      // baseStyles.color = 'var(--bui-black)';
     } else if (color === 'default') {
       baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
-      //baseStyles.color = 'var(--bui-black)';
+      // baseStyles.color = 'var(--bui-black)';
     } else {
       baseStyles.backgroundColor = color;
       baseStyles.color = textColor || '#fff';

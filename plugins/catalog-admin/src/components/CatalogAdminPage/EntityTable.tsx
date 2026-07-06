@@ -217,7 +217,7 @@ const columns: ColumnConfig<TableRow>[] = [
   {
     id: 'location',
     label: 'Location',
-    width: '50%',
+    width: '45%',
     cell: ({ location }: TableRow) => <CellText title={location || '-'} />,
   },
 ];
