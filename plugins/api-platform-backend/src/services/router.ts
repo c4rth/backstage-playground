@@ -150,6 +150,15 @@ export async function createRouter(
     res.status(response.returnCode).json({ message: response.message });
   });
 
+  router.patch('/catalog/:kind/:name', async (req, res) => {
+    const response = await catalogService.refreshCatalogInfo({
+      name: req.params.name,
+      kind: req.params.kind,
+    });
+    res.status(response.returnCode).json({ message: response.message });
+  });
+
+
   // Endpoints: /services
 
   router.get('/services/count', async (req, res) => {

@@ -22,48 +22,6 @@ app:
 organization:
   name: Acme
 
-apiPlatform:
-  organization: organization
-  feedName: feedName
-  groupPrefix: c4rth
-  dns: api-platform.carth.xyz
-
-appRegistry:
-  baseUrl: &appRegistryUrl http://localhost:8080
-  fetch: &appRegistryFetchUrl http://localhost:8080/actuator
-  version: v2
-
-healthProbes:
-  proxyEndpoints:
-    - /health-probes-prd
-    - /health-probes-nonprd
-
-mcaComponents:
-  serviceBaseUrl: &mcaComponentsServiceUrl http://localhost:8080
-  baseTypes:
-    baseUrl: &mcaBasetypesUrl http://localhost:8080/basetypes
-    listBaseUrl: http://localhost:8080/basetypes/allclasses-frame.html
-    schedule:
-      frequency: PT2M
-      timeout: PT30S
-      initialDelay: PT1M
-  operations:
-    csvBaseUrl: http://localhost:8080/mca/alloperations.csv
-    schedule:
-      frequency: PT2M
-      timeout: PT30S
-      initialDelay: PT1M
-  urlLocations:
-    oldDns: https://old.carth.net
-    newDns: https://new.c4rth.net
-
-analytics:
-  threshold: PT30D # Threshold in days for deleting old analytics data
-  schedule:
-    frequency: PT5M
-    timeout: PT15M
-    initialDelay: PT1M
-
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
@@ -177,21 +135,21 @@ proxy:
   # skipInvalidProxies: true
   endpoints:
     '/app-registry':
-      target: *appRegistryUrl
+      target: http://localhost:8080
       allowedMethods: ['GET']
       allowedHeaders: ['Accept', 'x-api-version']
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
-    '/operations-sources':
-      target: *mcaComponentsServiceUrl
+    '/operations-sources':    
+      target: http://localhost:8080
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
     '/base-types':
-      target: *mcaBasetypesUrl
+      target: http://localhost:8080/basetypes
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true
@@ -341,9 +299,51 @@ devTools:
         target: '8.8.8.8'
       - name: 'App Registry'
         type: 'fetch'
-        target: *appRegistryFetchUrl
+        target: http://localhost:8080/actuator
   scheduledTasks:
     plugins:
       - catalog
       - mca
       - analytics
+
+apiPlatform:
+  organization: organization
+  feedName: feedName
+  groupPrefix: c4rth
+  dns: api-platform.carth.xyz
+
+appRegistry:
+  baseUrl: http://localhost:8080
+  fetch:  http://localhost:8080/actuator
+  version: v2
+
+healthProbes:
+  proxyEndpoints:
+    - /health-probes-prd
+    - /health-probes-nonprd
+
+mcaComponents:
+  serviceBaseUrl: http://localhost:8080
+  baseTypes:
+    baseUrl: http://localhost:8080/basetypes
+    listBaseUrl: http://localhost:8080/basetypes/allclasses-frame.html
+    schedule:
+      frequency: PT2M
+      timeout: PT30S
+      initialDelay: PT1M
+  operations:
+    csvBaseUrl: http://localhost:8080/mca/alloperations.csv
+    schedule:
+      frequency: PT2M
+      timeout: PT30S
+      initialDelay: PT1M
+  urlLocations:
+    oldDns: https://old.carth.net
+    newDns: https://new.c4rth.net
+
+analytics:
+  threshold: PT30D # Threshold in days for deleting old analytics data
+  schedule:
+    frequency: PT5M
+    timeout: PT15M
+    initialDelay: PT1M

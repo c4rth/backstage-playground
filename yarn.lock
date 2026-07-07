@@ -3340,7 +3340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-events-backend@backstage:^::backstage=1.52.1&npm=0.6.3, @backstage/plugin-events-backend@npm:^0.6.3":
+"@backstage/plugin-events-backend@npm:^0.6.3":
   version: 0.6.3
   resolution: "@backstage/plugin-events-backend@npm:0.6.3"
   dependencies:
@@ -14194,7 +14194,7 @@ __metadata:
     "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-devtools-backend": "backstage:^"
     "@backstage/plugin-devtools-common": "backstage:^"
-    "@backstage/plugin-events-backend": "backstage:^"
+    "@backstage/plugin-events-backend": "npm:^0.6.3"
     "@backstage/plugin-mcp-actions-backend": "backstage:^"
     "@backstage/plugin-permission-backend": "backstage:^"
     "@backstage/plugin-permission-common": "backstage:^"

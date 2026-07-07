@@ -8,8 +8,6 @@ import {
 import { entityPage } from './modules/catalog/EntityPage';
 import { createApp } from '@backstage/frontend-defaults';
 import { convertLegacyAppRoot, } from '@backstage/core-compat-api';
-// Scaffolder
-import { scaffolderPlugin } from '@backstage/plugin-scaffolder';
 // Legacy Plugins
 import {
   appRegistryNfsPlugin,
@@ -27,6 +25,7 @@ import { homePluginOverrides } from './modules/home';
 import devToolsPlugin from '@backstage/plugin-devtools/alpha';
 import { appOverrides } from './modules/app';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
+import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 
 const convertedRootFeatures = convertLegacyAppRoot(routes, { entityPage });
 
@@ -60,6 +59,7 @@ const app = createApp({
     catalogPlugin,
     devToolsPlugin,
     catalogImportPlugin,
+    scaffolderPlugin,
     // Legacy plugins
     appRegistryNfsPlugin,
     azdoNfsPlugin,

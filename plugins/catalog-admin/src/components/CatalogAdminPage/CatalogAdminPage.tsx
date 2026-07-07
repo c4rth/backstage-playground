@@ -1,4 +1,4 @@
-import { Container, FullPage, Grid, Select } from '@backstage/ui';
+import { Container, Grid, Select } from '@backstage/ui';
 import { useState, useEffect } from 'react';
 import { EntityTable } from './EntityTable';
 import { useApi } from '@backstage/core-plugin-api';
@@ -10,6 +10,7 @@ const kindOptions = [
   { label: 'Library', id: 'library' },
   { label: 'Service', id: 'service' },
   { label: 'TechDocs', id: 'techdocs' },
+  { label: 'Template', id: 'template' },
 ];
 
 export const CatalogAdminPage = () => {

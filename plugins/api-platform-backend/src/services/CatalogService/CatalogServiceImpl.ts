@@ -5,8 +5,8 @@ import {
   createServiceRef,
   LoggerService,
 } from '@backstage/backend-plugin-api';
-import { ApiPlatformCatalogService, UnregisterResponse } from './types';
-import { Entity } from '@backstage/catalog-model';
+import { ApiPlatformCatalogService, RefreshResponse, UnregisterResponse } from './types';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   CatalogService,
   catalogServiceRef,
@@ -125,6 +125,45 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
       }
     } else {
       this.logger.error('Entity not found for unregistration:', request);
+      return {
+        message: `entity not found: "${request.name}"`,
+        returnCode: 404,
+      };
+    }
+  }
+
+  async refreshCatalogInfo(request: {
+    name: string;
+    kind: string;
+  }): Promise<RefreshResponse> {
+    const entity = await this.getEntityByName({
+      name: request.name,
+      kind: request.kind,
+    });
+    if (entity) {
+      try {
+        const annotations = entity.metadata.annotations;
+        if (!annotations || !annotations['backstage.io/managed-by-location']) {
+          this.logger.error('Metadata location not found for entity:', entity);
+          throw new Error('Metadata location not found');
+        }
+        const entityRef = stringifyEntityRef(entity);
+        this.logger.info(`Entity to refresh: ${entityRef}`);
+        await this.catalog.refreshEntity(entityRef, {
+          credentials: await this.auth.getOwnServiceCredentials(),
+        });
+        return {
+          message: `refreshed "${entity.metadata.name}"`,
+          returnCode: 200,
+        };
+      } catch (error) {
+        return {
+          message: `failed to refresh "${entity.metadata.name}" - ${error}`,
+          returnCode: 500,
+        };
+      }
+    } else {
+      this.logger.error('Entity not found for refresh:', request);
       return {
         message: `entity not found: "${request.name}"`,
         returnCode: 404,

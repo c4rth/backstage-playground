@@ -5,6 +5,11 @@ export type UnregisterResponse = {
   returnCode: number;
 };
 
+export type RefreshResponse = {
+  message: string;
+  returnCode: number;
+};
+
 export interface ApiPlatformCatalogService {
   registerCatalogInfo(request: {
     target: string;
@@ -18,4 +23,8 @@ export interface ApiPlatformCatalogService {
     name: string;
     kind: string;
   }): Promise<UnregisterResponse>;
+  refreshCatalogInfo(request: {
+    name: string;
+    kind: string;
+  }): Promise<RefreshResponse>;
 }

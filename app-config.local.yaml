@@ -30,6 +30,9 @@ backend:
           plugin: azdo
         level: debug
       #- matchers:
+      #    plugin: catalog
+      #  level: debug
+      #- matchers:
       #    plugin: search
       # level: debug
 

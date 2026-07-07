@@ -6,8 +6,10 @@ metadata:
   title: Spring Boot Init Template 3
   description: Scaffold a new Spring Boot project
 spec:
-  owner: user:guest
+  owner: group:default/team-a.o
   type: service
+  system: system-a
+
 
   # These parameters are used to generate the input form in the frontend, and are
   # used to gather input data for the execution of the template.

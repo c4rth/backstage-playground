@@ -5,8 +5,9 @@ metadata:
   title: Test repo init
   description: Create a test API repository 7
 spec:
-  owner: group:default/prd.10.gemz.depo.ado.o
+  owner: group:default/team-a.o
   type: repository
+  system: system-a
  
   parameters:
     - title: "General Information"

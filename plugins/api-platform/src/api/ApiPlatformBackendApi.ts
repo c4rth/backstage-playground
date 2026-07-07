@@ -59,6 +59,8 @@ export interface ApiPlatformBackendApi {
   ): Promise<LibraryDefinition[]>;
 
   unregisterEntity(kind: string, name: string): Promise<void>;
+
+  refreshEntity(kind: string, name: string): Promise<void>;
 }
 
 export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
@@ -302,6 +304,20 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     if (!response.ok) {
       throw new Error(
         `Failed to unregister entity: HTTP ${response.status} - ${response.statusText}`,
+      );
+    }
+  }
+
+  async refreshEntity(kind: string, name: string): Promise<void> {
+    const encodedKind = encodeURIComponent(kind);
+    const encodedName = encodeURIComponent(name);
+    const baseUrl = await this.getBaseUrl();
+    const url = new URL(`${baseUrl}/catalog/${encodedKind}/${encodedName}`);
+
+    const response = await this.fetchApi.fetch(url, { method: 'PATCH' });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to refresh entity: HTTP ${response.status} - ${response.statusText}`,
       );
     }
   }

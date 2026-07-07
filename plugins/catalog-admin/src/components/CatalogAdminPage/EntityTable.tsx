@@ -67,6 +67,11 @@ function getFilter(kind: string, system: string): EntityFilterQuery {
       'spec.type': ['documentation'],
       'spec.system': system,
     };
+  } else if (kind === 'template') {
+    return {
+      kind: ['Template'],
+      'spec.system': system,
+    };
   }
   throw new Error(`Unsupported kind: ${kind}`);
 }
@@ -123,6 +128,16 @@ function mapEntityToTableRow(
         entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',
     };
   } else if (kind === 'techdocs') {
+    return {
+      id: idx,
+      name: entity.metadata.name,
+      system: entity.spec?.system?.toString() ?? '-',
+      version: '-',
+      entityName: entity.metadata.name,
+      location:
+        entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',
+    };
+  } else if (kind === 'template') {
     return {
       id: idx,
       name: entity.metadata.name,
@@ -283,15 +298,39 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
         toastApi.post({
           title: `Successfully deleted entity: ${entityName}`,
           status: 'success',
-          timeout: 2000,
+          timeout: 1500,
         });
       } catch (error) {
         toastApi.post({
           title: `Failed to delete entity: ${entityName} - ${error}`,
           status: 'danger',
-          timeout: 2000,
+          timeout: 1500,
         });
         console.error(`Failed to delete entity: ${entityName}`, error);
+      }
+    }
+    setSelected(new Set());
+    reload();
+  };
+
+  const refreshSelected = async () => {
+    const entityNames = getSelectedEntityNames();
+    const apiKind = kind === 'api' ? 'API' : 'Component';
+    for (const entityName of entityNames) {
+      try {
+        await apiPlatformApi.refreshEntity(apiKind, entityName);
+        toastApi.post({
+          title: `Successfully refreshed entity: ${entityName}`,
+          status: 'success',
+          timeout: 1500,
+        });
+      } catch (error) {
+        toastApi.post({
+          title: `Failed to refresh entity: ${entityName} - ${error}`,
+          status: 'danger',
+          timeout: 1500,
+        });
+        console.error(`Failed to refresh entity: ${entityName}`, error);
       }
     }
     setSelected(new Set());
@@ -319,6 +358,45 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
         sticky
         customActions={
           <>
+            <DialogTrigger>
+              <Button
+                variant="primary"
+                iconStart={<RiDeleteBin6Line />}
+                isDisabled={selected === 'all' ? false : selected.size === 0}
+              >
+                Refresh ({selected === 'all' ? 'all' : selected.size})
+              </Button>
+              <Dialog>
+                <DialogHeader>Confirm Refresh</DialogHeader>
+                <DialogBody>
+                  <Text>
+                    Are you sure you want to refresh{' '}
+                    {selected === 'all'
+                      ? 'all items'
+                      : `${selected.size} items`}
+                    ?
+                  </Text>
+                  <Flex direction="column" mt="2" gap="1">
+                    {getSelectedEntityNames().map(entityName => (
+                      <Text key={entityName}>- {entityName}</Text>
+                    ))}
+                  </Flex>
+                </DialogBody>
+                <DialogFooter>
+                  <Button variant="secondary" slot="close">
+                    Cancel
+                  </Button>
+                  <Button
+                    destructive
+                    variant="primary"
+                    slot="close"
+                    onClick={refreshSelected}
+                  >
+                    Refresh
+                  </Button>
+                </DialogFooter>
+              </Dialog>
+            </DialogTrigger>
             <DialogTrigger>
               <Button
                 destructive
