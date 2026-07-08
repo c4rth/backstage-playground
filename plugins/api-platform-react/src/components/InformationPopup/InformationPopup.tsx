@@ -43,7 +43,7 @@ export const InformationPopup = (props: InformationPopupProps) => {
 
   return (
     <Flex align="center" mt="2" gap="xs">
-      <Box as="span">
+      <Box as="span" mr="1">
         <Text variant={variant} style={{ color: 'var(--bui-accent-fg)' }}>
           {text}
         </Text>
