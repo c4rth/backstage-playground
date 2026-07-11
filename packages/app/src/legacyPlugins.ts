@@ -2,7 +2,6 @@ import {
     convertLegacyPlugin,
     convertLegacyPageExtension,
 } from '@backstage/core-compat-api';
-import { appRegistryPlugin, AppRegistryPage } from '@internal/plugin-app-registry';
 import {
     azdoPlugin,
     AzureDevOpsPipelinePage,
@@ -11,10 +10,6 @@ import {
 } from '@internal/plugin-azure-devops';
 import { analyticsPlugin, AnalyticsContent } from '@internal/plugin-analytics';
 import { shortcutsPlugin, Shortcuts } from '@backstage-community/plugin-shortcuts';
-
-export const appRegistryNfsPlugin = convertLegacyPlugin(appRegistryPlugin, {
-    extensions: [convertLegacyPageExtension(AppRegistryPage)],
-});
 
 export const azdoNfsPlugin = convertLegacyPlugin(azdoPlugin, {
     extensions: [
