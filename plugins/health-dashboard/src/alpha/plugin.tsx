@@ -1,0 +1,61 @@
+import {
+  ApiBlueprint,
+  PageBlueprint,
+  configApiRef,
+  createFrontendPlugin,
+  featureFlagsApiRef,
+  fetchApiRef,
+} from '@backstage/frontend-plugin-api';
+import {
+  HealthDashboardBackendClient,
+  healthDashboardBackendApiRef,
+} from '../api';
+import { rootRouteRef } from '../routes';
+
+const healthDashboardPage = PageBlueprint.make({
+  name: 'health-dashboard',
+  params: {
+    noHeader: true,
+    path: '/health-dashboard',
+    routeRef: rootRouteRef,
+    loader: () =>
+      import('../components/HealthDashboardPage').then(
+        m => <m.NfsHealthDashboardPage />,
+      ),
+  },
+});
+
+const healthDashboardApi = ApiBlueprint.make({
+  name: 'health-dashboard-backend-api',
+  params: defineParams =>
+    defineParams({
+      api: healthDashboardBackendApiRef,
+      deps: {
+        configApi: configApiRef,
+        fetchApi: fetchApiRef,
+        featureFlagsApi: featureFlagsApiRef,
+      },
+      factory: ({ configApi, fetchApi, featureFlagsApi }) =>
+        new HealthDashboardBackendClient({
+          configApi,
+          fetchApi,
+          featureFlagsApi,
+        }),
+    }),
+});
+
+export default createFrontendPlugin({
+  pluginId: 'health-dashboard',
+  title: 'Health Dashboard',
+  routes: {
+    root: rootRouteRef,
+  },
+  featureFlags: [
+    {
+      name: 'mock-health-dashboard',
+    },
+  ],
+  extensions: [healthDashboardPage, healthDashboardApi],
+});
+
+export { NfsHealthDashboardPage as HealthDashboardPage } from '../components/HealthDashboardPage';

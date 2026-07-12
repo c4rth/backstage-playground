@@ -5,6 +5,16 @@
   "private": true,
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
@@ -20,6 +30,11 @@
     ]
   },
   "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "start": "backstage-cli package start",
     "build": "backstage-cli package build",
@@ -38,7 +53,6 @@
     "@backstage/plugin-search-react": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@internal/plugin-api-platform-react": "workspace:^",
-    "@internal/plugin-iframe": "workspace:^",
     "@internal/plugin-mca-common": "workspace:^",
     "@material-table/core": "3.2.5",
     "@remixicon/react": ">=4.6.0 <4.9.0",

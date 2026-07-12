@@ -1,1 +1,4 @@
-export { McaBaseTypeExplorerPage } from './McaBaseTypeExplorerPage';
+export {
+	McaBaseTypeExplorerPage,
+	NfsMcaBaseTypeExplorerPage,
+} from './McaBaseTypeExplorerPage';

@@ -1,8 +1,6 @@
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
 import { SidebarLogo } from './SidebarLogo';
-
 import {
-  Settings as SidebarSettings,
   UserSettingsSignInAvatar,
 } from '@backstage/plugin-user-settings';
 import { SidebarSearchModal } from '@backstage/plugin-search';
@@ -24,16 +22,13 @@ import {
   RiMenuSearchLine,
   RiHome2Fill,
   RiCpuLine,
-  RiFileCopy2Line,
   RiBookShelfLine,
   RiToolsFill,
-  RiWrenchFill,
-  RiAdminLine,
   RiBubbleChartLine,
-  RiAlbumLine,
   RiPuzzleFill,
   RiShapesFill,
   RiHeartPulseFill,
+  RiWrenchFill,
 } from '@remixicon/react';
 import { IconComponent } from '@backstage/core-plugin-api';
 // Permission on menu
@@ -61,6 +56,7 @@ export const SidebarContent = NavContentBlueprint.make({
       const nav = navItems.withComponent(item => (
         <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
       ));
+      
       return (
         <Sidebar>
           <SidebarLogo />
@@ -103,31 +99,14 @@ export const SidebarContent = NavContentBlueprint.make({
                 text="Libraries"
               />
             </RequirePermission>
-            <SidebarItem
-              icon={RiBubbleChartLine as IconComponent}
-              to="mca/components"
-              text="MCA Operations"
-            />
-            <SidebarItem
-              icon={RiAlbumLine as IconComponent}
-              to="mca/basetypes"
-              text="MCA BaseTypes"
-            />
+            {nav.take('page:mca/mca-components')}
+            {nav.take('page:mca/mca-basetypes')}
             <SidebarItem
               icon={RiHeartPulseFill as IconComponent}
               to="health-dashboard"
               text="Health Dashboard"
-            />
-            <SidebarItem
-              icon={RiFileCopy2Line as IconComponent}
-              to="docs"
-              text="Docs"
-            />
-            <SidebarItem
-              icon={RiFileCopy2Line as IconComponent}
-              to="external-docs"
-              text="ExtDocs"
-            />
+            />            
+            {nav.take('page:techdocs')}
             <RequirePermission
               permission={taskCreatePermission}
               errorPage={<div />}
@@ -143,11 +122,6 @@ export const SidebarContent = NavContentBlueprint.make({
                     errorPage={<div />}
                   >
                     <SidebarDivider />
-                    <SidebarSubmenuItem
-                      icon={RiToolsFill as IconComponent}
-                      to="entity-validation"
-                      title="Entity Validator"
-                    />
                     <RequirePermission
                       permission={catalogEntityCreatePermission}
                       errorPage={<div />}
@@ -165,7 +139,7 @@ export const SidebarContent = NavContentBlueprint.make({
             <SidebarItem
               icon={RiWrenchFill as IconComponent}
               text="DevTools"
-              to="tools"
+              to="toolkit"
             />
             {/* End global nav */}
             <SidebarScrollWrapper>
@@ -175,15 +149,13 @@ export const SidebarContent = NavContentBlueprint.make({
           <SidebarSpace />
           <Shortcuts />
           <SidebarDivider />
+
           <RequirePermission
             permission={devToolsAdministerPermission}
             errorPage={<div />}
           >
-            <SidebarItem
-              icon={RiAdminLine as IconComponent}
-              to="admin"
-              text="Admin"
-            />
+            {nav.take('page:app-visualizer')}
+            {nav.take('page:devtools')}
           </RequirePermission>
 
           <SidebarGroup
@@ -191,7 +163,7 @@ export const SidebarContent = NavContentBlueprint.make({
             icon={<UserSettingsSignInAvatar />}
             to="/settings"
           >
-            <SidebarSettings />
+            {nav.take('page:user-settings')}
           </SidebarGroup>
         </Sidebar>
       );

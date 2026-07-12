@@ -7,7 +7,7 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-import { rootRouteRef } from './routes';
+import { componentsRouteRef } from './routes';
 import {
   mcaComponentsBackendApiRef,
   McaComponentsBackendClient,
@@ -41,7 +41,7 @@ export const McaComponentExplorerPage = mcaComponentPlugin.provide(
       import('./components/McaComponentExplorerPage').then(
         m => m.McaComponentExplorerPage,
       ),
-    mountPoint: rootRouteRef,
+    mountPoint: componentsRouteRef,
   }),
 );
 
@@ -78,7 +78,7 @@ export const McaBaseTypeExplorerPage = mcaComponentPlugin.provide(
       import('./components/McaBaseTypeExplorerPage').then(
         m => m.McaBaseTypeExplorerPage,
       ),
-    mountPoint: rootRouteRef,
+    mountPoint: componentsRouteRef,
   }),
 );
 

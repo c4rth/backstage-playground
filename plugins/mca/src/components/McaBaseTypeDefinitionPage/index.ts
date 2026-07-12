@@ -1,1 +1,4 @@
-export { McaBaseTypeDefinitionPage } from './McaBaseTypeDefinitionPage';
+export {
+	McaBaseTypeDefinitionPage,
+	NfsMcaBaseTypeDefinitionPage,
+} from './McaBaseTypeDefinitionPage';

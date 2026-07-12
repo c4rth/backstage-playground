@@ -1,7 +1,7 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useState } from 'react';
 import { analyticsBackendApiRef } from '../../api';
-import { Box, Container, Flex, FullPage, Select } from '@backstage/ui';
+import { Box, Container, Flex, Select } from '@backstage/ui';
 import { DailyVisitor } from '../../api/CustomAnalyticsApi';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { DailyUsersChart } from './DailyUsersChart';
@@ -65,37 +65,35 @@ export const AnalyticsContent = () => {
   }, [analyticsApi, daysToShow]);
 
   return (
-    <FullPage>
-      <Container>
-        {isLoading && <Progress />}
-        {error && (
-          <ResponseErrorPanel
-            title="Failed to call AppRegistry"
-            error={error}
-          />
-        )}
+    <Container>
+      {isLoading && <Progress />}
+      {error && (
+        <ResponseErrorPanel
+          title="Failed to call AppRegistry"
+          error={error}
+        />
+      )}
 
-        {!isLoading && !error && (
-          <Flex direction="column" style={{ height: 'calc(100vh - 200px)' }}>
-            <Box style={{ flexShrink: 0, marginBottom: '16px' }}>
-              <Select
-                onChange={selected => {
-                  setDaysToShow(parseInt(selected?.toString() ?? '0', 10));
-                }}
-                label="Date Range"
-                options={daysToShowOptions}
-                value={daysToShow.toString()}
-              />
-            </Box>
-            <Box style={{ flex: '0 0 25%', minHeight: 0 }}>
-              <DailyUsersChart data={dailyUniqueVisitors} />
-            </Box>
-            <Box style={{ flex: 1, minHeight: 0 }}>
-              <TopFeaturesTable data={topFeatures} />
-            </Box>
-          </Flex>
-        )}
-      </Container>
-    </FullPage>
+      {!isLoading && !error && (
+        <Flex direction="column" style={{ height: 'calc(100vh - 200px)' }}>
+          <Box style={{ flexShrink: 0, marginBottom: '16px' }}>
+            <Select
+              onChange={selected => {
+                setDaysToShow(parseInt(selected?.toString() ?? '0', 10));
+              }}
+              label="Date Range"
+              options={daysToShowOptions}
+              value={daysToShow.toString()}
+            />
+          </Box>
+          <Box style={{ flex: '0 0 25%', minHeight: 0 }}>
+            <DailyUsersChart data={dailyUniqueVisitors} />
+          </Box>
+          <Box style={{ flex: 1, minHeight: 0 }}>
+            <TopFeaturesTable data={topFeatures} />
+          </Box>
+        </Flex>
+      )}
+    </Container>
   );
 };

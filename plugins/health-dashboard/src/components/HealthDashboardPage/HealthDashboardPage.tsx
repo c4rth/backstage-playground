@@ -4,7 +4,7 @@ import {
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { Box, Cell, ColumnConfig, useTable, Table } from '@backstage/ui';
+import { Box, Cell, ColumnConfig, useTable, Table, FullPage, PluginHeader } from '@backstage/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useGetHealthData } from '../../hooks';
 import {
@@ -19,25 +19,25 @@ import {
 } from '@internal/plugin-api-platform-react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import styles from './HealthDashboardPage.module.css';
- 
+
 const emptyState = () => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
     No health data found.
   </div>
 );
- 
+
 const POPUP_CONTENT = (
- <InformationPopupContent
+  <InformationPopupContent
     text1="View the health dashboard for applications deployed in k8s. This screen displays each application and the health status reported for each environment."
     text2="The health status reflects the response returned by the applications, helping you quickly identify which services are healthy and which require attention."
   />
 );
- 
+
 type TableRow = {
   id: number;
   healthData: ApplicationHealthData;
 };
- 
+
 const toTableRow = (
   healthData: ApplicationHealthData,
   idx: number,
@@ -45,7 +45,7 @@ const toTableRow = (
   id: idx,
   healthData,
 });
- 
+
 async function fetchData(
   getHealthData: () => Promise<HealthDataResponse | undefined>,
   setErrors: (errors: HealthDataError[]) => void,
@@ -54,7 +54,7 @@ async function fetchData(
   setErrors(response?.errors ?? []);
   return response?.healthData.map(toTableRow) ?? [];
 }
- 
+
 const getEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
   id: env,
   label: env.toUpperCase(),
@@ -63,7 +63,7 @@ const getEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
   ),
   width: '15%',
 });
- 
+
 const columns: ColumnConfig<TableRow>[] = [
   {
     id: 'app',
@@ -83,22 +83,26 @@ const columns: ColumnConfig<TableRow>[] = [
   getEnvironmentColumn('ptp'),
   getEnvironmentColumn('prd'),
 ];
- 
-export const HealthDashboardPage = () => {
+
+const HealthDashboardPageContent = ({
+  headerVariant,
+}: {
+  headerVariant: 'legacy' | 'nfs';
+}) => {
   const getHealthData = useGetHealthData();
   const isFirstRender = useRef(true);
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
   );
   const configApi = useApi(configApiRef);
- 
+
   const organizationName =
     configApi.getOptionalString('organization.name') ?? 'Backstage';
   const subtitle = `${organizationName} Health Dashboard k8s`;
   const subtitleComponent = (
     <InformationPopup text={subtitle} content={POPUP_CONTENT} />
   );
- 
+
   const { tableProps, reload } = useTable({
     mode: 'complete',
     getData: () => fetchData(getHealthData, setHealthDataErrors),
@@ -106,7 +110,7 @@ export const HealthDashboardPage = () => {
       type: 'none',
     },
   });
- 
+
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -114,43 +118,73 @@ export const HealthDashboardPage = () => {
     }
     reload();
   }, [reload]);
- 
+
+  const pageContent = (
+    <Content className={styles.contentRoot}>
+      <Box bg="neutral" className={styles.contentScrollArea}>
+        <Box className={styles.tableContainer}>
+          {healthDataErrors.map((sourceError, index) => (
+            <Box mb="4" key={`${sourceError.source}-${index}`}>
+              <ResponseErrorPanel
+                title={`Failed to get ${sourceError.source} health data`}
+                error={new Error(sourceError.message)}
+              />
+            </Box>
+          ))}
+          {tableProps.error && (
+            <ResponseErrorPanel
+              title="Failed to render Health data"
+              error={tableProps.error}
+            />
+          )}
+          {tableProps.isPending && <Progress />}
+          <Table
+            columnConfig={columns}
+            {...tableProps}
+            pagination={{
+              type: 'none',
+            }}
+            emptyState={emptyState()}
+            className={styles.denseTable}
+          />
+        </Box>
+      </Box>
+    </Content>
+  );
+
+  if (headerVariant === 'nfs') {
+    return pageContent;
+  }
+
   return (
     <PageWithHeader
       themeId="dashboard"
       title="Health Dashboard OPP"
       subtitle={subtitleComponent}
     >
-      <Content className={styles.contentRoot}>
-        <Box bg="neutral" className={styles.contentScrollArea}>
-          <Box className={styles.tableContainer}>
-            {healthDataErrors.map((sourceError, index) => (
-              <Box mb="4" key={`${sourceError.source}-${index}`}>
-                <ResponseErrorPanel
-                  title={`Failed to get ${sourceError.source} health data`}
-                  error={new Error(sourceError.message)}
-                />
-              </Box>
-            ))}
-            {tableProps.error && (
-              <ResponseErrorPanel
-                title="Failed to render Health data"
-                error={tableProps.error}
-              />
-            )}
-            {tableProps.isPending && <Progress />}
-            <Table
-              columnConfig={columns}
-              {...tableProps}
-              pagination={{
-                type: 'none',
-              }}
-              emptyState={emptyState()}
-              className={styles.denseTable}
-            />
-          </Box>
-        </Box>
-      </Content>
+      {pageContent}
     </PageWithHeader>
   );
 };
+
+export const HealthDashboardPage = () => (
+  <HealthDashboardPageContent headerVariant="legacy" />
+);
+
+export const NfsHealthDashboardPage = () => {
+
+  const configApi = useApi(configApiRef);
+
+  const organizationName =
+    configApi.getOptionalString('organization.name') ?? 'Backstage';
+  const subtitle = `${organizationName} Health Dashboard k8s`;
+
+  return (
+    <FullPage>
+      <PluginHeader
+        title="Health Dashboard k8s"
+        customActions={<InformationPopup text={subtitle} content={POPUP_CONTENT} />} />
+      <HealthDashboardPageContent headerVariant="nfs" />
+    </FullPage>
+  );
+}

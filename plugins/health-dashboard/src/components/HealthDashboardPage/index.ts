@@ -1,1 +1,1 @@
-export { HealthDashboardPage } from './HealthDashboardPage';
+export { HealthDashboardPage, NfsHealthDashboardPage } from './HealthDashboardPage';

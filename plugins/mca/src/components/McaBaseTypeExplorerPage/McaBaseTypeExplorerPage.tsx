@@ -5,6 +5,7 @@ import {
   InformationPopupContent,
 } from '@internal/plugin-api-platform-react';
 import { McaBaseTypeTable } from '../McaBaseTypeTable/McaBaseTypeTable';
+import { Box, FullPage, PluginHeader } from '@backstage/ui';
 
 const POPUP_CONTENT = (
   <InformationPopupContent
@@ -23,6 +24,12 @@ export const McaBaseTypeExplorerPage = () => {
     <InformationPopup text={subtitle} content={POPUP_CONTENT} />
   );
 
+  const pageContent = (
+    <Content>
+      <McaBaseTypeTable />
+    </Content>
+  );
+
   return (
     <PageWithHeader
       themeId="apis"
@@ -30,9 +37,28 @@ export const McaBaseTypeExplorerPage = () => {
       subtitle={subtitleComponent}
       pageTitleOverride="MCA BaseTypes"
     >
-      <Content>
-        <McaBaseTypeTable />
-      </Content>
+      {pageContent}
     </PageWithHeader>
+  );
+};
+
+export const NfsMcaBaseTypeExplorerPage = () => {
+  const configApi = useApi(configApiRef);
+
+  const organizationName =
+    configApi.getOptionalString('organization.name') ?? 'Backstage';
+  const subtitle = `${organizationName} MCA BaseType Explorer`;
+
+  return (
+    <FullPage>
+      <PluginHeader
+        title="MCA BaseTypes"
+        customActions={<InformationPopup text={subtitle} content={POPUP_CONTENT} />} />
+      <Content>
+        <Box>
+          <McaBaseTypeTable />
+        </Box>
+      </Content>
+    </FullPage>
   );
 };

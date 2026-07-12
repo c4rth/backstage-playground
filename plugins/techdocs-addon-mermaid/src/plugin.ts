@@ -28,6 +28,7 @@ import type { MermaidProps } from './Mermaid';
  * @public
  */
 
+
 export const techdocsAddonMermaidPlugin = createPlugin({
   id: 'techdocs-addon-mermaid',
 });
@@ -38,7 +39,7 @@ export const techdocsAddonMermaidPlugin = createPlugin({
  * @public
  */
 
-export const Mermaid = techdocsAddonMermaidPlugin.provide(
+ export const Mermaid = techdocsAddonMermaidPlugin.provide(
   createTechDocsAddonExtension<MermaidProps>({
     name: 'MermaidDiagram',
     location: TechDocsAddonLocations.Content,

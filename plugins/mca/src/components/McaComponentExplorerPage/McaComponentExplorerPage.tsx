@@ -7,7 +7,7 @@ import {
 } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Alert, Box, Flex, Grid, Select, Option } from '@backstage/ui';
+import { Alert, Box, Flex, Grid, Select, Option, FullPage, PluginHeader, } from '@backstage/ui';
 import { mcaComponentsBackendApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 
@@ -66,6 +66,46 @@ export const McaComponentExplorerPage = () => {
     <InformationPopup text={subtitle} content={POPUP_CONTENT} />
   );
 
+  const pageContent = (
+    <>
+      <Box mb="4">
+        <Grid.Root columns="2">
+          <Grid.Item>
+            <Select
+              onChange={selected => handleSelectChange(selected!.toString())}
+              label="Type"
+              options={componentTypes}
+              value={selectedType}
+            />
+          </Grid.Item>
+          <Grid.Item>
+            <Flex
+              style={{
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                height: '100%',
+              }}
+            >
+              <Alert
+                status="warning"
+                icon
+                title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
+                style={{ width: 'fit-content', alignSelf: 'flex-end' }}
+              />
+              <Alert
+                status="info"
+                icon
+                title={`Last updated: ${lastModifiedDate?.toLocaleString('fr-BE') || 'Unknown'}`}
+                style={{ width: 'fit-content', alignSelf: 'flex-end' }}
+              />
+            </Flex>
+          </Grid.Item>
+        </Grid.Root>
+      </Box>
+      <McaComponentTable type={selectedType} />
+    </>
+  );
+
   return (
     <PageWithHeader
       themeId="apis"
@@ -73,6 +113,39 @@ export const McaComponentExplorerPage = () => {
       subtitle={subtitleComponent}
       pageTitleOverride="MCA Components"
     >
+      <Content>{pageContent}</Content>
+    </PageWithHeader>
+  );
+};
+
+export const NfsMcaComponentExplorerPage = () => {
+  const configApi = useApi(configApiRef);
+  const mcaApi = useApi(mcaComponentsBackendApiRef);
+
+  const organizationName =
+    configApi.getOptionalString('organization.name') ?? 'Backstage';
+
+  const { value: lastModifiedDate } = useAsync(async () => {
+    return mcaApi.getCsvLastModifiedDate();
+  }, [mcaApi]);
+
+  const subtitle = `${organizationName} MCA Components Explorer`;
+
+  const [selectedType, setSelectedType] = useState<McaComponentType>(() =>
+    getInitialType(),
+  );
+
+  const handleSelectChange = (selected: string) => {
+    const normalizedType = normalizeComponentType(selected);
+    sessionStorage.setItem(STORAGE_KEY, normalizedType);
+    setSelectedType(normalizedType);
+  };
+
+  return (
+    <FullPage>
+      <PluginHeader
+        title="MCA Components"
+        customActions={<InformationPopup text={subtitle} content={POPUP_CONTENT} />} />
       <Content>
         <Box mb="4">
           <Grid.Root columns="2">
@@ -110,6 +183,6 @@ export const McaComponentExplorerPage = () => {
         </Box>
         <McaComponentTable type={selectedType} />
       </Content>
-    </PageWithHeader>
+    </FullPage>
   );
 };

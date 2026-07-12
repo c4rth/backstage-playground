@@ -5,6 +5,9 @@ app:
     - api:home/visits
     - app-root-element:home/visit-listener
     - page:catalog-unprocessed-entities
+    - page:devtools:
+        config:
+          title: Admin
   support:
     url: https://github.com/c4rth # Used by common ErrorPage
     items: # Used by common SupportButton component
@@ -187,6 +190,14 @@ techdocs:
       containerName: ${AZURE_STORAGE_CONTAINER_NAME}
       credentials:
         accountName: ${AZURE_STORAGE_ACCOUNT_NAME}
+  addons:
+    mermaid:
+      enableZoom: true
+      zoomOptions:
+        scaleExtent: [0.1, 10]           # Optional: min/max zoom scale
+        translateExtent:                   # Optional: pan boundaries
+          - [-1000, -1000]
+          - [1000, 1000]
 
 #scaffolder:
 # see https://backstage.io/docs/features/software-templates/configuration for software template options

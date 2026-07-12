@@ -55,7 +55,6 @@ export const InformationPopup = (props: InformationPopupProps) => {
           style={{ width: 'auto', background: 'transparent' }}
           icon={
             <RiInformationLine
-              style={{ color: 'var(--bui-accent-fg)' }}
               aria-label="More information"
             />
           }

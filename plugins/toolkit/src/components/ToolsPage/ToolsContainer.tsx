@@ -1,9 +1,8 @@
-import { Content } from '@backstage/core-components';
 import { defaultTools } from './tools';
 import { useCallback, useState } from 'react';
 import { Tool } from './types';
 import { ToolContainer } from './ToolContainer';
-import { Grid, List, ListRow } from '@backstage/ui';
+import { Box, Grid, List, ListRow } from '@backstage/ui';
 import { useAnalytics } from '@backstage/core-plugin-api';
 import styles from './ToolsContainer.module.css';
 
@@ -24,7 +23,7 @@ export const ToolsContainer = () => {
   );
 
   return (
-    <Content noPadding>
+    <Box style={{ width: '100%', height: '100%' }}>
       <Grid.Root style={{ width: '100%', height: '100%' }} gap="0">
         <Grid.Item colSpan="2">
           <List
@@ -55,6 +54,6 @@ export const ToolsContainer = () => {
           <ToolContainer tool={selectedTool} />
         </Grid.Item>
       </Grid.Root>
-    </Content>
+    </Box>
   );
 };
