@@ -193,7 +193,7 @@ export const LoremIpsum = () => {
       <Grid.Item>
         <Grid.Root
           columns="12"
-          style={{ marginBottom: 10, alignContent: 'center' }}
+          style={{ marginBottom: 10, marginLeft: 10, alignContent: 'center' }}
         >
           <Grid.Item colSpan="2">
             <Select

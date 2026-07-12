@@ -11,11 +11,11 @@
 custom:
 
 - DONE: analytics
-- api-platform
+- DONE: api-platform
 - DONE: app-registry
 - DONE: azure-devops
 - DONE: health-dashboard
-- mca
+- DONE: mca
 - DELETED: techdocs
 - DONE: toolkit
 
@@ -37,7 +37,6 @@ community:
 - shortcuts
 - sonarqube
 
-
 ## TODO
 
 - protect routes
@@ -56,6 +55,16 @@ community:
     - done:
       - health
       - mca: basetypes, components
+      - api-platform
 
 
-  
+- cleanup plugins:
+  use only NFS -> remove old plugins and duplicated JSX components
+  - analytics
+  - api-platform
+  - app-registry
+  - azure-devops
+  - health-dashboard
+  - mca
+  - DELETED: techdocs
+  - toolkit

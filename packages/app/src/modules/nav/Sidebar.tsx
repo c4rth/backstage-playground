@@ -1,8 +1,5 @@
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
 import { SidebarLogo } from './SidebarLogo';
-import {
-  UserSettingsSignInAvatar,
-} from '@backstage/plugin-user-settings';
 import { SidebarSearchModal } from '@backstage/plugin-search';
 import {
   Sidebar,
@@ -18,17 +15,10 @@ import {
 } from '@backstage/core-components';
 
 import {
-  RiMenuFill,
   RiMenuSearchLine,
-  RiHome2Fill,
-  RiCpuLine,
   RiBookShelfLine,
   RiToolsFill,
   RiBubbleChartLine,
-  RiPuzzleFill,
-  RiShapesFill,
-  RiHeartPulseFill,
-  RiWrenchFill,
 } from '@remixicon/react';
 import { IconComponent } from '@backstage/core-plugin-api';
 // Permission on menu
@@ -56,7 +46,7 @@ export const SidebarContent = NavContentBlueprint.make({
       const nav = navItems.withComponent(item => (
         <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
       ));
-      
+
       return (
         <Sidebar>
           <SidebarLogo />
@@ -72,80 +62,54 @@ export const SidebarContent = NavContentBlueprint.make({
             />
           </SidebarGroup>
           <SidebarDivider />
-          <SidebarGroup label="Menu" icon={<RiMenuFill />}>
-            <SidebarItem icon={RiHome2Fill as IconComponent} to="/" text="Home" />
-            <SidebarItem
-              icon={RiShapesFill as IconComponent}
-              to="api-platform/system"
-              text="Systems"
-            />
-            <SidebarItem
-              icon={RiCpuLine as IconComponent}
-              to="api-platform/service"
-              text="Services"
-            />
-            <SidebarItem
-              icon={RiPuzzleFill as IconComponent}
-              to="api-platform/api"
-              text="APIs"
-            />
-            <RequirePermission
-              permission={advancedUserPermission}
-              errorPage={<div />}
-            >
-              <SidebarItem
-                icon={RiBookShelfLine as IconComponent}
-                to="api-platform/library"
-                text="Libraries"
-              />
-            </RequirePermission>
-            {nav.take('page:mca/mca-components')}
-            {nav.take('page:mca/mca-basetypes')}
-            <SidebarItem
-              icon={RiHeartPulseFill as IconComponent}
-              to="health-dashboard"
-              text="Health Dashboard"
-            />            
-            {nav.take('page:techdocs')}
-            <RequirePermission
-              permission={taskCreatePermission}
-              errorPage={<div />}
-            >
-              {nav.take('page:scaffolder')}
-            </RequirePermission>
-            <RequirePermission permission={notGuestPermission} errorPage={<div />}>
-              <SidebarItem icon={RiBookShelfLine as IconComponent} text="Catalog">
-                <SidebarSubmenu title="Catalog">
-                  {nav.take('page:catalog')}
+          {nav.take('page:home')}
+          {nav.take('page:api-platform/system-explorer')}
+          {nav.take('page:api-platform/service-explorer')}
+          {nav.take('page:api-platform/api-explorer')}
+          <RequirePermission
+            permission={advancedUserPermission}
+            errorPage={<div />}
+          >
+            {nav.take('page:api-platform/library-explorer')}
+          </RequirePermission>
+          {nav.take('page:mca/mca-components')}
+          {nav.take('page:mca/mca-basetypes')}
+          {nav.take('page:health-dashboard/health-dashboard')}
+          {nav.take('page:techdocs')}
+          <RequirePermission
+            permission={taskCreatePermission}
+            errorPage={<div />}
+          >
+            {nav.take('page:scaffolder')}
+          </RequirePermission>
+          <RequirePermission permission={notGuestPermission} errorPage={<div />}>
+            <SidebarItem icon={RiBookShelfLine as IconComponent} text="Catalog">
+              <SidebarSubmenu title="Catalog">
+                {nav.take('page:catalog')}
+                <RequirePermission
+                  permission={adminToolsPermission}
+                  errorPage={<div />}
+                >
+                  <SidebarDivider />
                   <RequirePermission
-                    permission={adminToolsPermission}
+                    permission={catalogEntityCreatePermission}
                     errorPage={<div />}
                   >
-                    <SidebarDivider />
-                    <RequirePermission
-                      permission={catalogEntityCreatePermission}
-                      errorPage={<div />}
-                    >
-                      <SidebarSubmenuItem
-                        icon={RiToolsFill as IconComponent}
-                        to="catalog-import"
-                        title="Catalog Import"
-                      />
-                    </RequirePermission>
+                    <SidebarSubmenuItem
+                      icon={RiToolsFill as IconComponent}
+                      to="catalog-import"
+                      title="Catalog Import"
+                    />
                   </RequirePermission>
-                </SidebarSubmenu>
-              </SidebarItem>
-            </RequirePermission>
-            <SidebarItem
-              icon={RiWrenchFill as IconComponent}
-              text="DevTools"
-              to="toolkit"
-            />
-            {/* End global nav */}
-            <SidebarScrollWrapper>
-              {/* Items in this group will be scrollable if they run out of space */}
-            </SidebarScrollWrapper>
-          </SidebarGroup>
+                </RequirePermission>
+              </SidebarSubmenu>
+            </SidebarItem>
+          </RequirePermission>
+          {nav.take('page:toolkit/toolkit')}
+          {/* End global nav */}
+          <SidebarScrollWrapper>
+            {/* Items in this group will be scrollable if they run out of space */}
+          </SidebarScrollWrapper>
           <SidebarSpace />
           <Shortcuts />
           <SidebarDivider />
@@ -157,14 +121,7 @@ export const SidebarContent = NavContentBlueprint.make({
             {nav.take('page:app-visualizer')}
             {nav.take('page:devtools')}
           </RequirePermission>
-
-          <SidebarGroup
-            label="Settings"
-            icon={<UserSettingsSignInAvatar />}
-            to="/settings"
-          >
-            {nav.take('page:user-settings')}
-          </SidebarGroup>
+          {nav.take('page:user-settings')}
         </Sidebar>
       );
     },

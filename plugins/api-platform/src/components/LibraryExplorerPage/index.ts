@@ -1,1 +1,1 @@
-export { LibraryExplorerPage } from './LibraryExplorerPage';
+export { LibraryExplorerPage, NfsLibraryExplorerPage } from './LibraryExplorerPage';

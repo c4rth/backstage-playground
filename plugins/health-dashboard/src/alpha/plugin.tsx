@@ -7,6 +7,9 @@ import {
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
 import {
+  RiHeartPulseFill,
+} from '@remixicon/react';
+import {
   HealthDashboardBackendClient,
   healthDashboardBackendApiRef,
 } from '../api';
@@ -17,6 +20,8 @@ const healthDashboardPage = PageBlueprint.make({
   params: {
     noHeader: true,
     path: '/health-dashboard',
+    icon: <RiHeartPulseFill fontSize="inherit" />,
+    title: 'Health Dashboard',
     routeRef: rootRouteRef,
     loader: () =>
       import('../components/HealthDashboardPage').then(

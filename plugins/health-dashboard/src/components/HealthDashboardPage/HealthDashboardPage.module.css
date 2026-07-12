@@ -1,24 +1,3 @@
-.contentRoot {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.contentScrollArea {
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-  display: flex;
-  justify-content: stretch;
-  align-items: stretch;
-}
-
-.tableContainer {
-  width: 50%;
-  margin: 0 auto;
-}
-
 .denseTable :global(.bui-TableResizableContainer),
 .denseTable :global(.bui-TableScrollContainer) {
   overflow: visible;
@@ -67,4 +46,8 @@
     .bui-TableHeader .bui-TableHead:not(:first-child) .bui-TableHeadContent
   ) {
   justify-content: center;
+}
+
+.denseTable {
+  width: 50%;
 }

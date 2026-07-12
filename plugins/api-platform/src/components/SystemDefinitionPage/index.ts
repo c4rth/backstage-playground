@@ -1,1 +1,4 @@
-export { SystemDefinitionPage } from './SystemDefinitionPage';
+export {
+	SystemDefinitionPage,
+	NfsSystemDefinitionPage,
+} from './SystemDefinitionPage';

@@ -6,6 +6,8 @@ import {
   InformationPopupContent,
 } from '@internal/plugin-api-platform-react';
 import { getStringForKey } from '../common';
+import { Container, FullPage, PluginHeader } from '@backstage/ui';
+import { RiCpuLine } from '@remixicon/react';
 
 const INFO_POPUP_CONTENT = (
   <InformationPopupContent
@@ -19,21 +21,43 @@ export const ServiceExplorerPage = () => {
   const orgName =
     configApi.getOptionalString('organization.name') ?? 'Backstage';
 
+  const subtitle = (
+    <InformationPopup
+      text={`${orgName} Service Explorer`}
+      content={INFO_POPUP_CONTENT}
+    />
+  );
+
+  const pageContent = (
+    <Content>
+      <ServiceTable />
+    </Content>
+  );
+
   return (
     <PageWithHeader
       themeId="apis"
       title="Services"
-      subtitle={
-        <InformationPopup
-          text={`${orgName} Service Explorer`}
-          content={INFO_POPUP_CONTENT}
-        />
-      }
+      subtitle={subtitle}
       pageTitleOverride="Services"
     >
-      <Content>
-        <ServiceTable />
-      </Content>
+      {pageContent}
     </PageWithHeader>
+  );
+};
+
+export const NfsServiceExplorerPage = () => {
+  return (
+    <>
+      <PluginHeader
+        title="Services"
+        icon={<RiCpuLine fontSize="inherit" />}
+        customActions={<InformationPopup content={INFO_POPUP_CONTENT} />} />
+      <FullPage>
+        <Container>
+          <ServiceTable />
+        </Container>
+      </FullPage>
+    </>
   );
 };

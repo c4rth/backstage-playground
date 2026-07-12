@@ -25,7 +25,7 @@ export const ToolsContainer = () => {
   return (
     <Box style={{ width: '100%', height: '100%' }}>
       <Grid.Root style={{ width: '100%', height: '100%' }} gap="0">
-        <Grid.Item colSpan="2">
+        <Grid.Item colSpan="2" style={{ backgroundColor: 'var(--bui-bg-neutral-1-disabled)', padding: 0 }}>
           <List
             aria-label="Tools"
             selectedKeys={[selectedTool.id]}

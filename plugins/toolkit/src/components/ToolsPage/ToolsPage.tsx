@@ -1,6 +1,6 @@
 import { Header, Page } from '@backstage/core-components';
 import { ToolsContainer } from './ToolsContainer';
-import { FullPage } from '@backstage/ui';
+import { Container, FullPage } from '@backstage/ui';
 
 export const ToolsPage = () => {
   return (
@@ -13,8 +13,10 @@ export const ToolsPage = () => {
 
 export const NfsToolsPage = () => {
   return (
-    <FullPage style={{ height: '92vh' }}>
-      <ToolsContainer />
+    <FullPage style={{ height: '90vh' }}>
+      <Container style={{ height: '90vh' }} mb="0">
+        <ToolsContainer />
+      </Container>
     </FullPage>
   );
 };

@@ -1,2 +1,2 @@
-export { ApiDefinitionPage } from './ApiDefinitionPage';
+export { ApiDefinitionPage, NfsApiDefinitionPage } from './ApiDefinitionPage';
 export { ApiRedirectToNoSystem } from './ApiRedirectToNoSystem';

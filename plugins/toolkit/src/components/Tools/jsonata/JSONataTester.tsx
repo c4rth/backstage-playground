@@ -173,8 +173,21 @@ export const JSONataTester = () => {
   return (
     <div style={styles.container}>
       {/* Toolbar */}
-      <Flex align="center" style={{ alignItems: 'center' }}>
-        <Box>
+       <Box style={{
+        display: 'flex',
+        alignItems: 'center', 
+        marginBottom: '8px',
+        gap: '0px',
+      }}>
+        <Flex
+          direction="row"
+          style={{
+            alignItems: 'center',
+            marginLeft: '8px',
+            marginRight: '24px',
+            flexWrap: 'wrap',
+          }}
+        >
           <ClearValueButton
             setValue={(v: string) => {
               setInput(v);
@@ -184,8 +197,8 @@ export const JSONataTester = () => {
           />
           <PasteFromClipboardButton setInput={setInput} />
           <SampleButton setInput={loadSample} sample="sample" />
-        </Box>
-      </Flex>
+        </Flex>
+      </Box>
 
       {/* Main Split (Left vs Right) */}
       <div ref={mainContainerRef} style={styles.mainGrid(splitX)}>

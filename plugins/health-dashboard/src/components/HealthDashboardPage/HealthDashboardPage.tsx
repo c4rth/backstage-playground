@@ -1,10 +1,9 @@
 import {
-  Content,
   PageWithHeader,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { Box, Cell, ColumnConfig, useTable, Table, FullPage, PluginHeader } from '@backstage/ui';
+import { Box, Cell, ColumnConfig, useTable, Table, FullPage, PluginHeader, Container } from '@backstage/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useGetHealthData } from '../../hooks';
 import {
@@ -120,36 +119,32 @@ const HealthDashboardPageContent = ({
   }, [reload]);
 
   const pageContent = (
-    <Content className={styles.contentRoot}>
-      <Box bg="neutral" className={styles.contentScrollArea}>
-        <Box className={styles.tableContainer}>
-          {healthDataErrors.map((sourceError, index) => (
-            <Box mb="4" key={`${sourceError.source}-${index}`}>
-              <ResponseErrorPanel
-                title={`Failed to get ${sourceError.source} health data`}
-                error={new Error(sourceError.message)}
-              />
-            </Box>
-          ))}
-          {tableProps.error && (
-            <ResponseErrorPanel
-              title="Failed to render Health data"
-              error={tableProps.error}
-            />
-          )}
-          {tableProps.isPending && <Progress />}
-          <Table
-            columnConfig={columns}
-            {...tableProps}
-            pagination={{
-              type: 'none',
-            }}
-            emptyState={emptyState()}
-            className={styles.denseTable}
+    <Container>
+      {healthDataErrors.map((sourceError, index) => (
+        <Box mb="4" key={`${sourceError.source}-${index}`}>
+          <ResponseErrorPanel
+            title={`Failed to get ${sourceError.source} health data`}
+            error={new Error(sourceError.message)}
           />
         </Box>
-      </Box>
-    </Content>
+      ))}
+      {tableProps.error && (
+        <ResponseErrorPanel
+          title="Failed to render Health data"
+          error={tableProps.error}
+        />
+      )}
+      {tableProps.isPending && <Progress />}
+      <Table
+        columnConfig={columns}
+        {...tableProps}
+        pagination={{
+          type: 'none',
+        }}
+        emptyState={emptyState()}
+        className={styles.denseTable}
+      />
+    </Container>
   );
 
   if (headerVariant === 'nfs') {
@@ -173,18 +168,14 @@ export const HealthDashboardPage = () => (
 
 export const NfsHealthDashboardPage = () => {
 
-  const configApi = useApi(configApiRef);
-
-  const organizationName =
-    configApi.getOptionalString('organization.name') ?? 'Backstage';
-  const subtitle = `${organizationName} Health Dashboard k8s`;
-
   return (
-    <FullPage>
+    <>
       <PluginHeader
         title="Health Dashboard k8s"
-        customActions={<InformationPopup text={subtitle} content={POPUP_CONTENT} />} />
-      <HealthDashboardPageContent headerVariant="nfs" />
-    </FullPage>
+        customActions={<InformationPopup content={POPUP_CONTENT} />} />
+      <FullPage>
+        <HealthDashboardPageContent headerVariant="nfs" />
+      </FullPage>
+    </>
   );
 }

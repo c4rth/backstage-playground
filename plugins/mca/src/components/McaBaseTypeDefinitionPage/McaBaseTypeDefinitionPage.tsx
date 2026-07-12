@@ -1,4 +1,5 @@
 import {
+  Content,
   PageWithHeader,
   Progress,
   ResponseErrorPanel,
@@ -9,7 +10,6 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
-import { FullPage, } from '@backstage/ui';
 
 async function getBaseType(
   mcaApi: McaComponentsBackendApi,
@@ -140,20 +140,20 @@ export const NfsMcaBaseTypeDefinitionPage = () => {
   }
 
   return (
-    <FullPage>
-      <PageWithHeader
-        key={name}
-        themeId="apis"
-        title={name || 'Unknown'}
-        type="MCA BaseType"
-      >
+    <PageWithHeader
+      key={name}
+      themeId="apis"
+      title={name || 'Unknown'}
+      type="MCA BaseType"
+    >
+      <Content noPadding stretch>
         <iframe
           src={baseTypeUrl || ''}
           height={'100%'}
           width={'100%'}
           title={`BaseType :${baseTypeUrl}`}
         />
-      </PageWithHeader>
-    </FullPage>
+      </Content>
+    </PageWithHeader>
   );
 };

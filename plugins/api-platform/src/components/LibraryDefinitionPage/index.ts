@@ -1,2 +1,8 @@
-export { LibraryDefinitionPage } from './LibraryDefinitionPage';
-export { LibraryDefinitionServicesPage } from './LibraryDefinitionServicesPage';
+export {
+	LibraryDefinitionPage,
+	NfsLibraryDefinitionPage,
+} from './LibraryDefinitionPage';
+export {
+	LibraryDefinitionServicesPage,
+	NfsLibraryDefinitionServicesPage,
+} from './LibraryDefinitionServicesPage';

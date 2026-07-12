@@ -11,7 +11,7 @@ import {
 } from '@backstage/ui';
 
 export interface InformationPopupProps {
-  text: string;
+  text?: string;
   title?: string;
   variant?: TextVariants;
   content: ReactNode;
@@ -43,11 +43,13 @@ export const InformationPopup = (props: InformationPopupProps) => {
 
   return (
     <Flex align="center" mt="2" gap="xs">
-      <Box as="span" mr="1">
-        <Text variant={variant} style={{ color: 'var(--bui-accent-fg)' }}>
-          {text}
-        </Text>
-      </Box>
+      {text && (
+        <Box as="span" mr="1">
+          <Text variant={variant} style={{ color: 'var(--bui-accent-fg)' }}>
+            {text}
+          </Text>
+        </Box>
+      )}
       <DialogTrigger>
         <ButtonIcon
           variant="tertiary"

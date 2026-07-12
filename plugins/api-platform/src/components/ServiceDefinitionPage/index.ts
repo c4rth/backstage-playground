@@ -1,1 +1,4 @@
-export { ServiceDefinitionPage } from './ServiceDefinitionPage';
+export {
+	ServiceDefinitionPage,
+	NfsServiceDefinitionPage,
+} from './ServiceDefinitionPage';

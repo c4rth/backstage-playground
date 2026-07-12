@@ -6,6 +6,7 @@ import {
   InformationPopupContent,
 } from '@internal/plugin-api-platform-react';
 import { getStringForKey } from '../common';
+import { Container, FullPage, PluginHeader } from '@backstage/ui';
 
 const POPUP_CONTENT = (
   <InformationPopupContent
@@ -19,21 +20,43 @@ export const SystemExplorerPage = () => {
   const orgName =
     configApi.getOptionalString('organization.name') ?? 'Backstage';
 
+  const subtitle = (
+    <InformationPopup
+      text={`${orgName} Team Explorer`}
+      content={POPUP_CONTENT}
+    />
+  );
+
+  const pageContent = (
+    <Content>
+      <SystemTable />
+    </Content>
+  );
+
   return (
     <PageWithHeader
       themeId="systems"
       title="Systems"
-      subtitle={
-        <InformationPopup
-          text={`${orgName} Team Explorer`}
-          content={POPUP_CONTENT}
-        />
-      }
+      subtitle={subtitle}
       pageTitleOverride="Systems"
     >
-      <Content>
-        <SystemTable />
-      </Content>
+      {pageContent}
     </PageWithHeader>
+  );
+};
+
+export const NfsSystemExplorerPage = () => {
+
+  return (
+    <>
+      <PluginHeader
+        title="APIs"
+        customActions={<InformationPopup content={POPUP_CONTENT} />} />
+      <FullPage>
+        <Container>
+          <SystemTable />
+        </Container>
+      </FullPage>
+    </>
   );
 };

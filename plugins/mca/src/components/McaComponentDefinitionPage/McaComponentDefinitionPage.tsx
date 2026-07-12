@@ -11,7 +11,7 @@ import { McaComponent } from '@internal/plugin-mca-common';
 import { McaComponentDefinitionCard } from './McaComponentDefinitionCard';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { Box, Grid, Select, Option, FullPage, } from '@backstage/ui';
+import { Box, Grid, Select, Option, } from '@backstage/ui';
 
 function mapMcaVersions(mca: McaComponent | undefined): Option[] {
   if (!mca) return [];
@@ -169,7 +169,6 @@ export const NfsMcaComponentDefinitionPage = () => {
   if (loading || !selectedVersion) return <Progress />;
 
   return (
-    <FullPage>
     <PageWithHeader key={name} themeId="apis" title={name} type="MCA Component">
       <Content>
         <Box mb="4">
@@ -189,6 +188,5 @@ export const NfsMcaComponentDefinitionPage = () => {
         <McaComponentDefinitionCard mca={mca!} version={selectedVersion} />
       </Content>
       </PageWithHeader>
-    </FullPage>
   );
 };

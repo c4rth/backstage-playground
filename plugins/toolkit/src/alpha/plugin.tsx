@@ -1,4 +1,4 @@
-import { RiToolsLine } from '@remixicon/react';
+import { RiWrenchFill } from '@remixicon/react';
 import {
   PageBlueprint,
   createFrontendPlugin,
@@ -20,7 +20,7 @@ const toolsPage = PageBlueprint.make({
 export default createFrontendPlugin({
   pluginId: 'toolkit',
   title: 'Dev Tools',
-  icon: <RiToolsLine />,
+  icon: <RiWrenchFill />,
   routes: {
     root: rootRouteRef,
   },

@@ -23,6 +23,7 @@ import visualizerPlugin from '@backstage/plugin-app-visualizer';
 // Custom plugins
 import { appOverrides } from './modules/app';
 import { navModule } from './modules/nav';
+import apiPlatformPlugin from '@internal/plugin-api-platform/alpha';
 import appRegistryPlugin from '@internal/plugin-app-registry/alpha';
 import azdoPlugin from '@internal/plugin-azure-devops/alpha';
 import analyticsPlugin from '@internal/plugin-analytics/alpha';
@@ -55,6 +56,7 @@ const app = createApp({
     userSettingsPlugin,
     visualizerPlugin,
     // Custom plugins
+    apiPlatformPlugin,
     appRegistryPlugin,
     azdoPlugin,
     analyticsPlugin,
