@@ -70,7 +70,7 @@ const columns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: item => (
       <Cell>
-        <b>{item.healthData.application}</b>
+        <b>{item.healthData.application.toUpperCase()}</b>
       </Cell>
     ),
     isSortable: true,
@@ -119,7 +119,13 @@ const HealthDashboardPageContent = ({
   }, [reload]);
 
   const pageContent = (
-    <Container>
+    <Container
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       {healthDataErrors.map((sourceError, index) => (
         <Box mb="4" key={`${sourceError.source}-${index}`}>
           <ResponseErrorPanel

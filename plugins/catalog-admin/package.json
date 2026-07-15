@@ -24,7 +24,9 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage-community/plugin-entity-validation": "^0.21.0",
     "@backstage/catalog-client": "backstage:^",
+    "@backstage/plugin-catalog-import": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",

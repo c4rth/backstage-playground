@@ -7,7 +7,6 @@
     "role": "frontend"
   },
   "dependencies": {
-    "@backstage-community/plugin-entity-validation": "^0.21.0",
     "@backstage-community/plugin-shortcuts": "^0.22.0",
     "@backstage-community/plugin-sonarqube": "^1.1.0",
     "@backstage-community/plugin-sonarqube-react": "^1.1.0",
@@ -28,7 +27,6 @@
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/plugin-catalog-common": "backstage:^",
     "@backstage/plugin-catalog-graph": "backstage:^",
-    "@backstage/plugin-catalog-import": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-catalog-unprocessed-entities": "backstage:^",
     "@backstage/plugin-devtools": "backstage:^",

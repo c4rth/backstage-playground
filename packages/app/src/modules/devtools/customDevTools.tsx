@@ -6,12 +6,11 @@ import {
 import { ExternalDependenciesContent } from '@backstage/plugin-devtools';
 import { AnalyticsContent } from '@internal/plugin-analytics';
 import { CatalogAdminPage } from '@internal/plugin-catalog-admin';
-import { EntityValidationContent } from '@backstage-community/plugin-entity-validation';
 import { Box } from '@backstage/ui';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 
-export const externalDependenciesDevToolsContent = SubPageBlueprint.make(
+export const externalDependenciesDevTools = SubPageBlueprint.make(
     {
         name: 'external-dependencies',
         attachTo: { id: 'page:devtools', input: 'pages' },
@@ -31,7 +30,7 @@ export const externalDependenciesDevToolsContent = SubPageBlueprint.make(
     },
 );
 
-export const analyticsDevToolsContent = SubPageBlueprint.make(
+export const analyticsDevTools = SubPageBlueprint.make(
     {
         name: 'analytics',
         attachTo: { id: 'page:devtools', input: 'pages' },
@@ -50,7 +49,7 @@ export const analyticsDevToolsContent = SubPageBlueprint.make(
 );
 
 
-export const catalogAdminDevToolsContent = SubPageBlueprint.make(
+export const catalogAdminDevTools = SubPageBlueprint.make(
     {
         name: 'catalog-admin',
         attachTo: { id: 'page:devtools', input: 'pages' },
@@ -68,32 +67,11 @@ export const catalogAdminDevToolsContent = SubPageBlueprint.make(
     },
 );
 
-export const entityValidationDevToolsContent = SubPageBlueprint.make(
-    {
-        name: 'entity-validation',
-        attachTo: { id: 'page:devtools', input: 'pages' },
-        params: {
-            path: 'entity-validation',
-            title: 'Entity Validation',
-            loader: async () => {
-                return (
-                    <RequirePermission permission={devToolsAdministerPermission}>
-                        <Box m="10">
-                            <EntityValidationContent />
-                        </Box>
-                    </RequirePermission>
-                );
-            },
-        },
-    },
-);
-
 export const devToolsExtensionPlugin = createFrontendPlugin({
     pluginId: 'devtools-extensions',
     extensions: [
-        externalDependenciesDevToolsContent,
-        analyticsDevToolsContent,
-        catalogAdminDevToolsContent,
-        entityValidationDevToolsContent,
+        externalDependenciesDevTools,
+        analyticsDevTools,
+        catalogAdminDevTools,
     ],
 });

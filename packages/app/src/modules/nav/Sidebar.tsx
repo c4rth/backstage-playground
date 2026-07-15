@@ -8,22 +8,17 @@ import {
   SidebarItem,
   SidebarScrollWrapper,
   SidebarSpace,
-  SidebarSubmenu,
-  SidebarSubmenuItem,
   CatalogIcon,
   DocsIcon,
 } from '@backstage/core-components';
 
 import {
   RiMenuSearchLine,
-  RiBookShelfLine,
-  RiToolsFill,
   RiBubbleChartLine,
 } from '@remixicon/react';
 import { IconComponent } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Api Platform
 import { ApiSearchResultListItem } from '@internal/plugin-api-platform';
@@ -34,7 +29,6 @@ import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 // Admin Tools
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import {
-  adminToolsPermission,
   notGuestPermission,
   advancedUserPermission,
 } from '@internal/plugin-permissions-common';
@@ -83,27 +77,7 @@ export const SidebarContent = NavContentBlueprint.make({
             {nav.take('page:scaffolder')}
           </RequirePermission>
           <RequirePermission permission={notGuestPermission} errorPage={<div />}>
-            <SidebarItem icon={RiBookShelfLine as IconComponent} text="Catalog">
-              <SidebarSubmenu title="Catalog">
-                {nav.take('page:catalog')}
-                <RequirePermission
-                  permission={adminToolsPermission}
-                  errorPage={<div />}
-                >
-                  <SidebarDivider />
-                  <RequirePermission
-                    permission={catalogEntityCreatePermission}
-                    errorPage={<div />}
-                  >
-                    <SidebarSubmenuItem
-                      icon={RiToolsFill as IconComponent}
-                      to="catalog-import"
-                      title="Catalog Import"
-                    />
-                  </RequirePermission>
-                </RequirePermission>
-              </SidebarSubmenu>
-            </SidebarItem>
+            {nav.take('page:catalog')}
           </RequirePermission>
           {nav.take('page:toolkit/toolkit')}
           {/* End global nav */}

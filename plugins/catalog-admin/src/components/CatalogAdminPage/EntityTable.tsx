@@ -342,6 +342,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
       isFirstRender.current = false;
       return;
     }
+    setSelected(new Set());
     if (
       prevKindSystem.current.kind !== kind ||
       prevKindSystem.current.system !== system

@@ -24,7 +24,7 @@ backstage:
 - api-docs
 - DONE: catalog
 - DONE: devtools
-- home
+- DONE: home
 - org
 - scaffolder .... busy
 - search
@@ -46,10 +46,6 @@ community:
   - update extensions
   - add to scaffolder
 
-- admin - catalog:
-  - remove catalog import menu
-  - admin: 1 entry catalog -> 3 tabs: delete, validation, import
-
 - all custom plugins:
   - add info popup
     - done:
@@ -68,3 +64,19 @@ community:
   - mca
   - DELETED: techdocs
   - toolkit
+
+- UI
+  update to bui
+  - analytics
+  - api-platform
+  - app-registry
+  - azure-devops
+  - health-dashboard
+  - mca
+  - toolkit
+
+## DONE
+
+- admin - catalog:
+  - remove catalog import menu
+  - admin: 1 entry catalog -> 3 tabs: delete, validation, import

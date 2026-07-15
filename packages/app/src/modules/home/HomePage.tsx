@@ -1,14 +1,13 @@
-import { Content, Header, Page } from '@backstage/core-components';
+import { Content, Page } from '@backstage/core-components';
 import {
   HomePageRecentlyVisited,
   HomePageStarredEntities,
   HomePageTopVisited,
-  WelcomeTitle,
 } from '@backstage/plugin-home';
 import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { ToolkitCard } from '@internal/plugin-toolkit';
-import { Box, Grid } from '@backstage/ui';
+import { Grid } from '@backstage/ui';
 import styles from './HomePage.module.css';
 
 export const HomePage = () => {
@@ -16,9 +15,6 @@ export const HomePage = () => {
     <SearchContextProvider>
       <Page themeId="home">
         <Content>
-          <Box>
-            <Header title={<WelcomeTitle />} pageTitleOverride="Home" />
-          </Box>
           <Grid.Root columns="12">
             <Grid.Item colSpan="12" style={{ margin: '16px' }}>
               <HomePageSearchBar

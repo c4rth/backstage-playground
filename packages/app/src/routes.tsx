@@ -1,7 +1,4 @@
 import { Route } from 'react-router-dom';
-import {
-  CatalogImportPage,
-} from '@backstage/plugin-catalog-import';
 import { SearchPage } from '@backstage/plugin-search';
 import { searchPage } from './modules/search/SearchPage';
 
@@ -11,7 +8,6 @@ import {
 import { FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Scaffolder
 import { ScaffolderPage } from '@backstage/plugin-scaffolder';
@@ -40,23 +36,10 @@ export const routes = (
         </RequirePermission>
       }
     />
-    <Route
-      path="/catalog-import"
-      element={
-        <RequirePermission
-          permission={catalogEntityCreatePermission}
-          errorPage={<ErrorPage statusMessage="RBAC access denied" />}
-        >
-          <CatalogImportPage />
-        </RequirePermission>
-      }
-    />
     <Route path="/search" element={<SearchPage />}>
       {searchPage}
     </Route>
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-
-
 
   </FlatRoutes>
 );
