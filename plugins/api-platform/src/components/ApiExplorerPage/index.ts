@@ -1,1 +1,1 @@
-export { ApiExplorerPage, NfsApiExplorerPage } from './ApiExplorerPage';
+export { ApiExplorerPage } from './ApiExplorerPage';

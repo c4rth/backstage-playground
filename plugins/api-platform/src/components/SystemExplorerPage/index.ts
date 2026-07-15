@@ -1,1 +1,1 @@
-export { SystemExplorerPage, NfsSystemExplorerPage } from './SystemExplorerPage';
+export { SystemExplorerPage } from './SystemExplorerPage';

@@ -13,7 +13,7 @@ const toolsPage = PageBlueprint.make({
     path: '/toolkit',
     routeRef: rootRouteRef,
     loader: () =>
-      import('../components/ToolsPage').then(m => <m.NfsToolsPage />),
+      import('../components/ToolsPage').then(m => <m.ToolsPage />),
   },
 });
 

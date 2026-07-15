@@ -30,7 +30,7 @@ const apiExplorerPage = PageBlueprint.make({
         path: '/api-platform/api',
         routeRef: apiPlatformRouteRef,
         loader: () =>
-            import('../components/ApiExplorerPage').then(m => <m.NfsApiExplorerPage />),
+            import('../components/ApiExplorerPage').then(m => <m.ApiExplorerPage />),
     },
 });
 
@@ -52,7 +52,7 @@ const apiDefinitionPage = PageBlueprint.make({
         path: '/api-platform/api/:system/:name',
         routeRef: apiPlatformApiDefinitionRouteRef,
         loader: () =>
-            import('../components/ApiDefinitionPage').then(m => <m.NfsApiDefinitionPage />),
+            import('../components/ApiDefinitionPage').then(m => <m.ApiDefinitionPage />),
     },
 });
 
@@ -66,7 +66,7 @@ const serviceExplorerPage = PageBlueprint.make({
         routeRef: apiPlatformServiceRouteRef,
         loader: () =>
             import('../components/ServiceExplorerPage').then(
-                m => <m.NfsServiceExplorerPage />,
+                m => <m.ServiceExplorerPage />,
             ),
     },
 });
@@ -79,7 +79,7 @@ const serviceDefinitionPage = PageBlueprint.make({
         routeRef: apiPlatformServiceDefinitionRouteRef,
         loader: () =>
             import('../components/ServiceDefinitionPage').then(
-                m => <m.NfsServiceDefinitionPage />,
+                m => <m.ServiceDefinitionPage />,
             ),
     },
 });
@@ -93,7 +93,7 @@ const systemExplorerPage = PageBlueprint.make({
         path: '/api-platform/system',
         routeRef: apiPlatformSystemRouteRef,
         loader: () =>
-            import('../components/SystemExplorerPage').then(m => <m.NfsSystemExplorerPage />),
+            import('../components/SystemExplorerPage').then(m => <m.SystemExplorerPage />),
     },
 });
 
@@ -105,7 +105,7 @@ const systemDefinitionPage = PageBlueprint.make({
         routeRef: apiPlatformSystemDefinitionRouteRef,
         loader: () =>
             import('../components/SystemDefinitionPage').then(
-                m => <m.NfsSystemDefinitionPage />,
+                m => <m.SystemDefinitionPage />,
             ),
     },
 });
@@ -120,7 +120,7 @@ const libraryExplorerPage = PageBlueprint.make({
         routeRef: apiPlatformLibraryRouteRef,
         loader: () =>
             import('../components/LibraryExplorerPage').then(
-                m => <m.NfsLibraryExplorerPage />,
+                m => <m.LibraryExplorerPage />,
             ),
     },
 });
@@ -133,7 +133,7 @@ const libraryDefinitionPage = PageBlueprint.make({
         routeRef: apiPlatformLibraryDefinitionRouteRef,
         loader: () =>
             import('../components/LibraryDefinitionPage').then(
-                m => <m.NfsLibraryDefinitionPage />,
+                m => <m.LibraryDefinitionPage />,
             ),
     },
 });
@@ -146,7 +146,7 @@ const libraryDefinitionServicesPage = PageBlueprint.make({
         routeRef: apiPlatformLibraryDefinitionServicesRouteRef,
         loader: () =>
             import('../components/LibraryDefinitionPage').then(
-                m => <m.NfsLibraryDefinitionServicesPage />,
+                m => <m.LibraryDefinitionServicesPage />,
             ),
     },
 });

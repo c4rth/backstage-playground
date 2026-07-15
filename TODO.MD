@@ -34,7 +34,7 @@ backstage:
 community:
 
 - DONE: entity-validation
-- shortcuts
+- LEGACY: shortcuts
 - sonarqube
 
 ## TODO
@@ -46,27 +46,9 @@ community:
   - update extensions
   - add to scaffolder
 
-- all custom plugins:
-  - add info popup
-    - done:
-      - health
-      - mca: basetypes, components
-      - api-platform
-
-
-- cleanup plugins:
-  use only NFS -> remove old plugins and duplicated JSX components
-  - analytics
-  - api-platform
-  - app-registry
-  - azure-devops
-  - DONE: health-dashboard
-  - DONE: mca
-  - toolkit
-
 - UI
 
-  - update to bui
+  - update to bui (header, card, etc)
     - analytics
     - api-platform
     - app-registry
@@ -82,3 +64,22 @@ community:
 - admin - catalog:
   - remove catalog import menu
   - admin: 1 entry catalog -> 3 tabs: delete, validation, import
+
+
+- UI
+
+  - add info popup
+    - done:
+      - health
+      - mca: basetypes, components
+      - api-platform
+
+  - cleanup plugins:
+    use only NFS -> remove old plugins and duplicated JSX components
+    - DONE: analytics
+    - DONE: api-platform
+    - DONE: app-registry
+    - DONE: azure-devops
+    - DONE: health-dashboard
+    - DONE: mca
+    - DONE: toolkit

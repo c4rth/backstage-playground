@@ -1,1 +1,1 @@
-export { NfsToolsPage, ToolsPage } from './ToolsPage';
+export { ToolsPage } from './ToolsPage';

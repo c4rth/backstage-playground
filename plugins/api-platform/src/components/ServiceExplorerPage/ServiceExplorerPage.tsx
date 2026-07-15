@@ -1,5 +1,3 @@
-import { Content, PageWithHeader } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ServiceTable } from '../ServiceTable';
 import {
   InformationPopup,
@@ -17,36 +15,6 @@ const INFO_POPUP_CONTENT = (
 );
 
 export const ServiceExplorerPage = () => {
-  const configApi = useApi(configApiRef);
-  const orgName =
-    configApi.getOptionalString('organization.name') ?? 'Backstage';
-
-  const subtitle = (
-    <InformationPopup
-      text={`${orgName} Service Explorer`}
-      content={INFO_POPUP_CONTENT}
-    />
-  );
-
-  const pageContent = (
-    <Content>
-      <ServiceTable />
-    </Content>
-  );
-
-  return (
-    <PageWithHeader
-      themeId="apis"
-      title="Services"
-      subtitle={subtitle}
-      pageTitleOverride="Services"
-    >
-      {pageContent}
-    </PageWithHeader>
-  );
-};
-
-export const NfsServiceExplorerPage = () => {
   return (
     <>
       <PluginHeader

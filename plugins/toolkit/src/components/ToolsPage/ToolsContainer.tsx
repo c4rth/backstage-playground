@@ -50,7 +50,7 @@ export const ToolsContainer = () => {
           </List>
         </Grid.Item>
 
-        <Grid.Item colSpan="10" style={{ padding: 0 }}>
+        <Grid.Item colSpan="10" style={{ padding: 0, }}>
           <ToolContainer tool={selectedTool} />
         </Grid.Item>
       </Grid.Root>

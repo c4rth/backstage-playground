@@ -11,31 +11,6 @@ export const SystemDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
   const { systemDefinition, loading, error } = useGetSystem(name);
 
-  const pageContent = (
-    <Content>
-      {systemDefinition && name && (
-        <SystemDefinitionCard system={name} systemDefinition={systemDefinition} />
-      )}
-    </Content>
-  );
-
-  return (
-    <AsyncEntityProvider
-      loading={loading}
-      error={error}
-      entity={systemDefinition?.entity}
-    >
-      <PageWithHeader themeId="systems" title={name} type="System">
-        {pageContent}
-      </PageWithHeader>
-    </AsyncEntityProvider>
-  );
-};
-
-export const NfsSystemDefinitionPage = () => {
-  const { name } = useRouteRefParams(entityRouteRef);
-  const { systemDefinition, loading, error } = useGetSystem(name);
-
   return (
     <AsyncEntityProvider
       loading={loading}

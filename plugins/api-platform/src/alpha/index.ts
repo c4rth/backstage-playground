@@ -1,28 +1,27 @@
 export { default } from './plugin';
 export {
-  NfsApiExplorerPage as ApiExplorerPage,
+  ApiExplorerPage,
 } from '../components/ApiExplorerPage';
 export {
-  NfsApiDefinitionPage as ApiDefinitionPage,
+  ApiDefinitionPage,
 } from '../components/ApiDefinitionPage';
 export {
-  NfsServiceExplorerPage as ServiceExplorerPage,
+  ServiceExplorerPage,
 } from '../components/ServiceExplorerPage';
 export {
-  NfsServiceDefinitionPage as ServiceDefinitionPage,
+  ServiceDefinitionPage,
 } from '../components/ServiceDefinitionPage';
 export {
-  NfsSystemExplorerPage as SystemExplorerPage,
+  SystemExplorerPage,
 } from '../components/SystemExplorerPage';
 export {
-  NfsSystemDefinitionPage as SystemDefinitionPage,
+  SystemDefinitionPage,
 } from '../components/SystemDefinitionPage';
 export {
-  NfsLibraryExplorerPage as LibraryExplorerPage,
+  LibraryExplorerPage,
 } from '../components/LibraryExplorerPage';
 export {
-  NfsLibraryDefinitionPage as LibraryDefinitionPage,
-  NfsLibraryDefinitionServicesPage as LibraryDefinitionServicesPage,
+  LibraryDefinitionPage
 } from '../components/LibraryDefinitionPage';
 export { ApiRedirectToNoSystem } from '../components/ApiDefinitionPage';
 export { ApiSearchResultListItem, apiPlatformBackendApiRef } from '../plugin';

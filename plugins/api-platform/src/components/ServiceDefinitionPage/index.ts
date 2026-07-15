@@ -1,4 +1,3 @@
 export {
-	ServiceDefinitionPage,
-	NfsServiceDefinitionPage,
+	ServiceDefinitionPage
 } from './ServiceDefinitionPage';
