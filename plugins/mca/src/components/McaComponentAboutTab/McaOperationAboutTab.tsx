@@ -7,7 +7,7 @@ import {
 import { AboutField } from '@backstage/plugin-catalog';
 import { Grid, Text } from '@backstage/ui';
 import { memo } from 'react';
-import styles from './McaOperationAboutCard.module.css';
+import styles from './McaOperationAboutTab.module.css';
 
 export type UrlLocations = {
   oldDns: string;
@@ -101,13 +101,13 @@ function getDecodedURI(
   return { url };
 }
 
-export interface McaOperationAboutCardProps {
+export interface McaOperationAboutTabProps {
   operationAnalyze: any;
   operation: any;
   urlLocations: UrlLocations;
 }
 
-export const McaOperationAboutCard = memo<McaOperationAboutCardProps>(
+export const McaOperationAboutTab = memo<McaOperationAboutTabProps>(
   ({ operationAnalyze, operation, urlLocations }) => {
     const fieldConfigs = [
       { label: 'Package', value: operationAnalyze?.package, xs: 6 },

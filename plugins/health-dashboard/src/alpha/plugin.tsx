@@ -25,7 +25,7 @@ const healthDashboardPage = PageBlueprint.make({
     routeRef: rootRouteRef,
     loader: () =>
       import('../components/HealthDashboardPage').then(
-        m => <m.NfsHealthDashboardPage />,
+        m => <m.HealthDashboardPage />,
       ),
   },
 });
@@ -62,5 +62,3 @@ export default createFrontendPlugin({
   ],
   extensions: [healthDashboardPage, healthDashboardApi],
 });
-
-export { NfsHealthDashboardPage as HealthDashboardPage } from '../components/HealthDashboardPage';

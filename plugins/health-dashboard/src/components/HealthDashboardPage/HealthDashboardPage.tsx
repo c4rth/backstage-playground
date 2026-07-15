@@ -1,5 +1,4 @@
 import {
-  PageWithHeader,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
@@ -16,7 +15,6 @@ import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-api-platform-react';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import styles from './HealthDashboardPage.module.css';
 
 const emptyState = () => (
@@ -83,23 +81,11 @@ const columns: ColumnConfig<TableRow>[] = [
   getEnvironmentColumn('prd'),
 ];
 
-const HealthDashboardPageContent = ({
-  headerVariant,
-}: {
-  headerVariant: 'legacy' | 'nfs';
-}) => {
+const HealthDashboardPageContent = () => {
   const getHealthData = useGetHealthData();
   const isFirstRender = useRef(true);
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
-  );
-  const configApi = useApi(configApiRef);
-
-  const organizationName =
-    configApi.getOptionalString('organization.name') ?? 'Backstage';
-  const subtitle = `${organizationName} Health Dashboard k8s`;
-  const subtitleComponent = (
-    <InformationPopup text={subtitle} content={POPUP_CONTENT} />
   );
 
   const { tableProps, reload } = useTable({
@@ -153,34 +139,17 @@ const HealthDashboardPageContent = ({
     </Container>
   );
 
-  if (headerVariant === 'nfs') {
     return pageContent;
-  }
-
-  return (
-    <PageWithHeader
-      themeId="dashboard"
-      title="Health Dashboard OPP"
-      subtitle={subtitleComponent}
-    >
-      {pageContent}
-    </PageWithHeader>
-  );
 };
 
-export const HealthDashboardPage = () => (
-  <HealthDashboardPageContent headerVariant="legacy" />
-);
-
-export const NfsHealthDashboardPage = () => {
-
+export const HealthDashboardPage = () => {
   return (
     <>
       <PluginHeader
         title="Health Dashboard k8s"
         customActions={<InformationPopup content={POPUP_CONTENT} />} />
       <FullPage>
-        <HealthDashboardPageContent headerVariant="nfs" />
+        <HealthDashboardPageContent/>
       </FullPage>
     </>
   );

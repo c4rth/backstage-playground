@@ -2,9 +2,9 @@ import { InfoCard, MarkdownContent } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
 import { Grid, Text } from '@backstage/ui';
 import { memo } from 'react';
-import styles from './McaElementAboutCard.module.css';
+import styles from './McaElementAboutTab.module.css';
 
-export interface McaElementAboutCardProps {
+export interface McaElementAboutTabProps {
   element: any;
 }
 
@@ -24,7 +24,7 @@ const FieldDisplay = memo<{
   </AboutField>
 ));
 
-export const McaElementAboutCard = ({ element }: McaElementAboutCardProps) => {
+export const McaElementAboutTab = ({ element }: McaElementAboutTabProps) => {
   const fieldConfigs = [
     {
       label: 'Package',

@@ -1,12 +1,13 @@
-import { ResponseErrorPanel, TabbedLayout } from '@backstage/core-components';
-import { McaOperationAboutCard, UrlLocations } from '../McaComponentAboutCard';
+import { ResponseErrorPanel } from '@backstage/core-components';
+import { McaOperationAboutTab, UrlLocations } from '../McaComponentAboutTab';
 import { memo, useMemo } from 'react';
-import { McaComponentFieldsCard } from './McaComponentFieldsCard';
-import { McaComponentMethodsCard } from './McaComponentMethodsCard';
+import { McaComponentFieldsTab } from './McaComponentFieldsTab';
+import { McaComponentMethodsTab } from './McaComponentMethodsTab';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentSnippet } from '../McaComponentSnippet';
+import { Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
 
-export interface McaOperationDefinitionPageProps {
+export interface McaOperationDefinitionTabsProps {
   parsedDefinition: any;
   rawXml: string;
 }
@@ -50,7 +51,7 @@ function getOperationNodes(parsedDefinition: any): NodesType {
   return { operationAnalyze, operation, operationType };
 }
 
-export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
+export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
   ({ parsedDefinition, rawXml }) => {
     const configApi = useApi(configApiRef);
     const urlLocations = useMemo<UrlLocations>(
@@ -106,30 +107,106 @@ export const McaOperationDefinitionPage = memo<McaOperationDefinitionPageProps>(
     }
 
     return (
-      <TabbedLayout>
-        <TabbedLayout.Route path="/" title="Overview">
+      <Tabs defaultSelectedKey="tab1">
+        <TabList>
+          <Tab id="tab1" href=".">Overview</Tab>
+          <Tab id="tab2" href='inputfields'>Input Fields</Tab>
+          <Tab id="tab3" href='outputfields'>Output Fields</Tab>
+          <Tab id="tab4" href='methods'>Methods</Tab>
+          <Tab id="tab5" href='raw'>Raw</Tab>
+        </TabList>
+        <TabPanel id="tab1">
+          <McaOperationAboutTab
+            operationAnalyze={operationAnalyze}
+            operation={operation}
+            urlLocations={urlLocations}
+          />
+        </TabPanel>
+        <TabPanel id="tab2">
+          <McaComponentFieldsTab data={operation} fieldType="input" />
+        </TabPanel>
+        <TabPanel id="tab3">
+          <McaComponentFieldsTab data={operation} fieldType="output" />
+        </TabPanel>
+        <TabPanel id="tab4">
+          <McaComponentMethodsTab data={operation} componentType="operation" />
+        </TabPanel>
+        <TabPanel id="tab5">
+          <McaComponentSnippet
+            filename={`${operationAnalyze.id}.osml`}
+            data={rawXml}
+          />
+        </TabPanel>
+      </Tabs>
+    );
+  },
+);
+
+/*
+
+return (
+      <Tabs>
+        <TabList>
+          <Tab id="tab1">Overview</Tab>
+          <Tab id="tab2">Input Fields</Tab>
+          <Tab id="tab3">Output Fields</Tab>
+          <Tab id="tab4">Methods</Tab>
+          <Tab id="tab5">Raw</Tab>
+        </TabList>
+        <TabPanel id="tab1">
           <McaOperationAboutCard
             operationAnalyze={operationAnalyze}
             operation={operation}
             urlLocations={urlLocations}
           />
-        </TabbedLayout.Route>
-        <TabbedLayout.Route path="/inputfields" title="Input Fields">
+        </TabPanel>
+        <TabPanel id="tab2">
           <McaComponentFieldsCard data={operation} fieldType="input" />
-        </TabbedLayout.Route>
-        <TabbedLayout.Route path="/outputfields" title="Output Fields">
+        </TabPanel>
+        <TabPanel id="tab3">
           <McaComponentFieldsCard data={operation} fieldType="output" />
-        </TabbedLayout.Route>
-        <TabbedLayout.Route path="/methods" title="Methods">
+        </TabPanel>
+        <TabPanel id="tab4">
           <McaComponentMethodsCard data={operation} componentType="operation" />
-        </TabbedLayout.Route>
-        <TabbedLayout.Route path="/raw" title="Raw">
+        </TabPanel>
+        <TabPanel id="tab5">
           <McaComponentSnippet
             filename={`${operationAnalyze.id}.osml`}
             data={rawXml}
           />
-        </TabbedLayout.Route>
-      </TabbedLayout>
+        </TabPanel>
+      </Tabs>
     );
-  },
+
+
+
+
+  return (
+    <TabbedLayout>
+      <TabbedLayout.Route path="/" title="Overview">
+        <McaOperationAboutCard
+          operationAnalyze={operationAnalyze}
+          operation={operation}
+          urlLocations={urlLocations}
+        />
+      </TabbedLayout.Route>
+      <TabbedLayout.Route path="/inputfields" title="Input Fields">
+        <McaComponentFieldsCard data={operation} fieldType="input" />
+      </TabbedLayout.Route>
+      <TabbedLayout.Route path="/outputfields" title="Output Fields">
+        <McaComponentFieldsCard data={operation} fieldType="output" />
+      </TabbedLayout.Route>
+      <TabbedLayout.Route path="/methods" title="Methods">
+        <McaComponentMethodsCard data={operation} componentType="operation" />
+      </TabbedLayout.Route>
+      <TabbedLayout.Route path="/raw" title="Raw">
+        <McaComponentSnippet
+          filename={`${operationAnalyze.id}.osml`}
+          data={rawXml}
+        />
+      </TabbedLayout.Route>
+    </TabbedLayout>
+  );
+},
 );
+*/

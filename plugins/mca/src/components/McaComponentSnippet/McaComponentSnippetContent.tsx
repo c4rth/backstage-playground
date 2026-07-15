@@ -81,11 +81,10 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
       >
         <TooltipTrigger trigger="hover" delay={500}>
           <ButtonIcon
-            variant="tertiary"
+            variant="primary"
             size="medium"
             onClick={handleCopyClick}
-            icon={<RiFileCopy2Line style={{ width: '2em', height: '2em' }} />}
-            style={{ color: 'rgba(0,0,0,0.54)' }}
+            icon={<RiFileCopy2Line style={{ width: '1.5em', height: '1.5em' }} />}
             aria-label="Copy XML to clipboard"
           />
           <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
@@ -94,18 +93,16 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
         </TooltipTrigger>
         <TooltipTrigger trigger="hover" delay={500}>
           <ButtonIcon
-            variant="tertiary"
+            variant="primary"
             size="medium"
             onClick={handleDownloadClick}
-            icon={<RiFileDownloadFill style={{ width: '2em', height: '2em' }} />}
-            style={{ color: 'rgba(0,0,0,0.54)' }}
+            icon={<RiFileDownloadFill style={{ width: '1.5em', height: '1.5em' }} />}
             aria-label="Download XML"
           />
           <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
             Download XML
           </Tooltip>
         </TooltipTrigger>
-
       </Flex>
     </Box>
   );

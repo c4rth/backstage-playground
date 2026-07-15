@@ -1,6 +1,4 @@
 import {
-  Content,
-  PageWithHeader,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
@@ -10,6 +8,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
+import { FullPage, PluginHeader } from '@backstage/ui';
 
 async function getBaseType(
   mcaApi: McaComponentsBackendApi,
@@ -70,90 +69,19 @@ export const McaBaseTypeDefinitionPage = () => {
     );
   }
 
-  const iframeContent = (
-    <iframe
-      src={baseTypeUrl || ''}
-      height={'100%'}
-      width={'100%'}
-      title={`BaseType :${baseTypeUrl}`}
-    />
-  );
-
   return (
-    <PageWithHeader
-      key={name}
-      themeId="apis"
-      title={name || 'Unknown'}
-      type="MCA BaseType"
-    >
-      {iframeContent}
-    </PageWithHeader>
-  );
-};
-
-export const NfsMcaBaseTypeDefinitionPage = () => {
-  const mcaApi = useApi(mcaComponentsBackendApiRef);
-  const configApi = useApi(configApiRef);
-  const { name } = useParams();
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [baseType, setBaseType] = useState<McaBaseType>();
-
-  let baseTypesUrl = '';
-  try {
-    baseTypesUrl = configApi.getString('mcaComponents.baseTypes.baseUrl');
-  } catch (configError) {
-    // baseTypesUrl remains empty
-  }
-
-  useEffect(() => {
-    getBaseType(mcaApi, name!)
-      .then(result => {
-        setBaseType(result);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, [name, mcaApi]);
-
-  let baseTypeUrl: string | undefined;
-  if (baseType && baseTypesUrl) {
-    const packageUrl = baseType.packageName?.replace(/\./g, '/') || '';
-    baseTypeUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
-  }
-
-  if (error) return <ResponseErrorPanel error={error} />;
-  if (loading) return <Progress />;
-  if (!baseTypesUrl) {
-    return (
-      <ResponseErrorPanel
-        error={
-          new Error(
-            'Base types URL not configured. Please check mcaComponents.baseTypes.baseUrl in app-config.yaml',
-          )
-        }
+    <>
+      <PluginHeader
+        title={`BaseType: ${name}`}
       />
-    );
-  }
-
-  return (
-    <PageWithHeader
-      key={name}
-      themeId="apis"
-      title={name || 'Unknown'}
-      type="MCA BaseType"
-    >
-      <Content noPadding stretch>
-        <iframe
-          src={baseTypeUrl || ''}
-          height={'100%'}
-          width={'100%'}
-          title={`BaseType :${baseTypeUrl}`}
-        />
-      </Content>
-    </PageWithHeader>
+      <FullPage>
+          <iframe
+            src={baseTypeUrl || ''}
+            height={'100%'}
+            width={'100%'}
+            title={`BaseType :${baseTypeUrl}`}
+          />
+      </FullPage>
+    </>
   );
 };

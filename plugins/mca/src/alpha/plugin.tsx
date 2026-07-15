@@ -39,7 +39,7 @@ const mcaComponentsExplorerPage = PageBlueprint.make({
         routeRef: componentsRouteRef,
         loader: () =>
             import('../components/McaComponentExplorerPage').then(
-                m => <m.NfsMcaComponentExplorerPage />,
+                m => <m.McaComponentExplorerPage />,
             ),
     },
 });
@@ -52,7 +52,7 @@ const mcaComponentPage = PageBlueprint.make({
         routeRef: componentRouteRef,
         loader: () =>
             import('../components/McaComponentDefinitionPage').then(
-                m => <m.NfsMcaComponentDefinitionPage />,
+                m => <m.McaComponentDefinitionPage />,
             ),
     },
 });
@@ -67,7 +67,7 @@ const mcaBaseTypesExplorerPage = PageBlueprint.make({
         routeRef: baseTypesRouteRef,
         loader: () =>
             import('../components/McaBaseTypeExplorerPage').then(
-                m => <m.NfsMcaBaseTypeExplorerPage />,
+                m => <m.McaBaseTypeExplorerPage />,
             ),
     },
 });
@@ -80,7 +80,7 @@ const mcaBaseTypePage = PageBlueprint.make({
         routeRef: baseTypeRouteRef,
         loader: () =>
             import('../components/McaBaseTypeDefinitionPage').then(
-                m => <m.NfsMcaBaseTypeDefinitionPage />,
+                m => <m.McaBaseTypeDefinitionPage />,
             ),
     },
 });

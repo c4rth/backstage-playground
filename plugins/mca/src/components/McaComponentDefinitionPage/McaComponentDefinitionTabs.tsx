@@ -1,8 +1,8 @@
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { McaComponent } from '@internal/plugin-mca-common';
 import { useGetMcaComponentDefinition } from '../../hooks';
-import { McaOperationDefinitionPage } from './McaOperationDefinitionPage';
-import { McaElementDefinitionPage } from './McaElementDefinitionPage';
+import { McaOperationDefinitionTabs } from './McaOperationDefinitionTabs';
+import { McaElementDefinitionTabs } from './McaElementDefinitionTabs';
 import { memo, useMemo } from 'react';
 import { XMLParser } from 'fast-xml-parser';
 
@@ -27,12 +27,12 @@ const xmlParser = new XMLParser({
   },
 });
 
-export interface McaComponentDefinitionCardProps {
+export interface McaComponentDefinitionTabsProps {
   mca: McaComponent;
   version: string;
 }
 
-export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(
+export const McaComponentDefinitionTabs = memo<McaComponentDefinitionTabsProps>(
   ({ mca, version }) => {
     const { rawXml, loading, error } = useGetMcaComponentDefinition(
       mca.component,
@@ -66,14 +66,14 @@ export const McaComponentDefinitionCard = memo<McaComponentDefinitionCardProps>(
     switch (componentType) {
       case 'operation':
         return (
-          <McaOperationDefinitionPage
+          <McaOperationDefinitionTabs
             parsedDefinition={parsedXml}
             rawXml={rawXml}
           />
         );
       case 'element':
         return (
-          <McaElementDefinitionPage
+          <McaElementDefinitionTabs
             parsedDefinition={parsedXml}
             rawXml={rawXml}
           />

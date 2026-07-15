@@ -60,20 +60,22 @@ community:
   - api-platform
   - app-registry
   - azure-devops
-  - health-dashboard
-  - mca
-  - DELETED: techdocs
+  - DONE: health-dashboard
+  - DONE: mca
   - toolkit
 
 - UI
-  update to bui
-  - analytics
-  - api-platform
-  - app-registry
-  - azure-devops
-  - health-dashboard
-  - mca
-  - toolkit
+
+  - update to bui
+    - analytics
+    - api-platform
+    - app-registry
+    - azure-devops
+    - health-dashboard
+    - mca
+    - toolkit
+
+  - plugin header when put in code : different height as by default
 
 ## DONE
 

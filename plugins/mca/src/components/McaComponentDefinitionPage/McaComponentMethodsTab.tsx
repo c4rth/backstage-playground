@@ -2,7 +2,7 @@ import { InfoCard, Table, TableColumn } from '@backstage/core-components';
 import { Flex, Box, Text } from '@backstage/ui';
 import { memo, useMemo } from 'react';
 
-export interface McaComponentMethodsCardProps {
+export interface McaComponentMethodsTabProps {
   data: any;
   componentType?: 'element' | 'operation';
 }
@@ -57,7 +57,7 @@ function getMethods(data: any): MethodRow[] {
   return transformMethodsToRows(methodsArray);
 }
 
-export const McaComponentMethodsCard = memo<McaComponentMethodsCardProps>(
+export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
   ({ data, componentType = 'element' }) => {
     const methods = useMemo(() => getMethods(data), [data]);
 

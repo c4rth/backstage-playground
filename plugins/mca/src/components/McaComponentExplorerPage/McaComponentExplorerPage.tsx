@@ -1,5 +1,4 @@
-import { Content, PageWithHeader } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { McaComponentTable } from '../McaComponentTable';
 import {
   InformationPopup,
@@ -7,7 +6,7 @@ import {
 } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Alert, Box, Flex, Grid, Select, Option, FullPage, PluginHeader, } from '@backstage/ui';
+import { Alert, Box, Flex, Grid, Select, Option, FullPage, PluginHeader, Container, } from '@backstage/ui';
 import { mcaComponentsBackendApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import { RiBubbleChartLine } from '@remixicon/react';
@@ -41,85 +40,6 @@ function normalizeComponentType(type: string): McaComponentType {
 }
 
 export const McaComponentExplorerPage = () => {
-  const configApi = useApi(configApiRef);
-  const mcaApi = useApi(mcaComponentsBackendApiRef);
-
-  const organizationName =
-    configApi.getOptionalString('organization.name') ?? 'Backstage';
-
-  const { value: lastModifiedDate } = useAsync(async () => {
-    return mcaApi.getCsvLastModifiedDate();
-  }, [mcaApi]);
-
-  const subtitle = `${organizationName} MCA Components Explorer`;
-
-  const [selectedType, setSelectedType] = useState<McaComponentType>(() =>
-    getInitialType(),
-  );
-
-  const handleSelectChange = (selected: string) => {
-    const normalizedType = normalizeComponentType(selected);
-    sessionStorage.setItem(STORAGE_KEY, normalizedType);
-    setSelectedType(normalizedType);
-  };
-
-  const subtitleComponent = (
-    <InformationPopup text={subtitle} content={POPUP_CONTENT} />
-  );
-
-  const pageContent = (
-    <>
-      <Box mb="4">
-        <Grid.Root columns="2">
-          <Grid.Item>
-            <Select
-              onChange={selected => handleSelectChange(selected!.toString())}
-              label="Type"
-              options={componentTypes}
-              value={selectedType}
-            />
-          </Grid.Item>
-          <Grid.Item>
-            <Flex
-              style={{
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                height: '100%',
-              }}
-            >
-              <Alert
-                status="warning"
-                icon
-                title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
-                style={{ width: 'fit-content', alignSelf: 'flex-end' }}
-              />
-              <Alert
-                status="info"
-                icon
-                title={`Last updated: ${lastModifiedDate?.toLocaleString('fr-BE') || 'Unknown'}`}
-                style={{ width: 'fit-content', alignSelf: 'flex-end' }}
-              />
-            </Flex>
-          </Grid.Item>
-        </Grid.Root>
-      </Box>
-      <McaComponentTable type={selectedType} />
-    </>
-  );
-
-  return (
-    <PageWithHeader
-      themeId="apis"
-      title="MCA Components"
-      subtitle={subtitleComponent}
-      pageTitleOverride="MCA Components"
-    >
-      <Content>{pageContent}</Content>
-    </PageWithHeader>
-  );
-};
-
-export const NfsMcaComponentExplorerPage = () => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const { value: lastModifiedDate } = useAsync(async () => {
@@ -143,9 +63,9 @@ export const NfsMcaComponentExplorerPage = () => {
         icon={<RiBubbleChartLine fontSize="inherit" />}
         customActions={<InformationPopup content={POPUP_CONTENT} />} />
       <FullPage>
-        <Content>
+        <Container>
           <Box mb="4">
-            <Grid.Root columns="2">
+            <Grid.Root columns="3">
               <Grid.Item>
                 <Select
                   onChange={selected => handleSelectChange(selected!.toString())}
@@ -154,7 +74,7 @@ export const NfsMcaComponentExplorerPage = () => {
                   value={selectedType}
                 />
               </Grid.Item>
-              <Grid.Item>
+              <Grid.Item colSpan="2">
                 <Flex
                   style={{
                     alignItems: 'center',
@@ -179,7 +99,7 @@ export const NfsMcaComponentExplorerPage = () => {
             </Grid.Root>
           </Box>
           <McaComponentTable type={selectedType} />
-        </Content>
+        </Container>
       </FullPage>
     </>
   );

@@ -190,7 +190,7 @@ function toTableRows(
   return [];
 }
 
-export interface McaComponentFieldsCardProps {
+export interface McaComponentFieldsTabProps {
   data: any;
   fieldType: 'element' | 'input' | 'output';
   title?: string;
@@ -222,7 +222,7 @@ function getDefaultTitle(fieldType: 'element' | 'input' | 'output') {
   return 'Output Fields';
 }
 
-export const McaComponentFieldsCard = memo<McaComponentFieldsCardProps>(
+export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
   ({ data, fieldType, title }) => {
     const fields = getFields(data, fieldType);
     const rows = toTableRows(fields, fieldType);

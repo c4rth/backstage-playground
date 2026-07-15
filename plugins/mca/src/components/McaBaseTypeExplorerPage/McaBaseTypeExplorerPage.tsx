@@ -1,11 +1,9 @@
-import { Content, PageWithHeader } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-api-platform-react';
 import { McaBaseTypeTable } from '../McaBaseTypeTable/McaBaseTypeTable';
-import { Box, FullPage, PluginHeader } from '@backstage/ui';
+import { Container, FullPage, PluginHeader } from '@backstage/ui';
 import { RiAlbumLine } from '@remixicon/react';
 
 const POPUP_CONTENT = (
@@ -16,34 +14,6 @@ const POPUP_CONTENT = (
 );
 
 export const McaBaseTypeExplorerPage = () => {
-  const configApi = useApi(configApiRef);
-
-  const organizationName =
-    configApi.getOptionalString('organization.name') ?? 'Backstage';
-  const subtitle = `${organizationName} MCA BaseType Explorer`;
-  const subtitleComponent = (
-    <InformationPopup text={subtitle} content={POPUP_CONTENT} />
-  );
-
-  const pageContent = (
-    <Content>
-      <McaBaseTypeTable />
-    </Content>
-  );
-
-  return (
-    <PageWithHeader
-      themeId="apis"
-      title="MCA BaseTypes"
-      subtitle={subtitleComponent}
-      pageTitleOverride="MCA BaseTypes"
-    >
-      {pageContent}
-    </PageWithHeader>
-  );
-};
-
-export const NfsMcaBaseTypeExplorerPage = () => {
   return (
     <>
       <PluginHeader
@@ -51,12 +21,9 @@ export const NfsMcaBaseTypeExplorerPage = () => {
         icon={<RiAlbumLine fontSize="inherit" />}
         customActions={<InformationPopup content={POPUP_CONTENT} />} />
       <FullPage>
-
-        <Content>
-          <Box>
-            <McaBaseTypeTable />
-          </Box>
-        </Content>
+        <Container>
+          <McaBaseTypeTable />
+        </Container>
       </FullPage>
     </>
   );
