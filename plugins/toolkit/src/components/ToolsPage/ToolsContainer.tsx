@@ -23,9 +23,9 @@ export const ToolsContainer = () => {
   );
 
   return (
-    <Box style={{ width: '100%', height: '100%' }}>
-      <Grid.Root style={{ width: '100%', height: '100%' }} gap="0">
-        <Grid.Item colSpan="2" style={{ backgroundColor: 'var(--bui-bg-neutral-1-disabled)', padding: 0 }}>
+    <Box style={{ width: '100%', height: '100%', minHeight: 0 }}>
+      <Grid.Root style={{ width: '100%', height: '100%', minHeight: 0 }} gap="0">
+        <Grid.Item colSpan="2" style={{ backgroundColor: 'var(--bui-bg-neutral-1-disabled)', padding: 0, height: '100%', minHeight: 0, overflowY: 'auto' }}>
           <List
             aria-label="Tools"
             selectedKeys={[selectedTool.id]}
@@ -50,7 +50,7 @@ export const ToolsContainer = () => {
           </List>
         </Grid.Item>
 
-        <Grid.Item colSpan="10" style={{ padding: 0, }}>
+        <Grid.Item colSpan="10" style={{ padding: 0, height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           <ToolContainer tool={selectedTool} />
         </Grid.Item>
       </Grid.Root>

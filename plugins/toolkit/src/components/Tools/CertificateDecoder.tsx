@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { DefaultEditor } from '../DefaultEditor';
-import { Box } from '@backstage/ui';
 import * as asn1js from 'asn1js';
 import { AttributeTypeAndValue, Certificate } from 'pkijs';
 import ReactJson from 'react-json-view';
@@ -115,31 +114,42 @@ export const CertificateDecoder = () => {
 
   const CertificateDecodeOutput = (props: { info?: any }) => {
     return (
-      <Box
+      <div
         style={{
           width: '100%',
           height: '100%',
+          minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
         {props.info ? (
-          <ReactJson
-            name={false}
-            src={props.info || {}}
+          <div
             style={{
+              flex: 1,
+              minHeight: 0,
+              overflow: 'auto',
               border: '1px solid var(--bui-border-1)',
               boxSizing: 'border-box',
               borderRadius: '4px',
-              flex: 1,
               backgroundColor: 'var(--bui-bg-neutral-1)',
             }}
-            enableClipboard
-          />
+          >
+            <ReactJson
+              name={false}
+              src={props.info || {}}
+              style={{
+                minHeight: '100%',
+                backgroundColor: 'var(--bui-bg-neutral-1)',
+              }}
+              enableClipboard
+            />
+          </div>
         ) : (
           <div
             style={{
               flex: 1,
+              minHeight: 0,
               overflow: 'auto',
               padding: '8px',
               fontFamily: 'monospace',
@@ -150,12 +160,12 @@ export const CertificateDecoder = () => {
               color: 'var(--bui-fg-primary)',
             }}
           >
-            <Box>
+            <div>
               <i>No Certificate data available</i>
-            </Box>
+            </div>
           </div>
         )}
-      </Box>
+      </div>
     );
   };
 

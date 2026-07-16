@@ -5,9 +5,9 @@ import {
   PasteFromClipboardButton,
   SampleButton,
 } from '../Buttons';
-import { TextField, TextArea } from 'react-aria-components';
-import { Box, Flex, Grid } from '@backstage/ui';
+import { Box, Flex, Grid, TextAreaField } from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
+import styles from '../styles/customTextAreaField.module.css';
 
 type Props = {
   input: string;
@@ -45,10 +45,10 @@ export const DefaultEditor = (props: Props) => {
   } = props;
 
   return (
-    <Flex direction="column" style={{ height: '100%' }}>
+    <Flex direction="column" style={{ height: '100%', minHeight: 0 }}>
       <Box style={{
         display: 'flex',
-        alignItems: 'center', 
+        alignItems: 'center',
         gap: '0px',
       }}>
         <Flex
@@ -81,86 +81,74 @@ export const DefaultEditor = (props: Props) => {
           )}
         </Flex>
       </Box>
-      <Grid.Root style={{ flex: 1, display: 'flex' }}>
+      <Grid.Root style={{ flex: 1, display: 'flex', minHeight: 0 }}>
         <Grid.Item
           style={{
             paddingTop: '8px !important',
             paddingLeft: '8px !important',
             display: 'flex',
             flexDirection: 'column',
+            minHeight: 0,
             width: '50%',
+            flex: 1,
           }}
         >
-          {leftContent ?? (
-            <TextField
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-              aria-label="Input"
-            >
-              <TextArea
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+              overflow: 'hidden',
+              height: '100%',
+              width: '100%',
+            }}
+          >
+            {leftContent ?? (
+              <TextAreaField
+                className={styles.customTextAreaField}
+                aria-label="Input"
                 value={input}
-                onChange={e => setInput(e.target.value)}
+                onChange={text => setInput(text)}
                 rows={minRows}
-                style={{
-                  width: '100%',
-                  flex: 1,
-                  padding: '8px',
-                  fontFamily: 'monospace',
-                  fontSize: '14px',
-                  border: '1px solid var(--bui-border-1)',
-                  boxSizing: 'border-box',
-                  borderRadius: '4px',
-                  backgroundColor: 'var(--bui-bg-neutral-1)',
-                  color: 'var(--bui-fg-primary)',
-                  resize: 'none',
-                }}
               />
-            </TextField>
-          )}
-          {extraLeftContent}
+            )}
+            {extraLeftContent}
+          </div>
         </Grid.Item>
         <Grid.Item
           style={{
-            padding: '8px !important',
+            width: '100%',
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            width: '50%',
+            minHeight: 0,
+            overflow: 'hidden',
+            padding: '8px !important',
           }}
         >
-          {rightContent ?? (
-            <TextField
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-              aria-label="Output"
-            >
-              <TextArea
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+              overflow: 'hidden',
+              height: '100%',
+              width: '100%',
+            }}
+          >
+            {rightContent ?? (
+              <TextAreaField
+                className={styles.customTextAreaField}
+                aria-label="Output"
                 value={output || ''}
                 rows={minRows}
-                readOnly
-                style={{
-                  width: '100%',
-                  flex: 1,
-                  padding: '8px',
-                  fontFamily: 'monospace',
-                  fontSize: '14px',
-                  border: '1px solid var(--bui-border-1)',
-                  borderRadius: '4px',
-                  backgroundColor: 'var(--bui-bg-neutral-1)',
-                  color: 'var(--bui-fg-primary)',
-                  resize: 'none',
-                }}
+                isReadOnly
               />
-            </TextField>
-          )}
-          {extraRightContent}
+            )}
+            {extraRightContent}
+          </div>
         </Grid.Item>
       </Grid.Root>
     </Flex>

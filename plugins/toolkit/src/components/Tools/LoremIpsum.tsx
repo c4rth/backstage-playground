@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
-import { TextField, TextArea } from 'react-aria-components';
 import { RiEditBoxLine } from '@remixicon/react';
-import { Button, Flex, Grid, Select, Option } from '@backstage/ui';
+import { Button, Flex, Grid, Select, Option, TextAreaField } from '@backstage/ui';
+import styles from '../styles/customTextAreaField.module.css';
 
 const randomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * max) + min;
@@ -242,31 +242,11 @@ export const LoremIpsum = () => {
           flexDirection: 'column',
         }}
       >
-        <TextField
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
+        <TextAreaField
+          className={styles.customTextAreaField}
           aria-label="Output"
-        >
-          <TextArea
-            value={output || ''}
-            style={{
-              width: '100%',
-              flex: 1,
-              padding: '8px',
-              fontFamily: 'monospace',
-              fontSize: '14px',
-              border: '1px solid var(--bui-border-1)',
-              borderRadius: '4px',
-              backgroundColor: 'var(--bui-bg-neutral-1)',
-              color: 'var(--bui-fg-primary)',
-              resize: 'none',
-            }}
-          />
-        </TextField>
+          value={output || ''}
+        />
       </Grid.Item>
     </Flex>
   );

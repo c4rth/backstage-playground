@@ -8,17 +8,6 @@
 
 ## plugins
 
-custom:
-
-- DONE: analytics
-- DONE: api-platform
-- DONE: app-registry
-- DONE: azure-devops
-- DONE: health-dashboard
-- DONE: mca
-- DELETED: techdocs
-- DONE: toolkit
-
 backstage:
 
 - api-docs
@@ -49,6 +38,15 @@ community:
 - UI
 
   - update to bui (header, card, etc)
+    - DONE: analytics
+    - api-platform
+    - DONE: app-registry
+    - DONE: azure-devops
+    - DONE: health-dashboard
+    - DONE: mca
+    - DONE: toolkit
+
+  - update to bui Table
     - analytics
     - api-platform
     - app-registry
@@ -58,8 +56,20 @@ community:
     - toolkit
 
   - plugin header when put in code : different height as by default
+    - actions ?
 
 ## DONE
+
+- nfs:
+  custom:
+  - DONE: analytics
+  - DONE: api-platform
+  - DONE: app-registry
+  - DONE: azure-devops
+  - DONE: health-dashboard
+  - DONE: mca
+  - DELETED: techdocs
+  - DONE: toolkit
 
 - admin - catalog:
   - remove catalog import menu
@@ -83,3 +93,6 @@ community:
     - DONE: health-dashboard
     - DONE: mca
     - DONE: toolkit
+  
+  - toolkit
+    - use bui components TextAreaField
