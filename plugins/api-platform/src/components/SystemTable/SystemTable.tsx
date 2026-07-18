@@ -1,12 +1,11 @@
 import {
-  Link,
   ResponseErrorPanel,
   Table,
   TableColumn,
 } from '@backstage/core-components';
 import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box, Flex, Text } from '@backstage/ui';
+import { Box, Flex, Text, Link } from '@backstage/ui';
 import { useState } from 'react';
 import { ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
@@ -35,7 +34,7 @@ const columns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ name }: TableRow) => (
-      <Link to={name}>
+      <Link href={name} weight="bold" color="info" standalone>
         <ComponentDisplayName text={name} type="system" />
       </Link>
     ),

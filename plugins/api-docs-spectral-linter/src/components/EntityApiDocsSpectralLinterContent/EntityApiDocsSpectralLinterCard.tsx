@@ -16,7 +16,6 @@
 
 import {
   CodeSnippet,
-  InfoCard,
   MarkdownContent,
   Progress,
   WarningPanel,
@@ -25,9 +24,8 @@ import useAsync from 'react-use/lib/useAsync';
 import { ApiEntity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { linterApiRef } from '../../api';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { Grid, Text } from '@backstage/ui';
-import { Link } from '@backstage/core-components';
+import { EntityInfoCard, useEntity } from '@backstage/plugin-catalog-react';
+import { Grid, Text, Link } from '@backstage/ui';
 
 /**
  * Component for browsing API docs spectral linter on an entity page.
@@ -77,11 +75,11 @@ export const EntityApiDocsSpectralLinterCard = () => {
   };
 
   return (
-    <InfoCard
+    <EntityInfoCard
       title="Spectral Linter"
-      subheader={
+      headerActions={
         value?.rulesetUrl && (
-          <Link to={value?.rulesetUrl} target="_blank">
+          <Link href={value?.rulesetUrl} target="_blank">
             Rule set used
           </Link>
         )
@@ -103,13 +101,10 @@ export const EntityApiDocsSpectralLinterCard = () => {
                   title={`${ruleResult.message} (${ruleResult.code})`}
                   severity={getSeverity(ruleResult.severity)}
                   message={
-                    <InfoCard
-                      deepLink={
+                    <EntityInfoCard
+                      headerActions={
                         ruleResult.ruleDocumentationUrl
-                          ? {
-                              title: 'Documentation',
-                              link: ruleResult.ruleDocumentationUrl,
-                            }
+                          ? <Link href={ruleResult.ruleDocumentationUrl} target="_blank">View rule documentation</Link>
                           : undefined
                       }
                     >
@@ -131,7 +126,7 @@ export const EntityApiDocsSpectralLinterCard = () => {
                           padding: '0.5em 0',
                         }}
                       />
-                    </InfoCard>
+                    </EntityInfoCard>
                   }
                 />
               </Grid.Item>
@@ -140,6 +135,6 @@ export const EntityApiDocsSpectralLinterCard = () => {
         ) : (
           <Text>No linting errors found...</Text>
         ))}
-    </InfoCard>
+    </EntityInfoCard>
   );
 };

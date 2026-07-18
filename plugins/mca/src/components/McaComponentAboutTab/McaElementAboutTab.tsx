@@ -1,4 +1,5 @@
-import { InfoCard, MarkdownContent } from '@backstage/core-components';
+import { MarkdownContent } from '@backstage/core-components';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import { Grid, Text } from '@backstage/ui';
 import { memo } from 'react';
@@ -37,7 +38,7 @@ export const McaElementAboutTab = ({ element }: McaElementAboutTabProps) => {
   ];
 
   return (
-    <InfoCard title="About" divider>
+    <EntityInfoCard title="About">
       <Grid.Root columns="1">
         {fieldConfigs.map(config => (
           <FieldDisplay
@@ -51,6 +52,6 @@ export const McaElementAboutTab = ({ element }: McaElementAboutTabProps) => {
           <MarkdownContent content={element?.description || ''} />
         </AboutField>
       </Grid.Root>
-    </InfoCard>
+    </EntityInfoCard>
   );
 };

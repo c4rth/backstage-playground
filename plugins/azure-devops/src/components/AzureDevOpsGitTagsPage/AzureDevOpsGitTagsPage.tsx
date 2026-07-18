@@ -10,9 +10,10 @@ import {
   CellText,
   useTable,
   ColumnConfig,
+  Link,
 } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import {
   GitTag,
   getAnnotationValuesFromEntity,
@@ -73,7 +74,7 @@ export const AzureDevOpsGitTagsPage = () => {
         isRowHeader: true,
         cell: item => (
           <Cell>
-            <Link to={item.gitTag.link ?? ''}>{item.gitTag.name}</Link>
+            <Link href={item.gitTag.link ?? ''} weight="bold" color="info" standalone>{item.gitTag.name}</Link>
           </Cell>
         ),
         isSortable: true,
@@ -83,7 +84,7 @@ export const AzureDevOpsGitTagsPage = () => {
         label: 'Commit',
         cell: item => (
           <Cell>
-            <Link to={item.gitTag.commitLink ?? ''}>
+            <Link href={item.gitTag.commitLink ?? ''} weight="bold" color="info" standalone>
               {item.gitTag.peeledObjectId ?? item.gitTag.objectId}
             </Link>
           </Cell>

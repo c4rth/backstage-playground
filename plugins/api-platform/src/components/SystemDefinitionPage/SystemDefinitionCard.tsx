@@ -1,20 +1,19 @@
-import { InfoCard, TabbedLayout } from '@backstage/core-components';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
 import {
   catalogApiRef,
+  EntityInfoCard,
   EntityProvider,
   EntityRefLink,
   useEntity,
 } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
-import { SystemRelationCard } from './SystemPlatformRelationCard';
+import { SystemRelationCard } from './SystemRelationCard';
 import { EntityMembersListCard } from '@backstage/plugin-org';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
-import { Box, Grid, Flex, ButtonLink } from '@backstage/ui';
-import styles from './SystemDefinitionCard.module.css';
+import { Box, Grid, Flex, ButtonLink, Tab, TabList, TabPanel, Tabs, } from '@backstage/ui';
 import { SystemDefinition } from '@internal/plugin-api-platform-common';
 
 interface SystemDefinitionCardProps {
@@ -47,8 +46,14 @@ export const SystemDefinitionCard = ({
   }, [entity, catalogApi]);
 
   return (
-    <TabbedLayout>
-      <TabbedLayout.Route path="/" title="Ownership">
+
+    <Tabs defaultSelectedKey="tab1">
+      <TabList>
+        <Tab id="tab1" href=".">Ownership</Tab>
+        <Tab id="tab2" href='members'>Members</Tab>
+        <Tab id="tab3" href='info'>Info</Tab>
+      </TabList>
+      <TabPanel id="tab1">
         <Flex gap="2" direction="column">
           <SystemRelationCard
             system={system}
@@ -69,22 +74,18 @@ export const SystemDefinitionCard = ({
               />
             )}
         </Flex>
-      </TabbedLayout.Route>
-
-      <TabbedLayout.Route path="/members" title="Members">
+      </TabPanel>
+      <TabPanel id="tab2">
         <EntityProvider entity={ownedByGroup.value}>
           <EntityMembersListCard />
         </EntityProvider>
-      </TabbedLayout.Route>
-
-      <TabbedLayout.Route path="/info" title="Info">
+      </TabPanel>
+      <TabPanel id="tab3">
         <Grid.Root columns="12">
           <Grid.Item colSpan="6">
-            <InfoCard
+            <EntityInfoCard
               title="About"
-              divider
-              className={styles.gridItemCard}
-              action={
+              headerActions={
                 <ButtonLink
                   href={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
                   isDisabled={!hasDocs}
@@ -100,10 +101,10 @@ export const SystemDefinitionCard = ({
                 </AboutField>
               </Box>
               <ComponentAboutContent entity={entity} />
-            </InfoCard>
+            </EntityInfoCard>
           </Grid.Item>
         </Grid.Root>
-      </TabbedLayout.Route>
-    </TabbedLayout>
+      </TabPanel>
+    </Tabs>
   );
 };

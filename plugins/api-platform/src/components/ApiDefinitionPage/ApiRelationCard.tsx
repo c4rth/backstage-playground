@@ -1,5 +1,4 @@
 import {
-  Link,
   ResponseErrorPanel,
   Table,
   TableColumn,
@@ -26,7 +25,7 @@ import {
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
-import { Flex } from '@backstage/ui';
+import { Flex, Link } from '@backstage/ui';
 
 type TableRow = {
   id: number;
@@ -45,8 +44,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     render: ({ system, name, version, environment }: TableRow) => (
       <Link
-        to={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
-      >
+        href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`} weight="bold" color="info" standalone>
         <ComponentDisplayName text={name} type="service" />
       </Link>
     ),
@@ -70,7 +68,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
       system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
-        <Link to={`/api-platform/system/${system}`}>
+        <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
           <ComponentDisplayName text={system} type="system" />
         </Link>
       ),

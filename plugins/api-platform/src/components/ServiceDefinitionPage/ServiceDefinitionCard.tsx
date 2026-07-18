@@ -1,9 +1,8 @@
-import { InfoCard, TabbedLayout, Link } from '@backstage/core-components';
 import {
   ComponentEntity,
   getCompoundEntityRef,
 } from '@backstage/catalog-model';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import { EntityInfoCard, EntityRefLink } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import {
   Direction,
@@ -32,9 +31,8 @@ import {
 //
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Grid, Box, Text, ButtonIcon } from '@backstage/ui';
+import { Grid, Box, Text, ButtonIcon, Tab, TabList, TabPanel, Tabs, Link, } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
-import styles from './ServiceDefinitionCard.module.css';
 import {
   isAzureDevOpsAvailable,
   isAzurePipelinesAvailable,
@@ -72,17 +70,33 @@ export const ServiceDefinitionCard = ({
   }
 
   return (
-    <TabbedLayout>
-      <TabbedLayout.Route path="/" title="Overview">
+    <Tabs defaultSelectedKey="tab1">
+      <TabList>
+        <Tab id="tab1" href=".">Overview</Tab>
+        <Tab id="tab2" href='dependencies'>Dependencies</Tab>
+        <Tab id="tab3" href='app-registry'>App Registry</Tab>
+        {azurePipelines && (
+          <Tab id="tab4" href='ci-cd'>CI/CD</Tab>
+        )}
+        {azureDevOps && (
+          <Tab id="tab5" href='git-tags'>Git Tags</Tab>
+        )}
+        {azureDevOps && (
+          <Tab id="tab6" href='readme'>Readme</Tab>
+        )}
+        {sonarQube && (
+          <Tab id="tab7" href='sonarqube'>SonarQube</Tab>
+        )}
+      </TabList>
+      <TabPanel id="tab1">
         <Grid.Root columns="12">
           <Grid.Item colSpan="6">
-            <InfoCard
+            <EntityInfoCard
               title="About"
-              divider
-              className={styles.gridItemCard}
-              action={
+              headerActions={
                 <Link
-                  to={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+                  href={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
+                  standalone
                 >
                   <ButtonIcon
                     icon={<RiFileFill />}
@@ -116,7 +130,7 @@ export const ServiceDefinitionCard = ({
                   <Grid.Item colSpan="12">
                     <AboutField label="Repository">
                       {repository && repositoryUrl ? (
-                        <Link to={repositoryUrl}>
+                        <Link href={repositoryUrl} weight="bold" color="info" standalone>
                           <ComponentDisplayName text={repository} type="azdo" />
                         </Link>
                       ) : (
@@ -129,7 +143,7 @@ export const ServiceDefinitionCard = ({
               <Box mt="6">
                 <ComponentAboutContent entity={entity} />
               </Box>
-            </InfoCard>
+            </EntityInfoCard>
           </Grid.Item>
           <Grid.Item colSpan="6">
             <EntityCatalogGraphCard
@@ -140,11 +154,15 @@ export const ServiceDefinitionCard = ({
             />
           </Grid.Item>
         </Grid.Root>
-      </TabbedLayout.Route>
+      </TabPanel>
 
-      <TabbedLayout.Route path="/dependencies" title="Dependencies">
-        <TabbedLayout>
-          <TabbedLayout.Route path="/apis" title="APIs">
+      <TabPanel id="tab2">
+        <Tabs key="tabs-dependencies" defaultSelectedKey="tab2-1">
+          <TabList>
+            <Tab id="tab2-1">APIs</Tab>
+            <Tab id="tab2-2">Libraries</Tab>
+          </TabList>
+          <TabPanel id="tab2-1">
             <Grid.Root columns="12">
               <Grid.Item colSpan="6">
                 <ServiceApiRelationCard dependency="provided" />
@@ -153,40 +171,40 @@ export const ServiceDefinitionCard = ({
                 <ServiceApiRelationCard dependency="consumed" />
               </Grid.Item>
             </Grid.Root>
-          </TabbedLayout.Route>
-          <TabbedLayout.Route path="/libraries" title="Libraries">
+          </TabPanel>
+          <TabPanel id="tab2-2">
             <ServiceLibraryRelationCard />
-          </TabbedLayout.Route>
-        </TabbedLayout>
-      </TabbedLayout.Route>
+          </TabPanel>
+        </Tabs>
+      </TabPanel>
 
-      <TabbedLayout.Route path="/appreg" title="App Registry">
+      <TabPanel id="tab3">
         <AppRegistryPage />
-      </TabbedLayout.Route>
+      </TabPanel>
 
       {azurePipelines && (
-        <TabbedLayout.Route path="/ci-cd" title="CI/CD">
+        <TabPanel id="tab4">
           <AzureDevOpsPipelinePage />
-        </TabbedLayout.Route>
+        </TabPanel>
       )}
 
       {azureDevOps && (
-        <TabbedLayout.Route path="/gittags" title="Git Tags">
+        <TabPanel id="tab5">
           <AzureDevOpsGitTagsPage />
-        </TabbedLayout.Route>
+        </TabPanel>
       )}
 
       {azureDevOps && (
-        <TabbedLayout.Route path="/readme" title="Readme">
+        <TabPanel id="tab6">
           <AzureReadmeCard />
-        </TabbedLayout.Route>
+        </TabPanel>
       )}
 
       {sonarQube && (
-        <TabbedLayout.Route path="/sonarqube" title="SonarQube">
+        <TabPanel id="tab7">
           <EntitySonarQubeContentPage />
-        </TabbedLayout.Route>
+        </TabPanel>
       )}
-    </TabbedLayout>
+    </Tabs>
   );
 };

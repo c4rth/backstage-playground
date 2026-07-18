@@ -1,5 +1,5 @@
-import { Table, TableColumn, Link } from '@backstage/core-components';
-import { ButtonIcon, Flex, Tooltip, TooltipTrigger } from '@backstage/ui';
+import { Table, TableColumn } from '@backstage/core-components';
+import { ButtonIcon, Flex, Tooltip, TooltipTrigger, Link } from '@backstage/ui';
 import { RiAsterisk } from '@remixicon/react';
 import { memo } from 'react';
 
@@ -55,7 +55,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
         <div>
           {field.clientElement} of{' '}
           {field.name && (
-            <Link to={`/mca/${field.clientKind}/${field.name}`}>
+            <Link href={`/mca/${field.clientKind}/${field.name}`} weight="bold" color="info" standalone>
               <b>{field.name}</b>
             </Link>
           )}
@@ -63,7 +63,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
       );
     }
     return (
-      <Link to={`/mca/components/${field.name}`}>
+      <Link href={`/mca/components/${field.name}`} weight="bold" color="info" standalone>
         <b>{field.name}</b>
       </Link>
     );
@@ -71,7 +71,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
 
   if (field.kind === 'basetype') {
     return (
-      <Link to={`/mca/basetypes/${field.name}`}>
+      <Link href={`/mca/basetypes/${field.name}`} weight="bold" color="info" standalone>
         <b>{field.name}</b>
       </Link>
     );

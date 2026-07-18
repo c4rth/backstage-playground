@@ -1,8 +1,7 @@
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
-import { Link } from '@backstage/core-components';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { Chip } from '@internal/plugin-api-platform-react';
-import { Text, TooltipTrigger, Tooltip, Flex, Box } from '@backstage/ui';
+import { Text, TooltipTrigger, Tooltip, Flex, Box, Link } from '@backstage/ui';
 
 export type ComponentChipProps = {
   index?: number;
@@ -152,7 +151,7 @@ export const ComponentChip = ({
   );
 
   return link ? (
-    <Link to={link} style={{ padding: 0, margin: 0 }}>
+    <Link href={link} weight="bold" color="info" standalone style={{ padding: 0, margin: 0 }}>
       {content}
     </Link>
   ) : (

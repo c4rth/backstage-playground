@@ -1,7 +1,6 @@
 import {
   Header,
   Content,
-  TabbedLayout,
   HeaderActionMenu,
   Progress,
   ResponseErrorPanel,
@@ -20,6 +19,7 @@ import { apiPlatformBackendApiRef } from '../../plugin';
 import { ComponentHeaderLabels } from '../common';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { generateReport } from './generateReport';
+import { Container, FullPage, PluginHeader, Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
 
 export const LibraryDefinitionPage = () => {
   const { system, name } = useParams();
@@ -102,14 +102,18 @@ export const LibraryDefinitionPage = () => {
             error={errorReport}
           />
         )}
-        <TabbedLayout>
-          <TabbedLayout.Route path="/" title="By versions">
+        <Tabs>
+          <TabList>
+            <Tab id="tab1">By versions</Tab>
+            <Tab id="tab2">By services</Tab>
+          </TabList>
+          <TabPanel id="tab1">
             <LibraryDefinitionVersionsCard system={system!} name={name!} />
-          </TabbedLayout.Route>
-          <TabbedLayout.Route path="/services" title="By services">
+          </TabPanel>
+          <TabPanel id="tab2">
             <LibraryDefinitionAllServicesCard system={system!} name={name!} />
-          </TabbedLayout.Route>
-        </TabbedLayout>
+          </TabPanel>
+        </Tabs>
       </Content>
     </AsyncEntityProvider>
   );

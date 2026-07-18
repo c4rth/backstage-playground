@@ -2,7 +2,6 @@ import {
   ResponseErrorPanel,
   Table,
   TableColumn,
-  Link,
 } from '@backstage/core-components';
 import {
   McaBaseType,
@@ -13,7 +12,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { Query } from '@material-table/core';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useState, memo } from 'react';
-import { Flex } from '@backstage/ui';
+import { Flex, Link } from '@backstage/ui';
 
 type TableRow = {
   id: number;
@@ -29,7 +28,9 @@ const columns: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     highlight: true,
     render: row => (
-      <Link to={`/mca/basetypes/${row.baseType}`}>{row.baseType}</Link>
+      <Link href={`/mca/basetypes/${row.baseType}`} weight="bold" color="info" standalone>
+        {row.baseType}
+      </Link>
     ),
   },
   {

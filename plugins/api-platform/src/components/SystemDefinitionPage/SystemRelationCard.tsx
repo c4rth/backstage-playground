@@ -1,5 +1,5 @@
-import { Link, Table, TableColumn } from '@backstage/core-components';
-import { Flex } from '@backstage/ui';
+import { Table, TableColumn } from '@backstage/core-components';
+import { Flex, Link } from '@backstage/ui';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
@@ -16,7 +16,7 @@ const apiColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ name, system }: TableRow) => (
-      <Link to={`/api-platform/api/${system}/${name}`}>
+      <Link href={`/api-platform/api/${system}/${name}`} weight="bold" color="info" standalone>
         <ComponentDisplayName type="api" text={name} />
       </Link>
     ),
@@ -31,7 +31,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ name, system }: TableRow) => (
-      <Link to={`/api-platform/service/${system}/${name}`}>
+      <Link href={`/api-platform/service/${system}/${name}`} weight="bold" color="info" standalone>
         <ComponentDisplayName type="service" text={name} />
       </Link>
     ),
@@ -46,7 +46,7 @@ const libraryColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ name, system }: TableRow) => (
-      <Link to={`/api-platform/library/${system}/${name}`}>
+      <Link href={`/api-platform/library/${system}/${name}`} weight="bold" color="info" standalone>
         <ComponentDisplayName type="library" text={name} />
       </Link>
     ),

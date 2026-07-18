@@ -1,10 +1,9 @@
 import {
   TableColumn,
   Table,
-  Link,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { Box, Flex } from '@backstage/ui';
+import { Box, Flex, Link } from '@backstage/ui';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
@@ -35,7 +34,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
       return a.version.localeCompare(b.version);
     },
     render: ({ system, name, version }: TableRow) => (
-      <Link to={`/api-platform/library/${system}/${name}/${version}`}>
+      <Link href={`/api-platform/library/${system}/${name}/${version}`} weight="bold" color="info" standalone>
         <ComponentDisplayName text={`${version}`} type="library" />
       </Link>
     ),

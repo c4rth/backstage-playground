@@ -2,7 +2,6 @@ import {
   ResponseErrorPanel,
   Table,
   TableColumn,
-  Link,
   OverflowTooltip,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
@@ -21,7 +20,7 @@ import { Query, MTableAction } from '@material-table/core';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
-import { Box, Flex, Select } from '@backstage/ui';
+import { Box, Flex, Select, Link } from '@backstage/ui';
 
 type TableRow = {
   id: number;
@@ -89,7 +88,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     highlight: true,
     render: ({ system, name }: TableRow) => (
-      <Link to={`/api-platform/api/${system}/${name}`}>
+      <Link href={`/api-platform/api/${system}/${name}`} weight="bold" color="info" standalone>
         <ComponentDisplayName text={name} type="api" />
       </Link>
     ),
@@ -117,7 +116,7 @@ const COLUMNS: TableColumn<TableRow>[] = [
       system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
-        <Link to={`/api-platform/system/${system}`}>
+        <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
           <ComponentDisplayName text={system} type="system" />
         </Link>
       ),

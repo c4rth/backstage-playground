@@ -11,11 +11,12 @@ import {
   CellText,
   useTable,
   ColumnConfig,
+  Link,
 } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getDurationFromDates } from '../../utils';
 import { DateTime } from 'luxon';
-import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import {
   AZURE_DEVOPS_DEFAULT_TOP,
   getAnnotationValuesFromEntity,
@@ -151,7 +152,9 @@ export const AzureDevOpsPipelinePage = () => {
         label: 'Build',
         cell: row => (
           <Cell>
-            <Link to={row.item.link ?? ''}>{row.item.title}</Link>
+            <Link href={row.item.link ?? ''} weight="bold" color="info" standalone>
+              {row.item.title}
+            </Link>
           </Cell>
         ),
         width: '25%',

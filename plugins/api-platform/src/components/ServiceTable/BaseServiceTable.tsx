@@ -1,5 +1,4 @@
 import {
-  Link,
   ResponseErrorPanel,
   Table,
   TableColumn,
@@ -17,7 +16,7 @@ import { useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { Box, Flex, Text } from '@backstage/ui';
+import { Box, Flex, Text, Link } from '@backstage/ui';
 import { Query } from '@material-table/core';
 
 export type BaseTableRow = {
@@ -65,7 +64,10 @@ const createNameColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
   sorting: true,
   render: ({ serviceDefinition }) => (
     <Link
-      to={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
+      href={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
+      weight="bold"
+      color="info"
+      standalone
     >
       <ComponentDisplayName
         text={serviceDefinition.serviceName}
@@ -104,7 +106,7 @@ const createSystemColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
   highlight: true,
   field: 'system',
   render: ({ serviceDefinition }) => (
-    <Link to={`/api-platform/system/${serviceDefinition.system}`}>
+    <Link href={`/api-platform/system/${serviceDefinition.system}`} weight="bold" color="info" standalone>
       <ComponentDisplayName text={serviceDefinition.system} type="system" />
     </Link>
   ),

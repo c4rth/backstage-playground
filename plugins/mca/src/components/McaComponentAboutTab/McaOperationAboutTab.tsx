@@ -1,11 +1,10 @@
 import {
   CopyTextButton,
-  InfoCard,
   MarkdownContent,
-  Link,
 } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
-import { Grid, Text } from '@backstage/ui';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
+import { Grid, Text, Link } from '@backstage/ui';
 import { memo } from 'react';
 import styles from './McaOperationAboutTab.module.css';
 import { convertUrlLocation, UrlLocations } from './convertUrlLocations';
@@ -56,7 +55,7 @@ const FieldDisplay = memo<{
           style={{ display: 'inline' }}
         >
           {isLink ? (
-            <Link to={href} target="_blank">
+            <Link href={href} target="_blank" weight="bold" color="info" standalone>
               {String(displayValue)}
             </Link>
           ) : (
@@ -129,7 +128,7 @@ export const McaOperationAboutTab = memo<McaOperationAboutTabProps>(
     ];
 
     return (
-      <InfoCard title="About" divider>
+      <EntityInfoCard title="About">
         <Grid.Root columns="1">
           {fieldConfigs.map(config => (
             <FieldDisplay
@@ -146,7 +145,7 @@ export const McaOperationAboutTab = memo<McaOperationAboutTabProps>(
             </AboutField>
           </Grid.Item>
         </Grid.Root>
-      </InfoCard>
+      </EntityInfoCard>
     );
   },
 );

@@ -1,11 +1,8 @@
 import {
-  InfoCard,
-  TabbedLayout,
-  Link,
   CodeSnippet,
 } from '@backstage/core-components';
 import { ApiEntity } from '@backstage/catalog-model';
-import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import { EntityInfoCard, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import {
   ANNOTATION_API_NAME,
@@ -21,7 +18,7 @@ import { ApiRelationCard } from './ApiRelationCard';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiAllRelationsCard } from './ApiAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
-import { Box, Grid } from '@backstage/ui';
+import { Box, Grid, Tab, TabList, TabPanel, Tabs, Link } from '@backstage/ui';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 export const ApiDefinitionCard = () => {
@@ -63,21 +60,35 @@ export const ApiDefinitionCard = () => {
     entity.metadata.annotations?.['api.depo.be/project'] === 'dead';
 
   return (
-    <TabbedLayout>
-      <TabbedLayout.Route path="/" title="OpenApi">
+
+    <Tabs defaultSelectedKey="tab1">
+      <TabList>
+        <Tab id="tab1" href=".">OpenApi</Tab>
+        <Tab id="tab2" href='raw'>Raw</Tab>
+        {isLinterAvailable && !isMcaApi && (
+          <Tab id="tab3" href='linter'>Linter</Tab>
+        )}
+        <Tab id="tab4" href='services'>Services</Tab>
+        <Tab id="tab5" href='info'>Info</Tab>
+      </TabList>
+      <TabPanel id="tab1">
         <OpenApiDefinitionWidget definition={definition} />
-      </TabbedLayout.Route>
-      <TabbedLayout.Route path="/raw" title="Raw">
+      </TabPanel>
+      <TabPanel id="tab2">
         <CodeSnippet text={definition} language="yaml" showCopyCodeButton />
-      </TabbedLayout.Route>
+      </TabPanel>
       {isLinterAvailable && !isMcaApi && (
-        <TabbedLayout.Route path="/linter" title="Linter">
+        <TabPanel id="tab3">
           <EntityApiDocsSpectralLinterCard />
-        </TabbedLayout.Route>
+        </TabPanel>
       )}
-      <TabbedLayout.Route path="/services" title="Services">
-        <TabbedLayout>
-          <TabbedLayout.Route path="/services/this" title={`${apiVersion}`}>
+      <TabPanel id="tab4">
+        <Tabs key="tabs-services" defaultSelectedKey="tab4-1">
+          <TabList>
+            <Tab id="tab4-1">{apiVersion}</Tab>
+            <Tab id="tab4-2">All versions</Tab>
+          </TabList>
+          <TabPanel id="tab4-1">
             <Grid.Root style={{ alignItems: 'stretch' }}>
               <Grid.Item colSpan="6">
                 <ApiRelationCard dependency="provider" />
@@ -86,8 +97,8 @@ export const ApiDefinitionCard = () => {
                 <ApiRelationCard dependency="consumer" />
               </Grid.Item>
             </Grid.Root>
-          </TabbedLayout.Route>
-          <TabbedLayout.Route path="/services/all" title="All versions">
+          </TabPanel>
+          <TabPanel id="tab4-2">
             <Grid.Root style={{ alignItems: 'stretch' }}>
               <Grid.Item colSpan="6">
                 <ApiAllRelationsCard dependency="provider" />
@@ -96,11 +107,11 @@ export const ApiDefinitionCard = () => {
                 <ApiAllRelationsCard dependency="consumer" />
               </Grid.Item>
             </Grid.Root>
-          </TabbedLayout.Route>
-        </TabbedLayout>
-      </TabbedLayout.Route>
-      <TabbedLayout.Route path="/info" title="Info">
-        <InfoCard title="About" divider>
+          </TabPanel>
+        </Tabs>
+      </TabPanel>
+      <TabPanel id="tab5">
+        <EntityInfoCard title="About">
           <Box mb="4">
             <AboutField label="Catalog reference">
               <EntityRefLink entityRef={entity!} />
@@ -112,10 +123,7 @@ export const ApiDefinitionCard = () => {
               <Box mt="6">
                 <AboutField label="Azure Artifact">
                   <Link
-                    to={artifactUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                    href={artifactUrl} weight="bold" color="info" target="_blank" rel="noopener noreferrer" standalone>
                     <ComponentDisplayName text={artifactText} type="azdo" />
                   </Link>
                 </AboutField>
@@ -132,10 +140,7 @@ export const ApiDefinitionCard = () => {
               <Box mt="6">
                 <AboutField label="API Platform URL">
                   <Link
-                    to={platformUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                    href={platformUrl} weight="bold" color="info" target="_blank" rel="noopener noreferrer" standalone>
                     <ComponentDisplayName text={platformUrl} type="url" />
                   </Link>
                 </AboutField>
@@ -146,8 +151,7 @@ export const ApiDefinitionCard = () => {
             <Box mt="6">
               <AboutField label="MCA Operation">
                 <Link
-                  to={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`}
-                >
+                  href={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`} weight="bold" color="info" standalone>
                   <ComponentDisplayName
                     text={`${entity.metadata.annotations?.['api.depo.be/name']}`}
                     type="api"
@@ -160,10 +164,7 @@ export const ApiDefinitionCard = () => {
             <Box mt="6">
               <AboutField label="API Platform URL">
                 <Link
-                  to={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  href={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`} weight="bold" color="info" target="_blank" rel="noopener noreferrer" standalone>
                   <ComponentDisplayName
                     text={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`}
                     type="url"
@@ -172,8 +173,8 @@ export const ApiDefinitionCard = () => {
               </AboutField>
             </Box>
           )}
-        </InfoCard>
-      </TabbedLayout.Route>
-    </TabbedLayout>
+        </EntityInfoCard>
+      </TabPanel>
+    </Tabs>
   );
 };

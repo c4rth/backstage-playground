@@ -1,10 +1,9 @@
 import {
-  Link,
   ResponseErrorPanel,
   Table,
   TableColumn,
 } from '@backstage/core-components';
-import { Flex } from '@backstage/ui';
+import { Flex, Link } from '@backstage/ui';
 import {
   Entity,
   parseEntityRef,
@@ -41,7 +40,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
       version === 'local' ? (
         <ComponentDisplayName text={name} type="api" />
       ) : (
-        <Link to={`/api-platform/api/${system}/${name}?version=${version}`}>
+        <Link href={`/api-platform/api/${system}/${name}?version=${version}`} weight="bold" color="info" standalone>
           <ComponentDisplayName text={name} type="api" />
         </Link>
       ),
@@ -60,7 +59,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
       system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
-        <Link to={`/api-platform/system/${system}`}>
+        <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
           <ComponentDisplayName text={system} type="system" />
         </Link>
       ),

@@ -2,7 +2,6 @@ import {
   ResponseErrorPanel,
   Table,
   TableColumn,
-  Link,
 } from '@backstage/core-components';
 import {
   McaComponent,
@@ -14,7 +13,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef, McaComponentsBackendApi } from '../../api';
 import { Query } from '@material-table/core';
 import { memo, useEffect, useState } from 'react';
-import { Flex } from '@backstage/ui';
+import { Flex, Link } from '@backstage/ui';
 
 type TableRow = {
   id: number;
@@ -36,7 +35,7 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       field: 'component',
       defaultSort: 'asc',
       highlight: true,
-      render: row => <Link to={row.component}>{row.component}</Link>,
+      render: row => <Link href={row.component} weight="bold" color="info" standalone>{row.component}</Link>,
     },
     {
       title: 'Baseline',
@@ -44,7 +43,7 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       field: 'prdVersion',
       highlight: true,
       render: row => (
-        <Link to={`${row.component}?version=${row.prdVersion}`}>
+        <Link href={`${row.component}?version=${row.prdVersion}`} weight="bold" color="info" standalone>
           {row.prdVersion}
         </Link>
       ),
@@ -58,7 +57,7 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       highlight: true,
       render: row =>
         row.p1Version ? (
-          <Link to={`${row.component}?version=${row.p1Version}`}>
+          <Link href={`${row.component}?version=${row.p1Version}`} weight="bold" color="info" standalone>
             {row.p1Version}
           </Link>
         ) : null,
@@ -72,7 +71,7 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       highlight: true,
       render: row =>
         row.p2Version ? (
-          <Link to={`${row.component}?version=${row.p2Version}`}>
+          <Link href={`${row.component}?version=${row.p2Version}`} weight="bold" color="info" standalone>
             {row.p2Version}
           </Link>
         ) : null,
@@ -87,7 +86,7 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       render: row =>
         row.p3Version ? (
           <Flex align="center">
-            <Link to={`${row.component}?version=${row.p3Version}`}>
+            <Link href={`${row.component}?version=${row.p3Version}`} weight="bold" color="info" standalone>
               {row.p3Version}
             </Link>
           </Flex>
@@ -102,7 +101,7 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       highlight: true,
       render: row =>
         row.p4Version ? (
-          <Link to={`${row.component}?version=${row.p4Version}`}>
+          <Link href={`${row.component}?version=${row.p4Version}`} weight="bold" color="info" standalone>
             {row.p4Version}
           </Link>
         ) : null,

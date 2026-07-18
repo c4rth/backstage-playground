@@ -1,4 +1,5 @@
-import { InfoCard, Table, TableColumn } from '@backstage/core-components';
+import { Table, TableColumn } from '@backstage/core-components';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 import { Flex, Box, Text } from '@backstage/ui';
 import { memo, useMemo } from 'react';
 
@@ -67,13 +68,13 @@ export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
 
     if (methods.length === 0) {
       return (
-        <InfoCard title="Implemented Methods">
+        <EntityInfoCard title="Implemented Methods">
           <Box p="2">
             <Text variant="body-medium" color="secondary">
               No implemented methods found for this {componentType}.
             </Text>
           </Box>
-        </InfoCard>
+        </EntityInfoCard>
       );
     }
 

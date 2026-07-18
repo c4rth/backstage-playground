@@ -1,5 +1,4 @@
 import {
-  Link,
   ResponseErrorPanel,
   Table,
   TableColumn,
@@ -30,7 +29,7 @@ import {
 import { useGetApiVersions } from '../../hooks';
 import semver from 'semver';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
-import { Flex } from '@backstage/ui';
+import { Flex, Link } from '@backstage/ui';
 
 type TableRow = {
   readonly id: number;
@@ -49,7 +48,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     render: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Link
-        to={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+        href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`} weight="bold" color="info"
       >
         <ComponentDisplayName text={svcName} type="service" />
       </Link>
@@ -91,12 +90,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
     title: 'System',
     width: '10%',
     highlight: true,
-    field: 'system',
+    field: 'svcSystem',
     render: ({ svcSystem }: TableRow) =>
       svcSystem === '-' ? (
         <ComponentDisplayName text={svcSystem} type="system" />
       ) : (
-        <Link to={`/api-platform/system/${svcSystem}`}>
+        <Link href={`/api-platform/system/${svcSystem}`} weight="bold" color="info" standalone>
           <ComponentDisplayName text={svcSystem} type="system" />
         </Link>
       ),

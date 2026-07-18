@@ -15,16 +15,16 @@
  */
 
 import {
-  InfoCard,
   Progress,
   MarkdownContent,
   EmptyState,
   ErrorPanel,
 } from '@backstage/core-components';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { useReadme } from '../../hooks';
-import { Box, ButtonLink } from '@backstage/ui';
+import { Box, ButtonLink, Link } from '@backstage/ui';
 
 type Props = {
   maxHeight?: number;
@@ -72,16 +72,21 @@ export const ReadmeCard = (props: Props) => {
   }
 
   return (
-    <InfoCard
+    <EntityInfoCard
       title="Readme"
-      deepLink={{
-        link: value!.url,
-        title: 'Readme',
-      }}
+      headerActions={
+        <Link
+          href={value!.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open README
+        </Link>
+      }
     >
       <Box style={{ maxHeight: props.maxHeight }}>
         <MarkdownContent content={value?.content ?? ''} />
       </Box>
-    </InfoCard>
+    </EntityInfoCard>
   );
 };

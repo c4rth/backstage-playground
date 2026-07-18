@@ -4,8 +4,7 @@ import {
   ResultHighlight,
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
-import { Link } from '@backstage/core-components';
-import { Box, Text } from '@backstage/ui';
+import { Box, Text, Link } from '@backstage/ui';
 import { Chip } from '@internal/plugin-api-platform-react';
 import { RiAlbumLine } from '@remixicon/react';
 
@@ -55,7 +54,7 @@ export const McaComponentSearchResultListItem = (
             marginBottom: '1rem',
           }}
         >
-          <Link noTrack to={result.location}>
+          <Link href={result.location} weight="bold" color="info" standalone>
             <Text
               weight="bold"
               style={{ color: 'var(--bui-fg-announcement)', fontSize: '20px' }}

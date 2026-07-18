@@ -1,4 +1,4 @@
-import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   Box,
@@ -13,6 +13,7 @@ import {
   Table,
   Text,
   useTable,
+  Link,
 } from '@backstage/ui';
 import { useCallback, useState } from 'react';
 import { ComponentOwnership } from '../common';
@@ -46,7 +47,7 @@ const columns: ColumnConfig<TableRow>[] = [
     cell: ({ name, system }: TableRow) => (
       <Cell>
         <Text weight="bold">
-          <Link to={`/api-platform/library/${system}/${name}`}>
+          <Link href={`/api-platform/library/${system}/${name}`} weight="bold" color="info" standalone>
             <ComponentDisplayName text={name} type="library" />
           </Link>
         </Text>
@@ -81,7 +82,7 @@ const columns: ColumnConfig<TableRow>[] = [
       ) : (
         <Cell>
           <Text weight="bold">
-            <Link to={`/api-platform/system/${system}`}>
+            <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
               <ComponentDisplayName text={system} type="system" />
             </Link>
           </Text>
