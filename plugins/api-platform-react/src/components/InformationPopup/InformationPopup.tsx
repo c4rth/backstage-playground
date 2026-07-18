@@ -55,11 +55,7 @@ export const InformationPopup = (props: InformationPopupProps) => {
           variant="tertiary"
           size="medium"
           style={{ width: 'auto', background: 'transparent' }}
-          icon={
-            <RiInformationLine
-              aria-label="More information"
-            />
-          }
+          icon={<RiInformationLine aria-label="More information" />}
         />
         <Popover placement="bottom" style={{ maxWidth: '50em' }}>
           <Text variant="title-x-small">

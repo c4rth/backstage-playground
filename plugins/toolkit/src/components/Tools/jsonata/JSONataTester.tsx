@@ -173,12 +173,14 @@ export const JSONataTester = () => {
   return (
     <div style={styles.container}>
       {/* Toolbar */}
-       <Box style={{
-        display: 'flex',
-        alignItems: 'center', 
-        marginBottom: '8px',
-        gap: '0px',
-      }}>
+      <Box
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '8px',
+          gap: '0px',
+        }}
+      >
         <Flex
           direction="row"
           style={{

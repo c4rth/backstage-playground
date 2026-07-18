@@ -1,14 +1,10 @@
-import {
-  CopyTextButton,
-  MarkdownContent,
-} from '@backstage/core-components';
+import { CopyTextButton, MarkdownContent } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 import { Grid, Text, Link } from '@backstage/ui';
 import { memo } from 'react';
 import styles from './McaOperationAboutTab.module.css';
 import { convertUrlLocation, UrlLocations } from './convertUrlLocations';
-
 
 const FieldDisplay = memo<{
   label: string;
@@ -55,7 +51,13 @@ const FieldDisplay = memo<{
           style={{ display: 'inline' }}
         >
           {isLink ? (
-            <Link href={href} target="_blank" weight="bold" color="info" standalone>
+            <Link
+              href={href}
+              target="_blank"
+              weight="bold"
+              color="info"
+              standalone
+            >
               {String(displayValue)}
             </Link>
           ) : (
@@ -80,7 +82,6 @@ const FieldDisplay = memo<{
     </Grid.Item>
   );
 });
-
 
 export interface McaOperationAboutTabProps {
   operationAnalyze: any;

@@ -1,7 +1,4 @@
-import {
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -9,7 +6,7 @@ import { McaComponent } from '@internal/plugin-mca-common';
 import { McaComponentDefinitionTabs } from './McaComponentDefinitionTabs';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { Select, Option, PluginHeader, Container, } from '@backstage/ui';
+import { Select, Option, PluginHeader, Container } from '@backstage/ui';
 import { RiBubbleChartLine } from '@remixicon/react';
 
 function mapMcaVersions(mca: McaComponent | undefined): Option[] {
@@ -94,7 +91,7 @@ export const McaComponentDefinitionPage = () => {
   return (
     <>
       <PluginHeader
-        title={name} 
+        title={name}
         icon={<RiBubbleChartLine fontSize="inherit" />}
       />
       <Container>
@@ -112,5 +109,4 @@ export const McaComponentDefinitionPage = () => {
       </Container>
     </>
   );
-
 };

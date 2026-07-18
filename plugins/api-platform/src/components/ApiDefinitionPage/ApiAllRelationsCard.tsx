@@ -48,7 +48,9 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     render: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Link
-        href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`} weight="bold" color="info"
+        href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+        weight="bold"
+        color="info"
       >
         <ComponentDisplayName text={svcName} type="service" />
       </Link>
@@ -95,7 +97,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
       svcSystem === '-' ? (
         <ComponentDisplayName text={svcSystem} type="system" />
       ) : (
-        <Link href={`/api-platform/system/${svcSystem}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/system/${svcSystem}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={svcSystem} type="system" />
         </Link>
       ),

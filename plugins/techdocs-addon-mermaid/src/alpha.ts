@@ -1,15 +1,15 @@
-import { createElement } from "react";
+import { createElement } from 'react';
 import {
   AddonBlueprint,
   TechDocsAddonOptions,
-} from "@backstage/plugin-techdocs-react/alpha";
-import { MermaidAddon } from "./Mermaid";
+} from '@backstage/plugin-techdocs-react/alpha';
+import { MermaidAddon } from './Mermaid';
 import {
   createFrontendModule,
   useApi,
   configApiRef,
-} from "@backstage/frontend-plugin-api";
-import type { MermaidProps } from "./Mermaid/props";
+} from '@backstage/frontend-plugin-api';
+import type { MermaidProps } from './Mermaid/props';
 
 /**
  * Wrapper that reads zoom configuration from app-config.yaml and forwards
@@ -25,20 +25,21 @@ import type { MermaidProps } from "./Mermaid/props";
  */
 const ConfiguredMermaidAddon = () => {
   const config = useApi(configApiRef);
-  const mermaidConfig = config.getOptionalConfig("techdocs.addons.mermaid");
+  const mermaidConfig = config.getOptionalConfig('techdocs.addons.mermaid');
 
   const props: MermaidProps = {};
 
   if (mermaidConfig) {
-    props.enableZoom = mermaidConfig.getOptionalBoolean("enableZoom") ?? false;
+    props.enableZoom = mermaidConfig.getOptionalBoolean('enableZoom') ?? false;
 
-    const zoomConfig = mermaidConfig.getOptionalConfig("zoomOptions");
+    const zoomConfig = mermaidConfig.getOptionalConfig('zoomOptions');
     if (zoomConfig) {
       props.zoomOptions = {
-        scaleExtent: zoomConfig.getOptional<[number, number]>("scaleExtent"),
-        translateExtent: zoomConfig.getOptional<
-          [[number, number], [number, number]]
-        >("translateExtent"),
+        scaleExtent: zoomConfig.getOptional<[number, number]>('scaleExtent'),
+        translateExtent:
+          zoomConfig.getOptional<[[number, number], [number, number]]>(
+            'translateExtent',
+          ),
       };
     }
   }
@@ -47,18 +48,18 @@ const ConfiguredMermaidAddon = () => {
 };
 
 const mermaidAddonParams: TechDocsAddonOptions = {
-  name: "Mermaid",
-  location: "Content",
+  name: 'Mermaid',
+  location: 'Content',
   component: ConfiguredMermaidAddon,
 };
 
 export const techDocsMermaidAddon = AddonBlueprint.make({
-  name: "mermaid",
+  name: 'mermaid',
   params: mermaidAddonParams,
 });
 
 export const techDocsMermaidAddonModule = createFrontendModule({
-  pluginId: "techdocs",
+  pluginId: 'techdocs',
   extensions: [techDocsMermaidAddon],
 });
 

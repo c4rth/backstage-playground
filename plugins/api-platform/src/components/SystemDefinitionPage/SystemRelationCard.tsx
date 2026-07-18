@@ -16,7 +16,12 @@ const apiColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ name, system }: TableRow) => (
-      <Link href={`/api-platform/api/${system}/${name}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/api-platform/api/${system}/${name}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <ComponentDisplayName type="api" text={name} />
       </Link>
     ),
@@ -31,7 +36,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ name, system }: TableRow) => (
-      <Link href={`/api-platform/service/${system}/${name}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/api-platform/service/${system}/${name}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <ComponentDisplayName type="service" text={name} />
       </Link>
     ),
@@ -46,7 +56,12 @@ const libraryColumns: TableColumn<TableRow>[] = [
     highlight: true,
     defaultSort: 'asc',
     render: ({ name, system }: TableRow) => (
-      <Link href={`/api-platform/library/${system}/${name}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/api-platform/library/${system}/${name}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <ComponentDisplayName type="library" text={name} />
       </Link>
     ),

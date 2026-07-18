@@ -56,7 +56,10 @@ export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
   ({ parsedDefinition, rawXml }) => {
     const configApi = useApi(configApiRef);
     const urlLocations = useMemo<UrlLocations>(
-      () => parseUrlLocations(configApi.getOptionalConfigArray('mcaComponents.urlLocations') || []),
+      () =>
+        parseUrlLocations(
+          configApi.getOptionalConfigArray('mcaComponents.urlLocations') || [],
+        ),
       [configApi],
     );
 
@@ -107,11 +110,21 @@ export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
     return (
       <Tabs defaultSelectedKey="tab1">
         <TabList>
-          <Tab id="tab1" href=".">Overview</Tab>
-          <Tab id="tab2" href='inputfields'>Input Fields</Tab>
-          <Tab id="tab3" href='outputfields'>Output Fields</Tab>
-          <Tab id="tab4" href='methods'>Methods</Tab>
-          <Tab id="tab5" href='raw'>Raw</Tab>
+          <Tab id="tab1" href=".">
+            Overview
+          </Tab>
+          <Tab id="tab2" href="inputfields">
+            Input Fields
+          </Tab>
+          <Tab id="tab3" href="outputfields">
+            Output Fields
+          </Tab>
+          <Tab id="tab4" href="methods">
+            Methods
+          </Tab>
+          <Tab id="tab5" href="raw">
+            Raw
+          </Tab>
         </TabList>
         <TabPanel id="tab1">
           <McaOperationAboutTab

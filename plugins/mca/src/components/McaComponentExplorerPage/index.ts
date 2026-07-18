@@ -1,3 +1,1 @@
-export {
-	McaComponentExplorerPage,
-} from './McaComponentExplorerPage';
+export { McaComponentExplorerPage } from './McaComponentExplorerPage';

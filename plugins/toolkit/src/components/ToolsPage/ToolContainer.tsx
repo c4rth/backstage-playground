@@ -19,7 +19,16 @@ export const ToolContainer = (props: ToolContainerProps) => {
       }}
     >
       {tool.headerButtons}
-      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>{tool.component}</div>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {tool.component}
+      </div>
     </div>
   );
 };

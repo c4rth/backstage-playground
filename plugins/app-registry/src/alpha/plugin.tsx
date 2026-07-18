@@ -7,10 +7,7 @@ import {
   featureFlagsApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import {
-  AppRegistryBackendClient,
-  appRegistryBackendApiRef,
-} from '../api';
+import { AppRegistryBackendClient, appRegistryBackendApiRef } from '../api';
 import { rootRouteRef } from '../routes';
 
 /** @alpha */

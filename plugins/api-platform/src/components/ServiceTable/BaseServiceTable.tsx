@@ -106,7 +106,12 @@ const createSystemColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
   highlight: true,
   field: 'system',
   render: ({ serviceDefinition }) => (
-    <Link href={`/api-platform/system/${serviceDefinition.system}`} weight="bold" color="info" standalone>
+    <Link
+      href={`/api-platform/system/${serviceDefinition.system}`}
+      weight="bold"
+      color="info"
+      standalone
+    >
       <ComponentDisplayName text={serviceDefinition.system} type="system" />
     </Link>
   ),

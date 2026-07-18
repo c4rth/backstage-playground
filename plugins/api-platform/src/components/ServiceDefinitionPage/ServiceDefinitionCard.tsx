@@ -31,7 +31,17 @@ import {
 //
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Grid, Box, Text, ButtonIcon, Tab, TabList, TabPanel, Tabs, Link, } from '@backstage/ui';
+import {
+  Grid,
+  Box,
+  Text,
+  ButtonIcon,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  Link,
+} from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import {
   isAzureDevOpsAvailable,
@@ -72,20 +82,34 @@ export const ServiceDefinitionCard = ({
   return (
     <Tabs defaultSelectedKey="tab1">
       <TabList>
-        <Tab id="tab1" href=".">Overview</Tab>
-        <Tab id="tab2" href='dependencies'>Dependencies</Tab>
-        <Tab id="tab3" href='app-registry'>App Registry</Tab>
+        <Tab id="tab1" href=".">
+          Overview
+        </Tab>
+        <Tab id="tab2" href="dependencies">
+          Dependencies
+        </Tab>
+        <Tab id="tab3" href="app-registry">
+          App Registry
+        </Tab>
         {azurePipelines && (
-          <Tab id="tab4" href='ci-cd'>CI/CD</Tab>
+          <Tab id="tab4" href="ci-cd">
+            CI/CD
+          </Tab>
         )}
         {azureDevOps && (
-          <Tab id="tab5" href='git-tags'>Git Tags</Tab>
+          <Tab id="tab5" href="git-tags">
+            Git Tags
+          </Tab>
         )}
         {azureDevOps && (
-          <Tab id="tab6" href='readme'>Readme</Tab>
+          <Tab id="tab6" href="readme">
+            Readme
+          </Tab>
         )}
         {sonarQube && (
-          <Tab id="tab7" href='sonarqube'>SonarQube</Tab>
+          <Tab id="tab7" href="sonarqube">
+            SonarQube
+          </Tab>
         )}
       </TabList>
       <TabPanel id="tab1">
@@ -130,7 +154,12 @@ export const ServiceDefinitionCard = ({
                   <Grid.Item colSpan="12">
                     <AboutField label="Repository">
                       {repository && repositoryUrl ? (
-                        <Link href={repositoryUrl} weight="bold" color="info" standalone>
+                        <Link
+                          href={repositoryUrl}
+                          weight="bold"
+                          color="info"
+                          standalone
+                        >
                           <ComponentDisplayName text={repository} type="azdo" />
                         </Link>
                       ) : (

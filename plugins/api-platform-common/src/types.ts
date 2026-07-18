@@ -39,10 +39,7 @@ export type ApiRelationDefinition = {
 };
 
 export type ApiDefinitionsListFields =
-  | 'name'
-  | 'description'
-  | 'system'
-  | 'type';
+  'name' | 'description' | 'system' | 'type';
 
 export const APIDEFINITIONS_FIELDS = [
   'name',

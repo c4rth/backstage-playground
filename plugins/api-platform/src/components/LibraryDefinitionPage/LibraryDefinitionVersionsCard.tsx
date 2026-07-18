@@ -34,7 +34,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
       return a.version.localeCompare(b.version);
     },
     render: ({ system, name, version }: TableRow) => (
-      <Link href={`/api-platform/library/${system}/${name}/${version}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/api-platform/library/${system}/${name}/${version}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <ComponentDisplayName text={`${version}`} type="library" />
       </Link>
     ),

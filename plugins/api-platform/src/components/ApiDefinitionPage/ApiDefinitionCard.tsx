@@ -1,8 +1,10 @@
-import {
-  CodeSnippet,
-} from '@backstage/core-components';
+import { CodeSnippet } from '@backstage/core-components';
 import { ApiEntity } from '@backstage/catalog-model';
-import { EntityInfoCard, EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
+import {
+  EntityInfoCard,
+  EntityRefLink,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import {
   ANNOTATION_API_NAME,
@@ -60,16 +62,25 @@ export const ApiDefinitionCard = () => {
     entity.metadata.annotations?.['api.depo.be/project'] === 'dead';
 
   return (
-
     <Tabs defaultSelectedKey="tab1">
       <TabList>
-        <Tab id="tab1" href=".">OpenApi</Tab>
-        <Tab id="tab2" href='raw'>Raw</Tab>
+        <Tab id="tab1" href=".">
+          OpenApi
+        </Tab>
+        <Tab id="tab2" href="raw">
+          Raw
+        </Tab>
         {isLinterAvailable && !isMcaApi && (
-          <Tab id="tab3" href='linter'>Linter</Tab>
+          <Tab id="tab3" href="linter">
+            Linter
+          </Tab>
         )}
-        <Tab id="tab4" href='services'>Services</Tab>
-        <Tab id="tab5" href='info'>Info</Tab>
+        <Tab id="tab4" href="services">
+          Services
+        </Tab>
+        <Tab id="tab5" href="info">
+          Info
+        </Tab>
       </TabList>
       <TabPanel id="tab1">
         <OpenApiDefinitionWidget definition={definition} />
@@ -123,7 +134,13 @@ export const ApiDefinitionCard = () => {
               <Box mt="6">
                 <AboutField label="Azure Artifact">
                   <Link
-                    href={artifactUrl} weight="bold" color="info" target="_blank" rel="noopener noreferrer" standalone>
+                    href={artifactUrl}
+                    weight="bold"
+                    color="info"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    standalone
+                  >
                     <ComponentDisplayName text={artifactText} type="azdo" />
                   </Link>
                 </AboutField>
@@ -140,7 +157,13 @@ export const ApiDefinitionCard = () => {
               <Box mt="6">
                 <AboutField label="API Platform URL">
                   <Link
-                    href={platformUrl} weight="bold" color="info" target="_blank" rel="noopener noreferrer" standalone>
+                    href={platformUrl}
+                    weight="bold"
+                    color="info"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    standalone
+                  >
                     <ComponentDisplayName text={platformUrl} type="url" />
                   </Link>
                 </AboutField>
@@ -151,7 +174,11 @@ export const ApiDefinitionCard = () => {
             <Box mt="6">
               <AboutField label="MCA Operation">
                 <Link
-                  href={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`} weight="bold" color="info" standalone>
+                  href={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`}
+                  weight="bold"
+                  color="info"
+                  standalone
+                >
                   <ComponentDisplayName
                     text={`${entity.metadata.annotations?.['api.depo.be/name']}`}
                     type="api"
@@ -164,7 +191,13 @@ export const ApiDefinitionCard = () => {
             <Box mt="6">
               <AboutField label="API Platform URL">
                 <Link
-                  href={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`} weight="bold" color="info" target="_blank" rel="noopener noreferrer" standalone>
+                  href={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`}
+                  weight="bold"
+                  color="info"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  standalone
+                >
                   <ComponentDisplayName
                     text={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`}
                     type="url"

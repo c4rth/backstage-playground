@@ -1,7 +1,4 @@
-import {
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useParams } from 'react-router-dom';
 import { mcaComponentsBackendApiRef } from '../../api';
@@ -71,16 +68,14 @@ export const McaBaseTypeDefinitionPage = () => {
 
   return (
     <>
-      <PluginHeader
-        title={`BaseType: ${name}`}
-      />
+      <PluginHeader title={`BaseType: ${name}`} />
       <FullPage>
-          <iframe
-            src={baseTypeUrl || ''}
-            height='100%'
-            width='100%'
-            title={`BaseType :${baseTypeUrl}`}
-          />
+        <iframe
+          src={baseTypeUrl || ''}
+          height="100%"
+          width="100%"
+          title={`BaseType :${baseTypeUrl}`}
+        />
       </FullPage>
     </>
   );

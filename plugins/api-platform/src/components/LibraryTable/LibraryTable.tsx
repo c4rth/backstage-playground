@@ -47,7 +47,12 @@ const columns: ColumnConfig<TableRow>[] = [
     cell: ({ name, system }: TableRow) => (
       <Cell>
         <Text weight="bold">
-          <Link href={`/api-platform/library/${system}/${name}`} weight="bold" color="info" standalone>
+          <Link
+            href={`/api-platform/library/${system}/${name}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
             <ComponentDisplayName text={name} type="library" />
           </Link>
         </Text>
@@ -82,7 +87,12 @@ const columns: ColumnConfig<TableRow>[] = [
       ) : (
         <Cell>
           <Text weight="bold">
-            <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
+            <Link
+              href={`/api-platform/system/${system}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
               <ComponentDisplayName text={system} type="system" />
             </Link>
           </Text>

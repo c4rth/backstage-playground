@@ -1,3 +1,1 @@
-export {
-	ServiceDefinitionPage
-} from './ServiceDefinitionPage';
+export { ServiceDefinitionPage } from './ServiceDefinitionPage';

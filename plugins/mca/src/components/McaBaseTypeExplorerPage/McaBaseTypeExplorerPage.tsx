@@ -19,7 +19,8 @@ export const McaBaseTypeExplorerPage = () => {
       <PluginHeader
         title="MCA BaseTypes"
         icon={<RiAlbumLine fontSize="inherit" />}
-        customActions={<InformationPopup content={POPUP_CONTENT} />} />
+        customActions={<InformationPopup content={POPUP_CONTENT} />}
+      />
       <FullPage>
         <Container>
           <McaBaseTypeTable />

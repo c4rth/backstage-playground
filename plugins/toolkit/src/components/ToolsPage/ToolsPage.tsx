@@ -1,5 +1,5 @@
 import { ToolsContainer } from './ToolsContainer';
-import { Box, FullPage, } from '@backstage/ui';
+import { Box, FullPage } from '@backstage/ui';
 
 export const ToolsPage = () => {
   return (

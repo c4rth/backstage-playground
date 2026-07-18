@@ -20,7 +20,8 @@ export const ServiceExplorerPage = () => {
       <PluginHeader
         title="Services"
         icon={<RiCpuLine fontSize="inherit" />}
-        customActions={<InformationPopup content={INFO_POPUP_CONTENT} />} />
+        customActions={<InformationPopup content={INFO_POPUP_CONTENT} />}
+      />
       <FullPage>
         <Container>
           <ServiceTable />

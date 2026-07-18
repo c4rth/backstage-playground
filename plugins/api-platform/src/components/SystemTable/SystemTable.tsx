@@ -50,7 +50,9 @@ const columns: TableColumn<TableRow>[] = [
     width: '25%',
     field: 'owner',
     highlight: true,
-    render: ({ owner }: TableRow) => <EntityRefLinks entityRefs={[owner]} defaultKind="group" /> ,
+    render: ({ owner }: TableRow) => (
+      <EntityRefLinks entityRefs={[owner]} defaultKind="group" />
+    ),
   },
 ];
 
@@ -79,9 +81,9 @@ const getData = async (
     search: query.search,
     orderBy: query.orderBy
       ? ({
-        field: query.orderBy.field,
-        direction: query.orderDirection,
-      } as SystemDefinitionsListRequest['orderBy'])
+          field: query.orderBy.field,
+          direction: query.orderDirection,
+        } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
   });

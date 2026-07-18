@@ -61,7 +61,11 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
     <Box position="relative">
       <Suspense
         fallback={
-          <Box py="4" style={{ display: 'flex', justifyContent: 'center' }} aria-busy>
+          <Box
+            py="4"
+            style={{ display: 'flex', justifyContent: 'center' }}
+            aria-busy
+          >
             <Progress />
           </Box>
         }
@@ -84,7 +88,9 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
             variant="primary"
             size="medium"
             onClick={handleCopyClick}
-            icon={<RiFileCopy2Line style={{ width: '1.5em', height: '1.5em' }} />}
+            icon={
+              <RiFileCopy2Line style={{ width: '1.5em', height: '1.5em' }} />
+            }
             aria-label="Copy XML to clipboard"
           />
           <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
@@ -96,7 +102,9 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
             variant="primary"
             size="medium"
             onClick={handleDownloadClick}
-            icon={<RiFileDownloadFill style={{ width: '1.5em', height: '1.5em' }} />}
+            icon={
+              <RiFileDownloadFill style={{ width: '1.5em', height: '1.5em' }} />
+            }
             aria-label="Download XML"
           />
           <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>

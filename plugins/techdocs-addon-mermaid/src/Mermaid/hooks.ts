@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import mermaid from 'mermaid'
+import mermaid from 'mermaid';
 
 export const isMermaidCode = (code: string): boolean => {
   try {
-    mermaid.detectType(code)
-    return true
+    mermaid.detectType(code);
+    return true;
   } catch (_) {
-    return false
+    return false;
   }
 };

@@ -1,3 +1,1 @@
-export {
-	SystemDefinitionPage,
-} from './SystemDefinitionPage';
+export { SystemDefinitionPage } from './SystemDefinitionPage';

@@ -103,9 +103,14 @@ export const EntityApiDocsSpectralLinterCard = () => {
                   message={
                     <EntityInfoCard
                       headerActions={
-                        ruleResult.ruleDocumentationUrl
-                          ? <Link href={ruleResult.ruleDocumentationUrl} target="_blank">View rule documentation</Link>
-                          : undefined
+                        ruleResult.ruleDocumentationUrl ? (
+                          <Link
+                            href={ruleResult.ruleDocumentationUrl}
+                            target="_blank"
+                          >
+                            View rule documentation
+                          </Link>
+                        ) : undefined
                       }
                     >
                       <MarkdownContent

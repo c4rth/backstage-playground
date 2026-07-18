@@ -6,9 +6,7 @@ import {
   featureFlagsApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import {
-  RiHeartPulseFill,
-} from '@remixicon/react';
+import { RiHeartPulseFill } from '@remixicon/react';
 import {
   HealthDashboardBackendClient,
   healthDashboardBackendApiRef,
@@ -24,9 +22,9 @@ const healthDashboardPage = PageBlueprint.make({
     title: 'Health Dashboard',
     routeRef: rootRouteRef,
     loader: () =>
-      import('../components/HealthDashboardPage').then(
-        m => <m.HealthDashboardPage />,
-      ),
+      import('../components/HealthDashboardPage').then(m => (
+        <m.HealthDashboardPage />
+      )),
   },
 });
 

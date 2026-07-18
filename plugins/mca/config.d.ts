@@ -18,15 +18,15 @@ export interface Config {
      */
     urlLocations?: [
       {
-      /**
-       * @visibility frontend
-       */
-      oldDns?: string;
-      /**
-       * @visibility frontend
-       */
-      newDns?: string;
-      }
+        /**
+         * @visibility frontend
+         */
+        oldDns?: string;
+        /**
+         * @visibility frontend
+         */
+        newDns?: string;
+      },
     ];
   };
 }

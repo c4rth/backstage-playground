@@ -13,7 +13,16 @@ import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
-import { Box, Grid, Flex, ButtonLink, Tab, TabList, TabPanel, Tabs, } from '@backstage/ui';
+import {
+  Box,
+  Grid,
+  Flex,
+  ButtonLink,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+} from '@backstage/ui';
 import { SystemDefinition } from '@internal/plugin-api-platform-common';
 
 interface SystemDefinitionCardProps {
@@ -46,12 +55,17 @@ export const SystemDefinitionCard = ({
   }, [entity, catalogApi]);
 
   return (
-
     <Tabs defaultSelectedKey="tab1">
       <TabList>
-        <Tab id="tab1" href=".">Ownership</Tab>
-        <Tab id="tab2" href='members'>Members</Tab>
-        <Tab id="tab3" href='info'>Info</Tab>
+        <Tab id="tab1" href=".">
+          Ownership
+        </Tab>
+        <Tab id="tab2" href="members">
+          Members
+        </Tab>
+        <Tab id="tab3" href="info">
+          Info
+        </Tab>
       </TabList>
       <TabPanel id="tab1">
         <Flex gap="2" direction="column">

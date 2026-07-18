@@ -75,11 +75,7 @@ export const ReadmeCard = (props: Props) => {
     <EntityInfoCard
       title="Readme"
       headerActions={
-        <Link
-          href={value!.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link href={value!.url} target="_blank" rel="noopener noreferrer">
           Open README
         </Link>
       }

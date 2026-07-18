@@ -28,7 +28,12 @@ const columns: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     highlight: true,
     render: row => (
-      <Link href={`/mca/basetypes/${row.baseType}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/mca/basetypes/${row.baseType}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         {row.baseType}
       </Link>
     ),

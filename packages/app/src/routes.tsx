@@ -2,9 +2,7 @@ import { Route } from 'react-router-dom';
 import { SearchPage } from '@backstage/plugin-search';
 import { searchPage } from './modules/search/SearchPage';
 
-import {
-  ErrorPage,
-} from '@backstage/core-components';
+import { ErrorPage } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
@@ -40,7 +38,6 @@ export const routes = (
       {searchPage}
     </Route>
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-
   </FlatRoutes>
 );
 

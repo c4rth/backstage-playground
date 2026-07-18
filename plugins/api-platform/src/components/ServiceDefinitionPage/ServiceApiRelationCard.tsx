@@ -40,7 +40,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
       version === 'local' ? (
         <ComponentDisplayName text={name} type="api" />
       ) : (
-        <Link href={`/api-platform/api/${system}/${name}?version=${version}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/api/${system}/${name}?version=${version}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={name} type="api" />
         </Link>
       ),
@@ -59,7 +64,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
       system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
-        <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/system/${system}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={system} type="system" />
         </Link>
       ),

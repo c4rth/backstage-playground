@@ -152,7 +152,12 @@ export const AzureDevOpsPipelinePage = () => {
         label: 'Build',
         cell: row => (
           <Cell>
-            <Link href={row.item.link ?? ''} weight="bold" color="info" standalone>
+            <Link
+              href={row.item.link ?? ''}
+              weight="bold"
+              color="info"
+              standalone
+            >
               {row.item.title}
             </Link>
           </Cell>

@@ -2,7 +2,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { ClearValueButton, CopyToClipboardButton } from '../Buttons';
 import { RiEditBoxLine } from '@remixicon/react';
-import { Button, Flex, Grid, Select, Option, TextAreaField } from '@backstage/ui';
+import {
+  Button,
+  Flex,
+  Grid,
+  Select,
+  Option,
+  TextAreaField,
+} from '@backstage/ui';
 import styles from '../styles/customTextAreaField.module.css';
 
 const randomInt = (min: number, max: number) => {

@@ -15,13 +15,11 @@ export const CopyToClipboardButton = (props: Props) => {
     navigator.clipboard
       .writeText(props.output.toString())
       .then(() => {
-        toastApi.post(
-          {
-            title: 'Copied to clipboard!',
-            status: 'success',
-            timeout: 2000,
-          }
-        );
+        toastApi.post({
+          title: 'Copied to clipboard!',
+          status: 'success',
+          timeout: 2000,
+        });
       })
       .catch(() => {
         toastApi.post({

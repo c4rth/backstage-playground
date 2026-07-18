@@ -1,8 +1,14 @@
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import {
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
-import { Box, Cell, ColumnConfig, useTable, Table, FullPage, PluginHeader, Container } from '@backstage/ui';
+  Box,
+  Cell,
+  ColumnConfig,
+  useTable,
+  Table,
+  FullPage,
+  PluginHeader,
+  Container,
+} from '@backstage/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useGetHealthData } from '../../hooks';
 import {
@@ -139,7 +145,7 @@ const HealthDashboardPageContent = () => {
     </Container>
   );
 
-    return pageContent;
+  return pageContent;
 };
 
 export const HealthDashboardPage = () => {
@@ -147,10 +153,11 @@ export const HealthDashboardPage = () => {
     <>
       <PluginHeader
         title="Health Dashboard k8s"
-        customActions={<InformationPopup content={POPUP_CONTENT} />} />
+        customActions={<InformationPopup content={POPUP_CONTENT} />}
+      />
       <FullPage>
-        <HealthDashboardPageContent/>
+        <HealthDashboardPageContent />
       </FullPage>
     </>
   );
-}
+};

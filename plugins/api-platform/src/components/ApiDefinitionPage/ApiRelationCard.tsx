@@ -44,7 +44,11 @@ const serviceColumns: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     render: ({ system, name, version, environment }: TableRow) => (
       <Link
-        href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`} weight="bold" color="info" standalone>
+        href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <ComponentDisplayName text={name} type="service" />
       </Link>
     ),
@@ -68,7 +72,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
       system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
-        <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/system/${system}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={system} type="system" />
         </Link>
       ),

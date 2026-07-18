@@ -14,12 +14,12 @@ const POPUP_CONTENT = (
 );
 
 export const SystemExplorerPage = () => {
-
   return (
     <>
       <PluginHeader
         title="Systems"
-        customActions={<InformationPopup content={POPUP_CONTENT} />} />
+        customActions={<InformationPopup content={POPUP_CONTENT} />}
+      />
       <FullPage>
         <Container>
           <SystemTable />

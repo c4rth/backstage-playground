@@ -158,7 +158,6 @@ export async function createRouter(
     res.status(response.returnCode).json({ message: response.message });
   });
 
-
   // Endpoints: /services
 
   router.get('/services/count', async (req, res) => {

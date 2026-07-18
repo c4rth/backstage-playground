@@ -1,4 +1,4 @@
-import { ReactNode, } from 'react';
+import { ReactNode } from 'react';
 
 import {
   PageTheme,
@@ -110,24 +110,24 @@ const darkPageTheme = genPageTheme({
 
 export const LightThemeProvider = ({ children }: { children: ReactNode }) => (
   <UnifiedThemeProvider
-        theme={createCustomBaseTheme(
-          palettes.light,
-          colors.rubyRed,
-          colors.slateGray,
-          lightPageTheme,
-        )}
-        children={children}
-      />
+    theme={createCustomBaseTheme(
+      palettes.light,
+      colors.rubyRed,
+      colors.slateGray,
+      lightPageTheme,
+    )}
+    children={children}
+  />
 );
 
 export const DarkThemeProvider = ({ children }: { children: ReactNode }) => (
   <UnifiedThemeProvider
-        theme={createCustomBaseTheme(
-          palettes.dark,
-          colors.roseRed,
-          colors.slateGray,
-          darkPageTheme,
-        )}
-        children={children}
-      />
+    theme={createCustomBaseTheme(
+      palettes.dark,
+      colors.roseRed,
+      colors.slateGray,
+      darkPageTheme,
+    )}
+    children={children}
+  />
 );

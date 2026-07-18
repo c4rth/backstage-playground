@@ -1,6 +1,14 @@
 import { LibraryTable } from '../LibraryTable';
 import { ServiceLibrariesTable } from './ServiceLibrariesTable';
-import { Container, FullPage, PluginHeader, Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
+import {
+  Container,
+  FullPage,
+  PluginHeader,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+} from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
 
 export const LibraryExplorerPage = () => {

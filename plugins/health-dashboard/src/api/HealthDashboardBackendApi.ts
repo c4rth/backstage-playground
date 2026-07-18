@@ -65,12 +65,10 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
           sensitivity: 'base',
         }),
       )
-      .map(
-        ([application, environments]): ApplicationHealthData => ({
-          application,
-          environments,
-        }),
-      );
+      .map(([application, environments]): ApplicationHealthData => ({
+        application,
+        environments,
+      }));
   }
 
   private async fetchHealthData(endpointPath: string): Promise<HealthData> {

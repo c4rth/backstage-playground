@@ -1,4 +1,13 @@
-import { Box, Container, Grid, Select, Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
+import {
+  Box,
+  Container,
+  Grid,
+  Select,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+} from '@backstage/ui';
 import { useState, useEffect } from 'react';
 import { EntityTable } from './EntityTable';
 import { useApi } from '@backstage/core-plugin-api';
@@ -48,7 +57,6 @@ export const CatalogAdminPage = () => {
       });
   }, [catalogApi]);
 
-
   return (
     <Container>
       <Tabs>
@@ -83,9 +91,13 @@ export const CatalogAdminPage = () => {
               </Grid.Item>
             </Grid.Root>
             {!system && (
-              <p>Please select a system to view the entities associated with it.</p>
+              <p>
+                Please select a system to view the entities associated with it.
+              </p>
             )}
-            {system && system !== '' && <EntityTable kind={kind} system={system} />}
+            {system && system !== '' && (
+              <EntityTable kind={kind} system={system} />
+            )}
           </>
         </TabPanel>
         <TabPanel id="tab2">
@@ -101,5 +113,4 @@ export const CatalogAdminPage = () => {
       </Tabs>
     </Container>
   );
-
 };

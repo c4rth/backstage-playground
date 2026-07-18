@@ -35,7 +35,11 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       field: 'component',
       defaultSort: 'asc',
       highlight: true,
-      render: row => <Link href={row.component} weight="bold" color="info" standalone>{row.component}</Link>,
+      render: row => (
+        <Link href={row.component} weight="bold" color="info" standalone>
+          {row.component}
+        </Link>
+      ),
     },
     {
       title: 'Baseline',
@@ -43,7 +47,12 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       field: 'prdVersion',
       highlight: true,
       render: row => (
-        <Link href={`${row.component}?version=${row.prdVersion}`} weight="bold" color="info" standalone>
+        <Link
+          href={`${row.component}?version=${row.prdVersion}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           {row.prdVersion}
         </Link>
       ),
@@ -57,7 +66,12 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       highlight: true,
       render: row =>
         row.p1Version ? (
-          <Link href={`${row.component}?version=${row.p1Version}`} weight="bold" color="info" standalone>
+          <Link
+            href={`${row.component}?version=${row.p1Version}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
             {row.p1Version}
           </Link>
         ) : null,
@@ -71,7 +85,12 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       highlight: true,
       render: row =>
         row.p2Version ? (
-          <Link href={`${row.component}?version=${row.p2Version}`} weight="bold" color="info" standalone>
+          <Link
+            href={`${row.component}?version=${row.p2Version}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
             {row.p2Version}
           </Link>
         ) : null,
@@ -86,7 +105,12 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       render: row =>
         row.p3Version ? (
           <Flex align="center">
-            <Link href={`${row.component}?version=${row.p3Version}`} weight="bold" color="info" standalone>
+            <Link
+              href={`${row.component}?version=${row.p3Version}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
               {row.p3Version}
             </Link>
           </Flex>
@@ -101,7 +125,12 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
       highlight: true,
       render: row =>
         row.p4Version ? (
-          <Link href={`${row.component}?version=${row.p4Version}`} weight="bold" color="info" standalone>
+          <Link
+            href={`${row.component}?version=${row.p4Version}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
             {row.p4Version}
           </Link>
         ) : null,

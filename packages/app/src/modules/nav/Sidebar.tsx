@@ -12,10 +12,7 @@ import {
   DocsIcon,
 } from '@backstage/core-components';
 
-import {
-  RiMenuSearchLine,
-  RiBubbleChartLine,
-} from '@remixicon/react';
+import { RiMenuSearchLine, RiBubbleChartLine } from '@remixicon/react';
 import { IconComponent } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
@@ -49,7 +46,9 @@ export const SidebarContent = NavContentBlueprint.make({
               icon={RiMenuSearchLine as IconComponent}
               resultItemComponents={[
                 <ApiSearchResultListItem icon={<CatalogIcon />} />,
-                <McaComponentSearchResultListItem icon={<RiBubbleChartLine />} />,
+                <McaComponentSearchResultListItem
+                  icon={<RiBubbleChartLine />}
+                />,
                 <CatalogSearchResultListItem icon={<CatalogIcon />} />,
                 <TechDocsSearchResultListItem icon={<DocsIcon />} />,
               ]}
@@ -76,7 +75,10 @@ export const SidebarContent = NavContentBlueprint.make({
           >
             {nav.take('page:scaffolder')}
           </RequirePermission>
-          <RequirePermission permission={notGuestPermission} errorPage={<div />}>
+          <RequirePermission
+            permission={notGuestPermission}
+            errorPage={<div />}
+          >
             {nav.take('page:catalog')}
           </RequirePermission>
           {nav.take('page:toolkit/toolkit')}

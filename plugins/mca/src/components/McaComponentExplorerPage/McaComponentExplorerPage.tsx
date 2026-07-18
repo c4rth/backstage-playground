@@ -6,7 +6,17 @@ import {
 } from '@internal/plugin-api-platform-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
-import { Alert, Box, Flex, Grid, Select, Option, FullPage, PluginHeader, Container, } from '@backstage/ui';
+import {
+  Alert,
+  Box,
+  Flex,
+  Grid,
+  Select,
+  Option,
+  FullPage,
+  PluginHeader,
+  Container,
+} from '@backstage/ui';
 import { mcaComponentsBackendApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import { RiBubbleChartLine } from '@remixicon/react';
@@ -61,14 +71,17 @@ export const McaComponentExplorerPage = () => {
       <PluginHeader
         title="MCA Components"
         icon={<RiBubbleChartLine fontSize="inherit" />}
-        customActions={<InformationPopup content={POPUP_CONTENT} />} />
+        customActions={<InformationPopup content={POPUP_CONTENT} />}
+      />
       <FullPage>
         <Container>
           <Box mb="4">
             <Grid.Root columns="3">
               <Grid.Item>
                 <Select
-                  onChange={selected => handleSelectChange(selected!.toString())}
+                  onChange={selected =>
+                    handleSelectChange(selected!.toString())
+                  }
                   label="Type"
                   options={componentTypes}
                   value={selectedType}

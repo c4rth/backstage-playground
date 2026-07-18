@@ -15,13 +15,13 @@ const INFO_POPUP_CONTENT = (
 );
 
 export const ApiExplorerPage = () => {
-  
   return (
     <>
       <PluginHeader
         title="APIs"
         icon={<RiPuzzleFill fontSize="inherit" />}
-        customActions={<InformationPopup content={INFO_POPUP_CONTENT} />} />
+        customActions={<InformationPopup content={INFO_POPUP_CONTENT} />}
+      />
       <FullPage>
         <Container>
           <ApiTable />

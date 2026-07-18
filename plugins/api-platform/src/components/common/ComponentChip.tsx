@@ -151,7 +151,13 @@ export const ComponentChip = ({
   );
 
   return link ? (
-    <Link href={link} weight="bold" color="info" standalone style={{ padding: 0, margin: 0 }}>
+    <Link
+      href={link}
+      weight="bold"
+      color="info"
+      standalone
+      style={{ padding: 0, margin: 0 }}
+    >
       {content}
     </Link>
   ) : (

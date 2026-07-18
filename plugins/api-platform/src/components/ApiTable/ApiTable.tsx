@@ -88,7 +88,12 @@ const COLUMNS: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     highlight: true,
     render: ({ system, name }: TableRow) => (
-      <Link href={`/api-platform/api/${system}/${name}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/api-platform/api/${system}/${name}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <ComponentDisplayName text={name} type="api" />
       </Link>
     ),
@@ -116,7 +121,12 @@ const COLUMNS: TableColumn<TableRow>[] = [
       system === '-' ? (
         <ComponentDisplayName text={system} type="system" />
       ) : (
-        <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/system/${system}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={system} type="system" />
         </Link>
       ),

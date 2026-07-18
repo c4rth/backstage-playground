@@ -17,11 +17,13 @@ export const SystemDefinitionPage = () => {
       error={error}
       entity={systemDefinition?.entity}
     >
-
       <PageWithHeader themeId="systems" title={name} type="System">
         <Content>
           {systemDefinition && name && (
-            <SystemDefinitionCard system={name} systemDefinition={systemDefinition} />
+            <SystemDefinitionCard
+              system={name}
+              systemDefinition={systemDefinition}
+            />
           )}
         </Content>
       </PageWithHeader>

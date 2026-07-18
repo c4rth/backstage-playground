@@ -46,11 +46,13 @@ export const DefaultEditor = (props: Props) => {
 
   return (
     <Flex direction="column" style={{ height: '100%', minHeight: 0 }}>
-      <Box style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0px',
-      }}>
+      <Box
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0px',
+        }}
+      >
         <Flex
           direction="row"
           style={{

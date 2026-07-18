@@ -9,10 +9,7 @@ export const AlertMessage = ({ uiSchema }: ScaffolderRJSFFieldProps<void>) => {
   const message = uiSchema?.['ui:options']?.message as string;
   const status: 'info' | 'success' | 'warning' | 'danger' =
     (uiSchema?.['ui:options']?.severity as
-      | 'info'
-      | 'success'
-      | 'warning'
-      | 'danger') || 'info';
+      'info' | 'success' | 'warning' | 'danger') || 'info';
 
   return <Alert status={status} icon title={message} />;
 };

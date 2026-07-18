@@ -75,7 +75,6 @@ community:
   - remove catalog import menu
   - admin: 1 entry catalog -> 3 tabs: delete, validation, import
 
-
 - UI
 
   - add info popup
@@ -93,6 +92,6 @@ community:
     - DONE: health-dashboard
     - DONE: mca
     - DONE: toolkit
-  
+
   - toolkit
     - use bui components TextAreaField

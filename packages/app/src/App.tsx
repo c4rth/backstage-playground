@@ -1,10 +1,8 @@
 import { entityPage } from './modules/catalog/EntityPage';
 import { createApp } from '@backstage/frontend-defaults';
-import { convertLegacyAppRoot, } from '@backstage/core-compat-api';
+import { convertLegacyAppRoot } from '@backstage/core-compat-api';
 // Legacy Plugins
-import {
-  shortcutsNfsPlugin,
-} from './legacyPlugins';
+import { shortcutsNfsPlugin } from './legacyPlugins';
 // Legacy routes
 import { routes } from './routes';
 // NFS
@@ -17,7 +15,7 @@ import homePlugin from '@backstage/plugin-home/alpha';
 import { homePluginOverrides } from './modules/home';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
-import { techDocsMermaidAddonModule } from "@internal/plugin-techdocs-addon-mermaid";
+import { techDocsMermaidAddonModule } from '@internal/plugin-techdocs-addon-mermaid';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import visualizerPlugin from '@backstage/plugin-app-visualizer';
 // Custom plugins
@@ -30,7 +28,7 @@ import analyticsPlugin from '@internal/plugin-analytics/alpha';
 import healthDashboardPlugin from '@internal/plugin-health-dashboard/alpha';
 import toolkitPlugin from '@internal/plugin-toolkit/alpha';
 import { devToolsExtensionPlugin } from './modules/devtools';
-import mcaPlugin from  '@internal/plugin-mca/alpha';
+import mcaPlugin from '@internal/plugin-mca/alpha';
 
 const convertedRootFeatures = convertLegacyAppRoot(routes, { entityPage });
 
@@ -68,5 +66,4 @@ const app = createApp({
   ],
 });
 
-export default app.createRoot(
-);
+export default app.createRoot();

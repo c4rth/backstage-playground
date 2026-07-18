@@ -5,7 +5,11 @@ import {
   createServiceRef,
   LoggerService,
 } from '@backstage/backend-plugin-api';
-import { ApiPlatformCatalogService, RefreshResponse, UnregisterResponse } from './types';
+import {
+  ApiPlatformCatalogService,
+  RefreshResponse,
+  UnregisterResponse,
+} from './types';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   CatalogService,

@@ -147,7 +147,7 @@ proxy:
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
-    '/operations-sources':    
+    '/operations-sources':
       target: http://localhost:8080
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
@@ -197,8 +197,8 @@ techdocs:
     mermaid:
       enableZoom: true
       zoomOptions:
-        scaleExtent: [0.1, 10]           # Optional: min/max zoom scale
-        translateExtent:                   # Optional: pan boundaries
+        scaleExtent: [0.1, 10] # Optional: min/max zoom scale
+        translateExtent: # Optional: pan boundaries
           - [-1000, -1000]
           - [1000, 1000]
 
@@ -328,7 +328,7 @@ apiPlatform:
 
 appRegistry:
   baseUrl: http://localhost:8080
-  fetch:  http://localhost:8080/actuator
+  fetch: http://localhost:8080/actuator
   version: v2
 
 healthProbes:

@@ -3,7 +3,7 @@ import {
   Table,
   TableColumn,
 } from '@backstage/core-components';
-import { Flex, Link, } from '@backstage/ui';
+import { Flex, Link } from '@backstage/ui';
 import {
   Entity,
   parseEntityRef,
@@ -38,7 +38,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
     defaultSort: 'asc',
     render: ({ system, name, valid }: TableRow) =>
       valid ? (
-        <Link href={`/api-platform/library/${system}/${name}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/library/${system}/${name}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={name} type="library" />
         </Link>
       ) : (
@@ -52,7 +57,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
     highlight: true,
     render: ({ system, name, version, valid }: TableRow) =>
       valid ? (
-        <Link href={`/api-platform/library/${system}/${name}?version=${version}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/library/${system}/${name}?version=${version}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={version} type="library" />
         </Link>
       ) : (
@@ -66,7 +76,12 @@ const serviceColumns: TableColumn<TableRow>[] = [
     field: 'system',
     render: ({ system, valid }: TableRow) =>
       valid ? (
-        <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
+        <Link
+          href={`/api-platform/system/${system}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
           <ComponentDisplayName text={system} type="system" />
         </Link>
       ) : (

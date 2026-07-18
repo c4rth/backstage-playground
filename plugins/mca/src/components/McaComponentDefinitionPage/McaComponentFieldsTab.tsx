@@ -55,7 +55,12 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
         <div>
           {field.clientElement} of{' '}
           {field.name && (
-            <Link href={`/mca/${field.clientKind}/${field.name}`} weight="bold" color="info" standalone>
+            <Link
+              href={`/mca/${field.clientKind}/${field.name}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
               <b>{field.name}</b>
             </Link>
           )}
@@ -63,7 +68,12 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
       );
     }
     return (
-      <Link href={`/mca/components/${field.name}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/mca/components/${field.name}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <b>{field.name}</b>
       </Link>
     );
@@ -71,7 +81,12 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
 
   if (field.kind === 'basetype') {
     return (
-      <Link href={`/mca/basetypes/${field.name}`} weight="bold" color="info" standalone>
+      <Link
+        href={`/mca/basetypes/${field.name}`}
+        weight="bold"
+        color="info"
+        standalone
+      >
         <b>{field.name}</b>
       </Link>
     );

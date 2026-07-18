@@ -1,3 +1,1 @@
-export {
-	McaBaseTypeExplorerPage,
-} from './McaBaseTypeExplorerPage';
+export { McaBaseTypeExplorerPage } from './McaBaseTypeExplorerPage';

@@ -68,10 +68,7 @@ export const AnalyticsContent = () => {
     <Container>
       {isLoading && <Progress />}
       {error && (
-        <ResponseErrorPanel
-          title="Failed to call AppRegistry"
-          error={error}
-        />
+        <ResponseErrorPanel title="Failed to call AppRegistry" error={error} />
       )}
 
       {!isLoading && !error && (

@@ -74,7 +74,14 @@ export const AzureDevOpsGitTagsPage = () => {
         isRowHeader: true,
         cell: item => (
           <Cell>
-            <Link href={item.gitTag.link ?? ''} weight="bold" color="info" standalone>{item.gitTag.name}</Link>
+            <Link
+              href={item.gitTag.link ?? ''}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              {item.gitTag.name}
+            </Link>
           </Cell>
         ),
         isSortable: true,
@@ -84,7 +91,12 @@ export const AzureDevOpsGitTagsPage = () => {
         label: 'Commit',
         cell: item => (
           <Cell>
-            <Link href={item.gitTag.commitLink ?? ''} weight="bold" color="info" standalone>
+            <Link
+              href={item.gitTag.commitLink ?? ''}
+              weight="bold"
+              color="info"
+              standalone
+            >
               {item.gitTag.peeledObjectId ?? item.gitTag.objectId}
             </Link>
           </Cell>

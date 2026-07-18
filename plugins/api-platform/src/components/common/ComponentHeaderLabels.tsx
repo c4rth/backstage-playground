@@ -16,7 +16,12 @@ export const ComponentHeaderLabels = (props: EntityLabelsProps) => {
         <HeaderLabel
           label="Owner"
           value={
-            <Link href={`/api-platform/system/${system}`} weight="bold" color="info" standalone>
+            <Link
+              href={`/api-platform/system/${system}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
               <div style={{ color: 'var(--bui-accent-fg)' }}>
                 <ComponentDisplayName text={system} type="system" />
               </div>
