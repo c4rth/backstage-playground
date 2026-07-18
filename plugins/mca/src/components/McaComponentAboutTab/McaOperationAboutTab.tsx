@@ -8,11 +8,8 @@ import { AboutField } from '@backstage/plugin-catalog';
 import { Grid, Text } from '@backstage/ui';
 import { memo } from 'react';
 import styles from './McaOperationAboutTab.module.css';
+import { convertUrlLocation, UrlLocations } from './convertUrlLocations';
 
-export type UrlLocations = {
-  oldDns: string;
-  newDns: string;
-};
 
 const FieldDisplay = memo<{
   label: string;
@@ -85,21 +82,6 @@ const FieldDisplay = memo<{
   );
 });
 
-function getDecodedURI(
-  url: string | undefined,
-  urlLocations: UrlLocations,
-): { url: string; originalUrl?: string } {
-  if (!url) {
-    return { url: '-' };
-  }
-  if (url.startsWith(urlLocations.oldDns)) {
-    return {
-      url: url.replace(urlLocations.oldDns, urlLocations.newDns),
-      originalUrl: url,
-    };
-  }
-  return { url };
-}
 
 export interface McaOperationAboutTabProps {
   operationAnalyze: any;
@@ -123,19 +105,19 @@ export const McaOperationAboutTab = memo<McaOperationAboutTabProps>(
       { label: 'B-Function', value: operationAnalyze?.bfunction, xs: 12 },
       {
         label: 'FIC',
-        value: getDecodedURI(operationAnalyze?.ficLocation, urlLocations),
+        value: convertUrlLocation(operationAnalyze?.ficLocation, urlLocations),
         xs: 12,
         showCopyButton: Boolean(operationAnalyze?.ficLocation),
       },
       {
         label: 'TIC',
-        value: getDecodedURI(operationAnalyze?.ticLocation, urlLocations),
+        value: convertUrlLocation(operationAnalyze?.ticLocation, urlLocations),
         xs: 12,
         showCopyButton: Boolean(operationAnalyze?.ticLocation),
       },
       {
         label: 'CIC',
-        value: getDecodedURI(operationAnalyze?.cicLocation, urlLocations),
+        value: convertUrlLocation(operationAnalyze?.cicLocation, urlLocations),
         xs: 12,
         showCopyButton: Boolean(operationAnalyze?.cicLocation),
       },

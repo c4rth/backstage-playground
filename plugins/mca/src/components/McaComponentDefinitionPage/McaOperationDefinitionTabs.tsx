@@ -6,6 +6,7 @@ import { McaComponentMethodsTab } from './McaComponentMethodsTab';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentSnippet } from '../McaComponentSnippet';
 import { Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
+import { parseUrlLocations } from '../McaComponentAboutTab';
 
 export interface McaOperationDefinitionTabsProps {
   parsedDefinition: any;
@@ -55,10 +56,7 @@ export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
   ({ parsedDefinition, rawXml }) => {
     const configApi = useApi(configApiRef);
     const urlLocations = useMemo<UrlLocations>(
-      () => ({
-        oldDns: configApi.getString('mcaComponents.urlLocations.oldDns'),
-        newDns: configApi.getString('mcaComponents.urlLocations.newDns'),
-      }),
+      () => parseUrlLocations(configApi.getOptionalConfigArray('mcaComponents.urlLocations') || []),
       [configApi],
     );
 

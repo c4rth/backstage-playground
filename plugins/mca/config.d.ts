@@ -16,7 +16,8 @@ export interface Config {
     /**
      * @visibility frontend
      */
-    urlLocations?: {
+    urlLocations?: [
+      {
       /**
        * @visibility frontend
        */
@@ -25,6 +26,7 @@ export interface Config {
        * @visibility frontend
        */
       newDns?: string;
-    };
+      }
+    ];
   };
 }
