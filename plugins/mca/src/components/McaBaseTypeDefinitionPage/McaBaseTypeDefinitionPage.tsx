@@ -77,8 +77,8 @@ export const McaBaseTypeDefinitionPage = () => {
       <FullPage>
           <iframe
             src={baseTypeUrl || ''}
-            height={'100%'}
-            width={'100%'}
+            height='100%'
+            width='100%'
             title={`BaseType :${baseTypeUrl}`}
           />
       </FullPage>

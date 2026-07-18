@@ -45,13 +45,6 @@
   },
   "dependencies": {
     "@backstage/core-plugin-api": "backstage:^",
-    "@backstage/plugin-techdocs-react": "backstage:^",
-    "d3-selection": "^3.0.0",
-    "d3-zoom": "^3.0.0",
-    "mermaid": "^11.15.0"
-  },
-  "devDependencies": {
-    "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-techdocs-react": "backstage:^",
     "@backstage/theme": "backstage:^",
@@ -61,7 +54,7 @@
     "d3": "^7.9.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "mermaid": "^11.6.0",
+    "mermaid": "^11.15.0",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {

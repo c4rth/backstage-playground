@@ -19,7 +19,7 @@ import { apiPlatformBackendApiRef } from '../../plugin';
 import { ComponentHeaderLabels } from '../common';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { generateReport } from './generateReport';
-import { Container, FullPage, PluginHeader, Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
+import { Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
 
 export const LibraryDefinitionPage = () => {
   const { system, name } = useParams();
