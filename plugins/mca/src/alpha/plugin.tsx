@@ -14,6 +14,7 @@ import {
   baseTypeRouteRef,
 } from '../routes';
 import { RiAlbumLine, RiBubbleChartLine } from '@remixicon/react';
+import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 
 const mcaApi = ApiBlueprint.make({
   name: 'mca-components-backend-api',
@@ -86,6 +87,19 @@ const mcaBaseTypePage = PageBlueprint.make({
   },
 });
 
+
+const mcaSearchResultListItemExtension = SearchResultListItemBlueprint.make({
+  name: 'mca-search-result-item',
+  params: {
+    icon: <RiBubbleChartLine fontSize="inherit" />,
+    predicate: result => result.type === 'mca-components' || result.type === 'mca-basetypes',
+    component: () =>
+      import('../components/McaComponentSearchResultListItem').then(
+        m => m.McaComponentSearchResultListItem,
+      ),
+  },
+});
+
 export default createFrontendPlugin({
   pluginId: 'mca',
   title: 'MCA',
@@ -99,5 +113,6 @@ export default createFrontendPlugin({
     mcaComponentPage,
     mcaBaseTypePage,
     mcaApi,
+    mcaSearchResultListItemExtension,
   ],
 });

@@ -1,4 +1,3 @@
-import { Content, Header } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
@@ -10,8 +9,8 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { ComponentHeaderLabels } from '../common';
-import { Box, Grid, Select } from '@backstage/ui';
+import { Box, Container, Grid, PluginHeader, Select } from '@backstage/ui';
+import { RiCpuLine } from '@remixicon/react';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>;
 
@@ -135,15 +134,11 @@ export const ServiceDefinitionPage = () => {
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={serviceEntity}>
-      <Header title={name} type="Service">
-        <ComponentHeaderLabels
-          entity={
-            serviceEntity ??
-            ({ metadata: { name, title: name } } as ComponentEntity)
-          }
-        />
-      </Header>
-      <Content>
+      <PluginHeader
+        title={`Service - ${name}`}
+        icon={<RiCpuLine fontSize="inherit" />}
+      />
+      <Container>
         <Box mb="4">
           <Grid.Root columns="12">
             <Grid.Item colSpan="6">
@@ -175,7 +170,7 @@ export const ServiceDefinitionPage = () => {
         ) : (
           <div />
         )}
-      </Content>
+      </Container>
     </AsyncEntityProvider>
   );
 };

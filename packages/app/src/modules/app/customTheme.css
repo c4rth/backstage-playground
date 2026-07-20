@@ -6,12 +6,6 @@
   --belui-chip-bg-color4: #e6d6ff;
   --belui-chip-bg-color5: #dce3ea;
 
-  /* Field label */
-  .bui-FieldLabel {
-    font-weight: var(--bui-font-weight-bold);
-    font-size: var(--bui-font-size-3);
-  }
-
   /* Themes */
   [data-theme-mode='light'] {
     --bui-accent-bg: #c30045;

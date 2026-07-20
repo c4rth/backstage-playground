@@ -7,6 +7,7 @@ import { shortcutsNfsPlugin } from './legacyPlugins';
 import { routes } from './routes';
 // NFS
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import catalogGraphPlugin from '@backstage/plugin-catalog-graph/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import catalogUnprocessedEntitiesPlugin from '@backstage/plugin-catalog-unprocessed-entities/alpha';
 import devToolsPlugin from '@backstage/plugin-devtools/alpha';
@@ -14,6 +15,7 @@ import entityValidationPlugin from '@backstage-community/plugin-entity-validatio
 import homePlugin from '@backstage/plugin-home/alpha';
 import { homePluginOverrides } from './modules/home';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
+import searchPlugin from '@backstage/plugin-search/alpha';
 import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
 import { techDocsMermaidAddonModule } from '@internal/plugin-techdocs-addon-mermaid';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
@@ -41,6 +43,7 @@ const app = createApp({
     ...convertedRootFeatures,
     // Nfs plugins
     catalogPlugin,
+    catalogGraphPlugin,
     catalogImportPlugin,
     catalogUnprocessedEntitiesPlugin,
     devToolsPlugin,
@@ -49,6 +52,7 @@ const app = createApp({
     homePlugin,
     homePluginOverrides,
     scaffolderPlugin,
+    searchPlugin,
     techdocsPlugin,
     techDocsMermaidAddonModule,
     userSettingsPlugin,

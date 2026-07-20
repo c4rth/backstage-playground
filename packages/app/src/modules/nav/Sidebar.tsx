@@ -38,6 +38,8 @@ export const SidebarContent = NavContentBlueprint.make({
         <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
       ));
 
+      nav.take('page:search'); // Using search modal instead
+      
       return (
         <Sidebar>
           <SidebarLogo />

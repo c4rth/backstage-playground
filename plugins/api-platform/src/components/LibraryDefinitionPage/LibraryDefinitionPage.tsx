@@ -1,7 +1,4 @@
 import {
-  Header,
-  Content,
-  HeaderActionMenu,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
@@ -16,10 +13,10 @@ import {
   catalogApiRef,
 } from '@backstage/plugin-catalog-react';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { ComponentHeaderLabels } from '../common';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { generateReport } from './generateReport';
-import { Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
+import { ButtonIcon, Container, PluginHeader, Tab, TabList, TabPanel, Tabs, TooltipTrigger, Tooltip } from '@backstage/ui';
+import { RiBookShelfLine } from '@remixicon/react';
 
 export const LibraryDefinitionPage = () => {
   const { system, name } = useParams();
@@ -77,24 +74,21 @@ export const LibraryDefinitionPage = () => {
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
-      <Header title={`${name}`} type="Library">
-        <ComponentHeaderLabels
-          entity={
-            libraryEntity ??
-            ({ metadata: { name, title: name } } as ComponentEntity)
-          }
-        />
-        <HeaderActionMenu
-          actionItems={[
-            {
-              label: 'Generate report',
-              onClick: handleGenerateReport,
-              disabled: loading || !!error,
-            },
-          ]}
-        />
-      </Header>
-      <Content>
+      <PluginHeader
+        title={`Library - ${name}`}
+        icon={<RiBookShelfLine fontSize="inherit" />}
+        customActions={
+          <TooltipTrigger>
+            <ButtonIcon
+              onClick={handleGenerateReport}
+              isDisabled={loading || !!error}
+              icon={<RiBookShelfLine />}
+            />
+            <Tooltip>Generate report</Tooltip>
+          </TooltipTrigger>
+        }
+      />
+      <Container>
         {generating && <Progress />}
         {errorReport && (
           <ResponseErrorPanel
@@ -114,7 +108,7 @@ export const LibraryDefinitionPage = () => {
             <LibraryDefinitionAllServicesCard system={system!} name={name!} />
           </TabPanel>
         </Tabs>
-      </Content>
+      </Container>
     </AsyncEntityProvider>
   );
 };

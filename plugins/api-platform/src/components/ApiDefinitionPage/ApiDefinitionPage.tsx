@@ -1,4 +1,3 @@
-import { Content, Header } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -7,9 +6,9 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
 import { ApiDefinitionCard } from './ApiDefinitionCard';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { ComponentHeaderLabels } from '../common';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
-import { Box, Select } from '@backstage/ui';
+import { Box, Container, PluginHeader, Select } from '@backstage/ui';
+import { RiPuzzleFill } from '@remixicon/react';
 
 export const ApiDefinitionPage = () => {
   const { system, name } = useParams();
@@ -65,15 +64,11 @@ export const ApiDefinitionPage = () => {
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
-      <Header title={name} type="API">
-        <ComponentHeaderLabels
-          entity={
-            apiEntity ?? ({ metadata: { name, title: name } } as ApiEntity)
-          }
-        />
-      </Header>
-
-      <Content>
+      <PluginHeader
+        title={`API - ${name}`}
+        icon={<RiPuzzleFill fontSize="inherit" />}
+      />
+      <Container>
         <Box mb="4">
           <Select
             onChange={selected => {
@@ -85,7 +80,7 @@ export const ApiDefinitionPage = () => {
           />
         </Box>
         {apiEntity ? <ApiDefinitionCard /> : <div />}
-      </Content>
+      </Container>
     </AsyncEntityProvider>
   );
 };

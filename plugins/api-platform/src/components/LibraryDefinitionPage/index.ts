@@ -1,2 +1,2 @@
 export { LibraryDefinitionPage } from './LibraryDefinitionPage';
-export { LibraryDefinitionServicesPage } from './LibraryDefinitionServicesPage';
+export { LibraryDefinitionVersionPage as LibraryDefinitionServicesPage } from './LibraryDefinitionVersionPage';

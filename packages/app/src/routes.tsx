@@ -1,10 +1,6 @@
 import { Route } from 'react-router-dom';
-import { SearchPage } from '@backstage/plugin-search';
-import { searchPage } from './modules/search/SearchPage';
-
 import { ErrorPage } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
-import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Scaffolder
@@ -34,17 +30,14 @@ export const routes = (
         </RequirePermission>
       }
     />
-    <Route path="/search" element={<SearchPage />}>
-      {searchPage}
-    </Route>
-    <Route path="/catalog-graph" element={<CatalogGraphPage />} />
   </FlatRoutes>
 );
 
 /*
 
-
-
+    <Route path="/search" element={<SearchPage />}>
+      {searchPage}
+    </Route>
     <Route path="/api-platform/api" element={<ApiExplorerPage />} />
     {For compatibility with old URLs }
     <Route path="/api-platform/api/:name" element={<ApiRedirectToNoSystem />} />

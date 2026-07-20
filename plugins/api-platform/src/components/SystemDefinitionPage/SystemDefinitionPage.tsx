@@ -1,4 +1,4 @@
-import { Content, PageWithHeader } from '@backstage/core-components';
+import { RiShapesLine } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/core-plugin-api';
 import {
   AsyncEntityProvider,
@@ -6,6 +6,7 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { useGetSystem } from '../../hooks';
 import { SystemDefinitionCard } from './SystemDefinitionCard';
+import { Container, PluginHeader } from '@backstage/ui';
 
 export const SystemDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
@@ -17,16 +18,18 @@ export const SystemDefinitionPage = () => {
       error={error}
       entity={systemDefinition?.entity}
     >
-      <PageWithHeader themeId="systems" title={name} type="System">
-        <Content>
-          {systemDefinition && name && (
-            <SystemDefinitionCard
-              system={name}
-              systemDefinition={systemDefinition}
-            />
-          )}
-        </Content>
-      </PageWithHeader>
+      <PluginHeader
+        title={`System - ${name}`}
+        icon={<RiShapesLine fontSize="inherit" />}
+      />
+      <Container>
+        {systemDefinition && name && (
+          <SystemDefinitionCard
+            system={name}
+            systemDefinition={systemDefinition}
+          />
+        )}
+      </Container>
     </AsyncEntityProvider>
   );
 };

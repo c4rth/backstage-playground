@@ -20,11 +20,12 @@ import {
   apiPlatformSystemRouteRef,
 } from '../routes';
 import {
-  RiShapesFill,
+  RiShapesLine,
   RiPuzzleFill,
   RiCpuLine,
   RiBookShelfLine,
 } from '@remixicon/react';
+import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 
 const apiExplorerPage = PageBlueprint.make({
   name: 'api-explorer',
@@ -97,7 +98,7 @@ const systemExplorerPage = PageBlueprint.make({
   name: 'system-explorer',
   params: {
     noHeader: true,
-    icon: <RiShapesFill fontSize="inherit" />,
+    icon: <RiShapesLine fontSize="inherit" />,
     title: 'Systems',
     path: '/api-platform/system',
     routeRef: apiPlatformSystemRouteRef,
@@ -176,6 +177,21 @@ const apiPlatformApi = ApiBlueprint.make({
     }),
 });
 
+const apiSearchResultListItemExtension = SearchResultListItemBlueprint.make({
+  name: 'api-search-result-item',
+  params: {
+    icon: <RiPuzzleFill fontSize="inherit" />,
+    predicate: result => {
+      console.log('result', result);
+      return result.type === 'software-catalog';
+    },
+    component: () =>
+      import('../components/ApiSearchResultListItem').then(
+        m => m.ApiSearchResultListItem,
+      ),
+  },
+});
+
 export default createFrontendPlugin({
   pluginId: 'api-platform',
   title: 'API Platform',
@@ -203,5 +219,6 @@ export default createFrontendPlugin({
     libraryDefinitionPage,
     libraryDefinitionServicesPage,
     apiPlatformApi,
+    apiSearchResultListItemExtension,
   ],
 });

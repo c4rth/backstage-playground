@@ -42,7 +42,7 @@ export const InformationPopup = (props: InformationPopupProps) => {
   const { text, title, variant = 'body-medium', content } = props;
 
   return (
-    <Flex align="center" mt="2" gap="xs">
+    <Flex align="center">
       {text && (
         <Box as="span" mr="1">
           <Text variant={variant} style={{ color: 'var(--bui-accent-fg)' }}>
@@ -52,10 +52,8 @@ export const InformationPopup = (props: InformationPopupProps) => {
       )}
       <DialogTrigger>
         <ButtonIcon
-          variant="tertiary"
-          size="medium"
-          style={{ width: 'auto', background: 'transparent' }}
-          icon={<RiInformationLine aria-label="More information" />}
+          variant="secondary"
+          icon={<RiInformationLine aria-label="More information" fontSize="inherit" />}
         />
         <Popover placement="bottom" style={{ maxWidth: '50em' }}>
           <Text variant="title-x-small">

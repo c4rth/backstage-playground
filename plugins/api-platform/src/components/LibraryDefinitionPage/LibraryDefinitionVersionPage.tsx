@@ -1,4 +1,3 @@
-import { Header, Content } from '@backstage/core-components';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ComponentEntity } from '@backstage/catalog-model';
@@ -8,10 +7,11 @@ import {
   catalogApiRef,
 } from '@backstage/plugin-catalog-react';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { ComponentHeaderLabels } from '../common';
 import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
+import { Container, PluginHeader } from '@backstage/ui';
+import { RiBookShelfLine } from '@remixicon/react';
 
-export const LibraryDefinitionServicesPage = () => {
+export const LibraryDefinitionVersionPage = () => {
   const { system, name, version } = useParams();
   const resolvedVersion = version === 'services' ? undefined : version;
   const [libraryEntity, setLibraryEntity] = useState<
@@ -59,22 +59,18 @@ export const LibraryDefinitionServicesPage = () => {
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
-      <Header title={headerTitle} type="Library">
-        <ComponentHeaderLabels
-          entity={
-            libraryEntity ??
-            ({ metadata: { name, title: name } } as ComponentEntity)
-          }
-        />
-      </Header>
-      <Content>
+      <PluginHeader
+        title={`Library - ${headerTitle}`}
+        icon={<RiBookShelfLine fontSize="inherit" />}
+      />
+      <Container>
         <LibraryDefinitionAllServicesCard
           system={system!}
           name={name!}
           version={resolvedVersion}
           componentName={libraryEntity?.metadata.name}
         />
-      </Content>
+      </Container>
     </AsyncEntityProvider>
   );
 };

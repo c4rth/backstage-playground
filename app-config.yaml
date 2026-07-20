@@ -319,6 +319,7 @@ devTools:
       - catalog
       - mca
       - analytics
+      - search
 
 apiPlatform:
   organization: organization
