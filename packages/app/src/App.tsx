@@ -1,4 +1,3 @@
-import { entityPage } from './modules/catalog/EntityPage';
 import { createApp } from '@backstage/frontend-defaults';
 import { convertLegacyAppRoot } from '@backstage/core-compat-api';
 // Legacy Plugins
@@ -32,7 +31,7 @@ import toolkitPlugin from '@internal/plugin-toolkit/alpha';
 import { devToolsExtensionPlugin } from './modules/devtools';
 import mcaPlugin from '@internal/plugin-mca/alpha';
 
-const convertedRootFeatures = convertLegacyAppRoot(routes, { entityPage });
+const convertedRootFeatures = convertLegacyAppRoot(routes);
 
 const app = createApp({
   features: [
@@ -41,6 +40,14 @@ const app = createApp({
     navModule,
     // Legacy
     ...convertedRootFeatures,
+    // Custom plugins
+    apiPlatformPlugin,
+    appRegistryPlugin,
+    azdoPlugin,
+    analyticsPlugin,
+    healthDashboardPlugin,
+    mcaPlugin,
+    toolkitPlugin,
     // Nfs plugins
     catalogPlugin,
     catalogGraphPlugin,
@@ -57,14 +64,6 @@ const app = createApp({
     techDocsMermaidAddonModule,
     userSettingsPlugin,
     visualizerPlugin,
-    // Custom plugins
-    apiPlatformPlugin,
-    appRegistryPlugin,
-    azdoPlugin,
-    analyticsPlugin,
-    healthDashboardPlugin,
-    mcaPlugin,
-    toolkitPlugin,
     // Legacy plugins
     shortcutsNfsPlugin,
   ],

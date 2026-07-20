@@ -82,7 +82,8 @@ backend:
     allow:
       - host: raw.githubusercontent.com
       - host: github.com
-  #cache:
+  cache:
+    store: memory
   #  store: redis
   #  connection: redis://default:${REDIS_PASSWORD}@127.0.0.1:6379
   actions:

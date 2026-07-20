@@ -37,15 +37,6 @@ community:
 
 - UI
 
-  - update to bui (header, card, etc)
-    - DONE: analytics
-    - api-platform
-    - DONE: app-registry
-    - DONE: azure-devops
-    - DONE: health-dashboard
-    - DONE: mca
-    - DONE: toolkit
-
   - update to bui Table
     - analytics
     - api-platform
@@ -55,8 +46,15 @@ community:
     - mca
     - toolkit
 
-  - plugin header when put in code : different height as by default
-    - actions ?
+  - cleanup plugins:
+    use only NFS -> remove old plugins and duplicated JSX components
+    - analytics
+    - api-platform
+    - app-registry
+    - azure-devops
+    - health-dashboard
+    - mca
+    - toolkit
 
 ## DONE
 
@@ -85,6 +83,15 @@ community:
 
   - cleanup plugins:
     use only NFS -> remove old plugins and duplicated JSX components
+    - DONE: analytics
+    - DONE: api-platform
+    - DONE: app-registry
+    - DONE: azure-devops
+    - DONE: health-dashboard
+    - DONE: mca
+    - DONE: toolkit
+
+  - update to bui (header, card, etc)
     - DONE: analytics
     - DONE: api-platform
     - DONE: app-registry

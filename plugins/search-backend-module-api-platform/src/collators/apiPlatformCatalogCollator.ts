@@ -108,24 +108,28 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
 export const apiPlatformCatalogCollatorEntityTransformer: CatalogCollatorEntityTransformer =
   (entity: Entity) => {
     try {
+
+
       const entityInfo = getEntityTypeInfo(entity);
 
       if (!entityInfo) {
         return defaultCatalogCollatorEntityTransformer(entity);
       }
-
       return {
-        title: entityInfo.title,
-        text: entityInfo.text,
-        componentType: entity.spec?.type?.toString() ?? 'other',
+        componentType: `api-platform.${entityInfo.type}`,
         type: `api-platform.${entityInfo.type}`,
         namespace: entity.metadata.namespace ?? DEFAULT_NAMESPACE,
         kind: entityInfo.kind,
         lifecycle: entityInfo.lifecycle,
         owner: (entity.spec?.owner as string) ?? '',
+
+        title: entityInfo.title,
+        text: entityInfo.text,
+        location: entityInfo.location,
         apiPlatformLocation: entityInfo.location,
       };
     } catch (error) {
+      console.error(`Error transforming entity ${entity.metadata.name}:`, error);
       return defaultCatalogCollatorEntityTransformer(entity);
     }
   };

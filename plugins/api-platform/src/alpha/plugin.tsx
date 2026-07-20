@@ -181,10 +181,7 @@ const apiSearchResultListItemExtension = SearchResultListItemBlueprint.make({
   name: 'api-search-result-item',
   params: {
     icon: <RiPuzzleFill fontSize="inherit" />,
-    predicate: result => {
-      console.log('result', result);
-      return result.type === 'software-catalog';
-    },
+    predicate: result => result.type === 'software-catalog' && (result.document as any).type.startsWith('api-platform.'),
     component: () =>
       import('../components/ApiSearchResultListItem').then(
         m => m.ApiSearchResultListItem,
