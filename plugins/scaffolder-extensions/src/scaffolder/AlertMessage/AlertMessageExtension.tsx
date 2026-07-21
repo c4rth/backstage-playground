@@ -1,11 +1,9 @@
-import { scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import {
-  createScaffolderFieldExtension,
-  ScaffolderRJSFFieldProps,
+  FieldExtensionComponentProps,
 } from '@backstage/plugin-scaffolder-react';
 import { Alert } from '@backstage/ui';
 
-export const AlertMessage = ({ uiSchema }: ScaffolderRJSFFieldProps<void>) => {
+export const AlertMessage = ({ uiSchema }: FieldExtensionComponentProps<void>) => {
   const message = uiSchema?.['ui:options']?.message as string;
   const status: 'info' | 'success' | 'warning' | 'danger' =
     (uiSchema?.['ui:options']?.severity as
@@ -13,10 +11,3 @@ export const AlertMessage = ({ uiSchema }: ScaffolderRJSFFieldProps<void>) => {
 
   return <Alert status={status} icon title={message} />;
 };
-
-export const AlertMessageExtension = scaffolderPlugin.provide(
-  createScaffolderFieldExtension({
-    name: 'AlertMessage',
-    component: AlertMessage,
-  }),
-);

@@ -1,2 +1,1 @@
-export { ProjectPickerFieldExtension } from './ProjectPicker';
-export { AlertMessageExtension } from './AlertMessage';
+export { scaffolderExtensions } from './module';

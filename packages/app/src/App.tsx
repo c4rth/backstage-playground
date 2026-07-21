@@ -1,9 +1,6 @@
 import { createApp } from '@backstage/frontend-defaults';
-import { convertLegacyAppRoot } from '@backstage/core-compat-api';
 // Legacy Plugins
 import { shortcutsNfsPlugin } from './legacyPlugins';
-// Legacy routes
-import { routes } from './routes';
 // NFS
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogGraphPlugin from '@backstage/plugin-catalog-graph/alpha';
@@ -17,11 +14,12 @@ import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import searchPlugin from '@backstage/plugin-search/alpha';
 import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
 import { techDocsMermaidAddonModule } from '@internal/plugin-techdocs-addon-mermaid';
-import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha'; 
 import visualizerPlugin from '@backstage/plugin-app-visualizer';
 // Custom plugins
 import { appOverrides } from './modules/app';
 import { navModule } from './modules/nav';
+import apiDocsSpectralLinterPlugin from '@internal/plugin-api-docs-spectral-linter/alpha';
 import apiPlatformPlugin from '@internal/plugin-api-platform/alpha';
 import appRegistryPlugin from '@internal/plugin-app-registry/alpha';
 import azdoPlugin from '@internal/plugin-azure-devops/alpha';
@@ -30,23 +28,22 @@ import healthDashboardPlugin from '@internal/plugin-health-dashboard/alpha';
 import toolkitPlugin from '@internal/plugin-toolkit/alpha';
 import { devToolsExtensionPlugin } from './modules/devtools';
 import mcaPlugin from '@internal/plugin-mca/alpha';
-
-const convertedRootFeatures = convertLegacyAppRoot(routes);
+import { scaffolderExtensions } from '@internal/plugin-scaffolder-extensions';
 
 const app = createApp({
   features: [
     appOverrides,
     // Nav
     navModule,
-    // Legacy
-    ...convertedRootFeatures,
     // Custom plugins
+    apiDocsSpectralLinterPlugin,
     apiPlatformPlugin,
     appRegistryPlugin,
     azdoPlugin,
     analyticsPlugin,
     healthDashboardPlugin,
     mcaPlugin,
+    scaffolderExtensions,
     toolkitPlugin,
     // Nfs plugins
     catalogPlugin,

@@ -1,31 +1,27 @@
-import { scaffolderPlugin } from '@backstage/plugin-scaffolder';
-import { createScaffolderFieldExtension } from '@backstage/plugin-scaffolder-react';
 import {
   errorApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
+import useDebounce from 'react-use/lib/useDebounce';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { NotFoundError } from '@backstage/errors';
 import useAsync from 'react-use/esm/useAsync';
 import { useState } from 'react';
-import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
-import useDebounce from 'react-use/esm/useDebounce';
 import { useTemplateSecrets } from '@backstage/plugin-scaffolder-react';
 import { scmAuthApiRef } from '@backstage/integration-react';
 import { ProjectPickerFieldSchema } from './schemas';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import { MenuItem } from '@material-ui/core';
+import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
+import { Select } from '@backstage/ui';
 
 export { ProjectPickerSchema } from './schemas';
 
-const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
+export const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
   const { uiSchema, onChange, rawErrors, errors, schema, required } = props;
 
   const [projects, setProjects] = useState<
     Array<{
-      value: string;
+      id: string;
       label: string;
     }>
   >([]);
@@ -68,9 +64,9 @@ const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
       ),
     );
     const result: Array<{
-      value: string;
+      id: string;
       label: string;
-    }> = uniqueNames.sort().map(name => ({ value: name, label: name }));
+    }> = uniqueNames.sort().map(name => ({ id: name, label: name }));
 
     setProjects(result);
   });
@@ -111,6 +107,25 @@ const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
       required={required}
       errors={errors}
     >
+      <Select
+        name="project-label"
+        label={uiSchema['ui:title'] ?? schema.title}
+        search
+        value={selectedProject}
+        options={projects}
+        onChange={selected => {
+          const newValue = selected?.toString() ?? undefined;
+          setSelectedProject(newValue);
+          onChange(newValue);
+        }}
+      />
+    </ScaffolderField>
+  );
+};
+
+
+/*
+
       <InputLabel id="project-label">
         {uiSchema['ui:title'] ?? schema.title}
       </InputLabel>
@@ -130,13 +145,4 @@ const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
           </MenuItem>
         ))}
       </Select>
-    </ScaffolderField>
-  );
-};
-
-export const ProjectPickerFieldExtension = scaffolderPlugin.provide(
-  createScaffolderFieldExtension({
-    name: 'ProjectPicker',
-    component: ProjectPicker,
-  }),
-);
+      */

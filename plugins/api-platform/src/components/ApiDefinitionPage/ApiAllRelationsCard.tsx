@@ -51,6 +51,7 @@ const serviceColumns: TableColumn<TableRow>[] = [
         href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
         weight="bold"
         color="info"
+        standalone
       >
         <ComponentDisplayName text={svcName} type="service" />
       </Link>

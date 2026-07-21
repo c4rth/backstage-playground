@@ -1,1 +1,1 @@
-export { ProjectPickerFieldExtension } from './ProjectPickerExtension';
+export { ProjectPicker } from './ProjectPickerExtension';
