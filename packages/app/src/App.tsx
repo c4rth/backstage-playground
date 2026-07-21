@@ -9,7 +9,6 @@ import catalogUnprocessedEntitiesPlugin from '@backstage/plugin-catalog-unproces
 import devToolsPlugin from '@backstage/plugin-devtools/alpha';
 import entityValidationPlugin from '@backstage-community/plugin-entity-validation/alpha';
 import homePlugin from '@backstage/plugin-home/alpha';
-import { homePluginOverrides } from './modules/home';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import searchPlugin from '@backstage/plugin-search/alpha';
 import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
@@ -19,6 +18,7 @@ import visualizerPlugin from '@backstage/plugin-app-visualizer';
 // Custom plugins
 import { appOverrides } from './modules/app';
 import { navModule } from './modules/nav';
+import { homePluginOverrides } from './modules/home';
 import apiDocsSpectralLinterPlugin from '@internal/plugin-api-docs-spectral-linter/alpha';
 import apiPlatformPlugin from '@internal/plugin-api-platform/alpha';
 import appRegistryPlugin from '@internal/plugin-app-registry/alpha';

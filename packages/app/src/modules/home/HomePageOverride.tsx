@@ -1,6 +1,7 @@
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import homePlugin from '@backstage/plugin-home/alpha';
 
+
 export const HomePageOverride = PageBlueprint.makeWithOverrides({
   factory(originalFactory) {
     return originalFactory({

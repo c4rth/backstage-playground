@@ -1,4 +1,3 @@
-import { Content, Page } from '@backstage/core-components';
 import {
   HomePageRecentlyVisited,
   HomePageStarredEntities,
@@ -8,7 +7,8 @@ import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { ToolkitCard } from '@internal/plugin-toolkit';
 import { Grid } from '@backstage/ui';
-import styles from './HomePage.module.css';
+import { Content, Page } from '@backstage/core-components';
+
 
 export const HomePage = () => {
   return (
@@ -18,12 +18,6 @@ export const HomePage = () => {
           <Grid.Root columns="12">
             <Grid.Item colSpan="12" style={{ margin: '16px' }}>
               <HomePageSearchBar
-                InputProps={{
-                  classes: {
-                    root: styles.searchBarInput,
-                    notchedOutline: styles.searchBarOutline,
-                  },
-                }}
                 placeholder="Search"
               />
             </Grid.Item>

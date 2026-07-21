@@ -31,10 +31,6 @@ community:
 - protect routes
   - moved to plugin loader()
 
-- scaffolder
-  - update extensions
-  - add to scaffolder
-
 - UI
 
   - update to bui Table
@@ -68,6 +64,10 @@ community:
   - DONE: mca
   - DELETED: techdocs
   - DONE: toolkit
+
+- scaffolder
+  - update extensions
+  - add to scaffolder
 
 - admin - catalog:
   - remove catalog import menu
