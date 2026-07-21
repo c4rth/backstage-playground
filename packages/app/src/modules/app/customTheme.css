@@ -20,6 +20,8 @@
     /* Deprecated */
     --bui-fg-info: #c30045;
     --bui-fg-solid: #fff;
+    --bui-bg-solid: #c30045;
+    --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
     /*
     --bui-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
@@ -52,6 +54,8 @@
     /* Deprecated */
     --bui-fg-info: #FF80A5;
     --bui-fg-solid: #fff;
+    --bui-bg-solid: #c30045;
+    --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
     /*
     --bui-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);

@@ -18,8 +18,6 @@
 }
 
 .denseTable :global(.bui-TableCell) {
-  padding-top: 1em;
-  padding-bottom: 1em;
   font-size: var(--bui-font-size-3);
   min-width: 0;
   overflow: hidden;

@@ -150,12 +150,9 @@ export const LibraryTable = () => {
     paginationOptions: {
       type: 'none',
     },
-    search: initialSearch,
+    initialSearch: initialSearch,
     searchFn: (items, query) => {
       const lowerQuery = query.toLowerCase();
-      if (query.search !== undefined) {
-        sessionStorage.setItem(STORAGE_SEARCH_KEY, lowerQuery);
-      }
       return items.filter(
         item =>
           item.name.toLowerCase().includes(lowerQuery) ||
@@ -163,6 +160,9 @@ export const LibraryTable = () => {
           item.description.toLowerCase().includes(lowerQuery) ||
           item.system.toLowerCase().includes(lowerQuery),
       );
+    },
+    onSearchChange: (newSearch) => {
+      sessionStorage.setItem(STORAGE_SEARCH_KEY, newSearch ?? '');
     },
     sortFn: (items, { column, direction }) => {
       return [...items].sort((a, b) => {
@@ -213,7 +213,10 @@ export const LibraryTable = () => {
             />
           </Box>
           <Box style={{ marginLeft: 'auto', width: '250px' }}>
-            <SearchField placeholder="Filter..." {...search} />
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={search.onChange} />
           </Box>
         </Flex>
       </CardHeader>

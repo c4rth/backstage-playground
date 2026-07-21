@@ -140,7 +140,7 @@ export const AzureDevOpsGitTagsPage = () => {
     );
   }
 
-  if (tableProps.loading) {
+  if (tableProps.isPending) {
     return <Progress />;
   }
 

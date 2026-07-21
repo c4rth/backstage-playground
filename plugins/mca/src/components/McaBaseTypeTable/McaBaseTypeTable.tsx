@@ -1,7 +1,5 @@
 import {
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
 import {
   McaBaseType,
@@ -9,10 +7,10 @@ import {
 } from '@internal/plugin-mca-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
-import { Query } from '@material-table/core';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { useState, memo } from 'react';
-import { Flex, Link } from '@backstage/ui';
+import { useState, memo, useCallback } from 'react';
+import { ColumnConfig, Link, CellText, Cell, useTable, SortDescriptor, Table, Container, Header, SearchField, Box } from '@backstage/ui';
+import styles from './McaBaseTypeTable.module.css';
 
 type TableRow = {
   id: number;
@@ -20,35 +18,37 @@ type TableRow = {
   packageName: string;
 };
 
-const columns: TableColumn<TableRow>[] = [
+const columns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    id: 'baseType',
+    label: 'Name',
     width: '50%',
-    field: 'baseType',
-    defaultSort: 'asc',
-    highlight: true,
-    render: row => (
-      <Link
-        href={`/mca/basetypes/${row.baseType}`}
-        weight="bold"
-        color="info"
-        standalone
-      >
-        {row.baseType}
-      </Link>
+    isRowHeader: true,
+    isSortable: true,
+    cell: ({ baseType }: TableRow) => (
+      <Cell>
+        <Link
+          href={`/mca/basetypes/${baseType}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
+          {baseType}
+        </Link>
+      </Cell>
     ),
   },
   {
-    title: 'Package',
+    id: 'packageName',
+    label: 'Package',
     width: '50%',
-    field: 'packageName',
+    cell: ({ packageName }: TableRow) => <CellText title={packageName || '-'} />,
   },
 ];
 
-const PAGE_SIZE = 20;
 const STORAGE_KEY = 'mcaBaseTypeTableSearch';
 
-function toEntityRow(item: McaBaseType, idx: number) {
+function toTableRow(item: McaBaseType, idx: number) {
   return {
     id: idx,
     baseType: item.baseType,
@@ -56,26 +56,28 @@ function toEntityRow(item: McaBaseType, idx: number) {
   };
 }
 
-async function getData(
+const getData = async (
   mcaApi: McaComponentsBackendApi,
-  query: Query<TableRow>,
-) {
-  const page = query.page || 0;
-  const pageSize = query.pageSize || PAGE_SIZE;
+  offset: number,
+  pageSize: number,
+  sort: SortDescriptor | null,
+  search?: string,
+) => {
   const result = await mcaApi.listMcaBaseTypes({
-    offset: page * pageSize,
+    offset,
     limit: pageSize,
-    search: query.search,
+    search,
     orderBy:
-      query?.orderBy &&
-      ({
-        field: query.orderBy.field,
-        direction: query.orderDirection,
-      } as McaBaseTypeListOptions['orderBy']),
+      sort
+        ? ({
+          field: sort.column.toString(),
+          direction: sort.direction === 'descending' ? 'desc' : 'asc',
+        } as McaBaseTypeListOptions['orderBy'])
+        : undefined,
   });
   if (result) {
     return {
-      data: result.items.map(toEntityRow),
+      data: result.items.map(toTableRow),
       totalCount: result.totalCount,
       page: Math.floor(result.offset / result.limit),
     };
@@ -91,56 +93,71 @@ export const McaBaseTypeTable = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const [countRows, setCountRows] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
   const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
 
-  const dataFunction = async (query: Query<TableRow>) => {
-    if (query.search !== undefined) {
-      sessionStorage.setItem(STORAGE_KEY, query.search);
-    }
-
-    try {
-      setLoading(true);
-      const result = await getData(mcaApi, query);
+  const fetchData = useCallback(
+    async ({
+      offset,
+      pageSize,
+      sort,
+      search,
+    }: {
+      offset: number;
+      pageSize: number;
+      sort: SortDescriptor | null;
+      search?: string;
+    }) => {
+      const result = await getData(mcaApi, offset, pageSize, sort, search);
       setCountRows(result.totalCount);
       return result;
-    } catch (e) {
-      setError(e as Error);
-      setCountRows(0);
-      return {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [mcaApi],
+  );
 
-  const tableOptions = {
-    paginationPosition: 'bottom' as const,
-    search: true,
-    padding: 'dense' as const,
-    pageSize: PAGE_SIZE,
-    pageSizeOptions: [10, PAGE_SIZE, 50],
-    showEmptyDataSourceMessage: countRows === 0,
-    draggable: false,
-    thirdSortClick: false,
-    searchText: initialSearch,
-  };
-  const tableTitle = <Flex align="center">BaseTypes ({countRows})</Flex>;
+  const { tableProps, search } = useTable({
+    mode: 'offset',
+    getData: fetchData,
+    paginationOptions: {
+      pageSize: 20,
+      pageSizeOptions: [10, 20, 50],
+    },
+    initialSearch,
+    initialSort: { column: 'baseType', direction: 'ascending' },
+    onSearchChange: (val) => {
+      sessionStorage.setItem(STORAGE_KEY, val ?? '');
+    },
+  });
 
-  if (error) return <ResponseErrorPanel error={error} />;
+  if (tableProps.error) {
+    return (
+      <ResponseErrorPanel
+        title="Failed to call MCA API"
+        error={tableProps.error}
+      />
+    );
+  }
 
   return (
-    <Table<TableRow>
-      isLoading={loading}
-      columns={columns}
-      options={tableOptions}
-      title={tableTitle}
-      data={dataFunction}
-    />
+    <Container>
+      <Header
+        title={`BaseTypes (${countRows})`}
+        customActions={
+          <Box style={{ marginLeft: 'auto', width: '250px' }}>
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={search.onChange}
+            />
+          </Box>
+        }
+      />
+      <Table
+        key={`table-basetypes`}
+        {...tableProps}
+        columnConfig={columns}
+        emptyState={<div>No data available</div>}
+        className={styles.denseTable}
+      />
+    </Container>
   );
 });

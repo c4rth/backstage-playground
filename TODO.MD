@@ -31,16 +31,23 @@ community:
 - protect routes
   - moved to plugin loader()
 
+- for API with sort: update to ascending | descending ipo asc desc
+  -> compatible with useTable
+
 - UI
 
   - update to bui Table
     - DONE: analytics
     - api-platform
+      - api
+      - DONE: library
+      - service
+      - system
     - DONE: app-registry
     - DONE: azure-devops
     - DONE: catalog-admin
     - DONE: health-dashboard
-    - mca
+    - DONE: mca
     - DONE: toolkit
 
   - cleanup plugins:
@@ -76,6 +83,8 @@ community:
 
 - UI
   - cleanup themes: standard
+
+  - Library : filter / search
 
   - add info popup
     - done:

@@ -244,7 +244,7 @@ export const AppRegistryPage = () => {
       />
     );
   }
-  if (tableProps.loading) {
+  if (tableProps.isPending) {
     return <Progress />;
   }
 

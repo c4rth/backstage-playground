@@ -238,7 +238,7 @@ export const AzureDevOpsPipelinePage = () => {
     );
   }
 
-  if (tableProps.loading) {
+  if (tableProps.isPending) {
     return <Progress />;
   }
 
