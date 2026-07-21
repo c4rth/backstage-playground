@@ -14,7 +14,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { CATALOG_METADATA_NAME } from '@internal/plugin-api-platform-common';
 import { EntityValidationContent } from '@backstage-community/plugin-entity-validation';
-import { CatalogImportPage } from '@backstage/plugin-catalog-import';
+import { ImportStepper } from '@backstage/plugin-catalog-import';
 
 const kindOptions = [
   { label: 'API', id: 'api' },
@@ -67,7 +67,7 @@ export const CatalogAdminPage = () => {
         </TabList>
         <TabPanel id="tab1">
           <>
-            <Grid.Root columns="2" gap="4" mt="4">
+            <Grid.Root columns="2" gap="10" mt="4" mb="4">
               <Grid.Item>
                 <Select
                   onChange={selected => {
@@ -102,11 +102,11 @@ export const CatalogAdminPage = () => {
         </TabPanel>
         <TabPanel id="tab2">
           <Box mt="4">
-            <CatalogImportPage />
+            <ImportStepper />
           </Box>
         </TabPanel>
-        <TabPanel id="tab3">
-          <Box mt="4">
+        <TabPanel id="tab3" >
+          <Box mt="4" style={{ height: '80vh' }}>
             <EntityValidationContent />
           </Box>
         </TabPanel>

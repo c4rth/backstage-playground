@@ -72,8 +72,8 @@ export const AnalyticsContent = () => {
       )}
 
       {!isLoading && !error && (
-        <Flex direction="column" style={{ height: 'calc(100vh - 200px)' }}>
-          <Box style={{ flexShrink: 0, marginBottom: '16px' }}>
+        <Flex direction="column" style={{ height: '85vh' }}>
+          <Box style={{ flexShrink: 0, marginBottom: '8px' }}>
             <Select
               onChange={selected => {
                 setDaysToShow(parseInt(selected?.toString() ?? '0', 10));

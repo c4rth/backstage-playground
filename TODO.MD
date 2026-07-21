@@ -34,13 +34,14 @@ community:
 - UI
 
   - update to bui Table
-    - analytics
+    - DONE: analytics
     - api-platform
-    - app-registry
-    - azure-devops
-    - health-dashboard
+    - DONE: app-registry
+    - DONE: azure-devops
+    - DONE: catalog-admin
+    - DONE: health-dashboard
     - mca
-    - toolkit
+    - DONE: toolkit
 
   - cleanup plugins:
     use only NFS -> remove old plugins and duplicated JSX components
@@ -74,6 +75,7 @@ community:
   - admin: 1 entry catalog -> 3 tabs: delete, validation, import
 
 - UI
+  - cleanup themes: standard
 
   - add info popup
     - done:
