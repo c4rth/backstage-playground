@@ -56,9 +56,6 @@ community:
       - DONE: fields
     - DONE: toolkit
 
-  - table bui:
-    - denseTable in common css ?
-
   - header: HeaderBottom margin
 
   - cleanup plugins:
@@ -94,6 +91,9 @@ community:
 
 - UI
   - cleanup themes: standard
+
+  - table bui:
+    - denseTable in common css ?
 
   - Library : filter / search
 

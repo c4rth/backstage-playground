@@ -29,7 +29,6 @@ import {
   ColumnConfig,
   Box,
 } from '@backstage/ui';
-import styles from './AppRegistry.module.css';
 
 type TableRow = {
   id: number;
@@ -66,7 +65,6 @@ const AbacTooltip = ({
 }) => (
   <TooltipTrigger delay={250}>
     <ButtonIcon
-      size="medium"
       variant="tertiary"
       style={{ width: '20px', padding: 0, background: 'transparent' }}
       icon={icon}
@@ -270,7 +268,7 @@ export const AppRegistryPage = () => {
               type: 'none',
             }}
             emptyState={emptyState()}
-            className={styles.denseTable}
+            className="denseTable"
           />
         </Box>
       </CardBody>

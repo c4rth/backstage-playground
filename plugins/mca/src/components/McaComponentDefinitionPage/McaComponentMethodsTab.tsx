@@ -10,7 +10,6 @@ import {
   SearchField,
 } from '@backstage/ui';
 import { memo, useMemo } from 'react';
-import styles from './McaComponentTable.module.css';
 
 export interface McaComponentMethodsTabProps {
   data: any;
@@ -113,7 +112,7 @@ export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
           emptyState={
             <div>No implemented methods found for this {componentType}.</div>
           }
-          className={styles.denseTable}
+          className="denseTable"
         />
       </Container>
     );

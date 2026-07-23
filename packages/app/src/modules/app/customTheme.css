@@ -75,3 +75,28 @@
     */
   }
 }
+
+.denseTable .bui-TableRow {
+  border-bottom: 0px;
+  transition: color 0.2s ease-in-out;
+  margin: 0;
+  padding: 0;
+}
+
+.denseTable .bui-TableRow[data-react-aria-pressable='true'] {
+  cursor: pointer;
+}
+
+.denseTable .bui-TableRow:hover {
+  background-color: #00000000;
+}
+
+.denseTable .bui-TableRow:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.03); 
+}
+
+.denseTable .bui-TableCell {
+  font-size: var(--bui-font-size-3);
+  min-width: 0;
+  overflow: hidden;
+}

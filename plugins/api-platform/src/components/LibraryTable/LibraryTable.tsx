@@ -26,7 +26,6 @@ import {
   ANNOTATION_LIBRARY_NAME,
   ANNOTATION_LIBRARY_VERSION,
 } from '@internal/plugin-api-platform-common';
-import styles from './LibraryTable.module.css';
 
 type TableRow = {
   id: number;
@@ -236,7 +235,7 @@ export const LibraryTable = () => {
               type: 'none',
             }}
             emptyState={emptyState()}
-            className={styles.denseTable}
+            className="denseTable"
           />
         </Box>
       </CardBody>

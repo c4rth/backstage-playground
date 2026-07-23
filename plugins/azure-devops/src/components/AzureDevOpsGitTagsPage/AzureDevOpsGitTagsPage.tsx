@@ -21,7 +21,6 @@ import {
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { azureDevOpsApiRef, AzureDevOpsApi } from '../../api';
-import styles from './AzureDevOpsGitTagsPage.module.css';
 
 type TableRow = {
   id: number;
@@ -149,7 +148,7 @@ export const AzureDevOpsGitTagsPage = () => {
       <CardHeader>{cardTitle}</CardHeader>
       <CardBody>
         <Table
-          className={styles.customTable}
+          className="denseTable"
           columnConfig={columns}
           {...tableProps}
           pagination={{

@@ -19,7 +19,6 @@ import {
   DialogFooter,
   Flex,
 } from '@backstage/ui';
-import styles from './EntityTable.module.css';
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { EntityFilterQuery } from '@backstage/catalog-client';
 import {
@@ -452,7 +451,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
           onSelectionChange: setSelected,
         }}
         emptyState={<div>No data available</div>}
-        className={styles.denseTable}
+        className="denseTable"
       />
     </>
   );

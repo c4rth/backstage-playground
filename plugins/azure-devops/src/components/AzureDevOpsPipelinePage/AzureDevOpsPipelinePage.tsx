@@ -27,7 +27,6 @@ import { AzureDevOpsApi, azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildStateComponent } from './BuildStateComponent';
 import { LogsDialog } from './LogsDialog';
-import styles from './AzureDevOpsPipelinePage.module.css';
 
 type TableRow = {
   id: number;
@@ -254,7 +253,7 @@ export const AzureDevOpsPipelinePage = () => {
               type: 'none',
             }}
             emptyState={emptyState()}
-            className={styles.customTable}
+            className="denseTable"
           />
         </CardBody>
       </Card>

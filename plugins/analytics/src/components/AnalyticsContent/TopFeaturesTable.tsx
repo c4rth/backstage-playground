@@ -10,7 +10,6 @@ import {
   Text,
   useTable,
 } from '@backstage/ui';
-import styles from './AnalyticsContent.module.css';
 import { TopFeature } from '../../api/CustomAnalyticsApi';
 
 export type TableRow = {
@@ -106,7 +105,7 @@ export const TopFeaturesTable = ({ data }: { data: TableRow[] }) => {
             <Table
               columnConfig={columns}
               {...tableProps}
-              className={styles.denseTable}
+              className="denseTable"
             />
           </Box>
         )}

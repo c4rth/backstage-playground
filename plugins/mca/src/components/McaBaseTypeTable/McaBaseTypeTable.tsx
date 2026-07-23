@@ -20,7 +20,6 @@ import {
   SearchField,
   Box,
 } from '@backstage/ui';
-import styles from './McaBaseTypeTable.module.css';
 
 type TableRow = {
   id: number;
@@ -165,7 +164,7 @@ export const McaBaseTypeTable = memo(() => {
         {...tableProps}
         columnConfig={columns}
         emptyState={<div>No data available</div>}
-        className={styles.denseTable}
+        className="denseTable"
       />
     </Container>
   );

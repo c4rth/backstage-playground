@@ -15,7 +15,6 @@ import {
 } from '@backstage/ui';
 import { RiAsterisk } from '@remixicon/react';
 import { memo } from 'react';
-import styles from './McaComponentTable.module.css';
 
 type FieldInfo = {
   kind: 'component' | 'basetype' | 'unknown';
@@ -296,7 +295,7 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
           {...tableProps}
           columnConfig={columns}
           emptyState={<div>No fields found for this {fieldType}.</div>}
-          className={styles.denseTable}
+          className="denseTable"
         />
       </Container>
     );
