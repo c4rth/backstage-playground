@@ -19,8 +19,7 @@ export const linterApi = ApiBlueprint.make({
       deps: {
         configApi: configApiRef,
       },
-      factory: ({ configApi }) =>
-        new LinterClient({ configApi }),
+      factory: ({ configApi }) => new LinterClient({ configApi }),
     }),
 });
 
@@ -32,9 +31,9 @@ export const entityApiDocsSpectralLinterContent = EntityContentBlueprint.make({
     title: 'Linter',
     filter: isApiDocsSpectralLinterAvailable,
     loader: () =>
-      import('../components/EntityApiDocsSpectralLinterContent').then(
-        m => <m.EntityApiDocsSpectralLinterContent />,
-      ),
+      import('../components/EntityApiDocsSpectralLinterContent').then(m => (
+        <m.EntityApiDocsSpectralLinterContent />
+      )),
   },
 });
 
@@ -44,9 +43,9 @@ export const entityApiDocsSpectralLinterCard = EntityCardBlueprint.make({
   params: {
     filter: isApiDocsSpectralLinterAvailable,
     loader: () =>
-      import('../components/EntityApiDocsSpectralLinterContent').then(
-        m => <m.EntityApiDocsSpectralLinterCard />,
-      ),
+      import('../components/EntityApiDocsSpectralLinterContent').then(m => (
+        <m.EntityApiDocsSpectralLinterCard />
+      )),
   },
 });
 

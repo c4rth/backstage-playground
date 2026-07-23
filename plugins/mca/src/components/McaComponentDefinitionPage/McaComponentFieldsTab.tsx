@@ -1,7 +1,21 @@
-import { Table, TableColumn } from '@backstage/core-components';
-import { ButtonIcon, Flex, Tooltip, TooltipTrigger, Link } from '@backstage/ui';
+import {
+  ButtonIcon,
+  Tooltip,
+  TooltipTrigger,
+  Link,
+  Text,
+  Table,
+  useTable,
+  ColumnConfig,
+  Cell,
+  Container,
+  Header,
+  SearchField,
+  Box,
+} from '@backstage/ui';
 import { RiAsterisk } from '@remixicon/react';
 import { memo } from 'react';
+import styles from './McaComponentTable.module.css';
 
 type FieldInfo = {
   kind: 'component' | 'basetype' | 'unknown';
@@ -95,50 +109,61 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
   return <div>{field.name}</div>;
 });
 
-const mandatoryColumn: TableColumn<TableRow> = {
-  title: '',
+const mandatoryColumn: ColumnConfig<TableRow> = {
+  label: '',
   width: '1%',
-  field: 'mandatory',
-  render: ({ mandatory }) =>
+  id: 'mandatory',
+  cell: ({ mandatory }) =>
     mandatory ? (
-      <TooltipTrigger delay={250}>
-        <ButtonIcon
-          variant="tertiary"
-          size="small"
-          style={{ width: 'auto', background: 'transparent' }}
-          icon={<RiAsterisk color="primary" />}
-        />
-        <Tooltip placement="bottom">Mandatory</Tooltip>
-      </TooltipTrigger>
-    ) : null,
+      <Cell>
+        <TooltipTrigger delay={250}>
+          <ButtonIcon
+            variant="tertiary"
+            size="small"
+            style={{ width: 'auto', background: 'transparent' }}
+            icon={<RiAsterisk color="primary" />}
+          />
+          <Tooltip placement="bottom">Mandatory</Tooltip>
+        </TooltipTrigger>
+      </Cell>
+    ) : (
+      <Cell />
+    ),
 };
 
-const commonColumns: TableColumn<TableRow>[] = [
+const commonColumns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    label: 'Name',
     width: '20%',
-    field: 'name',
-    highlight: true,
+    id: 'name',
+    isRowHeader: true,
+    cell: row => (
+      <Cell>
+        <Text weight="bold">{row.name}</Text>
+      </Cell>
+    ),
   },
   {
-    title: 'Class',
+    label: 'Class',
     width: '25%',
-    searchable: true,
-    customFilterAndSearch: (query, row) =>
-      `${row.className} ${row.elementType}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
-    render: rowData => <ClassNameRenderer row={rowData} />,
+    id: 'className',
+    cell: rowData => (
+      <Cell>
+        <ClassNameRenderer row={rowData} />
+      </Cell>
+    ),
   },
   {
-    title: 'Description',
+    label: 'Description',
     width: '55%',
-    field: 'description',
-    render: ({ description }) => (
-      <div
-        style={{ whiteSpace: 'pre-wrap' }}
-        dangerouslySetInnerHTML={{ __html: description }}
-      />
+    id: 'description',
+    cell: ({ description }) => (
+      <Cell>
+        <div
+          style={{ whiteSpace: 'pre-wrap' }}
+          dangerouslySetInnerHTML={{ __html: description }}
+        />
+      </Cell>
     ),
   },
 ];
@@ -211,15 +236,6 @@ export interface McaComponentFieldsTabProps {
   title?: string;
 }
 
-const tableOptions = {
-  search: true,
-  padding: 'dense' as const,
-  paging: false,
-  draggable: false,
-  thirdSortClick: true,
-  showEmptyDataSourceMessage: true,
-};
-
 function getFields(data: any, fieldType: 'element' | 'input' | 'output') {
   if (fieldType === 'element') return data?.fields?.FieldInput;
   if (fieldType === 'input') return data?.inputFields?.FieldInput;
@@ -243,19 +259,46 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
     const rows = toTableRows(fields, fieldType);
     const columns = getColumns(fieldType);
     const defaultTitle = getDefaultTitle(fieldType);
-    const tableTitle = (
-      <Flex align="center">
-        {title || defaultTitle} ({rows.length})
-      </Flex>
-    );
+
+    const { tableProps, search } = useTable({
+      mode: 'complete',
+      getData: () => rows,
+      searchFn: (items, query) => {
+        const lowerQuery = query.toLowerCase();
+        return items.filter(
+          item =>
+            item.name.toLowerCase().includes(lowerQuery) ||
+            item.field.name.toLowerCase().includes(lowerQuery) ||
+            item.description.toLowerCase().includes(lowerQuery),
+        );
+      },
+    });
 
     return (
-      <Table<TableRow>
-        columns={columns}
-        options={tableOptions}
-        title={tableTitle}
-        data={rows}
-      />
+      <Container>
+        <Header
+          title={`${title || defaultTitle} (${rows.length})`}
+          customActions={
+            <Box style={{ marginLeft: 'auto', width: '250px' }}>
+              <SearchField
+                placeholder="Filter..."
+                value={search.value}
+                onChange={str => {
+                  search.onChange(str);
+                }}
+                aria-label="Filter"
+              />
+            </Box>
+          }
+        />
+        <Table
+          key={`table-${fieldType}`}
+          {...tableProps}
+          columnConfig={columns}
+          emptyState={<div>No fields found for this {fieldType}.</div>}
+          className={styles.denseTable}
+        />
+      </Container>
     );
   },
 );

@@ -87,12 +87,12 @@ const mcaBaseTypePage = PageBlueprint.make({
   },
 });
 
-
 const mcaSearchResultListItemExtension = SearchResultListItemBlueprint.make({
   name: 'mca-search-result-item',
   params: {
     icon: <RiBubbleChartLine fontSize="inherit" />,
-    predicate: result => result.type === 'mca-components' || result.type === 'mca-basetypes',
+    predicate: result =>
+      result.type === 'mca-components' || result.type === 'mca-basetypes',
     component: () =>
       import('../components/McaComponentSearchResultListItem').then(
         m => m.McaComponentSearchResultListItem,

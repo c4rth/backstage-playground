@@ -16,7 +16,9 @@ import { Select } from '@backstage/ui';
 
 export { ProjectPickerSchema } from './schemas';
 
-export const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => {
+export const ProjectPicker = (
+  props: typeof ProjectPickerFieldSchema.TProps,
+) => {
   const { uiSchema, onChange, rawErrors, errors, schema, required } = props;
 
   const [projects, setProjects] = useState<
@@ -122,7 +124,6 @@ export const ProjectPicker = (props: typeof ProjectPickerFieldSchema.TProps) => 
     </ScaffolderField>
   );
 };
-
 
 /*
 

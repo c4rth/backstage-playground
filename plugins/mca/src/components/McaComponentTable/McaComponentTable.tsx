@@ -1,8 +1,4 @@
-import {
-  ResponseErrorPanel,
-  Table,
-  TableColumn,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   McaComponent,
   McaComponentListOptions,
@@ -11,9 +7,21 @@ import {
 } from '@internal/plugin-mca-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef, McaComponentsBackendApi } from '../../api';
-import { Query } from '@material-table/core';
-import { memo, useEffect, useState } from 'react';
-import { Flex, Link } from '@backstage/ui';
+import { memo, useEffect, useState, useRef } from 'react';
+import {
+  Link,
+  useTable,
+  SortDescriptor,
+  Table,
+  Container,
+  Header,
+  SearchField,
+  Box,
+  ColumnConfig,
+  CellText,
+  Cell,
+} from '@backstage/ui';
+import styles from './McaComponentTable.module.css';
 
 type TableRow = {
   id: number;
@@ -27,84 +35,90 @@ type TableRow = {
   packageName: string;
 };
 
-function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
-  const columns: TableColumn<TableRow>[] = [
+function getColumns(versions?: McaVersions): ColumnConfig<TableRow>[] {
+  const columns: ColumnConfig<TableRow>[] = [
     {
-      title: 'Name',
-      width: '45%',
-      field: 'component',
-      defaultSort: 'asc',
-      highlight: true,
-      render: row => (
-        <Link href={row.component} weight="bold" color="info" standalone>
-          {row.component}
-        </Link>
+      id: 'component',
+      label: 'Name',
+      width: '40%',
+      isRowHeader: true,
+      isSortable: true,
+      cell: row => (
+        <Cell>
+          <Link href={row.component} weight="bold" color="info" standalone>
+            {row.component}
+          </Link>
+        </Cell>
       ),
     },
     {
-      title: 'Baseline',
-      width: '5%',
-      field: 'prdVersion',
-      highlight: true,
-      render: row => (
-        <Link
-          href={`${row.component}?version=${row.prdVersion}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
-          {row.prdVersion}
-        </Link>
+      id: 'prdVersion',
+      label: 'Baseline',
+      width: '6%',
+      isSortable: true,
+      cell: row => (
+        <Cell>
+          <Link
+            href={`${row.component}?version=${row.prdVersion}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            {row.prdVersion}
+          </Link>
+        </Cell>
       ),
     },
-  ];
-  if (versions?.p1Version) {
-    columns.push({
-      title: versions?.p1Version,
-      width: '5%',
-      field: 'p1Version',
-      highlight: true,
-      render: row =>
+    {
+      id: 'p1Version',
+      label: versions?.p1Version || '',
+      width: '6%',
+      isSortable: true,
+      cell: row =>
         row.p1Version ? (
-          <Link
-            href={`${row.component}?version=${row.p1Version}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            {row.p1Version}
-          </Link>
-        ) : null,
-    });
-  }
-  if (versions?.p2Version) {
-    columns.push({
-      title: versions?.p2Version,
-      width: '5%',
-      field: 'p2Version',
-      highlight: true,
-      render: row =>
+          <Cell>
+            <Link
+              href={`${row.component}?version=${row.p1Version}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              {row.p1Version}
+            </Link>
+          </Cell>
+        ) : (
+          <Cell />
+        ),
+    },
+    {
+      id: 'p2Version',
+      label: versions?.p2Version || '',
+      width: '6%',
+      isSortable: true,
+      cell: row =>
         row.p2Version ? (
-          <Link
-            href={`${row.component}?version=${row.p2Version}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            {row.p2Version}
-          </Link>
-        ) : null,
-    });
-  }
-  if (versions?.p3Version) {
-    columns.push({
-      title: versions.p3Version,
-      width: '5%',
-      field: 'p3Version',
-      highlight: true,
-      render: row =>
+          <Cell>
+            <Link
+              href={`${row.component}?version=${row.p2Version}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              {row.p2Version}
+            </Link>
+          </Cell>
+        ) : (
+          <Cell />
+        ),
+    },
+    {
+      id: 'p3Version',
+      label: versions?.p3Version || '',
+      width: '6%',
+      isSortable: true,
+      cell: row =>
         row.p3Version ? (
-          <Flex align="center">
+          <Cell>
             <Link
               href={`${row.component}?version=${row.p3Version}`}
               weight="bold"
@@ -113,45 +127,48 @@ function getColumns(versions?: McaVersions): TableColumn<TableRow>[] {
             >
               {row.p3Version}
             </Link>
-          </Flex>
-        ) : null,
-    });
-  }
-  if (versions?.p4Version) {
-    columns.push({
-      title: versions.p4Version,
-      width: '5%',
-      field: 'p4Version',
-      highlight: true,
-      render: row =>
+          </Cell>
+        ) : (
+          <Cell />
+        ),
+    },
+    {
+      id: 'p4Version',
+      label: versions?.p4Version || '',
+      width: '6%',
+      isSortable: true,
+      cell: row =>
         row.p4Version ? (
-          <Link
-            href={`${row.component}?version=${row.p4Version}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            {row.p4Version}
-          </Link>
-        ) : null,
-    });
-  }
-  columns.push(
+          <Cell>
+            <Link
+              href={`${row.component}?version=${row.p4Version}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              {row.p4Version}
+            </Link>
+          </Cell>
+        ) : (
+          <Cell />
+        ),
+    },
     {
-      title: 'Package',
+      id: 'packageName',
+      label: 'Package',
       width: '20%',
-      field: 'packageName',
+      cell: row => <CellText title={row.packageName} />,
     },
     {
-      title: 'System',
+      label: 'System',
       width: '10%',
-      field: 'applicationCode',
+      id: 'applicationCode',
+      cell: row => <CellText title={row.applicationCode} />,
     },
-  );
+  ];
   return columns;
 }
 
-const PAGE_SIZE = 20;
 const STORAGE_KEY = 'mcaComponentTableSearch';
 
 const toEntityRow = (mca: McaComponent, idx: number): TableRow => ({
@@ -168,19 +185,20 @@ const toEntityRow = (mca: McaComponent, idx: number): TableRow => ({
 
 async function getData(
   mcaApi: McaComponentsBackendApi,
-  query: Query<TableRow>,
   type: McaComponentType,
+  offset: number,
+  pageSize: number,
+  sort: SortDescriptor | null,
+  search?: string,
 ) {
-  const page = query.page || 0;
-  const pageSize = query.pageSize || PAGE_SIZE;
   const result = await mcaApi.listMcaComponents({
-    offset: page * pageSize,
+    offset,
     limit: pageSize,
-    search: query.search,
-    orderBy: query?.orderBy
+    search,
+    orderBy: sort
       ? ({
-          field: query.orderBy.field,
-          direction: query.orderDirection,
+          field: sort.column.toString(),
+          direction: sort.direction,
         } as McaComponentListOptions['orderBy'])
       : undefined,
     type: type,
@@ -214,56 +232,81 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
   const [mcaVersions, setMcaVersions] = useState<McaVersions>();
   const [countRows, setCountRows] = useState<number>(0);
-  const [loadingVersions, setLoadingVersions] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const isFirstRender = useRef(true);
 
   const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
   const columns = getColumns(mcaVersions);
-  const tableOptions = {
-    paginationPosition: 'bottom' as const,
-    search: true,
-    padding: 'dense' as const,
-    pageSize: PAGE_SIZE,
-    pageSizeOptions: [10, PAGE_SIZE, 50],
-    showEmptyDataSourceMessage: !loadingVersions,
-    draggable: false,
-    thirdSortClick: false,
-    searchText: initialSearch,
-  };
-  const tableTitle = (
-    <Flex align="center">
-      {getTitle(type)} ({countRows})
-    </Flex>
-  );
-
-  const dataFetcher = async (query: Query<TableRow>) => {
-    setLoadingVersions(true);
-    if (query.search !== undefined) {
-      sessionStorage.setItem(STORAGE_KEY, query.search);
-    }
-    const result = await getData(mcaApi, query, type);
-    setCountRows(result.totalCount);
-    setLoadingVersions(false);
-    return result;
-  };
 
   useEffect(() => {
     mcaApi
       .getMcaVersions()
       .then(versions => setMcaVersions(versions))
-      .catch(setError)
-      .finally(() => setLoadingVersions(false));
+      .catch(setError);
   }, [mcaApi]);
+
+  const fetchData = async ({
+    offset,
+    pageSize,
+    sort,
+    search,
+  }: {
+    offset: number;
+    pageSize: number;
+    sort: SortDescriptor | null;
+    search?: string;
+  }) => {
+    const result = await getData(mcaApi, type, offset, pageSize, sort, search);
+    setCountRows(result.totalCount);
+    return result;
+  };
+
+  const { tableProps, search, reload } = useTable({
+    mode: 'offset',
+    getData: fetchData,
+    paginationOptions: {
+      pageSize: 20,
+      pageSizeOptions: [10, 20, 50],
+    },
+    initialSearch,
+    initialSort: { column: 'component', direction: 'ascending' },
+  });
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    reload();
+  }, [type, reload]);
 
   if (error) return <ResponseErrorPanel error={error} />;
 
   return (
-    <Table<TableRow>
-      key={type}
-      columns={columns}
-      options={tableOptions}
-      title={tableTitle}
-      data={dataFetcher}
-    />
+    <Container>
+      <Header
+        title={`${getTitle(type)} (${countRows})`}
+        customActions={
+          <Box style={{ marginLeft: 'auto', width: '250px' }}>
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={str => {
+                sessionStorage.setItem(STORAGE_KEY, str ?? '');
+                search.onChange(str);
+              }}
+              aria-label="Filter"
+            />
+          </Box>
+        }
+      />
+      <Table
+        key={`table-${type}`}
+        {...tableProps}
+        columnConfig={columns}
+        emptyState={<div>No data available</div>}
+        className={styles.denseTable}
+      />
+    </Container>
   );
 });

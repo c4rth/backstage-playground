@@ -9,7 +9,6 @@ import { ToolkitCard } from '@internal/plugin-toolkit';
 import { Grid } from '@backstage/ui';
 import { Content, Page } from '@backstage/core-components';
 
-
 export const HomePage = () => {
   return (
     <SearchContextProvider>
@@ -17,9 +16,7 @@ export const HomePage = () => {
         <Content>
           <Grid.Root columns="12">
             <Grid.Item colSpan="12" style={{ margin: '16px' }}>
-              <HomePageSearchBar
-                placeholder="Search"
-              />
+              <HomePageSearchBar placeholder="Search" />
             </Grid.Item>
             <Grid.Item colSpan="12">
               <Grid.Root columns="12">

@@ -53,7 +53,12 @@ export const InformationPopup = (props: InformationPopupProps) => {
       <DialogTrigger>
         <ButtonIcon
           variant="secondary"
-          icon={<RiInformationLine aria-label="More information" fontSize="inherit" />}
+          icon={
+            <RiInformationLine
+              aria-label="More information"
+              fontSize="inherit"
+            />
+          }
         />
         <Popover placement="bottom" style={{ maxWidth: '50em' }}>
           <Text variant="title-x-small">

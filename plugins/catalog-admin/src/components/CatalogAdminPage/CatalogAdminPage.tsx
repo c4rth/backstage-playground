@@ -105,7 +105,7 @@ export const CatalogAdminPage = () => {
             <ImportStepper />
           </Box>
         </TabPanel>
-        <TabPanel id="tab3" >
+        <TabPanel id="tab3">
           <Box mt="4" style={{ height: '80vh' }}>
             <EntityValidationContent />
           </Box>

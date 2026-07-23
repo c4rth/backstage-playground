@@ -1,5 +1,8 @@
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { createFormField, FormFieldBlueprint } from '@backstage/plugin-scaffolder-react/alpha';
+import {
+  createFormField,
+  FormFieldBlueprint,
+} from '@backstage/plugin-scaffolder-react/alpha';
 
 const AlertMessageExtension = FormFieldBlueprint.make({
   name: 'AlertMessage',
@@ -29,8 +32,5 @@ const ProjectPickerFieldExtension = FormFieldBlueprint.make({
 
 export const scaffolderExtensions = createFrontendPlugin({
   pluginId: 'custom-scaffolder-extensions',
-  extensions: [
-    AlertMessageExtension,
-    ProjectPickerFieldExtension,
-  ],
+  extensions: [AlertMessageExtension, ProjectPickerFieldExtension],
 });

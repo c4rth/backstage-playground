@@ -9,6 +9,8 @@ export type McaComponent = {
   packageName: string;
 };
 
+export type SortDirection = 'ascending' | 'descending';
+
 export type McaComponentListResult = {
   items: McaComponent[];
   offset: number;
@@ -42,7 +44,7 @@ export type McaComponentListOptions = {
   limit?: number;
   orderBy?: {
     field: McaComponentListFields;
-    direction: 'asc' | 'desc';
+    direction: SortDirection;
   };
   search?: string;
   type: McaComponentType;
@@ -71,7 +73,7 @@ export type McaBaseTypeListOptions = {
   limit?: number;
   orderBy?: {
     field: McaBaseTypeListFields;
-    direction: 'asc' | 'desc';
+    direction: SortDirection;
   };
   search?: string;
 };

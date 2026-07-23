@@ -1,7 +1,4 @@
-import {
-  Progress,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useParams } from 'react-router-dom';
 import { LibraryDefinitionVersionsCard } from './LibraryDefinitionVersionsCard';
 import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
@@ -15,7 +12,17 @@ import {
 import { apiPlatformBackendApiRef } from '../../plugin';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { generateReport } from './generateReport';
-import { ButtonIcon, Container, PluginHeader, Tab, TabList, TabPanel, Tabs, TooltipTrigger, Tooltip } from '@backstage/ui';
+import {
+  ButtonIcon,
+  Container,
+  PluginHeader,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  TooltipTrigger,
+  Tooltip,
+} from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
 
 export const LibraryDefinitionPage = () => {

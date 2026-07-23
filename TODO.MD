@@ -33,6 +33,8 @@ community:
 
 - for API with sort: update to ascending | descending ipo asc desc
   -> compatible with useTable
+  - DONE: mca
+  - api-platform
 
 - UI
 
@@ -47,8 +49,17 @@ community:
     - DONE: azure-devops
     - DONE: catalog-admin
     - DONE: health-dashboard
-    - DONE: mca
+    - mca
+      - DONE: basetype
+      - DONE: operation/element
+      - DONE: methods
+      - DONE: fields
     - DONE: toolkit
+
+  - table bui:
+    - denseTable in common css ?
+
+  - header: HeaderBottom margin
 
   - cleanup plugins:
     use only NFS -> remove old plugins and duplicated JSX components

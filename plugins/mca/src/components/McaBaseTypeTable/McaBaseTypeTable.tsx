@@ -1,6 +1,4 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   McaBaseType,
   McaBaseTypeListOptions,
@@ -8,8 +6,20 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { useState, memo, useCallback } from 'react';
-import { ColumnConfig, Link, CellText, Cell, useTable, SortDescriptor, Table, Container, Header, SearchField, Box } from '@backstage/ui';
+import { useState, memo } from 'react';
+import {
+  ColumnConfig,
+  Link,
+  CellText,
+  Cell,
+  useTable,
+  SortDescriptor,
+  Table,
+  Container,
+  Header,
+  SearchField,
+  Box,
+} from '@backstage/ui';
 import styles from './McaBaseTypeTable.module.css';
 
 type TableRow = {
@@ -42,7 +52,9 @@ const columns: ColumnConfig<TableRow>[] = [
     id: 'packageName',
     label: 'Package',
     width: '50%',
-    cell: ({ packageName }: TableRow) => <CellText title={packageName || '-'} />,
+    cell: ({ packageName }: TableRow) => (
+      <CellText title={packageName || '-'} />
+    ),
   },
 ];
 
@@ -67,13 +79,12 @@ const getData = async (
     offset,
     limit: pageSize,
     search,
-    orderBy:
-      sort
-        ? ({
+    orderBy: sort
+      ? ({
           field: sort.column.toString(),
-          direction: sort.direction === 'descending' ? 'desc' : 'asc',
+          direction: sort.direction,
         } as McaBaseTypeListOptions['orderBy'])
-        : undefined,
+      : undefined,
   });
   if (result) {
     return {
@@ -87,7 +98,7 @@ const getData = async (
     totalCount: 0,
     page: 0,
   };
-}
+};
 
 export const McaBaseTypeTable = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
@@ -95,24 +106,21 @@ export const McaBaseTypeTable = memo(() => {
   const [countRows, setCountRows] = useState(0);
   const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
 
-  const fetchData = useCallback(
-    async ({
-      offset,
-      pageSize,
-      sort,
-      search,
-    }: {
-      offset: number;
-      pageSize: number;
-      sort: SortDescriptor | null;
-      search?: string;
-    }) => {
-      const result = await getData(mcaApi, offset, pageSize, sort, search);
-      setCountRows(result.totalCount);
-      return result;
-    },
-    [mcaApi],
-  );
+  const fetchData = async ({
+    offset,
+    pageSize,
+    sort,
+    search,
+  }: {
+    offset: number;
+    pageSize: number;
+    sort: SortDescriptor | null;
+    search?: string;
+  }) => {
+    const result = await getData(mcaApi, offset, pageSize, sort, search);
+    setCountRows(result.totalCount);
+    return result;
+  };
 
   const { tableProps, search } = useTable({
     mode: 'offset',
@@ -123,9 +131,6 @@ export const McaBaseTypeTable = memo(() => {
     },
     initialSearch,
     initialSort: { column: 'baseType', direction: 'ascending' },
-    onSearchChange: (val) => {
-      sessionStorage.setItem(STORAGE_KEY, val ?? '');
-    },
   });
 
   if (tableProps.error) {
@@ -146,7 +151,11 @@ export const McaBaseTypeTable = memo(() => {
             <SearchField
               placeholder="Filter..."
               value={search.value}
-              onChange={search.onChange}
+              onChange={str => {
+                sessionStorage.setItem(STORAGE_KEY, str ?? '');
+                search.onChange(str);
+              }}
+              aria-label="Filter"
             />
           </Box>
         }

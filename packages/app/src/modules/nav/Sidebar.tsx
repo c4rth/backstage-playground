@@ -39,7 +39,7 @@ export const SidebarContent = NavContentBlueprint.make({
       ));
 
       nav.take('page:search'); // Using search modal instead
-      
+
       return (
         <Sidebar>
           <SidebarLogo />

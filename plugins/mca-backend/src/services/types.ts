@@ -8,10 +8,11 @@ import {
   McaComponentType,
   McaVersions,
 } from '@internal/plugin-mca-common';
+import type { SortDirection } from '@internal/plugin-mca-common';
 
 export type McaComponentOrderByOptions = {
   field: McaComponentListFields;
-  direction: 'asc' | 'desc';
+  direction: SortDirection;
 };
 
 export type McaComponentListRequest = {
@@ -31,7 +32,7 @@ export type McaBaseTypeListRequest = {
 
 export type McaBaseTypeOrderByOptions = {
   field: McaBaseTypeListFields;
-  direction: 'asc' | 'desc';
+  direction: SortDirection;
 };
 
 export interface McaService {

@@ -161,7 +161,7 @@ export const LibraryTable = () => {
           item.system.toLowerCase().includes(lowerQuery),
       );
     },
-    onSearchChange: (newSearch) => {
+    onSearchChange: newSearch => {
       sessionStorage.setItem(STORAGE_SEARCH_KEY, newSearch ?? '');
     },
     sortFn: (items, { column, direction }) => {
@@ -216,7 +216,8 @@ export const LibraryTable = () => {
             <SearchField
               placeholder="Filter..."
               value={search.value}
-              onChange={search.onChange} />
+              onChange={search.onChange}
+            />
           </Box>
         </Flex>
       </CardHeader>

@@ -108,8 +108,6 @@ const getEntityTypeInfo = (entity: Entity): EntityInfo | null => {
 export const apiPlatformCatalogCollatorEntityTransformer: CatalogCollatorEntityTransformer =
   (entity: Entity) => {
     try {
-
-
       const entityInfo = getEntityTypeInfo(entity);
 
       if (!entityInfo) {
@@ -129,7 +127,10 @@ export const apiPlatformCatalogCollatorEntityTransformer: CatalogCollatorEntityT
         apiPlatformLocation: entityInfo.location,
       };
     } catch (error) {
-      console.error(`Error transforming entity ${entity.metadata.name}:`, error);
+      console.error(
+        `Error transforming entity ${entity.metadata.name}:`,
+        error,
+      );
       return defaultCatalogCollatorEntityTransformer(entity);
     }
   };

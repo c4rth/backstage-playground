@@ -356,6 +356,10 @@ mcaComponents:
   urlLocations:
     - oldDns: https://old.carth.net
       newDns: https://new.c4rth.net
+    - oldDns: https://other.carth.net
+      newDns: https://new.c4rth.net
+    - oldDns: \\old.carth.xyz
+      newDns: \\new.c4rth.xyz
 
 analytics:
   threshold: PT30D # Threshold in days for deleting old analytics data
