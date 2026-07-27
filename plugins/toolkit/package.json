@@ -52,7 +52,7 @@
     "@uiw/codemirror-theme-vscode": "^4.25.10",
     "@uiw/react-codemirror": "^4.25.10",
     "asn1js": "^3.0.7",
-    "cronstrue": "^3.14.0",
+    "cronstrue": "^3.24.0",
     "jose": "^6.2.3",
     "jsonata": "^2.2.1",
     "jwt-decode": "^4.0.0",
