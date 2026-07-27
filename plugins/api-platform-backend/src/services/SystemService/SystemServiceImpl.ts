@@ -46,7 +46,7 @@ function getOrder(
   };
   return {
     field: fieldMap[order.field] ?? CATALOG_METADATA_NAME,
-    order: order.direction,
+    order: order.direction === 'descending' ? 'desc' : 'asc',
   };
 }
 

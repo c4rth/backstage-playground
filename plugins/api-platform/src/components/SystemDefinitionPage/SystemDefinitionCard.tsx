@@ -68,7 +68,7 @@ export const SystemDefinitionCard = ({
         </Tab>
       </TabList>
       <TabPanel id="tab1">
-        <Flex gap="2" direction="column">
+        <Flex gap="4" direction="column">
           <SystemRelationCard
             system={system}
             dependency="service"

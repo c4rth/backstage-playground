@@ -4,21 +4,22 @@ import {
   OpenApiType,
   OPENAPITYPE_LIST,
   OwnershipType,
+  SortDirection,
 } from '@internal/plugin-api-platform-common';
 
 export const parseOrderByParam = <T extends readonly string[]>(
   str: unknown,
   allowedFields: T,
-): { field: T[number]; direction: 'asc' | 'desc' } | undefined => {
+): { field: T[number]; direction: SortDirection } | undefined => {
   if (str === undefined) return undefined;
   if (typeof str !== 'string')
     throw new InputError('invalid orderBy query, must be a string');
   const [field, direction] = str.split('=');
   if (!field)
     throw new InputError('invalid orderBy query, field name is empty');
-  if (!['asc', 'desc'].includes(direction)) {
+  if (!['ascending', 'descending'].includes(direction)) {
     throw new InputError(
-      "invalid orderBy query, order direction must be 'asc' or 'desc'",
+      "invalid orderBy query, order direction must be 'ascending' or 'descending'",
     );
   }
   if (!allowedFields.includes(field)) {
@@ -26,7 +27,7 @@ export const parseOrderByParam = <T extends readonly string[]>(
       `invalid orderBy field, must be one of ${allowedFields.join(', ')}`,
     );
   }
-  return { field: field as T[number], direction: direction as 'asc' | 'desc' };
+  return { field: field as T[number], direction: direction as 'ascending' | 'descending' };
 };
 
 export const parseSearchParam = (str: unknown): string | undefined => {

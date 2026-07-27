@@ -1,18 +1,28 @@
 import {
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
 import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { Box, Flex, Text, Link } from '@backstage/ui';
-import { useState } from 'react';
+import {
+  Box,
+  Cell,
+  CellText,
+  ColumnConfig,
+  SearchField,
+  Table,
+  Text,
+  useTable,
+  Link,
+  Container,
+  Header,
+  SortDescriptor,
+} from '@backstage/ui';
+import { useEffect, useRef, useState } from 'react';
 import { ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { Query } from '@material-table/core';
 import {
   SystemDefinitionsListRequest,
   OwnershipType,
@@ -26,37 +36,45 @@ type TableRow = {
   owner: string;
 };
 
-const columns: TableColumn<TableRow>[] = [
+const COLUMNS: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    id: 'name',
     width: '25%',
-    field: 'name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ name }: TableRow) => (
-      <Link href={name} weight="bold" color="info" standalone>
-        <ComponentDisplayName text={name} type="system" />
-      </Link>
+    label: 'Name',
+    isRowHeader: true,
+    isSortable: true,
+    cell: ({ name }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link href={name} weight="bold" color="info" standalone>
+            <ComponentDisplayName text={name} type="system" />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
   {
-    title: 'Description',
+    id: 'description',
     width: '50%',
-    field: 'description',
-    render: ({ description }: TableRow) => description || '-',
+    label: 'Description',
+    isSortable: true,
+    cell: ({ description }: TableRow) => (
+      <CellText title={description || '-'} />
+    ),
   },
   {
-    title: 'Owner',
+    id: 'owner',
     width: '25%',
-    field: 'owner',
-    highlight: true,
-    render: ({ owner }: TableRow) => (
-      <EntityRefLinks entityRefs={[owner]} defaultKind="group" />
+    label: 'Owner',
+    isSortable: true,
+    cell: ({ owner }: TableRow) => (
+      <Cell>
+        <EntityRefLinks entityRefs={[owner]} defaultKind="group" />
+      </Cell>
     ),
   },
 ];
 
-const PAGE_SIZE = 20;
 const STORAGE_OWNERSHIP_KEY = 'systemsTablePageOwner';
 const STORAGE_SEARCH_KEY = 'systemsTablePageSearch';
 
@@ -71,19 +89,20 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
   ownership: OwnershipType,
-  query: Query<TableRow>,
+  offset: number,
+  pageSize: number,
+  sort: SortDescriptor | null,
+  search?: string,
 ) => {
-  const page = query.page ?? 0;
-  const pageSize = query.pageSize ?? PAGE_SIZE;
   const result = await apiPlatformApi.listSystems({
-    offset: page * pageSize,
+    offset,
     limit: pageSize,
-    search: query.search,
-    orderBy: query.orderBy
+    search,
+    orderBy: sort
       ? ({
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as SystemDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
   });
@@ -102,71 +121,98 @@ const getData = async (
   };
 };
 
+
+function getTitle(ownership: OwnershipType, countRows: number) {
+  return `${ownership === 'owned' ? 'Owned' : 'All'} Systems (${countRows})`;
+}
+
 export const SystemTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
   const [countRows, setCountRows] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(() =>
     sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
+  const isFirstRender = useRef(true);
 
-  const fetchData = async (query: Query<TableRow>) => {
-    setLoading(true);
-    if (query.search !== undefined) {
-      sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
-    }
-    try {
-      const result = await getData(apiPlatformApi, ownership, query);
-      setCountRows(result.totalCount);
-      setError(null);
-      return result;
-    } catch (e) {
-      setError(e as Error);
-      setCountRows(0);
-      return {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
-    } finally {
-      setLoading(false);
-    }
+  const fetchData = async ({
+    offset,
+    pageSize,
+    sort,
+    search,
+  }: {
+    offset: number;
+    pageSize: number;
+    sort: SortDescriptor | null;
+    search?: string;
+  }) => {
+    const result = await getData(
+      apiPlatformApi,
+      ownership,
+      offset,
+      pageSize,
+      sort,
+      search,
+    );;
+    setCountRows(result.totalCount);
+    return result;
   };
 
-  if (error) return <ResponseErrorPanel error={error} />;
+  const { tableProps, search, reload } = useTable({
+    mode: 'offset',
+    getData: fetchData,
+    paginationOptions: {
+      pageSize: 20,
+      pageSizeOptions: [10, 20, 50],
+    },
+    initialSort: {
+      column: 'name',
+      direction: 'ascending',
+    },
+    initialSearch,
+  });
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    reload();
+  }, [ownership, reload]);
+
+  if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Table<TableRow>
-      key={ownership}
-      columns={columns}
-      options={{
-        search: true,
-        padding: 'dense' as const,
-        pageSize: PAGE_SIZE,
-        pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: countRows === 0 && !loading,
-        draggable: false,
-        thirdSortClick: false,
-        searchText: initialSearch,
-      }}
-      title={
-        <Flex gap="0" align="center">
-          <Box>
-            <Text variant="title-small" weight="bold">
-              {ownership === 'owned' ? 'Owned' : 'All'} Systems ({countRows})
-            </Text>
-          </Box>
-          <Box ml="4">
+    <Container>
+      <Header
+        title={getTitle(ownership, countRows)}
+        customActions={
+          <>
             <ComponentOwnership
               storageKey={STORAGE_OWNERSHIP_KEY}
               handleOwnershipChange={setOwnership}
             />
-          </Box>
-        </Flex>
-      }
-      data={fetchData}
-    />
+            <Box style={{ marginLeft: 'auto', width: '250px' }}>
+              <SearchField
+                placeholder="Filter..."
+                value={search.value}
+                onChange={str => {
+                  sessionStorage.setItem(STORAGE_SEARCH_KEY, str ?? '');
+                  search.onChange(str);
+                }}
+                aria-label="Filter"
+              />
+            </Box>
+          </>
+        }
+      />
+      <Table
+        key={`table-${ownership}`}
+        {...tableProps}
+        columnConfig={COLUMNS}
+        emptyState={<div>No data available</div>}
+        className="denseTable"
+      />
+    </Container>
   );
 };

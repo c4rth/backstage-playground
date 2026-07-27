@@ -1,15 +1,13 @@
 import {
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
-import { Flex, Link } from '@backstage/ui';
+import { Link, Table, useTable, ColumnConfig, Cell, Text } from '@backstage/ui';
 import {
   Entity,
   parseEntityRef,
   RELATION_DEPENDS_ON,
 } from '@backstage/catalog-model';
-import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, EntityInfoCard, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import {
@@ -20,6 +18,7 @@ import {
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   id: number;
@@ -29,63 +28,78 @@ type TableRow = {
   valid: boolean;
 };
 
-const serviceColumns: TableColumn<TableRow>[] = [
+const serviceColumns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    label: 'Name',
     width: '50%',
-    field: 'name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ system, name, valid }: TableRow) =>
+    id: 'name',
+    isRowHeader: true,
+    cell: ({ system, name, valid }: TableRow) =>
       valid ? (
-        <Link
-          href={`/api-platform/library/${system}/${name}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/library/${system}/${name}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={name} type="library" />
+            </Link>
+          </Text>
+        </Cell>
+      ) : (
+        <Cell>
           <ComponentDisplayName text={name} type="library" />
-        </Link>
-      ) : (
-        <ComponentDisplayName text={name} type="library" />
+        </Cell>
       ),
   },
   {
-    title: 'Version',
+    label: 'Version',
     width: '35%',
-    field: 'version',
-    highlight: true,
-    render: ({ system, name, version, valid }: TableRow) =>
+    id: 'version',
+    cell: ({ system, name, version, valid }: TableRow) =>
       valid ? (
-        <Link
-          href={`/api-platform/library/${system}/${name}?version=${version}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
-          <ComponentDisplayName text={version} type="library" />
-        </Link>
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/library/${system}/${name}?version=${version}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={version} type="library" />
+            </Link>
+          </Text>
+        </Cell>
       ) : (
-        <ComponentDisplayName text={version} type="library" />
+        <Cell>
+          <ComponentDisplayName text={version} type="library" />
+        </Cell>
       ),
   },
   {
-    title: 'System',
+    label: 'System',
     width: '15%',
-    highlight: true,
-    field: 'system',
-    render: ({ system, valid }: TableRow) =>
+    id: 'system',
+    cell: ({ system, valid }: TableRow) =>
       valid ? (
-        <Link
-          href={`/api-platform/system/${system}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
-          <ComponentDisplayName text={system} type="system" />
-        </Link>
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/system/${system}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={system} type="system" />
+            </Link>
+          </Text>
+        </Cell>
       ) : (
-        <ComponentDisplayName text={system} type="system" />
+        <Cell>
+          <ComponentDisplayName text={system} type="system" />
+        </Cell>
       ),
   },
 ];
@@ -125,12 +139,39 @@ const toRow = (entity: Entity, idx: number): TableRow => {
   };
 };
 
-const tableOptions = {
-  search: true,
-  padding: 'dense' as const,
-  paging: false,
-  draggable: false,
-  thirdSortClick: false,
+
+type ServiceLibraryRelationTableProps = {
+  title: string;
+  rows: TableRow[];
+};
+
+const ServiceLibraryRelationTable = ({ title, rows }: ServiceLibraryRelationTableProps) => {
+  const { tableProps } = useTable({
+    mode: 'complete',
+    getData: () => rows,
+    initialSort: {
+      column: 'name',
+      direction: 'ascending',
+    },
+    paginationOptions: {
+      type: 'none',
+    },
+  });
+
+  return (
+    <EntityInfoCard
+      title={`${title} (${rows.length})`}>
+      <Table
+        columnConfig={serviceColumns}
+        {...tableProps}
+        pagination={{
+          type: 'none',
+        }}
+        emptyState={<div>No data available</div>}
+        className="denseTable"
+      />
+    </EntityInfoCard>
+  );
 };
 
 export const ServiceLibraryRelationCard = () => {
@@ -186,19 +227,26 @@ export const ServiceLibraryRelationCard = () => {
     return relatedEntities;
   }, [entity, catalogApi]);
 
-  if (error) {
-    return <ResponseErrorPanel title="Error" error={error} />;
+  const rows = entities?.map(toRow) ?? [];
+
+  if (loading) {
+    return <Progress />;
   }
 
-  const rows = entities.map(toRow);
+  if (error) {
+    return (
+      <ResponseErrorPanel
+        title={`Error loading Libraries`}
+        error={error}
+      />
+    );
+  }
 
   return (
-    <Table<TableRow>
-      isLoading={loading}
-      columns={serviceColumns}
-      options={tableOptions}
-      title={<Flex align="center">Libraries ({rows.length})</Flex>}
-      data={rows}
+    <ServiceLibraryRelationTable
+      key={`service-library-${rows.length}`}
+      title='Libraries'
+      rows={rows}
     />
   );
 };

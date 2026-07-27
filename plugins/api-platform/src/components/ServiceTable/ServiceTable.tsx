@@ -1,11 +1,10 @@
-import { TableColumn } from '@backstage/core-components';
 import { ComponentChip } from '../common';
 import {
   ServiceDefinition,
   ServiceEnvironmentDefinitions,
   ServiceVersionDefinition,
 } from '@internal/plugin-api-platform-common';
-import { Text } from '@backstage/ui';
+import { ColumnConfig, Text, Column } from '@backstage/ui';
 import {
   BaseServiceTable,
   BaseTableRow,
@@ -59,23 +58,17 @@ const toRow = (
   }),
 });
 
-const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
-  title: env.toUpperCase(),
+const createEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
+  id: env,
+  label: env.toUpperCase(),
   width: '12%',
-  align: 'center',
-  cellStyle: { padding: 0 },
-  sorting: false,
-  searchable: true,
-  customFilterAndSearch: (query, row) => {
-    if (!row.serviceDefinition?.versions) return false;
-    const lowerQuery = query.toLowerCase();
-    return row.serviceDefinition.versions.some(version => {
-      const envData =
-        version.environments[env as keyof typeof version.environments];
-      return envData?.imageVersion.toLowerCase().includes(lowerQuery);
-    });
-  },
-  render: ({ serviceDefinition, imageVersions }) =>
+  isSortable: false,
+  header: () => (
+    <Column id={env} className="centered-col-header">
+      <Text weight="bold">{env.toUpperCase()}</Text>
+    </Column>
+  ),
+  cell: ({ serviceDefinition, imageVersions }) =>
     renderVersionList(
       serviceDefinition,
       (version: ServiceVersionDefinition, idx) => {
@@ -100,7 +93,7 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
     ),
 });
 
-const ENV_COLUMNS: TableColumn<TableRow>[] = [
+const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
   createEnvironmentColumn('tst'),
   createEnvironmentColumn('gtu'),
   createEnvironmentColumn('uat'),
@@ -111,10 +104,12 @@ const ENV_COLUMNS: TableColumn<TableRow>[] = [
 const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
 
 export const ServiceTable = () => (
-  <BaseServiceTable<TableRow>
-    columns={COLUMNS}
-    toRow={toRow}
-    storageOwnershipKey="servicesTablePageOwner"
-    storageSearchKey="servicesTablePageSearch"
-  />
+  <>
+    <BaseServiceTable<TableRow>
+      columns={COLUMNS}
+      toRow={toRow}
+      storageOwnershipKey="servicesTablePageOwner"
+      storageSearchKey="servicesTablePageSearch"
+    />
+  </>
 );

@@ -1,16 +1,14 @@
 import {
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
-import { Flex, Link } from '@backstage/ui';
+import { Link, Table, useTable, ColumnConfig, Cell, Text } from '@backstage/ui';
 import {
   Entity,
   parseEntityRef,
   RELATION_CONSUMES_API,
   RELATION_PROVIDES_API,
 } from '@backstage/catalog-model';
-import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, EntityInfoCard, useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import {
@@ -21,6 +19,7 @@ import {
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   id: number;
@@ -29,49 +28,78 @@ type TableRow = {
   system: string;
 };
 
-const serviceColumns: TableColumn<TableRow>[] = [
+const serviceColumns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    label: 'Name',
     width: '50%',
-    field: 'name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ system, name, version }: TableRow) =>
+    id: 'name',
+    isRowHeader: true,
+    cell: ({ system, name, version }: TableRow) =>
       version === 'local' ? (
-        <ComponentDisplayName text={name} type="api" />
-      ) : (
-        <Link
-          href={`/api-platform/api/${system}/${name}?version=${version}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
+        <Cell>
           <ComponentDisplayName text={name} type="api" />
-        </Link>
+        </Cell>
+      ) : (
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/api/${system}/${name}?version=${version}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={name} type="api" />
+            </Link>
+          </Text>
+        </Cell>
       ),
   },
   {
-    title: 'Version',
+    label: 'Version',
     width: '35%',
-    field: 'version',
+    id: 'version',
+    cell: ({ system, name, version }: TableRow) =>
+      version === 'local' ? (
+        <Cell>
+          <ComponentDisplayName text={name} type="api" />
+        </Cell>
+      ) : (
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/api/${system}/${name}?version=${version}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={version} type="api" />
+            </Link>
+          </Text>
+        </Cell>
+      ),
   },
   {
-    title: 'System',
+    label: 'System',
     width: '15%',
-    highlight: true,
-    field: 'system',
-    render: ({ system }: TableRow) =>
+    id: 'system',
+    cell: ({ system }: TableRow) =>
       system === '-' ? (
-        <ComponentDisplayName text={system} type="system" />
-      ) : (
-        <Link
-          href={`/api-platform/system/${system}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
+        <Cell>
           <ComponentDisplayName text={system} type="system" />
-        </Link>
+        </Cell>
+      ) : (
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/system/${system}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={system} type="system" />
+            </Link>
+          </Text>
+        </Cell>
       ),
   },
 ];
@@ -97,17 +125,43 @@ const createLocalEntity = (name: string): Entity =>
     },
   }) as Entity;
 
-const tableOptions = {
-  search: true,
-  padding: 'dense' as const,
-  paging: false,
-  draggable: false,
-  thirdSortClick: false,
-};
-
 interface ServiceApiRelationCardProps {
   dependency: 'provided' | 'consumed';
 }
+
+type ServiceApiRelationTableProps = {
+  title: string;
+  rows: TableRow[];
+};
+
+const ServiceApiRelationTable = ({ title, rows }: ServiceApiRelationTableProps) => {
+  const { tableProps } = useTable({
+    mode: 'complete',
+    getData: () => rows,
+    initialSort: {
+      column: 'name',
+      direction: 'ascending',
+    },
+    paginationOptions: {
+      type: 'none',
+    },
+  });
+
+  return (
+    <EntityInfoCard
+      title={`${title} (${rows.length})`}>
+      <Table
+        columnConfig={serviceColumns}
+        {...tableProps}
+        pagination={{
+          type: 'none',
+        }}
+        emptyState={<div>No data available</div>}
+        className="denseTable"
+      />
+    </EntityInfoCard>
+  );
+};
 
 export const ServiceApiRelationCard = ({
   dependency,
@@ -172,19 +226,26 @@ export const ServiceApiRelationCard = ({
 
   const title = dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs';
 
-  const rows = entities.map(toRow);
+  const rows = entities?.map(toRow) ?? [];
+
+  if (loading) {
+    return <Progress />;
+  }
+
+  if (error) {
+    return (
+      <ResponseErrorPanel
+        title={`Error loading ${title.toLowerCase()}`}
+        error={error}
+      />
+    );
+  }
 
   return (
-    <Table<TableRow>
-      isLoading={loading}
-      columns={serviceColumns}
-      options={tableOptions}
-      title={
-        <Flex align="center">
-          {title} ({rows.length})
-        </Flex>
-      }
-      data={rows}
+    <ServiceApiRelationTable
+      key={`${dependency}-${rows.length}`}
+      title={title}
+      rows={rows}
     />
   );
 };

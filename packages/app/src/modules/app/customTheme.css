@@ -92,11 +92,15 @@
 }
 
 .denseTable .bui-TableRow:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.03); 
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .denseTable .bui-TableCell {
   font-size: var(--bui-font-size-3);
   min-width: 0;
   overflow: hidden;
+}
+
+.centered-col-header .bui-TableHeadContent {
+  justify-content: center;
 }

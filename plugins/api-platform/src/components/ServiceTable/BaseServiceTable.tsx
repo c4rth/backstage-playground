@@ -1,7 +1,5 @@
 import {
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
@@ -12,12 +10,24 @@ import {
   ServiceVersionDefinition,
   DependentsType,
 } from '@internal/plugin-api-platform-common';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { Box, Flex, Text, Link } from '@backstage/ui';
-import { Query } from '@material-table/core';
+import {
+  Box,
+  Cell,
+  ColumnConfig,
+  SearchField,
+  Table,
+  Text,
+  useTable,
+  Link,
+  Container,
+  Header,
+  SortDescriptor,
+  Column,
+} from '@backstage/ui';
 
 export type BaseTableRow = {
   id: number;
@@ -27,8 +37,6 @@ export type BaseTableRow = {
 };
 
 export type ToggleType = 'ownership' | 'dependents';
-
-const PAGE_SIZE = 20;
 
 export const LIST_ITEM_STYLE = {
   margin: 2,
@@ -42,7 +50,7 @@ export const renderVersionList = (
   serviceDefinition: ServiceDefinition,
   renderItem: (version: ServiceVersionDefinition, idx: number) => JSX.Element,
 ) => (
-  <>
+  <Cell>
     {serviceDefinition.versions?.map((version, idx) => (
       <Box
         key={`${serviceDefinition.name}-${version.version}-${idx}`}
@@ -52,74 +60,78 @@ export const renderVersionList = (
         {renderItem(version, idx)}
       </Box>
     ))}
-  </>
+  </Cell>
 );
 
-const createNameColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
-  title: 'Name',
+const createNameColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
+  label: 'Name',
   width: '25%',
-  field: 'name',
-  highlight: true,
-  defaultSort: 'asc',
-  sorting: true,
-  render: ({ serviceDefinition }) => (
-    <Link
-      href={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
-      weight="bold"
-      color="info"
-      standalone
-    >
-      <ComponentDisplayName
-        text={serviceDefinition.serviceName}
-        type="service"
-      />
-    </Link>
+  id: 'name',
+  isSortable: true,
+  isRowHeader: true,
+  cell: ({ serviceDefinition }) => (
+    <Cell>
+      <Text weight="bold">
+        <Link
+          href={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
+          <ComponentDisplayName
+            text={serviceDefinition.serviceName}
+            type="service"
+          />
+        </Link>
+      </Text>
+    </Cell>
   ),
-  customSort: (a, b) => {
-    return a.serviceDefinition.serviceName.localeCompare(
-      b.serviceDefinition.serviceName,
-    );
-  },
 });
 
-const createVersionColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
-  title: 'Version',
+const createVersionColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
+  label: 'Version',
   width: '5%',
-  field: 'version',
-  sorting: false,
-  align: 'center',
-  cellStyle: { padding: 0 },
-  render: ({ serviceDefinition }) =>
-    renderVersionList(serviceDefinition, (version, idx) => (
-      <ComponentChip
-        index={idx}
-        backgroundColor="#C30045"
-        text={version.version}
-        link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
-      />
-    )),
+  id: 'version',
+  isSortable: false,
+  header: () => (
+    <Column id="version" className="centered-col-header">
+      <Text weight="bold">Version</Text>
+    </Column>
+  ),
+  cell: ({ serviceDefinition }) => renderVersionList(serviceDefinition, (version, idx) => (
+    <ComponentChip
+      index={idx}
+      backgroundColor="#C30045"
+      text={version.version}
+      link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
+    />
+  )),
 });
 
-const createSystemColumn = <T extends BaseTableRow>(): TableColumn<T> => ({
-  title: 'System',
+const createSystemColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
+  label: 'System',
   width: '10%',
-  highlight: true,
-  field: 'system',
-  render: ({ serviceDefinition }) => (
-    <Link
-      href={`/api-platform/system/${serviceDefinition.system}`}
-      weight="bold"
-      color="info"
-      standalone
-    >
-      <ComponentDisplayName text={serviceDefinition.system} type="system" />
-    </Link>
+  id: 'system',
+  isSortable: true,
+  cell: ({ serviceDefinition }) => (
+    <Cell>
+      <Text weight="bold">
+        <Link
+          href={`/api-platform/system/${serviceDefinition.system}`}
+          weight="bold"
+          color="info"
+          standalone
+        >
+          <ComponentDisplayName text={serviceDefinition.system} type="system" />
+        </Link>
+      </Text>
+    </Cell>
   ),
 });
 
 export function buildColumns<T extends BaseTableRow>(
-  environmentColumns: TableColumn<T>[],
-): TableColumn<T>[] {
+  environmentColumns: ColumnConfig<T>[],
+): ColumnConfig<T>[] {
   return [
     createNameColumn<T>(),
     createVersionColumn<T>(),
@@ -129,7 +141,7 @@ export function buildColumns<T extends BaseTableRow>(
 }
 
 type BaseServiceTableProps<T extends BaseTableRow> = {
-  columns: TableColumn<T>[];
+  columns: ColumnConfig<T>[];
   toRow: (serviceDefinition: ServiceDefinition, idx: number) => T;
   storageOwnershipKey: string;
   storageSearchKey: string;
@@ -138,40 +150,43 @@ type BaseServiceTableProps<T extends BaseTableRow> = {
 
 const getData = async <T extends BaseTableRow>(
   apiPlatformApi: ApiPlatformBackendApi,
-  query: Query<T>,
   toggleType: ToggleType,
   ownershipType: OwnershipType,
   dependentsType: DependentsType,
   toRow: (serviceDefinition: ServiceDefinition, idx: number) => T,
+  offset: number,
+  pageSize: number,
+  sort: SortDescriptor | null,
+  search?: string,
 ) => {
-  const page = query.page ?? 0;
-  const pageSize = query.pageSize ?? PAGE_SIZE;
-
   const result = await apiPlatformApi.listServices({
-    offset: page * pageSize,
+    offset,
     limit: pageSize,
-    search: query.search,
-    orderBy: query.orderBy
+    search,
+    orderBy: sort
       ? ({
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as ServiceDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
   });
 
-  return result
+  const res = result
     ? {
-        data: result.items.map(toRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
+
+  console.log(res);
+  return res;
 };
 
 const getTitleLabel = (toggleType: ToggleType, ownership: OwnershipType) => {
@@ -190,84 +205,105 @@ export function BaseServiceTable<T extends BaseTableRow>({
 }: BaseServiceTableProps<T>) {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
   const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
     sessionStorage.getItem(storageOwnershipKey) === 'owned' ? 'owned' : 'all',
   );
   const [dependentsType, setDependentsType] = useState<DependentsType>('all');
+  const isFirstRender = useRef(true);
 
   const initialSearch = sessionStorage.getItem(storageSearchKey) ?? '';
 
-  const fetchData = async (query: Query<T>) => {
-    setLoading(true);
-    setError(null);
-    if (query.search !== undefined) {
-      sessionStorage.setItem(storageSearchKey, query.search);
-    }
-    try {
-      const result = await getData(
-        apiPlatformApi,
-        query,
-        toggleType,
-        ownershipType,
-        dependentsType,
-        toRow,
-      );
-      setCountRows(result.totalCount);
-      return result;
-    } catch (e) {
-      setError(e as Error);
-      return {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
-    } finally {
-      setLoading(false);
-    }
+  const fetchData = async ({
+    offset,
+    pageSize,
+    sort,
+    search,
+  }: {
+    offset: number;
+    pageSize: number;
+    sort: SortDescriptor | null;
+    search?: string;
+  }) => {
+    const result = await getData(
+      apiPlatformApi,
+      toggleType,
+      ownershipType,
+      dependentsType,
+      toRow,
+      offset,
+      pageSize,
+      sort,
+      search,
+    );
+    setCountRows(result.totalCount);
+    return result;
   };
 
-  if (error) return <ResponseErrorPanel error={error} />;
+  const { tableProps, search, reload } = useTable({
+    mode: 'offset',
+    getData: fetchData,
+    paginationOptions: {
+      pageSize: 20,
+      pageSizeOptions: [10, 20, 50],
+    },
+    initialSort: {
+      column: 'name',
+      direction: 'ascending',
+    },
+    initialSearch,
+  });
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    reload();
+  }, [ownershipType, dependentsType, reload]);
+
+  if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Table<T>
-      key={`${ownershipType}-${dependentsType}`}
-      columns={columns}
-      options={{
-        search: true,
-        padding: 'dense' as const,
-        pageSize: PAGE_SIZE,
-        pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: countRows === 0 && !loading,
-        draggable: false,
-        thirdSortClick: false,
-        searchText: initialSearch,
-      }}
-      title={
-        <Flex gap="0" align="center">
-          <Box>
-            <Text variant="title-small" weight="bold">
-              {getTitleLabel(toggleType, ownershipType)} ({countRows})
-            </Text>
-          </Box>
-          <Box ml="4">
-            {toggleType === 'ownership' && (
-              <ComponentOwnership
-                storageKey={storageOwnershipKey}
-                handleOwnershipChange={setOwnershipType}
-              />
-            )}
-            {toggleType === 'dependents' && (
-              <DependentsToggle
-                handleDependentChange={setDependentsType}
-                selectedType={dependentsType}
-              />
-            )}
-          </Box>
-        </Flex>
-      }
-      data={fetchData}
-    />
+    <>
+      <Container>
+        <Header
+          title={`${getTitleLabel(toggleType, ownershipType)} (${countRows})`}
+          customActions={
+            <>
+              {toggleType === 'ownership' && (
+                <ComponentOwnership
+                  storageKey={storageOwnershipKey}
+                  handleOwnershipChange={setOwnershipType}
+                />
+              )}
+              {toggleType === 'dependents' && (
+                <DependentsToggle
+                  handleDependentChange={setDependentsType}
+                  selectedType={dependentsType}
+                />
+              )}
+              <Box style={{ marginLeft: 'auto', width: '250px' }}>
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    sessionStorage.setItem(storageSearchKey, str ?? '');
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                />
+              </Box>
+            </>
+          }
+        />
+        <Table
+          key={`table-${ownershipType}-${dependentsType}`}
+          {...tableProps}
+          columnConfig={columns}
+          emptyState={<div>No data available</div>}
+          className="denseTable"
+        />
+      </Container>
+    </>
   );
 }

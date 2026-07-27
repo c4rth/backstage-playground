@@ -306,7 +306,7 @@ export class McaComponentDbStore implements McaComponentStore {
     if (orderBy) {
       baseQuery.orderBy(
         mapMcaBaseTypeOrderByField(orderBy.field),
-        orderBy.direction,
+        orderBy.direction === 'descending' ? 'desc' : 'asc',
       );
     }
 

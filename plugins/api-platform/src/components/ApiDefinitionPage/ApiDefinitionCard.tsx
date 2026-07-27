@@ -20,7 +20,7 @@ import { ApiRelationCard } from './ApiRelationCard';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiAllRelationsCard } from './ApiAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
-import { Box, Grid, Tab, TabList, TabPanel, Tabs, Link } from '@backstage/ui';
+import { Box, Tab, TabList, TabPanel, Tabs, Link, Flex } from '@backstage/ui';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 export const ApiDefinitionCard = () => {
@@ -100,24 +100,16 @@ export const ApiDefinitionCard = () => {
             <Tab id="tab4-2">All versions</Tab>
           </TabList>
           <TabPanel id="tab4-1">
-            <Grid.Root style={{ alignItems: 'stretch' }}>
-              <Grid.Item colSpan="6">
-                <ApiRelationCard dependency="provider" />
-              </Grid.Item>
-              <Grid.Item colSpan="6">
-                <ApiRelationCard dependency="consumer" />
-              </Grid.Item>
-            </Grid.Root>
+            <Flex direction="column" gap="4">
+              <ApiRelationCard dependency="provider" />
+              <ApiRelationCard dependency="consumer" />
+            </Flex>
           </TabPanel>
           <TabPanel id="tab4-2">
-            <Grid.Root style={{ alignItems: 'stretch' }}>
-              <Grid.Item colSpan="6">
-                <ApiAllRelationsCard dependency="provider" />
-              </Grid.Item>
-              <Grid.Item colSpan="6">
-                <ApiAllRelationsCard dependency="consumer" />
-              </Grid.Item>
-            </Grid.Root>
+            <Flex direction="column" gap="4">
+              <ApiAllRelationsCard dependency="provider" />
+              <ApiAllRelationsCard dependency="consumer" />
+            </Flex>
           </TabPanel>
         </Tabs>
       </TabPanel>

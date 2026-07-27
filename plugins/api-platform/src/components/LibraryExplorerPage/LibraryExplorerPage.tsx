@@ -1,5 +1,4 @@
-import { LibraryTable } from '../LibraryTable';
-import { ServiceLibrariesTable } from './ServiceLibrariesTable';
+import { LibraryTable, LibraryByServiceTable } from '../LibraryTable';
 import {
   Container,
   FullPage,
@@ -29,7 +28,7 @@ export const LibraryExplorerPage = () => {
               <LibraryTable />
             </TabPanel>
             <TabPanel id="tab2">
-              <ServiceLibrariesTable />
+              <LibraryByServiceTable />
             </TabPanel>
           </Tabs>
         </Container>

@@ -1,7 +1,5 @@
 import {
   ResponseErrorPanel,
-  Table,
-  TableColumn,
   OverflowTooltip,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
@@ -15,12 +13,25 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { useState } from 'react';
-import { Query, MTableAction } from '@material-table/core';
+import { useEffect, useRef, useState } from 'react';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentOwnership } from '../common';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
-import { Box, Flex, Select, Link } from '@backstage/ui';
+import {
+  Box,
+  Select,
+  Cell,
+  ColumnConfig,
+  SearchField,
+  Table,
+  Text,
+  useTable,
+  Link,
+  Container,
+  Header,
+  SortDescriptor,
+  CellText,
+} from '@backstage/ui';
 
 type TableRow = {
   id: number;
@@ -31,7 +42,6 @@ type TableRow = {
   entityRef: string;
 };
 
-const PAGE_SIZE = 20;
 const STORAGE_OWNERSHIP_KEY = 'apisTablePageOwner';
 const STORAGE_SEARCH_KEY = 'apisTablePageSearch';
 const STORAGE_TYPE_KEY = 'apisTablePageType';
@@ -47,21 +57,22 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 
 const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
-  query: Query<TableRow>,
   ownership: OwnershipType,
   apiType: OpenApiType,
+  offset: number,
+  pageSize: number,
+  sort: SortDescriptor | null,
+  search?: string,
 ) => {
-  const page = query.page ?? 0;
-  const pageSize = query.pageSize ?? PAGE_SIZE;
   const result = await apiPlatformApi.listApis({
-    offset: page * pageSize,
+    offset: offset,
     limit: pageSize,
-    search: query.search,
-    orderBy: query.orderBy
+    search: search,
+    orderBy: sort
       ? ({
-          field: query.orderBy.field,
-          direction: query.orderDirection,
-        } as ApiDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
     apiType,
@@ -69,66 +80,76 @@ const getData = async (
 
   return result
     ? {
-        data: result.items.map(toEntityRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toEntityRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 };
 
-const COLUMNS: TableColumn<TableRow>[] = [
+const COLUMNS: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    id: 'name',
     width: '25%',
-    field: 'name',
-    defaultSort: 'asc',
-    highlight: true,
-    render: ({ system, name }: TableRow) => (
-      <Link
-        href={`/api-platform/api/${system}/${name}`}
-        weight="bold"
-        color="info"
-        standalone
-      >
-        <ComponentDisplayName text={name} type="api" />
-      </Link>
+    label: 'Name',
+    isRowHeader: true,
+    isSortable: true,
+    cell: ({ system, name }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/api/${system}/${name}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName text={name} type="api" />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
   {
-    title: 'Description',
-    field: 'description',
+    id: 'description',
+    label: 'Description',
     width: '45%',
-    render: ({ description }: TableRow) => (
-      <OverflowTooltip text={description} line={2} />
+    isSortable: true,
+    cell: ({ description }: TableRow) => (
+      <Cell><OverflowTooltip text={description} line={2} /></Cell>
     ),
   },
   {
-    title: 'Type',
-    field: 'type',
+    id: 'type',
+    label: 'Type',
     width: '5%',
-    render: ({ type }: TableRow) => <OverflowTooltip text={type} line={2} />,
+    isSortable: true,
+    cell: ({ type }: TableRow) => <CellText title={type} />,
   },
   {
-    title: 'System',
+    id: 'system',
     width: '10%',
-    field: 'system',
-    highlight: true,
-    render: ({ system }: TableRow) =>
+    label: 'System',
+    isSortable: true,
+    cell: ({ system }: TableRow) =>
       system === '-' ? (
-        <ComponentDisplayName text={system} type="system" />
+        <Cell><ComponentDisplayName text={system} type="system" /></Cell>
       ) : (
-        <Link
-          href={`/api-platform/system/${system}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
-          <ComponentDisplayName text={system} type="system" />
-        </Link>
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/system/${system}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={system} type="system" />
+            </Link>
+          </Text>
+        </Cell>
       ),
   },
 ];
@@ -151,8 +172,6 @@ function getTitle(
 export const ApiTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
   const [ownership, setOwnership] = useState<OwnershipType>(() =>
     sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
@@ -161,92 +180,101 @@ export const ApiTable = () => {
       ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as OpenApiType)
       : 'all',
   );
+  const isFirstRender = useRef(true);
 
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
 
-  const fetchData = async (query: Query<TableRow>) => {
-    setLoading(true);
-    setError(null);
-    if (query.search !== undefined) {
-      sessionStorage.setItem(STORAGE_SEARCH_KEY, query.search);
-    }
-    try {
-      const result = await getData(
-        apiPlatformApi,
-        query,
-        ownership,
-        selectedType,
-      );
-      setCountRows(result.totalCount);
-      return result;
-    } catch (e) {
-      setError(e as Error);
-      return {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
-    } finally {
-      setLoading(false);
-    }
+  const fetchData = async ({
+    offset,
+    pageSize,
+    sort,
+    search,
+  }: {
+    offset: number;
+    pageSize: number;
+    sort: SortDescriptor | null;
+    search?: string;
+  }) => {
+    const result = await getData(
+      apiPlatformApi,
+      ownership,
+      selectedType,
+      offset,
+      pageSize,
+      sort,
+      search,
+    );;
+    setCountRows(result.totalCount);
+    return result;
   };
 
-  if (error) return <ResponseErrorPanel error={error} />;
+  const { tableProps, reload, search } = useTable({
+    mode: 'offset',
+    getData: fetchData,
+    paginationOptions: {
+      pageSize: 20,
+      pageSizeOptions: [10, 20, 50],
+    },
+    initialSort: {
+      column: 'name',
+      direction: 'ascending',
+    },
+    initialSearch,
+  });
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    reload();
+  }, [ownership, selectedType, reload]);
+
+  if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Table<TableRow>
-      key={`${ownership}-${selectedType}`}
-      columns={COLUMNS}
-      options={{
-        search: true,
-        padding: 'dense',
-        pageSize: PAGE_SIZE,
-        pageSizeOptions: [10, PAGE_SIZE, 50],
-        showEmptyDataSourceMessage: countRows === 0 && !loading,
-        draggable: false,
-        thirdSortClick: false,
-        searchText: initialSearch,
-      }}
-      title={
-        <Flex gap="0" align="center">
-          <Box>
-            <b>{getTitle(ownership, selectedType, countRows)}</b>
-          </Box>
-          <Box ml="4">
+    <Container>
+      <Header
+        title={getTitle(ownership, selectedType, countRows)}
+        customActions={
+          <>
             <ComponentOwnership
               storageKey={STORAGE_OWNERSHIP_KEY}
               handleOwnershipChange={setOwnership}
             />
-          </Box>
-        </Flex>
-      }
-      actions={[
-        {
-          isFreeAction: true,
-          onClick: () => null,
-          // @ts-ignore
-          component: (
+
             <Box mx="4" style={{ width: '10em' }}>
               <Select
                 name="apiType"
                 size="medium"
                 value={selectedType}
-                onChange={v => setSelectedType(v as OpenApiType)}
+                onChange={v => {
+                  setSelectedType(v as OpenApiType);
+                }}
                 options={API_TYPES}
               />
             </Box>
-          ),
-        },
-      ]}
-      components={{
-        Action: (props: any) => {
-          if (props.action.component) {
-            return props.action.component;
-          }
-          return <MTableAction {...props} />;
-        },
-      }}
-      data={fetchData}
-    />
+            <Box style={{ marginLeft: 'auto', width: '250px' }}>
+              <SearchField
+                placeholder="Filter..."
+                value={search.value}
+                onChange={str => {
+                  sessionStorage.setItem(STORAGE_SEARCH_KEY, str ?? '');
+                  search.onChange(str);
+                }}
+                aria-label="Filter"
+              />
+            </Box>
+          </>
+        }
+      />
+      <Table
+        key={`table-${selectedType}-${ownership}`}
+        {...tableProps}
+        columnConfig={COLUMNS}
+        emptyState={<div>No data available</div>}
+        className="denseTable"
+      />
+    </Container>
   );
 };

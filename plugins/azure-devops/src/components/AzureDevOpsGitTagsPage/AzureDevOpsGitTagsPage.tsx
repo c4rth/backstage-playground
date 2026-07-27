@@ -116,8 +116,8 @@ export const AzureDevOpsGitTagsPage = () => {
     mode: 'complete',
     getData,
     sortFn: (items, { column, direction }) => {
+      const desc = direction === 'descending' ? -1 : 1;
       return [...items].sort((a, b) => {
-        const desc = direction === 'descending' ? -1 : 1;
         switch (column) {
           case 'tag':
             return (

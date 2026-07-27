@@ -1,7 +1,6 @@
-import { TableColumn } from '@backstage/core-components';
 import { ComponentChip } from '../common';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { Flex } from '@backstage/ui';
+import { Flex, ColumnConfig, Column, Text } from '@backstage/ui';
 import {
   BaseServiceTable,
   BaseTableRow,
@@ -22,33 +21,24 @@ const toRow = (
   serviceDefinition,
 });
 
-const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
-  title: env.toUpperCase(),
+const createEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
+  id: env,
+  label: env.toUpperCase(),
   width: '12%',
-  align: 'center',
-  cellStyle: { padding: 0 },
-  sorting: false,
-  searchable: true,
-  customFilterAndSearch: (query, row) => {
-    if (!row.serviceDefinition?.versions) return false;
-    const lowerQuery = query.toLowerCase();
-    return row.serviceDefinition.versions.some(version => {
-      const envData =
-        version.environments[env as keyof typeof version.environments];
-      return envData?.dependencies
-        ?.join(', ')
-        .toLowerCase()
-        .includes(lowerQuery);
-    });
-  },
-  render: ({ serviceDefinition }) =>
+  isSortable: false,
+  header: () => (
+    <Column id={env} className="centered-col-header">
+      <Text weight="bold">{env.toUpperCase()}</Text>
+    </Column>
+  ),
+  cell: ({ serviceDefinition }) =>
     renderVersionList(serviceDefinition, version => {
       const envData = version.environments[
         env as keyof typeof version.environments
       ] as any;
       const dependencies = envData?.dependencies || [];
       if (!envData) {
-        return <></>;
+        return <div />;
       }
       if (!dependencies.length) {
         return <RiCloseCircleLine size="20" />;
@@ -63,7 +53,7 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
     }),
 });
 
-const ENV_COLUMNS: TableColumn<TableRow>[] = [
+const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
   createEnvironmentColumn('tst'),
   createEnvironmentColumn('gtu'),
   createEnvironmentColumn('uat'),
@@ -73,7 +63,7 @@ const ENV_COLUMNS: TableColumn<TableRow>[] = [
 
 const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
 
-export const ServiceLibrariesTable = () => (
+export const LibraryByServiceTable = () => (
   <BaseServiceTable<TableRow>
     columns={COLUMNS}
     toRow={toRow}

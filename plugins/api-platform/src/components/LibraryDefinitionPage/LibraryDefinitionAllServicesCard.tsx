@@ -1,11 +1,9 @@
 import {
-  TableColumn,
-  Table,
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo, useState } from 'react';
-import { Box, Flex, Text } from '@backstage/ui';
+import { Box, Text, ColumnConfig, Table, useTable, Column, SearchField } from '@backstage/ui';
 import {
   LibraryDefinition,
   ServiceDefinition,
@@ -18,16 +16,22 @@ import { ComponentChip } from '../common';
 import { useGetLibraryVersions } from '../..';
 import { DependentsToggle } from '../common';
 import { BaseTableRow, buildColumns, renderVersionList } from '../ServiceTable';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
+import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = BaseTableRow;
 
-const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
-  title: env.toUpperCase(),
+const createEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
+  id: env,
+  label: env.toUpperCase(),
   width: '12%',
-  align: 'center',
-  cellStyle: { padding: 0 },
-  sorting: false,
-  render: ({ serviceDefinition }) =>
+  isSortable: false,
+  header: () => (
+    <Column id={env} className="centered-col-header">
+      <Text weight="bold">{env.toUpperCase()}</Text>
+    </Column>
+  ),
+  cell: ({ serviceDefinition }) =>
     renderVersionList(serviceDefinition, version => {
       const envData = version.environments[
         env as keyof typeof version.environments
@@ -42,22 +46,9 @@ const createEnvironmentColumn = (env: string): TableColumn<TableRow> => ({
         (dependencyIndexes[0] >= 0 ? dependencyIndexes[0] + 1 : 0) * 2;
       return <ComponentChip index={index} text={dependencies.join(', ')} />;
     }),
-  searchable: true,
-  customFilterAndSearch: (query, row) => {
-    if (!row.serviceDefinition?.versions) return false;
-    const lowerQuery = query.toLowerCase();
-    return row.serviceDefinition.versions.some(version => {
-      const envData =
-        version.environments[env as keyof typeof version.environments];
-      return envData?.dependencies
-        ?.join(', ')
-        .toLowerCase()
-        .includes(lowerQuery);
-    });
-  },
 });
 
-const ENV_COLUMNS: TableColumn<TableRow>[] = [
+const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
   createEnvironmentColumn('tst'),
   createEnvironmentColumn('gtu'),
   createEnvironmentColumn('uat'),
@@ -118,6 +109,96 @@ interface LibraryServicesCardProps {
   version?: string;
   componentName?: string;
 }
+
+
+type LibraryDefinitionAllServiceTableProps = {
+  title: string;
+  rows: TableRow[];
+  version?: string;
+  selectedDependency: DependentsType;
+  setSelectedDependency: (type: DependentsType) => void;
+};
+
+const LibraryDefinitionAllServiceTable = ({ title, rows, version, selectedDependency, setSelectedDependency }: LibraryDefinitionAllServiceTableProps) => {
+  const { tableProps, search } = useTable({
+    mode: 'complete',
+    getData: () => rows,
+    initialSort: {
+      column: 'name',
+      direction: 'ascending',
+    },
+    paginationOptions: {
+      type: 'none',
+    },
+    sortFn: (items, { column, direction }) => {
+      const desc = direction === 'descending' ? -1 : 1;
+      return [...items].sort((a, b) => {
+        switch (column) {
+          case 'name':
+            return desc * a.name.localeCompare(b.name);
+          default:
+            return 0;
+        }
+      });
+    },
+    searchFn: (items, query) => {
+      const lowerQuery = query.toLowerCase();
+      return items.filter(
+        item => {
+          return item.name.toLowerCase().includes(lowerQuery) ||
+            item.system.toLowerCase().includes(lowerQuery) ||
+            item.serviceDefinition.versions.some(version => {
+              return Object.values(version.environments).some(envData => {
+                return envData?.dependencies
+                  ?.join(', ')
+                  .toLowerCase()
+                  .includes(lowerQuery);
+              });
+            });
+        }
+      );
+    }
+  });
+
+  return (
+    <EntityInfoCard
+      title={title}
+      headerActions={
+        <>
+          {!version && (
+            <Box mb="4">
+              <DependentsToggle
+                handleDependentChange={type => setSelectedDependency(type)}
+                selectedType={selectedDependency}
+              />
+            </Box>
+          )}
+          <Box style={{ marginLeft: 'auto', width: '250px' }}>
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={str => {
+                search.onChange(str);
+              }}
+              aria-label="Filter"
+            />
+          </Box>
+        </>
+      }>
+      <Box>
+        <Table
+          columnConfig={COLUMNS}
+          {...tableProps}
+          pagination={{
+            type: 'none',
+          }}
+          emptyState={<div>No data available</div>}
+          className="denseTable"
+        />
+      </Box>
+    </EntityInfoCard >
+  );
+};
 
 export const LibraryDefinitionAllServicesCard = ({
   system,
@@ -199,6 +280,10 @@ export const LibraryDefinitionAllServicesCard = ({
     componentName,
   ]);
 
+  if (loading || loadingLibVersions) {
+    return <Progress />;
+  }
+
   if (error || errorLibVersion) {
     return (
       <ResponseErrorPanel
@@ -211,31 +296,13 @@ export const LibraryDefinitionAllServicesCard = ({
   if (!libraryVersions) return null;
 
   return (
-    <>
-      {!version && (
-        <Box mb="4">
-          <DependentsToggle
-            handleDependentChange={type => setSelectedDependency(type)}
-            selectedType={selectedDependency}
-          />
-        </Box>
-      )}
-      <Box>
-        <Table<TableRow>
-          isLoading={loading || loadingLibVersions}
-          columns={COLUMNS}
-          options={{
-            search: true,
-            padding: 'dense' as const,
-            draggable: false,
-            thirdSortClick: false,
-            pageSize: 20,
-            pageSizeOptions: [10, 20, 50],
-          }}
-          title={<Flex align="center">{title}</Flex>}
-          data={rows}
-        />
-      </Box>
-    </>
+    <LibraryDefinitionAllServiceTable
+      key={`${name}-${selectedDependency}-${rows.length}`}
+      title={title}
+      rows={rows}
+      version={version}
+      selectedDependency={selectedDependency}
+      setSelectedDependency={setSelectedDependency}
+    />
   );
 };

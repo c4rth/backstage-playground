@@ -1,5 +1,5 @@
-import { Table, TableColumn } from '@backstage/core-components';
-import { Flex, Link } from '@backstage/ui';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
+import { Link, useTable, ColumnConfig, Cell, Text, Table } from '@backstage/ui';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
@@ -8,67 +8,74 @@ type TableRow = {
   system: string;
 };
 
-const apiColumns: TableColumn<TableRow>[] = [
+const apiColumns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    label: 'Name',
     width: '100%',
-    field: 'name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ name, system }: TableRow) => (
-      <Link
-        href={`/api-platform/api/${system}/${name}`}
-        weight="bold"
-        color="info"
-        standalone
-      >
-        <ComponentDisplayName type="api" text={name} />
-      </Link>
+    id: 'name',
+    isRowHeader: true,
+    cell: ({ name, system }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/api/${system}/${name}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName type="api" text={name} />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
 ];
 
-const serviceColumns: TableColumn<TableRow>[] = [
+const serviceColumns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    label: 'Name',
     width: '100%',
-    field: 'name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ name, system }: TableRow) => (
-      <Link
-        href={`/api-platform/service/${system}/${name}`}
-        weight="bold"
-        color="info"
-        standalone
-      >
-        <ComponentDisplayName type="service" text={name} />
-      </Link>
+    id: 'name',
+    isRowHeader: true,
+    cell: ({ name, system }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/service/${system}/${name}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName type="service" text={name} />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
 ];
 
-const libraryColumns: TableColumn<TableRow>[] = [
+const libraryColumns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    label: 'Name',
     width: '100%',
-    field: 'name',
-    highlight: true,
-    defaultSort: 'asc',
-    render: ({ name, system }: TableRow) => (
-      <Link
-        href={`/api-platform/library/${system}/${name}`}
-        weight="bold"
-        color="info"
-        standalone
-      >
-        <ComponentDisplayName type="library" text={name} />
-      </Link>
+    id: 'name',
+    isRowHeader: true,
+    cell: ({ name, system }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/library/${system}/${name}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName type="library" text={name} />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
 ];
-
-const DEFAULT_PAGE_SIZE = 20;
 
 const toRow = (item: string, idx: number, system: string): TableRow => ({
   id: idx,
@@ -87,7 +94,7 @@ export const SystemRelationCard = ({
   dependency,
   data,
 }: SystemPlatformRelationCardProps) => {
-  let columns: TableColumn<TableRow>[];
+  let columns: ColumnConfig<TableRow>[];
   let title: string;
 
   if (dependency === 'api') {
@@ -102,25 +109,40 @@ export const SystemRelationCard = ({
   }
 
   const rows = data.map((item, idx) => toRow(item, idx, system));
-  const showPagination = rows.length > DEFAULT_PAGE_SIZE;
+
+  const { tableProps } = useTable({
+    mode: 'complete',
+    data: rows,
+    paginationOptions: {
+      type: 'none',
+    },
+    initialSort: {
+      column: 'name',
+      direction: 'ascending',
+    },
+    sortFn: (items, { column, direction }) => {
+      const desc = direction === 'descending' ? -1 : 1;
+      return [...items].sort((a, b) => {
+        switch (column) {
+          case 'name':
+            return desc * a.name.localeCompare(b.name);
+          default:
+            return 0;
+        }
+      });
+    },
+  });
 
   return (
-    <Table<TableRow>
-      columns={columns}
-      options={{
-        search: false,
-        padding: 'dense' as const,
-        paging: showPagination,
-        pageSize: DEFAULT_PAGE_SIZE,
-        draggable: false,
-        thirdSortClick: false,
-      }}
-      title={
-        <Flex align="center">
-          {title} ({rows.length})
-        </Flex>
-      }
-      data={rows}
-    />
+    <EntityInfoCard
+      title={`${title} (${rows.length})`}
+    >
+      <Table
+        columnConfig={columns}
+        {...tableProps}
+        className="denseTable"
+        emptyState={`No ${title.toLowerCase()} found for this system.`}
+      />
+    </EntityInfoCard>
   );
 };

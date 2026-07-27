@@ -160,7 +160,7 @@ function getOrder(
   }
   return {
     field: field,
-    order: order.direction,
+    order: order.direction === 'descending' ? 'desc' : 'asc',
   };
 }
 

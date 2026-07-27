@@ -197,8 +197,8 @@ export const AppRegistryPage = () => {
       type: 'none',
     },
     sortFn: (items, { column, direction }) => {
+      const desc = direction === 'descending' ? -1 : 1;
       return [...items].sort((a, b) => {
-        const desc = direction === 'descending' ? -1 : 1;
         switch (column) {
           case 'method':
             return desc * a.operation.method.localeCompare(b.operation.method);

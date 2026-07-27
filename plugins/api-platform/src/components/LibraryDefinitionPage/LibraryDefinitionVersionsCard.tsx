@@ -1,13 +1,21 @@
 import {
-  TableColumn,
-  Table,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { Box, Flex, Link } from '@backstage/ui';
+import {
+  Cell,
+  ColumnConfig,
+  Table,
+  Text,
+  useTable,
+  Link,
+  CellText,
+} from '@backstage/ui';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { useGetLibraryVersions } from '../..';
+import { EntityInfoCard } from '@backstage/plugin-catalog-react';
+import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   readonly id: number;
@@ -18,37 +26,33 @@ type TableRow = {
   readonly entityRef: string;
 };
 
-const serviceColumns: TableColumn<TableRow>[] = [
+const columns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Version',
+    label: 'Version',
     width: '50%',
-    field: 'libraryVersion',
-    highlight: true,
-    defaultSort: 'desc',
-    customSort: (a, b) => {
-      const aValid = semver.valid(a.version);
-      const bValid = semver.valid(b.version);
-      if (aValid && bValid) {
-        return semver.compare(a.version, b.version);
-      }
-      return a.version.localeCompare(b.version);
-    },
-    render: ({ system, name, version }: TableRow) => (
-      <Link
-        href={`/api-platform/library/${system}/${name}/${version}`}
-        weight="bold"
-        color="info"
-        standalone
-      >
-        <ComponentDisplayName text={`${version}`} type="library" />
-      </Link>
+    id: 'libraryVersion',
+    isRowHeader: true,
+    isSortable: true,
+    cell: ({ system, name, version }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/library/${system}/${name}/${version}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName text={`${version}`} type="library" />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
   {
-    title: 'Used by # Services',
+    label: 'Used by # Services',
     width: '50%',
-    field: 'svcNumber',
-    sorting: false,
+    id: 'svcNumber',
+    cell: ({ svcNumber }: TableRow) => <CellText title={`${svcNumber}`} />,
   },
 ];
 
@@ -71,44 +75,82 @@ interface LibraryVersionsCardProps {
   name: string;
 }
 
+
+type LibraryVersionsTableProps = {
+  readonly title: string;
+  readonly rows: TableRow[];
+};
+
+const LibraryVersionsTable = ({ title, rows }: LibraryVersionsTableProps) => {
+  const { tableProps } = useTable({
+    mode: 'complete',
+    getData: () => rows,
+    initialSort: {
+      column: 'libraryVersion',
+      direction: 'descending',
+    },
+    paginationOptions: {
+      type: 'none',
+    },
+    sortFn: (items, { direction }) => {
+      const desc = direction === 'descending' ? -1 : 1;
+      return [...items].sort((a, b) => {
+        const aValid = semver.valid(a.version);
+        const bValid = semver.valid(b.version);
+        if (aValid && bValid) {
+          return desc * semver.compare(a.version, b.version);
+        }
+        return desc * a.version.localeCompare(b.version);
+      });
+    },
+  });
+
+  return (
+    <EntityInfoCard
+      title={`${title} (${rows.length})`}>
+      <Table
+        columnConfig={columns}
+        {...tableProps}
+        pagination={{
+          type: 'none',
+        }}
+        emptyState={<div>No data available</div>}
+        className="denseTable"
+      />
+    </EntityInfoCard>
+  );
+};
+
 export const LibraryDefinitionVersionsCard = ({
   system,
   name,
 }: LibraryVersionsCardProps) => {
+
   const { libraryVersions, loading, error } = useGetLibraryVersions(
     system!,
     name!,
   );
 
+  const rows = libraryVersions?.map((l, idx) => toRow(l, system, name, idx)) ?? [];
+
+  if (loading) {
+    return <Progress />;
+  }
+
   if (error) {
     return (
       <ResponseErrorPanel
         title="Error loading Library Versions"
-        error={error!}
+        error={error}
       />
     );
   }
 
-  const rows =
-    libraryVersions?.map((l, idx) => toRow(l, system, name, idx)) ?? [];
-
   return (
-    <Box>
-      <Box>
-        <Table<TableRow>
-          isLoading={loading}
-          columns={serviceColumns}
-          options={{
-            search: false,
-            padding: 'dense' as const,
-            paging: false,
-            draggable: false,
-            thirdSortClick: false,
-          }}
-          title={<Flex align="center">Versions</Flex>}
-          data={rows}
-        />
-      </Box>
-    </Box>
+    <LibraryVersionsTable
+      key={`lib-${name}-${rows.length}`}
+      title="Library Versions"
+      rows={rows}
+    />
   );
 };

@@ -21,6 +21,8 @@ export type OpenApiType =
   | 'third-party'
   | 'mca';
 
+export type SortDirection = 'ascending' | 'descending';
+
 export type ApiVersionDefinition = {
   entityRef: string;
   version: string;
@@ -57,7 +59,7 @@ export type ApiDefinitionListResult = {
 
 export type ApiDefinitionsOptions = {
   field: ApiDefinitionsListFields;
-  direction: 'asc' | 'desc';
+  direction: SortDirection;
 };
 
 export type ApiDefinitionsListRequest = {
@@ -129,7 +131,7 @@ export type ServiceDefinitionsListFields = 'name' | 'system';
 
 export type ServiceDefinitionsOptions = {
   field: ServiceDefinitionsListFields;
-  direction: 'asc' | 'desc';
+  direction: SortDirection;
 };
 
 export type ServiceDefinitionsListRequest = {
@@ -162,7 +164,7 @@ export type SystemDefinitionsListFields = 'name' | 'description' | 'owner';
 
 export type SystemDefinitionsOptions = {
   field: SystemDefinitionsListFields;
-  direction: 'asc' | 'desc';
+  direction: SortDirection;
 };
 
 export type OwnershipType = 'all' | 'owned';
@@ -203,7 +205,7 @@ export type LibraryDefinitionsListFields = 'name' | 'description' | 'system';
 
 export type LibraryDefinitionsOptions = {
   field: LibraryDefinitionsListFields;
-  direction: 'asc' | 'desc';
+  direction: SortDirection;
 };
 
 export type LibraryDefinitionListResult = {

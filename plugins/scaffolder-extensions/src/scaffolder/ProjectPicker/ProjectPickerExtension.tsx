@@ -124,26 +124,3 @@ export const ProjectPicker = (
     </ScaffolderField>
   );
 };
-
-/*
-
-      <InputLabel id="project-label">
-        {uiSchema['ui:title'] ?? schema.title}
-      </InputLabel>
-      <Select
-        labelId="project-label"
-        value={selectedProject}
-        label={uiSchema['ui:title'] ?? schema.title}
-        onChange={event => {
-          const newValue = event.target.value?.toString() ?? undefined;
-          setSelectedProject(newValue);
-          onChange(newValue);
-        }}
-      >
-        {projects.map(project => (
-          <MenuItem key={project.value} value={project.value}>
-            {project.label}
-          </MenuItem>
-        ))}
-      </Select>
-      */

@@ -70,8 +70,8 @@ export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
       mode: 'complete',
       getData: () => methods,
       sortFn: (items, { column, direction }) => {
+        const desc = direction === 'descending' ? -1 : 1;
         return [...items].sort((a, b) => {
-          const desc = direction === 'descending' ? -1 : 1;
           switch (column) {
             case 'name':
               return desc * a.name.localeCompare(b.name);

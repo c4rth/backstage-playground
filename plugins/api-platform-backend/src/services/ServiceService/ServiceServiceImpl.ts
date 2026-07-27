@@ -27,6 +27,7 @@ import {
   ServiceDefinitionListResult,
   ServiceDefinitionsListRequest,
   ServiceDefinitionsOptions,
+  SortDirection,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
@@ -54,7 +55,7 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined):
   | {
       field1: 'serviceName' | 'system';
       field2: 'serviceName' | 'system';
-      order: 'asc' | 'desc';
+      order: SortDirection;
     }
   | undefined {
   if (!order) return undefined;
@@ -260,10 +261,10 @@ function processServiceEntities(
       svcDefs.sort((a, b) => {
         const compare1 = a[order.field1].localeCompare(b[order.field1]);
         if (compare1 !== 0) {
-          return order.order === 'asc' ? compare1 : -compare1;
+          return order.order === 'ascending' ? compare1 : -compare1;
         }
         const compare2 = a[order.field2].localeCompare(b[order.field2]);
-        return order.order === 'asc' ? compare2 : -compare2;
+        return order.order === 'ascending' ? compare2 : -compare2;
       });
     }
   }

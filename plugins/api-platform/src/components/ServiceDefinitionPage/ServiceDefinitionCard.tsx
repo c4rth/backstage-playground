@@ -41,6 +41,7 @@ import {
   TabPanel,
   Tabs,
   Link,
+  Flex,
 } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import {
@@ -192,14 +193,10 @@ export const ServiceDefinitionCard = ({
             <Tab id="tab2-2">Libraries</Tab>
           </TabList>
           <TabPanel id="tab2-1">
-            <Grid.Root columns="12">
-              <Grid.Item colSpan="6">
-                <ServiceApiRelationCard dependency="provided" />
-              </Grid.Item>
-              <Grid.Item colSpan="6">
-                <ServiceApiRelationCard dependency="consumed" />
-              </Grid.Item>
-            </Grid.Root>
+            <Flex direction="column" gap="4">
+              <ServiceApiRelationCard dependency="provided" />
+              <ServiceApiRelationCard dependency="consumed" />
+            </Flex>
           </TabPanel>
           <TabPanel id="tab2-2">
             <ServiceLibraryRelationCard />

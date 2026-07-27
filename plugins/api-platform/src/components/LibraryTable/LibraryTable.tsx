@@ -164,8 +164,8 @@ export const LibraryTable = () => {
       sessionStorage.setItem(STORAGE_SEARCH_KEY, newSearch ?? '');
     },
     sortFn: (items, { column, direction }) => {
+      const desc = direction === 'descending' ? -1 : 1;
       return [...items].sort((a, b) => {
-        const desc = direction === 'descending' ? -1 : 1;
         switch (column) {
           case 'name':
             return desc * a.name.localeCompare(b.name);
@@ -192,7 +192,7 @@ export const LibraryTable = () => {
       />
     );
   }
-  if (tableProps.loading) {
+  if (tableProps.isPending) {
     return <Progress />;
   }
 
@@ -220,7 +220,7 @@ export const LibraryTable = () => {
           </Box>
         </Flex>
       </CardHeader>
-      <CardBody style={{ padding: '0' }}>
+      <CardBody>
         <Box
           ref={boxRef}
           style={{

@@ -1,7 +1,5 @@
 import {
   ResponseErrorPanel,
-  Table,
-  TableColumn,
 } from '@backstage/core-components';
 import {
   Entity,
@@ -12,6 +10,7 @@ import {
 import {
   CatalogApi,
   catalogApiRef,
+  EntityInfoCard,
   useEntity,
 } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
@@ -27,9 +26,9 @@ import {
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
 import { useGetApiVersions } from '../../hooks';
-import semver from 'semver';
 import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
-import { Flex, Link } from '@backstage/ui';
+import { Link, Table, useTable, ColumnConfig, Cell, Text, CellText } from '@backstage/ui';
+import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   readonly id: number;
@@ -40,72 +39,93 @@ type TableRow = {
   readonly svcSystem: string;
 };
 
-const serviceColumns: TableColumn<TableRow>[] = [
+const serviceColumns: ColumnConfig<TableRow>[] = [
   {
-    title: 'Name',
+    label: 'Name',
     width: '50%',
-    field: 'svcName',
-    highlight: true,
-    render: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
-      <Link
-        href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
-        weight="bold"
-        color="info"
-        standalone
-      >
-        <ComponentDisplayName text={svcName} type="service" />
-      </Link>
+    id: 'svcName',
+    isRowHeader: true,
+    cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName text={svcName} type="service" />
+          </Link>
+        </Text>
+      </Cell>
     ),
   },
   {
-    title: 'API Version',
+    label: 'API Version',
     width: '20%',
-    field: 'apiVersion',
-    defaultSort: 'asc',
-    customSort: (a, b) => {
-      const aValid = semver.valid(a.apiVersion);
-      const bValid = semver.valid(b.apiVersion);
-      if (aValid && bValid) {
-        return semver.compare(a.apiVersion, b.apiVersion);
-      }
-      return a.apiVersion.localeCompare(b.apiVersion);
-    },
+    id: 'apiVersion',
+    cell: ({ apiVersion }: TableRow) => <CellText title={apiVersion} />,
   },
   {
-    title: 'Version',
+    label: 'Version',
     width: '10%',
-    field: 'svcVersion',
-    customSort: (a, b) => {
-      const aValid = semver.valid(a.svcVersion);
-      const bValid = semver.valid(b.svcVersion);
-      if (aValid && bValid) {
-        return semver.compare(a.svcVersion, b.svcVersion);
-      }
-      return a.svcVersion.localeCompare(b.svcVersion);
-    },
+    id: 'svcVersion',
+    cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName text={svcVersion} type="service" />
+          </Link>
+        </Text>
+      </Cell>
+    ),
   },
   {
-    title: 'Environment',
+    label: 'Environment',
     width: '10%',
-    field: 'svcEnvironment',
+    id: 'svcEnvironment',
+    cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
+      <Cell>
+        <Text weight="bold">
+          <Link
+            href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+            weight="bold"
+            color="info"
+            standalone
+          >
+            <ComponentDisplayName text={svcEnvironment} type="service" />
+          </Link>
+        </Text>
+      </Cell>
+    ),
   },
   {
-    title: 'System',
+    label: 'System',
     width: '10%',
-    highlight: true,
-    field: 'svcSystem',
-    render: ({ svcSystem }: TableRow) =>
+    id: 'svcSystem',
+    cell: ({ svcSystem }: TableRow) =>
       svcSystem === '-' ? (
-        <ComponentDisplayName text={svcSystem} type="system" />
-      ) : (
-        <Link
-          href={`/api-platform/system/${svcSystem}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
+        <Cell>
           <ComponentDisplayName text={svcSystem} type="system" />
-        </Link>
+        </Cell>
+      ) : (
+        <Cell>
+          <Text weight="bold">
+            <Link
+              href={`/api-platform/system/${svcSystem}`}
+              weight="bold"
+              color="info"
+              standalone
+            >
+              <ComponentDisplayName text={svcSystem} type="system" />
+            </Link>
+          </Text>
+        </Cell>
       ),
   },
 ];
@@ -165,6 +185,40 @@ const fetchEntities = async (
 interface ApiAllRelationsCardProps {
   readonly dependency: 'provider' | 'consumer';
 }
+
+type ApiAllRelationsTableProps = {
+  readonly title: string;
+  readonly rows: TableRow[];
+};
+
+const ApiAllRelationsTable = ({ title, rows }: ApiAllRelationsTableProps) => {
+  const { tableProps } = useTable({
+    mode: 'complete',
+    getData: () => rows,
+    initialSort: {
+      column: 'svcName',
+      direction: 'ascending',
+    },
+    paginationOptions: {
+      type: 'none',
+    },
+  });
+
+  return (
+    <EntityInfoCard
+      title={`${title} (${rows.length})`}>
+      <Table
+        columnConfig={serviceColumns}
+        {...tableProps}
+        pagination={{
+          type: 'none',
+        }}
+        emptyState={<div>No data available</div>}
+        className="denseTable"
+      />
+    </EntityInfoCard>
+  );
+};
 
 export const ApiAllRelationsCard = ({
   dependency,
@@ -226,6 +280,10 @@ export const ApiAllRelationsCard = ({
   const loading = versionsLoading || servicesLoading;
   const error = versionsError || servicesError;
 
+  if (loading) {
+    return <Progress />;
+  }
+
   if (error) {
     return (
       <ResponseErrorPanel
@@ -236,22 +294,10 @@ export const ApiAllRelationsCard = ({
   }
 
   return (
-    <Table<TableRow>
-      isLoading={loading}
-      columns={serviceColumns}
-      options={{
-        search: true,
-        padding: 'dense' as const,
-        paging: false,
-        draggable: false,
-        thirdSortClick: false,
-      }}
-      title={
-        <Flex align="center">
-          {title} ({rows.length})
-        </Flex>
-      }
-      data={rows}
+    <ApiAllRelationsTable
+      key={`${dependency}-${rows.length}`}
+      title={title}
+      rows={rows}
     />
   );
 };
