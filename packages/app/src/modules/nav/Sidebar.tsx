@@ -11,15 +11,12 @@ import {
   CatalogIcon,
   DocsIcon,
 } from '@backstage/core-components';
-
 import { RiMenuSearchLine, RiBubbleChartLine } from '@remixicon/react';
-import { IconComponent } from '@backstage/core-plugin-api';
-// Permission on menu
+import { IconComponent } from '@backstage/core-plugin-api';// Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
-// Api Platform
-import { ApiSearchResultListItem } from '@internal/plugin-api-platform';
 // Search
+import { ApiSearchResultListItem } from '@internal/plugin-api-platform';
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';

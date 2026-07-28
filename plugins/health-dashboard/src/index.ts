@@ -1,1 +1,1 @@
-export { healthDashboardPlugin, HealthDashboardPage } from './plugin';
+export { default } from './plugin';

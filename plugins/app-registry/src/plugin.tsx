@@ -7,8 +7,8 @@ import {
   featureFlagsApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import { AppRegistryBackendClient, appRegistryBackendApiRef } from '../api';
-import { rootRouteRef } from '../routes';
+import { AppRegistryBackendClient, appRegistryBackendApiRef } from './api';
+import { rootRouteRef } from './routes';
 
 /** @alpha */
 const appRegistryPage = PageBlueprint.make({
@@ -17,7 +17,7 @@ const appRegistryPage = PageBlueprint.make({
     path: '/app-registry',
     routeRef: rootRouteRef,
     loader: () =>
-      import('../components/AppRegistryPage').then(m => <m.AppRegistryPage />),
+      import('./components/AppRegistryPage').then(m => <m.AppRegistryPage />),
   },
 });
 

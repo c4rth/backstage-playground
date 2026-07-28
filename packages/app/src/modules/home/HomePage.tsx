@@ -5,9 +5,9 @@ import {
 } from '@backstage/plugin-home';
 import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
-import { ToolkitCard } from '@internal/plugin-toolkit';
 import { Grid } from '@backstage/ui';
 import { Content, Page } from '@backstage/core-components';
+import { ToolkitCard } from '@internal/plugin-toolkit';
 
 export const HomePage = () => {
   return (

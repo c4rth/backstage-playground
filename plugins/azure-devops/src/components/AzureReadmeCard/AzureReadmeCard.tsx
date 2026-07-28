@@ -45,7 +45,7 @@ const ReadmeCardError = ({ error }: ErrorProps) => {
   return <ErrorPanel title={error.message} error={error} />;
 };
 
-export const ReadmeCard = (props: Props) => {
+export const AzureReadmeCard = (props: Props) => {
   const { entity } = useEntity();
   const { loading, error, item: value } = useReadme(entity);
 

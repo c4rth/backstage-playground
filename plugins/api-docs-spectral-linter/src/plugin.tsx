@@ -7,8 +7,8 @@ import {
   EntityCardBlueprint,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
-import { linterApiRef, LinterClient } from '../api';
-import { isApiDocsSpectralLinterAvailable } from '../lib/helper';
+import { linterApiRef, LinterClient } from './api';
+import { isApiDocsSpectralLinterAvailable } from './lib/helper';
 
 /** @alpha */
 export const linterApi = ApiBlueprint.make({
@@ -31,7 +31,7 @@ export const entityApiDocsSpectralLinterContent = EntityContentBlueprint.make({
     title: 'Linter',
     filter: isApiDocsSpectralLinterAvailable,
     loader: () =>
-      import('../components/EntityApiDocsSpectralLinterContent').then(m => (
+      import('./components/EntityApiDocsSpectralLinterContent').then(m => (
         <m.EntityApiDocsSpectralLinterContent />
       )),
   },
@@ -43,7 +43,7 @@ export const entityApiDocsSpectralLinterCard = EntityCardBlueprint.make({
   params: {
     filter: isApiDocsSpectralLinterAvailable,
     loader: () =>
-      import('../components/EntityApiDocsSpectralLinterContent').then(m => (
+      import('./components/EntityApiDocsSpectralLinterContent').then(m => (
         <m.EntityApiDocsSpectralLinterCard />
       )),
   },

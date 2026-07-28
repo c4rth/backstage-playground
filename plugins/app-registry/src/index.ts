@@ -1,1 +1,2 @@
-export { appRegistryPlugin, AppRegistryPage } from './plugin';
+export { default } from './plugin';
+export { AppRegistryPage } from './components/AppRegistryPage';

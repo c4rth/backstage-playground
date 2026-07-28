@@ -10,8 +10,8 @@ import { RiHeartPulseFill } from '@remixicon/react';
 import {
   HealthDashboardBackendClient,
   healthDashboardBackendApiRef,
-} from '../api';
-import { rootRouteRef } from '../routes';
+} from './api';
+import { rootRouteRef } from './routes';
 
 const healthDashboardPage = PageBlueprint.make({
   name: 'health-dashboard',
@@ -22,7 +22,7 @@ const healthDashboardPage = PageBlueprint.make({
     title: 'Health Dashboard',
     routeRef: rootRouteRef,
     loader: () =>
-      import('../components/HealthDashboardPage').then(m => (
+      import('./components/HealthDashboardPage').then(m => (
         <m.HealthDashboardPage />
       )),
   },

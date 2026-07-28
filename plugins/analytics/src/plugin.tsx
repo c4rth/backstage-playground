@@ -4,7 +4,7 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import { AnalyticsBackendApi, analyticsBackendApiRef } from '../api';
+import { AnalyticsBackendApi, analyticsBackendApiRef } from './api';
 
 const analyticsApi = ApiBlueprint.make({
   name: 'analytics-backend-api',
@@ -25,5 +25,3 @@ export default createFrontendPlugin({
   title: 'Analytics',
   extensions: [analyticsApi],
 });
-
-export { AnalyticsContent } from '../plugin';

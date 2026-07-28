@@ -4,9 +4,10 @@ import {
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
+  createApiRef,
+  createApiFactory,
 } from '@backstage/frontend-plugin-api';
-import { ApiPlatformBackendClient } from '../api';
-import { apiPlatformBackendApiRef } from '../plugin';
+import { ApiPlatformBackendApi, ApiPlatformBackendClient } from './api';
 import {
   apiPlatformApiDefinitionRouteRef,
   apiPlatformApiNoSystemRouteRef,
@@ -18,7 +19,7 @@ import {
   apiPlatformServiceRouteRef,
   apiPlatformSystemDefinitionRouteRef,
   apiPlatformSystemRouteRef,
-} from '../routes';
+} from './routes';
 import {
   RiShapesLine,
   RiPuzzleFill,
@@ -26,6 +27,9 @@ import {
   RiBookShelfLine,
 } from '@remixicon/react';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
+import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import { ApiSearchResultListItemProps } from './components/ApiSearchResultListItem';
+import { createPlugin } from '@backstage/core-plugin-api';
 
 const apiExplorerPage = PageBlueprint.make({
   name: 'api-explorer',
@@ -36,7 +40,7 @@ const apiExplorerPage = PageBlueprint.make({
     path: '/api-platform/api',
     routeRef: apiPlatformRouteRef,
     loader: () =>
-      import('../components/ApiExplorerPage').then(m => <m.ApiExplorerPage />),
+      import('./components/ApiExplorerPage').then(m => <m.ApiExplorerPage />),
   },
 });
 
@@ -47,7 +51,7 @@ const apiNoSystemPage = PageBlueprint.make({
     path: '/api-platform/api/:name',
     routeRef: apiPlatformApiNoSystemRouteRef,
     loader: () =>
-      import('../components/ApiDefinitionPage').then(m => (
+      import('./components/ApiDefinitionPage').then(m => (
         <m.ApiRedirectToNoSystem />
       )),
   },
@@ -60,7 +64,7 @@ const apiDefinitionPage = PageBlueprint.make({
     path: '/api-platform/api/:system/:name',
     routeRef: apiPlatformApiDefinitionRouteRef,
     loader: () =>
-      import('../components/ApiDefinitionPage').then(m => (
+      import('./components/ApiDefinitionPage').then(m => (
         <m.ApiDefinitionPage />
       )),
   },
@@ -75,7 +79,7 @@ const serviceExplorerPage = PageBlueprint.make({
     path: '/api-platform/service',
     routeRef: apiPlatformServiceRouteRef,
     loader: () =>
-      import('../components/ServiceExplorerPage').then(m => (
+      import('./components/ServiceExplorerPage').then(m => (
         <m.ServiceExplorerPage />
       )),
   },
@@ -88,7 +92,7 @@ const serviceDefinitionPage = PageBlueprint.make({
     path: '/api-platform/service/:system/:name',
     routeRef: apiPlatformServiceDefinitionRouteRef,
     loader: () =>
-      import('../components/ServiceDefinitionPage').then(m => (
+      import('./components/ServiceDefinitionPage').then(m => (
         <m.ServiceDefinitionPage />
       )),
   },
@@ -103,7 +107,7 @@ const systemExplorerPage = PageBlueprint.make({
     path: '/api-platform/system',
     routeRef: apiPlatformSystemRouteRef,
     loader: () =>
-      import('../components/SystemExplorerPage').then(m => (
+      import('./components/SystemExplorerPage').then(m => (
         <m.SystemExplorerPage />
       )),
   },
@@ -116,7 +120,7 @@ const systemDefinitionPage = PageBlueprint.make({
     path: '/api-platform/system/:name',
     routeRef: apiPlatformSystemDefinitionRouteRef,
     loader: () =>
-      import('../components/SystemDefinitionPage').then(m => (
+      import('./components/SystemDefinitionPage').then(m => (
         <m.SystemDefinitionPage />
       )),
   },
@@ -131,7 +135,7 @@ const libraryExplorerPage = PageBlueprint.make({
     path: '/api-platform/library',
     routeRef: apiPlatformLibraryRouteRef,
     loader: () =>
-      import('../components/LibraryExplorerPage').then(m => (
+      import('./components/LibraryExplorerPage').then(m => (
         <m.LibraryExplorerPage />
       )),
   },
@@ -144,7 +148,7 @@ const libraryDefinitionPage = PageBlueprint.make({
     path: '/api-platform/library/:system/:name',
     routeRef: apiPlatformLibraryDefinitionRouteRef,
     loader: () =>
-      import('../components/LibraryDefinitionPage').then(m => (
+      import('./components/LibraryDefinitionPage').then(m => (
         <m.LibraryDefinitionPage />
       )),
   },
@@ -157,7 +161,7 @@ const libraryDefinitionServicesPage = PageBlueprint.make({
     path: '/api-platform/library/:system/:name/:version',
     routeRef: apiPlatformLibraryDefinitionServicesRouteRef,
     loader: () =>
-      import('../components/LibraryDefinitionPage').then(m => (
+      import('./components/LibraryDefinitionPage').then(m => (
         <m.LibraryDefinitionServicesPage />
       )),
   },
@@ -177,7 +181,7 @@ const apiPlatformApi = ApiBlueprint.make({
     }),
 });
 
-const apiSearchResultListItemExtension = SearchResultListItemBlueprint.make({
+export const ApiSearchResultListItemExtension = SearchResultListItemBlueprint.make({
   name: 'api-search-result-item',
   params: {
     icon: <RiPuzzleFill fontSize="inherit" />,
@@ -185,10 +189,14 @@ const apiSearchResultListItemExtension = SearchResultListItemBlueprint.make({
       result.type === 'software-catalog' &&
       (result.document as any).type.startsWith('api-platform.'),
     component: () =>
-      import('../components/ApiSearchResultListItem').then(
+      import('./components/ApiSearchResultListItem').then(
         m => m.ApiSearchResultListItem,
       ),
   },
+});
+
+export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>().with({
+  id: 'plugin.api-platform.service',
 });
 
 export default createFrontendPlugin({
@@ -218,6 +226,35 @@ export default createFrontendPlugin({
     libraryDefinitionPage,
     libraryDefinitionServicesPage,
     apiPlatformApi,
-    apiSearchResultListItemExtension,
+    ApiSearchResultListItemExtension,
   ],
 });
+
+// Legacy support for the SearchResultListItemExtension until the new extension is fully supported in the search plugin
+
+export const apiPlatformPlugin = createPlugin({
+  id: 'api-platform',
+  apis: [
+    createApiFactory({
+      api: apiPlatformBackendApiRef,
+      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new ApiPlatformBackendClient({ discoveryApi, fetchApi }),
+    }),
+  ],
+});
+
+export const ApiSearchResultListItem: (
+  props: SearchResultListItemExtensionProps<ApiSearchResultListItemProps>,
+) => React.JSX.Element | null = apiPlatformPlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'ApiSearchResultListItem',
+    component: () =>
+      import('./components/ApiSearchResultListItem').then(
+        m => m.ApiSearchResultListItem,
+      ),
+    predicate: result =>
+      result.type === 'software-catalog' &&
+      (result.document as any).type.startsWith('api-platform.'),
+  }),
+);

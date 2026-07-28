@@ -2,19 +2,23 @@ import {
   ApiBlueprint,
   PageBlueprint,
   configApiRef,
+  createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import { McaComponentsBackendClient, mcaComponentsBackendApiRef } from '../api';
+import { McaComponentsBackendClient, mcaComponentsBackendApiRef } from './api';
 import {
   baseTypesRouteRef,
   componentsRouteRef,
   componentRouteRef,
   baseTypeRouteRef,
-} from '../routes';
+} from './routes';
 import { RiAlbumLine, RiBubbleChartLine } from '@remixicon/react';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
+import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import { McaComponentSearchResultListItemProps } from './components/McaComponentSearchResultListItem';
+import { createPlugin } from '@backstage/core-plugin-api';
 
 const mcaApi = ApiBlueprint.make({
   name: 'mca-components-backend-api',
@@ -40,7 +44,7 @@ const mcaComponentsExplorerPage = PageBlueprint.make({
     path: '/mca/components',
     routeRef: componentsRouteRef,
     loader: () =>
-      import('../components/McaComponentExplorerPage').then(m => (
+      import('./components/McaComponentExplorerPage').then(m => (
         <m.McaComponentExplorerPage />
       )),
   },
@@ -53,7 +57,7 @@ const mcaComponentPage = PageBlueprint.make({
     path: '/mca/components/:name',
     routeRef: componentRouteRef,
     loader: () =>
-      import('../components/McaComponentDefinitionPage').then(m => (
+      import('./components/McaComponentDefinitionPage').then(m => (
         <m.McaComponentDefinitionPage />
       )),
   },
@@ -68,7 +72,7 @@ const mcaBaseTypesExplorerPage = PageBlueprint.make({
     path: '/mca/basetypes',
     routeRef: baseTypesRouteRef,
     loader: () =>
-      import('../components/McaBaseTypeExplorerPage').then(m => (
+      import('./components/McaBaseTypeExplorerPage').then(m => (
         <m.McaBaseTypeExplorerPage />
       )),
   },
@@ -81,20 +85,20 @@ const mcaBaseTypePage = PageBlueprint.make({
     path: '/mca/basetypes/:name',
     routeRef: baseTypeRouteRef,
     loader: () =>
-      import('../components/McaBaseTypeDefinitionPage').then(m => (
+      import('./components/McaBaseTypeDefinitionPage').then(m => (
         <m.McaBaseTypeDefinitionPage />
       )),
   },
 });
 
-const mcaSearchResultListItemExtension = SearchResultListItemBlueprint.make({
+export const McaSearchResultListItemExtension = SearchResultListItemBlueprint.make({
   name: 'mca-search-result-item',
   params: {
     icon: <RiBubbleChartLine fontSize="inherit" />,
     predicate: result =>
       result.type === 'mca-components' || result.type === 'mca-basetypes',
     component: () =>
-      import('../components/McaComponentSearchResultListItem').then(
+      import('./components/McaComponentSearchResultListItem').then(
         m => m.McaComponentSearchResultListItem,
       ),
   },
@@ -113,6 +117,39 @@ export default createFrontendPlugin({
     mcaComponentPage,
     mcaBaseTypePage,
     mcaApi,
-    mcaSearchResultListItemExtension,
+    McaSearchResultListItemExtension,
   ],
 });
+
+
+// Legacy support for the SearchResultListItemExtension until the new extension is fully supported in the search plugin
+
+export const mcaComponentPlugin = createPlugin({
+  id: 'mca',
+  apis: [
+    createApiFactory({
+      api: mcaComponentsBackendApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+        configApi: configApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi, configApi }) =>
+        new McaComponentsBackendClient({ discoveryApi, fetchApi, configApi }),
+    }),
+  ],
+});
+
+export const McaComponentSearchResultListItem: (
+  props: SearchResultListItemExtensionProps<McaComponentSearchResultListItemProps>,
+) => React.JSX.Element | null = mcaComponentPlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'McaComponentSearchResultListItem',
+    component: () =>
+      import('./components/McaComponentSearchResultListItem').then(
+        m => m.McaComponentSearchResultListItem,
+      ),
+    predicate: result =>
+      result.type === 'mca-components' || result.type === 'mca-basetypes',
+  }),
+);

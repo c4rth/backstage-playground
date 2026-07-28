@@ -1,12 +1,3 @@
-/**
- * API docs spectral linter frontend plugin
- *
- * @packageDocumentation
- */
-
+export { default } from './plugin';
 export { isApiDocsSpectralLinterAvailable } from './lib/helper';
-export {
-  apiDocsSpectralLinterPlugin,
-  EntityApiDocsSpectralLinterCard,
-  EntityApiDocsSpectralLinterContent,
-} from './plugin';
+export { EntityApiDocsSpectralLinterCard } from './components/EntityApiDocsSpectralLinterContent';

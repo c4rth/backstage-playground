@@ -19,22 +19,25 @@ import visualizerPlugin from '@backstage/plugin-app-visualizer';
 import { appOverrides } from './modules/app';
 import { navModule } from './modules/nav';
 import { homePluginOverrides } from './modules/home';
-import apiDocsSpectralLinterPlugin from '@internal/plugin-api-docs-spectral-linter/alpha';
-import apiPlatformPlugin from '@internal/plugin-api-platform/alpha';
-import appRegistryPlugin from '@internal/plugin-app-registry/alpha';
-import azdoPlugin from '@internal/plugin-azure-devops/alpha';
-import analyticsPlugin from '@internal/plugin-analytics/alpha';
-import healthDashboardPlugin from '@internal/plugin-health-dashboard/alpha';
-import toolkitPlugin from '@internal/plugin-toolkit/alpha';
+import apiDocsSpectralLinterPlugin from '@internal/plugin-api-docs-spectral-linter';
+import apiPlatformPlugin from '@internal/plugin-api-platform';
+import appRegistryPlugin from '@internal/plugin-app-registry';
+import azdoPlugin from '@internal/plugin-azure-devops';
+import analyticsPlugin from '@internal/plugin-analytics';
+import healthDashboardPlugin from '@internal/plugin-health-dashboard';
+import toolkitPlugin from '@internal/plugin-toolkit';
 import { devToolsExtensionPlugin } from './modules/devtools';
-import mcaPlugin from '@internal/plugin-mca/alpha';
+import mcaPlugin from '@internal/plugin-mca';
 import { scaffolderExtensions } from '@internal/plugin-scaffolder-extensions';
+import { searchCustomizations } from './modules/search';
 
 const app = createApp({
   features: [
     appOverrides,
     // Nav
     navModule,
+    // Search
+    searchCustomizations,
     // Custom plugins
     apiDocsSpectralLinterPlugin,
     apiPlatformPlugin,
