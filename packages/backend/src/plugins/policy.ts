@@ -88,7 +88,7 @@ export class MyPermissionPolicy implements PermissionPolicy {
       return {
         result:
           isPermission(request.permission, catalogEntityReadPermission) &&
-          !isPermission(request.permission, notGuestPermission)
+            !isPermission(request.permission, notGuestPermission)
             ? AuthorizeResult.ALLOW
             : AuthorizeResult.DENY,
       };

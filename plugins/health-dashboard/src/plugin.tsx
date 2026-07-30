@@ -56,6 +56,7 @@ export default createFrontendPlugin({
   featureFlags: [
     {
       name: 'mock-health-dashboard',
+      description: 'Enable the mock health dashboard endpoint for testing purposes',
     },
   ],
   extensions: [healthDashboardPage, healthDashboardApi],

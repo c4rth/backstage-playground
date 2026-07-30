@@ -47,6 +47,7 @@ export default createFrontendPlugin({
   featureFlags: [
     {
       name: 'mock-app-registry',
+      description: 'Enable the mock app registry endpoint for testing purposes',
     },
   ],
   extensions: [appRegistryPage, appRegistryApi],

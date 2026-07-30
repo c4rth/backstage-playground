@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.53.0",
+  "releaseVersion": "1.53.1",
   "packages": [
     {
       "name": "@backstage/app-defaults",
@@ -11,7 +11,7 @@
     },
     {
       "name": "@backstage/backend-defaults",
-      "version": "0.17.5"
+      "version": "0.17.6"
     },
     {
       "name": "@backstage/backend-dev-utils",
@@ -19,7 +19,7 @@
     },
     {
       "name": "@backstage/backend-dynamic-feature-service",
-      "version": "0.8.4"
+      "version": "0.8.5"
     },
     {
       "name": "@backstage/backend-openapi-utils",
@@ -63,11 +63,11 @@
     },
     {
       "name": "@backstage/cli-module-build",
-      "version": "0.1.5"
+      "version": "0.1.6"
     },
     {
       "name": "@backstage/cli-module-config",
-      "version": "0.1.4"
+      "version": "0.1.5"
     },
     {
       "name": "@backstage/cli-module-github",
@@ -115,7 +115,7 @@
     },
     {
       "name": "@backstage/config-loader",
-      "version": "1.11.0"
+      "version": "1.11.1"
     },
     {
       "name": "@backstage/connections",

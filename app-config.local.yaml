@@ -42,7 +42,8 @@ backend:
 auth:
   autologout:
     enabled: true
-    idleTimeoutMinutes: 10
+    idleTimeoutMinutes: 1
+    logoutIfDisconnected: true
   environment: development
   providers:
     guest:
