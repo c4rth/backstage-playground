@@ -8,6 +8,7 @@ const CronDecoder = lazy(() => import('../Tools/CronDecoder'));
 const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
 const JSONataTester = lazy(() => import('../Tools/jsonata/JSONataTester'));
 const StringUtilities = lazy(() => import('../Tools/StringUtilities'));
+const CryptoCoder = lazy(() => import('../Tools/CryptoCoder'));
 
 export const defaultTools: Tool[] = [
   {
@@ -59,5 +60,12 @@ export const defaultTools: Tool[] = [
     component: <StringUtilities />,
     category: 'Utilities',
     description: 'Various string manipulation tools',
+  },
+  {
+    id: 'crypto-coder',
+    name: 'Crypto Coder',
+    component: <CryptoCoder />,
+    category: 'Encode/Decode',
+    description: 'Encrypt and decrypt strings using PBEWithMD5AndDES',
   },
 ];

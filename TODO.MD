@@ -10,13 +10,13 @@
 
 backstage:
 
-- api-docs
+- DONE: api-docs
 - DONE: catalog
 - DONE: devtools
 - DONE: home
-- org
-- scaffolder .... busy
-- search
+- DONE: org
+- DONE: scaffolder .... busy
+- DONE: search
 - DONE: techdocs
 - DONE: user-settings
 
@@ -34,13 +34,13 @@ community:
 - for API with sort: update to ascending | descending ipo asc desc
   -> compatible with useTable
   - DONE: mca
-  - api-platform
+  - DONE: api-platform
 
 - UI
 
   - update to bui Table
     - DONE: analytics
-    - api-platform
+    - DONE: api-platform
       - api
       - DONE: library
       - service
@@ -49,16 +49,16 @@ community:
     - DONE: azure-devops
     - DONE: catalog-admin
     - DONE: health-dashboard
-    - mca
+    - DONE: mca
       - DONE: basetype
       - DONE: operation/element
       - DONE: methods
       - DONE: fields
     - DONE: toolkit
 
-  - header: HeaderBottom margin
+  - DONE: header: HeaderBottom margin
 
-  - cleanup plugins:
+  - DONE: cleanup plugins:
     use only NFS -> remove old plugins and duplicated JSX components
     - analytics
     - api-platform
