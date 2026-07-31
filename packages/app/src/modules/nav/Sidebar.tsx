@@ -12,7 +12,8 @@ import {
   DocsIcon,
 } from '@backstage/core-components';
 import { RiMenuSearchLine, RiBubbleChartLine } from '@remixicon/react';
-import { IconComponent } from '@backstage/core-plugin-api';// Permission on menu
+import { IconComponent } from '@backstage/core-plugin-api';
+// Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Search

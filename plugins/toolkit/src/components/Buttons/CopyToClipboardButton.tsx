@@ -40,7 +40,7 @@ export const CopyToClipboardButton = (props: Props) => {
       >
         Copy
       </Button>
-      <Tooltip placement="bottom">{props.title || 'Copy to clipboard'}</Tooltip>
+      <Tooltip placement="bottom">{props.title || 'Copy output to clipboard'}</Tooltip>
     </TooltipTrigger>
   );
 };

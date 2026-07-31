@@ -63,9 +63,9 @@ export const defaultTools: Tool[] = [
   },
   {
     id: 'crypto-coder',
-    name: 'Crypto Coder',
+    name: 'Ciphers',
     component: <CryptoCoder />,
     category: 'Encode/Decode',
-    description: 'Encrypt and decrypt strings using PBEWithMD5AndDES',
+    description: 'Encrypt and decrypt strings',
   },
 ];
