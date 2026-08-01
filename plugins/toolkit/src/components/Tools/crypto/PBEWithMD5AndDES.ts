@@ -7,13 +7,12 @@ import {
   CipherParams,
   CBC,
   Pkcs7,
-} from "crypto-es";
+} from 'crypto-es';
 
 export class PBEWithMD5AndDES {
   private static readonly ITERATIONS = 1000;
 
-  constructor() {
-  }
+  constructor() {}
 
   /**
    * Encrypts a plain text string using PBEWithMD5AndDES.
@@ -52,7 +51,7 @@ export class PBEWithMD5AndDES {
       // 5. Convert to Base64
       return combinedWordArray.toString(Base64);
     } catch (error) {
-      return this.formatCryptoError("encrypt", error);
+      return this.formatCryptoError('encrypt', error);
     }
   }
 
@@ -65,14 +64,14 @@ export class PBEWithMD5AndDES {
     }
 
     if (!encryptedText?.trim()) {
-      return "";
+      return '';
     }
 
     try {
       // 1. Decode Base64 input
       const fullCipherWordArray = Base64.parse(encryptedText);
       if (fullCipherWordArray.sigBytes <= 8) {
-        throw new Error("input is too short or not a valid encrypted payload");
+        throw new Error('input is too short or not a valid encrypted payload');
       }
 
       // 2. Extract salt (first 8 bytes / 2 words)
@@ -83,7 +82,7 @@ export class PBEWithMD5AndDES {
       const cipherTextWords = fullCipherWordArray.words.slice(2);
       const cipherTextLength = fullCipherWordArray.sigBytes - 8;
       if (cipherTextLength <= 0 || cipherTextLength % 8 !== 0) {
-        throw new Error("ciphertext length is invalid");
+        throw new Error('ciphertext length is invalid');
       }
       const cipherText = WordArray.create(cipherTextWords, cipherTextLength);
 
@@ -104,19 +103,26 @@ export class PBEWithMD5AndDES {
       // 6. Convert decrypted word array to UTF-8 string
       return decryptedWordArray.toString(Utf8);
     } catch (error) {
-      return this.formatCryptoError("decrypt", error);
+      return this.formatCryptoError('decrypt', error);
     }
   }
 
-  private formatCryptoError(operation: "encrypt" | "decrypt", error: unknown): string {
-    const detail = error instanceof Error && error.message ? `: ${error.message}` : "";
+  private formatCryptoError(
+    operation: 'encrypt' | 'decrypt',
+    error: unknown,
+  ): string {
+    const detail =
+      error instanceof Error && error.message ? `: ${error.message}` : '';
     return `Cannot ${operation}${detail}`;
   }
 
   /**
    * Helper method to perform PKCS#5 v1.5 PBKDF1 Key Derivation.
    */
-  private deriveKeyAndIV(password: string, salt: WordArray): { key: WordArray; iv: WordArray } {
+  private deriveKeyAndIV(
+    password: string,
+    salt: WordArray,
+  ): { key: WordArray; iv: WordArray } {
     const passwordWords = Utf8.parse(password);
 
     // Iteration 1: MD5(password + salt)

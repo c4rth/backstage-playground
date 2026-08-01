@@ -16,7 +16,10 @@ import { apiPlatformBackendApiRef } from '../../plugin';
 import { useEffect, useRef, useState } from 'react';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentOwnership } from '../common';
-import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import {
+  ComponentDisplayName,
+  LinkComponentDisplayName,
+} from '@internal/plugin-api-platform-react';
 import {
   Box,
   Select,
@@ -68,9 +71,9 @@ const getData = async (
     search: search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ApiDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
     apiType,
@@ -78,15 +81,15 @@ const getData = async (
 
   return result
     ? {
-      data: result.items.map(toEntityRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toEntityRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
 };
 
 const COLUMNS: ColumnConfig<TableRow>[] = [
@@ -112,7 +115,9 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
     width: '45%',
     isSortable: true,
     cell: ({ description }: TableRow) => (
-      <Cell><OverflowTooltip text={description} line={2} /></Cell>
+      <Cell>
+        <OverflowTooltip text={description} line={2} />
+      </Cell>
     ),
   },
   {
@@ -129,7 +134,9 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
     isSortable: true,
     cell: ({ system }: TableRow) =>
       system === '-' ? (
-        <Cell><ComponentDisplayName text={system} type="system" /></Cell>
+        <Cell>
+          <ComponentDisplayName text={system} type="system" />
+        </Cell>
       ) : (
         <Cell>
           <LinkComponentDisplayName
@@ -191,7 +198,7 @@ export const ApiTable = () => {
       pageSize,
       sort,
       search,
-    );;
+    );
     setCountRows(result.totalCount);
     return result;
   };

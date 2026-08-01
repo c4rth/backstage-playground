@@ -21,7 +21,10 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiAllRelationsCard } from './ApiAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { Box, Tab, TabList, TabPanel, Tabs, Link, Flex } from '@backstage/ui';
-import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import {
+  ComponentDisplayName,
+  LinkComponentDisplayName,
+} from '@internal/plugin-api-platform-react';
 
 export const ApiDefinitionCard = () => {
   const { entity } = useEntity<ApiEntity>();
@@ -127,10 +130,11 @@ export const ApiDefinitionCard = () => {
                 <AboutField label="Azure Artifact">
                   <LinkComponentDisplayName
                     href={artifactUrl}
-                    text={artifactText} 
-                    type="azdo"       
-                    target="_blank"              
-                    rel="noopener noreferrer"/>
+                    text={artifactText}
+                    type="azdo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
                 </AboutField>
               </Box>
               <Box mt="6">

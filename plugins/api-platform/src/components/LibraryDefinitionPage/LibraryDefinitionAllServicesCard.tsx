@@ -1,9 +1,15 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo, useState } from 'react';
-import { Box, Text, ColumnConfig, Table, useTable, Column, SearchField } from '@backstage/ui';
+import {
+  Box,
+  Text,
+  ColumnConfig,
+  Table,
+  useTable,
+  Column,
+  SearchField,
+} from '@backstage/ui';
 import {
   LibraryDefinition,
   ServiceDefinition,
@@ -110,7 +116,6 @@ interface LibraryServicesCardProps {
   componentName?: string;
 }
 
-
 type LibraryDefinitionAllServiceTableProps = {
   title: string;
   rows: TableRow[];
@@ -119,7 +124,13 @@ type LibraryDefinitionAllServiceTableProps = {
   setSelectedDependency: (type: DependentsType) => void;
 };
 
-const LibraryDefinitionAllServiceTable = ({ title, rows, version, selectedDependency, setSelectedDependency }: LibraryDefinitionAllServiceTableProps) => {
+const LibraryDefinitionAllServiceTable = ({
+  title,
+  rows,
+  version,
+  selectedDependency,
+  setSelectedDependency,
+}: LibraryDefinitionAllServiceTableProps) => {
   const { tableProps, search } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -143,21 +154,21 @@ const LibraryDefinitionAllServiceTable = ({ title, rows, version, selectedDepend
     },
     searchFn: (items, query) => {
       const lowerQuery = query.toLowerCase();
-      return items.filter(
-        item => {
-          return item.name.toLowerCase().includes(lowerQuery) ||
-            item.system.toLowerCase().includes(lowerQuery) ||
-            item.serviceDefinition.versions.some(version => {
-              return Object.values(version.environments).some(envData => {
-                return envData?.dependencies
-                  ?.join(', ')
-                  .toLowerCase()
-                  .includes(lowerQuery);
-              });
+      return items.filter(item => {
+        return (
+          item.name.toLowerCase().includes(lowerQuery) ||
+          item.system.toLowerCase().includes(lowerQuery) ||
+          item.serviceDefinition.versions.some(version => {
+            return Object.values(version.environments).some(envData => {
+              return envData?.dependencies
+                ?.join(', ')
+                .toLowerCase()
+                .includes(lowerQuery);
             });
-        }
-      );
-    }
+          })
+        );
+      });
+    },
   });
 
   return (
@@ -184,7 +195,8 @@ const LibraryDefinitionAllServiceTable = ({ title, rows, version, selectedDepend
             />
           </Box>
         </>
-      }>
+      }
+    >
       <Box>
         <Table
           columnConfig={COLUMNS}
@@ -196,7 +208,7 @@ const LibraryDefinitionAllServiceTable = ({ title, rows, version, selectedDepend
           className="denseTable"
         />
       </Box>
-    </EntityInfoCard >
+    </EntityInfoCard>
   );
 };
 

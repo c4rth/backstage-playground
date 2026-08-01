@@ -1,1 +1,1 @@
-export { AzureReadmeCard  } from './AzureReadmeCard';
+export { AzureReadmeCard } from './AzureReadmeCard';

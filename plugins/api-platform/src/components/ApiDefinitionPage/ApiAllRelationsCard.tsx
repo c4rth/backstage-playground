@@ -1,6 +1,4 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   Entity,
   parseEntityRef,
@@ -26,7 +24,10 @@ import {
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
 import { useGetApiVersions } from '../../hooks';
-import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import {
+  ComponentDisplayName,
+  LinkComponentDisplayName,
+} from '@internal/plugin-api-platform-react';
 import { Table, useTable, ColumnConfig, Cell, CellText } from '@backstage/ui';
 import { Progress } from '@backstage/frontend-plugin-api';
 
@@ -48,10 +49,10 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Cell>
         <LinkComponentDisplayName
-            href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
-            text={svcName}
-            type="service"
-          />
+          href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+          text={svcName}
+          type="service"
+        />
       </Cell>
     ),
   },
@@ -68,10 +69,10 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Cell>
         <LinkComponentDisplayName
-            href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
-            text={svcVersion}
-            type="service"
-          />
+          href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+          text={svcVersion}
+          type="service"
+        />
       </Cell>
     ),
   },
@@ -82,10 +83,10 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Cell>
         <LinkComponentDisplayName
-            href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
-            text={svcEnvironment}
-            type="service"
-          />
+          href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
+          text={svcEnvironment}
+          type="service"
+        />
       </Cell>
     ),
   },
@@ -185,8 +186,7 @@ const ApiAllRelationsTable = ({ title, rows }: ApiAllRelationsTableProps) => {
   });
 
   return (
-    <EntityInfoCard
-      title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={`${title} (${rows.length})`}>
       <Table
         columnConfig={serviceColumns}
         {...tableProps}

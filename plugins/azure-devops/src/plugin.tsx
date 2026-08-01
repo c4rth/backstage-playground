@@ -26,7 +26,6 @@ const azureDevOpsApi = ApiBlueprint.make({
     }),
 });
 
-
 /** @public */
 export const isAzureDevOpsAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[AZURE_DEVOPS_REPO_ANNOTATION]);

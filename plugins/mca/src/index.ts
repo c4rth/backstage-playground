@@ -3,4 +3,7 @@ export { McaComponentExplorerPage } from './components/McaComponentExplorerPage'
 export { McaBaseTypeExplorerPage } from './components/McaBaseTypeExplorerPage';
 export { McaComponentDefinitionPage } from './components/McaComponentDefinitionPage';
 export { McaBaseTypeDefinitionPage } from './components/McaBaseTypeDefinitionPage';
-export { McaSearchResultListItemExtension, McaComponentSearchResultListItem } from './plugin';
+export {
+  McaSearchResultListItemExtension,
+  McaComponentSearchResultListItem,
+} from './plugin';

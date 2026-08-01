@@ -5,13 +5,13 @@ import { Flex, TextAreaField, TextField, Select, Option } from '@backstage/ui';
 import styles from '../styles/customTextAreaField.module.css';
 import { AES, DES, TripleDES, Rabbit, RC4, Utf8 } from 'crypto-es';
 
- const algorithms: Option[] =[
-      { label: 'AES', id: 'aes' },
-      { label: 'DES', id: 'des' },
-      { label: 'TripleDES', id: 'tripledes' },
-      { label: 'Rabbit', id: 'rabbit' },
-      { label: 'RC4', id: 'rc4' },
-      { label: 'PBEWithMD5AndDES (jasypt)', id: 'pbestring' },
+const algorithms: Option[] = [
+  { label: 'AES', id: 'aes' },
+  { label: 'DES', id: 'des' },
+  { label: 'TripleDES', id: 'tripledes' },
+  { label: 'Rabbit', id: 'rabbit' },
+  { label: 'RC4', id: 'rc4' },
+  { label: 'PBEWithMD5AndDES (jasypt)', id: 'pbestring' },
 ];
 
 export const CryptoCoder = () => {
@@ -34,7 +34,7 @@ export const CryptoCoder = () => {
   useEffect(() => {
     if (!input) {
       setOutput('');
-      return; 
+      return;
     }
 
     if (mode === 'Encode') {
@@ -103,7 +103,10 @@ export const CryptoCoder = () => {
       output={output}
       modes={['Decode', 'Encode']}
       leftContent={
-        <Flex direction="column" style={{ gap: '8px', width: '100%', height: '100%', minHeight: 0 }}>
+        <Flex
+          direction="column"
+          style={{ gap: '8px', width: '100%', height: '100%', minHeight: 0 }}
+        >
           <Select
             style={{ flex: '0 0 auto' }}
             onChange={v => setAlgorithm(v as string)}

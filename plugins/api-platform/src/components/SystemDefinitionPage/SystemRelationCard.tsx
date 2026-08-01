@@ -119,9 +119,7 @@ export const SystemRelationCard = ({
   });
 
   return (
-    <EntityInfoCard
-      title={`${title} (${rows.length})`}
-    >
+    <EntityInfoCard title={`${title} (${rows.length})`}>
       <Table
         columnConfig={columns}
         {...tableProps}

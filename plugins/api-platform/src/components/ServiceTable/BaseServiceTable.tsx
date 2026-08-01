@@ -1,6 +1,4 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
 import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import {
@@ -89,14 +87,15 @@ const createVersionColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
       <Text weight="bold">Version</Text>
     </Column>
   ),
-  cell: ({ serviceDefinition }) => renderVersionList(serviceDefinition, (version, idx) => (
-    <ComponentChip
-      index={idx}
-      backgroundColor="#C30045"
-      text={version.version}
-      link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
-    />
-  )),
+  cell: ({ serviceDefinition }) =>
+    renderVersionList(serviceDefinition, (version, idx) => (
+      <ComponentChip
+        index={idx}
+        backgroundColor="#C30045"
+        text={version.version}
+        link={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}?version=${version.version}`}
+      />
+    )),
 });
 
 const createSystemColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
@@ -151,9 +150,9 @@ const getData = async <T extends BaseTableRow>(
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ServiceDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -161,15 +160,15 @@ const getData = async <T extends BaseTableRow>(
 
   const res = result
     ? {
-      data: result.items.map(toRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
 
   console.log(res);
   return res;

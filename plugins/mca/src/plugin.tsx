@@ -16,7 +16,10 @@ import {
 } from './routes';
 import { RiAlbumLine, RiBubbleChartLine } from '@remixicon/react';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
-import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import {
+  createSearchResultListItemExtension,
+  SearchResultListItemExtensionProps,
+} from '@backstage/plugin-search-react';
 import { McaComponentSearchResultListItemProps } from './components/McaComponentSearchResultListItem';
 import { createPlugin } from '@backstage/core-plugin-api';
 
@@ -91,18 +94,19 @@ const mcaBaseTypePage = PageBlueprint.make({
   },
 });
 
-export const McaSearchResultListItemExtension = SearchResultListItemBlueprint.make({
-  name: 'mca-search-result-item',
-  params: {
-    icon: <RiBubbleChartLine fontSize="inherit" />,
-    predicate: result =>
-      result.type === 'mca-components' || result.type === 'mca-basetypes',
-    component: () =>
-      import('./components/McaComponentSearchResultListItem').then(
-        m => m.McaComponentSearchResultListItem,
-      ),
-  },
-});
+export const McaSearchResultListItemExtension =
+  SearchResultListItemBlueprint.make({
+    name: 'mca-search-result-item',
+    params: {
+      icon: <RiBubbleChartLine fontSize="inherit" />,
+      predicate: result =>
+        result.type === 'mca-components' || result.type === 'mca-basetypes',
+      component: () =>
+        import('./components/McaComponentSearchResultListItem').then(
+          m => m.McaComponentSearchResultListItem,
+        ),
+    },
+  });
 
 export default createFrontendPlugin({
   pluginId: 'mca',
@@ -120,7 +124,6 @@ export default createFrontendPlugin({
     McaSearchResultListItemExtension,
   ],
 });
-
 
 // Legacy support for the SearchResultListItemExtension until the new extension is fully supported in the search plugin
 

@@ -10,7 +10,6 @@ export type LinkComponentDisplayNameProps = {
   target?: HTMLAttributeAnchorTarget;
 };
 
-
 export const LinkComponentDisplayName = ({
   text,
   type,
@@ -30,4 +29,4 @@ export const LinkComponentDisplayName = ({
       <ComponentDisplayName text={text} type={type} />
     </Link>
   );
-}
+};

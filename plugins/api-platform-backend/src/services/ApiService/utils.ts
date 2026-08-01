@@ -27,7 +27,10 @@ export const parseOrderByParam = <T extends readonly string[]>(
       `invalid orderBy field, must be one of ${allowedFields.join(', ')}`,
     );
   }
-  return { field: field as T[number], direction: direction as 'ascending' | 'descending' };
+  return {
+    field: field as T[number],
+    direction: direction as 'ascending' | 'descending',
+  };
 };
 
 export const parseSearchParam = (str: unknown): string | undefined => {

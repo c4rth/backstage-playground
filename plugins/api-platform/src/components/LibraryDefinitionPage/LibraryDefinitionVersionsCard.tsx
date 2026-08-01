@@ -1,13 +1,5 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
-import {
-  Cell,
-  ColumnConfig,
-  Table,
-  useTable,
-  CellText,
-} from '@backstage/ui';
+import { ResponseErrorPanel } from '@backstage/core-components';
+import { Cell, ColumnConfig, Table, useTable, CellText } from '@backstage/ui';
 import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
@@ -68,7 +60,6 @@ interface LibraryVersionsCardProps {
   name: string;
 }
 
-
 type LibraryVersionsTableProps = {
   readonly title: string;
   readonly rows: TableRow[];
@@ -99,8 +90,7 @@ const LibraryVersionsTable = ({ title, rows }: LibraryVersionsTableProps) => {
   });
 
   return (
-    <EntityInfoCard
-      title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={`${title} (${rows.length})`}>
       <Table
         columnConfig={columns}
         {...tableProps}
@@ -118,13 +108,13 @@ export const LibraryDefinitionVersionsCard = ({
   system,
   name,
 }: LibraryVersionsCardProps) => {
-
   const { libraryVersions, loading, error } = useGetLibraryVersions(
     system!,
     name!,
   );
 
-  const rows = libraryVersions?.map((l, idx) => toRow(l, system, name, idx)) ?? [];
+  const rows =
+    libraryVersions?.map((l, idx) => toRow(l, system, name, idx)) ?? [];
 
   if (loading) {
     return <Progress />;

@@ -16,7 +16,10 @@ import {
 } from '@backstage/ui';
 import { useCallback, useState } from 'react';
 import { ComponentOwnership } from '../common';
-import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import {
+  ComponentDisplayName,
+  LinkComponentDisplayName,
+} from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';

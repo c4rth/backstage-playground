@@ -7,8 +7,11 @@
     "plugins/*/src",
     "plugins/*/config.d.ts",
     "plugins/*/dev",
-    "plugins/*/migrations"
-, "plugins/app-registry/src/plugin.tsx", "plugins/api-docs-spectral-linter/src/plugin.tsx", "plugins/api-platform/src/plugin.tsx"  ],
+    "plugins/*/migrations",
+    "plugins/app-registry/src/plugin.tsx",
+    "plugins/api-docs-spectral-linter/src/plugin.tsx",
+    "plugins/api-platform/src/plugin.tsx"
+  ],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "dist-types",

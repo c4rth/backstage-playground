@@ -1,6 +1,4 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import {
   Entity,
@@ -8,7 +6,11 @@ import {
   RELATION_CONSUMES_API,
   RELATION_PROVIDES_API,
 } from '@backstage/catalog-model';
-import { catalogApiRef, EntityInfoCard, useEntity } from '@backstage/plugin-catalog-react';
+import {
+  catalogApiRef,
+  EntityInfoCard,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import {
@@ -18,7 +20,10 @@ import {
   CATALOG_METADATA_API_VERSION,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
-import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import {
+  ComponentDisplayName,
+  LinkComponentDisplayName,
+} from '@internal/plugin-api-platform-react';
 import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
@@ -42,9 +47,10 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
       ) : (
         <Cell>
           <LinkComponentDisplayName
-            href={`/api-platform/api/${system}/${name}?version=${version}`} 
-            text={name} 
-            type="api" />
+            href={`/api-platform/api/${system}/${name}?version=${version}`}
+            text={name}
+            type="api"
+          />
         </Cell>
       ),
   },
@@ -118,7 +124,10 @@ type ServiceApiRelationTableProps = {
   rows: TableRow[];
 };
 
-const ServiceApiRelationTable = ({ title, rows }: ServiceApiRelationTableProps) => {
+const ServiceApiRelationTable = ({
+  title,
+  rows,
+}: ServiceApiRelationTableProps) => {
   const { tableProps } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -132,8 +141,7 @@ const ServiceApiRelationTable = ({ title, rows }: ServiceApiRelationTableProps) 
   });
 
   return (
-    <EntityInfoCard
-      title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={`${title} (${rows.length})`}>
       <Table
         columnConfig={serviceColumns}
         {...tableProps}

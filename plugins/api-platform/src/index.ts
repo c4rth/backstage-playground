@@ -8,5 +8,9 @@ export { SystemDefinitionPage } from './components/SystemDefinitionPage';
 export { LibraryExplorerPage } from './components/LibraryExplorerPage';
 export { LibraryDefinitionPage } from './components/LibraryDefinitionPage';
 export { ApiRedirectToNoSystem } from './components/ApiDefinitionPage';
-export { ApiSearchResultListItemExtension, apiPlatformBackendApiRef, ApiSearchResultListItem} from './plugin';
+export {
+  ApiSearchResultListItemExtension,
+  apiPlatformBackendApiRef,
+  ApiSearchResultListItem,
+} from './plugin';
 export * from './hooks';

@@ -22,7 +22,11 @@ export const Base64Encode = () => {
       setMode={setMode}
       output={output}
       modes={['Decode', 'Encode']}
-      sample={mode === 'Encode' ? 'Lorem ipsum dolor sit amet' : 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQ='}
+      sample={
+        mode === 'Encode'
+          ? 'Lorem ipsum dolor sit amet'
+          : 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQ='
+      }
     />
   );
 };

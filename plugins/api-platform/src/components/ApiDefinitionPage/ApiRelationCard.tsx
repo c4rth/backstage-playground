@@ -1,6 +1,4 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   Entity,
   parseEntityRef,
@@ -23,7 +21,10 @@ import {
   CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
-import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import {
+  ComponentDisplayName,
+  LinkComponentDisplayName,
+} from '@internal/plugin-api-platform-react';
 import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import { Progress } from '@backstage/frontend-plugin-api';
 
@@ -69,7 +70,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     label: 'Environment',
     width: '15%',
     id: 'environment',
-   cell: ({ system, name, version, environment }: TableRow) => (
+    cell: ({ system, name, version, environment }: TableRow) => (
       <Cell>
         <LinkComponentDisplayName
           href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
@@ -171,8 +172,7 @@ const ApiRelationTable = ({ title, rows }: ApiRelationTableProps) => {
   });
 
   return (
-    <EntityInfoCard
-      title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={`${title} (${rows.length})`}>
       <Table
         columnConfig={serviceColumns}
         {...tableProps}

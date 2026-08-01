@@ -27,7 +27,10 @@ import {
   RiBookShelfLine,
 } from '@remixicon/react';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
-import { createSearchResultListItemExtension, SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import {
+  createSearchResultListItemExtension,
+  SearchResultListItemExtensionProps,
+} from '@backstage/plugin-search-react';
 import { ApiSearchResultListItemProps } from './components/ApiSearchResultListItem';
 import { createPlugin } from '@backstage/core-plugin-api';
 
@@ -181,23 +184,25 @@ const apiPlatformApi = ApiBlueprint.make({
     }),
 });
 
-export const ApiSearchResultListItemExtension = SearchResultListItemBlueprint.make({
-  name: 'api-search-result-item',
-  params: {
-    icon: <RiPuzzleFill fontSize="inherit" />,
-    predicate: result =>
-      result.type === 'software-catalog' &&
-      (result.document as any).type.startsWith('api-platform.'),
-    component: () =>
-      import('./components/ApiSearchResultListItem').then(
-        m => m.ApiSearchResultListItem,
-      ),
-  },
-});
+export const ApiSearchResultListItemExtension =
+  SearchResultListItemBlueprint.make({
+    name: 'api-search-result-item',
+    params: {
+      icon: <RiPuzzleFill fontSize="inherit" />,
+      predicate: result =>
+        result.type === 'software-catalog' &&
+        (result.document as any).type.startsWith('api-platform.'),
+      component: () =>
+        import('./components/ApiSearchResultListItem').then(
+          m => m.ApiSearchResultListItem,
+        ),
+    },
+  });
 
-export const apiPlatformBackendApiRef = createApiRef<ApiPlatformBackendApi>().with({
-  id: 'plugin.api-platform.service',
-});
+export const apiPlatformBackendApiRef =
+  createApiRef<ApiPlatformBackendApi>().with({
+    id: 'plugin.api-platform.service',
+  });
 
 export default createFrontendPlugin({
   pluginId: 'api-platform',

@@ -1,13 +1,15 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import {
   Entity,
   parseEntityRef,
   RELATION_DEPENDS_ON,
 } from '@backstage/catalog-model';
-import { catalogApiRef, EntityInfoCard, useEntity } from '@backstage/plugin-catalog-react';
+import {
+  catalogApiRef,
+  EntityInfoCard,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import {
@@ -17,7 +19,10 @@ import {
   CATALOG_METADATA_LIBRARY_VERSION,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
-import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import {
+  ComponentDisplayName,
+  LinkComponentDisplayName,
+} from '@internal/plugin-api-platform-react';
 import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
@@ -124,13 +129,15 @@ const toRow = (entity: Entity, idx: number): TableRow => {
   };
 };
 
-
 type ServiceLibraryRelationTableProps = {
   title: string;
   rows: TableRow[];
 };
 
-const ServiceLibraryRelationTable = ({ title, rows }: ServiceLibraryRelationTableProps) => {
+const ServiceLibraryRelationTable = ({
+  title,
+  rows,
+}: ServiceLibraryRelationTableProps) => {
   const { tableProps } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -144,8 +151,7 @@ const ServiceLibraryRelationTable = ({ title, rows }: ServiceLibraryRelationTabl
   });
 
   return (
-    <EntityInfoCard
-      title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={`${title} (${rows.length})`}>
       <Table
         columnConfig={serviceColumns}
         {...tableProps}
@@ -220,17 +226,14 @@ export const ServiceLibraryRelationCard = () => {
 
   if (error) {
     return (
-      <ResponseErrorPanel
-        title={`Error loading Libraries`}
-        error={error}
-      />
+      <ResponseErrorPanel title={`Error loading Libraries`} error={error} />
     );
   }
 
   return (
     <ServiceLibraryRelationTable
       key={`service-library-${rows.length}`}
-      title='Libraries'
+      title="Libraries"
       rows={rows}
     />
   );

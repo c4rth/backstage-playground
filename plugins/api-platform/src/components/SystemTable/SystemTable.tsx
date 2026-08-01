@@ -1,6 +1,4 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
@@ -43,11 +41,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
     isSortable: true,
     cell: ({ name }: TableRow) => (
       <Cell>
-        <LinkComponentDisplayName
-          href={name}
-          text={name}
-          type="system"
-        />
+        <LinkComponentDisplayName href={name} text={name} type="system" />
       </Cell>
     ),
   },
@@ -98,9 +92,9 @@ const getData = async (
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as SystemDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
     ownership,
   });
@@ -118,7 +112,6 @@ const getData = async (
     page: 0,
   };
 };
-
 
 function getTitle(ownership: OwnershipType, countRows: number) {
   return `${ownership === 'owned' ? 'Owned' : 'All'} Systems (${countRows})`;
@@ -151,7 +144,7 @@ export const SystemTable = () => {
       pageSize,
       sort,
       search,
-    );;
+    );
     setCountRows(result.totalCount);
     return result;
   };

@@ -1,7 +1,7 @@
 export {
-    default,
-    isAzureDevOpsAvailable,
-    isAzurePipelinesAvailable,
+  default,
+  isAzureDevOpsAvailable,
+  isAzurePipelinesAvailable,
 } from './plugin';
 export { AzureDevOpsPipelinePage } from './components/AzureDevOpsPipelinePage';
 export { AzureDevOpsGitTagsPage } from './components/AzureDevOpsGitTagsPage';
