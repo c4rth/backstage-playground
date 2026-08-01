@@ -7,7 +7,6 @@ import { searchPlugin } from '@backstage/plugin-search';
 import { McaSearchResultListItemExtension } from '@internal/plugin-mca';
 import { ApiSearchResultListItemExtension } from '@internal/plugin-api-platform';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
-
 import {
   DefaultResultListItem,
   SearchBar,
@@ -18,6 +17,7 @@ import {
 } from '@backstage/plugin-search-react';
 import { SearchResult } from '@backstage/plugin-search-common';
 import { Container } from '@backstage/ui';
+import { UrlUpdater } from './UrlUpdater';
 
 const searchPageOverride = PageBlueprint.makeWithOverrides({
   inputs: {
@@ -70,6 +70,7 @@ const searchPageOverride = PageBlueprint.makeWithOverrides({
         };
         return (
           <SearchContextProvider>
+            <UrlUpdater />
             <Component />
           </SearchContextProvider>
         );

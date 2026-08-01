@@ -11,7 +11,6 @@ export const homePageOverrides = PageBlueprint.makeWithOverrides({
       path: '/',
       loader: async () => {
         const { HomePage } = await import('./HomePage');
-
         return <HomePage />;
       },
     });
