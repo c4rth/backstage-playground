@@ -2,7 +2,8 @@ import { HomePageToolkit } from '@backstage/plugin-home';
 import { useToolkitData } from '../../hooks/useToolkitData';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ToolkitLink } from '../../types/types';
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 export const ToolkitCard = () => {
   const configApi = useApi(configApiRef);

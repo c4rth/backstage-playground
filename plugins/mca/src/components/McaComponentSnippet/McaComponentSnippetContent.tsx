@@ -1,6 +1,5 @@
 import type {} from 'react-syntax-highlighter';
 import type { SyntaxHighlighterProps } from 'react-syntax-highlighter';
-import { Progress } from '@backstage/core-components';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
 import { Box, ButtonIcon, Flex, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { RiFileCopy2Line, RiFileDownloadFill } from '@remixicon/react';
@@ -8,6 +7,7 @@ import { MouseEventHandler, Suspense, lazy, useEffect } from 'react';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 const LightAsync = lazy(async () => {
   const module = await import('react-syntax-highlighter/dist/esm/light-async');

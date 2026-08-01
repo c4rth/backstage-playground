@@ -16,7 +16,7 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getDurationFromDates } from '../../utils';
 import { DateTime } from 'luxon';
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   AZURE_DEVOPS_DEFAULT_TOP,
   getAnnotationValuesFromEntity,
@@ -27,6 +27,7 @@ import { AzureDevOpsApi, azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildStateComponent } from './BuildStateComponent';
 import { LogsDialog } from './LogsDialog';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number;

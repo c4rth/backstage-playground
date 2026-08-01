@@ -1,10 +1,11 @@
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { McaComponent } from '@internal/plugin-mca-common';
 import { useGetMcaComponentDefinition } from '../../hooks';
 import { McaOperationDefinitionTabs } from './McaOperationDefinitionTabs';
 import { McaElementDefinitionTabs } from './McaElementDefinitionTabs';
 import { memo, useMemo } from 'react';
 import { XMLParser } from 'fast-xml-parser';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 function getComponentType(
   componentName: string,

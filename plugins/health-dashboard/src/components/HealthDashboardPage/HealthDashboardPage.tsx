@@ -1,4 +1,4 @@
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   Box,
   Cell,
@@ -20,6 +20,7 @@ import { HealthProbeCell } from './HealthProbeCell';
 import {
   InformationPopup,
   InformationPopupContent,
+  Progress,
 } from '@internal/plugin-api-platform-react';
 import styles from './HealthDashboardPage.module.css';
 

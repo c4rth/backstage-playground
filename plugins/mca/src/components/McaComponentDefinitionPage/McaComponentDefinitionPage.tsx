@@ -1,4 +1,4 @@
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { Select, Option, PluginHeader, Container } from '@backstage/ui';
 import { RiBubbleChartLine } from '@remixicon/react';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 function mapMcaVersions(mca: McaComponent | undefined): Option[] {
   if (!mca) return [];

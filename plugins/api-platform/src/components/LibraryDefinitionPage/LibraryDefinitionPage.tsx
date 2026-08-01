@@ -1,4 +1,4 @@
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { useParams } from 'react-router-dom';
 import { LibraryDefinitionVersionsCard } from './LibraryDefinitionVersionsCard';
 import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
@@ -24,6 +24,7 @@ import {
   Tooltip,
 } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 export const LibraryDefinitionPage = () => {
   const { system, name } = useParams();

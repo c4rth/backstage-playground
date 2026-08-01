@@ -7,7 +7,7 @@ interface DependentsToggleProps {
   selectedType: DependentsType;
 }
 
-const chipStyle = { marginTop: '6px', cursor: 'pointer', marginRight: '8px' };
+const chipStyle = { cursor: 'pointer', marginRight: '8px' };
 
 export const DependentsToggle = ({
   handleDependentChange,

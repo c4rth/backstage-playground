@@ -1,4 +1,4 @@
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   Box,
@@ -19,6 +19,7 @@ import { ComponentOwnership } from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
+  Progress,
 } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';

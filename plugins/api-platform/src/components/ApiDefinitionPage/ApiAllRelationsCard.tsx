@@ -27,9 +27,9 @@ import { useGetApiVersions } from '../../hooks';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
+  Progress,
 } from '@internal/plugin-api-platform-react';
 import { Table, useTable, ColumnConfig, Cell, CellText } from '@backstage/ui';
-import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   readonly id: number;

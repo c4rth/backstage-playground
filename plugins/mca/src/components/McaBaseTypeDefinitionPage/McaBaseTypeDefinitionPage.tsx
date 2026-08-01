@@ -1,4 +1,4 @@
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useParams } from 'react-router-dom';
 import { mcaComponentsBackendApiRef } from '../../api';
@@ -6,6 +6,7 @@ import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
 import { FullPage, PluginHeader } from '@backstage/ui';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 async function getBaseType(
   mcaApi: McaComponentsBackendApi,

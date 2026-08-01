@@ -1,7 +1,6 @@
 import {
   CodeSnippet,
   MarkdownContent,
-  Progress,
   WarningPanel,
 } from '@backstage/core-components';
 import useAsync from 'react-use/lib/useAsync';
@@ -10,6 +9,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { linterApiRef } from '../../api';
 import { EntityInfoCard, useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, Text, Link } from '@backstage/ui';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 /**
  * Component for browsing API docs spectral linter on an entity page.

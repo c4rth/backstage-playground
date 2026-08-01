@@ -177,12 +177,10 @@ const LibraryDefinitionAllServiceTable = ({
       headerActions={
         <>
           {!version && (
-            <Box mb="4">
               <DependentsToggle
                 handleDependentChange={type => setSelectedDependency(type)}
                 selectedType={selectedDependency}
               />
-            </Box>
           )}
           <Box style={{ marginLeft: 'auto', width: '250px' }}>
             <SearchField

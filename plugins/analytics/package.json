@@ -44,6 +44,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
+    "@internal/plugin-api-platform-react": "workspace:^",
     "recharts": "^3.10.1"
   },
   "devDependencies": {

@@ -1,11 +1,10 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { Cell, ColumnConfig, Table, useTable, CellText } from '@backstage/ui';
-import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName, Progress } from '@internal/plugin-api-platform-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { useGetLibraryVersions } from '../..';
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
-import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   readonly id: number;

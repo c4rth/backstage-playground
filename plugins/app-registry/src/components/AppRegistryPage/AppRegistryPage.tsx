@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGetOperations } from '../../hooks';
@@ -29,6 +29,7 @@ import {
   ColumnConfig,
   Box,
 } from '@backstage/ui';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number;

@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { analyticsBackendApiRef } from '../../api';
 import { Box, Container, Flex, Select } from '@backstage/ui';
 import { DailyVisitor } from '../../api/CustomAnalyticsApi';
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { DailyUsersChart } from './DailyUsersChart';
 import { TopFeaturesTable, TableRow, toRow } from './TopFeaturesTable';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 const daysToShowOptions = [
   { label: 'Today', id: '0' },

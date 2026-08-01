@@ -13,7 +13,7 @@ import {
   Link,
 } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { Progress, ResponseErrorPanel } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   GitTag,
   getAnnotationValuesFromEntity,
@@ -21,6 +21,7 @@ import {
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { azureDevOpsApiRef, AzureDevOpsApi } from '../../api';
+import { Progress } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number;
