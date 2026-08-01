@@ -31,7 +31,7 @@ export const ToolsContainer = () => {
         <Grid.Item
           colSpan="2"
           style={{
-            backgroundColor: 'var(--bui-bg-neutral-1-disabled)',
+            backgroundColor: 'var(--bui-bg-neutral-1)',
             padding: 0,
             height: '100%',
             minHeight: 0,

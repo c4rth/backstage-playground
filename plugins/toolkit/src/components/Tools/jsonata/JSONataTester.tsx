@@ -7,12 +7,13 @@ import {
 } from '../../Buttons';
 import jsonata from 'jsonata';
 import CodeMirror from '@uiw/react-codemirror';
-import { vscodeLight } from '@uiw/codemirror-theme-vscode';
+import { vscodeLight, vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { json } from '@codemirror/lang-json';
 import { styles, dividerBaseStyle } from './styles';
 import { jsonataLanguage } from './codemirror-jsonata';
 import { registerCustomFunctions, loadFuncBindings } from './jsonata-functions';
 import { useResizable } from '../../../hooks';
+import { useApi, appThemeApiRef } from '@backstage/core-plugin-api';
 
 const sampleInput = JSON.stringify(
   {
@@ -95,6 +96,11 @@ const sampleInput = JSON.stringify(
 const sampleExpression = 'account.order.product.price';
 
 export const JSONataTester = () => {
+  const appThemeApi = useApi(appThemeApiRef);
+  const [isDarkMode] = useState(() => {
+    const currentThemeId = appThemeApi.getActiveThemeId();
+    return currentThemeId?.includes('dark') ?? false;
+  });
   const [input, setInput] = useState('{}');
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState<any>(undefined);
@@ -212,7 +218,7 @@ export const JSONataTester = () => {
               height="100%"
               style={{ height: '100%' }}
               value={input}
-              theme={vscodeLight}
+              theme={isDarkMode ? vscodeDark : vscodeLight}
               basicSetup={{
                 lineNumbers: true,
                 syntaxHighlighting: true,
@@ -246,7 +252,7 @@ export const JSONataTester = () => {
                 width="100%"
                 height="100%"
                 style={{ height: '100%' }}
-                theme={vscodeLight}
+                theme={isDarkMode ? vscodeDark : vscodeLight}
                 value={expression}
                 onChange={newValue => setExpression(newValue ?? '')}
                 basicSetup={{
@@ -284,7 +290,7 @@ export const JSONataTester = () => {
                   style={{ height: '100%' }}
                   readOnly
                   extensions={jsonExtensions}
-                  theme={vscodeLight}
+                  theme={isDarkMode ? vscodeDark : vscodeLight}
                   basicSetup={{
                     lineNumbers: true,
                     syntaxHighlighting: true,

@@ -1,10 +1,4 @@
 :root {
-  /* Chip colors */
-  --belui-chip-bg-color1: #c9d6ff;
-  --belui-chip-bg-color2: #ffd6e8;
-  --belui-chip-bg-color3: #cdede4;
-  --belui-chip-bg-color4: #e6d6ff;
-  --belui-chip-bg-color5: #dce3ea;
 
   /* Themes */
   [data-theme-mode='light'] {
@@ -39,13 +33,20 @@
     --bui-bg-solid-pressed: rgb(136, 0, 48);
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
     */
+
+    /* Chip colors */
+    --belui-chip-bg-color1: #c9d6ff;
+    --belui-chip-bg-color2: #ffd6e8;
+    --belui-chip-bg-color3: #cdede4;
+    --belui-chip-bg-color4: #e6d6ff;
+    --belui-chip-bg-color5: #dce3ea;
   }
 
   [data-theme-mode='dark'] {
     --bui-accent-bg: #c30045;
     --bui-accent-bg-hover: rgb(166, 0, 59);
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);
-    --bui-fg-announcement: #c30045;
+    --bui-fg-announcement: #ff80a5;
 
     --bui-accent-fg: #424242;
     --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
@@ -73,6 +74,13 @@
     --bui-bg-solid-pressed: rgb(136, 0, 48);
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
     */
+
+    /* Chip colors */
+    --belui-chip-bg-color1: #2a3a62;
+    --belui-chip-bg-color2: #5c2b3f;
+    --belui-chip-bg-color3: #224b40;
+    --belui-chip-bg-color4: #432e60;
+    --belui-chip-bg-color5: #38404a;
   }
 }
 

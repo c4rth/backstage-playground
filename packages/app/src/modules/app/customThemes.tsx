@@ -18,6 +18,7 @@ const colors = {
   paleRose: '#74002A',
   slateGray: '#51626F',
   charcoalBlue: '#2F3D47',
+  darkCharcoalBlue: '#232E35',
   white: '#ffffff',
   black: '#000000',
 };
@@ -26,6 +27,7 @@ function createCustomBaseTheme(
   palette: UnifiedThemeOptions['palette'],
   primary: string,
   secondary: string,
+  navigation: string,
   pageTheme: PageTheme,
 ): UnifiedTheme {
   return createUnifiedTheme({
@@ -56,7 +58,7 @@ function createCustomBaseTheme(
         link: colors.white,
       },
       navigation: {
-        background: colors.charcoalBlue,
+        background: navigation,
         indicator: colors.rubyRed,
         color: '#d5d6db',
         selectedColor: colors.white,
@@ -114,6 +116,7 @@ export const LightThemeProvider = ({ children }: { children: ReactNode }) => (
       palettes.light,
       colors.rubyRed,
       colors.slateGray,
+      colors.charcoalBlue,
       lightPageTheme,
     )}
     children={children}
@@ -126,6 +129,7 @@ export const DarkThemeProvider = ({ children }: { children: ReactNode }) => (
       palettes.dark,
       colors.roseRed,
       colors.slateGray,
+      colors.darkCharcoalBlue,
       darkPageTheme,
     )}
     children={children}

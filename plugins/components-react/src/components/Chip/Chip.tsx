@@ -10,8 +10,6 @@ export interface ChipProps {
   onClick?: () => void;
   /** The color of the chip */
   color?: 'default' | 'primary' | 'secondary' | string;
-  /** The text color of the chip */
-  textColor?: string;
   /** The size of the chip */
   size?: 'small' | 'medium';
   /** The variant to use */
@@ -28,7 +26,6 @@ export interface ChipProps {
 
 const getChipStyles = (
   color: ChipProps['color'],
-  textColor: ChipProps['textColor'] | undefined,
   variant: ChipProps['variant'],
   size: ChipProps['size'],
   clickable: boolean,
@@ -74,7 +71,6 @@ const getChipStyles = (
       // baseStyles.color = 'var(--bui-black)';
     } else {
       baseStyles.backgroundColor = color;
-      baseStyles.color = textColor || '#fff';
     }
   } else {
     // outlined variant
@@ -83,15 +79,19 @@ const getChipStyles = (
   return baseStyles;
 };
 
-const getLabelStyles = (size: ChipProps['size']): CSSProperties => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  paddingLeft: size === 'small' ? '8px' : '12px',
-  paddingRight: size === 'small' ? '8px' : '12px',
-  whiteSpace: 'nowrap',
-  display: 'flex',
-  alignItems: 'center',
-});
+const getLabelStyles = (
+  color: ChipProps['color'],
+  variant: ChipProps['variant'],
+  size: ChipProps['size']): CSSProperties => ({
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    paddingLeft: size === 'small' ? '8px' : '12px',
+    paddingRight: size === 'small' ? '8px' : '12px',
+    whiteSpace: 'nowrap',
+    display: 'flex',
+    alignItems: 'center',
+    color: variant === 'filled' && color === 'primary' ? 'var(--bui-white)' : 'var(--bui-fg-primary)',
+  });
 
 const getIconStyles = (size: ChipProps['size']): CSSProperties => ({
   display: 'flex',
@@ -101,6 +101,7 @@ const getIconStyles = (size: ChipProps['size']): CSSProperties => ({
   marginRight: size === 'small' ? '-4px' : '-6px',
   width: size === 'small' ? '16px' : '18px',
   height: size === 'small' ? '16px' : '18px',
+  color: 'var(--bui-fg-primary)',
 });
 
 export const Chip = forwardRef<HTMLDivElement, ChipProps>(
@@ -110,7 +111,6 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       icon,
       onClick,
       color = 'default',
-      textColor = undefined,
       size = 'medium',
       variant = 'filled',
       clickable = false,
@@ -123,14 +123,14 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     const isClickable = clickable || !!onClick;
 
     const chipStyles = {
-      ...getChipStyles(color, textColor, variant, size, isClickable, disabled),
+      ...getChipStyles(color, variant, size, isClickable, disabled),
       ...style,
     };
 
     const content = (
       <>
         {icon && <span style={getIconStyles(size)}>{icon}</span>}
-        <span style={getLabelStyles(size)}>{label}</span>
+        <span style={getLabelStyles(color, variant, size)}>{label}</span>
       </>
     );
 
