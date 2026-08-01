@@ -23,8 +23,8 @@ import {
   CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
-import { Link, Table, useTable, ColumnConfig, Cell, Text } from '@backstage/ui';
+import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
@@ -43,16 +43,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: ({ system, name, version, environment }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={name} type="service" />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
+          text={name}
+          type="service"
+        />
       </Cell>
     ),
   },
@@ -62,16 +57,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     id: 'version',
     cell: ({ system, name, version, environment }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={version} type="service" />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
+          text={version}
+          type="service"
+        />
       </Cell>
     ),
   },
@@ -81,16 +71,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     id: 'environment',
    cell: ({ system, name, version, environment }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={environment} type="service" />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/service/${system}/${name}?version=${version}&env=${environment}`}
+          text={environment}
+          type="service"
+        />
       </Cell>
     ),
   },
@@ -105,16 +90,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
         </Cell>
       ) : (
         <Cell>
-          <Text weight="bold">
-            <Link
-              href={`/api-platform/system/${system}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              <ComponentDisplayName text={system} type="system" />
-            </Link>
-          </Text>
+          <LinkComponentDisplayName
+            href={`/api-platform/system/${system}`}
+            text={system}
+            type="system"
+          />
         </Cell>
       ),
   },

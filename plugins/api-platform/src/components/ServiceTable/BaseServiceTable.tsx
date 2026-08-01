@@ -2,7 +2,7 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import {
   OwnershipType,
   ServiceDefinition,
@@ -22,7 +22,6 @@ import {
   Table,
   Text,
   useTable,
-  Link,
   Container,
   Header,
   SortDescriptor,
@@ -71,19 +70,11 @@ const createNameColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
   isRowHeader: true,
   cell: ({ serviceDefinition }) => (
     <Cell>
-      <Text weight="bold">
-        <Link
-          href={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
-          <ComponentDisplayName
-            text={serviceDefinition.serviceName}
-            type="service"
-          />
-        </Link>
-      </Text>
+      <LinkComponentDisplayName
+        href={`/api-platform/service/${serviceDefinition.system}/${serviceDefinition.serviceName}`}
+        text={serviceDefinition.serviceName}
+        type="service"
+      />
     </Cell>
   ),
 });
@@ -115,16 +106,11 @@ const createSystemColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
   isSortable: true,
   cell: ({ serviceDefinition }) => (
     <Cell>
-      <Text weight="bold">
-        <Link
-          href={`/api-platform/system/${serviceDefinition.system}`}
-          weight="bold"
-          color="info"
-          standalone
-        >
-          <ComponentDisplayName text={serviceDefinition.system} type="system" />
-        </Link>
-      </Text>
+      <LinkComponentDisplayName
+        href={`/api-platform/system/${serviceDefinition.system}`}
+        text={serviceDefinition.system}
+        type="system"
+      />
     </Cell>
   ),
 });

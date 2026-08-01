@@ -16,7 +16,7 @@ import { apiPlatformBackendApiRef } from '../../plugin';
 import { useEffect, useRef, useState } from 'react';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentOwnership } from '../common';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import {
   Box,
   Select,
@@ -24,9 +24,7 @@ import {
   ColumnConfig,
   SearchField,
   Table,
-  Text,
   useTable,
-  Link,
   Container,
   Header,
   SortDescriptor,
@@ -100,16 +98,11 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
     isSortable: true,
     cell: ({ system, name }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/api/${system}/${name}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={name} type="api" />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/api/${system}/${name}`}
+          text={name}
+          type="api"
+        />
       </Cell>
     ),
   },
@@ -139,16 +132,11 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
         <Cell><ComponentDisplayName text={system} type="system" /></Cell>
       ) : (
         <Cell>
-          <Text weight="bold">
-            <Link
-              href={`/api-platform/system/${system}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              <ComponentDisplayName text={system} type="system" />
-            </Link>
-          </Text>
+          <LinkComponentDisplayName
+            href={`/api-platform/system/${system}`}
+            text={system}
+            type="system"
+          />
         </Cell>
       ),
   },

@@ -5,12 +5,10 @@ import {
   Cell,
   ColumnConfig,
   Table,
-  Text,
   useTable,
-  Link,
   CellText,
 } from '@backstage/ui';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { useGetLibraryVersions } from '../..';
@@ -35,16 +33,11 @@ const columns: ColumnConfig<TableRow>[] = [
     isSortable: true,
     cell: ({ system, name, version }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/library/${system}/${name}/${version}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={`${version}`} type="library" />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/library/${system}/${name}/${version}`}
+          text={version}
+          type="library"
+        />
       </Cell>
     ),
   },

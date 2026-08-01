@@ -13,11 +13,10 @@ import {
   Table,
   Text,
   useTable,
-  Link,
 } from '@backstage/ui';
 import { useCallback, useState } from 'react';
 import { ComponentOwnership } from '../common';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
@@ -45,16 +44,11 @@ const columns: ColumnConfig<TableRow>[] = [
     isSortable: true,
     cell: ({ name, system }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/library/${system}/${name}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={name} type="library" />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/library/${system}/${name}`}
+          text={name}
+          type="library"
+        />
       </Cell>
     ),
   },
@@ -85,16 +79,11 @@ const columns: ColumnConfig<TableRow>[] = [
         </Cell>
       ) : (
         <Cell>
-          <Text weight="bold">
-            <Link
-              href={`/api-platform/system/${system}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              <ComponentDisplayName text={system} type="system" />
-            </Link>
-          </Text>
+          <LinkComponentDisplayName
+            href={`/api-platform/system/${system}`}
+            text={system}
+            type="system"
+          />
         </Cell>
       ),
   },

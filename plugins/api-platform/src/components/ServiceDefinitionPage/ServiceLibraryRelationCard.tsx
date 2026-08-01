@@ -1,7 +1,7 @@
 import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { Link, Table, useTable, ColumnConfig, Cell, Text } from '@backstage/ui';
+import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import {
   Entity,
   parseEntityRef,
@@ -17,7 +17,7 @@ import {
   CATALOG_METADATA_LIBRARY_VERSION,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
@@ -37,16 +37,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     cell: ({ system, name, valid }: TableRow) =>
       valid ? (
         <Cell>
-          <Text weight="bold">
-            <Link
-              href={`/api-platform/library/${system}/${name}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              <ComponentDisplayName text={name} type="library" />
-            </Link>
-          </Text>
+          <LinkComponentDisplayName
+            href={`/api-platform/library/${system}/${name}`}
+            text={name}
+            type="library"
+          />
         </Cell>
       ) : (
         <Cell>
@@ -61,16 +56,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     cell: ({ system, name, version, valid }: TableRow) =>
       valid ? (
         <Cell>
-          <Text weight="bold">
-            <Link
-              href={`/api-platform/library/${system}/${name}?version=${version}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              <ComponentDisplayName text={version} type="library" />
-            </Link>
-          </Text>
+          <LinkComponentDisplayName
+            href={`/api-platform/library/${system}/${name}?version=${version}`}
+            text={version}
+            type="library"
+          />
         </Cell>
       ) : (
         <Cell>
@@ -85,16 +75,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     cell: ({ system, valid }: TableRow) =>
       valid ? (
         <Cell>
-          <Text weight="bold">
-            <Link
-              href={`/api-platform/system/${system}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              <ComponentDisplayName text={system} type="system" />
-            </Link>
-          </Text>
+          <LinkComponentDisplayName
+            href={`/api-platform/system/${system}`}
+            text={system}
+            type="system"
+          />
         </Cell>
       ) : (
         <Cell>

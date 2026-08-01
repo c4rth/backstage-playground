@@ -26,8 +26,8 @@ import {
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
 import { useGetApiVersions } from '../../hooks';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
-import { Link, Table, useTable, ColumnConfig, Cell, Text, CellText } from '@backstage/ui';
+import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { Table, useTable, ColumnConfig, Cell, CellText } from '@backstage/ui';
 import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
@@ -47,16 +47,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
+        <LinkComponentDisplayName
             href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={svcName} type="service" />
-          </Link>
-        </Text>
+            text={svcName}
+            type="service"
+          />
       </Cell>
     ),
   },
@@ -72,16 +67,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     id: 'svcVersion',
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
+        <LinkComponentDisplayName
             href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={svcVersion} type="service" />
-          </Link>
-        </Text>
+            text={svcVersion}
+            type="service"
+          />
       </Cell>
     ),
   },
@@ -91,16 +81,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     id: 'svcEnvironment',
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
+        <LinkComponentDisplayName
             href={`/api-platform/service/${svcSystem}/${svcName}?version=${svcVersion}&env=${svcEnvironment}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName text={svcEnvironment} type="service" />
-          </Link>
-        </Text>
+            text={svcEnvironment}
+            type="service"
+          />
       </Cell>
     ),
   },
@@ -115,16 +100,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
         </Cell>
       ) : (
         <Cell>
-          <Text weight="bold">
-            <Link
-              href={`/api-platform/system/${svcSystem}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              <ComponentDisplayName text={svcSystem} type="system" />
-            </Link>
-          </Text>
+          <LinkComponentDisplayName
+            href={`/api-platform/system/${svcSystem}`}
+            text={svcSystem}
+            type="system"
+          />
         </Cell>
       ),
   },

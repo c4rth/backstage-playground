@@ -21,7 +21,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ApiAllRelationsCard } from './ApiAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { Box, Tab, TabList, TabPanel, Tabs, Link, Flex } from '@backstage/ui';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { ComponentDisplayName, LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 export const ApiDefinitionCard = () => {
   const { entity } = useEntity<ApiEntity>();
@@ -125,16 +125,12 @@ export const ApiDefinitionCard = () => {
             <>
               <Box mt="6">
                 <AboutField label="Azure Artifact">
-                  <Link
+                  <LinkComponentDisplayName
                     href={artifactUrl}
-                    weight="bold"
-                    color="info"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    standalone
-                  >
-                    <ComponentDisplayName text={artifactText} type="azdo" />
-                  </Link>
+                    text={artifactText} 
+                    type="azdo"       
+                    target="_blank"              
+                    rel="noopener noreferrer"/>
                 </AboutField>
               </Box>
               <Box mt="6">
@@ -148,16 +144,13 @@ export const ApiDefinitionCard = () => {
               </Box>
               <Box mt="6">
                 <AboutField label="API Platform URL">
-                  <Link
+                  <LinkComponentDisplayName
                     href={platformUrl}
-                    weight="bold"
-                    color="info"
                     target="_blank"
                     rel="noopener noreferrer"
-                    standalone
-                  >
-                    <ComponentDisplayName text={platformUrl} type="url" />
-                  </Link>
+                    text={platformUrl}
+                    type="url"
+                  />
                 </AboutField>
               </Box>
             </>
@@ -165,17 +158,11 @@ export const ApiDefinitionCard = () => {
           {isMcaApi && (
             <Box mt="6">
               <AboutField label="MCA Operation">
-                <Link
+                <LinkComponentDisplayName
                   href={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`}
-                  weight="bold"
-                  color="info"
-                  standalone
-                >
-                  <ComponentDisplayName
-                    text={`${entity.metadata.annotations?.['api.depo.be/name']}`}
-                    type="api"
-                  />
-                </Link>
+                  text={`${entity.metadata.annotations?.['api.depo.be/name']}`}
+                  type="api"
+                />
               </AboutField>
             </Box>
           )}

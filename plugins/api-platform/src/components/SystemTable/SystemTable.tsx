@@ -10,16 +10,14 @@ import {
   ColumnConfig,
   SearchField,
   Table,
-  Text,
   useTable,
-  Link,
   Container,
   Header,
   SortDescriptor,
 } from '@backstage/ui';
 import { useEffect, useRef, useState } from 'react';
 import { ComponentOwnership } from '../common';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { apiPlatformBackendApiRef } from '../../plugin';
@@ -45,11 +43,11 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
     isSortable: true,
     cell: ({ name }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link href={name} weight="bold" color="info" standalone>
-            <ComponentDisplayName text={name} type="system" />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={name}
+          text={name}
+          type="system"
+        />
       </Cell>
     ),
   },

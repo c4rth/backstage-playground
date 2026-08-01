@@ -1,6 +1,6 @@
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
-import { Link, useTable, ColumnConfig, Cell, Text, Table } from '@backstage/ui';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { useTable, ColumnConfig, Cell, Table } from '@backstage/ui';
+import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 
 type TableRow = {
   id: number;
@@ -16,16 +16,11 @@ const apiColumns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: ({ name, system }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/api/${system}/${name}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName type="api" text={name} />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/api/${system}/${name}`}
+          text={name}
+          type="api"
+        />
       </Cell>
     ),
   },
@@ -39,16 +34,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: ({ name, system }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/service/${system}/${name}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName type="service" text={name} />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/service/${system}/${name}`}
+          text={name}
+          type="service"
+        />
       </Cell>
     ),
   },
@@ -62,16 +52,11 @@ const libraryColumns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: ({ name, system }: TableRow) => (
       <Cell>
-        <Text weight="bold">
-          <Link
-            href={`/api-platform/library/${system}/${name}`}
-            weight="bold"
-            color="info"
-            standalone
-          >
-            <ComponentDisplayName type="library" text={name} />
-          </Link>
-        </Text>
+        <LinkComponentDisplayName
+          href={`/api-platform/library/${system}/${name}`}
+          text={name}
+          type="library"
+        />
       </Cell>
     ),
   },

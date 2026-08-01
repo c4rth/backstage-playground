@@ -18,7 +18,7 @@ import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-reac
 // Api Platform
 import { ServiceApiRelationCard } from './ServiceApiRelationCard';
 import { ServiceLibraryRelationCard } from './ServiceLibraryRelationCard';
-import { ComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
 // App Registry
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
@@ -155,14 +155,11 @@ export const ServiceDefinitionCard = ({
                   <Grid.Item colSpan="12">
                     <AboutField label="Repository">
                       {repository && repositoryUrl ? (
-                        <Link
+                        <LinkComponentDisplayName
                           href={repositoryUrl}
-                          weight="bold"
-                          color="info"
-                          standalone
-                        >
-                          <ComponentDisplayName text={repository} type="azdo" />
-                        </Link>
+                          text={repository}
+                          type="azdo"
+                        />
                       ) : (
                         <Text variant="body-medium">-</Text>
                       )}
