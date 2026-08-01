@@ -1,7 +1,7 @@
 import {
   InformationPopup,
   InformationPopupContent,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import { McaBaseTypeTable } from '../McaBaseTypeTable/McaBaseTypeTable';
 import { Container, FullPage, PluginHeader } from '@backstage/ui';
 import { RiAlbumLine } from '@remixicon/react';

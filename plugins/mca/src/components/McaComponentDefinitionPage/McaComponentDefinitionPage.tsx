@@ -8,7 +8,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { Select, Option, PluginHeader, Container } from '@backstage/ui';
 import { RiBubbleChartLine } from '@remixicon/react';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 function mapMcaVersions(mca: McaComponent | undefined): Option[] {
   if (!mca) return [];

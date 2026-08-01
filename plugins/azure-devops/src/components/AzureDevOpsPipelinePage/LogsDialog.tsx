@@ -7,7 +7,7 @@ import {
   DialogBody,
   Box,
 } from '@backstage/ui';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 export const LogsDialog = ({
   isOpen,

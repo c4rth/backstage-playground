@@ -23,8 +23,7 @@
     "pluginPackages": [
       "@internal/plugin-api-platform",
       "@internal/plugin-api-platform-backend",
-      "@internal/plugin-api-platform-common",
-      "@internal/plugin-api-platform-react"
+      "@internal/plugin-api-platform-common"
     ]
   },
   "sideEffects": false,
@@ -59,10 +58,10 @@
     "@backstage/ui": "backstage:^",
     "@internal/plugin-api-docs-spectral-linter": "workspace:^",
     "@internal/plugin-api-platform-common": "workspace:^",
-    "@internal/plugin-api-platform-react": "workspace:^",
     "@internal/plugin-api-swagger-docs": "workspace:^",
     "@internal/plugin-app-registry": "workspace:^",
     "@internal/plugin-azure-devops": "workspace:^",
+    "@internal/plugin-components-react": "workspace:^",
     "@material-table/core": "3.2.5",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "react-use": "^17.6.0",

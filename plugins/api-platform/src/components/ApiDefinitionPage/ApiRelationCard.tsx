@@ -24,7 +24,7 @@ import {
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import { Progress } from '@backstage/frontend-plugin-api';
 

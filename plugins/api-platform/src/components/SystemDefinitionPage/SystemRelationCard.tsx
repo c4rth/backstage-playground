@@ -1,6 +1,6 @@
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 import { useTable, ColumnConfig, Cell, Table } from '@backstage/ui';
-import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-components-react';
 
 type TableRow = {
   id: number;

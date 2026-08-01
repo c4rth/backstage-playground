@@ -19,7 +19,7 @@ import { ComponentOwnership } from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import {
   Box,
   Select,

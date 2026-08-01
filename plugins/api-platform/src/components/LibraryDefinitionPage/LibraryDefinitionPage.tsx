@@ -24,7 +24,7 @@ import {
   Tooltip,
 } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 export const LibraryDefinitionPage = () => {
   const { system, name } = useParams();

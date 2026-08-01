@@ -21,7 +21,7 @@ import {
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { azureDevOpsApiRef, AzureDevOpsApi } from '../../api';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 type TableRow = {
   id: number;

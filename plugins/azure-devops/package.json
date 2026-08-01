@@ -47,7 +47,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@internal/plugin-api-platform-react": "workspace:^",
+    "@internal/plugin-components-react": "workspace:^",
     "humanize-duration": "^3.34.0",
     "luxon": "^3.5.0",
     "react-use": "^17.6.0"

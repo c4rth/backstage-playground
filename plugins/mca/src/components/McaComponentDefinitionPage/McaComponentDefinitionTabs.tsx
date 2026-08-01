@@ -5,7 +5,7 @@ import { McaOperationDefinitionTabs } from './McaOperationDefinitionTabs';
 import { McaElementDefinitionTabs } from './McaElementDefinitionTabs';
 import { memo, useMemo } from 'react';
 import { XMLParser } from 'fast-xml-parser';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 function getComponentType(
   componentName: string,

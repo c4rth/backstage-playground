@@ -15,7 +15,7 @@ import {
 } from '@backstage/ui';
 import { useEffect, useRef, useState } from 'react';
 import { ComponentOwnership } from '../common';
-import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { apiPlatformBackendApiRef } from '../../plugin';

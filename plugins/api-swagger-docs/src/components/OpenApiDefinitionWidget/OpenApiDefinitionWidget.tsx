@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 // The swagger-ui component and related CSS has a significant size, only load it
 // if the element is actually used.

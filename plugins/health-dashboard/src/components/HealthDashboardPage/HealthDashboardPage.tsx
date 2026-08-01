@@ -21,7 +21,7 @@ import {
   InformationPopup,
   InformationPopupContent,
   Progress,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import styles from './HealthDashboardPage.module.css';
 
 const emptyState = () => (

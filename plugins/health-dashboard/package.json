@@ -39,7 +39,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@internal/plugin-api-platform-react": "workspace:^",
+    "@internal/plugin-components-react": "workspace:^",
     "@remixicon/react": ">=4.6.0 <4.9.0"
   },
   "devDependencies": {

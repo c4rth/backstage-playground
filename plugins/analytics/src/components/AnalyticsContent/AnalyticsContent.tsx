@@ -6,7 +6,7 @@ import { DailyVisitor } from '../../api/CustomAnalyticsApi';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { DailyUsersChart } from './DailyUsersChart';
 import { TopFeaturesTable, TableRow, toRow } from './TopFeaturesTable';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 const daysToShowOptions = [
   { label: 'Today', id: '0' },

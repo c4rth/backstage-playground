@@ -6,7 +6,7 @@ import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
 import { FullPage, PluginHeader } from '@backstage/ui';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 async function getBaseType(
   mcaApi: McaComponentsBackendApi,

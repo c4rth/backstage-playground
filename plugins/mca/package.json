@@ -50,7 +50,7 @@
     "@backstage/plugin-search-common": "backstage:^",
     "@backstage/plugin-search-react": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@internal/plugin-api-platform-react": "workspace:^",
+    "@internal/plugin-components-react": "workspace:^",
     "@internal/plugin-mca-common": "workspace:^",
     "@material-table/core": "3.2.5",
     "@remixicon/react": ">=4.6.0 <4.9.0",

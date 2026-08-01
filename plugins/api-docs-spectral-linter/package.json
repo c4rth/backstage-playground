@@ -50,7 +50,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@internal/plugin-api-platform-react": "workspace:^",
+    "@internal/plugin-components-react": "workspace:^",
     "@stoplight/spectral-core": "1.23.1",
     "@stoplight/spectral-ruleset-bundler": "1.7.0",
     "@stoplight/spectral-runtime": "1.1.6",

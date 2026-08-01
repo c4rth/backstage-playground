@@ -3,7 +3,7 @@ import { useToolkitData } from '../../hooks/useToolkitData';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { ToolkitLink } from '../../types/types';
 import { ResponseErrorPanel } from '@backstage/core-components';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 export const ToolkitCard = () => {
   const configApi = useApi(configApiRef);

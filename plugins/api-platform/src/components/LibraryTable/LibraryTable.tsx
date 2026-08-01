@@ -20,7 +20,7 @@ import {
   ComponentDisplayName,
   LinkComponentDisplayName,
   Progress,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';

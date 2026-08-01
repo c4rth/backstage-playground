@@ -7,7 +7,7 @@ import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useReadme } from '../../hooks';
 import { Box, ButtonLink, Link } from '@backstage/ui';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 type Props = {
   maxHeight?: number;

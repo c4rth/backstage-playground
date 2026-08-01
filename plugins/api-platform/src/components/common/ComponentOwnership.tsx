@@ -1,6 +1,6 @@
 import { Box } from '@backstage/ui';
 import { OwnershipType } from '@internal/plugin-api-platform-common';
-import { Chip } from '@internal/plugin-api-platform-react';
+import { Chip } from '@internal/plugin-components-react';
 import { useState } from 'react';
 
 interface ComponentOwnershipProps {

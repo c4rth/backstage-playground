@@ -6,7 +6,7 @@ import {
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Link } from '@backstage/core-components';
 import { Box, Text } from '@backstage/ui';
-import { Chip } from '@internal/plugin-api-platform-react';
+import { Chip } from '@internal/plugin-components-react';
 import { RiCpuLine, RiPuzzleFill, RiShapesFill } from '@remixicon/react';
 
 export interface ApiSearchResultListItemProps {

@@ -3,7 +3,7 @@ import { McaComponentTable } from '../McaComponentTable';
 import {
   InformationPopup,
   InformationPopupContent,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 import {

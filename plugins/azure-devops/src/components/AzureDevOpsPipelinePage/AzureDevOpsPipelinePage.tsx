@@ -27,7 +27,7 @@ import { AzureDevOpsApi, azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildStateComponent } from './BuildStateComponent';
 import { LogsDialog } from './LogsDialog';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 type TableRow = {
   id: number;

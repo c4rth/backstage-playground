@@ -24,7 +24,7 @@ import { Box, Tab, TabList, TabPanel, Tabs, Link, Flex } from '@backstage/ui';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 
 export const ApiDefinitionCard = () => {
   const { entity } = useEntity<ApiEntity>();

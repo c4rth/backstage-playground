@@ -1,6 +1,6 @@
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
-import { Chip } from '@internal/plugin-api-platform-react';
+import { Chip } from '@internal/plugin-components-react';
 import { Text, TooltipTrigger, Tooltip, Flex, Box, Link } from '@backstage/ui';
 
 export type ComponentChipProps = {

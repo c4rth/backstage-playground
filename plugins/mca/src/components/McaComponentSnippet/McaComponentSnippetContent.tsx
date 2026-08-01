@@ -7,7 +7,7 @@ import { MouseEventHandler, Suspense, lazy, useEffect } from 'react';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 const LightAsync = lazy(async () => {
   const module = await import('react-syntax-highlighter/dist/esm/light-async');

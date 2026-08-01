@@ -16,8 +16,7 @@
     "pluginPackages": [
       "@internal/plugin-api-platform",
       "@internal/plugin-api-platform-backend",
-      "@internal/plugin-api-platform-common",
-      "@internal/plugin-api-platform-react"
+      "@internal/plugin-api-platform-common"
     ]
   },
   "scripts": {

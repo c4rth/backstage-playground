@@ -28,7 +28,7 @@ import {
   ComponentDisplayName,
   LinkComponentDisplayName,
   Progress,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import { Table, useTable, ColumnConfig, Cell, CellText } from '@backstage/ui';
 
 type TableRow = {

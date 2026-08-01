@@ -5,7 +5,7 @@ import {
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Box, Text, Link } from '@backstage/ui';
-import { Chip } from '@internal/plugin-api-platform-react';
+import { Chip } from '@internal/plugin-components-react';
 import { RiAlbumLine } from '@remixicon/react';
 
 function getIcon(kind: string, defaultIcon: ReactNode) {

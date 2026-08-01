@@ -6,7 +6,7 @@ import {
   SampleButton,
 } from '../Buttons';
 import { Box, Flex, Grid, TextAreaField } from '@backstage/ui';
-import { Chip } from '@internal/plugin-api-platform-react';
+import { Chip } from '@internal/plugin-components-react';
 import styles from '../styles/customTextAreaField.module.css';
 
 type Props = {

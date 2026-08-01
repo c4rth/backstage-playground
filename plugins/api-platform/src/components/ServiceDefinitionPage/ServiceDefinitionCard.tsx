@@ -18,7 +18,7 @@ import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-reac
 // Api Platform
 import { ServiceApiRelationCard } from './ServiceApiRelationCard';
 import { ServiceLibraryRelationCard } from './ServiceLibraryRelationCard';
-import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-components-react';
 // App Registry
 import { AppRegistryPage } from '@internal/plugin-app-registry';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';

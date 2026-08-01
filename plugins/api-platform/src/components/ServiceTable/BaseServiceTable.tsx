@@ -1,6 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
-import { LinkComponentDisplayName } from '@internal/plugin-api-platform-react';
+import { LinkComponentDisplayName } from '@internal/plugin-components-react';
 import {
   OwnershipType,
   ServiceDefinition,

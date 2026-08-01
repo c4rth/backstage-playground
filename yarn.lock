@@ -5510,7 +5510,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@types/react": "backstage:^"
     react: "npm:^18.0.2"
     recharts: "npm:^3.10.1"
@@ -5532,7 +5532,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@stoplight/spectral-core": "npm:1.23.1"
     "@stoplight/spectral-ruleset-bundler": "npm:1.7.0"
     "@stoplight/spectral-runtime": "npm:1.1.6"
@@ -5576,24 +5576,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@internal/plugin-api-platform-react@workspace:^, @internal/plugin-api-platform-react@workspace:plugins/api-platform-react":
-  version: 0.0.0-use.local
-  resolution: "@internal/plugin-api-platform-react@workspace:plugins/api-platform-react"
-  dependencies:
-    "@backstage/cli": "backstage:^"
-    "@backstage/ui": "backstage:^"
-    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
-    "@types/react": "npm:^18.0.0"
-    react: "npm:^18.0.2"
-    react-aria-components: "npm:^1.17.0"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
-  languageName: unknown
-  linkType: soft
-
 "@internal/plugin-api-platform@workspace:^, @internal/plugin-api-platform@workspace:plugins/api-platform":
   version: 0.0.0-use.local
   resolution: "@internal/plugin-api-platform@workspace:plugins/api-platform"
@@ -5616,10 +5598,10 @@ __metadata:
     "@backstage/ui": "backstage:^"
     "@internal/plugin-api-docs-spectral-linter": "workspace:^"
     "@internal/plugin-api-platform-common": "workspace:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
     "@internal/plugin-api-swagger-docs": "workspace:^"
     "@internal/plugin-app-registry": "workspace:^"
     "@internal/plugin-azure-devops": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@material-table/core": "npm:3.2.5"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
@@ -5642,7 +5624,7 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@types/react": "npm:^18.0.0"
     "@types/swagger-ui-react": "npm:^5.18.0"
     react: "npm:^18.0.2"
@@ -5667,7 +5649,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/ui": "backstage:^"
     "@internal/plugin-api-platform-common": "workspace:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
     react: "npm:^18.0.2"
@@ -5692,7 +5674,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@types/humanize-duration": "npm:^3.27.0"
     "@types/react": "npm:^18.0.0"
     humanize-duration: "npm:^3.34.0"
@@ -5722,10 +5704,28 @@ __metadata:
     "@backstage/ui": "backstage:^"
     "@internal/plugin-api-platform": "workspace:^"
     "@internal/plugin-api-platform-common": "workspace:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
     react: "npm:^18.0.2"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  languageName: unknown
+  linkType: soft
+
+"@internal/plugin-components-react@workspace:^, @internal/plugin-components-react@workspace:plugins/components-react":
+  version: 0.0.0-use.local
+  resolution: "@internal/plugin-components-react@workspace:plugins/components-react"
+  dependencies:
+    "@backstage/cli": "backstage:^"
+    "@backstage/ui": "backstage:^"
+    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
+    "@types/react": "npm:^18.0.0"
+    react: "npm:^18.0.2"
+    react-aria-components: "npm:^1.17.0"
   peerDependencies:
     "@types/react": ^17.0.0 || ^18.0.0
     react: ^17.0.0 || ^18.0.0
@@ -5743,7 +5743,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
     react: "npm:^18.0.2"
@@ -5795,7 +5795,7 @@ __metadata:
     "@backstage/plugin-search-common": "backstage:^"
     "@backstage/plugin-search-react": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@internal/plugin-mca-common": "workspace:^"
     "@material-table/core": "npm:3.2.5"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
@@ -5935,7 +5935,7 @@ __metadata:
     "@codemirror/lang-json": "npm:^6.0.2"
     "@codemirror/language": "npm:^6.12.3"
     "@faker-js/faker": "npm:^10.5.0"
-    "@internal/plugin-api-platform-react": "workspace:^"
+    "@internal/plugin-components-react": "workspace:^"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/lodash": "npm:^4.14.202"
     "@types/react": "npm:^18.0.0"

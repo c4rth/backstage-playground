@@ -2,7 +2,7 @@ import { SystemTable } from '../SystemTable';
 import {
   InformationPopup,
   InformationPopupContent,
-} from '@internal/plugin-api-platform-react';
+} from '@internal/plugin-components-react';
 import { getStringForKey } from '../common';
 import { Container, FullPage, PluginHeader } from '@backstage/ui';
 

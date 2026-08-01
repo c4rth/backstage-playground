@@ -29,7 +29,7 @@ import {
   ColumnConfig,
   Box,
 } from '@backstage/ui';
-import { Progress } from '@internal/plugin-api-platform-react';
+import { Progress } from '@internal/plugin-components-react';
 
 type TableRow = {
   id: number;
