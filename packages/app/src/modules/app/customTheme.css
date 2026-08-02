@@ -2,6 +2,7 @@
 
   /* Themes */
   [data-theme-mode='light'] {
+
     --bui-accent-bg: #c30045;
     --bui-accent-bg-hover: rgb(166, 0, 59);
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);
@@ -16,6 +17,7 @@
     --bui-fg-solid: #fff;
     --bui-bg-solid: #c30045;
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
+    --bui-bg-solid-hover: #74002A;
     /*
     --bui-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
@@ -57,6 +59,7 @@
     --bui-fg-solid: #fff;
     --bui-bg-solid: #c30045;
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
+    --bui-bg-solid-hover: #74002A;
     /*
     --bui-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
