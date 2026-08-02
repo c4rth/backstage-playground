@@ -4433,7 +4433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.12.3":
+"@codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.12.4":
   version: 6.12.4
   resolution: "@codemirror/language@npm:6.12.4"
   dependencies:
@@ -5675,7 +5675,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/ui": "backstage:^"
     "@internal/plugin-components-react": "workspace:^"
-    "@types/humanize-duration": "npm:^3.27.0"
+    "@types/humanize-duration": "npm:^3.27.4"
     "@types/react": "npm:^18.0.0"
     humanize-duration: "npm:^3.34.0"
     luxon: "npm:^3.5.0"
@@ -5933,18 +5933,18 @@ __metadata:
     "@backstage/plugin-home": "backstage:^"
     "@backstage/ui": "backstage:^"
     "@codemirror/lang-json": "npm:^6.0.2"
-    "@codemirror/language": "npm:^6.12.3"
+    "@codemirror/language": "npm:^6.12.4"
     "@faker-js/faker": "npm:^10.5.0"
     "@internal/plugin-components-react": "workspace:^"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/lodash": "npm:^4.14.202"
     "@types/react": "npm:^18.0.0"
-    "@uiw/codemirror-theme-vscode": "npm:^4.25.10"
-    "@uiw/react-codemirror": "npm:^4.25.10"
+    "@uiw/codemirror-theme-vscode": "npm:^4.25.11"
+    "@uiw/react-codemirror": "npm:^4.25.11"
     asn1js: "npm:^3.0.7"
     cronstrue: "npm:^3.24.0"
     crypto-es: "npm:^3.1.3"
-    jose: "npm:^6.2.3"
+    jose: "npm:^6.2.7"
     jsonata: "npm:^2.2.2"
     jwt-decode: "npm:^4.0.0"
     lodash: "npm:^4.17.23"
@@ -11861,7 +11861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/humanize-duration@npm:^3.27.0":
+"@types/humanize-duration@npm:^3.27.4":
   version: 3.27.4
   resolution: "@types/humanize-duration@npm:3.27.4"
   checksum: 10/aa7fa41af839021c846a1728d2f097b7885f80acbc5050623a9804d23fd8fee19d2654eaae331f000a4e551b88d99cd0b5f6cc97aa99f869b9205f6248066827
@@ -12687,7 +12687,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-vscode@npm:^4.25.10":
+"@uiw/codemirror-theme-vscode@npm:^4.25.11":
   version: 4.25.11
   resolution: "@uiw/codemirror-theme-vscode@npm:4.25.11"
   dependencies:
@@ -12711,7 +12711,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uiw/react-codemirror@npm:^4.25.10, @uiw/react-codemirror@npm:^4.9.3":
+"@uiw/react-codemirror@npm:^4.25.11, @uiw/react-codemirror@npm:^4.9.3":
   version: 4.25.11
   resolution: "@uiw/react-codemirror@npm:4.25.11"
   dependencies:
@@ -22207,10 +22207,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^6.1.3, jose@npm:^6.2.3":
+"jose@npm:^6.1.3":
   version: 6.2.6
   resolution: "jose@npm:6.2.6"
   checksum: 10/37d816f644989ef4759ca1552382bbbda4d3c2fd38ff64f79af4dbea4a6d5f00c9de0a73530be185e89b904063cf4ef7ee830e7507956d04b6e8705844dba78f
+  languageName: node
+  linkType: hard
+
+"jose@npm:^6.2.7":
+  version: 6.2.7
+  resolution: "jose@npm:6.2.7"
+  checksum: 10/75a62fdc7ea71a67ae496e4ceadb11d6953f749c5df67585e6a2c153efd292d6a17c862bd41f453b0680550ac0635af0ba177bded354e455feaeb76f5117a2f1
   languageName: node
   linkType: hard
 
