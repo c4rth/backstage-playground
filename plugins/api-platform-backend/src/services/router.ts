@@ -3,7 +3,10 @@ import Router from 'express-promise-router';
 import {
   HttpAuthService,
   UserInfoService,
+  PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { catalogEntityDeletePermission } from '@backstage/plugin-catalog-common/alpha';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { ApiService } from './ApiService';
 import { ApiPlatformCatalogService } from './CatalogService';
 import { ServiceService } from './ServiceService';
@@ -25,6 +28,7 @@ import {
 import { RelationType } from './ApiService/types';
 import { LibraryService } from './LibraryService';
 import { ServiceInformationService } from './ServiceInformationService';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 
 async function getUserEntityRef(
   ownership: string,
@@ -44,6 +48,7 @@ async function getUserEntityRef(
 export interface RouterOptions {
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
+  permissions: PermissionsService;
   serviceInformationService: ServiceInformationService;
   systemService: SystemService;
   serviceService: ServiceService;
@@ -58,6 +63,7 @@ export async function createRouter(
   const {
     httpAuth,
     userInfo,
+    permissions,
     serviceInformationService,
     systemService,
     serviceService,
@@ -143,10 +149,29 @@ export async function createRouter(
   });
 
   router.delete('/catalog/:kind/:name', async (req, res) => {
-    const response = await catalogService.unregisterCatalogInfo({
+    const entity = await catalogService.getEntityByName({
       name: req.params.name,
       kind: req.params.kind,
     });
+    if (!entity) {
+      res.status(404).json({ message: 'Entity not found' });
+      return;
+    }
+    const credentials = await httpAuth.credentials(req);
+    const authorizeResponse = (
+      await permissions.authorize(
+        [{ 
+          permission: catalogEntityDeletePermission,
+          resourceRef: stringifyEntityRef(entity),
+         }],
+        { credentials },
+      )
+    )[0];
+    if (authorizeResponse.result === AuthorizeResult.DENY) {
+      res.status(403).json({ message: 'Forbidden' });
+      return;
+    }
+    const response = await catalogService.unregisterCatalogInfo(entity);
     res.status(response.returnCode).json({ message: response.message });
   });
 

@@ -19,10 +19,7 @@ export interface ApiPlatformCatalogService {
     name: string;
     kind: string;
   }): Promise<Entity | undefined>;
-  unregisterCatalogInfo(request: {
-    name: string;
-    kind: string;
-  }): Promise<UnregisterResponse>;
+  unregisterCatalogInfo(entity: Entity): Promise<UnregisterResponse>;
   refreshCatalogInfo(request: {
     name: string;
     kind: string;

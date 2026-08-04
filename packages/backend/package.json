@@ -36,6 +36,7 @@
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "backstage:^",
     "@backstage/plugin-catalog-backend-module-unprocessed": "backstage:^",
     "@backstage/plugin-catalog-common": "backstage:^",
+    "@backstage/plugin-catalog-unprocessed-entities-common": "backstage:^",
     "@backstage/plugin-devtools-backend": "backstage:^",
     "@backstage/plugin-devtools-common": "backstage:^",
     "@backstage/plugin-events-backend": "backstage:^",

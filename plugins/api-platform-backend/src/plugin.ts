@@ -29,6 +29,7 @@ export const apiPlatformBackendPlugin = createBackendPlugin({
         apiService: apiServiceRef,
         libraryService: libraryServiceRef,
         catalogService: apiPlatformCatalogServiceRef,
+        permissions: coreServices.permissions,
       },
       async init({
         httpRouter,
@@ -40,11 +41,13 @@ export const apiPlatformBackendPlugin = createBackendPlugin({
         apiService,
         libraryService,
         catalogService,
+        permissions,
       }) {
         httpRouter.use(
           await createRouter({
             httpAuth,
             userInfo,
+            permissions,
             serviceInformationService,
             systemService,
             serviceService,

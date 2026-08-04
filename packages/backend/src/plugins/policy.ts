@@ -3,6 +3,7 @@ import {
   catalogEntityCreatePermission,
   catalogEntityDeletePermission,
   catalogEntityReadPermission,
+  catalogLocationDeletePermission,
 } from '@backstage/plugin-catalog-common/alpha';
 import {
   AuthorizeResult,
@@ -19,8 +20,10 @@ import {
   adminToolsPermission,
   notGuestPermission,
 } from '@internal/plugin-permissions-common';
-import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+import { devToolsAdministerPermission, devToolsConfigReadPermission, devToolsExternalDependenciesReadPermission, devToolsInfoReadPermission } from '@backstage/plugin-devtools-common';
 import { templateManagementPermission } from '@backstage/plugin-scaffolder-common/alpha';
+import { devToolsTaskSchedulerCreatePermission, devToolsTaskSchedulerReadPermission } from '@backstage/plugin-devtools-common/alpha';
+import { unprocessedEntitiesDeletePermission, unprocessedEntitiesReadPermission } from '@backstage/plugin-catalog-unprocessed-entities-common';
 
 type CustomPermission = {
   name: string;
@@ -119,8 +122,16 @@ export class MyPermissionPolicy implements PermissionPolicy {
     const denyPermissions = [
       catalogEntityCreatePermission,
       catalogEntityDeletePermission,
+      catalogLocationDeletePermission,
+      unprocessedEntitiesReadPermission,
+      unprocessedEntitiesDeletePermission,
       adminToolsPermission,
       devToolsAdministerPermission,
+      devToolsInfoReadPermission,
+      devToolsConfigReadPermission,
+      devToolsExternalDependenciesReadPermission,
+      devToolsTaskSchedulerReadPermission,
+      devToolsTaskSchedulerCreatePermission,
       templateManagementPermission,
     ];
     if (denyPermissions.some(perm => isPermission(request.permission, perm))) {

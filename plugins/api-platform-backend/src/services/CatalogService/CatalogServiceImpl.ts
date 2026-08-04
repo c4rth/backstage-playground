@@ -91,47 +91,32 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
     return entities.items[0];
   }
 
-  async unregisterCatalogInfo(request: {
-    name: string;
-    kind: string;
-  }): Promise<UnregisterResponse> {
-    const entity = await this.getEntityByName({
-      name: request.name,
-      kind: request.kind,
-    });
-    if (entity) {
-      try {
-        const annotations = entity.metadata.annotations;
-        if (!annotations || !annotations['backstage.io/managed-by-location']) {
-          this.logger.error('Metadata location not found for entity:', entity);
-          throw new Error('Metadata location not found');
-        }
-        const location = await this.catalog.getLocationByRef(
-          annotations['backstage.io/managed-by-location'],
-          { credentials: await this.auth.getOwnServiceCredentials() },
-        );
-        this.logger.info('Location to remove:', location);
-        if (!location) {
-          throw new Error('Location not found');
-        }
-        await this.catalog.removeLocationById(location.id, {
-          credentials: await this.auth.getOwnServiceCredentials(),
-        });
-        return {
-          message: `unregistered "${entity.metadata.name}"`,
-          returnCode: 204,
-        };
-      } catch (error) {
-        return {
-          message: `failed to unregister "${entity.metadata.name}" - ${error}`,
-          returnCode: 500,
-        };
+  async unregisterCatalogInfo(entity: Entity): Promise<UnregisterResponse> {
+    try {
+      const annotations = entity.metadata.annotations;
+      if (!annotations || !annotations['backstage.io/managed-by-location']) {
+        this.logger.error('Metadata location not found for entity:', entity);
+        throw new Error('Metadata location not found');
       }
-    } else {
-      this.logger.error('Entity not found for unregistration:', request);
+      const location = await this.catalog.getLocationByRef(
+        annotations['backstage.io/managed-by-location'],
+        { credentials: await this.auth.getOwnServiceCredentials() },
+      );
+      this.logger.info('Location to remove:', location);
+      if (!location) {
+        throw new Error('Location not found');
+      }
+      await this.catalog.removeLocationById(location.id, {
+        credentials: await this.auth.getOwnServiceCredentials(),
+      });
       return {
-        message: `entity not found: "${request.name}"`,
-        returnCode: 404,
+        message: `unregistered "${entity.metadata.name}"`,
+        returnCode: 204,
+      };
+    } catch (error) {
+      return {
+        message: `failed to unregister "${entity.metadata.name}" - ${error}`,
+        returnCode: 500,
       };
     }
   }
