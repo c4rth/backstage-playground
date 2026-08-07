@@ -17,29 +17,13 @@ export interface InformationPopupProps {
   content: ReactNode;
 }
 
-export const IconInformationPopup = (props: InformationPopupProps) => {
-  const { title, content } = props;
-
-  return (
-    <DialogTrigger>
-      <ButtonIcon
-        variant="tertiary"
-        size="medium"
-        style={{ width: 'auto', background: 'transparent' }}
-        icon={<RiInformationLine aria-label="More information" />}
-      />
-      <Popover placement="bottom" style={{ maxWidth: '50em' }}>
-        <Text variant="title-x-small">
-          <b>{title}</b>
-        </Text>
-        {content}
-      </Popover>
-    </DialogTrigger>
-  );
+const INFORMATION_POPOVER_STYLE = {
+  width: 'min(40rem, calc(100vw - var(--bui-space-8)))',
+  maxWidth: '50em',
 };
 
 export const InformationPopup = (props: InformationPopupProps) => {
-  const { text, title, variant = 'body-medium', content } = props;
+  const { text, variant = 'body-medium', content } = props;
 
   return (
     <Flex align="center">
@@ -60,10 +44,10 @@ export const InformationPopup = (props: InformationPopupProps) => {
             />
           }
         />
-        <Popover placement="bottom" style={{ maxWidth: '50em' }}>
-          <Text variant="title-x-small">
-            <b>{title}</b>
-          </Text>
+        <Popover
+          placement="bottom end"
+          style={INFORMATION_POPOVER_STYLE}
+        >
           {content}
         </Popover>
       </DialogTrigger>
@@ -81,7 +65,7 @@ export const InformationPopupContent = (
 ) => {
   const { text1, text2 } = props;
   return (
-    <Box>
+    <Box style={{ whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
       <Text variant="body-large">{text1}</Text>
       {text2 && (
         <>
