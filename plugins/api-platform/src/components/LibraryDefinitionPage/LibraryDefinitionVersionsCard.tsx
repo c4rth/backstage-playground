@@ -25,7 +25,7 @@ const columns: ColumnConfig<TableRow>[] = [
     cell: ({ system, name, version }: TableRow) => (
       <Cell>
         <LinkComponentDisplayName
-          href={`/api-platform/library/${system}/${name}/${version}`}
+          href={`/api-platform/library/${system}/${name}?version=${version}`}
           text={version}
           type="library"
         />

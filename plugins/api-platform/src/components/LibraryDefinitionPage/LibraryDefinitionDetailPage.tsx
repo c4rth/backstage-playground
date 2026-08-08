@@ -9,12 +9,18 @@ import { apiPlatformBackendApiRef } from '../../plugin';
 import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
 import { Container, PluginHeader } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
-import { useRouteRefParams } from '@backstage/frontend-plugin-api';
-import { apiPlatformLibraryDefinitionServicesRouteRef } from '../../routes';
 
-export const LibraryDefinitionVersionPage = () => {
-  const { system, name, version } = useRouteRefParams(apiPlatformLibraryDefinitionServicesRouteRef);
-  const resolvedVersion = version === 'services' ? undefined : version;
+interface LibraryDefinitionDetailPageProps {
+  system: string;
+  name: string;
+  version: string;
+}
+
+export const LibraryDefinitionDetailPage = ({
+  system,
+  name,
+  version,
+}: LibraryDefinitionDetailPageProps) => {
   const [libraryEntity, setLibraryEntity] = useState<
     ComponentEntity | undefined
   >(undefined);
@@ -23,9 +29,7 @@ export const LibraryDefinitionVersionPage = () => {
   const catalogApi = useApi(catalogApiRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
 
-  const headerTitle = resolvedVersion
-    ? `${name} - ${resolvedVersion}`
-    : `${name}`;
+  const headerTitle = `${name} - ${version}`;
 
   useEffect(() => {
     if (!name || !system) return;
@@ -38,9 +42,7 @@ export const LibraryDefinitionVersionPage = () => {
           name,
           true,
         );
-        const libVersion = resolvedVersion
-          ? libVersions.filter(lib => lib.version === resolvedVersion)
-          : libVersions;
+        const libVersion = libVersions.filter(lib => lib.version === version);
         if (libVersion?.[0]?.entityRef) {
           const entity = await catalogApi.getEntityByRef(
             libVersion[0].entityRef,
@@ -56,7 +58,7 @@ export const LibraryDefinitionVersionPage = () => {
     };
 
     fetchLibraryEntity();
-  }, [apiPlatformApi, catalogApi, system, name, resolvedVersion]);
+  }, [apiPlatformApi, catalogApi, system, name, version]);
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
@@ -68,7 +70,7 @@ export const LibraryDefinitionVersionPage = () => {
         <LibraryDefinitionAllServicesCard
           system={system!}
           name={name!}
-          version={resolvedVersion}
+          version={version!}
           componentName={libraryEntity?.metadata.name}
         />
       </Container>

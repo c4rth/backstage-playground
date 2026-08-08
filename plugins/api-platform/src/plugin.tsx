@@ -12,7 +12,6 @@ import {
   apiPlatformApiDefinitionRouteRef,
   apiPlatformApiNoSystemRouteRef,
   apiPlatformLibraryDefinitionRouteRef,
-  apiPlatformLibraryDefinitionServicesRouteRef,
   apiPlatformLibraryRouteRef,
   apiPlatformRouteRef,
   apiPlatformServiceDefinitionRouteRef,
@@ -157,18 +156,6 @@ const libraryDefinitionPage = PageBlueprint.make({
   },
 });
 
-const libraryDefinitionServicesPage = PageBlueprint.make({
-  name: 'library-definition-services',
-  params: {
-    noHeader: true,
-    path: '/api-platform/library/:system/:name/:version',
-    routeRef: apiPlatformLibraryDefinitionServicesRouteRef,
-    loader: () =>
-      import('./components/LibraryDefinitionPage').then(m => (
-        <m.LibraryDefinitionServicesPage />
-      )),
-  },
-});
 const apiPlatformApi = ApiBlueprint.make({
   name: 'backend-api',
   params: defineParams =>
@@ -216,7 +203,6 @@ export default createFrontendPlugin({
     systemDefinition: apiPlatformSystemDefinitionRouteRef,
     libraryExplorer: apiPlatformLibraryRouteRef,
     libraryDefinition: apiPlatformLibraryDefinitionRouteRef,
-    libraryDefinitionServices: apiPlatformLibraryDefinitionServicesRouteRef,
   },
   extensions: [
     apiExplorerPage,
@@ -228,7 +214,6 @@ export default createFrontendPlugin({
     systemDefinitionPage,
     libraryExplorerPage,
     libraryDefinitionPage,
-    libraryDefinitionServicesPage,
     apiPlatformApi,
     ApiSearchResultListItemExtension,
   ],

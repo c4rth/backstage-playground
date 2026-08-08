@@ -40,9 +40,3 @@ export const apiPlatformLibraryDefinitionRouteRef = createRouteRef({
   id: 'api-platform-library-definition',
   params: [ 'system', 'name' ],
 });
-
-
-export const apiPlatformLibraryDefinitionServicesRouteRef = createRouteRef({
-  id: 'api-platform-library-definition-services',
-   params: [ 'system', 'name', 'version' ],
-});
