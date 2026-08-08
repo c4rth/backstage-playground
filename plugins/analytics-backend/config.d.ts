@@ -1,15 +1,15 @@
-import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
-import { Duration } from 'luxon';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
+import { HumanDuration } from '@backstage/types';
 
 export interface Config {
   analytics?: {
     /**
-     * @visibility frontend
+     * @visibility backend
      */
-    threshold?: Duration;
+    threshold?: string | HumanDuration;
     /**
-     * @visibility frontend
+     * @visibility backend
      */
-    schedule?: SchedulerServiceTaskScheduleDefinition;
+    schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
   };
 }

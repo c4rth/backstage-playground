@@ -1,40 +1,40 @@
-import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
 export interface Config {
   mcaComponents?: {
     /**
-     * @visibility frontend
+     * @visibility backend
      */
     serviceBaseUrl?: string;
     /**
-     * @visibility frontend
+     * @visibility backend
      */
     baseTypes?: {
       /**
-       * @visibility frontend
+       * @visibility backend
        */
       baseUrl?: string;
       /**
-       * @visibility frontend
+       * @visibility backend
        */
       listBaseUrl?: string;
       /**
-       * @visibility frontend
+       * @visibility backend
        */
-      schedule?: SchedulerServiceTaskScheduleDefinition;
+      schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
     };
     /**
      * @visibility frontend
      */
     operations?: {
       /**
-       * @visibility frontend
+       * @visibility backend
        */
       csvBaseUrl?: string;
       /**
-       * @visibility frontend
+       * @visibility backend
        */
-      schedule?: SchedulerServiceTaskScheduleDefinition;
-    };
+      schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
+    }
   };
 }
