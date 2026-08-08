@@ -5,13 +5,15 @@ import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
 import { ApiDefinitionCard } from './ApiDefinitionCard';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
 import { Box, Container, PluginHeader, Select } from '@backstage/ui';
 import { RiPuzzleFill } from '@remixicon/react';
+import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import { apiPlatformApiDefinitionRouteRef } from '../../routes';
 
 export const ApiDefinitionPage = () => {
-  const { system, name } = useParams();
+  const { system, name } = useRouteRefParams(apiPlatformApiDefinitionRouteRef);
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
 

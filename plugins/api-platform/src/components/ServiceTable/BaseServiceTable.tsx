@@ -150,9 +150,9 @@ const getData = async <T extends BaseTableRow>(
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as ServiceDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -160,15 +160,15 @@ const getData = async <T extends BaseTableRow>(
 
   const res = result
     ? {
-        data: result.items.map(toRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 
   console.log(res);
   return res;
@@ -249,46 +249,44 @@ export function BaseServiceTable<T extends BaseTableRow>({
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <>
-      <Container>
-        <Header
-          title={`${getTitleLabel(toggleType, ownershipType)} (${countRows})`}
-          customActions={
-            <>
-              {toggleType === 'ownership' && (
-                <ComponentOwnership
-                  storageKey={storageOwnershipKey}
-                  handleOwnershipChange={setOwnershipType}
-                />
-              )}
-              {toggleType === 'dependents' && (
-                <DependentsToggle
-                  handleDependentChange={setDependentsType}
-                  selectedType={dependentsType}
-                />
-              )}
-              <Box style={{ marginLeft: 'auto', width: '250px' }}>
-                <SearchField
-                  placeholder="Filter..."
-                  value={search.value}
-                  onChange={str => {
-                    sessionStorage.setItem(storageSearchKey, str ?? '');
-                    search.onChange(str);
-                  }}
-                  aria-label="Filter"
-                />
-              </Box>
-            </>
-          }
-        />
-        <Table
-          key={`table-${ownershipType}-${dependentsType}`}
-          {...tableProps}
-          columnConfig={columns}
-          emptyState={<div>No data available</div>}
-          className="denseTable"
-        />
-      </Container>
-    </>
+    <Container>
+      <Header
+        title={`${getTitleLabel(toggleType, ownershipType)} (${countRows})`}
+        customActions={
+          <>
+            {toggleType === 'ownership' && (
+              <ComponentOwnership
+                storageKey={storageOwnershipKey}
+                handleOwnershipChange={setOwnershipType}
+              />
+            )}
+            {toggleType === 'dependents' && (
+              <DependentsToggle
+                handleDependentChange={setDependentsType}
+                selectedType={dependentsType}
+              />
+            )}
+            <Box style={{ marginLeft: 'auto', width: '250px' }}>
+              <SearchField
+                placeholder="Filter..."
+                value={search.value}
+                onChange={str => {
+                  sessionStorage.setItem(storageSearchKey, str ?? '');
+                  search.onChange(str);
+                }}
+                aria-label="Filter"
+              />
+            </Box>
+          </>
+        }
+      />
+      <Table
+        key={`table-${ownershipType}-${dependentsType}`}
+        {...tableProps}
+        columnConfig={columns}
+        emptyState={<div>No data available</div>}
+        className="denseTable"
+      />
+    </Container>
   );
 }

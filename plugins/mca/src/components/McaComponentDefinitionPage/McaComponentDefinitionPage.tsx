@@ -1,7 +1,7 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-common';
 import { McaComponentDefinitionTabs } from './McaComponentDefinitionTabs';
 import { mcaComponentsBackendApiRef } from '../../api';
@@ -9,6 +9,8 @@ import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { Select, Option, PluginHeader, Container } from '@backstage/ui';
 import { RiBubbleChartLine } from '@remixicon/react';
 import { Progress } from '@internal/plugin-components-react';
+import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import { componentRouteRef } from '../../routes';
 
 function mapMcaVersions(mca: McaComponent | undefined): Option[] {
   if (!mca) return [];
@@ -42,7 +44,7 @@ async function getMca(
 
 export const McaComponentDefinitionPage = () => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
-  const { name } = useParams();
+  const { name } = useRouteRefParams(componentRouteRef);
   const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);

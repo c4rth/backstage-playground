@@ -62,7 +62,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
       valid ? (
         <Cell>
           <LinkComponentDisplayName
-            href={`/api-platform/library/${system}/${name}?version=${version}`}
+            href={`/api-platform/library/${system}/${name}/${version}`}
             text={version}
             type="library"
           />

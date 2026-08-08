@@ -1,12 +1,13 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { useParams } from 'react-router-dom';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
 import { FullPage, PluginHeader } from '@backstage/ui';
 import { Progress } from '@internal/plugin-components-react';
+import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import { baseTypeRouteRef } from '../../routes';
 
 async function getBaseType(
   mcaApi: McaComponentsBackendApi,
@@ -22,7 +23,7 @@ async function getBaseType(
 export const McaBaseTypeDefinitionPage = () => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
   const configApi = useApi(configApiRef);
-  const { name } = useParams();
+  const { name } = useRouteRefParams(baseTypeRouteRef);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

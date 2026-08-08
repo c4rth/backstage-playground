@@ -1,5 +1,4 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
-import { useParams } from 'react-router-dom';
 import { LibraryDefinitionVersionsCard } from './LibraryDefinitionVersionsCard';
 import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
 import { useEffect, useState } from 'react';
@@ -25,9 +24,11 @@ import {
 } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
 import { Progress } from '@internal/plugin-components-react';
+import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import { apiPlatformLibraryDefinitionRouteRef } from '../../routes';
 
 export const LibraryDefinitionPage = () => {
-  const { system, name } = useParams();
+  const { system, name } = useRouteRefParams(apiPlatformLibraryDefinitionRouteRef);
   const [libraryEntity, setLibraryEntity] = useState<
     ComponentEntity | undefined
   >(undefined);

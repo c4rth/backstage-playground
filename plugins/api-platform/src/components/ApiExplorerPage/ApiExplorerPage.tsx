@@ -4,7 +4,7 @@ import {
   InformationPopupContent,
 } from '@internal/plugin-components-react';
 import { getStringForKey } from '../common';
-import { Container, FullPage, PluginHeader } from '@backstage/ui';
+import { FullPage, PluginHeader } from '@backstage/ui';
 import { RiPuzzleFill } from '@remixicon/react';
 
 const INFO_POPUP_CONTENT = (
@@ -23,9 +23,7 @@ export const ApiExplorerPage = () => {
         customActions={<InformationPopup content={INFO_POPUP_CONTENT} />}
       />
       <FullPage>
-        <Container>
-          <ApiTable />
-        </Container>
+        <ApiTable />
       </FullPage>
     </>
   );

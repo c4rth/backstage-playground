@@ -4,7 +4,7 @@ import {
   InformationPopupContent,
 } from '@internal/plugin-components-react';
 import { getStringForKey } from '../common';
-import { Container, FullPage, PluginHeader } from '@backstage/ui';
+import { FullPage, PluginHeader } from '@backstage/ui';
 
 const POPUP_CONTENT = (
   <InformationPopupContent
@@ -21,9 +21,7 @@ export const SystemExplorerPage = () => {
         customActions={<InformationPopup content={POPUP_CONTENT} />}
       />
       <FullPage>
-        <Container>
-          <SystemTable />
-        </Container>
+        <SystemTable />
       </FullPage>
     </>
   );

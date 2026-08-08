@@ -6,6 +6,7 @@ export const componentsRouteRef = createRouteRef({
 
 export const componentRouteRef = createRouteRef({
   id: 'mca-component',
+  params: ['name'],
 });
 
 export const baseTypesRouteRef = createRouteRef({
@@ -14,4 +15,5 @@ export const baseTypesRouteRef = createRouteRef({
 
 export const baseTypeRouteRef = createRouteRef({
   id: 'mca-basetype',
+  params: ['name'],
 });

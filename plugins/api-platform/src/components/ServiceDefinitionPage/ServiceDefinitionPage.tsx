@@ -7,10 +7,12 @@ import {
   AsyncEntityProvider,
   catalogApiRef,
 } from '@backstage/plugin-catalog-react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { Box, Container, Grid, PluginHeader, Select } from '@backstage/ui';
 import { RiCpuLine } from '@remixicon/react';
+import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import { apiPlatformServiceDefinitionRouteRef } from '../../routes';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>;
 
@@ -39,7 +41,7 @@ function parseServiceDefinition(
 }
 
 export const ServiceDefinitionPage = () => {
-  const { system, name } = useParams();
+  const { system, name } = useRouteRefParams(apiPlatformServiceDefinitionRouteRef);
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
   const queryEnv = searchParams.get('env');

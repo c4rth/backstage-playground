@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
@@ -10,9 +9,11 @@ import { apiPlatformBackendApiRef } from '../../plugin';
 import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
 import { Container, PluginHeader } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
+import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import { apiPlatformLibraryDefinitionServicesRouteRef } from '../../routes';
 
 export const LibraryDefinitionVersionPage = () => {
-  const { system, name, version } = useParams();
+  const { system, name, version } = useRouteRefParams(apiPlatformLibraryDefinitionServicesRouteRef);
   const resolvedVersion = version === 'services' ? undefined : version;
   const [libraryEntity, setLibraryEntity] = useState<
     ComponentEntity | undefined

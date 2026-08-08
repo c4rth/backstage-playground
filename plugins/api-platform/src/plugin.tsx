@@ -169,7 +169,6 @@ const libraryDefinitionServicesPage = PageBlueprint.make({
       )),
   },
 });
-
 const apiPlatformApi = ApiBlueprint.make({
   name: 'backend-api',
   params: defineParams =>
