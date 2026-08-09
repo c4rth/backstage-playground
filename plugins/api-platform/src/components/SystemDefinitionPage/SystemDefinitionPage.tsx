@@ -6,7 +6,7 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { useGetSystem } from '../../hooks';
 import { SystemDefinitionCard } from './SystemDefinitionCard';
-import { Container, PluginHeader } from '@backstage/ui';
+import { Container, PluginHeader, Header } from '@backstage/ui';
 
 export const SystemDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
@@ -19,9 +19,13 @@ export const SystemDefinitionPage = () => {
       entity={systemDefinition?.entity}
     >
       <PluginHeader
-        title={`System - ${name}`}
         icon={<RiShapesLine fontSize="inherit" />}
+        breadcrumbs={[
+          { label: 'Systems', href: '/api-platform/system' },
+        ]}
       />
+      <Header
+        title={name} />
       <Container>
         {systemDefinition && name && (
           <SystemDefinitionCard

@@ -7,7 +7,7 @@ import { ApiEntity } from '@backstage/catalog-model';
 import { ApiDefinitionCard } from './ApiDefinitionCard';
 import { useSearchParams } from 'react-router-dom';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
-import { Box, Container, PluginHeader, Select } from '@backstage/ui';
+import { Container, Header, PluginHeader, Select } from '@backstage/ui';
 import { RiPuzzleFill } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { apiPlatformApiDefinitionRouteRef } from '../../routes';
@@ -67,20 +67,27 @@ export const ApiDefinitionPage = () => {
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
       <PluginHeader
-        title={`API - ${name}`}
         icon={<RiPuzzleFill fontSize="inherit" />}
+        breadcrumbs={[
+          { label: 'APIs', href: '/api-platform/api' },
+        ]}
       />
+      <Header
+        title={name}
+        metadata={[
+          {
+            label: 'Versions',
+            value: <Select
+              onChange={selected => {
+                setSelectedVersion(selected ? selected.toString() : undefined);
+              }}
+              options={versions}
+              value={selectedVersion}
+              style={{ minWidth: '200px' }}
+            />,
+          },
+        ]} />
       <Container>
-        <Box mb="4">
-          <Select
-            onChange={selected => {
-              setSelectedVersion(selected ? selected.toString() : undefined);
-            }}
-            label="Versions"
-            options={versions}
-            value={selectedVersion}
-          />
-        </Box>
         {apiEntity ? <ApiDefinitionCard /> : <div />}
       </Container>
     </AsyncEntityProvider>

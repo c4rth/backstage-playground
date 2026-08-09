@@ -21,6 +21,7 @@ import {
   Tabs,
   TooltipTrigger,
   Tooltip,
+  Header,
 } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
 import { Progress } from '@internal/plugin-components-react';
@@ -86,8 +87,10 @@ export const LibraryDefinitionVersionsPage = ({ system, name }: LibraryDefinitio
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <PluginHeader
-        title={`Library - ${name}`}
         icon={<RiBookShelfLine fontSize="inherit" />}
+        breadcrumbs={[
+          { label: 'Libraries', href: '/api-platform/library' },
+        ]}
         customActions={
           <TooltipTrigger>
             <ButtonIcon
@@ -99,6 +102,8 @@ export const LibraryDefinitionVersionsPage = ({ system, name }: LibraryDefinitio
           </TooltipTrigger>
         }
       />
+      <Header
+        title={name} />
       <Container>
         {generating && <Progress />}
         {errorReport && (

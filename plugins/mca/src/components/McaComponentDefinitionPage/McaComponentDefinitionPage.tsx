@@ -6,7 +6,7 @@ import { McaComponent } from '@internal/plugin-mca-common';
 import { McaComponentDefinitionTabs } from './McaComponentDefinitionTabs';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
-import { Select, Option, PluginHeader, Container } from '@backstage/ui';
+import { Select, Option, PluginHeader, Container, Header } from '@backstage/ui';
 import { RiBubbleChartLine } from '@remixicon/react';
 import { Progress } from '@internal/plugin-components-react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
@@ -94,19 +94,25 @@ export const McaComponentDefinitionPage = () => {
   return (
     <>
       <PluginHeader
-        title={name}
         icon={<RiBubbleChartLine fontSize="inherit" />}
+        breadcrumbs={[
+          { label: 'MCA Components', href: '/mca/components' },
+        ]}
       />
-      <Container>
-        <Select
-          onChange={selected => {
-            setSelectedVersion(selected ? selected.toString() : undefined);
-          }}
-          label="Versions"
-          options={versions}
-          value={selectedVersion}
-        />
-      </Container>
+      <Header
+        title={name}
+        metadata={[
+          {
+            label: 'Versions',
+            value: <Select
+              onChange={selected => {
+                setSelectedVersion(selected ? selected.toString() : undefined);
+              }}
+              options={versions}
+              value={selectedVersion}
+            />,
+          },
+        ]} />
       <Container>
         <McaComponentDefinitionTabs mca={mca!} version={selectedVersion} />
       </Container>

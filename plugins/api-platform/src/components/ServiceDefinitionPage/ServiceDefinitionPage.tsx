@@ -9,7 +9,7 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { Box, Container, Grid, PluginHeader, Select } from '@backstage/ui';
+import { Container, PluginHeader, Select, Header } from '@backstage/ui';
 import { RiCpuLine } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { apiPlatformServiceDefinitionRouteRef } from '../../routes';
@@ -137,36 +137,40 @@ export const ServiceDefinitionPage = () => {
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={serviceEntity}>
       <PluginHeader
-        title={`Service - ${name}`}
         icon={<RiCpuLine fontSize="inherit" />}
+        breadcrumbs={[
+          { label: 'Services', href: '/api-platform/service' },
+        ]}
       />
+      <Header
+        title={name}
+        metadata={[
+          {
+            label: 'Versions',
+            value: <Select
+              onChange={selected => {
+                setSelectedVersion(selected ? selected.toString() : undefined);
+              }}
+              options={versions}
+              value={selectedVersion}
+              style={{ minWidth: '50px' }}
+            />,
+          },
+          {
+            label: 'Environments',
+            value: <Select
+              onChange={selected =>
+                setSelectedEnvironment(
+                  selected ? selected.toString() : undefined,
+                )
+              }
+              options={environments}
+              value={selectedEnvironment}
+              style={{ minWidth: '50px' }}
+            />,
+          },
+        ]} />
       <Container>
-        <Box mb="4">
-          <Grid.Root columns="12">
-            <Grid.Item colSpan="6">
-              <Select
-                onChange={selected =>
-                  setSelectedVersion(selected ? selected.toString() : undefined)
-                }
-                label="Versions"
-                options={versions}
-                value={selectedVersion}
-              />
-            </Grid.Item>
-            <Grid.Item colSpan="6">
-              <Select
-                onChange={selected =>
-                  setSelectedEnvironment(
-                    selected ? selected.toString() : undefined,
-                  )
-                }
-                label="Environments"
-                options={environments}
-                value={selectedEnvironment}
-              />
-            </Grid.Item>
-          </Grid.Root>
-        </Box>
         {serviceEntity ? (
           <ServiceDefinitionCard entity={serviceEntity} />
         ) : (

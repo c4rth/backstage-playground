@@ -237,7 +237,7 @@ export const LibraryDefinitionAllServicesCard = ({
   }, [apiPlatformApi, name]);
 
   const title = version
-    ? `Services depending on ${name} ${version}`
+    ? `Dependent Services`
     : 'All services';
 
   const rows = useMemo(() => {

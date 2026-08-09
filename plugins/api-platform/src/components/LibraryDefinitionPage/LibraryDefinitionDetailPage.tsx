@@ -7,7 +7,7 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { apiPlatformBackendApiRef } from '../../plugin';
 import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
-import { Container, PluginHeader } from '@backstage/ui';
+import { Container, PluginHeader, Header } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
 
 interface LibraryDefinitionDetailPageProps {
@@ -63,9 +63,13 @@ export const LibraryDefinitionDetailPage = ({
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <PluginHeader
-        title={`Library - ${headerTitle}`}
         icon={<RiBookShelfLine fontSize="inherit" />}
+        breadcrumbs={[
+          { label: 'Libraries', href: '/api-platform/library' },
+        ]}
       />
+      <Header
+        title={headerTitle} />
       <Container>
         <LibraryDefinitionAllServicesCard
           system={system!}
