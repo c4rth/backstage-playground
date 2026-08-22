@@ -20,10 +20,21 @@ import {
   adminToolsPermission,
   notGuestPermission,
 } from '@internal/plugin-permissions-common';
-import { devToolsAdministerPermission, devToolsConfigReadPermission, devToolsExternalDependenciesReadPermission, devToolsInfoReadPermission } from '@backstage/plugin-devtools-common';
+import {
+  devToolsAdministerPermission,
+  devToolsConfigReadPermission,
+  devToolsExternalDependenciesReadPermission,
+  devToolsInfoReadPermission,
+} from '@backstage/plugin-devtools-common';
 import { templateManagementPermission } from '@backstage/plugin-scaffolder-common/alpha';
-import { devToolsTaskSchedulerCreatePermission, devToolsTaskSchedulerReadPermission } from '@backstage/plugin-devtools-common/alpha';
-import { unprocessedEntitiesDeletePermission, unprocessedEntitiesReadPermission } from '@backstage/plugin-catalog-unprocessed-entities-common';
+import {
+  devToolsTaskSchedulerCreatePermission,
+  devToolsTaskSchedulerReadPermission,
+} from '@backstage/plugin-devtools-common/alpha';
+import {
+  unprocessedEntitiesDeletePermission,
+  unprocessedEntitiesReadPermission,
+} from '@backstage/plugin-catalog-unprocessed-entities-common';
 
 type CustomPermission = {
   name: string;

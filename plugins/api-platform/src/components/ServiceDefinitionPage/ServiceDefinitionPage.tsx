@@ -41,7 +41,9 @@ function parseServiceDefinition(
 }
 
 export const ServiceDefinitionPage = () => {
-  const { system, name } = useRouteRefParams(apiPlatformServiceDefinitionRouteRef);
+  const { system, name } = useRouteRefParams(
+    apiPlatformServiceDefinitionRouteRef,
+  );
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
   const queryEnv = searchParams.get('env');
@@ -138,38 +140,43 @@ export const ServiceDefinitionPage = () => {
     <AsyncEntityProvider loading={loading} error={error} entity={serviceEntity}>
       <PluginHeader
         icon={<RiCpuLine fontSize="inherit" />}
-        breadcrumbs={[
-          { label: 'Services', href: '/api-platform/service' },
-        ]}
+        breadcrumbs={[{ label: 'Services', href: '/api-platform/service' }]}
       />
       <Header
         title={name}
         metadata={[
           {
             label: 'Versions',
-            value: <Select
-              onChange={selected => {
-                setSelectedVersion(selected ? selected.toString() : undefined);
-              }}
-              options={versions}
-              value={selectedVersion}
-              style={{ minWidth: '50px' }}
-            />,
+            value: (
+              <Select
+                onChange={selected => {
+                  setSelectedVersion(
+                    selected ? selected.toString() : undefined,
+                  );
+                }}
+                options={versions}
+                value={selectedVersion}
+                style={{ minWidth: '50px' }}
+              />
+            ),
           },
           {
             label: 'Environments',
-            value: <Select
-              onChange={selected =>
-                setSelectedEnvironment(
-                  selected ? selected.toString() : undefined,
-                )
-              }
-              options={environments}
-              value={selectedEnvironment}
-              style={{ minWidth: '50px' }}
-            />,
+            value: (
+              <Select
+                onChange={selected =>
+                  setSelectedEnvironment(
+                    selected ? selected.toString() : undefined,
+                  )
+                }
+                options={environments}
+                value={selectedEnvironment}
+                style={{ minWidth: '50px' }}
+              />
+            ),
           },
-        ]} />
+        ]}
+      />
       <Container>
         {serviceEntity ? (
           <ServiceDefinitionCard entity={serviceEntity} />

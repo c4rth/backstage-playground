@@ -1,32 +1,73 @@
-import { createPlugin } from '@backstage/core-plugin-api';
+import { createElement } from 'react';
 import {
-  createTechDocsAddonExtension,
-  TechDocsAddonLocations,
-} from '@backstage/plugin-techdocs-react';
-
+  AddonBlueprint,
+  TechDocsAddonOptions,
+} from '@backstage/plugin-techdocs-react/alpha';
 import { MermaidAddon } from './Mermaid';
-import type { MermaidProps } from './Mermaid';
+import {
+  createFrontendModule,
+  useApi,
+  configApiRef,
+} from '@backstage/frontend-plugin-api';
+import type { MermaidProps } from './Mermaid/props';
+import type { MermaidConfig } from 'mermaid';
 
 /**
- * The TechDocs addons mermaid plugin
+ * Wrapper that reads zoom configuration from app-config.yaml and forwards
+ * it as props to MermaidAddon.
  *
- * @public
+ * When no `techdocs.addons.mermaid` config is present, MermaidAddon is
+ * rendered with no props — preserving the original behaviour.
+ *
+ * Supported app-config keys:
+ *   techdocs.addons.mermaid.lightConfig             — MermaidConfig
+ *   techdocs.addons.mermaid.darkConfig              — MermaidConfig
+ *   techdocs.addons.mermaid.config                  — MermaidConfig
+ *   techdocs.addons.mermaid.enableZoom              — boolean (default: false)
+ *   techdocs.addons.mermaid.zoomOptions.scaleExtent  — [min, max]
+ *   techdocs.addons.mermaid.zoomOptions.translateExtent — [[xmin, ymin], [xmax, ymax]]
  */
+const ConfiguredMermaidAddon = () => {
+  const config = useApi(configApiRef);
+  const mermaidConfig = config.getOptionalConfig('techdocs.addons.mermaid');
 
-export const techdocsAddonMermaidPlugin = createPlugin({
-  id: 'techdocs-addon-mermaid',
+  const props: MermaidProps = {};
+
+  if (mermaidConfig) {
+    props.lightConfig = mermaidConfig.getOptional<MermaidConfig>('lightConfig');
+    props.darkConfig = mermaidConfig.getOptional<MermaidConfig>('darkConfig');
+    props.config = mermaidConfig.getOptional<MermaidConfig>('config');
+    props.enableZoom = mermaidConfig.getOptionalBoolean('enableZoom') ?? false;
+
+    const zoomConfig = mermaidConfig.getOptionalConfig('zoomOptions');
+    if (zoomConfig) {
+      props.zoomOptions = {
+        scaleExtent: zoomConfig.getOptional<[number, number]>('scaleExtent'),
+        translateExtent:
+          zoomConfig.getOptional<[[number, number], [number, number]]>(
+            'translateExtent',
+          ),
+      };
+    }
+  }
+
+  return createElement(MermaidAddon, props);
+};
+
+const mermaidAddonParams: TechDocsAddonOptions = {
+  name: 'Mermaid',
+  location: 'Content',
+  component: ConfiguredMermaidAddon,
+};
+
+export const techDocsMermaidAddon = AddonBlueprint.make({
+  name: 'mermaid',
+  params: mermaidAddonParams,
 });
 
-/**
- * TechDocs addon that lets you render Mermaid diagrams
- *
- * @public
- */
+export const techDocsMermaidAddonModule = createFrontendModule({
+  pluginId: 'techdocs',
+  extensions: [techDocsMermaidAddon],
+});
 
-export const Mermaid = techdocsAddonMermaidPlugin.provide(
-  createTechDocsAddonExtension<MermaidProps>({
-    name: 'MermaidDiagram',
-    location: TechDocsAddonLocations.Content,
-    component: MermaidAddon,
-  }),
-);
+export { techDocsMermaidAddonModule as default };

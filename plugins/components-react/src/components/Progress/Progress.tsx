@@ -19,7 +19,8 @@ export const Progress = ({ ariaLabel = 'Loading' }: ProgressProps) => {
           width: '100%',
           overflow: 'hidden',
           borderRadius: '2px',
-          backgroundColor: 'color-mix(in srgb, var(--bui-accent-bg) 20%, transparent)',
+          backgroundColor:
+            'color-mix(in srgb, var(--bui-accent-bg) 20%, transparent)',
         }}
       >
         {/* Animated Fill Bar */}
@@ -52,4 +53,4 @@ export const Progress = ({ ariaLabel = 'Loading' }: ProgressProps) => {
       </div>
     </ProgressBar>
   );
-}
+};

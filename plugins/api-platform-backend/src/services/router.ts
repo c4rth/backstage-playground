@@ -160,10 +160,12 @@ export async function createRouter(
     const credentials = await httpAuth.credentials(req);
     const authorizeResponse = (
       await permissions.authorize(
-        [{ 
-          permission: catalogEntityDeletePermission,
-          resourceRef: stringifyEntityRef(entity),
-         }],
+        [
+          {
+            permission: catalogEntityDeletePermission,
+            resourceRef: stringifyEntityRef(entity),
+          },
+        ],
         { credentials },
       )
     )[0];

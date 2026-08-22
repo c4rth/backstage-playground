@@ -5,14 +5,19 @@ import { LibraryDefinitionDetailPage } from './LibraryDefinitionDetailPage';
 import { LibraryDefinitionVersionsPage } from './LibraryDefintionVersionsPage';
 
 export const LibraryDefinitionPage = () => {
-  
-  const { system, name } = useRouteRefParams(apiPlatformLibraryDefinitionRouteRef);
+  const { system, name } = useRouteRefParams(
+    apiPlatformLibraryDefinitionRouteRef,
+  );
   const [searchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
 
   return queryVersion ? (
-    <LibraryDefinitionDetailPage system={system!} name={name!} version={queryVersion} />
+    <LibraryDefinitionDetailPage
+      system={system!}
+      name={name!}
+      version={queryVersion}
+    />
   ) : (
     <LibraryDefinitionVersionsPage system={system!} name={name!} />
   );
-}
+};

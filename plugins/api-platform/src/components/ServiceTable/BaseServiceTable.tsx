@@ -150,9 +150,9 @@ const getData = async <T extends BaseTableRow>(
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ServiceDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -160,15 +160,15 @@ const getData = async <T extends BaseTableRow>(
 
   const res = result
     ? {
-      data: result.items.map(toRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
 
   console.log(res);
   return res;

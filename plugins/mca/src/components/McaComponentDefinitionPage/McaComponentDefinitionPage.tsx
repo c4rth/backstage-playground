@@ -95,24 +95,27 @@ export const McaComponentDefinitionPage = () => {
     <>
       <PluginHeader
         icon={<RiBubbleChartLine fontSize="inherit" />}
-        breadcrumbs={[
-          { label: 'MCA Components', href: '/mca/components' },
-        ]}
+        breadcrumbs={[{ label: 'MCA Components', href: '/mca/components' }]}
       />
       <Header
         title={name}
         metadata={[
           {
             label: 'Versions',
-            value: <Select
-              onChange={selected => {
-                setSelectedVersion(selected ? selected.toString() : undefined);
-              }}
-              options={versions}
-              value={selectedVersion}
-            />,
+            value: (
+              <Select
+                onChange={selected => {
+                  setSelectedVersion(
+                    selected ? selected.toString() : undefined,
+                  );
+                }}
+                options={versions}
+                value={selectedVersion}
+              />
+            ),
           },
-        ]} />
+        ]}
+      />
       <Container>
         <McaComponentDefinitionTabs mca={mca!} version={selectedVersion} />
       </Container>

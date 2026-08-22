@@ -31,7 +31,10 @@ interface LibraryDefinitionVersionsPageProps {
   name: string;
 }
 
-export const LibraryDefinitionVersionsPage = ({ system, name }: LibraryDefinitionVersionsPageProps) => {
+export const LibraryDefinitionVersionsPage = ({
+  system,
+  name,
+}: LibraryDefinitionVersionsPageProps) => {
   const [libraryEntity, setLibraryEntity] = useState<
     ComponentEntity | undefined
   >(undefined);
@@ -88,9 +91,7 @@ export const LibraryDefinitionVersionsPage = ({ system, name }: LibraryDefinitio
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <PluginHeader
         icon={<RiBookShelfLine fontSize="inherit" />}
-        breadcrumbs={[
-          { label: 'Libraries', href: '/api-platform/library' },
-        ]}
+        breadcrumbs={[{ label: 'Libraries', href: '/api-platform/library' }]}
         customActions={
           <TooltipTrigger>
             <ButtonIcon
@@ -102,8 +103,7 @@ export const LibraryDefinitionVersionsPage = ({ system, name }: LibraryDefinitio
           </TooltipTrigger>
         }
       />
-      <Header
-        title={name} />
+      <Header title={name} />
       <Container>
         {generating && <Progress />}
         {errorReport && (

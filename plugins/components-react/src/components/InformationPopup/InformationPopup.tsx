@@ -44,10 +44,7 @@ export const InformationPopup = (props: InformationPopupProps) => {
             />
           }
         />
-        <Popover
-          placement="bottom end"
-          style={INFORMATION_POPOVER_STYLE}
-        >
+        <Popover placement="bottom end" style={INFORMATION_POPOVER_STYLE}>
           {content}
         </Popover>
       </DialogTrigger>

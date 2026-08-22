@@ -6,12 +6,12 @@ export const apiPlatformRouteRef = createRouteRef({
 
 export const apiPlatformApiDefinitionRouteRef = createRouteRef({
   id: 'api-platform-api-definition',
-  params: [ 'system', 'name' ],
+  params: ['system', 'name'],
 });
 
 export const apiPlatformApiNoSystemRouteRef = createRouteRef({
   id: 'api-platform-api-no-system',
-  params: [ 'name' ],
+  params: ['name'],
 });
 
 export const apiPlatformServiceRouteRef = createRouteRef({
@@ -20,7 +20,7 @@ export const apiPlatformServiceRouteRef = createRouteRef({
 
 export const apiPlatformServiceDefinitionRouteRef = createRouteRef({
   id: 'api-platform-service-definition',
-  params: [ 'system', 'name' ],
+  params: ['system', 'name'],
 });
 
 export const apiPlatformSystemRouteRef = createRouteRef({
@@ -29,7 +29,7 @@ export const apiPlatformSystemRouteRef = createRouteRef({
 
 export const apiPlatformSystemDefinitionRouteRef = createRouteRef({
   id: 'api-platform-system-definition',
-  params: [ 'system', 'name' ],
+  params: ['system', 'name'],
 });
 
 export const apiPlatformLibraryRouteRef = createRouteRef({
@@ -38,5 +38,5 @@ export const apiPlatformLibraryRouteRef = createRouteRef({
 
 export const apiPlatformLibraryDefinitionRouteRef = createRouteRef({
   id: 'api-platform-library-definition',
-  params: [ 'system', 'name' ],
+  params: ['system', 'name'],
 });

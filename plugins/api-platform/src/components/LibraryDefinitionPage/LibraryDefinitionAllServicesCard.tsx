@@ -177,10 +177,10 @@ const LibraryDefinitionAllServiceTable = ({
       headerActions={
         <>
           {!version && (
-              <DependentsToggle
-                handleDependentChange={type => setSelectedDependency(type)}
-                selectedType={selectedDependency}
-              />
+            <DependentsToggle
+              handleDependentChange={type => setSelectedDependency(type)}
+              selectedType={selectedDependency}
+            />
           )}
           <Box style={{ marginLeft: 'auto', width: '250px' }}>
             <SearchField
@@ -236,9 +236,7 @@ export const LibraryDefinitionAllServicesCard = ({
     return result.items;
   }, [apiPlatformApi, name]);
 
-  const title = version
-    ? `Dependent Services`
-    : 'All services';
+  const title = version ? `Dependent Services` : 'All services';
 
   const rows = useMemo(() => {
     if (!libraryVersions) return [];

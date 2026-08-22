@@ -1,6 +1,9 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { Cell, ColumnConfig, Table, useTable, CellText } from '@backstage/ui';
-import { LinkComponentDisplayName, Progress } from '@internal/plugin-components-react';
+import {
+  LinkComponentDisplayName,
+  Progress,
+} from '@internal/plugin-components-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { useGetLibraryVersions } from '../..';

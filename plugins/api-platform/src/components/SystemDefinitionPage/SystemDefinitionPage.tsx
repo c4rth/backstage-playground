@@ -20,12 +20,9 @@ export const SystemDefinitionPage = () => {
     >
       <PluginHeader
         icon={<RiShapesLine fontSize="inherit" />}
-        breadcrumbs={[
-          { label: 'Systems', href: '/api-platform/system' },
-        ]}
+        breadcrumbs={[{ label: 'Systems', href: '/api-platform/system' }]}
       />
-      <Header
-        title={name} />
+      <Header title={name} />
       <Container>
         {systemDefinition && name && (
           <SystemDefinitionCard

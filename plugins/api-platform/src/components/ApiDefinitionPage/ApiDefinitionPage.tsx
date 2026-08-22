@@ -68,28 +68,29 @@ export const ApiDefinitionPage = () => {
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
       <PluginHeader
         icon={<RiPuzzleFill fontSize="inherit" />}
-        breadcrumbs={[
-          { label: 'APIs', href: '/api-platform/api' },
-        ]}
+        breadcrumbs={[{ label: 'APIs', href: '/api-platform/api' }]}
       />
       <Header
         title={name}
         metadata={[
           {
             label: 'Versions',
-            value: <Select
-              onChange={selected => {
-                setSelectedVersion(selected ? selected.toString() : undefined);
-              }}
-              options={versions}
-              value={selectedVersion}
-              style={{ minWidth: '200px' }}
-            />,
+            value: (
+              <Select
+                onChange={selected => {
+                  setSelectedVersion(
+                    selected ? selected.toString() : undefined,
+                  );
+                }}
+                options={versions}
+                value={selectedVersion}
+                style={{ minWidth: '200px' }}
+              />
+            ),
           },
-        ]} />
-      <Container>
-        {apiEntity ? <ApiDefinitionCard /> : <div />}
-      </Container>
+        ]}
+      />
+      <Container>{apiEntity ? <ApiDefinitionCard /> : <div />}</Container>
     </AsyncEntityProvider>
   );
 };

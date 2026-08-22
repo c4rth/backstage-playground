@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Copy of https://github.com/backstage/backstage/blob/master/plugins/search/src/components/SearchPage/SearchPage.tsx
  * Need to update the URL when the search state changes, and update the search state when the URL changes. This is a bit tricky because we don't want to create an infinite loop of updates, so we need to be careful about when we update the URL and when we update the search state.
  */
@@ -21,9 +21,7 @@ import { useEffect } from 'react';
 import usePrevious from 'react-use/esm/usePrevious';
 import qs from 'qs';
 import { useLocation } from 'react-router-dom';
-import {
-  useSearch,
-} from '@backstage/plugin-search-react';
+import { useSearch } from '@backstage/plugin-search-react';
 import { JsonObject } from '@backstage/types';
 
 export const UrlUpdater = () => {

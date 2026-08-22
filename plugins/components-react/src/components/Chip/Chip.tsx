@@ -82,16 +82,20 @@ const getChipStyles = (
 const getLabelStyles = (
   color: ChipProps['color'],
   variant: ChipProps['variant'],
-  size: ChipProps['size']): CSSProperties => ({
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    paddingLeft: size === 'small' ? '8px' : '12px',
-    paddingRight: size === 'small' ? '8px' : '12px',
-    whiteSpace: 'nowrap',
-    display: 'flex',
-    alignItems: 'center',
-    color: variant === 'filled' && color === 'primary' ? 'var(--bui-white)' : 'var(--bui-fg-primary)',
-  });
+  size: ChipProps['size'],
+): CSSProperties => ({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  paddingLeft: size === 'small' ? '8px' : '12px',
+  paddingRight: size === 'small' ? '8px' : '12px',
+  whiteSpace: 'nowrap',
+  display: 'flex',
+  alignItems: 'center',
+  color:
+    variant === 'filled' && color === 'primary'
+      ? 'var(--bui-white)'
+      : 'var(--bui-fg-primary)',
+});
 
 const getIconStyles = (size: ChipProps['size']): CSSProperties => ({
   display: 'flex',

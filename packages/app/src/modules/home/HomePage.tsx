@@ -49,7 +49,10 @@ export const HomePage = () => {
                   <ToolkitCard />
                 </Grid.Item>
                 <Grid.Item colSpan="6">
-                  <HomePageRecentlyVisited numVisitsOpen={10} numVisitsTotal={20} />
+                  <HomePageRecentlyVisited
+                    numVisitsOpen={10}
+                    numVisitsTotal={20}
+                  />
                 </Grid.Item>
                 <Grid.Item colSpan="6">
                   <HomePageTopVisited numVisitsOpen={10} numVisitsTotal={20} />

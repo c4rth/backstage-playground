@@ -35,6 +35,6 @@ export interface Config {
        * @visibility backend
        */
       schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
-    }
+    };
   };
 }
