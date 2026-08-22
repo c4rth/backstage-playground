@@ -1,5 +1,10 @@
+import {
+  createBackendModule,
+  coreServices,
+} from '@backstage/backend-plugin-api';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import {
+  microsoftGraphOrgEntityProviderTransformExtensionPoint,
   defaultGroupTransformer,
   defaultUserTransformer,
   defaultOrganizationTransformer,
@@ -9,7 +14,7 @@ import {
 import { GroupEntity, UserEntity } from '@backstage/catalog-model';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-export interface GraphTransformerService {
+interface GraphTransformerService {
   groupTransformer(
     group: MicrosoftGraph.Group,
     groupPhoto?: string,
@@ -23,7 +28,7 @@ export interface GraphTransformerService {
   ): Promise<GroupEntity | undefined>;
 }
 
-export interface GroupTransformerOptions {
+interface GroupTransformerOptions {
   logger: LoggerService;
 }
 
@@ -34,7 +39,7 @@ function extractGroupName(group: MicrosoftGraph.Group): string {
   return (group.mailNickname || group.displayName) as string;
 }
 
-export async function createGraphTransformerService(
+async function createGraphTransformerService(
   options: GroupTransformerOptions,
 ): Promise<GraphTransformerService> {
   const logger = options.logger;
@@ -130,3 +135,32 @@ export async function createGraphTransformerService(
     },
   };
 }
+
+export const microsoftGraphTransformerModule =
+  createBackendModule({
+    pluginId: 'catalog',
+    moduleId: 'microsoft-graph-extensions',
+    register(env) {
+      env.registerInit({
+        deps: {
+          logger: coreServices.logger,
+          microsoftGraphTransformers:
+            microsoftGraphOrgEntityProviderTransformExtensionPoint,
+        },
+        async init({ logger, microsoftGraphTransformers }) {
+          const graphTransformerService = await createGraphTransformerService({
+            logger,
+          });
+          microsoftGraphTransformers.setUserTransformer(
+            graphTransformerService.userTransformer,
+          );
+          microsoftGraphTransformers.setGroupTransformer(
+            graphTransformerService.groupTransformer,
+          );
+          microsoftGraphTransformers.setOrganizationTransformer(
+            graphTransformerService.organizationTransformer,
+          );
+        },
+      });
+    },
+  });

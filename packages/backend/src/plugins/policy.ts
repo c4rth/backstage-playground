@@ -1,3 +1,8 @@
+import {
+  createBackendModule,
+  coreServices,
+} from '@backstage/backend-plugin-api';
+import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   catalogEntityCreatePermission,
@@ -41,7 +46,7 @@ type CustomPermission = {
   allowed: string[];
 };
 
-export class MyPermissionPolicy implements PermissionPolicy {
+class CustomPermissionPolicy implements PermissionPolicy {
   logger: LoggerService;
   config: Config;
   superUserGroups: string[] = [];
@@ -153,3 +158,21 @@ export class MyPermissionPolicy implements PermissionPolicy {
     return { result: AuthorizeResult.ALLOW };
   }
 }
+
+export const customPermissionPolicyModule =
+  createBackendModule({
+    pluginId: 'permission',
+    moduleId: 'custom-policy',
+    register(reg) {
+      reg.registerInit({
+        deps: {
+          policy: policyExtensionPoint,
+          config: coreServices.rootConfig,
+          logger: coreServices.logger,
+        },
+        async init({ policy, logger, config }) {
+          policy.setPolicy(new CustomPermissionPolicy(logger, config));
+        },
+      });
+    },
+  });
