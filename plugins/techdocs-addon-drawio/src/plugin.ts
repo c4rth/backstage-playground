@@ -1,19 +1,36 @@
-import { createPlugin } from '@backstage/core-plugin-api';
+import { createElement } from 'react';
 import {
-  createTechDocsAddonExtension,
-  TechDocsAddonLocations,
-} from '@backstage/plugin-techdocs-react';
+  AddonBlueprint,
+  TechDocsAddonOptions,
+} from '@backstage/plugin-techdocs-react/alpha';
+import {
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
 import { DrawIoAddOn } from './DrawIo';
 import type { DrawIoProps } from './DrawIo';
 
-export const techdocsAddonDrawIoPlugin = createPlugin({
-  id: 'techdocs-addon-drawio',
+
+const ConfiguredDrawIoAddon = () => {
+
+  const props: DrawIoProps = {};
+
+  return createElement(DrawIoAddOn, props);
+};
+
+const drawIoAddonParams: TechDocsAddonOptions = {
+  name: 'DrawIo',
+  location: 'Content',
+  component: ConfiguredDrawIoAddon,
+};
+
+export const techDocsDrawIoAddon = AddonBlueprint.make({
+  name: 'drawio',
+  params: drawIoAddonParams,
 });
 
-export const DrawIo = techdocsAddonDrawIoPlugin.provide(
-  createTechDocsAddonExtension<DrawIoProps>({
-    name: 'DrawIoDiagram',
-    location: TechDocsAddonLocations.Content,
-    component: DrawIoAddOn,
-  }),
-);
+export const techDocsDrawIoAddonModule = createFrontendModule({
+  pluginId: 'techdocs',
+  extensions: [techDocsDrawIoAddon],
+});
+
+export { techDocsDrawIoAddonModule as default };

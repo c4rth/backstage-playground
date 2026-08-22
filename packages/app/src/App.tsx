@@ -12,7 +12,6 @@ import homePlugin from '@backstage/plugin-home/alpha';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import searchPlugin from '@backstage/plugin-search/alpha';
 import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
-import { techDocsMermaidAddonModule } from '@internal/plugin-techdocs-addon-mermaid';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import visualizerPlugin from '@backstage/plugin-app-visualizer';
 // Custom plugins
@@ -30,6 +29,8 @@ import { devToolsExtensionPlugin } from './modules/devtools';
 import mcaPlugin from '@internal/plugin-mca';
 import { scaffolderExtensions } from '@internal/plugin-scaffolder-extensions';
 import { searchCustomizations } from './modules/search';
+import { techDocsMermaidAddonModule } from '@internal/plugin-techdocs-addon-mermaid';
+import { techDocsDrawIoAddonModule } from '@internal/plugin-techdocs-addon-drawio';
 
 const app = createApp({
   features: [
@@ -62,6 +63,7 @@ const app = createApp({
     searchPlugin,
     techdocsPlugin,
     techDocsMermaidAddonModule,
+    techDocsDrawIoAddonModule,
     userSettingsPlugin,
     visualizerPlugin,
     // Legacy plugins
