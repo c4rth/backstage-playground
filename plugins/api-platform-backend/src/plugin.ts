@@ -41,13 +41,11 @@ export const apiPlatformBackendPlugin = createBackendPlugin({
         apiService,
         libraryService,
         catalogService,
-        permissions,
       }) {
         httpRouter.use(
           await createRouter({
             httpAuth,
             userInfo,
-            permissions,
             serviceInformationService,
             systemService,
             serviceService,

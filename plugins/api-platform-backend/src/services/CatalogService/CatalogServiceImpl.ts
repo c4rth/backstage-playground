@@ -4,6 +4,8 @@ import {
   createServiceFactory,
   createServiceRef,
   LoggerService,
+  PermissionsService,
+  HttpAuthService,
 } from '@backstage/backend-plugin-api';
 import {
   ApiPlatformCatalogService,
@@ -15,22 +17,30 @@ import {
   CatalogService,
   catalogServiceRef,
 } from '@backstage/plugin-catalog-node';
+import { catalogEntityDeletePermission } from '@backstage/plugin-catalog-common/alpha';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 export interface CatalogServiceOptions {
   logger: LoggerService;
   auth: AuthService;
   catalog: CatalogService;
+  permissions: PermissionsService;
+  httpAuth: HttpAuthService;
 }
 
 export class CatalogServiceImpl implements ApiPlatformCatalogService {
   private readonly logger: LoggerService;
   private readonly catalog: CatalogService;
   private readonly auth: AuthService;
+  private readonly permissions: PermissionsService;
+  private readonly httpAuth: HttpAuthService;
 
   constructor(options: CatalogServiceOptions) {
     this.logger = options.logger;
     this.catalog = options.catalog;
     this.auth = options.auth;
+    this.permissions = options.permissions;
+    this.httpAuth = options.httpAuth;
     this.logger.info('CatalogService initialized');
   }
   async registerCatalogInfo(request: {
@@ -91,7 +101,35 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
     return entities.items[0];
   }
 
-  async unregisterCatalogInfo(entity: Entity): Promise<UnregisterResponse> {
+  async unregisterCatalogInfo(request: any): Promise<UnregisterResponse> {
+    const entity = await this.getEntityByName({
+      name: request.params.name,
+      kind: request.params.kind,
+    });
+    if (!entity) {
+      return {
+        message: `Entity not found: "${request.kind} / ${request.name}"`,
+        returnCode: 404,
+      };
+    }
+    const credentials = await this.httpAuth.credentials(request);
+    const authorizeResponse = (
+      await this.permissions.authorize(
+        [
+          {
+            permission: catalogEntityDeletePermission,
+            resourceRef: stringifyEntityRef(entity),
+          },
+        ],
+        { credentials },
+      )
+    )[0];
+    if (authorizeResponse.result === AuthorizeResult.DENY) {
+      return {
+        message: `Forbidden: "${request.kind} / ${request.name}"`,
+        returnCode: 403,
+      };
+    }
     try {
       const annotations = entity.metadata.annotations;
       if (!annotations || !annotations['backstage.io/managed-by-location']) {
@@ -105,6 +143,11 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
       this.logger.info('Location to remove:', location);
       if (!location) {
         throw new Error('Location not found');
+      }
+      if (entity.metadata.uid) {
+        await this.catalog.removeEntityByUid(entity.metadata.uid, {
+          credentials: await this.auth.getOwnServiceCredentials(),
+        });
       }
       await this.catalog.removeLocationById(location.id, {
         credentials: await this.auth.getOwnServiceCredentials(),
@@ -171,12 +214,16 @@ export const apiPlatformCatalogServiceRef =
           logger: coreServices.logger,
           auth: coreServices.auth,
           catalog: catalogServiceRef,
+          permissions: coreServices.permissions,
+          httpAuth: coreServices.httpAuth,
         },
-        async factory({ logger, auth, catalog }) {
+        async factory({ logger, auth, catalog, permissions, httpAuth }) {
           const apiService = new CatalogServiceImpl({
             logger,
             auth,
             catalog,
+            permissions,
+            httpAuth,
           });
           return apiService;
         },
