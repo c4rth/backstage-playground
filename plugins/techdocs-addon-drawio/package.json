@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-techdocs-react": "backstage:^"
   },
   "devDependencies": {

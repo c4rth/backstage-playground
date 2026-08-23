@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { EntityTable } from './EntityTable';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { CATALOG_METADATA_NAME } from '@internal/plugin-api-platform-common';
 import { EntityValidationContent } from '@backstage-community/plugin-entity-validation';
 import { ImportStepper } from '@backstage/plugin-catalog-import';
@@ -32,6 +33,7 @@ export const CatalogAdminPage = () => {
   >([]);
 
   const catalogApi = useApi(catalogApiRef);
+  const toastApi = useApi(toastApiRef);
 
   useEffect(() => {
     catalogApi
@@ -53,9 +55,13 @@ export const CatalogAdminPage = () => {
         setSystemOptions(loaded);
       })
       .catch(err => {
-        console.error('Failed to load systems', err);
+        toastApi.post({
+          title: `Failed to load systems: ${err}`,
+          status: 'danger',
+          timeout: 1500,
+        });
       });
-  }, [catalogApi]);
+  }, [catalogApi, toastApi]);
 
   return (
     <Container>

@@ -305,7 +305,6 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
           status: 'danger',
           timeout: 1500,
         });
-        console.error(`Failed to delete entity: ${entityName}`, error);
       }
     }
     setSelected(new Set());
@@ -329,7 +328,6 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
           status: 'danger',
           timeout: 1500,
         });
-        console.error(`Failed to refresh entity: ${entityName}`, error);
       }
     }
     setSelected(new Set());

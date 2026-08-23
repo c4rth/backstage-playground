@@ -42,11 +42,13 @@
     "@backstage/plugin-scaffolder-common": "backstage:^",
     "@backstage/plugin-scaffolder-react": "backstage:^",
     "@backstage/plugin-search": "backstage:^",
+    "@backstage/plugin-search-common": "backstage:^",
     "@backstage/plugin-search-react": "backstage:^",
     "@backstage/plugin-techdocs": "backstage:^",
     "@backstage/plugin-techdocs-react": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",
     "@backstage/theme": "backstage:^",
+    "@backstage/types": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@internal/plugin-analytics": "workspace:^",
     "@internal/plugin-api-docs-spectral-linter": "workspace:^",
@@ -62,15 +64,18 @@
     "@internal/plugin-techdocs-addon-mermaid": "workspace:^",
     "@internal/plugin-toolkit": "workspace:^",
     "@remixicon/react": ">=4.6.0 <4.9.0",
+    "qs": "^6.15.3",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
     "react-router": "^6.3.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "react-use": "^17.6.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.32.3",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/react": "^16.0.0",
+    "@types/qs": "^6",
     "@types/react": "*",
     "@types/react-dom": "*"
   },

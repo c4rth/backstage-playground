@@ -12,12 +12,10 @@ import {
 export class PBEWithMD5AndDES {
   private static readonly ITERATIONS = 1000;
 
-  constructor() {}
-
   /**
    * Encrypts a plain text string using PBEWithMD5AndDES.
    */
-  public encrypt(plainText: string, password: string | null): string {
+  public static encrypt(plainText: string, password: string | null): string {
     if (!password) {
       return plainText;
     }
@@ -27,7 +25,7 @@ export class PBEWithMD5AndDES {
       const salt = WordArray.random(8);
 
       // 2. Derive Key and IV using PKCS#5 v1.5 (PBKDF1 with MD5)
-      const { key, iv } = this.deriveKeyAndIV(password, salt);
+      const { key, iv } = PBEWithMD5AndDES.deriveKeyAndIV(password, salt);
 
       // 3. Encrypt the plaintext using DES-CBC mode
       const encrypted = DES.encrypt(plainText, key, {
@@ -51,14 +49,17 @@ export class PBEWithMD5AndDES {
       // 5. Convert to Base64
       return combinedWordArray.toString(Base64);
     } catch (error) {
-      return this.formatCryptoError('encrypt', error);
+      return PBEWithMD5AndDES.formatCryptoError('encrypt', error);
     }
   }
 
   /**
    * Decrypts a Base64 encoded string encrypted with PBEWithMD5AndDES.
    */
-  public decrypt(encryptedText: string, password: string | null): string {
+  public static decrypt(
+    encryptedText: string,
+    password: string | null,
+  ): string {
     if (!password) {
       return encryptedText;
     }
@@ -87,7 +88,7 @@ export class PBEWithMD5AndDES {
       const cipherText = WordArray.create(cipherTextWords, cipherTextLength);
 
       // 4. Derive Key and IV using PKCS#5 v1.5 (PBKDF1 with MD5)
-      const { key, iv } = this.deriveKeyAndIV(password, salt);
+      const { key, iv } = PBEWithMD5AndDES.deriveKeyAndIV(password, salt);
 
       // 5. Decrypt using DES-CBC mode
       const cipherParams = CipherParams.create({
@@ -103,11 +104,11 @@ export class PBEWithMD5AndDES {
       // 6. Convert decrypted word array to UTF-8 string
       return decryptedWordArray.toString(Utf8);
     } catch (error) {
-      return this.formatCryptoError('decrypt', error);
+      return PBEWithMD5AndDES.formatCryptoError('decrypt', error);
     }
   }
 
-  private formatCryptoError(
+  private static formatCryptoError(
     operation: 'encrypt' | 'decrypt',
     error: unknown,
   ): string {
@@ -119,7 +120,7 @@ export class PBEWithMD5AndDES {
   /**
    * Helper method to perform PKCS#5 v1.5 PBKDF1 Key Derivation.
    */
-  private deriveKeyAndIV(
+  private static deriveKeyAndIV(
     password: string,
     salt: WordArray,
   ): { key: WordArray; iv: WordArray } {

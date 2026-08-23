@@ -5896,6 +5896,7 @@ __metadata:
   dependencies:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/errors": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/integration-react": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-scaffolder": "backstage:^"
@@ -5942,6 +5943,7 @@ __metadata:
   dependencies:
     "@backstage/cli": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-techdocs-react": "backstage:^"
     "@types/react": "npm:^18.0.0"
     react: "npm:^18.0.2"
@@ -12238,7 +12240,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/qs@npm:*, @types/qs@npm:^6.9.6":
+"@types/qs@npm:*, @types/qs@npm:^6, @types/qs@npm:^6.9.6":
   version: 6.15.1
   resolution: "@types/qs@npm:6.15.1"
   checksum: 10/fd04a36c683dbb1ec5819c01773905259955bfd84d7294af178ad609990a9b8d75d458629ca3bf97b151fe2934eb12ade7fdeb98f2e3ad40d138f0a7d195ac7c
@@ -13570,11 +13572,13 @@ __metadata:
     "@backstage/plugin-scaffolder-common": "backstage:^"
     "@backstage/plugin-scaffolder-react": "backstage:^"
     "@backstage/plugin-search": "backstage:^"
+    "@backstage/plugin-search-common": "backstage:^"
     "@backstage/plugin-search-react": "backstage:^"
     "@backstage/plugin-techdocs": "backstage:^"
     "@backstage/plugin-techdocs-react": "backstage:^"
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/theme": "backstage:^"
+    "@backstage/types": "backstage:^"
     "@backstage/ui": "backstage:^"
     "@internal/plugin-analytics": "workspace:^"
     "@internal/plugin-api-docs-spectral-linter": "workspace:^"
@@ -13593,12 +13597,15 @@ __metadata:
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/react": "npm:^16.0.0"
+    "@types/qs": "npm:^6"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
+    qs: "npm:^6.15.3"
     react: "npm:^18.0.2"
     react-dom: "npm:^18.0.2"
     react-router: "npm:^6.3.0"
     react-router-dom: "npm:^6.3.0"
+    react-use: "npm:^17.6.1"
   languageName: unknown
   linkType: soft
 
@@ -27306,7 +27313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.3, qs@npm:^6.11.2, qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.15.0, qs@npm:^6.15.2, qs@npm:^6.9.4, qs@npm:~6.15.1":
+"qs@npm:^6.10.3, qs@npm:^6.11.2, qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.15.0, qs@npm:^6.15.2, qs@npm:^6.15.3, qs@npm:^6.9.4, qs@npm:~6.15.1":
   version: 6.15.3
   resolution: "qs@npm:6.15.3"
   dependencies:
@@ -28205,7 +28212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use@npm:^17.2.4, react-use@npm:^17.3.2, react-use@npm:^17.6.0":
+"react-use@npm:^17.2.4, react-use@npm:^17.3.2, react-use@npm:^17.6.0, react-use@npm:^17.6.1":
   version: 17.6.1
   resolution: "react-use@npm:17.6.1"
   dependencies:

@@ -160,7 +160,7 @@ export const McaBaseTypeTable = memo(() => {
         }
       />
       <Table
-        key={`table-basetypes`}
+        key="table-basetypes"
         {...tableProps}
         columnConfig={columns}
         emptyState={<div>No data available</div>}

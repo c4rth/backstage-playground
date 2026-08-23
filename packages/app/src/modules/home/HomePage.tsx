@@ -7,35 +7,35 @@ import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { Container, FullPage, Grid } from '@backstage/ui';
 import { ToolkitCard } from '@internal/plugin-toolkit';
-import { makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-  searchBarInput: {
-    maxWidth: '60vw',
-    margin: 'auto',
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: '50px',
-    boxShadow: theme.shadows[1],
-  },
-  searchBarOutline: {
-    borderStyle: 'none',
-  },
-}));
+const searchBarClasses = {
+  root: 'searchBarRoot',
+  notchedOutline: 'searchBarOutline',
+};
 
 export const HomePage = () => {
-  const classes = useStyles();
   return (
     <SearchContextProvider>
+      <style>{`
+        .searchBarRoot {
+          max-width: 60vw;
+          margin: auto;
+          background-color: var(--bui-bg-surface-1);
+          border-radius: 50px;
+          box-shadow: var(--bui-shadow);
+        }
+
+        .searchBarOutline {
+          border-style: none;
+        }
+      `}</style>
       <FullPage>
         <Container>
           <Grid.Root columns="12">
             <Grid.Item colSpan="12" style={{ margin: '16px' }}>
               <HomePageSearchBar
                 InputProps={{
-                  classes: {
-                    root: classes.searchBarInput,
-                    notchedOutline: classes.searchBarOutline,
-                  },
+                  classes: searchBarClasses,
                 }}
                 placeholder="Search"
               />

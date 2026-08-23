@@ -136,31 +136,30 @@ async function createGraphTransformerService(
   };
 }
 
-export const microsoftGraphTransformerModule =
-  createBackendModule({
-    pluginId: 'catalog',
-    moduleId: 'microsoft-graph-extensions',
-    register(env) {
-      env.registerInit({
-        deps: {
-          logger: coreServices.logger,
-          microsoftGraphTransformers:
-            microsoftGraphOrgEntityProviderTransformExtensionPoint,
-        },
-        async init({ logger, microsoftGraphTransformers }) {
-          const graphTransformerService = await createGraphTransformerService({
-            logger,
-          });
-          microsoftGraphTransformers.setUserTransformer(
-            graphTransformerService.userTransformer,
-          );
-          microsoftGraphTransformers.setGroupTransformer(
-            graphTransformerService.groupTransformer,
-          );
-          microsoftGraphTransformers.setOrganizationTransformer(
-            graphTransformerService.organizationTransformer,
-          );
-        },
-      });
-    },
-  });
+export const microsoftGraphTransformerModule = createBackendModule({
+  pluginId: 'catalog',
+  moduleId: 'microsoft-graph-extensions',
+  register(env) {
+    env.registerInit({
+      deps: {
+        logger: coreServices.logger,
+        microsoftGraphTransformers:
+          microsoftGraphOrgEntityProviderTransformExtensionPoint,
+      },
+      async init({ logger, microsoftGraphTransformers }) {
+        const graphTransformerService = await createGraphTransformerService({
+          logger,
+        });
+        microsoftGraphTransformers.setUserTransformer(
+          graphTransformerService.userTransformer,
+        );
+        microsoftGraphTransformers.setGroupTransformer(
+          graphTransformerService.groupTransformer,
+        );
+        microsoftGraphTransformers.setOrganizationTransformer(
+          graphTransformerService.organizationTransformer,
+        );
+      },
+    });
+  },
+});

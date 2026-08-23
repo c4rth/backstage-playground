@@ -140,6 +140,7 @@ export class CustomAnalyticsApi implements CustomAnalytics {
         body: JSON.stringify(enrichedEvent),
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to capture analytics event', error);
     }
   }

@@ -81,6 +81,7 @@ const makeDiagram = async (
   } catch (e) {
     el.style.display = '';
     diagramElement.remove();
+    // eslint-disable-next-line no-console
     console.error('Failed to render mermaid diagram', e);
   }
 };

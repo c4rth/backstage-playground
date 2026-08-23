@@ -20,10 +20,9 @@ export const CryptoCoder = () => {
   const [secretKey, setSecretKey] = useState('my-secret');
   const [mode, setMode] = useState('Encode');
   const [algorithm, setAlgorithm] = useState('aes');
-  const pbeStringDecryptor = new PBEWithMD5AndDES();
 
-  function setDecryptedText(output: any) {
-    const decryptedText = output.toString(Utf8);
+  function setDecryptedText(value: any) {
+    const decryptedText = value.toString(Utf8);
     if (!decryptedText) {
       setOutput('Error while decrypting: Invalid input or secret key');
     } else {
@@ -56,7 +55,7 @@ export const CryptoCoder = () => {
             setOutput(RC4.encrypt(input, secretKey).toString());
             break;
           case 'pbestring':
-            setOutput(pbeStringDecryptor.encrypt(input, secretKey));
+            setOutput(PBEWithMD5AndDES.encrypt(input, secretKey));
             break;
           default:
             setOutput(AES.encrypt(input, secretKey).toString());
@@ -83,7 +82,7 @@ export const CryptoCoder = () => {
             setDecryptedText(RC4.decrypt(input, secretKey));
             break;
           case 'pbestring':
-            setDecryptedText(pbeStringDecryptor.decrypt(input, secretKey));
+            setDecryptedText(PBEWithMD5AndDES.decrypt(input, secretKey));
             break;
           default:
             setDecryptedText(AES.decrypt(input, secretKey));

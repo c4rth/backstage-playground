@@ -159,20 +159,19 @@ class CustomPermissionPolicy implements PermissionPolicy {
   }
 }
 
-export const customPermissionPolicyModule =
-  createBackendModule({
-    pluginId: 'permission',
-    moduleId: 'custom-policy',
-    register(reg) {
-      reg.registerInit({
-        deps: {
-          policy: policyExtensionPoint,
-          config: coreServices.rootConfig,
-          logger: coreServices.logger,
-        },
-        async init({ policy, logger, config }) {
-          policy.setPolicy(new CustomPermissionPolicy(logger, config));
-        },
-      });
-    },
-  });
+export const customPermissionPolicyModule = createBackendModule({
+  pluginId: 'permission',
+  moduleId: 'custom-policy',
+  register(reg) {
+    reg.registerInit({
+      deps: {
+        policy: policyExtensionPoint,
+        config: coreServices.rootConfig,
+        logger: coreServices.logger,
+      },
+      async init({ policy, logger, config }) {
+        policy.setPolicy(new CustomPermissionPolicy(logger, config));
+      },
+    });
+  },
+});

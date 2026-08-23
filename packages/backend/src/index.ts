@@ -33,7 +33,6 @@ backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 backend.add(import('@backstage/plugin-permission-backend'));
 backend.add(customPermissionPolicyModule);
 
-
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));
 

@@ -156,20 +156,6 @@ const libraryDefinitionPage = PageBlueprint.make({
   },
 });
 
-const apiPlatformApi = ApiBlueprint.make({
-  name: 'backend-api',
-  params: defineParams =>
-    defineParams({
-      api: apiPlatformBackendApiRef,
-      deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
-      },
-      factory: ({ discoveryApi, fetchApi }) =>
-        new ApiPlatformBackendClient({ discoveryApi, fetchApi }),
-    }),
-});
-
 export const ApiSearchResultListItemExtension =
   SearchResultListItemBlueprint.make({
     name: 'api-search-result-item',
@@ -189,6 +175,20 @@ export const apiPlatformBackendApiRef =
   createApiRef<ApiPlatformBackendApi>().with({
     id: 'plugin.api-platform.service',
   });
+
+const apiPlatformApi = ApiBlueprint.make({
+  name: 'backend-api',
+  params: defineParams =>
+    defineParams({
+      api: apiPlatformBackendApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new ApiPlatformBackendClient({ discoveryApi, fetchApi }),
+    }),
+});
 
 export default createFrontendPlugin({
   pluginId: 'api-platform',

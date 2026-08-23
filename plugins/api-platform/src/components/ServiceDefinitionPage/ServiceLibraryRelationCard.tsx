@@ -225,9 +225,7 @@ export const ServiceLibraryRelationCard = () => {
   }
 
   if (error) {
-    return (
-      <ResponseErrorPanel title={`Error loading Libraries`} error={error} />
-    );
+    return <ResponseErrorPanel title="Error loading Libraries" error={error} />;
   }
 
   return (

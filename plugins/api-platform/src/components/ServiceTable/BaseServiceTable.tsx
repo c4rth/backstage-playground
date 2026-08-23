@@ -169,8 +169,6 @@ const getData = async <T extends BaseTableRow>(
         totalCount: 0,
         page: 0,
       };
-
-  console.log(res);
   return res;
 };
 

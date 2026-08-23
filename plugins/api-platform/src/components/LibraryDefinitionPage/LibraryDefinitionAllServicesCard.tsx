@@ -158,8 +158,8 @@ const LibraryDefinitionAllServiceTable = ({
         return (
           item.name.toLowerCase().includes(lowerQuery) ||
           item.system.toLowerCase().includes(lowerQuery) ||
-          item.serviceDefinition.versions.some(version => {
-            return Object.values(version.environments).some(envData => {
+          item.serviceDefinition.versions.some(v => {
+            return Object.values(v.environments).some(envData => {
               return envData?.dependencies
                 ?.join(', ')
                 .toLowerCase()
