@@ -24,6 +24,7 @@ import {
   Header,
   SortDescriptor,
   Column,
+  Flex,
 } from '@backstage/ui';
 
 export type BaseTableRow = {
@@ -35,28 +36,18 @@ export type BaseTableRow = {
 
 export type ToggleType = 'ownership' | 'dependents';
 
-export const LIST_ITEM_STYLE = {
-  margin: 2,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '2.5rem',
-};
-
 export const renderVersionList = (
   serviceDefinition: ServiceDefinition,
   renderItem: (version: ServiceVersionDefinition, idx: number) => JSX.Element,
 ) => (
   <Cell>
-    {serviceDefinition.versions?.map((version, idx) => (
-      <Box
-        key={`${serviceDefinition.name}-${version.version}-${idx}`}
-        style={LIST_ITEM_STYLE}
-        aria-label={`${serviceDefinition.name} version ${version.version}`}
-      >
-        {renderItem(version, idx)}
-      </Box>
-    ))}
+    <Flex direction="column" align="center" style={{ gap: 12 }}>
+      {serviceDefinition.versions?.map((version, idx) => (
+        <>
+          {renderItem(version, idx)}
+        </>
+      ))}
+    </Flex>
   </Cell>
 );
 
@@ -150,9 +141,9 @@ const getData = async <T extends BaseTableRow>(
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as ServiceDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -160,15 +151,15 @@ const getData = async <T extends BaseTableRow>(
 
   const res = result
     ? {
-        data: result.items.map(toRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
   return res;
 };
 
