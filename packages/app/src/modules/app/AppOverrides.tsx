@@ -2,6 +2,7 @@ import {
   SignInPageBlueprint,
   ThemeBlueprint,
 } from '@backstage/plugin-app-react';
+import { AutoLogout } from '@backstage/core-components';
 import {
   ScmIntegrationsApi,
   scmIntegrationsApiRef,
@@ -12,6 +13,7 @@ import {
   createFrontendModule,
   analyticsApiRef,
   ApiBlueprint,
+  AppRootElementBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
   configApiRef,
@@ -39,6 +41,12 @@ const providers: IdentityProviders = [
 export const appOverrides = createFrontendModule({
   pluginId: 'app',
   extensions: [
+    AppRootElementBlueprint.make({
+      name: 'auto-logout',
+      params: {
+        element: <AutoLogout />,
+      },
+    }),
     ApiBlueprint.make({
       name: 'scm-integrations',
       params: defineParams =>
