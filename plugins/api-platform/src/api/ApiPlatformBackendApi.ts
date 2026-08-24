@@ -135,7 +135,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     offset?: number;
     limit?: number;
     search?: string;
-    ownership?: OwnershipType;
+    ownershipType?: OwnershipType;
     apiType?: OpenApiType;
     orderBy?: { field: string; direction: string };
     dependsOn?: string;
@@ -145,7 +145,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
       offset,
       limit,
       search,
-      ownership,
+      ownershipType,
       apiType,
       orderBy,
       dependsOn,
@@ -156,7 +156,7 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
       offset,
       limit,
       search,
-      ownership,
+      ownershipType,
       apiType,
       orderBy: this.buildOrderByParam(orderBy),
       dependsOn,
