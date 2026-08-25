@@ -1,7 +1,4 @@
 import {
-  ButtonIcon,
-  Tooltip,
-  TooltipTrigger,
   Link,
   Text,
   Table,

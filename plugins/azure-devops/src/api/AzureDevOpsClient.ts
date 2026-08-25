@@ -9,7 +9,7 @@ import {
   ReadmeConfig,
   Team,
 } from '@backstage-community/plugin-azure-devops-common';
-import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi, ConfigApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import { AzureDevOpsApi } from './AzureDevOpsApi';
 
@@ -17,13 +17,18 @@ import { AzureDevOpsApi } from './AzureDevOpsApi';
 export class AzureDevOpsClient implements AzureDevOpsApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
+  private readonly azDoHost: string;
+  private readonly azDoOrg: string;
 
   public constructor(options: {
     discoveryApi: DiscoveryApi;
     fetchApi: FetchApi;
+    configApi: ConfigApi;
   }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
+    this.azDoHost = options.configApi.getString('azureDevOps.host');
+    this.azDoOrg = options.configApi.getString('azureDevOps.organization');
   }
 
   public async getGitTags(
@@ -34,10 +39,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     org?: string,
   ): Promise<{ items: GitTag[] }> {
     const queryString = new URLSearchParams();
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     queryString.append('entityRef', entityRef);
@@ -67,10 +76,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     if (options?.teamsLimit) {
       queryString.append('teamsLimit', options.teamsLimit.toString());
     }
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     queryString.append('entityRef', entityRef);
@@ -93,10 +106,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     if (teamsLimit) {
       queryString.append('teamsLimit', teamsLimit.toString());
     }
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     const urlSegment = `dashboard-pull-requests/${encodeURIComponent(
@@ -114,10 +131,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     if (limit) {
       queryString.append('limit', limit.toString());
     }
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     let urlSegment = 'all-teams';
@@ -133,10 +154,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     org?: string,
   ): Promise<string[]> {
     const queryString = new URLSearchParams();
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     let urlSegment = `users/${encodeURIComponent(userId)}/team-ids`;
@@ -160,10 +185,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     if (repoName) {
       queryString.append('repoName', repoName);
     }
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     if (definitionName) {
@@ -197,10 +226,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
 
   public async getReadme(opts: ReadmeConfig): Promise<Readme> {
     const queryString = new URLSearchParams();
-    if (opts.host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (opts.host) {
       queryString.append('host', opts.host);
     }
-    if (opts.org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (opts.org) {
       queryString.append('org', opts.org);
     }
     if (opts.path) {
@@ -224,10 +257,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   ): Promise<{ log: string[] }> {
     const queryString = new URLSearchParams();
     queryString.append('entityRef', entityRef);
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     const urlSegment = `builds/${encodeURIComponent(
@@ -238,10 +275,14 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
 
   public async getProjects(host?: string, org?: string): Promise<string[]> {
     const queryString = new URLSearchParams();
-    if (host) {
+    if (this.azDoHost) {
+      queryString.append('host', this.azDoHost);
+    } else if (host) {
       queryString.append('host', host);
     }
-    if (org) {
+    if (this.azDoOrg) {
+      queryString.append('org', this.azDoOrg);
+    } else if (org) {
       queryString.append('org', org);
     }
     let urlSegment = 'projects';
