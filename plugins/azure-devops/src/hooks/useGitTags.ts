@@ -22,7 +22,7 @@ export function useGitTags(entity: Entity): {
       host,
       org,
     );
-  }, [api]);
+  }, [api, entity]);
 
   return {
     items: value?.items,

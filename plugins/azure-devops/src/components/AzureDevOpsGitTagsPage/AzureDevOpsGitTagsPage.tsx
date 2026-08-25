@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   Table,
   Cell,
@@ -14,14 +14,9 @@ import {
 } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { ResponseErrorPanel } from '@backstage/core-components';
-import {
-  GitTag,
-  getAnnotationValuesFromEntity,
-} from '@backstage-community/plugin-azure-devops-common';
-import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { useApi } from '@backstage/core-plugin-api';
-import { azureDevOpsApiRef, AzureDevOpsApi } from '../../api';
+import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 import { Progress } from '@internal/plugin-components-react';
+import { useGitTags } from '../../hooks';
 
 type TableRow = {
   id: number;
@@ -48,23 +43,18 @@ const toTableRow = (gitTag: GitTag, idx: number): TableRow => ({
 });
 
 async function fetchData(
-  api: AzureDevOpsApi,
-  entity: Entity,
+  items: GitTag[] | undefined,
 ): Promise<TableRow[]> {
-  const { project, repo, host, org } = getAnnotationValuesFromEntity(entity);
-  const data = await api.getGitTags(
-    project,
-    repo as string,
-    stringifyEntityRef(entity),
-    host,
-    org,
-  );
-  return data?.items.map(toTableRow) ?? [];
+  return (items ?? []).map(toTableRow);
 }
 
 export const AzureDevOpsGitTagsPage = () => {
   const { entity } = useEntity();
-  const api = useApi(azureDevOpsApiRef);
+  const {
+    items: gitTags,
+    loading: gitTagsLoading,
+    error: gitTagsError,
+  } = useGitTags(entity);
 
   const columns: ColumnConfig<TableRow>[] = useMemo(
     () => [
@@ -111,9 +101,9 @@ export const AzureDevOpsGitTagsPage = () => {
     [],
   );
 
-  const getData = useCallback(() => fetchData(api, entity), [api, entity]);
+  const getData = useCallback(() => fetchData(gitTags), [gitTags]);
 
-  const { tableProps } = useTable({
+  const { tableProps, reload } = useTable({
     mode: 'complete',
     getData,
     sortFn: (items, { column, direction }) => {
@@ -131,16 +121,22 @@ export const AzureDevOpsGitTagsPage = () => {
     },
   });
 
-  if (tableProps.error) {
+  useEffect(() => {
+    reload();
+  }, [gitTags, reload]);
+
+  const error = gitTagsError ?? tableProps.error;
+
+  if (error) {
     return (
       <ResponseErrorPanel
         title="Failed to call AzureDevOps"
-        error={tableProps.error}
+        error={error}
       />
     );
   }
 
-  if (tableProps.isPending) {
+  if (gitTagsLoading || tableProps.isPending) {
     return <Progress />;
   }
 

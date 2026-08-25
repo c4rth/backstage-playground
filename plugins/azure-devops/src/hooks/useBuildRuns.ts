@@ -20,7 +20,7 @@ export function useBuildRuns(
 } {
   const top = defaultLimit ?? AZURE_DEVOPS_DEFAULT_TOP;
   const options: BuildRunOptions = {
-    top: top,
+    top,
   };
 
   const api = useApi(azureDevOpsApiRef);
@@ -37,7 +37,7 @@ export function useBuildRuns(
       org,
       options,
     );
-  }, [api]);
+  }, [api, entity, top]);
 
   return {
     items: value?.items,

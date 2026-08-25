@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Table,
   Cell,
@@ -17,17 +17,15 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { getDurationFromDates } from '../../utils';
 import { DateTime } from 'luxon';
 import { ResponseErrorPanel } from '@backstage/core-components';
-import {
-  AZURE_DEVOPS_DEFAULT_TOP,
-  getAnnotationValuesFromEntity,
-} from '@backstage-community/plugin-azure-devops-common';
+import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import type { BuildRun } from '@backstage-community/plugin-azure-devops-common';
-import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { AzureDevOpsApi, azureDevOpsApiRef } from '../../api';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+import { azureDevOpsApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildStateComponent } from './BuildStateComponent';
 import { LogsDialog } from './LogsDialog';
 import { Progress } from '@internal/plugin-components-react';
+import { useBuildRuns } from '../../hooks';
 
 type TableRow = {
   id: number;
@@ -72,24 +70,6 @@ function getDuration(finishTime?: string, startTime?: string): string {
   return getDurationFromDates(startTime, finishTime);
 }
 
-async function fetchData(
-  api: AzureDevOpsApi,
-  entity: Entity,
-): Promise<TableRow[]> {
-  const { project, repo, definition, host, org } =
-    getAnnotationValuesFromEntity(entity);
-  const data = await api.getBuildRuns(
-    project,
-    stringifyEntityRef(entity),
-    repo,
-    definition,
-    host,
-    org,
-    { top: AZURE_DEVOPS_DEFAULT_TOP },
-  );
-  return data?.items.map(toTableRow) ?? [];
-}
-
 export const AzureDevOpsPipelinePage = () => {
   const [logsDialogState, setLogsDialogState] = useState({
     isOpen: false,
@@ -100,6 +80,11 @@ export const AzureDevOpsPipelinePage = () => {
 
   const azureApi = useApi(azureDevOpsApiRef);
   const { entity } = useEntity();
+  const {
+    items: buildRuns,
+    loading: buildRunsLoading,
+    error: buildRunsError,
+  } = useBuildRuns(entity);
 
   const fetchLogs = useCallback(
     async (buildId: number, buildTitle: string) => {
@@ -220,25 +205,31 @@ export const AzureDevOpsPipelinePage = () => {
   );
 
   const getData = useCallback(
-    () => fetchData(azureApi, entity),
-    [azureApi, entity],
+    async () => (buildRuns ?? []).map(toTableRow),
+    [buildRuns],
   );
 
-  const { tableProps } = useTable({
+  const { tableProps, reload } = useTable({
     mode: 'complete',
     getData,
   });
 
-  if (tableProps.error) {
+  useEffect(() => {
+    reload();
+  }, [buildRuns, reload]);
+
+  const error = buildRunsError ?? tableProps.error;
+
+  if (error) {
     return (
       <ResponseErrorPanel
         title="Failed to call AzureDevOps"
-        error={tableProps.error}
+        error={error}
       />
     );
   }
 
-  if (tableProps.isPending) {
+  if (buildRunsLoading || tableProps.isPending) {
     return <Progress />;
   }
 
