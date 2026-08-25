@@ -42,16 +42,13 @@ export const McaElementDefinitionTabs = memo<McaElementDefinitionTabsProps>(
           <Tab id="tab1" href=".">
             Overview
           </Tab>
-          <Tab id="tab2" href="inputfields">
-            Input Fields
+          <Tab id="tab2" href="fields">
+            Fields
           </Tab>
-          <Tab id="tab3" href="outputfields">
-            Output Fields
-          </Tab>
-          <Tab id="tab4" href="methods">
+          <Tab id="tab3" href="methods">
             Methods
           </Tab>
-          <Tab id="tab5" href="raw">
+          <Tab id="tab4" href="raw">
             Raw
           </Tab>
         </TabList>
@@ -59,15 +56,12 @@ export const McaElementDefinitionTabs = memo<McaElementDefinitionTabsProps>(
           <McaElementAboutTab element={element} />
         </TabPanel>
         <TabPanel id="tab2">
-          <McaComponentFieldsTab data={element} fieldType="input" />
+          <McaComponentFieldsTab data={element} fieldType="element" />
         </TabPanel>
         <TabPanel id="tab3">
-          <McaComponentFieldsTab data={element} fieldType="output" />
-        </TabPanel>
-        <TabPanel id="tab4">
           <McaComponentMethodsTab data={element} componentType="element" />
         </TabPanel>
-        <TabPanel id="tab5">
+        <TabPanel id="tab4">
           <McaComponentSnippet
             filename={`${element.name}.esml`}
             data={rawXml}
