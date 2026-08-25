@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.54.3",
+  "releaseVersion": "1.54.4",
   "packages": [
     {
       "name": "@backstage/app-defaults",
@@ -667,7 +667,7 @@
     },
     {
       "name": "@backstage/plugin-scaffolder-backend",
-      "version": "4.0.4"
+      "version": "4.0.5"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-azure",
