@@ -22,14 +22,14 @@ export interface ApiPlatformBackendApi {
     options: ApiDefinitionsListRequest,
   ): Promise<ApiDefinitionListResult>;
 
-  getApisCount(ownership: OwnershipType, apiType: OpenApiType): Promise<number>;
+  getApisCount(ownershipType: OwnershipType, apiType: OpenApiType): Promise<number>;
 
   getApiVersions(
     system: string,
     apiName: string,
   ): Promise<ApiVersionDefinition[]>;
 
-  getServicesCount(ownership: OwnershipType): Promise<number>;
+  getServicesCount(ownershipType: OwnershipType): Promise<number>;
 
   listServices(
     options: ServiceDefinitionsListRequest,
@@ -40,7 +40,7 @@ export interface ApiPlatformBackendApi {
     serviceName: string,
   ): Promise<ServiceDefinition>;
 
-  getSystemsCount(ownership: OwnershipType): Promise<number>;
+  getSystemsCount(ownershipType: OwnershipType): Promise<number>;
 
   listSystems(
     options: SystemDefinitionsListRequest,
@@ -173,12 +173,12 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   // APIs
 
   async getApisCount(
-    ownership: OwnershipType,
+    ownershipType: OwnershipType,
     apiType: OpenApiType,
   ): Promise<number> {
     return this.fetchJson<number>(
       '/apis/count',
-      this.buildSearchParams({ ownership, apiType }),
+      this.buildSearchParams({ ownershipType, apiType }),
     );
   }
 
@@ -204,10 +204,10 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // Services
 
-  async getServicesCount(ownership: OwnershipType): Promise<number> {
+  async getServicesCount(ownershipType: OwnershipType): Promise<number> {
     return this.fetchJson<number>(
       '/services/count',
-      this.buildSearchParams({ ownership }),
+      this.buildSearchParams({ ownershipType }),
     );
   }
 
@@ -240,10 +240,10 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   // Systems
 
-  async getSystemsCount(ownership: OwnershipType): Promise<number> {
+  async getSystemsCount(ownershipType: OwnershipType): Promise<number> {
     return this.fetchJson<number>(
       '/systems/count',
-      this.buildSearchParams({ ownership }),
+      this.buildSearchParams({ ownershipType }),
     );
   }
 

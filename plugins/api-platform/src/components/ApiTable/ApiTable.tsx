@@ -58,7 +58,7 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 
 const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
-  ownership: OwnershipType,
+  ownershipType: OwnershipType,
   apiType: OpenApiType,
   offset: number,
   pageSize: number,
@@ -75,7 +75,7 @@ const getData = async (
           direction: sort.direction,
         } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
-    ownership,
+    ownershipType,
     apiType,
   });
 
@@ -157,17 +157,17 @@ const API_TYPES = [
 ];
 
 function getTitle(
-  ownership: OwnershipType,
+  ownershipType: OwnershipType,
   apiType: OpenApiType,
   count: number,
 ): string {
-  return `${ownership === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : (API_TYPES.find(t => t.value === apiType)?.label ?? '')} APIs (${count})`;
+  return `${ownershipType === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : (API_TYPES.find(t => t.value === apiType)?.label ?? '')} APIs (${count})`;
 }
 
 export const ApiTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
     sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
   const [selectedType, setSelectedType] = useState<OpenApiType>(() =>
@@ -192,7 +192,7 @@ export const ApiTable = () => {
   }) => {
     const result = await getData(
       apiPlatformApi,
-      ownership,
+      ownershipType,
       selectedType,
       offset,
       pageSize,
@@ -223,19 +223,19 @@ export const ApiTable = () => {
       return;
     }
     reload();
-  }, [ownership, selectedType, reload]);
+  }, [ownershipType, selectedType, reload]);
 
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
     <Container>
       <Header
-        title={getTitle(ownership, selectedType, countRows)}
+        title={getTitle(ownershipType, selectedType, countRows)}
         customActions={
           <>
             <ComponentOwnership
               storageKey={STORAGE_OWNERSHIP_KEY}
-              handleOwnershipChange={setOwnership}
+              handleOwnershipChange={ setOwnershipType}
             />
 
             <Box mx="4" style={{ width: '10em' }}>
@@ -264,7 +264,7 @@ export const ApiTable = () => {
         }
       />
       <Table
-        key={`table-${selectedType}-${ownership}`}
+        key={`table-${selectedType}-${ownershipType}`}
         {...tableProps}
         columnConfig={COLUMNS}
         emptyState={<div>No data available</div>}

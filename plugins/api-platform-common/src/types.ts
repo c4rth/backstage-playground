@@ -67,7 +67,7 @@ export type ApiDefinitionsListRequest = {
   limit?: number;
   orderBy?: ApiDefinitionsOptions;
   search?: string;
-  ownership: OwnershipType;
+  ownershipType: OwnershipType;
   apiType: OpenApiType;
   userEntityRef?: string | undefined;
 };
@@ -176,7 +176,7 @@ export type SystemDefinitionsListRequest = {
   limit?: number;
   orderBy?: SystemDefinitionsOptions;
   search?: string;
-  ownership: OwnershipType;
+  ownershipType: OwnershipType;
   userEntityRef?: string | undefined;
 };
 
@@ -220,6 +220,6 @@ export type LibraryDefinitionsListRequest = {
   limit?: number;
   orderBy?: LibraryDefinitionsOptions;
   search?: string;
-  ownership: OwnershipType;
+  ownershipType: OwnershipType;
   userEntityRef?: string | undefined;
 };

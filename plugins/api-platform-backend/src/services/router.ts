@@ -27,13 +27,13 @@ import { LibraryService } from './LibraryService';
 import { ServiceInformationService } from './ServiceInformationService';
 
 async function getUserEntityRef(
-  ownership: string,
+  ownershipType: string,
   httpAuth: HttpAuthService,
   req: any,
   userInfo: UserInfoService,
 ) {
   let userEntityRef = undefined;
-  if (ownership === 'owned') {
+  if (ownershipType === 'owned') {
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
     const user = await userInfo.getUserInfo(credentials);
     userEntityRef = user.userEntityRef;
@@ -76,10 +76,10 @@ export async function createRouter(
     const limit = parseInt(req.query.limit as string, 10) || 20;
     const orderBy = parseOrderByParam(req.query.orderBy, APIDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const ownership = parseOwnershipParam(req.query.ownership) || 'all';
+    const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
     const apiType = parseApiTypeParam(req.query.apiType) || 'all';
     const userEntityRef = await getUserEntityRef(
-      ownership,
+      ownershipType,
       httpAuth,
       req,
       userInfo,
@@ -90,7 +90,7 @@ export async function createRouter(
         offset,
         orderBy,
         search,
-        ownership,
+        ownershipType,
         apiType,
         userEntityRef,
       }),
@@ -98,15 +98,15 @@ export async function createRouter(
   });
 
   router.get('/apis/count', async (req, res) => {
-    const ownership = parseOwnershipParam(req.query.ownership) || 'all';
+    const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
     const apiType = parseApiTypeParam(req.query.apiType) || 'all';
     const userEntityRef = await getUserEntityRef(
-      ownership,
+      ownershipType,
       httpAuth,
       req,
       userInfo,
     );
-    res.json(await apiService.getApisCount(ownership, apiType, userEntityRef));
+    res.json(await apiService.getApisCount(ownershipType, apiType, userEntityRef));
   });
 
   router.get('/apis/definitions/:system/:apiName', async (req, res) => {
@@ -158,14 +158,14 @@ export async function createRouter(
   // Endpoints: /services
 
   router.get('/services/count', async (req, res) => {
-    const ownership = parseOwnershipParam(req.query.ownership) || 'all';
+    const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
     const userEntityRef = await getUserEntityRef(
-      ownership,
+      ownershipType,
       httpAuth,
       req,
       userInfo,
     );
-    res.json(await serviceService.getServicesCount(ownership, userEntityRef));
+    res.json(await serviceService.getServicesCount(ownershipType, userEntityRef));
   });
 
   router.get('/services/definitions', async (req, res) => {
@@ -239,9 +239,9 @@ export async function createRouter(
       SYSTEMDEFINITIONS_FIELDS,
     );
     const search = parseSearchParam(req.query.search);
-    const ownership = parseOwnershipParam(req.query.ownership) || 'all';
+    const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
     const userEntityRef = await getUserEntityRef(
-      ownership,
+      ownershipType,
       httpAuth,
       req,
       userInfo,
@@ -252,21 +252,21 @@ export async function createRouter(
         offset,
         orderBy,
         search,
-        ownership,
+        ownershipType,
         userEntityRef,
       }),
     );
   });
 
   router.get('/systems/count', async (req, res) => {
-    const ownership = parseOwnershipParam(req.query.ownership) || 'all';
+    const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
     const userEntityRef = await getUserEntityRef(
-      ownership,
+      ownershipType,
       httpAuth,
       req,
       userInfo,
     );
-    res.json(await systemService.getSystemsCount(ownership, userEntityRef));
+    res.json(await systemService.getSystemsCount(ownershipType, userEntityRef));
   });
 
   router.get('/systems/definitions/:systemName', async (req, res) => {
@@ -283,9 +283,9 @@ export async function createRouter(
       LIBRARYDEFINITIONS_FIELDS,
     );
     const search = parseSearchParam(req.query.search);
-    const ownership = parseOwnershipParam(req.query.ownership) || 'all';
+    const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
     const userEntityRef = await getUserEntityRef(
-      ownership,
+      ownershipType,
       httpAuth,
       req,
       userInfo,
@@ -296,7 +296,7 @@ export async function createRouter(
         offset,
         orderBy,
         search,
-        ownership,
+        ownershipType,
         userEntityRef,
       }),
     );

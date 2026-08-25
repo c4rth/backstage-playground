@@ -55,11 +55,11 @@ async function fetchSystemEntities(
   catalog: CatalogService,
   auth: AuthService,
   fields: string[],
-  ownership: OwnershipType,
+  ownershipType: OwnershipType,
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
-  if (ownership === 'owned' && isUserGuest(userEntityRef)) {
+  if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
     // Guest users have no owned systems
     return [];
   }
@@ -76,13 +76,13 @@ async function fetchSystemEntities(
         { credentials: await auth.getOwnServiceCredentials() },
       )
       .then(res => res.items),
-    ownership === 'owned' && userEntityRef
+    ownershipType === 'owned' && userEntityRef
       ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
   ]);
 
   // Filter by ownership if needed - use Set for O(1) lookup
-  if (ownership === 'owned' && userEntityRef && userGroupRefs.length > 0) {
+  if (ownershipType === 'owned' && userEntityRef && userGroupRefs.length > 0) {
     const groupSet = new Set(userGroupRefs);
     return entities.filter(entity => {
       const owner = entity.spec?.owner?.toString() || '';
@@ -105,14 +105,14 @@ export class SystemServiceImpl implements SystemService {
   }
 
   async getSystemsCount(
-    ownership: OwnershipType,
+    ownershipType: OwnershipType,
     userEntityRef: string | undefined,
   ): Promise<number> {
     const entities = await fetchSystemEntities(
       this.catalog,
       this.auth,
       [CATALOG_METADATA_NAME, CATALOG_SPEC_OWNER],
-      ownership,
+      ownershipType,
       userEntityRef,
     );
     return entities.length;
@@ -125,7 +125,7 @@ export class SystemServiceImpl implements SystemService {
       this.catalog,
       this.auth,
       [CATALOG_KIND, CATALOG_METADATA_NAME, CATALOG_SPEC_OWNER],
-      request.ownership ?? 'all',
+      request.ownershipType ?? 'all',
       request.userEntityRef,
       getOrder(request.orderBy),
     );

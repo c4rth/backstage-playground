@@ -190,12 +190,12 @@ async function fetchApiEntities(
   catalog: CatalogService,
   auth: AuthService,
   fields: string[],
-  ownership: OwnershipType,
+  ownershipType: OwnershipType,
   apiType: OpenApiType | 'all',
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
-  if (ownership === 'owned' && isUserGuest(userEntityRef)) {
+  if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
     // Guest users have no owned APIs
     return [];
   }
@@ -212,7 +212,7 @@ async function fetchApiEntities(
         { credentials: await auth.getOwnServiceCredentials() },
       )
       .then(res => res.items),
-    ownership === 'owned' && userEntityRef
+    ownershipType === 'owned' && userEntityRef
       ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
   ]);
@@ -228,7 +228,7 @@ async function fetchApiEntities(
   }
 
   // Filter by ownership if needed
-  if (ownership === 'owned' && userEntityRef && userGroupRefs.length > 0) {
+  if (ownershipType === 'owned' && userEntityRef && userGroupRefs.length > 0) {
     const groupSet = new Set(userGroupRefs);
     filteredEntities = filteredEntities.filter(entity => {
       const owner = entity.spec?.owner?.toString() || '';
@@ -252,7 +252,7 @@ export class ApiServiceImpl implements ApiService {
   }
 
   async getApisCount(
-    ownership: OwnershipType,
+    ownershipType: OwnershipType,
     apiType: OpenApiType,
     userEntityRef: string | undefined,
   ): Promise<number> {
@@ -260,7 +260,7 @@ export class ApiServiceImpl implements ApiService {
       this.catalog,
       this.auth,
       [CATALOG_METADATA_API_NAME, CATALOG_SPEC_SYSTEM, CATALOG_SPEC_OWNER],
-      ownership,
+      ownershipType,
       apiType,
       userEntityRef,
     );
@@ -293,7 +293,7 @@ export class ApiServiceImpl implements ApiService {
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_OWNER,
       ],
-      request.ownership ?? 'all',
+      request.ownershipType ?? 'all',
       request.apiType ?? 'all',
       request.userEntityRef,
       getOrder(request.orderBy),

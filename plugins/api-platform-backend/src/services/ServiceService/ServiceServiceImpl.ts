@@ -104,10 +104,10 @@ async function fetchServiceEntities(
   catalog: CatalogService,
   auth: AuthService,
   fields: string[],
-  ownership: OwnershipType,
+  ownershipType: OwnershipType,
   userEntityRef: string | undefined,
 ): Promise<Entity[]> {
-  if (ownership === 'owned' && isUserGuest(userEntityRef)) {
+  if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
     // Guest users have no owned Services
     return [];
   }
@@ -123,13 +123,13 @@ async function fetchServiceEntities(
         { credentials: await auth.getOwnServiceCredentials() },
       )
       .then(res => res.items),
-    ownership === 'owned' && userEntityRef
+    ownershipType === 'owned' && userEntityRef
       ? getUserGroups(catalog, auth, userEntityRef)
       : Promise.resolve([] as string[]),
   ]);
 
   // Filter by ownership if needed
-  if (ownership === 'owned' && userEntityRef && userGroupRefs.length > 0) {
+  if (ownershipType === 'owned' && userEntityRef && userGroupRefs.length > 0) {
     const groupSet = new Set(userGroupRefs);
     return entities.filter(entity => {
       const owner = entity.spec?.owner?.toString() || '';
@@ -290,14 +290,14 @@ export class ServiceServiceImpl implements ServiceService {
   }
 
   async getServicesCount(
-    ownership: OwnershipType,
+    ownershipType: OwnershipType,
     userEntityRef: string | undefined,
   ): Promise<number> {
     const entities = await fetchServiceEntities(
       this.catalog,
       this.auth,
       [CATALOG_SPEC_SYSTEM, CATALOG_METADATA_SERVICE_NAME, CATALOG_SPEC_OWNER],
-      ownership,
+      ownershipType,
       userEntityRef,
     );
     // Inline counting to avoid function call overhead

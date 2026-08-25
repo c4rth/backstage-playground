@@ -80,7 +80,7 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 
 const getData = async (
   apiPlatformApi: ApiPlatformBackendApi,
-  ownership: OwnershipType,
+  ownershipType: OwnershipType,
   offset: number,
   pageSize: number,
   sort: SortDescriptor | null,
@@ -96,7 +96,7 @@ const getData = async (
           direction: sort.direction,
         } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
-    ownership,
+    ownershipType,
   });
 
   if (result) {
@@ -121,7 +121,7 @@ export const SystemTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
   const [countRows, setCountRows] = useState(0);
-  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
     sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
   const isFirstRender = useRef(true);
@@ -139,7 +139,7 @@ export const SystemTable = () => {
   }) => {
     const result = await getData(
       apiPlatformApi,
-      ownership,
+      ownershipType,
       offset,
       pageSize,
       sort,
@@ -169,19 +169,19 @@ export const SystemTable = () => {
       return;
     }
     reload();
-  }, [ownership, reload]);
+  }, [ownershipType, reload]);
 
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
     <Container>
       <Header
-        title={getTitle(ownership, countRows)}
+        title={getTitle(ownershipType, countRows)}
         customActions={
           <>
             <ComponentOwnership
               storageKey={STORAGE_OWNERSHIP_KEY}
-              handleOwnershipChange={setOwnership}
+              handleOwnershipChange={setOwnershipType}
             />
             <Box style={{ marginLeft: 'auto', width: '250px' }}>
               <SearchField
@@ -198,7 +198,7 @@ export const SystemTable = () => {
         }
       />
       <Table
-        key={`table-${ownership}`}
+        key={`table-${ownershipType}`}
         {...tableProps}
         columnConfig={COLUMNS}
         emptyState={<div>No data available</div>}

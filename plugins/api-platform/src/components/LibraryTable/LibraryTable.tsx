@@ -8,13 +8,12 @@ import {
   Cell,
   CellText,
   ColumnConfig,
-  Flex,
   SearchField,
   Table,
-  Text,
   useTable,
+  Header,
 } from '@backstage/ui';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ComponentOwnership } from '../common';
 import {
   ComponentDisplayName,
@@ -110,10 +109,10 @@ const toEntityRow = (entity: Entity, idx: number): TableRow => ({
 
 const fetchData = async (
   apiPlatformApi: ApiPlatformBackendApi,
-  ownership: OwnershipType,
+  ownershipType: OwnershipType,
 ) => {
   const result = await apiPlatformApi.listLibraries({
-    ownership,
+    ownershipType,
   });
 
   return result ? result.items.map(toEntityRow) : [];
@@ -127,14 +126,15 @@ const emptyState = () => (
 
 export const LibraryTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const [ownership, setOwnership] = useState<OwnershipType>(() =>
+  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
     sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
   );
+  const isFirstRender = useRef(true);
   const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
 
-  const { tableProps, search } = useTable({
+  const { tableProps, search, reload } = useTable({
     mode: 'complete',
-    getData: () => fetchData(apiPlatformApi, ownership),
+    getData: () => fetchData(apiPlatformApi, ownershipType),
     initialSort: {
       column: 'name',
       direction: 'ascending',
@@ -169,6 +169,14 @@ export const LibraryTable = () => {
     },
   });
 
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    reload();
+  }, [ownershipType, reload]);
+
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
   const boxRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
@@ -192,26 +200,28 @@ export const LibraryTable = () => {
   return (
     <Card style={{ height: '100%' }}>
       <CardHeader>
-        <Flex align="center" gap="2">
-          <Box>
-            <Text variant="title-small" weight="bold">
-              {ownership === 'owned' ? 'Owned' : 'All'} Libraries
-            </Text>
-          </Box>
-          <Box ml="4">
-            <ComponentOwnership
-              storageKey={STORAGE_OWNERSHIP_KEY}
-              handleOwnershipChange={setOwnership}
-            />
-          </Box>
-          <Box style={{ marginLeft: 'auto', width: '250px' }}>
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={search.onChange}
-            />
-          </Box>
-        </Flex>
+        <Header
+          title={`${ownershipType === 'owned' ? 'Owned' : 'All'} Libraries`}
+          customActions={
+            <>
+              <ComponentOwnership
+                storageKey={STORAGE_OWNERSHIP_KEY}
+                handleOwnershipChange={setOwnershipType}
+              />
+              <Box style={{ marginLeft: 'auto', width: '250px' }}>
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    sessionStorage.setItem(STORAGE_SEARCH_KEY, str ?? '');
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                />
+              </Box>
+            </>
+          }
+        />
       </CardHeader>
       <CardBody>
         <Box
@@ -222,6 +232,7 @@ export const LibraryTable = () => {
           }}
         >
           <Table
+            key={ownershipType}
             columnConfig={columns}
             {...tableProps}
             pagination={{
