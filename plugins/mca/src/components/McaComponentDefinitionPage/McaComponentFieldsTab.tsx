@@ -74,7 +74,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
               color="info"
               standalone
             >
-              <b>{field.name}</b>
+              {field.name}
             </Link>
           )}
         </div>
@@ -87,7 +87,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
         color="info"
         standalone
       >
-        <b>{field.name}</b>
+        {field.name}
       </Link>
     );
   }
@@ -100,7 +100,7 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
         color="info"
         standalone
       >
-        <b>{field.name}</b>
+        {field.name}
       </Link>
     );
   }
@@ -108,27 +108,6 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
   return <div>{field.name}</div>;
 });
 
-const mandatoryColumn: ColumnConfig<TableRow> = {
-  label: '',
-  width: '1%',
-  id: 'mandatory',
-  cell: ({ mandatory }) =>
-    mandatory ? (
-      <Cell>
-        <TooltipTrigger delay={250}>
-          <ButtonIcon
-            variant="tertiary"
-            size="small"
-            style={{ width: 'auto', background: 'transparent' }}
-            icon={<RiAsterisk color="primary" />}
-          />
-          <Tooltip placement="bottom">Mandatory</Tooltip>
-        </TooltipTrigger>
-      </Cell>
-    ) : (
-      <Cell />
-    ),
-};
 
 const commonColumns: ColumnConfig<TableRow>[] = [
   {
@@ -138,7 +117,16 @@ const commonColumns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     cell: row => (
       <Cell>
-        <Text weight="bold">{row.name}</Text>
+        <Text weight="bold">
+          {row.name}{row.mandatory && (
+            <RiAsterisk
+              size={12}
+              color="var(--bui-fg-danger)"
+              aria-label="Mandatory field"
+              style={{ verticalAlign: 'text-top', marginLeft: 2 }}
+            />
+          )}
+        </Text>
       </Cell>
     ),
   },
@@ -241,11 +229,6 @@ function getFields(data: any, fieldType: 'element' | 'input' | 'output') {
   return data?.outputFields?.field;
 }
 
-function getColumns(fieldType: 'element' | 'input' | 'output') {
-  if (fieldType === 'input') return [mandatoryColumn, ...commonColumns];
-  return commonColumns;
-}
-
 function getDefaultTitle(fieldType: 'element' | 'input' | 'output') {
   if (fieldType === 'element') return 'Fields';
   if (fieldType === 'input') return 'Input Fields';
@@ -256,7 +239,7 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
   ({ data, fieldType, title }) => {
     const fields = getFields(data, fieldType);
     const rows = toTableRows(fields, fieldType);
-    const columns = getColumns(fieldType);
+    const columns = commonColumns;
     const defaultTitle = getDefaultTitle(fieldType);
 
     const { tableProps, search } = useTable({
