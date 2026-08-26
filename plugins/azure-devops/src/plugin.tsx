@@ -1,6 +1,5 @@
 import {
   ApiBlueprint,
-  configApiRef,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
@@ -19,12 +18,11 @@ const azureDevOpsApi = ApiBlueprint.make({
     defineParams({
       api: azureDevOpsApiRef,
       deps: {
-        configApi: configApiRef,
         discoveryApi: discoveryApiRef,
         fetchApi: fetchApiRef,
       },
-      factory: ({ configApi, discoveryApi, fetchApi }) =>
-        new AzureDevOpsClient({ configApi, discoveryApi, fetchApi }),
+      factory: ({ discoveryApi, fetchApi }) =>
+        new AzureDevOpsClient({ discoveryApi, fetchApi }),
     }),
 });
 
