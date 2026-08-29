@@ -85,6 +85,7 @@ export const McaComponentExplorerPage = () => {
                   label="Type"
                   options={componentTypes}
                   value={selectedType}
+                  aria-label="Type"
                 />
               </Grid.Item>
               <Grid.Item colSpan="2">

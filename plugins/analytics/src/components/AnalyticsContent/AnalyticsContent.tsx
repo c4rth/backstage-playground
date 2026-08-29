@@ -82,6 +82,7 @@ export const AnalyticsContent = () => {
               label="Date Range"
               options={daysToShowOptions}
               value={daysToShow.toString()}
+              aria-label="Date Range"
             />
           </Box>
           <Box style={{ flex: '0 0 25%', minHeight: 0 }}>

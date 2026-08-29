@@ -246,6 +246,7 @@ export const ApiTable = () => {
                 onChange={v => {
                   setSelectedType(v as OpenApiType);
                 }}
+                aria-label="API Type"
                 options={API_TYPES}
               />
             </Box>

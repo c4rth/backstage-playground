@@ -112,6 +112,7 @@ export const CryptoCoder = () => {
             label="Algorithm"
             value={algorithm}
             options={algorithms}
+            aria-label="Algorithm"
           />
           <TextField
             style={{ flex: '0 0 auto', marginBottom: '8px', marginTop: '8px' }}

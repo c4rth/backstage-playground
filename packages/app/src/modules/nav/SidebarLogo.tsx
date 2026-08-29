@@ -1,13 +1,12 @@
 import {
-  Link,
   sidebarConfig,
   useSidebarOpenState,
 } from '@backstage/core-components';
-import { NavLink } from 'react-router-dom';
 import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
 import { LogoFull } from './LogoFull';
 import { LogoIcon } from './LogoIcon';
 import styles from './SidebarLogo.module.css';
+import { Link } from '@backstage/ui';
 
 export const SidebarLogo = () => {
   const { isOpen } = useSidebarOpenState();
@@ -26,9 +25,7 @@ export const SidebarLogo = () => {
       }}
     >
       <Link
-        component={NavLink}
-        to="/catalog"
-        underline="none"
+        href="/"
         style={{
           width: sidebarConfig.drawerWidthClosed,
           marginLeft: themeId === 'aperture' ? 15 : 24,

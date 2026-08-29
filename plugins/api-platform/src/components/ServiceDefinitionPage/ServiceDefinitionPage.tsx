@@ -157,6 +157,7 @@ export const ServiceDefinitionPage = () => {
                 options={versions}
                 value={selectedVersion}
                 style={{ minWidth: '50px' }}
+                aria-label="Versions"
               />
             ),
           },
@@ -172,6 +173,7 @@ export const ServiceDefinitionPage = () => {
                 options={environments}
                 value={selectedEnvironment}
                 style={{ minWidth: '50px' }}
+                aria-label="Environments"
               />
             ),
           },

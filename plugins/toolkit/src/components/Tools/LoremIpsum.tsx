@@ -208,6 +208,7 @@ export const LoremIpsum = () => {
               label="Fake Data"
               value={fakerType.toString()}
               options={fakerTypes}
+              aria-label="Fake Data"
             />
           </Grid.Item>
           <Grid.Item colSpan="1">
@@ -218,6 +219,7 @@ export const LoremIpsum = () => {
               label="Count"
               value={multiplier.toString()}
               options={multipliers}
+              aria-label="Count"
             />
           </Grid.Item>
           <Grid.Item

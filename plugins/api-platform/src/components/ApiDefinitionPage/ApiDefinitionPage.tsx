@@ -85,6 +85,7 @@ export const ApiDefinitionPage = () => {
                 options={versions}
                 value={selectedVersion}
                 style={{ minWidth: '200px' }}
+                aria-label="Versions"
               />
             ),
           },

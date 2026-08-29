@@ -120,6 +120,7 @@ export const ProjectPicker = (
           setSelectedProject(newValue);
           onChange(newValue);
         }}
+        aria-label="Project"
       />
     </ScaffolderField>
   );

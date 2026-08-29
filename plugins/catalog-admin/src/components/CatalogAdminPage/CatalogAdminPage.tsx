@@ -83,6 +83,7 @@ export const CatalogAdminPage = () => {
                   label="System"
                   options={systemOptions}
                   value={system ?? ''}
+                  aria-label="System"
                 />
               </Grid.Item>
               <Grid.Item>
@@ -93,6 +94,7 @@ export const CatalogAdminPage = () => {
                   label="Kind"
                   options={kindOptions}
                   value={kind.toString()}
+                  aria-label="Kind"
                 />
               </Grid.Item>
             </Grid.Root>

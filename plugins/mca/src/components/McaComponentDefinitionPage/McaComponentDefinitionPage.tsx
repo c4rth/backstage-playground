@@ -111,6 +111,7 @@ export const McaComponentDefinitionPage = () => {
                 }}
                 options={versions}
                 value={selectedVersion}
+                aria-label="Versions"
               />
             ),
           },
