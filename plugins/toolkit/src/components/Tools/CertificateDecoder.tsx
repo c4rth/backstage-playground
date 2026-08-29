@@ -3,6 +3,8 @@ import { DefaultEditor } from '../DefaultEditor';
 import * as asn1js from 'asn1js';
 import { AttributeTypeAndValue, Certificate } from 'pkijs';
 import ReactJson from 'react-json-view';
+import { useApi } from '@backstage/core-plugin-api';
+import { appThemeApiRef } from '@backstage/core-plugin-api';
 
 const exampleCertificate = `-----BEGIN CERTIFICATE-----
 MIICMzCCAZygAwIBAgIJALiPnVsvq8dsMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNV
@@ -111,6 +113,12 @@ async function computeFingerprint(
 export const CertificateDecoder = () => {
   const [input, setInput] = useState('');
   const [info, setInfo] = useState<any>(null);
+  const appThemeApi = useApi(appThemeApiRef);
+  const [isDarkMode] = useState(() => {
+    const currentThemeId = appThemeApi.getActiveThemeId();
+    const preferedColor = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return currentThemeId?.includes('dark') ?? preferedColor;
+  });
 
   const CertificateDecodeOutput = (props: { info?: any }) => {
     return (
@@ -142,6 +150,7 @@ export const CertificateDecoder = () => {
                 minHeight: '100%',
                 backgroundColor: 'var(--bui-bg-neutral-1)',
               }}
+              theme={isDarkMode ? 'monokai' : 'rjv-default'}
               enableClipboard
             />
           </div>

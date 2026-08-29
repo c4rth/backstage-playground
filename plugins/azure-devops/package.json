@@ -45,7 +45,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops-common": "^0.25.0",
+    "@backstage-community/plugin-azure-devops-common": "^0.26.0",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",

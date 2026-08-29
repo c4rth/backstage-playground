@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { Tool } from './types';
+import { JsonDecoder } from '../Tools/JsonDecoder';
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
@@ -41,6 +42,20 @@ export const defaultTools: Tool[] = [
     description: 'Test JSONata expressions',
   },
   {
+    id: 'json-decoder',
+    name: 'JSON Decoder',
+    component: <JsonDecoder />,
+    category: 'Decode',
+    description: 'Decode JSON strings',
+  },
+  {
+    id: 'crypto-coder',
+    name: 'Ciphers',
+    component: <CryptoCoder />,
+    category: 'Encode/Decode',
+    description: 'Encrypt and decrypt strings',
+  },
+  {
     id: 'cron-decoder',
     name: 'Cron Decoder',
     component: <CronDecoder />,
@@ -60,12 +75,5 @@ export const defaultTools: Tool[] = [
     component: <StringUtilities />,
     category: 'Utilities',
     description: 'Various string manipulation tools',
-  },
-  {
-    id: 'crypto-coder',
-    name: 'Ciphers',
-    component: <CryptoCoder />,
-    category: 'Encode/Decode',
-    description: 'Encrypt and decrypt strings',
   },
 ];

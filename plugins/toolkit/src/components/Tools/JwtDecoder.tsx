@@ -4,6 +4,7 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { useApi } from '@backstage/core-plugin-api';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { appThemeApiRef } from '@backstage/core-plugin-api';
 import ReactJson from 'react-json-view';
 import { Box } from '@backstage/ui';
 
@@ -21,7 +22,13 @@ export const JwtDecoder = () => {
     null,
   );
   const [verificationError, setVerificationError] = useState<string>('');
-
+  const appThemeApi = useApi(appThemeApiRef);
+  const [isDarkMode] = useState(() => {
+    const currentThemeId = appThemeApi.getActiveThemeId();
+    const preferedColor = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return currentThemeId?.includes('dark') ?? preferedColor;
+  });
+  
   const showError = useCallback(
     (attribute: string) => {
       const errorMessage = `Couldn't encode JWT token: missing attribute ${attribute}`;
@@ -90,6 +97,7 @@ export const JwtDecoder = () => {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'hidden',
         }}
       >
         {props.jwt ? (
@@ -127,18 +135,28 @@ export const JwtDecoder = () => {
                 Signature: Verification not performed
               </Box>
             )}{' '}
+
+          <div
+            style={{
+              flex: 1,
+              minHeight: 0,
+              overflow: 'auto',
+              border: '1px solid var(--bui-border-1)',
+              borderRadius: '4px',
+              backgroundColor: 'var(--bui-bg-neutral-1)',
+            }}
+          >
             <ReactJson
               name={false}
               src={props.jwt || {}}
               style={{
-                border: '1px solid var(--bui-border-1)',
                 boxSizing: 'border-box',
-                borderRadius: '4px',
-                flex: 1,
-                backgroundColor: 'var(--bui-bg-neutral-1)',
+                backgroundColor: 'transparent',
               }}
               enableClipboard
+              theme={isDarkMode ? 'monokai' : 'rjv-default'}
             />
+          </div>
           </>
         ) : (
           <div
