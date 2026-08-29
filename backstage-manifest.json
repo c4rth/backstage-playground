@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.54.5",
+  "releaseVersion": "1.54.6",
   "packages": [
     {
       "name": "@backstage/app-defaults",
@@ -11,7 +11,7 @@
     },
     {
       "name": "@backstage/backend-defaults",
-      "version": "0.17.7"
+      "version": "0.17.8"
     },
     {
       "name": "@backstage/backend-dev-utils",
@@ -183,7 +183,7 @@
     },
     {
       "name": "@backstage/integration",
-      "version": "2.1.0"
+      "version": "2.1.1"
     },
     {
       "name": "@backstage/integration-aws-node",
@@ -207,7 +207,7 @@
     },
     {
       "name": "@techdocs/cli",
-      "version": "1.11.3"
+      "version": "1.11.4"
     },
     {
       "name": "@backstage/test-utils",
@@ -331,7 +331,7 @@
     },
     {
       "name": "@backstage/plugin-auth-backend-module-oidc-provider",
-      "version": "0.4.19"
+      "version": "0.4.20"
     },
     {
       "name": "@backstage/plugin-auth-backend-module-okta-provider",
@@ -371,7 +371,7 @@
     },
     {
       "name": "@backstage/plugin-catalog-backend",
-      "version": "3.9.0"
+      "version": "3.9.1"
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-ai-model",
@@ -379,11 +379,11 @@
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-aws",
-      "version": "0.4.26"
+      "version": "0.4.27"
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-azure",
-      "version": "0.3.20"
+      "version": "0.3.21"
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-backstage-openapi",
@@ -419,7 +419,7 @@
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-gitlab",
-      "version": "0.8.6"
+      "version": "0.8.7"
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-gitlab-org",
@@ -575,7 +575,7 @@
     },
     {
       "name": "@backstage/plugin-kubernetes-backend",
-      "version": "0.21.9"
+      "version": "0.21.10"
     },
     {
       "name": "@backstage/plugin-kubernetes-cluster",
@@ -655,7 +655,7 @@
     },
     {
       "name": "@backstage/plugin-proxy-backend",
-      "version": "0.6.16"
+      "version": "0.6.17"
     },
     {
       "name": "@backstage/plugin-proxy-node",
@@ -667,23 +667,23 @@
     },
     {
       "name": "@backstage/plugin-scaffolder-backend",
-      "version": "4.0.5"
+      "version": "4.1.0"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-azure",
-      "version": "0.2.24"
+      "version": "0.2.25"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-bitbucket-cloud",
-      "version": "0.3.9"
+      "version": "0.3.10"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-bitbucket-server",
-      "version": "0.2.24"
+      "version": "0.2.25"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-confluence-to-markdown",
-      "version": "0.3.24"
+      "version": "0.3.25"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-cookiecutter",
@@ -703,11 +703,11 @@
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-github",
-      "version": "0.9.12"
+      "version": "0.9.13"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-gitlab",
-      "version": "0.11.9"
+      "version": "0.11.10"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-notifications",
@@ -727,7 +727,7 @@
     },
     {
       "name": "@backstage/plugin-scaffolder-common",
-      "version": "2.2.2"
+      "version": "2.2.3"
     },
     {
       "name": "@backstage/plugin-scaffolder-node",
@@ -811,7 +811,7 @@
     },
     {
       "name": "@backstage/plugin-techdocs-backend",
-      "version": "2.2.3"
+      "version": "2.2.4"
     },
     {
       "name": "@backstage/plugin-techdocs-common",
@@ -823,7 +823,7 @@
     },
     {
       "name": "@backstage/plugin-techdocs-node",
-      "version": "1.15.3"
+      "version": "1.15.4"
     },
     {
       "name": "@backstage/plugin-techdocs-react",
