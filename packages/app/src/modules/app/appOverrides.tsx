@@ -28,26 +28,14 @@ import { CustomAnalyticsApi } from '@internal/plugin-analytics';
 import { IdentityProviders } from '@backstage/core-components';
 import { RiSunFill, RiMoonLine } from '@remixicon/react';
 
-const providers: IdentityProviders = [
-  {
-    id: 'microsoft-auth-provider',
-    title: 'Authenticated',
-    message: 'Sign in using Microsoft Entra ID',
-    apiRef: microsoftAuthApiRef,
+const autoLogout = AppRootElementBlueprint.make({
+  name: 'auto-logout',
+  params: {
+    element: <AutoLogout />,
   },
-  'guest',
-];
+});
 
-export const appOverrides = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    AppRootElementBlueprint.make({
-      name: 'auto-logout',
-      params: {
-        element: <AutoLogout />,
-      },
-    }),
-    ApiBlueprint.make({
+const scmIntegrations = ApiBlueprint.make({
       name: 'scm-integrations',
       params: defineParams =>
         defineParams({
@@ -57,8 +45,9 @@ export const appOverrides = createFrontendModule({
           },
           factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
         }),
-    }),
-    ApiBlueprint.make({
+    });
+
+const scmAuth = ApiBlueprint.make({
       name: 'scm-auth',
       params: defineParams =>
         defineParams({
@@ -68,8 +57,9 @@ export const appOverrides = createFrontendModule({
           },
           factory: ({ microsoftAuthApi }) => ScmAuth.forAzure(microsoftAuthApi),
         }),
-    }),
-    ApiBlueprint.make({
+    });
+
+const analytics = ApiBlueprint.make({
       name: 'analytics',
       params: defineParams =>
         defineParams({
@@ -82,9 +72,9 @@ export const appOverrides = createFrontendModule({
           factory: ({ discoveryApi, fetchApi, identityApi }) =>
             CustomAnalyticsApi.create({ discoveryApi, fetchApi, identityApi }),
         }),
-    }),
-    // Themes
-    ThemeBlueprint.make({
+    });
+
+const lightTheme = ThemeBlueprint.make({
       name: 'light',
       params: {
         theme: {
@@ -95,8 +85,9 @@ export const appOverrides = createFrontendModule({
           Provider: LightThemeProvider,
         },
       },
-    }),
-    ThemeBlueprint.make({
+    });
+
+const darkTheme = ThemeBlueprint.make({
       name: 'dark',
       params: {
         theme: {
@@ -107,18 +98,40 @@ export const appOverrides = createFrontendModule({
           Provider: DarkThemeProvider,
         },
       },
-    }),
-    SignInPageBlueprint.make({
+    });
+
+const signInProviders: IdentityProviders = [
+  {
+    id: 'microsoft-auth-provider',
+    title: 'Authenticated',
+    message: 'Sign in using Microsoft Entra ID',
+    apiRef: microsoftAuthApiRef,
+  },
+  'guest',
+];
+
+const signInPage = SignInPageBlueprint.make({
       params: {
         loader: async () => props => (
           <SignInPage
             {...props}
-            providers={providers}
+            providers={signInProviders}
             title="Select a sign-in method"
             align="center"
           />
         ),
       },
-    }),
+    });
+
+export const appOverrides = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    autoLogout,
+    scmIntegrations,
+    scmAuth,
+    analytics,
+    lightTheme,
+    darkTheme,
+    signInPage,
   ],
 });

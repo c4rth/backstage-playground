@@ -1,1 +1,1 @@
-export { appOverrides } from './xAppOverrides';
+export { appOverrides } from './appOverrides';

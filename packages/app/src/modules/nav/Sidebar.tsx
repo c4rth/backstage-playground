@@ -15,7 +15,6 @@ import { RiMenuSearchLine, RiBubbleChartLine } from '@remixicon/react';
 import { IconComponent } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { taskCreatePermission } from '@backstage/plugin-scaffolder-common/alpha';
 // Search
 import { ApiSearchResultListItem } from '@internal/plugin-api-platform';
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
@@ -25,7 +24,6 @@ import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import {
   notGuestPermission,
-  advancedUserPermission,
 } from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
 
@@ -59,35 +57,25 @@ export const SidebarContent = NavContentBlueprint.make({
           {nav.take('page:api-platform/system-explorer')}
           {nav.take('page:api-platform/service-explorer')}
           {nav.take('page:api-platform/api-explorer')}
-          <RequirePermission
-            permission={advancedUserPermission}
-            errorPage={<div />}
-          >
-            {nav.take('page:api-platform/library-explorer')}
-          </RequirePermission>
+          {nav.take('page:api-platform/library-explorer')}
           {nav.take('page:mca/mca-components')}
           {nav.take('page:mca/mca-basetypes')}
           {nav.take('page:health-dashboard/health-dashboard')}
           {nav.take('page:techdocs')}
-          <RequirePermission
-            permission={taskCreatePermission}
-            errorPage={<div />}
-          >
-            {nav.take('page:scaffolder')}
-          </RequirePermission>
-          <RequirePermission
-            permission={notGuestPermission}
-            errorPage={<div />}
-          >
-            {nav.take('page:catalog')}
-          </RequirePermission>
+          {nav.take('page:scaffolder')}
+          {nav.take('page:catalog')}
           {nav.take('page:toolkit/toolkit')}
           {/* End global nav */}
           <SidebarScrollWrapper>
             {/* Items in this group will be scrollable if they run out of space */}
           </SidebarScrollWrapper>
           <SidebarSpace />
-          <Shortcuts />
+          <RequirePermission
+            permission={notGuestPermission}
+            errorPage={<div />}
+          >
+            <Shortcuts />
+          </RequirePermission>
           <SidebarDivider />
 
           <RequirePermission

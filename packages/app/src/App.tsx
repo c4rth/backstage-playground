@@ -36,8 +36,6 @@ import { catalogPluginProtected, scaffolderPluginProtected } from './modules/app
 const app = createApp({
   features: [
     appOverrides,
-    catalogPluginProtected,
-    scaffolderPluginProtected,
     // Nav
     navModule,
     // Search
@@ -69,6 +67,9 @@ const app = createApp({
     techDocsDrawIoAddonModule,
     userSettingsPlugin,
     visualizerPlugin,
+    //
+    catalogPluginProtected,
+    scaffolderPluginProtected,
     // Legacy plugins
     shortcutsNfsPlugin,
   ],

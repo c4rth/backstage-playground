@@ -3,7 +3,6 @@ import {
   coreServices,
 } from '@backstage/backend-plugin-api';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
-import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   catalogEntityCreatePermission,
   catalogEntityDeletePermission,
@@ -41,121 +40,84 @@ import {
   unprocessedEntitiesReadPermission,
 } from '@backstage/plugin-catalog-unprocessed-entities-common';
 
-type CustomPermission = {
-  name: string;
-  allowed: string[];
-};
-
 class CustomPermissionPolicy implements PermissionPolicy {
-  logger: LoggerService;
-  config: Config;
-  superUserGroups: string[] = [];
-  permissions: CustomPermission[] = [];
+  private readonly superUserGroups: string[];
+  private readonly customPermissions: Map<string, string[]>;
+  private static readonly DENY_PERMISSIONS = [
+    catalogEntityCreatePermission,
+    catalogEntityDeletePermission,
+    catalogLocationDeletePermission,
+    unprocessedEntitiesReadPermission,
+    unprocessedEntitiesDeletePermission,
+    adminToolsPermission,
+    devToolsAdministerPermission,
+    devToolsInfoReadPermission,
+    devToolsConfigReadPermission,
+    devToolsExternalDependenciesReadPermission,
+    devToolsTaskSchedulerReadPermission,
+    devToolsTaskSchedulerCreatePermission,
+    templateManagementPermission,
+  ];
 
-  constructor(logger: LoggerService, config: Config) {
-    this.logger = logger;
-    this.config = config;
+  constructor(config: Config) {
     this.superUserGroups =
-      this.config.getOptionalStringArray('permission.rbac.admin.superUsers') ??
-      [];
-    this.permissions =
-      this.config
-        .getOptionalConfigArray('permission.rbac.permissions')
-        ?.map(cfg => ({
-          name: cfg.getString('name'),
-          allowed: cfg.getStringArray('allowed'),
-        })) ?? [];
+      config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
+    this.customPermissions = new Map(
+      (config.getOptionalConfigArray('permission.rbac.permissions') ?? []).map(
+        cfg => [cfg.getString('name'), cfg.getStringArray('allowed')],
+      ),
+    );
   }
 
-  checkCustomPermission(
+  // Returns undefined if there's no custom rule for this permission.
+  private resolveCustomPermission(
     permissionName: string,
     user?: PolicyQueryUser,
-  ): boolean {
-    const customPermission = this.permissions.find(
-      perm => perm.name === permissionName,
+  ): AuthorizeResult.ALLOW | AuthorizeResult.DENY | undefined {
+    const allowed = this.customPermissions.get(permissionName);
+    if (!allowed) return undefined;
+    const isAllowed =
+      user?.info?.ownershipEntityRefs.some(ref => allowed.includes(ref)) ??
+      false;
+    return isAllowed ? AuthorizeResult.ALLOW : AuthorizeResult.DENY;
+  }
+
+  private isSuperUser(user?: PolicyQueryUser): boolean {
+    return (
+      this.superUserGroups.length !== 0 &&
+      (user?.info?.ownershipEntityRefs.some(ref =>
+        this.superUserGroups.includes(ref),
+      ) ??
+        false)
     );
-    if (customPermission) {
-      return (
-        user?.info?.ownershipEntityRefs.some(entityRef =>
-          customPermission.allowed.includes(entityRef),
-        ) ?? false
-      );
-    }
-    return false;
   }
 
   async handle(
     request: PolicyQuery,
     user?: PolicyQueryUser,
   ): Promise<PolicyDecision> {
-    // Guest: allow only catalog.read, deny all others
+    const custom = this.resolveCustomPermission(request.permission.name, user);
+    
     if (user?.info?.userEntityRef === 'user:default/guest') {
-      const customPermission = this.permissions.find(
-        perm => perm.name === request.permission.name,
-      );
-      if (customPermission) {
-        const allowed = this.checkCustomPermission(
-          request.permission.name,
-          user,
-        );
-        if (allowed) {
-          return {
-            result: AuthorizeResult.ALLOW,
-          };
-        }
-      }
-      return {
-        result:
-          isPermission(request.permission, catalogEntityReadPermission) &&
-          !isPermission(request.permission, notGuestPermission)
-            ? AuthorizeResult.ALLOW
-            : AuthorizeResult.DENY,
-      };
+      if (custom === AuthorizeResult.ALLOW) return { result: AuthorizeResult.ALLOW };
+      const isRead =
+        isPermission(request.permission, catalogEntityReadPermission) &&
+        !isPermission(request.permission, notGuestPermission);
+      return { result: isRead ? AuthorizeResult.ALLOW : AuthorizeResult.DENY };
     }
 
-    // SuperUsers: allow all if in adminGroups
-    const isSuperUser =
-      this.superUserGroups.length !== 0 &&
-      user?.info?.ownershipEntityRefs.some(entityRef =>
-        this.superUserGroups.includes(entityRef),
-      );
-    if (isSuperUser) {
+    if (this.isSuperUser(user)) {
       return { result: AuthorizeResult.ALLOW };
     }
 
-    // Check custom permissions from config
-    const customPermission = this.permissions.find(
-      perm => perm.name === request.permission.name,
+    if (custom) {
+      return { result: custom };
+    }
+
+    const isDenied = CustomPermissionPolicy.DENY_PERMISSIONS.some(perm =>
+      isPermission(request.permission, perm),
     );
-    if (customPermission) {
-      const allowed = this.checkCustomPermission(request.permission.name, user);
-      return {
-        result: allowed ? AuthorizeResult.ALLOW : AuthorizeResult.DENY,
-      };
-    }
-
-    // Deny list for regular users
-    const denyPermissions = [
-      catalogEntityCreatePermission,
-      catalogEntityDeletePermission,
-      catalogLocationDeletePermission,
-      unprocessedEntitiesReadPermission,
-      unprocessedEntitiesDeletePermission,
-      adminToolsPermission,
-      devToolsAdministerPermission,
-      devToolsInfoReadPermission,
-      devToolsConfigReadPermission,
-      devToolsExternalDependenciesReadPermission,
-      devToolsTaskSchedulerReadPermission,
-      devToolsTaskSchedulerCreatePermission,
-      templateManagementPermission,
-    ];
-    if (denyPermissions.some(perm => isPermission(request.permission, perm))) {
-      return { result: AuthorizeResult.DENY };
-    }
-
-    // Allow all other permissions
-    return { result: AuthorizeResult.ALLOW };
+    return { result: isDenied ? AuthorizeResult.DENY : AuthorizeResult.ALLOW };
   }
 }
 
@@ -167,10 +129,9 @@ export const customPermissionPolicyModule = createBackendModule({
       deps: {
         policy: policyExtensionPoint,
         config: coreServices.rootConfig,
-        logger: coreServices.logger,
       },
-      async init({ policy, logger, config }) {
-        policy.setPolicy(new CustomPermissionPolicy(logger, config));
+      async init({ policy, config }) {
+        policy.setPolicy(new CustomPermissionPolicy(config));
       },
     });
   },

@@ -141,6 +141,11 @@ const libraryExplorerPage = PageBlueprint.make({
         <m.LibraryExplorerPage />
       )),
   },
+  if: {
+    permissions: {
+      $contains: 'app.advancedUser',
+    },
+  },
 });
 
 const libraryDefinitionPage = PageBlueprint.make({

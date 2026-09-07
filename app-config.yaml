@@ -86,6 +86,7 @@ backend:
     store: memory
   #  store: redis
   #  connection: redis://default:${REDIS_PASSWORD}@127.0.0.1:6379
+
   actions:
     pluginSources:
       - catalog
@@ -99,9 +100,10 @@ permission:
         - group:default/team-a.c
         #- group:default/dummy-admins
     permissions:
-      - name: advancedUser.read
+      - name: app.advancedUser
         allowed:
           - group:default/team-a.Y
+          #- group:default/dummy-admins
   # rbac:
   #   pluginsWithPermission:
   #     - catalog
