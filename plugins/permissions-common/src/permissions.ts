@@ -8,10 +8,8 @@ export const adminToolsPermission = createPermission({
 });
 
 export const notGuestPermission = createPermission({
-  name: 'notGuest.read',
-  attributes: {
-    action: 'read',
-  },
+  name: 'app.notGuest',
+  attributes: {},
 });
 
 export const advancedUserPermission = createPermission({

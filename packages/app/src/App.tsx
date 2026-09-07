@@ -31,10 +31,13 @@ import { scaffolderExtensions } from '@internal/plugin-scaffolder-extensions';
 import { searchCustomizations } from './modules/search';
 import { techDocsMermaidAddonModule } from '@internal/plugin-techdocs-addon-mermaid';
 import { techDocsDrawIoAddonModule } from '@internal/plugin-techdocs-addon-drawio';
+import { catalogPluginProtected, scaffolderPluginProtected } from './modules/app/protectedRoutesOverrides';
 
 const app = createApp({
   features: [
     appOverrides,
+    catalogPluginProtected,
+    scaffolderPluginProtected,
     // Nav
     navModule,
     // Search
