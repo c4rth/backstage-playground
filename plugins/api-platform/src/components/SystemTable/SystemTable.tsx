@@ -13,8 +13,13 @@ import {
   Header,
   SortDescriptor,
 } from '@backstage/ui';
-import { useEffect, useRef, useState } from 'react';
-import { ComponentOwnership } from '../common';
+import { useState } from 'react';
+import {
+  ComponentOwnership,
+  useReloadOnChange,
+  useStoredOwnership,
+  useStoredSearch,
+} from '../common';
 import { LinkComponentDisplayName } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
@@ -119,12 +124,11 @@ function getTitle(ownership: OwnershipType, countRows: number) {
 
 export const SystemTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
+  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_SEARCH_KEY);
   const [countRows, setCountRows] = useState(0);
-  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
-    sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
+  const [ownershipType, setOwnershipType] = useStoredOwnership(
+    STORAGE_OWNERSHIP_KEY,
   );
-  const isFirstRender = useRef(true);
 
   const fetchData = async ({
     offset,
@@ -163,13 +167,7 @@ export const SystemTable = () => {
     initialSearch,
   });
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    reload();
-  }, [ownershipType, reload]);
+  useReloadOnChange(reload, [ownershipType]);
 
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
@@ -188,7 +186,7 @@ export const SystemTable = () => {
                 placeholder="Filter..."
                 value={search.value}
                 onChange={str => {
-                  sessionStorage.setItem(STORAGE_SEARCH_KEY, str ?? '');
+                  storeSearch(str);
                   search.onChange(str);
                 }}
                 aria-label="Filter"

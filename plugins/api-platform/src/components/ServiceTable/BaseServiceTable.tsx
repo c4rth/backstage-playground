@@ -8,10 +8,11 @@ import {
   ServiceVersionDefinition,
   DependentsType,
 } from '@internal/plugin-api-platform-common';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
+import { useReloadOnChange, useStoredOwnership, useStoredSearch } from '../common';
 import {
   Box,
   Cell,
@@ -179,13 +180,11 @@ export function BaseServiceTable<T extends BaseTableRow>({
 }: BaseServiceTableProps<T>) {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
-    sessionStorage.getItem(storageOwnershipKey) === 'owned' ? 'owned' : 'all',
+  const [ownershipType, setOwnershipType] = useStoredOwnership(
+    storageOwnershipKey,
   );
   const [dependentsType, setDependentsType] = useState<DependentsType>('all');
-  const isFirstRender = useRef(true);
-
-  const initialSearch = sessionStorage.getItem(storageSearchKey) ?? '';
+  const { initialSearch, storeSearch } = useStoredSearch(storageSearchKey);
 
   const fetchData = async ({
     offset,
@@ -227,13 +226,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
     initialSearch,
   });
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    reload();
-  }, [ownershipType, dependentsType, reload]);
+  useReloadOnChange(reload, [ownershipType, dependentsType]);
 
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
@@ -260,7 +253,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
                 placeholder="Filter..."
                 value={search.value}
                 onChange={str => {
-                  sessionStorage.setItem(storageSearchKey, str ?? '');
+                  storeSearch(str);
                   search.onChange(str);
                 }}
                 aria-label="Filter"

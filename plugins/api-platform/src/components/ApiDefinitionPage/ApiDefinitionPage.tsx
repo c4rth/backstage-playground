@@ -1,6 +1,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
@@ -35,34 +35,21 @@ export const ApiDefinitionPage = () => {
     undefined,
   );
   const [apiEntity, setApiEntity] = useState<ApiEntity | undefined>(undefined);
-  const isInitialLoad = useRef(true);
+  const defaultVersion =
+    versions.find(version => version.label === queryVersion)?.id ??
+    versions[0]?.id;
+  const activeVersion =
+    selectedVersion && versions.some(version => version.id === selectedVersion)
+      ? selectedVersion
+      : defaultVersion;
 
   useEffect(() => {
-    if (!selectedVersion && versions.length > 0) {
-      let selVersion = null;
-      if (
-        isInitialLoad.current &&
-        queryVersion &&
-        versions.some(item => item.label === queryVersion)
-      ) {
-        selVersion = versions.find(item => item.label === queryVersion)?.id;
-        isInitialLoad.current = false;
-      } else {
-        selVersion = versions[0].id;
-      }
-      if (selVersion) {
-        setSelectedVersion(selVersion);
-      }
-    }
-  }, [versions, queryVersion, selectedVersion]);
-
-  useEffect(() => {
-    if (selectedVersion) {
+    if (activeVersion) {
       catalogApi
-        .getEntityByRef(selectedVersion)
+        .getEntityByRef(activeVersion)
         .then(entity => setApiEntity(entity as ApiEntity));
     }
-  }, [selectedVersion, catalogApi]);
+  }, [activeVersion, catalogApi]);
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
@@ -83,7 +70,7 @@ export const ApiDefinitionPage = () => {
                   );
                 }}
                 options={versions}
-                value={selectedVersion}
+                value={activeVersion}
                 style={{ minWidth: '200px' }}
                 aria-label="Versions"
               />

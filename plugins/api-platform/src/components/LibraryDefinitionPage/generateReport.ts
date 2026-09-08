@@ -1,5 +1,4 @@
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
-import * as XLSX from 'xlsx';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { fetchAllServices } from './fetchServicesByLibrary';
 
@@ -12,6 +11,7 @@ export async function generateReport(
     throw new Error('No library versions to generate report');
   }
 
+  const XLSX = await import('xlsx');
   const workbook = XLSX.utils.book_new();
   const allServices = (await fetchAllServices(apiPlatformApi)).items;
 

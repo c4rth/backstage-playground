@@ -13,8 +13,13 @@ import {
   useTable,
   Header,
 } from '@backstage/ui';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ComponentOwnership } from '../common';
+import { useCallback, useState } from 'react';
+import {
+  ComponentOwnership,
+  useReloadOnChange,
+  useStoredOwnership,
+  useStoredSearch,
+} from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
@@ -126,11 +131,10 @@ const emptyState = () => (
 
 export const LibraryTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
-    sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
+  const [ownershipType, setOwnershipType] = useStoredOwnership(
+    STORAGE_OWNERSHIP_KEY,
   );
-  const isFirstRender = useRef(true);
-  const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) ?? '';
+  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_SEARCH_KEY);
 
   const { tableProps, search, reload } = useTable({
     mode: 'complete',
@@ -154,7 +158,7 @@ export const LibraryTable = () => {
       );
     },
     onSearchChange: newSearch => {
-      sessionStorage.setItem(STORAGE_SEARCH_KEY, newSearch ?? '');
+      storeSearch(newSearch);
     },
     sortFn: (items, { column, direction }) => {
       const desc = direction === 'descending' ? -1 : 1;
@@ -169,13 +173,7 @@ export const LibraryTable = () => {
     },
   });
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    reload();
-  }, [ownershipType, reload]);
+  useReloadOnChange(reload, [ownershipType]);
 
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
   const boxRef = useCallback((node: HTMLDivElement | null) => {
@@ -213,7 +211,7 @@ export const LibraryTable = () => {
                   placeholder="Filter..."
                   value={search.value}
                   onChange={str => {
-                    sessionStorage.setItem(STORAGE_SEARCH_KEY, str ?? '');
+                    storeSearch(str);
                     search.onChange(str);
                   }}
                   aria-label="Filter"

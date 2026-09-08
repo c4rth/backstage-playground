@@ -13,9 +13,14 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
-import { ComponentOwnership } from '../common';
+import {
+  ComponentOwnership,
+  useReloadOnChange,
+  useStoredOwnership,
+  useStoredSearch,
+} from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
@@ -167,17 +172,15 @@ function getTitle(
 export const ApiTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [ownershipType, setOwnershipType] = useState<OwnershipType>(() =>
-    sessionStorage.getItem(STORAGE_OWNERSHIP_KEY) === 'owned' ? 'owned' : 'all',
+  const [ownershipType, setOwnershipType] = useStoredOwnership(
+    STORAGE_OWNERSHIP_KEY,
   );
   const [selectedType, setSelectedType] = useState<OpenApiType>(() =>
     sessionStorage.getItem(STORAGE_TYPE_KEY)
       ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as OpenApiType)
       : 'all',
   );
-  const isFirstRender = useRef(true);
-
-  const initialSearch = sessionStorage.getItem(STORAGE_SEARCH_KEY) || '';
+  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_SEARCH_KEY);
 
   const fetchData = async ({
     offset,
@@ -217,13 +220,7 @@ export const ApiTable = () => {
     initialSearch,
   });
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    reload();
-  }, [ownershipType, selectedType, reload]);
+  useReloadOnChange(reload, [ownershipType, selectedType]);
 
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
@@ -255,7 +252,7 @@ export const ApiTable = () => {
                 placeholder="Filter..."
                 value={search.value}
                 onChange={str => {
-                  sessionStorage.setItem(STORAGE_SEARCH_KEY, str ?? '');
+                  storeSearch(str);
                   search.onChange(str);
                 }}
                 aria-label="Filter"
