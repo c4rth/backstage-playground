@@ -6,15 +6,17 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 import { EntityOrderQuery } from '@backstage/catalog-client';
-import { Entity } from '@backstage/catalog-model';
 import { SystemService } from './types';
 import {
   ANNOTATION_API_NAME,
   ANNOTATION_SERVICE_NAME,
   CATALOG_KIND,
+  CATALOG_METADATA_API_NAME,
   CATALOG_METADATA_DESCRIPTION,
+  CATALOG_METADATA_LIBRARY_NAME,
   CATALOG_METADATA_NAME,
   CATALOG_RELATIONS,
+  CATALOG_METADATA_SERVICE_NAME,
   CATALOG_SPEC_OWNER,
   SystemDefinition,
   SystemDefinitionListResult,
@@ -50,49 +52,6 @@ function getOrder(
   };
 }
 
-// Shared function to fetch system entities with ownership filter
-async function fetchSystemEntities(
-  catalog: CatalogService,
-  auth: AuthService,
-  fields: string[],
-  ownershipType: OwnershipType,
-  userEntityRef: string | undefined,
-  order?: EntityOrderQuery,
-): Promise<Entity[]> {
-  if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
-    // Guest users have no owned systems
-    return [];
-  }
-
-  // Fetch entities and user groups in parallel if ownership filtering needed
-  const [entities, userGroupRefs] = await Promise.all([
-    catalog
-      .getEntities(
-        {
-          filter: { kind: ['System'] },
-          fields,
-          order,
-        },
-        { credentials: await auth.getOwnServiceCredentials() },
-      )
-      .then(res => res.items),
-    ownershipType === 'owned' && userEntityRef
-      ? getUserGroups(catalog, auth, userEntityRef)
-      : Promise.resolve([] as string[]),
-  ]);
-
-  // Filter by ownership if needed - use Set for O(1) lookup
-  if (ownershipType === 'owned' && userEntityRef && userGroupRefs.length > 0) {
-    const groupSet = new Set(userGroupRefs);
-    return entities.filter(entity => {
-      const owner = entity.spec?.owner?.toString() || '';
-      return groupSet.has(owner);
-    });
-  }
-
-  return entities;
-}
-
 export class SystemServiceImpl implements SystemService {
   private readonly catalog: CatalogService;
   private readonly auth: AuthService;
@@ -108,52 +67,82 @@ export class SystemServiceImpl implements SystemService {
     ownershipType: OwnershipType,
     userEntityRef: string | undefined,
   ): Promise<number> {
-    const entities = await fetchSystemEntities(
-      this.catalog,
-      this.auth,
-      [CATALOG_METADATA_NAME, CATALOG_SPEC_OWNER],
-      ownershipType,
-      userEntityRef,
+    if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
+      return 0;
+    }
+
+    const userGroupRefs =
+      ownershipType === 'owned' && userEntityRef
+        ? await getUserGroups(this.catalog, this.auth, userEntityRef)
+        : [];
+    if (ownershipType === 'owned' && userGroupRefs.length === 0) {
+      return 0;
+    }
+
+    const filter =
+      ownershipType === 'owned'
+        ? userGroupRefs.map(owner => ({
+            kind: ['System'],
+            'spec.owner': owner,
+          }))
+        : { kind: ['System'] };
+    const result = await this.catalog.queryEntities(
+      { filter, limit: 0 },
+      { credentials: await this.auth.getOwnServiceCredentials() },
     );
-    return entities.length;
+
+    return result.totalItems;
   }
 
   async listSystems(
     request: SystemDefinitionsListRequest,
   ): Promise<SystemDefinitionListResult> {
-    const entities = await fetchSystemEntities(
-      this.catalog,
-      this.auth,
-      [CATALOG_KIND, CATALOG_METADATA_NAME, CATALOG_SPEC_OWNER],
-      request.ownershipType ?? 'all',
-      request.userEntityRef,
-      getOrder(request.orderBy),
-    );
-
-    // Map to SystemDefinition format
-    let systems = entities.map(entity => ({
-      apiVersion: entity.apiVersion,
-      kind: entity.kind,
-      metadata: entity.metadata,
-      spec: entity.spec,
-    }));
-
-    const search = request.search?.toLowerCase();
-    if (search) {
-      systems = systems.filter(
-        system =>
-          system.metadata.name.toLowerCase().includes(search) ||
-          (system.spec?.owner?.toString() || '').toLowerCase().includes(search),
-      );
-    }
-
     const offset = request.offset ?? 0;
     const limit = request.limit ?? 20;
+    const ownershipType = request.ownershipType ?? 'all';
+
+    if (ownershipType === 'owned' && isUserGuest(request.userEntityRef)) {
+      return { items: [], offset, limit, totalCount: 0 };
+    }
+
+    const userGroupRefs =
+      ownershipType === 'owned' && request.userEntityRef
+        ? await getUserGroups(this.catalog, this.auth, request.userEntityRef)
+        : [];
+
+    if (ownershipType === 'owned' && userGroupRefs.length === 0) {
+      return { items: [], offset, limit, totalCount: 0 };
+    }
+
+    const filter =
+      ownershipType === 'owned'
+        ? userGroupRefs.map(owner => ({
+            kind: ['System'],
+            'spec.owner': owner,
+          }))
+        : { kind: ['System'] };
+    const systems = await this.catalog.queryEntities(
+      {
+        filter,
+        fields: [CATALOG_KIND, CATALOG_METADATA_NAME, CATALOG_SPEC_OWNER],
+        orderFields: getOrder(request.orderBy),
+        fullTextFilter: request.search
+          ? {
+              term: request.search,
+              fields: [CATALOG_METADATA_NAME, CATALOG_SPEC_OWNER],
+            }
+          : undefined,
+        offset,
+        limit,
+      },
+      { credentials: await this.auth.getOwnServiceCredentials() },
+    );
+
     return {
-      items: systems.slice(offset, offset + limit),
+      items: systems.items,
       offset,
       limit,
-      totalCount: systems.length,
+      totalCount: systems.totalItems,
     };
   }
 
@@ -173,23 +162,25 @@ export class SystemServiceImpl implements SystemService {
     );
 
     const entity = systemEntities.items[0];
-    const system: SystemDefinition = {
-      entity,
-      apis: [],
-      services: [],
-      libraries: [],
-    };
 
     if (!entity?.relations || entity.relations.length === 0) {
-      return system;
+      return { entity, apis: [], services: [], libraries: [] };
     }
 
-    // Extract entity refs from relations
-    const targetRefs = entity.relations.map(rel => rel.targetRef);
+    // Keep the first occurrence order while avoiding duplicate catalog lookups.
+    const targetRefs = [...new Set(entity.relations.map(rel => rel.targetRef))];
 
-    // Batch fetch all related entities in a single query instead of N individual calls
+    // Batch fetch only the fields needed to classify related entities.
     const relatedEntities = await this.catalog.getEntitiesByRefs(
-      { entityRefs: targetRefs },
+      {
+        entityRefs: targetRefs,
+        fields: [
+          CATALOG_KIND,
+          CATALOG_METADATA_API_NAME,
+          CATALOG_METADATA_SERVICE_NAME,
+          CATALOG_METADATA_LIBRARY_NAME,
+        ],
+      },
       { credentials: await this.auth.getOwnServiceCredentials() },
     );
 
@@ -207,22 +198,23 @@ export class SystemServiceImpl implements SystemService {
         if (name) apiNames.add(name);
       } else if (relEntity.kind === 'Component') {
         const name =
-          relEntity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+          relEntity.metadata?.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
         if (name) {
           serviceNames.add(name);
           continue;
         }
         const libName =
-          relEntity.metadata.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
+          relEntity.metadata?.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
         if (libName) libraryNames.add(libName);
       }
     }
 
-    system.apis = Array.from(apiNames);
-    system.services = Array.from(serviceNames);
-    system.libraries = Array.from(libraryNames);
-
-    return system;
+    return {
+      entity,
+      apis: Array.from(apiNames),
+      services: Array.from(serviceNames),
+      libraries: Array.from(libraryNames),
+    };
   }
 }
 

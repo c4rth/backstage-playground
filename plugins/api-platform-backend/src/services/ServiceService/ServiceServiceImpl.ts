@@ -27,11 +27,16 @@ import {
   ServiceDefinitionListResult,
   ServiceDefinitionsListRequest,
   ServiceDefinitionsOptions,
+  ServiceVersionDefinition,
   SortDirection,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
-import { getUserGroups, isUserGuest } from '../common/utils';
+import {
+  fetchCatalogEntitiesWithOwnership,
+  getUserGroups,
+  isUserGuest,
+} from '../common/utils';
 import {
   CatalogService,
   catalogServiceRef,
@@ -107,44 +112,82 @@ async function fetchServiceEntities(
   ownershipType: OwnershipType,
   userEntityRef: string | undefined,
 ): Promise<Entity[]> {
+  return fetchCatalogEntitiesWithOwnership({
+    catalog,
+    auth,
+    filter: getFilter(undefined),
+    fields,
+    ownershipType,
+    userEntityRef,
+  });
+}
+
+async function countServiceDefinitions(
+  catalog: CatalogService,
+  auth: AuthService,
+  ownershipType: OwnershipType,
+  userEntityRef: string | undefined,
+): Promise<number> {
   if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
-    // Guest users have no owned Services
-    return [];
+    return 0;
   }
 
-  // Fetch user groups in parallel with entities if needed
-  const [entities, userGroupRefs] = await Promise.all([
-    catalog
-      .getEntities(
-        {
-          filter: getFilter(undefined),
-          fields,
-        },
-        { credentials: await auth.getOwnServiceCredentials() },
-      )
-      .then(res => res.items),
+  const userGroupRefs =
     ownershipType === 'owned' && userEntityRef
-      ? getUserGroups(catalog, auth, userEntityRef)
-      : Promise.resolve([] as string[]),
-  ]);
-
-  // Filter by ownership if needed
-  if (ownershipType === 'owned' && userEntityRef && userGroupRefs.length > 0) {
-    const groupSet = new Set(userGroupRefs);
-    return entities.filter(entity => {
-      const owner = entity.spec?.owner?.toString() || '';
-      return groupSet.has(owner);
-    });
+      ? await getUserGroups(catalog, auth, userEntityRef)
+      : [];
+  if (ownershipType === 'owned' && userGroupRefs.length === 0) {
+    return 0;
   }
 
-  return entities;
+  const serviceFilter: Record<string, string | string[]> = {
+    kind: ['Component'],
+    'spec.type': ['service'],
+  };
+  const filter: EntityFilterQuery =
+    ownershipType === 'owned'
+      ? userGroupRefs.map(owner => ({
+          ...serviceFilter,
+          'spec.owner': owner,
+        }))
+      : serviceFilter;
+  const uniqueNames = new Set<string>();
+  const credentials = await auth.getOwnServiceCredentials();
+
+  for await (const entities of catalog.streamEntities(
+    {
+      filter,
+      fields: [CATALOG_METADATA_SERVICE_NAME, CATALOG_SPEC_SYSTEM],
+    },
+    { credentials },
+  )) {
+    for (const entity of entities) {
+      const serviceName =
+        entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+      if (serviceName) {
+        uniqueNames.add(
+          `${entity.spec?.system?.toString() ?? ''}-${serviceName}`,
+        );
+      }
+    }
+  }
+
+  return uniqueNames.size;
+}
+
+function normalizeDependency(dependency: any): string {
+  const dependencyRef = dependency.toString();
+  const componentPrefix = 'component:';
+  return dependencyRef.startsWith(componentPrefix)
+    ? dependencyRef.slice(componentPrefix.length)
+    : dependencyRef;
 }
 
 function parseDependencies(dependsOn: any): string[] {
   if (Array.isArray(dependsOn)) {
-    return dependsOn.map(dep => dep.toString().replace(/^component:/, ''));
+    return dependsOn.map(normalizeDependency);
   } else if (dependsOn) {
-    return [dependsOn.toString().replace(/^component:/, '')];
+    return [normalizeDependency(dependsOn)];
   }
   return [];
 }
@@ -158,6 +201,10 @@ function processServiceEntities(
   dependentsType?: DependentsType,
 ): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
+  const versionMaps = new Map<
+    string,
+    Map<string, ServiceVersionDefinition>
+  >();
   const searchLower = search?.toLowerCase();
 
   for (const entity of entities) {
@@ -172,25 +219,15 @@ function processServiceEntities(
 
     // Apply search filter during iteration to avoid second pass
     if (searchLower) {
-      const matchesSearch =
-        name.toLowerCase().includes(searchLower) ||
-        system.toLowerCase().includes(searchLower);
+      const matchesSearch = `${name}\0${system}`
+        .toLowerCase()
+        .includes(searchLower);
       if (!matchesSearch) continue;
     }
 
     const dependsOnList = parseDependencies(entity.spec.dependsOn);
     if (dependsOn && !dependsOnList.includes(dependsOn)) {
       continue;
-    }
-
-    if (dependentsType && dependentsType !== 'all') {
-      const hasDependents = dependsOnList.length > 0;
-      if (
-        (dependentsType === 'yes' && !hasDependents) ||
-        (dependentsType === 'no' && hasDependents)
-      ) {
-        continue;
-      }
     }
 
     if (dependentsType && dependentsType !== 'all') {
@@ -217,16 +254,19 @@ function processServiceEntities(
         versions: [],
       };
       mapServices.set(mapKey, def);
+      versionMaps.set(mapKey, new Map());
     }
 
     // Find or create version definition
-    let defVersion = def.versions.find(svcDef => svcDef.version === version);
+    const versionMap = versionMaps.get(mapKey)!;
+    let defVersion = versionMap.get(version);
     if (!defVersion) {
       defVersion = {
         version,
         environments: {},
       };
       def.versions.push(defVersion);
+      versionMap.set(version, defVersion);
     }
 
     // Add environment info
@@ -241,7 +281,7 @@ function processServiceEntities(
           '?',
         entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         platform: platforms,
-        dependencies: parseDependencies(entity.spec.dependsOn),
+        dependencies: dependsOnList,
       };
   }
 
@@ -293,24 +333,12 @@ export class ServiceServiceImpl implements ServiceService {
     ownershipType: OwnershipType,
     userEntityRef: string | undefined,
   ): Promise<number> {
-    const entities = await fetchServiceEntities(
+    return countServiceDefinitions(
       this.catalog,
       this.auth,
-      [CATALOG_SPEC_SYSTEM, CATALOG_METADATA_SERVICE_NAME, CATALOG_SPEC_OWNER],
       ownershipType,
       userEntityRef,
     );
-    // Inline counting to avoid function call overhead
-    const uniqueNames = new Set<string>();
-    for (const entity of entities) {
-      const serviceName =
-        entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
-      if (serviceName) {
-        const system = entity.spec?.system?.toString() ?? '';
-        uniqueNames.add(`${system}-${serviceName}`);
-      }
-    }
-    return uniqueNames.size;
   }
 
   async listServices(

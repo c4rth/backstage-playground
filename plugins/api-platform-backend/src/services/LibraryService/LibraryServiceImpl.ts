@@ -27,7 +27,7 @@ import {
 import { EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
 import { Entity, RELATION_DEPENDENCY_OF } from '@backstage/catalog-model';
-import { getUserGroups, isUserGuest } from '../common/utils';
+import { fetchCatalogEntitiesWithOwnership } from '../common/utils';
 import {
   CatalogService,
   catalogServiceRef,
@@ -97,17 +97,28 @@ async function innerGetLibraryVersions(
   );
 }
 
-function isNewerVersion(current: string, existing: string): boolean {
-  const currentSemver = semver.valid(current);
-  const existingSemver = semver.valid(existing);
+function isNewerVersion(
+  currentSemver: semver.SemVer | null,
+  existingSemver: semver.SemVer | null,
+  currentLower: string,
+  existingLower: string,
+): boolean {
   if (currentSemver && existingSemver) {
-    return semver.compare(currentSemver, existingSemver) > 0;
+    return currentSemver.compare(existingSemver) > 0;
   }
-  return current.toLowerCase() > existing.toLowerCase();
+  return currentLower > existingLower;
 }
 
 function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
-  const latest = new Map<string, { entity: Entity; version: string }>();
+  const latest = new Map<
+    string,
+    {
+      entity: Entity;
+      version: string;
+      parsedVersion: semver.SemVer | null;
+      normalizedVersion: string;
+    }
+  >();
   const searchLower = search?.toLowerCase();
 
   for (const item of entities) {
@@ -119,10 +130,9 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
     // Apply search filter during iteration to avoid second pass
     if (searchLower) {
       const description = item.metadata.description?.toString() || '';
-      const matchesSearch =
-        libraryName.toLowerCase().includes(searchLower) ||
-        system.toLowerCase().includes(searchLower) ||
-        description.toLowerCase().includes(searchLower);
+      const matchesSearch = `${libraryName}\0${system}\0${description}`
+        .toLowerCase()
+        .includes(searchLower);
       if (!matchesSearch) continue;
     }
 
@@ -132,8 +142,23 @@ function getLatestByLibraryName(entities: Entity[], search?: string): Entity[] {
 
     const mapKey = `${system}-${libraryName}`;
     const existing = latest.get(mapKey);
-    if (!existing || isNewerVersion(versionStr, existing.version)) {
-      latest.set(mapKey, { entity: item, version: versionStr });
+    const parsedVersion = semver.parse(versionStr);
+    const normalizedVersion = versionStr.toLowerCase();
+    if (
+      !existing ||
+      isNewerVersion(
+        parsedVersion,
+        existing.parsedVersion,
+        normalizedVersion,
+        existing.normalizedVersion,
+      )
+    ) {
+      latest.set(mapKey, {
+        entity: item,
+        version: versionStr,
+        parsedVersion,
+        normalizedVersion,
+      });
     }
   }
 
@@ -178,41 +203,18 @@ async function fetchLibraryEntities(
   userEntityRef: string | undefined,
   order?: EntityOrderQuery,
 ): Promise<Entity[]> {
-  if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
-    // Guest users have no owned Libraries
-    return [];
-  }
-
-  // Fetch user groups in parallel with entities if needed
-  const [entities, userGroupRefs] = await Promise.all([
-    catalog
-      .getEntities(
-        {
-          filter: {
-            kind: ['Component'],
-            'spec.type': ['library'],
-          },
-          fields,
-          order,
-        },
-        { credentials: await auth.getOwnServiceCredentials() },
-      )
-      .then(res => res.items),
-    ownershipType === 'owned' && userEntityRef
-      ? getUserGroups(catalog, auth, userEntityRef)
-      : Promise.resolve([] as string[]),
-  ]);
-
-  // Filter by ownership if needed
-  if (ownershipType === 'owned' && userEntityRef && userGroupRefs.length > 0) {
-    const groupSet = new Set(userGroupRefs);
-    return entities.filter(entity => {
-      const owner = entity.spec?.owner?.toString() || '';
-      return groupSet.has(owner);
-    });
-  }
-
-  return entities;
+  return fetchCatalogEntitiesWithOwnership({
+    catalog,
+    auth,
+    filter: {
+      kind: ['Component'],
+      'spec.type': ['library'],
+    },
+    fields,
+    ownershipType,
+    userEntityRef,
+    order,
+  });
 }
 
 export class LibraryServiceImpl implements LibraryService {

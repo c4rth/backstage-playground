@@ -14,11 +14,20 @@ import {
 } from './types';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
+  CATALOG_KIND,
+  CATALOG_METADATA_NAME,
+  CATALOG_METADATA_NAMESPACE,
+} from '@internal/plugin-api-platform-common';
+import {
   CatalogService,
   catalogServiceRef,
 } from '@backstage/plugin-catalog-node';
 import { catalogEntityDeletePermission } from '@backstage/plugin-catalog-common/alpha';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
+
+const CATALOG_METADATA_UID = 'metadata.uid';
+const CATALOG_MANAGED_BY_LOCATION =
+  'metadata.annotations.backstage.io/managed-by-location';
 
 export interface CatalogServiceOptions {
   logger: LoggerService;
@@ -82,27 +91,48 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
     return `{"message" : "${returnMessage}: ${request.target}"}`;
   }
 
-  async getEntityByName(request: {
-    name: string;
-    kind: string;
-  }): Promise<Entity | undefined> {
+  private async findEntityByName(
+    request: {
+      name: string;
+      kind: string;
+    },
+    fields?: string[],
+  ): Promise<Entity | undefined> {
     const entities = await this.catalog.getEntities(
       {
         filter: {
           kind: request.kind,
           'metadata.name': request.name,
         },
+        fields,
       },
       { credentials: await this.auth.getOwnServiceCredentials() },
     );
-    if (entities.items.length === 0) {
-      return undefined;
-    }
     return entities.items[0];
   }
 
+  async getEntityByName(request: {
+    name: string;
+    kind: string;
+  }): Promise<Entity | undefined> {
+    return this.findEntityByName(request);
+  }
+
+  private async getEntityReferenceByName(request: {
+    name: string;
+    kind: string;
+  }): Promise<Entity | undefined> {
+    return this.findEntityByName(request, [
+      CATALOG_KIND,
+      CATALOG_METADATA_NAME,
+      CATALOG_METADATA_NAMESPACE,
+      CATALOG_METADATA_UID,
+      CATALOG_MANAGED_BY_LOCATION,
+    ]);
+  }
+
   async unregisterCatalogInfo(request: any): Promise<UnregisterResponse> {
-    const entity = await this.getEntityByName({
+    const entity = await this.getEntityReferenceByName({
       name: request.params.name,
       kind: request.params.kind,
     });
@@ -133,17 +163,19 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
     try {
       const annotations = entity.metadata.annotations;
       if (!annotations || !annotations['backstage.io/managed-by-location']) {
-        this.logger.error('Metadata location not found for entity:', entity);
+        this.logger.error(
+          `Metadata location not found for entity: ${stringifyEntityRef(entity)}`,
+        );
         throw new Error('Metadata location not found');
       }
       const location = await this.catalog.getLocationByRef(
         annotations['backstage.io/managed-by-location'],
         { credentials: await this.auth.getOwnServiceCredentials() },
       );
-      this.logger.info('Location to remove:', location);
       if (!location) {
         throw new Error('Location not found');
       }
+      this.logger.info(`Location to remove: ${location.entityRef}`);
       if (entity.metadata.uid) {
         await this.catalog.removeEntityByUid(entity.metadata.uid, {
           credentials: await this.auth.getOwnServiceCredentials(),
@@ -168,7 +200,7 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
     name: string;
     kind: string;
   }): Promise<RefreshResponse> {
-    const entity = await this.getEntityByName({
+    const entity = await this.getEntityReferenceByName({
       name: request.name,
       kind: request.kind,
     });
@@ -176,7 +208,9 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
       try {
         const annotations = entity.metadata.annotations;
         if (!annotations || !annotations['backstage.io/managed-by-location']) {
-          this.logger.error('Metadata location not found for entity:', entity);
+          this.logger.error(
+            `Metadata location not found for entity: ${stringifyEntityRef(entity)}`,
+          );
           throw new Error('Metadata location not found');
         }
         const entityRef = stringifyEntityRef(entity);
@@ -195,7 +229,9 @@ export class CatalogServiceImpl implements ApiPlatformCatalogService {
         };
       }
     } else {
-      this.logger.error('Entity not found for refresh:', request);
+      this.logger.error(
+        `Entity not found for refresh: ${request.kind}:${request.name}`,
+      );
       return {
         message: `entity not found: "${request.name}"`,
         returnCode: 404,
