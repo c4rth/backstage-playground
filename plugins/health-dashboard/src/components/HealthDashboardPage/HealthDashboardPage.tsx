@@ -141,7 +141,7 @@ const HealthDashboardPageContent = () => {
           type: 'none',
         }}
         emptyState={emptyState()}
-        className={styles.denseTable}
+        className={`denseTable ${styles.healthTable}`}
       />
     </Container>
   );

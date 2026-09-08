@@ -47,7 +47,7 @@ export const ApiDefinitionPage = () => {
     if (activeVersion) {
       catalogApi
         .getEntityByRef(activeVersion)
-        .then(entity => setApiEntity(entity as ApiEntity));
+        .then((entity: any) => setApiEntity(entity as ApiEntity));
     }
   }, [activeVersion, catalogApi]);
 
