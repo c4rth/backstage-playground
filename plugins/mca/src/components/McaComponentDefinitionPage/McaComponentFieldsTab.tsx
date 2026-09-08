@@ -105,7 +105,6 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
   return <div>{field.name}</div>;
 });
 
-
 const commonColumns: ColumnConfig<TableRow>[] = [
   {
     label: 'Name',
@@ -115,7 +114,8 @@ const commonColumns: ColumnConfig<TableRow>[] = [
     cell: row => (
       <Cell>
         <Text weight="bold">
-          {row.name}{row.mandatory && (
+          {row.name}
+          {row.mandatory && (
             <RiAsterisk
               size={12}
               color="var(--bui-fg-danger)"

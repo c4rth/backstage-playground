@@ -22,7 +22,10 @@ export interface ApiPlatformBackendApi {
     options: ApiDefinitionsListRequest,
   ): Promise<ApiDefinitionListResult>;
 
-  getApisCount(ownershipType: OwnershipType, apiType: OpenApiType): Promise<number>;
+  getApisCount(
+    ownershipType: OwnershipType,
+    apiType: OpenApiType,
+  ): Promise<number>;
 
   getApiVersions(
     system: string,

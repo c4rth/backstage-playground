@@ -99,7 +99,9 @@ export const JSONataTester = () => {
   const appThemeApi = useApi(appThemeApiRef);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
-    const preferedColor = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const preferedColor = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    ).matches;
     return currentThemeId?.includes('dark') ?? preferedColor;
   });
   const [input, setInput] = useState('{}');

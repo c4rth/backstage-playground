@@ -21,10 +21,17 @@ export const ComponentOwnership = ({
   );
   const identityApi = useApi(identityApiRef);
 
-  const { value: isGuest, loading, error } = useAsync(async () => {
+  const {
+    value: isGuest,
+    loading,
+    error,
+  } = useAsync(async () => {
     const userProfile = await identityApi.getProfileInfo();
-    const backStageIdentity = await identityApi.getBackstageIdentity();    
-    return backStageIdentity.userEntityRef === 'user:default/guest' || !userProfile.email;
+    const backStageIdentity = await identityApi.getBackstageIdentity();
+    return (
+      backStageIdentity.userEntityRef === 'user:default/guest' ||
+      !userProfile.email
+    );
   }, [identityApi]);
 
   const handleSelectChange = (type: OwnershipType) => {

@@ -97,9 +97,10 @@ class CustomPermissionPolicy implements PermissionPolicy {
     user?: PolicyQueryUser,
   ): Promise<PolicyDecision> {
     const custom = this.resolveCustomPermission(request.permission.name, user);
-    
+
     if (user?.info?.userEntityRef === 'user:default/guest') {
-      if (custom === AuthorizeResult.ALLOW) return { result: AuthorizeResult.ALLOW };
+      if (custom === AuthorizeResult.ALLOW)
+        return { result: AuthorizeResult.ALLOW };
       const isRead =
         isPermission(request.permission, catalogEntityReadPermission) &&
         !isPermission(request.permission, notGuestPermission);

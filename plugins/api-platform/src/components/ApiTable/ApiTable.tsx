@@ -232,7 +232,7 @@ export const ApiTable = () => {
           <>
             <ComponentOwnership
               storageKey={STORAGE_OWNERSHIP_KEY}
-              handleOwnershipChange={ setOwnershipType}
+              handleOwnershipChange={setOwnershipType}
             />
 
             <Box mx="4" style={{ width: '10em' }}>

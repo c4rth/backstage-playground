@@ -201,10 +201,7 @@ function processServiceEntities(
   dependentsType?: DependentsType,
 ): ServiceDefinition[] {
   const mapServices = new Map<string, ServiceDefinition>();
-  const versionMaps = new Map<
-    string,
-    Map<string, ServiceVersionDefinition>
-  >();
+  const versionMaps = new Map<string, Map<string, ServiceVersionDefinition>>();
   const searchLower = search?.toLowerCase();
 
   for (const entity of entities) {

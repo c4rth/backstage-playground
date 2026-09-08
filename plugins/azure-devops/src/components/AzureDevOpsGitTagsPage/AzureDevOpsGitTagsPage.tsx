@@ -42,9 +42,7 @@ const toTableRow = (gitTag: GitTag, idx: number): TableRow => ({
   gitTag,
 });
 
-async function fetchData(
-  items: GitTag[] | undefined,
-): Promise<TableRow[]> {
+async function fetchData(items: GitTag[] | undefined): Promise<TableRow[]> {
   return (items ?? []).map(toTableRow);
 }
 
@@ -129,10 +127,7 @@ export const AzureDevOpsGitTagsPage = () => {
 
   if (error) {
     return (
-      <ResponseErrorPanel
-        title="Failed to call AzureDevOps"
-        error={error}
-      />
+      <ResponseErrorPanel title="Failed to call AzureDevOps" error={error} />
     );
   }
 

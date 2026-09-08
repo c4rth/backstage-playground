@@ -3,7 +3,7 @@ export { getStringForKey } from './strings';
 export { ComponentChip } from './ComponentChip';
 export { DependentsToggle } from './DependentsToggle';
 export {
-	useReloadOnChange,
-	useStoredOwnership,
-	useStoredSearch,
+  useReloadOnChange,
+  useStoredOwnership,
+  useStoredSearch,
 } from './useTableFilters';

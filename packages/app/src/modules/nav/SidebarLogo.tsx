@@ -1,7 +1,4 @@
-import {
-  sidebarConfig,
-  useSidebarOpenState,
-} from '@backstage/core-components';
+import { sidebarConfig, useSidebarOpenState } from '@backstage/core-components';
 import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
 import { LogoFull } from './LogoFull';
 import { LogoIcon } from './LogoIcon';

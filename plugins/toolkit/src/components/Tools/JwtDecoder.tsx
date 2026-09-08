@@ -25,10 +25,12 @@ export const JwtDecoder = () => {
   const appThemeApi = useApi(appThemeApiRef);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
-    const preferedColor = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const preferedColor = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    ).matches;
     return currentThemeId?.includes('dark') ?? preferedColor;
   });
-  
+
   const showError = useCallback(
     (attribute: string) => {
       const errorMessage = `Couldn't encode JWT token: missing attribute ${attribute}`;
@@ -135,28 +137,27 @@ export const JwtDecoder = () => {
                 Signature: Verification not performed
               </Box>
             )}{' '}
-
-          <div
-            style={{
-              flex: 1,
-              minHeight: 0,
-              overflow: 'auto',
-              border: '1px solid var(--bui-border-1)',
-              borderRadius: '4px',
-              backgroundColor: 'var(--bui-bg-neutral-1)',
-            }}
-          >
-            <ReactJson
-              name={false}
-              src={props.jwt || {}}
+            <div
               style={{
-                boxSizing: 'border-box',
-                backgroundColor: 'transparent',
+                flex: 1,
+                minHeight: 0,
+                overflow: 'auto',
+                border: '1px solid var(--bui-border-1)',
+                borderRadius: '4px',
+                backgroundColor: 'var(--bui-bg-neutral-1)',
               }}
-              enableClipboard
-              theme={isDarkMode ? 'monokai' : 'rjv-default'}
-            />
-          </div>
+            >
+              <ReactJson
+                name={false}
+                src={props.jwt || {}}
+                style={{
+                  boxSizing: 'border-box',
+                  backgroundColor: 'transparent',
+                }}
+                enableClipboard
+                theme={isDarkMode ? 'monokai' : 'rjv-default'}
+              />
+            </div>
           </>
         ) : (
           <div

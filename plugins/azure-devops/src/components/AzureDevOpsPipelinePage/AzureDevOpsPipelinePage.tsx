@@ -222,10 +222,7 @@ export const AzureDevOpsPipelinePage = () => {
 
   if (error) {
     return (
-      <ResponseErrorPanel
-        title="Failed to call AzureDevOps"
-        error={error}
-      />
+      <ResponseErrorPanel title="Failed to call AzureDevOps" error={error} />
     );
   }
 

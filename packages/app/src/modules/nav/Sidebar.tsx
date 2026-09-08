@@ -22,9 +22,7 @@ import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 // Admin Tools
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
-import {
-  notGuestPermission,
-} from '@internal/plugin-permissions-common';
+import { notGuestPermission } from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
 
 export const SidebarContent = NavContentBlueprint.make({

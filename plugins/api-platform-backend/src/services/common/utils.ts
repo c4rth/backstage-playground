@@ -1,9 +1,6 @@
 import { AuthService } from '@backstage/backend-plugin-api';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import {
-  EntityFilterQuery,
-  EntityOrderQuery,
-} from '@backstage/catalog-client';
+import { EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 import {
   CATALOG_KIND,
@@ -44,15 +41,8 @@ export async function fetchCatalogEntitiesWithOwnership(options: {
   userEntityRef: string | undefined;
   order?: EntityOrderQuery;
 }): Promise<Entity[]> {
-  const {
-    catalog,
-    auth,
-    filter,
-    fields,
-    ownershipType,
-    userEntityRef,
-    order,
-  } = options;
+  const { catalog, auth, filter, fields, ownershipType, userEntityRef, order } =
+    options;
   if (ownershipType === 'owned' && isUserGuest(userEntityRef)) {
     return [];
   }

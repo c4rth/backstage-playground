@@ -198,13 +198,17 @@ export class SystemServiceImpl implements SystemService {
         if (name) apiNames.add(name);
       } else if (relEntity.kind === 'Component') {
         const name =
-          relEntity.metadata?.annotations?.[ANNOTATION_SERVICE_NAME]?.toString();
+          relEntity.metadata?.annotations?.[
+            ANNOTATION_SERVICE_NAME
+          ]?.toString();
         if (name) {
           serviceNames.add(name);
           continue;
         }
         const libName =
-          relEntity.metadata?.annotations?.[ANNOTATION_LIBRARY_NAME]?.toString();
+          relEntity.metadata?.annotations?.[
+            ANNOTATION_LIBRARY_NAME
+          ]?.toString();
         if (libName) libraryNames.add(libName);
       }
     }

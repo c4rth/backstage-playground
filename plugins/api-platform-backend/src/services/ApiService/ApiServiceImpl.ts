@@ -109,9 +109,10 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
       const description = item.metadata.description?.toString() || '';
       const project =
         item.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '';
-      const matchesSearch = `${apiName}\0${system}\0${project}\0${apiType}\0${description}`
-        .toLowerCase()
-        .includes(searchLower);
+      const matchesSearch =
+        `${apiName}\0${system}\0${project}\0${apiType}\0${description}`
+          .toLowerCase()
+          .includes(searchLower);
       if (!matchesSearch) continue;
     }
 
@@ -352,8 +353,7 @@ export class ApiServiceImpl implements ApiService {
       entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
       version,
       project:
-        entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() ||
-        '',
+        entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
     };
   }
 

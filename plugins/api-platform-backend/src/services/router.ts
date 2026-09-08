@@ -106,7 +106,9 @@ export async function createRouter(
       req,
       userInfo,
     );
-    res.json(await apiService.getApisCount(ownershipType, apiType, userEntityRef));
+    res.json(
+      await apiService.getApisCount(ownershipType, apiType, userEntityRef),
+    );
   });
 
   router.get('/apis/definitions/:system/:apiName', async (req, res) => {
@@ -165,7 +167,9 @@ export async function createRouter(
       req,
       userInfo,
     );
-    res.json(await serviceService.getServicesCount(ownershipType, userEntityRef));
+    res.json(
+      await serviceService.getServicesCount(ownershipType, userEntityRef),
+    );
   });
 
   router.get('/services/definitions', async (req, res) => {

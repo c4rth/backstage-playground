@@ -36,69 +36,69 @@ const autoLogout = AppRootElementBlueprint.make({
 });
 
 const scmIntegrations = ApiBlueprint.make({
-      name: 'scm-integrations',
-      params: defineParams =>
-        defineParams({
-          api: scmIntegrationsApiRef,
-          deps: {
-            configApi: configApiRef,
-          },
-          factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-        }),
-    });
+  name: 'scm-integrations',
+  params: defineParams =>
+    defineParams({
+      api: scmIntegrationsApiRef,
+      deps: {
+        configApi: configApiRef,
+      },
+      factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
+    }),
+});
 
 const scmAuth = ApiBlueprint.make({
-      name: 'scm-auth',
-      params: defineParams =>
-        defineParams({
-          api: scmAuthApiRef,
-          deps: {
-            microsoftAuthApi: microsoftAuthApiRef,
-          },
-          factory: ({ microsoftAuthApi }) => ScmAuth.forAzure(microsoftAuthApi),
-        }),
-    });
+  name: 'scm-auth',
+  params: defineParams =>
+    defineParams({
+      api: scmAuthApiRef,
+      deps: {
+        microsoftAuthApi: microsoftAuthApiRef,
+      },
+      factory: ({ microsoftAuthApi }) => ScmAuth.forAzure(microsoftAuthApi),
+    }),
+});
 
 const analytics = ApiBlueprint.make({
-      name: 'analytics',
-      params: defineParams =>
-        defineParams({
-          api: analyticsApiRef,
-          deps: {
-            discoveryApi: discoveryApiRef,
-            fetchApi: fetchApiRef,
-            identityApi: identityApiRef,
-          },
-          factory: ({ discoveryApi, fetchApi, identityApi }) =>
-            CustomAnalyticsApi.create({ discoveryApi, fetchApi, identityApi }),
-        }),
-    });
+  name: 'analytics',
+  params: defineParams =>
+    defineParams({
+      api: analyticsApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+        identityApi: identityApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi, identityApi }) =>
+        CustomAnalyticsApi.create({ discoveryApi, fetchApi, identityApi }),
+    }),
+});
 
 const lightTheme = ThemeBlueprint.make({
-      name: 'light',
-      params: {
-        theme: {
-          id: 'light',
-          title: 'Light Theme',
-          variant: 'light',
-          icon: <RiSunFill />,
-          Provider: LightThemeProvider,
-        },
-      },
-    });
+  name: 'light',
+  params: {
+    theme: {
+      id: 'light',
+      title: 'Light Theme',
+      variant: 'light',
+      icon: <RiSunFill />,
+      Provider: LightThemeProvider,
+    },
+  },
+});
 
 const darkTheme = ThemeBlueprint.make({
-      name: 'dark',
-      params: {
-        theme: {
-          id: 'dark',
-          title: 'Dark Theme',
-          variant: 'dark',
-          icon: <RiMoonLine />,
-          Provider: DarkThemeProvider,
-        },
-      },
-    });
+  name: 'dark',
+  params: {
+    theme: {
+      id: 'dark',
+      title: 'Dark Theme',
+      variant: 'dark',
+      icon: <RiMoonLine />,
+      Provider: DarkThemeProvider,
+    },
+  },
+});
 
 const signInProviders: IdentityProviders = [
   {
@@ -111,17 +111,17 @@ const signInProviders: IdentityProviders = [
 ];
 
 const signInPage = SignInPageBlueprint.make({
-      params: {
-        loader: async () => props => (
-          <SignInPage
-            {...props}
-            providers={signInProviders}
-            title="Select a sign-in method"
-            align="center"
-          />
-        ),
-      },
-    });
+  params: {
+    loader: async () => props => (
+      <SignInPage
+        {...props}
+        providers={signInProviders}
+        title="Select a sign-in method"
+        align="center"
+      />
+    ),
+  },
+});
 
 export const appOverrides = createFrontendModule({
   pluginId: 'app',

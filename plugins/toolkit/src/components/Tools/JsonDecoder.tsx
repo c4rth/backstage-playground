@@ -5,14 +5,15 @@ import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
 import { appThemeApiRef } from '@backstage/core-plugin-api';
 
-
 export const JsonDecoder = () => {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState<any>(undefined);
   const appThemeApi = useApi(appThemeApiRef);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
-    const preferedColor = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const preferedColor = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    ).matches;
     return currentThemeId?.includes('dark') ?? preferedColor;
   });
 
@@ -85,7 +86,7 @@ export const JsonDecoder = () => {
       setOutput(undefined);
       return;
     }
-    let value = input;
+    const value = input;
     if (value) {
       try {
         setOutput(JSON.parse(value));
@@ -103,11 +104,7 @@ export const JsonDecoder = () => {
       mode="Decode"
       setInput={setInput}
       output={output}
-      rightContent={
-        <JsonDecoderOutput
-          json={output}
-        />
-      }
+      rightContent={<JsonDecoderOutput json={output} />}
     />
   );
 };

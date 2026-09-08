@@ -12,7 +12,11 @@ import { useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { useReloadOnChange, useStoredOwnership, useStoredSearch } from '../common';
+import {
+  useReloadOnChange,
+  useStoredOwnership,
+  useStoredSearch,
+} from '../common';
 import {
   Box,
   Cell,
@@ -142,9 +146,9 @@ const getData = async <T extends BaseTableRow>(
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ServiceDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -152,15 +156,15 @@ const getData = async <T extends BaseTableRow>(
 
   const res = result
     ? {
-      data: result.items.map(toRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
   return res;
 };
 
@@ -180,9 +184,8 @@ export function BaseServiceTable<T extends BaseTableRow>({
 }: BaseServiceTableProps<T>) {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
-  const [ownershipType, setOwnershipType] = useStoredOwnership(
-    storageOwnershipKey,
-  );
+  const [ownershipType, setOwnershipType] =
+    useStoredOwnership(storageOwnershipKey);
   const [dependentsType, setDependentsType] = useState<DependentsType>('all');
   const { initialSearch, storeSearch } = useStoredSearch(storageSearchKey);
 
