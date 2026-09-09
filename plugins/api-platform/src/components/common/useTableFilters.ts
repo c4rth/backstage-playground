@@ -35,5 +35,6 @@ export function useReloadOnChange(
       return;
     }
     reload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload, ...dependencies]);
 }
