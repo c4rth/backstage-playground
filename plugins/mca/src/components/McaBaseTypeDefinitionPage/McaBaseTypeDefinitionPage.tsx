@@ -25,9 +25,9 @@ export const McaBaseTypeDefinitionPage = () => {
   const configApi = useApi(configApiRef);
   const { name } = useRouteRefParams(baseTypeRouteRef);
 
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [baseType, setBaseType] = useState<McaBaseType>();
+  const [iframeLoading, setIframeLoading] = useState(true);
 
   let baseTypesUrl = '';
   try {
@@ -40,11 +40,9 @@ export const McaBaseTypeDefinitionPage = () => {
     getBaseType(mcaApi, name!)
       .then(result => {
         setBaseType(result);
-        setLoading(false);
       })
       .catch(err => {
         setError(err);
-        setLoading(false);
       });
   }, [name, mcaApi]);
 
@@ -54,8 +52,11 @@ export const McaBaseTypeDefinitionPage = () => {
     baseTypeUrl = `${baseTypesUrl}/${packageUrl}/${baseType.baseType}.html`;
   }
 
+  useEffect(() => {
+    setIframeLoading(true);
+  }, [baseTypeUrl]);
+
   if (error) return <ResponseErrorPanel error={error} />;
-  if (loading) return <Progress />;
   if (!baseTypesUrl) {
     return (
       <ResponseErrorPanel
@@ -72,11 +73,14 @@ export const McaBaseTypeDefinitionPage = () => {
     <>
       <PluginHeader title={`BaseType: ${name}`} />
       <FullPage>
+        {iframeLoading && <Progress />}
         <iframe
           src={baseTypeUrl || ''}
-          height="100%"
-          width="100%"
+          height={iframeLoading ? 0 : '100%'}
+          width={iframeLoading ? 0 : '100%'}
+          style={{ border: 0, visibility: iframeLoading ? 'hidden' : 'visible' }}
           title={`BaseType :${baseTypeUrl}`}
+          onLoad={() => setIframeLoading(false)}
         />
       </FullPage>
     </>

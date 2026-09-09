@@ -118,7 +118,20 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const buffer = await response.arrayBuffer();
-      return new TextDecoder('cp1252').decode(buffer);
+      const charset = response.headers
+        .get('content-type')
+        ?.match(/charset=([\w-]+)/i)?.[1];
+      if (charset) {
+        try {
+          return new TextDecoder(charset).decode(buffer);
+        } catch { /* unknown label — fall through */ }
+      }
+
+      try {
+        return new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+      } catch {
+        return new TextDecoder('windows-1252').decode(buffer);
+      }
     } catch (error) {
       throw error;
     }

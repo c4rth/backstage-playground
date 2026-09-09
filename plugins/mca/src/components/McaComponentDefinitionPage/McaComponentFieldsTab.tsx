@@ -12,6 +12,7 @@ import {
 } from '@backstage/ui';
 import { RiAsterisk } from '@remixicon/react';
 import { memo } from 'react';
+import { MarkdownContent } from '@backstage/core-components';
 
 type FieldInfo = {
   kind: 'component' | 'basetype' | 'unknown';
@@ -143,10 +144,7 @@ const commonColumns: ColumnConfig<TableRow>[] = [
     id: 'description',
     cell: ({ description }) => (
       <Cell>
-        <div
-          style={{ whiteSpace: 'pre-wrap' }}
-          dangerouslySetInnerHTML={{ __html: description }}
-        />
+        <MarkdownContent content={description} />
       </Cell>
     ),
   },
