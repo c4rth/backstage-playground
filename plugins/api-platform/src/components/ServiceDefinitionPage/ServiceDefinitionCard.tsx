@@ -159,6 +159,7 @@ export const ServiceDefinitionCard = ({
                           href={repositoryUrl}
                           text={repository}
                           type="azdo"
+                          regular
                         />
                       ) : (
                         <Text variant="body-medium">-</Text>

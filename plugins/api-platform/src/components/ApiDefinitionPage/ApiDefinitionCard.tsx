@@ -134,6 +134,7 @@ export const ApiDefinitionCard = () => {
                     type="azdo"
                     target="_blank"
                     rel="noopener noreferrer"
+                    regular
                   />
                 </AboutField>
               </Box>
@@ -154,6 +155,7 @@ export const ApiDefinitionCard = () => {
                     rel="noopener noreferrer"
                     text={platformUrl}
                     type="url"
+                    regular
                   />
                 </AboutField>
               </Box>

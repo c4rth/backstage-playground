@@ -11,6 +11,7 @@ import entityValidationPlugin from '@backstage-community/plugin-entity-validatio
 import homePlugin from '@backstage/plugin-home/alpha';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import searchPlugin from '@backstage/plugin-search/alpha';
+import sonarqubePlugin from '@backstage-community/plugin-sonarqube/alpha';
 import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import visualizerPlugin from '@backstage/plugin-app-visualizer';
@@ -64,6 +65,7 @@ const app = createApp({
     homePlugin,
     homePluginOverrides,
     scaffolderPlugin,
+    sonarqubePlugin,
     searchPlugin,
     techdocsPlugin,
     techDocsMermaidAddonModule,

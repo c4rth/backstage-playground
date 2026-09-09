@@ -100,7 +100,7 @@ const getData = async (
 const COLUMNS: ColumnConfig<TableRow>[] = [
   {
     id: 'name',
-    width: '25%',
+    width: '35%',
     label: 'Name',
     isRowHeader: true,
     isSortable: true,
@@ -128,7 +128,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
   {
     id: 'type',
     label: 'Type',
-    width: '5%',
+    width: '10%',
     isSortable: true,
     cell: ({ type }: TableRow) => <CellText title={type} />,
   },
@@ -225,7 +225,7 @@ export const ApiTable = () => {
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
       <Header
         title={getTitle(ownershipType, selectedType, countRows)}
         customActions={

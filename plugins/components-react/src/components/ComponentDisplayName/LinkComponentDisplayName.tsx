@@ -4,6 +4,7 @@ import { HTMLAttributeAnchorTarget } from 'react';
 
 export type LinkComponentDisplayNameProps = {
   text: string;
+  regular?: boolean;
   type: 'api' | 'system' | 'service' | 'azdo' | 'url' | 'library';
   href: string;
   rel?: string;
@@ -12,6 +13,7 @@ export type LinkComponentDisplayNameProps = {
 
 export const LinkComponentDisplayName = ({
   text,
+  regular = false,
   type,
   href,
   rel = '',
@@ -20,7 +22,7 @@ export const LinkComponentDisplayName = ({
   return (
     <Link
       href={href}
-      weight="bold"
+      weight={regular ? "regular" : "bold"}
       color="info"
       rel={rel}
       target={target}

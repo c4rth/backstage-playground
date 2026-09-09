@@ -80,9 +80,9 @@ const getData = async (
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as McaBaseTypeListOptions['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as McaBaseTypeListOptions['orderBy'])
       : undefined,
   });
   if (result) {
@@ -142,7 +142,7 @@ export const McaBaseTypeTable = memo(() => {
   }
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
       <Header
         title={`BaseTypes (${countRows})`}
         customActions={

@@ -196,9 +196,9 @@ async function getData(
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as McaComponentListOptions['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as McaComponentListOptions['orderBy'])
       : undefined,
     type: type,
   });
@@ -282,7 +282,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
   if (error) return <ResponseErrorPanel error={error} />;
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
       <Header
         title={`${getTitle(type)} (${countRows})`}
         customActions={

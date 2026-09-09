@@ -97,9 +97,9 @@ const getData = async (
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as SystemDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
   });
@@ -172,7 +172,7 @@ export const SystemTable = () => {
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
       <Header
         title={getTitle(ownershipType, countRows)}
         customActions={
