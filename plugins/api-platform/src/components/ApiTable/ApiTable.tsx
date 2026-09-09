@@ -247,17 +247,17 @@ export const ApiTable = () => {
                 options={API_TYPES}
               />
             </Box>
-            <Box style={{ marginLeft: 'auto', width: '250px' }}>
-              <SearchField
-                placeholder="Filter..."
-                value={search.value}
-                onChange={str => {
-                  storeSearch(str);
-                  search.onChange(str);
-                }}
-                aria-label="Filter"
-              />
-            </Box>
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={str => {
+                storeSearch(str);
+                search.onChange(str);
+              }}
+              aria-label="Filter"
+              startCollapsed
+              style={{ marginLeft: 'auto', maxWidth: '300px' }}
+            />
           </>
         }
       />

@@ -16,7 +16,6 @@ import {
   Container,
   Header,
   SearchField,
-  Box,
   ColumnConfig,
   CellText,
   Cell,
@@ -286,17 +285,17 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
       <Header
         title={`${getTitle(type)} (${countRows})`}
         customActions={
-          <Box style={{ marginLeft: 'auto', width: '250px' }}>
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                sessionStorage.setItem(STORAGE_KEY, str ?? '');
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-            />
-          </Box>
+          <SearchField
+            placeholder="Filter..."
+            value={search.value}
+            onChange={str => {
+              sessionStorage.setItem(STORAGE_KEY, str ?? '');
+              search.onChange(str);
+            }}
+            aria-label="Filter"
+            startCollapsed
+            style={{ marginLeft: 'auto', maxWidth: '300px' }}
+          />
         }
       />
       <Table

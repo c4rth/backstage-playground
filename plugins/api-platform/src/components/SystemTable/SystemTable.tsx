@@ -2,7 +2,6 @@ import { ResponseErrorPanel } from '@backstage/core-components';
 import { EntityRefLinks } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
-  Box,
   Cell,
   CellText,
   ColumnConfig,
@@ -181,17 +180,17 @@ export const SystemTable = () => {
               storageKey={STORAGE_OWNERSHIP_KEY}
               handleOwnershipChange={setOwnershipType}
             />
-            <Box style={{ marginLeft: 'auto', width: '250px' }}>
-              <SearchField
-                placeholder="Filter..."
-                value={search.value}
-                onChange={str => {
-                  storeSearch(str);
-                  search.onChange(str);
-                }}
-                aria-label="Filter"
-              />
-            </Box>
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={str => {
+                storeSearch(str);
+                search.onChange(str);
+              }}
+              aria-label="Filter"
+              startCollapsed
+              style={{ marginLeft: 'auto', maxWidth: '300px' }}
+            />
           </>
         }
       />

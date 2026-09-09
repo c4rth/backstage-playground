@@ -1,7 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
-  Box,
   Container,
   Cell,
   CellText,
@@ -11,7 +10,6 @@ import {
   useTable,
   Header,
 } from '@backstage/ui';
-import { useCallback, useState } from 'react';
 import {
   ComponentOwnership,
   useReloadOnChange,
@@ -173,14 +171,6 @@ export const LibraryTable = () => {
 
   useReloadOnChange(reload, [ownershipType]);
 
-  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
-  const boxRef = useCallback((node: HTMLDivElement | null) => {
-    if (node) {
-      const top = node.getBoundingClientRect().top;
-      setMaxHeight(window.innerHeight - top - 50); // 50px padding from bottom
-    }
-  }, []);
-
   if (tableProps.error) {
     return (
       <ResponseErrorPanel
@@ -203,17 +193,17 @@ export const LibraryTable = () => {
               storageKey={STORAGE_OWNERSHIP_KEY}
               handleOwnershipChange={setOwnershipType}
             />
-            <Box style={{ marginLeft: 'auto', width: '250px' }}>
-              <SearchField
-                placeholder="Filter..."
-                value={search.value}
-                onChange={str => {
-                  storeSearch(str);
-                  search.onChange(str);
-                }}
-                aria-label="Filter"
-              />
-            </Box>
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={str => {
+                storeSearch(str);
+                search.onChange(str);
+              }}
+              aria-label="Filter"
+              startCollapsed
+              style={{ marginLeft: 'auto', maxWidth: '300px' }}
+            />
           </>
         }
       />

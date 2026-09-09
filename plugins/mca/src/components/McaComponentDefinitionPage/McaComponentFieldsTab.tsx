@@ -8,7 +8,6 @@ import {
   Container,
   Header,
   SearchField,
-  Box,
 } from '@backstage/ui';
 import { RiAsterisk } from '@remixicon/react';
 import { memo } from 'react';
@@ -252,20 +251,20 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
     });
 
     return (
-      <Container>
+      <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
         <Header
           title={`${title || defaultTitle} (${rows.length})`}
           customActions={
-            <Box style={{ marginLeft: 'auto', width: '250px' }}>
-              <SearchField
-                placeholder="Filter..."
-                value={search.value}
-                onChange={str => {
-                  search.onChange(str);
-                }}
-                aria-label="Filter"
-              />
-            </Box>
+            <SearchField
+              placeholder="Filter..."
+              value={search.value}
+              onChange={str => {
+                search.onChange(str);
+              }}
+              aria-label="Filter"
+              startCollapsed
+              style={{ marginLeft: 'auto', maxWidth: '300px' }}
+            />
           }
         />
         <Table

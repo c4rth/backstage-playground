@@ -31,4 +31,6 @@
 
 .healthTable {
   width: 50%;
+  background-color: var(--bui-bg-neutral-1);
+  padding: 16px;
 }

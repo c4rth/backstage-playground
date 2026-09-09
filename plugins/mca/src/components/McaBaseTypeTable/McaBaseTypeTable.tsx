@@ -18,7 +18,6 @@ import {
   Container,
   Header,
   SearchField,
-  Box,
 } from '@backstage/ui';
 
 type TableRow = {
@@ -146,17 +145,17 @@ export const McaBaseTypeTable = memo(() => {
       <Header
         title={`BaseTypes (${countRows})`}
         customActions={
-          <Box style={{ marginLeft: 'auto', width: '250px' }}>
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                sessionStorage.setItem(STORAGE_KEY, str ?? '');
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-            />
-          </Box>
+          <SearchField
+            placeholder="Filter..."
+            value={search.value}
+            onChange={str => {
+              sessionStorage.setItem(STORAGE_KEY, str ?? '');
+              search.onChange(str);
+            }}
+            aria-label="Filter"
+            startCollapsed
+            style={{ marginLeft: 'auto', maxWidth: '300px' }}
+          />
         }
       />
       <Table
