@@ -7,6 +7,9 @@ import {
   Container,
   Header,
   SearchField,
+  CardBody,
+  Card,
+  CardHeader,
 } from '@backstage/ui';
 import { memo, useMemo } from 'react';
 
@@ -88,31 +91,37 @@ export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
     });
 
     return (
-      <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-        <Header
-          title={`Implemented Methods (${methods.length})`}
-          customActions={
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-              startCollapsed
-              style={{ marginLeft: 'auto', maxWidth: '300px' }}
+      <Container style={{ height: '100%' }}>
+        <Card>
+          <CardHeader>
+            <Header
+              title={`Implemented Methods (${methods.length})`}
+              customActions={
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                  startCollapsed
+                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                />
+              }
             />
-          }
-        />
-        <Table
-          key={`table-${componentType}`}
-          {...tableProps}
-          columnConfig={columns}
-          emptyState={
-            <div>No implemented methods found for this {componentType}.</div>
-          }
-          className="denseTable"
-        />
+          </CardHeader>
+          <CardBody>
+            <Table
+              key={`table-${componentType}`}
+              {...tableProps}
+              columnConfig={columns}
+              emptyState={
+                <div>No implemented methods found for this {componentType}.</div>
+              }
+              className="denseTable"
+            />
+          </CardBody>
+        </Card>
       </Container>
     );
   },

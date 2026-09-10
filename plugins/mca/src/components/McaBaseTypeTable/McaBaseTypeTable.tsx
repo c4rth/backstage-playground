@@ -18,6 +18,9 @@ import {
   Container,
   Header,
   SearchField,
+  Card,
+  CardHeader,
+  CardBody,
 } from '@backstage/ui';
 
 type TableRow = {
@@ -141,30 +144,36 @@ export const McaBaseTypeTable = memo(() => {
   }
 
   return (
-    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-      <Header
-        title={`BaseTypes (${countRows})`}
-        customActions={
-          <SearchField
-            placeholder="Filter..."
-            value={search.value}
-            onChange={str => {
-              sessionStorage.setItem(STORAGE_KEY, str ?? '');
-              search.onChange(str);
-            }}
-            aria-label="Filter"
-            startCollapsed
-            style={{ marginLeft: 'auto', maxWidth: '300px' }}
+    <Container style={{ height: '100%' }}>
+      <Card>
+        <CardHeader>
+          <Header
+            title={`BaseTypes (${countRows})`}
+            customActions={
+              <SearchField
+                placeholder="Filter..."
+                value={search.value}
+                onChange={str => {
+                  sessionStorage.setItem(STORAGE_KEY, str ?? '');
+                  search.onChange(str);
+                }}
+                aria-label="Filter"
+                startCollapsed
+                style={{ marginLeft: 'auto', maxWidth: '300px' }}
+              />
+            }
           />
-        }
-      />
-      <Table
-        key="table-basetypes"
-        {...tableProps}
-        columnConfig={columns}
-        emptyState={<div>No data available</div>}
-        className="denseTable"
-      />
+        </CardHeader>
+        <CardBody>
+          <Table
+            key="table-basetypes"
+            {...tableProps}
+            columnConfig={columns}
+            emptyState={<div>No data available</div>}
+            className="denseTable"
+          />
+        </CardBody>
+      </Card>
     </Container>
   );
 });

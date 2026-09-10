@@ -11,6 +11,9 @@ import {
   Container,
   Header,
   SortDescriptor,
+  Card,
+  CardHeader,
+  CardBody,
 } from '@backstage/ui';
 import { useState } from 'react';
 import {
@@ -171,36 +174,42 @@ export const SystemTable = () => {
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-      <Header
-        title={getTitle(ownershipType, countRows)}
-        customActions={
-          <>
-            <ComponentOwnership
-              storageKey={STORAGE_OWNERSHIP_KEY}
-              handleOwnershipChange={setOwnershipType}
-            />
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                storeSearch(str);
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-              startCollapsed
-              style={{ marginLeft: 'auto', maxWidth: '300px' }}
-            />
-          </>
-        }
-      />
-      <Table
-        key={`table-${ownershipType}`}
-        {...tableProps}
-        columnConfig={COLUMNS}
-        emptyState={<div>No data available</div>}
-        className="denseTable"
-      />
+    <Container style={{ height: '100%' }}>
+      <Card>
+        <CardHeader>
+          <Header
+            title={getTitle(ownershipType, countRows)}
+            customActions={
+              <>
+                <ComponentOwnership
+                  storageKey={STORAGE_OWNERSHIP_KEY}
+                  handleOwnershipChange={setOwnershipType}
+                />
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    storeSearch(str);
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                  startCollapsed
+                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                />
+              </>
+            }
+          />
+        </CardHeader>
+        <CardBody>
+          <Table
+            key={`table-${ownershipType}`}
+            {...tableProps}
+            columnConfig={COLUMNS}
+            emptyState={<div>No data available</div>}
+            className="denseTable"
+          />
+        </CardBody>
+      </Card>
     </Container>
   );
 };

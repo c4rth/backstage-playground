@@ -18,6 +18,10 @@ import {
   DialogBody,
   DialogFooter,
   Flex,
+  Card,
+  CardHeader,
+  CardBody,
+  Container,
 } from '@backstage/ui';
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { EntityFilterQuery } from '@backstage/catalog-client';
@@ -112,7 +116,7 @@ function mapEntityToTableRow(
     const names = [
       entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
       entity.metadata?.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString() ??
-        '?',
+      '?',
       entity.spec?.lifecycle?.toString() ?? '?',
     ];
     return {
@@ -350,107 +354,114 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
   }, [kind, system, reload]);
 
   return (
-    <>
-      <Header
-        title={`${kind.charAt(0).toUpperCase() + kind.slice(1)}s of ${system ?? '?'}`}
-        sticky
-        customActions={
-          <>
-            <DialogTrigger>
-              <Button
-                variant="primary"
-                iconStart={<RiDeleteBin6Line />}
-                isDisabled={selected === 'all' ? false : selected.size === 0}
-              >
-                Refresh ({selected === 'all' ? 'all' : selected.size})
-              </Button>
-              <Dialog>
-                <DialogHeader>Confirm Refresh</DialogHeader>
-                <DialogBody>
-                  <Text>
-                    Are you sure you want to refresh{' '}
-                    {selected === 'all'
-                      ? 'all items'
-                      : `${selected.size} items`}
-                    ?
-                  </Text>
-                  <Flex direction="column" mt="2" gap="1">
-                    {getSelectedEntityNames().map(entityName => (
-                      <Text key={entityName}>- {entityName}</Text>
-                    ))}
-                  </Flex>
-                </DialogBody>
-                <DialogFooter>
-                  <Button variant="secondary" slot="close">
-                    Cancel
+
+    <Container style={{ height: '100%' }}>
+      <Card>
+        <CardHeader>
+          <Header
+            title={`${kind.charAt(0).toUpperCase() + kind.slice(1)}s of ${system ?? '?'}`}
+            sticky
+            customActions={
+              <>
+                <DialogTrigger>
+                  <Button
+                    variant="primary"
+                    iconStart={<RiDeleteBin6Line />}
+                    isDisabled={selected === 'all' ? false : selected.size === 0}
+                  >
+                    Refresh ({selected === 'all' ? 'all' : selected.size})
                   </Button>
+                  <Dialog>
+                    <DialogHeader>Confirm Refresh</DialogHeader>
+                    <DialogBody>
+                      <Text>
+                        Are you sure you want to refresh{' '}
+                        {selected === 'all'
+                          ? 'all items'
+                          : `${selected.size} items`}
+                        ?
+                      </Text>
+                      <Flex direction="column" mt="2" gap="1">
+                        {getSelectedEntityNames().map(entityName => (
+                          <Text key={entityName}>- {entityName}</Text>
+                        ))}
+                      </Flex>
+                    </DialogBody>
+                    <DialogFooter>
+                      <Button variant="secondary" slot="close">
+                        Cancel
+                      </Button>
+                      <Button
+                        destructive
+                        variant="primary"
+                        slot="close"
+                        onClick={refreshSelected}
+                      >
+                        Refresh
+                      </Button>
+                    </DialogFooter>
+                  </Dialog>
+                </DialogTrigger>
+                <DialogTrigger>
                   <Button
                     destructive
                     variant="primary"
-                    slot="close"
-                    onClick={refreshSelected}
+                    iconStart={<RiDeleteBin6Line />}
+                    isDisabled={selected === 'all' ? false : selected.size === 0}
                   >
-                    Refresh
+                    Delete ({selected === 'all' ? 'all' : selected.size})
                   </Button>
-                </DialogFooter>
-              </Dialog>
-            </DialogTrigger>
-            <DialogTrigger>
-              <Button
-                destructive
-                variant="primary"
-                iconStart={<RiDeleteBin6Line />}
-                isDisabled={selected === 'all' ? false : selected.size === 0}
-              >
-                Delete ({selected === 'all' ? 'all' : selected.size})
-              </Button>
-              <Dialog>
-                <DialogHeader>Confirm Deletion</DialogHeader>
-                <DialogBody>
-                  <Text>
-                    Are you sure you want to delete{' '}
-                    {selected === 'all'
-                      ? 'all items'
-                      : `${selected.size} items`}
-                    ?
-                  </Text>
-                  <Flex direction="column" mt="2" gap="1">
-                    {getSelectedEntityNames().map(entityName => (
-                      <Text key={entityName}>- {entityName}</Text>
-                    ))}
-                  </Flex>
-                </DialogBody>
-                <DialogFooter>
-                  <Button variant="secondary" slot="close">
-                    Cancel
-                  </Button>
-                  <Button
-                    destructive
-                    variant="primary"
-                    slot="close"
-                    onClick={deleteSelected}
-                  >
-                    Delete
-                  </Button>
-                </DialogFooter>
-              </Dialog>
-            </DialogTrigger>
-          </>
-        }
-      />
-      <Table
-        key={`table-${kind}`}
-        {...tableProps}
-        columnConfig={columns}
-        selection={{
-          mode: 'multiple',
-          behavior: 'toggle',
-          selected,
-          onSelectionChange: setSelected,
-        }}
-        emptyState={<div>No data available</div>}
-        className="denseTable"
-      />
-    </>
+                  <Dialog>
+                    <DialogHeader>Confirm Deletion</DialogHeader>
+                    <DialogBody>
+                      <Text>
+                        Are you sure you want to delete{' '}
+                        {selected === 'all'
+                          ? 'all items'
+                          : `${selected.size} items`}
+                        ?
+                      </Text>
+                      <Flex direction="column" mt="2" gap="1">
+                        {getSelectedEntityNames().map(entityName => (
+                          <Text key={entityName}>- {entityName}</Text>
+                        ))}
+                      </Flex>
+                    </DialogBody>
+                    <DialogFooter>
+                      <Button variant="secondary" slot="close">
+                        Cancel
+                      </Button>
+                      <Button
+                        destructive
+                        variant="primary"
+                        slot="close"
+                        onClick={deleteSelected}
+                      >
+                        Delete
+                      </Button>
+                    </DialogFooter>
+                  </Dialog>
+                </DialogTrigger>
+              </>
+            }
+          />
+        </CardHeader>
+        <CardBody>
+          <Table
+            key={`table-${kind}`}
+            {...tableProps}
+            columnConfig={columns}
+            selection={{
+              mode: 'multiple',
+              behavior: 'toggle',
+              selected,
+              onSelectionChange: setSelected,
+            }}
+            emptyState={<div>No data available</div>}
+            className="denseTable"
+          />
+        </CardBody>
+      </Card>
+    </Container>
   );
 };

@@ -8,9 +8,12 @@ import {
   Container,
   Header,
   SearchField,
+  Card,
+  CardHeader,
+  CardBody,
 } from '@backstage/ui';
 import { RiAsterisk } from '@remixicon/react';
-import { memo } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { MarkdownContent } from '@backstage/core-components';
 
 type FieldInfo = {
@@ -142,7 +145,7 @@ const commonColumns: ColumnConfig<TableRow>[] = [
     width: '55%',
     id: 'description',
     cell: ({ description }) => (
-      <Cell>
+      <Cell style={{ padding: 0 }}>
         <MarkdownContent content={description} />
       </Cell>
     ),
@@ -235,10 +238,28 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
     const rows = toTableRows(fields, fieldType);
     const columns = commonColumns;
     const defaultTitle = getDefaultTitle(fieldType);
+    const tableContainerRef = useRef<HTMLDivElement>(null);
+    const [tableMaxHeight, setTableMaxHeight] = useState<number>();
+
+    useEffect(() => {
+      const updateTableMaxHeight = () => {
+        const tableTop = tableContainerRef.current?.getBoundingClientRect().top;
+        if (tableTop === undefined) return;
+
+        setTableMaxHeight(Math.max(0, window.innerHeight - tableTop - 16));
+      };
+
+      updateTableMaxHeight();
+      window.addEventListener('resize', updateTableMaxHeight);
+      return () => window.removeEventListener('resize', updateTableMaxHeight);
+    }, [fieldType, rows.length]);
 
     const { tableProps, search } = useTable({
       mode: 'complete',
       getData: () => rows,
+      paginationOptions: {
+        type: 'none',
+      },
       searchFn: (items, query) => {
         const lowerQuery = query.toLowerCase();
         return items.filter(
@@ -251,29 +272,40 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
     });
 
     return (
-      <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-        <Header
-          title={`${title || defaultTitle} (${rows.length})`}
-          customActions={
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-              startCollapsed
-              style={{ marginLeft: 'auto', maxWidth: '300px' }}
+      <Container style={{ height: '100%' }}>
+        <Card>
+          <CardHeader>
+            <Header
+              title={`${title || defaultTitle} (${rows.length})`}
+              customActions={
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                  startCollapsed
+                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                />
+              }
             />
-          }
-        />
-        <Table
-          key={`table-${fieldType}`}
-          {...tableProps}
-          columnConfig={columns}
-          emptyState={<div>No fields found for this {fieldType}.</div>}
-          className="denseTable"
-        />
+          </CardHeader>
+          <div
+            ref={tableContainerRef}
+            style={{ maxHeight: tableMaxHeight, overflow: 'auto' }}
+          >
+            <CardBody>
+              <Table
+                key={`table-${fieldType}`}
+                {...tableProps}
+                columnConfig={columns}
+                emptyState={<div>No fields found for this {fieldType}.</div>}
+                className="denseTable"
+              />
+            </CardBody>
+          </div>
+        </Card>
       </Container>
     );
   },

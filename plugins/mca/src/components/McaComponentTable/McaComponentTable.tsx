@@ -19,6 +19,9 @@ import {
   ColumnConfig,
   CellText,
   Cell,
+  Card,
+  CardHeader,
+  CardBody,
 } from '@backstage/ui';
 
 type TableRow = {
@@ -281,30 +284,36 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
   if (error) return <ResponseErrorPanel error={error} />;
 
   return (
-    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-      <Header
-        title={`${getTitle(type)} (${countRows})`}
-        customActions={
-          <SearchField
-            placeholder="Filter..."
-            value={search.value}
-            onChange={str => {
-              sessionStorage.setItem(STORAGE_KEY, str ?? '');
-              search.onChange(str);
-            }}
-            aria-label="Filter"
-            startCollapsed
-            style={{ marginLeft: 'auto', maxWidth: '300px' }}
+    <Container style={{ height: '100%' }}>
+      <Card>
+        <CardHeader>
+          <Header
+            title={`${getTitle(type)} (${countRows})`}
+            customActions={
+              <SearchField
+                placeholder="Filter..."
+                value={search.value}
+                onChange={str => {
+                  sessionStorage.setItem(STORAGE_KEY, str ?? '');
+                  search.onChange(str);
+                }}
+                aria-label="Filter"
+                startCollapsed
+                style={{ marginLeft: 'auto', maxWidth: '300px' }}
+              />
+            }
           />
-        }
-      />
-      <Table
-        key={`table-${type}`}
-        {...tableProps}
-        columnConfig={columns}
-        emptyState={<div>No data available</div>}
-        className="denseTable"
-      />
+        </CardHeader>
+        <CardBody>
+          <Table
+            key={`table-${type}`}
+            {...tableProps}
+            columnConfig={columns}
+            emptyState={<div>No data available</div>}
+            className="denseTable"
+          />
+        </CardBody>
+      </Card>
     </Container>
   );
 });

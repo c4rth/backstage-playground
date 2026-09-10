@@ -29,6 +29,9 @@ import {
   Header,
   SortDescriptor,
   Column,
+  Card,
+  CardHeader,
+  CardBody,
   Flex,
 } from '@backstage/ui';
 
@@ -234,44 +237,50 @@ export function BaseServiceTable<T extends BaseTableRow>({
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-      <Header
-        title={`${getTitleLabel(toggleType, ownershipType)} (${countRows})`}
-        customActions={
-          <>
-            {toggleType === 'ownership' && (
-              <ComponentOwnership
-                storageKey={storageOwnershipKey}
-                handleOwnershipChange={setOwnershipType}
-              />
-            )}
-            {toggleType === 'dependents' && (
-              <DependentsToggle
-                handleDependentChange={setDependentsType}
-                selectedType={dependentsType}
-              />
-            )}
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                storeSearch(str);
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-              startCollapsed
-              style={{ marginLeft: 'auto', maxWidth: '300px' }}
-            />
-          </>
-        }
-      />
-      <Table
-        key={`table-${ownershipType}-${dependentsType}`}
-        {...tableProps}
-        columnConfig={columns}
-        emptyState={<div>No data available</div>}
-        className="denseTable"
-      />
+    <Container style={{ height: '100%' }}>
+      <Card>
+        <CardHeader>
+          <Header
+            title={`${getTitleLabel(toggleType, ownershipType)} (${countRows})`}
+            customActions={
+              <>
+                {toggleType === 'ownership' && (
+                  <ComponentOwnership
+                    storageKey={storageOwnershipKey}
+                    handleOwnershipChange={setOwnershipType}
+                  />
+                )}
+                {toggleType === 'dependents' && (
+                  <DependentsToggle
+                    handleDependentChange={setDependentsType}
+                    selectedType={dependentsType}
+                  />
+                )}
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    storeSearch(str);
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                  startCollapsed
+                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                />
+              </>
+            }
+          />
+        </CardHeader>
+        <CardBody>
+          <Table
+            key={`table-${ownershipType}-${dependentsType}`}
+            {...tableProps}
+            columnConfig={columns}
+            emptyState={<div>No data available</div>}
+            className="denseTable"
+          />
+        </CardBody>
+      </Card>
     </Container>
   );
 }

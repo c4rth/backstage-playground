@@ -9,6 +9,9 @@ import {
   Table,
   useTable,
   Header,
+  Card,
+  CardHeader,
+  CardBody,
 } from '@backstage/ui';
 import {
   ComponentOwnership,
@@ -184,40 +187,46 @@ export const LibraryTable = () => {
   }
 
   return (
-    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-      <Header
-        title={`${ownershipType === 'owned' ? 'Owned' : 'All'} Libraries`}
-        customActions={
-          <>
-            <ComponentOwnership
-              storageKey={STORAGE_OWNERSHIP_KEY}
-              handleOwnershipChange={setOwnershipType}
-            />
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                storeSearch(str);
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-              startCollapsed
-              style={{ marginLeft: 'auto', maxWidth: '300px' }}
-            />
-          </>
-        }
-      />
-      <Table
-        key={ownershipType}
-        columnConfig={columns}
-        {...tableProps}
-        pagination={{
-          type: 'none',
-        }}
-        emptyState={emptyState()}
-        className="denseTable"
-        style={{ paddingBottom: '16px' }}
-      />
+    <Container style={{ height: '100%' }}>
+      <Card>
+        <CardHeader>
+          <Header
+            title={`${ownershipType === 'owned' ? 'Owned' : 'All'} Libraries`}
+            customActions={
+              <>
+                <ComponentOwnership
+                  storageKey={STORAGE_OWNERSHIP_KEY}
+                  handleOwnershipChange={setOwnershipType}
+                />
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    storeSearch(str);
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                  startCollapsed
+                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                />
+              </>
+            }
+          />
+        </CardHeader>
+        <CardBody>
+          <Table
+            key={ownershipType}
+            columnConfig={columns}
+            {...tableProps}
+            pagination={{
+              type: 'none',
+            }}
+            emptyState={emptyState()}
+            className="denseTable"
+            style={{ paddingBottom: '16px' }}
+          />
+        </CardBody>
+      </Card>
     </Container>
   );
 };

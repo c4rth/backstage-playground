@@ -37,6 +37,9 @@ import {
   Header,
   SortDescriptor,
   CellText,
+  Card,
+  CardBody,
+  CardHeader,
 } from '@backstage/ui';
 
 type TableRow = {
@@ -76,9 +79,9 @@ const getData = async (
     search: search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as ApiDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
     apiType,
@@ -86,15 +89,15 @@ const getData = async (
 
   return result
     ? {
-        data: result.items.map(toEntityRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toEntityRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
 };
 
 const COLUMNS: ColumnConfig<TableRow>[] = [
@@ -225,49 +228,55 @@ export const ApiTable = () => {
   if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
 
   return (
-    <Container style={{ backgroundColor: 'var(--bui-bg-neutral-1)' }}>
-      <Header
-        title={getTitle(ownershipType, selectedType, countRows)}
-        customActions={
-          <>
-            <ComponentOwnership
-              storageKey={STORAGE_OWNERSHIP_KEY}
-              handleOwnershipChange={setOwnershipType}
-            />
+    <Container style={{ height: '100%' }}>
+      <Card>
+        <CardHeader>
+          <Header
+            title={getTitle(ownershipType, selectedType, countRows)}
+            customActions={
+              <>
+                <ComponentOwnership
+                  storageKey={STORAGE_OWNERSHIP_KEY}
+                  handleOwnershipChange={setOwnershipType}
+                />
 
-            <Box mx="4" style={{ width: '10em' }}>
-              <Select
-                name="apiType"
-                size="medium"
-                value={selectedType}
-                onChange={v => {
-                  setSelectedType(v as OpenApiType);
-                }}
-                aria-label="API Type"
-                options={API_TYPES}
-              />
-            </Box>
-            <SearchField
-              placeholder="Filter..."
-              value={search.value}
-              onChange={str => {
-                storeSearch(str);
-                search.onChange(str);
-              }}
-              aria-label="Filter"
-              startCollapsed
-              style={{ marginLeft: 'auto', maxWidth: '300px' }}
-            />
-          </>
-        }
-      />
-      <Table
-        key={`table-${selectedType}-${ownershipType}`}
-        {...tableProps}
-        columnConfig={COLUMNS}
-        emptyState={<div>No data available</div>}
-        className="denseTable"
-      />
+                <Box mx="4" style={{ width: '10em' }}>
+                  <Select
+                    name="apiType"
+                    size="medium"
+                    value={selectedType}
+                    onChange={v => {
+                      setSelectedType(v as OpenApiType);
+                    }}
+                    aria-label="API Type"
+                    options={API_TYPES}
+                  />
+                </Box>
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    storeSearch(str);
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                  startCollapsed
+                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                />
+              </>
+            }
+          />
+        </CardHeader>
+        <CardBody>
+          <Table
+            key={`table-${selectedType}-${ownershipType}`}
+            {...tableProps}
+            columnConfig={COLUMNS}
+            emptyState={<div>No data available</div>}
+            className="denseTable"
+          />
+        </CardBody>
+      </Card>
     </Container>
   );
 };

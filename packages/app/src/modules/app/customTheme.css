@@ -1,4 +1,15 @@
 :root {
+
+  /* bui header bottom margin override */
+  .bui-HeaderBottom {
+    margin-bottom: 0;
+  }
+
+  .bui-HeaderBottom.bui-HeaderBottom {
+    margin-bottom: 0;
+  }
+  /* end of bui header bottom margin override */
+
   /* Themes */
   [data-theme-mode='light'] {
     --bui-accent-bg: #c30045;
@@ -16,23 +27,6 @@
     --bui-bg-solid: #c30045;
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
     --bui-bg-solid-hover: #74002a;
-    /*
-    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
-    --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
-    --bui-fg-danger: rgb(170, 46, 37);
-    --bui-fg-warning: rgb(178, 106, 0);
-    --bui-fg-success: rgb(53, 122, 56);
-    --bui-bg-danger: rgb(246, 104, 94);
-    --bui-bg-warning: rgb(255, 172, 51);
-    --bui-bg-success: rgb(111, 191, 115);
-    --bui-border-danger: #f44336;
-    --bui-border-warning: #ff9800;
-    --bui-border-success: #4caf50;
-    --bui-bg-solid: #c30045;
-    --bui-bg-solid-hover: rgb(166, 0, 59);
-    --bui-bg-solid-pressed: rgb(136, 0, 48);
-    --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
-    */
 
     /* Chip colors */
     --belui-chip-bg-color1: #c9d6ff;
@@ -58,23 +52,6 @@
     --bui-bg-solid: #c30045;
     --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
     --bui-bg-solid-hover: #74002a;
-    /*
-    --bui-fg-disabled: rgba(0, 0, 0, 0.38);
-    --bui-fg-solid-disabled: rgba(0, 0, 0, 0.38);
-    --bui-fg-danger: rgb(170, 46, 37);
-    --bui-fg-warning: rgb(178, 106, 0);
-    --bui-fg-success: rgb(53, 122, 56);
-    --bui-bg-danger: rgb(246, 104, 94);
-    --bui-bg-warning: rgb(255, 172, 51);
-    --bui-bg-success: rgb(111, 191, 115);
-    --bui-border-danger: #f44336;
-    --bui-border-warning: #ff9800;
-    --bui-border-success: #4caf50;
-    --bui-bg-solid: #c30045;
-    --bui-bg-solid-hover: rgb(166, 0, 59);
-    --bui-bg-solid-pressed: rgb(136, 0, 48);
-    --bui-bg-solid-disabled: rgba(0, 0, 0, 0.12);
-    */
 
     /* Chip colors */
     --belui-chip-bg-color1: #2a3a62;
