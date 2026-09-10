@@ -82,9 +82,9 @@ const getData = async (
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as McaBaseTypeListOptions['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as McaBaseTypeListOptions['orderBy'])
       : undefined,
   });
   if (result) {

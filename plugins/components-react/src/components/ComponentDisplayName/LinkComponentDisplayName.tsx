@@ -22,7 +22,7 @@ export const LinkComponentDisplayName = ({
   return (
     <Link
       href={href}
-      weight={regular ? "regular" : "bold"}
+      weight={regular ? 'regular' : 'bold'}
       color="info"
       rel={rel}
       target={target}

@@ -99,9 +99,9 @@ const getData = async (
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as SystemDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as SystemDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
   });

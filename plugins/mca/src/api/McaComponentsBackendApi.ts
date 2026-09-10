@@ -124,7 +124,9 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
       if (charset) {
         try {
           return new TextDecoder(charset).decode(buffer);
-        } catch { /* unknown label — fall through */ }
+        } catch {
+          /* unknown label — fall through */
+        }
       }
 
       try {

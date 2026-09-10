@@ -78,7 +78,10 @@ export const McaBaseTypeDefinitionPage = () => {
           src={baseTypeUrl || ''}
           height={iframeLoading ? 0 : '100%'}
           width={iframeLoading ? 0 : '100%'}
-          style={{ border: 0, visibility: iframeLoading ? 'hidden' : 'visible' }}
+          style={{
+            border: 0,
+            visibility: iframeLoading ? 'hidden' : 'visible',
+          }}
           title={`BaseType :${baseTypeUrl}`}
           onLoad={() => setIframeLoading(false)}
         />
