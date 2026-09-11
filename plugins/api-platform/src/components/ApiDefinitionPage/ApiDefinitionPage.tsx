@@ -4,13 +4,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { useGetApiVersions } from '../../hooks';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ApiEntity } from '@backstage/catalog-model';
-import { ApiDefinitionCard } from './ApiDefinitionCard';
-import { useSearchParams } from 'react-router-dom';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
 import { Container, Header, PluginHeader, Select } from '@backstage/ui';
 import { RiPuzzleFill } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { apiPlatformApiDefinitionRouteRef } from '../../routes';
+import { isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
+import {
+  ApiDefinitionInfoCard,
+  ApiDefinitionRawCard,
+  ApiDefinitionServicesCard,
+} from './ApiDefinitionCards';
+import { ApiDefinitionSwaggerCard } from './ApiDefinitionCards';
+import { EntityApiDocsSpectralLinterCard } from '@internal/plugin-api-docs-spectral-linter';
 
 export const ApiDefinitionPage = () => {
   const { system, name } = useRouteRefParams(apiPlatformApiDefinitionRouteRef);
@@ -51,6 +58,11 @@ export const ApiDefinitionPage = () => {
     }
   }, [activeVersion, catalogApi]);
 
+  const isLinterAvailable =
+    apiEntity && isApiDocsSpectralLinterAvailable(apiEntity);
+  const isMcaApi =
+    apiEntity?.metadata.annotations?.['api.depo.be/type'] === 'mca';
+
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
       <PluginHeader
@@ -77,8 +89,32 @@ export const ApiDefinitionPage = () => {
             ),
           },
         ]}
+        tabs={[
+          { id: 'openapi', label: 'OpenAPI', href: '.' },
+          { id: 'raw', label: 'Raw', href: 'raw' },
+          ...(isLinterAvailable && !isMcaApi
+            ? [{ id: 'lint', label: 'Lint', href: 'lint' }]
+            : []),
+          { id: 'services', label: 'Services', href: 'services' },
+          { id: 'info', label: 'Info', href: 'info' },
+        ]}
       />
-      <Container>{apiEntity ? <ApiDefinitionCard /> : <div />}</Container>
+      <Container>
+        {apiEntity && (
+          <Routes>
+            <Route path="/" element={<ApiDefinitionSwaggerCard />} />
+            <Route path="raw" element={<ApiDefinitionRawCard />} />
+            {isLinterAvailable && !isMcaApi && (
+              <Route
+                path="lint"
+                element={<EntityApiDocsSpectralLinterCard />}
+              />
+            )}
+            <Route path="services" element={<ApiDefinitionServicesCard />} />
+            <Route path="info" element={<ApiDefinitionInfoCard />} />
+          </Routes>
+        )}
+      </Container>
     </AsyncEntityProvider>
   );
 };

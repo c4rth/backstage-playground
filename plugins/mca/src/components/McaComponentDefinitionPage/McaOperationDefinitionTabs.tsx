@@ -5,8 +5,8 @@ import { McaComponentFieldsTab } from './McaComponentFieldsTab';
 import { McaComponentMethodsTab } from './McaComponentMethodsTab';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentSnippet } from '../McaComponentSnippet';
-import { Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
 import { parseUrlLocations } from '../McaComponentAboutTab';
+import { Route, Routes } from 'react-router-dom';
 
 export interface McaOperationDefinitionTabsProps {
   parsedDefinition: any;
@@ -108,47 +108,46 @@ export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
     }
 
     return (
-      <Tabs defaultSelectedKey="tab1">
-        <TabList>
-          <Tab id="tab1" href=".">
-            Overview
-          </Tab>
-          <Tab id="tab2" href="inputfields">
-            Input Fields
-          </Tab>
-          <Tab id="tab3" href="outputfields">
-            Output Fields
-          </Tab>
-          <Tab id="tab4" href="methods">
-            Methods
-          </Tab>
-          <Tab id="tab5" href="raw">
-            Raw
-          </Tab>
-        </TabList>
-        <TabPanel id="tab1">
-          <McaOperationAboutTab
-            operationAnalyze={operationAnalyze}
-            operation={operation}
-            urlLocations={urlLocations}
-          />
-        </TabPanel>
-        <TabPanel id="tab2">
-          <McaComponentFieldsTab data={operation} fieldType="input" />
-        </TabPanel>
-        <TabPanel id="tab3">
-          <McaComponentFieldsTab data={operation} fieldType="output" />
-        </TabPanel>
-        <TabPanel id="tab4">
-          <McaComponentMethodsTab data={operation} componentType="operation" />
-        </TabPanel>
-        <TabPanel id="tab5">
-          <McaComponentSnippet
-            filename={`${operationAnalyze.id}.osml`}
-            data={rawXml}
-          />
-        </TabPanel>
-      </Tabs>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <McaOperationAboutTab
+              operationAnalyze={operationAnalyze}
+              operation={operation}
+              urlLocations={urlLocations}
+            />
+          }
+        />
+        <Route
+          path="inputfields"
+          element={<McaComponentFieldsTab data={operation} fieldType="input" />}
+        />
+        <Route
+          path="outputfields"
+          element={
+            <McaComponentFieldsTab data={operation} fieldType="output" />
+          }
+        />
+        <Route
+          path="methods"
+          element={
+            <McaComponentMethodsTab
+              data={operation}
+              componentType="operation"
+            />
+          }
+        />
+        <Route
+          path="raw"
+          element={
+            <McaComponentSnippet
+              filename={`${operationAnalyze.id}.osml`}
+              data={rawXml}
+            />
+          }
+        />
+      </Routes>
     );
   },
 );

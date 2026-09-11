@@ -116,7 +116,7 @@ function mapEntityToTableRow(
     const names = [
       entity.metadata.annotations?.[ANNOTATION_SERVICE_NAME]?.toString() ?? '?',
       entity.metadata?.annotations?.[ANNOTATION_SERVICE_VERSION]?.toString() ??
-      '?',
+        '?',
       entity.spec?.lifecycle?.toString() ?? '?',
     ];
     return {
@@ -354,7 +354,6 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
   }, [kind, system, reload]);
 
   return (
-
     <Container style={{ height: '100%' }}>
       <Card>
         <CardHeader>
@@ -367,7 +366,9 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                   <Button
                     variant="primary"
                     iconStart={<RiDeleteBin6Line />}
-                    isDisabled={selected === 'all' ? false : selected.size === 0}
+                    isDisabled={
+                      selected === 'all' ? false : selected.size === 0
+                    }
                   >
                     Refresh ({selected === 'all' ? 'all' : selected.size})
                   </Button>
@@ -407,7 +408,9 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                     destructive
                     variant="primary"
                     iconStart={<RiDeleteBin6Line />}
-                    isDisabled={selected === 'all' ? false : selected.size === 0}
+                    isDisabled={
+                      selected === 'all' ? false : selected.size === 0
+                    }
                   >
                     Delete ({selected === 'all' ? 'all' : selected.size})
                   </Button>

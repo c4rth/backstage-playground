@@ -4,7 +4,7 @@ import { McaComponentFieldsTab } from './McaComponentFieldsTab';
 import { McaComponentMethodsTab } from './McaComponentMethodsTab';
 import { memo, useMemo } from 'react';
 import { McaComponentSnippet } from '../McaComponentSnippet';
-import { Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
+import { Route, Routes } from 'react-router-dom';
 
 export interface McaElementDefinitionTabsProps {
   parsedDefinition: any;
@@ -37,37 +37,28 @@ export const McaElementDefinitionTabs = memo<McaElementDefinitionTabsProps>(
     }
 
     return (
-      <Tabs defaultSelectedKey="tab1">
-        <TabList>
-          <Tab id="tab1" href=".">
-            Overview
-          </Tab>
-          <Tab id="tab2" href="fields">
-            Fields
-          </Tab>
-          <Tab id="tab3" href="methods">
-            Methods
-          </Tab>
-          <Tab id="tab4" href="raw">
-            Raw
-          </Tab>
-        </TabList>
-        <TabPanel id="tab1">
-          <McaElementAboutTab element={element} />
-        </TabPanel>
-        <TabPanel id="tab2">
-          <McaComponentFieldsTab data={element} fieldType="element" />
-        </TabPanel>
-        <TabPanel id="tab3">
-          <McaComponentMethodsTab data={element} componentType="element" />
-        </TabPanel>
-        <TabPanel id="tab4">
-          <McaComponentSnippet
-            filename={`${element.name}.esml`}
-            data={rawXml}
-          />
-        </TabPanel>
-      </Tabs>
+      <Routes>
+        <Route path="/" element={<McaElementAboutTab element={element} />} />
+        <Route
+          path="fields"
+          element={<McaComponentFieldsTab data={element} fieldType="element" />}
+        />
+        <Route
+          path="methods"
+          element={
+            <McaComponentMethodsTab data={element} componentType="element" />
+          }
+        />
+        <Route
+          path="raw"
+          element={
+            <McaComponentSnippet
+              filename={`${element.name}.esml`}
+              data={rawXml}
+            />
+          }
+        />
+      </Routes>
     );
   },
 );

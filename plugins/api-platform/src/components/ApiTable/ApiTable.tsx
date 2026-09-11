@@ -79,9 +79,9 @@ const getData = async (
     search: search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ApiDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
     apiType,
@@ -89,15 +89,15 @@ const getData = async (
 
   return result
     ? {
-      data: result.items.map(toEntityRow),
-      totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
-    }
+        data: result.items.map(toEntityRow),
+        totalCount: result.totalCount,
+        page: Math.floor(result.offset / result.limit),
+      }
     : {
-      data: [],
-      totalCount: 0,
-      page: 0,
-    };
+        data: [],
+        totalCount: 0,
+        page: 0,
+      };
 };
 
 const COLUMNS: ColumnConfig<TableRow>[] = [

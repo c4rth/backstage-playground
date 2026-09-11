@@ -4,7 +4,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState } from 'react';
 import { McaBaseType } from '@internal/plugin-mca-common';
-import { FullPage, PluginHeader } from '@backstage/ui';
+import { Container, FullPage, PluginHeader } from '@backstage/ui';
 import { Progress } from '@internal/plugin-components-react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { baseTypeRouteRef } from '../../routes';
@@ -74,17 +74,19 @@ export const McaBaseTypeDefinitionPage = () => {
       <PluginHeader title={`BaseType: ${name}`} />
       <FullPage>
         {iframeLoading && <Progress />}
-        <iframe
-          src={baseTypeUrl || ''}
-          height={iframeLoading ? 0 : '100%'}
-          width={iframeLoading ? 0 : '100%'}
-          style={{
-            border: 0,
-            visibility: iframeLoading ? 'hidden' : 'visible',
-          }}
-          title={`BaseType :${baseTypeUrl}`}
-          onLoad={() => setIframeLoading(false)}
-        />
+        <Container style={{ height: '100%' }}>
+          <iframe
+            src={baseTypeUrl || ''}
+            height={iframeLoading ? 0 : '100%'}
+            width={iframeLoading ? 0 : '100%'}
+            style={{
+              border: 0,
+              visibility: iframeLoading ? 'hidden' : 'visible',
+            }}
+            title={`BaseType :${baseTypeUrl}`}
+            onLoad={() => setIframeLoading(false)}
+          />
+        </Container>
       </FullPage>
     </>
   );

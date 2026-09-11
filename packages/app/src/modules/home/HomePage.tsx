@@ -20,7 +20,7 @@ export const HomePage = () => {
         .searchBarRoot {
           max-width: 60vw;
           margin: auto;
-          background-color: var(--bui-bg-surface-1);
+          background-color: var(--bui-bg-neutral-1);
           border-radius: 50px;
           box-shadow: var(--bui-shadow);
         }

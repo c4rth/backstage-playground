@@ -1,15 +1,4 @@
 :root {
-
-  /* bui header bottom margin override */
-  .bui-HeaderBottom {
-    margin-bottom: 0;
-  }
-
-  .bui-HeaderBottom.bui-HeaderBottom {
-    margin-bottom: 0;
-  }
-  /* end of bui header bottom margin override */
-
   /* Themes */
   [data-theme-mode='light'] {
     --bui-accent-bg: #c30045;
@@ -21,7 +10,7 @@
     --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-ring: #c30045;
 
-    /* Deprecated */
+    /* Deprecated : used by bui components */
     --bui-fg-info: #c30045;
     --bui-fg-solid: #fff;
     --bui-bg-solid: #c30045;
@@ -46,7 +35,7 @@
     --bui-accent-fg-disabled: rgba(0, 0, 0, 0.38);
     --bui-ring: #c30045;
 
-    /* Deprecated */
+    /* Deprecated : used by bui components */
     --bui-fg-info: #ff80a5;
     --bui-fg-solid: #fff;
     --bui-bg-solid: #c30045;

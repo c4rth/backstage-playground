@@ -1,9 +1,8 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-common';
-import { McaComponentDefinitionTabs } from './McaComponentDefinitionTabs';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { Select, Option, PluginHeader, Container, Header } from '@backstage/ui';
@@ -11,6 +10,7 @@ import { RiBubbleChartLine } from '@remixicon/react';
 import { Progress } from '@internal/plugin-components-react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { componentRouteRef } from '../../routes';
+import { McaComponentDefinitionTabs } from './McaComponentDefinitionTabs';
 
 function mapMcaVersions(mca: McaComponent | undefined): Option[] {
   if (!mca) return [];
@@ -42,7 +42,36 @@ async function getMca(
   return mca;
 }
 
-export const McaComponentDefinitionPage = () => {
+type McaComponentType = 'operation' | 'element' | 'unknown';
+
+function getMcaComponentType(componentName: string): McaComponentType {
+  if (componentName.startsWith('Operation')) return 'operation';
+  if (componentName.startsWith('Element')) return 'element';
+  return 'unknown';
+}
+
+function getTabs(componentType: McaComponentType) {
+  if (componentType === 'operation') {
+    return [
+      { id: 'overview', label: 'Overview', href: '.' },
+      { id: 'inputfields', label: 'Input Fields', href: 'inputfields' },
+      { id: 'outputfields', label: 'Output Fields', href: 'outputfields' },
+      { id: 'methods', label: 'Methods', href: 'methods' },
+      { id: 'raw', label: 'Raw', href: 'raw' },
+    ];
+  }
+  if (componentType === 'element') {
+    return [
+      { id: 'overview', label: 'Overview', href: '.' },
+      { id: 'fields', label: 'Fields', href: 'fields' },
+      { id: 'methods', label: 'Methods', href: 'methods' },
+      { id: 'raw', label: 'Raw', href: 'raw' },
+    ];
+  }
+  return [];
+}
+
+export const McaComponentDefinitionPage = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
   const { name } = useRouteRefParams(componentRouteRef);
   const [searchParams] = useSearchParams();
@@ -91,6 +120,9 @@ export const McaComponentDefinitionPage = () => {
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading || !selectedVersion) return <Progress />;
 
+  const componentType = getMcaComponentType(mca?.component ?? '');
+  const tabs = getTabs(componentType);
+
   return (
     <>
       <PluginHeader
@@ -116,10 +148,11 @@ export const McaComponentDefinitionPage = () => {
             ),
           },
         ]}
+        tabs={tabs}
       />
       <Container>
         <McaComponentDefinitionTabs mca={mca!} version={selectedVersion} />
       </Container>
     </>
   );
-};
+});

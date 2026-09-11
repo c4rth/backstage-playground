@@ -1,18 +1,33 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
-import { ServiceDefinitionCard } from './ServiceDefinitionCard';
 import { ComponentEntity } from '@backstage/catalog-model';
 import {
   AsyncEntityProvider,
   catalogApiRef,
 } from '@backstage/plugin-catalog-react';
-import { useSearchParams } from 'react-router-dom';
+import { Routes, Route, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { Container, PluginHeader, Select, Header } from '@backstage/ui';
 import { RiCpuLine } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { apiPlatformServiceDefinitionRouteRef } from '../../routes';
+import {
+  isAzureDevOpsAvailable,
+  isAzurePipelinesAvailable,
+} from '@internal/plugin-azure-devops';
+import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
+import {
+  ServiceDefinitionDependenciesCard,
+  ServiceDefinitionOverviewCard,
+} from './ServiceDefinitionCards';
+import { AppRegistryPage } from '@internal/plugin-app-registry';
+import {
+  AzureDevOpsPipelinePage,
+  AzureDevOpsGitTagsPage,
+  AzureReadmeCard,
+} from '@internal/plugin-azure-devops';
+import { EntitySonarQubeContentPage } from '@backstage-community/plugin-sonarqube';
 
 type MapVersionEnvironment = Map<string, Map<string, string>>;
 
@@ -136,6 +151,11 @@ export const ServiceDefinitionPage = () => {
     }
   }, [selectedVersion, selectedEnvironment, catalogApi, mapVersionEnv]);
 
+  const sonarQube = serviceEntity && isSonarQubeAvailable(serviceEntity);
+  const azureDevOps = serviceEntity && isAzureDevOpsAvailable(serviceEntity);
+  const azurePipelines =
+    serviceEntity && isAzurePipelinesAvailable(serviceEntity);
+
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={serviceEntity}>
       <PluginHeader
@@ -178,12 +198,49 @@ export const ServiceDefinitionPage = () => {
             ),
           },
         ]}
+        tabs={[
+          { id: 'overview', label: 'Overview', href: '.' },
+          { id: 'dependencies', label: 'Dependencies', href: 'dependencies' },
+          { id: 'app-registry', label: 'App Registry', href: 'app-registry' },
+          ...(azurePipelines
+            ? [{ id: 'ci-cd', label: 'CI/CD', href: 'ci-cd' }]
+            : []),
+          ...(azureDevOps
+            ? [{ id: 'git-tags', label: 'Git Tags', href: 'git-tags' }]
+            : []),
+          ...(azureDevOps
+            ? [{ id: 'readme', label: 'Readme', href: 'readme' }]
+            : []),
+          ...(sonarQube
+            ? [{ id: 'sonar', label: 'SonarQube', href: 'sonarqube' }]
+            : []),
+        ]}
       />
       <Container>
-        {serviceEntity ? (
-          <ServiceDefinitionCard entity={serviceEntity} />
-        ) : (
-          <div />
+        {serviceEntity && (
+          <Routes>
+            <Route path="/" element={<ServiceDefinitionOverviewCard />} />
+            <Route
+              path="dependencies"
+              element={<ServiceDefinitionDependenciesCard />}
+            />
+            <Route path="app-registry" element={<AppRegistryPage />} />
+            {azurePipelines && (
+              <Route path="ci-cd" element={<AzureDevOpsPipelinePage />} />
+            )}
+            {azureDevOps && (
+              <Route path="git-tags" element={<AzureDevOpsGitTagsPage />} />
+            )}
+            {azureDevOps && (
+              <Route path="readme" element={<AzureReadmeCard />} />
+            )}
+            {sonarQube && (
+              <Route
+                path="sonarqube"
+                element={<EntitySonarQubeContentPage />}
+              />
+            )}
+          </Routes>
         )}
       </Container>
     </AsyncEntityProvider>

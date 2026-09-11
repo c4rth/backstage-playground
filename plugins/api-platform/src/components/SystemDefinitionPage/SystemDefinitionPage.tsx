@@ -5,8 +5,13 @@ import {
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
 import { useGetSystem } from '../../hooks';
-import { SystemDefinitionCard } from './SystemDefinitionCard';
 import { Container, PluginHeader, Header } from '@backstage/ui';
+import { Routes, Route } from 'react-router-dom';
+import {
+  SystemDefinitionInfoCard,
+  SystemDefinitionOwnershipCard,
+  SystemDefinitionMembersCard,
+} from './SystemDefinitionCards';
 
 export const SystemDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
@@ -22,13 +27,29 @@ export const SystemDefinitionPage = () => {
         icon={<RiShapesLine fontSize="inherit" />}
         breadcrumbs={[{ label: 'Systems', href: '/api-platform/system' }]}
       />
-      <Header title={name} />
+      <Header
+        title={name}
+        tabs={[
+          { id: 'ownership', label: 'Ownership', href: '.' },
+          { id: 'members', label: 'Members', href: 'members' },
+          { id: 'info', label: 'Info', href: 'info' },
+        ]}
+      />
       <Container>
-        {systemDefinition && name && (
-          <SystemDefinitionCard
-            system={name}
-            systemDefinition={systemDefinition}
-          />
+        {systemDefinition && (
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <SystemDefinitionOwnershipCard
+                  system={name}
+                  systemDefinition={systemDefinition}
+                />
+              }
+            />
+            <Route path="members" element={<SystemDefinitionMembersCard />} />
+            <Route path="info" element={<SystemDefinitionInfoCard />} />
+          </Routes>
         )}
       </Container>
     </AsyncEntityProvider>

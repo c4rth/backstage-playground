@@ -5,7 +5,6 @@ import {
   useTable,
   ColumnConfig,
   Cell,
-  Container,
   Header,
   SearchField,
   Card,
@@ -121,9 +120,13 @@ const commonColumns: ColumnConfig<TableRow>[] = [
           {row.mandatory && (
             <RiAsterisk
               size={12}
-              color="var(--bui-fg-danger)"
               aria-label="Mandatory field"
-              style={{ verticalAlign: 'text-top', marginLeft: 2 }}
+              style={{
+                verticalAlign: 'text-top',
+                marginLeft: 2,
+                stroke: 'var(--bui-fg-negative)',
+                strokeWidth: 3,
+              }}
             />
           )}
         </Text>
@@ -254,7 +257,7 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
       return () => window.removeEventListener('resize', updateTableMaxHeight);
     }, [fieldType, rows.length]);
 
-    const { tableProps, search } = useTable({
+    const { tableProps, search, reload } = useTable({
       mode: 'complete',
       getData: () => rows,
       paginationOptions: {
@@ -271,42 +274,44 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
       },
     });
 
+    useEffect(() => {
+      reload();
+    }, [data, fieldType, reload]);
+
     return (
-      <Container style={{ height: '100%' }}>
-        <Card>
-          <CardHeader>
-            <Header
-              title={`${title || defaultTitle} (${rows.length})`}
-              customActions={
-                <SearchField
-                  placeholder="Filter..."
-                  value={search.value}
-                  onChange={str => {
-                    search.onChange(str);
-                  }}
-                  aria-label="Filter"
-                  startCollapsed
-                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
-                />
-              }
-            />
-          </CardHeader>
-          <div
-            ref={tableContainerRef}
-            style={{ maxHeight: tableMaxHeight, overflow: 'auto' }}
-          >
-            <CardBody>
-              <Table
-                key={`table-${fieldType}`}
-                {...tableProps}
-                columnConfig={columns}
-                emptyState={<div>No fields found for this {fieldType}.</div>}
-                className="denseTable"
+      <Card>
+        <CardHeader>
+          <Header
+            title={`${title || defaultTitle} (${rows.length})`}
+            customActions={
+              <SearchField
+                placeholder="Filter..."
+                value={search.value}
+                onChange={str => {
+                  search.onChange(str);
+                }}
+                aria-label="Filter"
+                startCollapsed
+                style={{ marginLeft: 'auto', maxWidth: '300px' }}
               />
-            </CardBody>
-          </div>
-        </Card>
-      </Container>
+            }
+          />
+        </CardHeader>
+        <div
+          ref={tableContainerRef}
+          style={{ maxHeight: tableMaxHeight, overflow: 'auto' }}
+        >
+          <CardBody>
+            <Table
+              key={`table-${fieldType}`}
+              {...tableProps}
+              columnConfig={columns}
+              emptyState={<div>No fields found for this {fieldType}.</div>}
+              className="denseTable"
+            />
+          </CardBody>
+        </div>
+      </Card>
     );
   },
 );
