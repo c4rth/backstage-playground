@@ -98,5 +98,26 @@ export async function createRouter(
     res.json(result);
   });
 
+  router.get('/basetypes/javadoc/assets', async (req, res) => {
+    const asset = await mcaService.getMcaBaseTypeJavadocAsset({
+      path: String(req.query.path ?? ''),
+    });
+    if (asset.contentType) res.type(asset.contentType);
+    res.send(asset.content);
+  });
+
+  router.get('/basetypes/javadoc/:baseType', async (req, res) => {
+    const javadoc = await mcaService.getMcaBaseTypeJavadoc({
+      baseType: req.params.baseType,
+      packageName: String(req.query.packageName ?? ''),
+    });
+    res.removeHeader('X-Frame-Options');
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    );
+    res.type('html').send(javadoc);
+  });
+
   return router;
 }

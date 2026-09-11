@@ -28,6 +28,10 @@ export const mcaComponentsBackendPlugin = createBackendPlugin({
           path: '/health',
           allow: 'unauthenticated',
         });
+        httpRouter.addAuthPolicy({
+          path: '/basetypes/javadoc',
+          allow: 'unauthenticated',
+        });
       },
     });
   },

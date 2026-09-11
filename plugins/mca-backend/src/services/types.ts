@@ -35,6 +35,11 @@ export type McaBaseTypeOrderByOptions = {
   direction: SortDirection;
 };
 
+export type McaJavadocAsset = {
+  content: Buffer;
+  contentType?: string;
+};
+
 export interface McaService {
   getMcaComponentsCount(request: { type: McaComponentType }): Promise<number>;
 
@@ -57,6 +62,15 @@ export interface McaService {
   getMcaBaseType(request: {
     baseType: string;
   }): Promise<McaBaseType | undefined>;
+
+  getMcaBaseTypeJavadoc(request: {
+    baseType: string;
+    packageName: string;
+  }): Promise<string>;
+
+  getMcaBaseTypeJavadocAsset(request: {
+    path: string;
+  }): Promise<McaJavadocAsset>;
 
   getLastModifiedDate(): Promise<Date | undefined>;
 }
