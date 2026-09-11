@@ -101,7 +101,7 @@ export const McaComponentDefinitionPage = () => {
         title={name}
         metadata={[
           {
-            label: 'Versions',
+            label: 'Version',
             value: (
               <Select
                 onChange={selected => {
@@ -111,7 +111,7 @@ export const McaComponentDefinitionPage = () => {
                 }}
                 options={versions}
                 value={selectedVersion}
-                aria-label="Versions"
+                aria-label="Version"
               />
             ),
           },

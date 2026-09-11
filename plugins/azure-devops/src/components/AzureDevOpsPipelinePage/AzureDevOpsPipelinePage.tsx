@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback, useEffect } from 'react';
 import {
   Table,
   Cell,
@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardBody,
   Text,
-  Button,
   Flex,
   CellText,
   useTable,
@@ -17,13 +16,8 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { getDurationFromDates } from '../../utils';
 import { DateTime } from 'luxon';
 import { ResponseErrorPanel } from '@backstage/core-components';
-import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import type { BuildRun } from '@backstage-community/plugin-azure-devops-common';
-import { stringifyEntityRef } from '@backstage/catalog-model';
-import { azureDevOpsApiRef } from '../../api';
-import { useApi } from '@backstage/core-plugin-api';
 import { BuildStateComponent } from './BuildStateComponent';
-import { LogsDialog } from './LogsDialog';
 import { Progress } from '@internal/plugin-components-react';
 import { useBuildRuns } from '../../hooks';
 
@@ -71,57 +65,12 @@ function getDuration(finishTime?: string, startTime?: string): string {
 }
 
 export const AzureDevOpsPipelinePage = () => {
-  const [logsDialogState, setLogsDialogState] = useState({
-    isOpen: false,
-    title: '',
-    loading: false,
-    logs: null as string[] | null,
-  });
-
-  const azureApi = useApi(azureDevOpsApiRef);
   const { entity } = useEntity();
   const {
     items: buildRuns,
     loading: buildRunsLoading,
     error: buildRunsError,
   } = useBuildRuns(entity);
-
-  const fetchLogs = useCallback(
-    async (buildId: number, buildTitle: string) => {
-      setLogsDialogState(prev => ({
-        ...prev,
-        loading: true,
-        logs: null,
-        title: buildTitle,
-        isOpen: true,
-      }));
-
-      if (!buildId) {
-        setLogsDialogState(prev => ({ ...prev, loading: false }));
-        return;
-      }
-
-      try {
-        const { project, host, org } = getAnnotationValuesFromEntity(entity);
-        const response = await azureApi.getBuildRunLog(
-          project,
-          stringifyEntityRef(entity),
-          buildId,
-          host,
-          org,
-        );
-        setLogsDialogState(prev => ({ ...prev, logs: response.log }));
-      } catch (err) {
-        setLogsDialogState(prev => ({
-          ...prev,
-          logs: ['Error fetching logs'],
-        }));
-      } finally {
-        setLogsDialogState(prev => ({ ...prev, loading: false }));
-      }
-    },
-    [azureApi, entity],
-  );
 
   const columns: ColumnConfig<TableRow>[] = useMemo(
     () => [
@@ -130,7 +79,7 @@ export const AzureDevOpsPipelinePage = () => {
         label: 'ID',
         isRowHeader: true,
         cell: row => <CellText title={row.item.id?.toString() ?? '-'} />,
-        width: '3%',
+        width: '5%',
       },
       {
         id: 'build',
@@ -153,7 +102,7 @@ export const AzureDevOpsPipelinePage = () => {
         id: 'source',
         label: 'Source',
         cell: row => <CellText title={row.item.source ?? '-'} />,
-        width: '20%',
+        width: '30%',
       },
       {
         id: 'state',
@@ -184,24 +133,8 @@ export const AzureDevOpsPipelinePage = () => {
         cell: row => <CellText title={getAge(row.item.queueTime)} />,
         width: '15%',
       },
-      {
-        id: 'actions',
-        label: 'Actions',
-        cell: row => (
-          <Cell>
-            <Button
-              style={{ backgroundColor: 'var(--bui-fg-announcement)' }}
-              onPress={() => fetchLogs(row.item.id!, row.item.title ?? '')}
-              isDisabled={!row.item.id}
-            >
-              View Logs
-            </Button>
-          </Cell>
-        ),
-        width: '12%',
-      },
     ],
-    [fetchLogs],
+    [],
   );
 
   const getData = useCallback(
@@ -246,13 +179,6 @@ export const AzureDevOpsPipelinePage = () => {
           />
         </CardBody>
       </Card>
-
-      <LogsDialog
-        {...logsDialogState}
-        onOpenChange={isOpen =>
-          setLogsDialogState(prev => ({ ...prev, isOpen }))
-        }
-      />
     </>
   );
 };

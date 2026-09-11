@@ -146,7 +146,7 @@ export const ServiceDefinitionPage = () => {
         title={name}
         metadata={[
           {
-            label: 'Versions',
+            label: 'Version',
             value: (
               <Select
                 onChange={selected => {
@@ -157,12 +157,12 @@ export const ServiceDefinitionPage = () => {
                 options={versions}
                 value={selectedVersion}
                 style={{ minWidth: '50px' }}
-                aria-label="Versions"
+                aria-label="Version"
               />
             ),
           },
           {
-            label: 'Environments',
+            label: 'Environment',
             value: (
               <Select
                 onChange={selected =>
@@ -173,7 +173,7 @@ export const ServiceDefinitionPage = () => {
                 options={environments}
                 value={selectedEnvironment}
                 style={{ minWidth: '50px' }}
-                aria-label="Environments"
+                aria-label="Environment"
               />
             ),
           },

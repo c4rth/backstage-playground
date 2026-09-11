@@ -61,7 +61,7 @@ export const ApiDefinitionPage = () => {
         title={name}
         metadata={[
           {
-            label: 'Versions',
+            label: 'Version',
             value: (
               <Select
                 onChange={selected => {
@@ -72,7 +72,7 @@ export const ApiDefinitionPage = () => {
                 options={versions}
                 value={activeVersion}
                 style={{ minWidth: '200px' }}
-                aria-label="Versions"
+                aria-label="Version"
               />
             ),
           },
