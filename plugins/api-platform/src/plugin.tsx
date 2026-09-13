@@ -1,11 +1,13 @@
 import {
   ApiBlueprint,
   PageBlueprint,
+  SubPageBlueprint,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
   createApiRef,
   createApiFactory,
+  createRouteRef,
 } from '@backstage/frontend-plugin-api';
 import { ApiPlatformBackendApi, ApiPlatformBackendClient } from './api';
 import {
@@ -131,14 +133,48 @@ const systemDefinitionPage = PageBlueprint.make({
 const libraryExplorerPage = PageBlueprint.make({
   name: 'library-explorer',
   params: {
-    noHeader: true,
     icon: <RiBookShelfLine fontSize="inherit" />,
     title: 'Libraries',
     path: '/api-platform/library',
     routeRef: apiPlatformLibraryRouteRef,
+  },
+  if: {
+    permissions: {
+      $contains: 'app.advancedUser',
+    },
+  },
+});
+
+const libraryListRouteRef = createRouteRef();
+const libraryByServiceRouteRef = createRouteRef();
+
+const libraryListSubPage = SubPageBlueprint.make({
+  name: 'libraries',
+  attachTo: { id: 'page:api-platform/library-explorer', input: 'pages' },
+  params: {
+    path: 'libraries',
+    routeRef: libraryListRouteRef,
+    title: 'By libraries',
     loader: () =>
-      import('./components/LibraryExplorerPage').then(m => (
-        <m.LibraryExplorerPage />
+      import('./components/LibraryTable').then(m => <m.LibraryTable />),
+  },
+  if: {
+    permissions: {
+      $contains: 'app.advancedUser',
+    },
+  },
+});
+
+const libraryByServiceSubPage = SubPageBlueprint.make({
+  name: 'by-services',
+  attachTo: { id: 'page:api-platform/library-explorer', input: 'pages' },
+  params: {
+    path: 'by-services',
+    routeRef: libraryByServiceRouteRef,
+    title: 'By services',
+    loader: () =>
+      import('./components/LibraryTable').then(m => (
+        <m.LibraryByServiceTable />
       )),
   },
   if: {
@@ -218,6 +254,8 @@ export default createFrontendPlugin({
     systemExplorerPage,
     systemDefinitionPage,
     libraryExplorerPage,
+    libraryListSubPage,
+    libraryByServiceSubPage,
     libraryDefinitionPage,
     apiPlatformApi,
     ApiSearchResultListItemExtension,

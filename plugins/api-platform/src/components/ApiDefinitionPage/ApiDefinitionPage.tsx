@@ -67,7 +67,10 @@ export const ApiDefinitionPage = () => {
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
       <PluginHeader
         icon={<RiPuzzleFill fontSize="inherit" />}
-        breadcrumbs={[{ label: 'APIs', href: '/api-platform/api' }]}
+        breadcrumbs={[
+          { label: 'APIs', href: '/api-platform/api' },
+          { label: name, href: '' },
+        ]}
       />
       <Header
         title={name}

@@ -25,7 +25,10 @@ export const SystemDefinitionPage = () => {
     >
       <PluginHeader
         icon={<RiShapesLine fontSize="inherit" />}
-        breadcrumbs={[{ label: 'Systems', href: '/api-platform/system' }]}
+        breadcrumbs={[
+          { label: 'Systems', href: '/api-platform/system' },
+          { label: name, href: '' },
+        ]}
       />
       <Header
         title={name}

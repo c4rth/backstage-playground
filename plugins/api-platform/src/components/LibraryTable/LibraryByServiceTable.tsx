@@ -1,6 +1,6 @@
 import { ComponentChip } from '../common';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
-import { Flex, ColumnConfig, Column, Text } from '@backstage/ui';
+import { Flex, ColumnConfig, Column, Text, FullPage } from '@backstage/ui';
 import {
   BaseServiceTable,
   BaseTableRow,
@@ -64,11 +64,13 @@ const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
 const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
 
 export const LibraryByServiceTable = () => (
-  <BaseServiceTable<TableRow>
-    columns={COLUMNS}
-    toRow={toRow}
-    toggleType="dependents"
-    storageOwnershipKey="serviceLibrariesTablePageOwner"
-    storageSearchKey="serviceLibrariesTablePageSearch"
-  />
+  <FullPage>
+    <BaseServiceTable<TableRow>
+      columns={COLUMNS}
+      toRow={toRow}
+      toggleType="dependents"
+      storageOwnershipKey="serviceLibrariesTablePageOwner"
+      storageSearchKey="serviceLibrariesTablePageSearch"
+    />
+  </FullPage>
 );

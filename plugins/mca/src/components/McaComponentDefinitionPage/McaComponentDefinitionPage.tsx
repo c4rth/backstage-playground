@@ -127,7 +127,10 @@ export const McaComponentDefinitionPage = memo(() => {
     <>
       <PluginHeader
         icon={<RiBubbleChartLine fontSize="inherit" />}
-        breadcrumbs={[{ label: 'MCA Components', href: '/mca/components' }]}
+        breadcrumbs={[
+          { label: 'MCA Components', href: '/mca/components' },
+          { label: name, href: '' },
+        ]}
       />
       <Header
         title={name}

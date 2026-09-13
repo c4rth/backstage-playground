@@ -91,7 +91,10 @@ export const LibraryDefinitionVersionsPage = ({
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <PluginHeader
         icon={<RiBookShelfLine fontSize="inherit" />}
-        breadcrumbs={[{ label: 'Libraries', href: '/api-platform/library' }]}
+        breadcrumbs={[
+          { label: 'Libraries', href: '/api-platform/library' },
+          { label: name, href: '' },
+        ]}
         customActions={
           <TooltipTrigger>
             <ButtonIcon

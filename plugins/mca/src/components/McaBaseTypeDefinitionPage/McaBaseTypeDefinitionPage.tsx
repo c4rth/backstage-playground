@@ -9,6 +9,7 @@ import { Container, FullPage, PluginHeader } from '@backstage/ui';
 import { Progress } from '@internal/plugin-components-react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { baseTypeRouteRef } from '../../routes';
+import { RiAlbumLine } from '@remixicon/react';
 
 async function getBaseType(
   mcaApi: McaComponentsBackendApi,
@@ -94,7 +95,13 @@ export const McaBaseTypeDefinitionPage = () => {
 
   return (
     <>
-      <PluginHeader title={`BaseType: ${name}`} />
+      <PluginHeader
+        icon={<RiAlbumLine fontSize="inherit" />}
+        breadcrumbs={[
+          { label: 'MCA BaseTypes', href: '/mca/basetypes' },
+          { label: name, href: `` },
+        ]}
+      />
       <FullPage>
         {iframeLoading && <Progress />}
         <Container style={{ height: '100%' }}>

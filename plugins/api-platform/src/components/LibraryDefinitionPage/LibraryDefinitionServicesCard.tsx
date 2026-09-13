@@ -195,7 +195,7 @@ const LibraryDefinitionServiceTable = ({
         </>
       }
     >
-      <Box>        
+      <Box>
         <Table
           columnConfig={COLUMNS}
           {...tableProps}

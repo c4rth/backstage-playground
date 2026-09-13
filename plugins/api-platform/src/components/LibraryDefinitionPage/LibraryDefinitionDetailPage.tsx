@@ -64,7 +64,11 @@ export const LibraryDefinitionDetailPage = ({
     <AsyncEntityProvider loading={loading} error={error} entity={libraryEntity}>
       <PluginHeader
         icon={<RiBookShelfLine fontSize="inherit" />}
-        breadcrumbs={[{ label: 'Libraries', href: '/api-platform/library' }]}
+        breadcrumbs={[
+          { label: 'Libraries', href: '/api-platform/library' },
+          { label: name, href: `/api-platform/library/${system}/${name}` },
+          { label: version, href: '' },
+        ]}
       />
       <Header title={headerTitle} />
       <Container>

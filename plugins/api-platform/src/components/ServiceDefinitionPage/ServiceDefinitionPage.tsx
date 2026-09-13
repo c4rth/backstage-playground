@@ -160,7 +160,10 @@ export const ServiceDefinitionPage = () => {
     <AsyncEntityProvider loading={loading} error={error} entity={serviceEntity}>
       <PluginHeader
         icon={<RiCpuLine fontSize="inherit" />}
-        breadcrumbs={[{ label: 'Services', href: '/api-platform/service' }]}
+        breadcrumbs={[
+          { label: 'Services', href: '/api-platform/service' },
+          { label: name, href: '' },
+        ]}
       />
       <Header
         title={name}
