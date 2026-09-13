@@ -1387,7 +1387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-sonarqube-backend@npm:^1.1.1":
+"@backstage-community/plugin-sonarqube-backend@npm:^1.2.0":
   version: 1.2.0
   resolution: "@backstage-community/plugin-sonarqube-backend@npm:1.2.0"
   dependencies:
@@ -1406,7 +1406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-sonarqube-react@npm:^1.1.0, @backstage-community/plugin-sonarqube-react@npm:^1.2.0":
+"@backstage-community/plugin-sonarqube-react@npm:^1.2.0":
   version: 1.2.0
   resolution: "@backstage-community/plugin-sonarqube-react@npm:1.2.0"
   dependencies:
@@ -1420,7 +1420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-sonarqube@npm:^1.1.0":
+"@backstage-community/plugin-sonarqube@npm:^1.2.0":
   version: 1.2.0
   resolution: "@backstage-community/plugin-sonarqube@npm:1.2.0"
   dependencies:
@@ -5357,8 +5357,8 @@ __metadata:
   resolution: "@internal/plugin-api-platform@workspace:plugins/api-platform"
   dependencies:
     "@backstage-community/plugin-azure-devops-common": "npm:^0.26.0"
-    "@backstage-community/plugin-sonarqube": "npm:^1.1.0"
-    "@backstage-community/plugin-sonarqube-react": "npm:^1.1.0"
+    "@backstage-community/plugin-sonarqube": "npm:^1.2.0"
+    "@backstage-community/plugin-sonarqube-react": "npm:^1.2.0"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-components": "backstage:^"
@@ -13400,8 +13400,8 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-entity-validation": "npm:^0.23.0"
     "@backstage-community/plugin-shortcuts": "npm:^0.24.0"
-    "@backstage-community/plugin-sonarqube": "npm:^1.1.0"
-    "@backstage-community/plugin-sonarqube-react": "npm:^1.1.0"
+    "@backstage-community/plugin-sonarqube": "npm:^1.2.0"
+    "@backstage-community/plugin-sonarqube-react": "npm:^1.2.0"
     "@backstage/app-defaults": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
@@ -14076,7 +14076,7 @@ __metadata:
     "@backstage-community/plugin-azure-devops-backend": "npm:^0.32.0"
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "npm:^0.22.0"
     "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "npm:^0.27.0"
-    "@backstage-community/plugin-sonarqube-backend": "npm:^1.1.1"
+    "@backstage-community/plugin-sonarqube-backend": "npm:^1.2.0"
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
