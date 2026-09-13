@@ -6,7 +6,7 @@ import {
   catalogApiRef,
 } from '@backstage/plugin-catalog-react';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
+import { LibraryDefinitionServicesCard } from './LibraryDefinitionServicesCard';
 import { Container, PluginHeader, Header } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
 
@@ -68,7 +68,7 @@ export const LibraryDefinitionDetailPage = ({
       />
       <Header title={headerTitle} />
       <Container>
-        <LibraryDefinitionAllServicesCard
+        <LibraryDefinitionServicesCard
           system={system!}
           name={name!}
           version={version!}

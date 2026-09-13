@@ -4,16 +4,22 @@ tsc:
 	yarn tsc
 
 run:
-	export $$(grep -v '^#' .env | xargs) && NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" && yarn start
+	export $$(grep -v '^#' .env | xargs) && \
+	NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" && \
+	yarn start
 
 run-prod:
-	export $$(grep -v '^#' .env | xargs) && NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" && NODE_ENV=production && LOG_LEVEL=warn yarn start 
+	export $$(grep -v '^#' .env | xargs) && \
+	NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" && \
+	NODE_ENV=production && LOG_LEVEL=warn && \
+	yarn start 
 
 install:
 	BACKSTAGE_MANIFEST_FILE=./backstage-manifest.json yarn install
 
 clean:
-	rm -rf node_modules
+    yarn clean && \
+	rm -rf node_modules && \
 	rm yarn.lock
 
 pod-up:

@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.54.6",
+  "releaseVersion": "1.54.7",
   "packages": [
     {
       "name": "@backstage/app-defaults",
@@ -355,7 +355,7 @@
     },
     {
       "name": "@backstage/plugin-auth-node",
-      "version": "0.7.4"
+      "version": "0.7.5"
     },
     {
       "name": "@backstage/plugin-auth-react",

@@ -1,6 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { LibraryDefinitionVersionsCard } from './LibraryDefinitionVersionsCard';
-import { LibraryDefinitionAllServicesCard } from './LibraryDefinitionAllServicesCard';
+import { LibraryDefinitionServicesCard } from './LibraryDefinitionServicesCard';
 import { useEffect, useState } from 'react';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
@@ -114,14 +114,14 @@ export const LibraryDefinitionVersionsPage = ({
         )}
         <Tabs>
           <TabList>
-            <Tab id="tab1">By versions</Tab>
-            <Tab id="tab2">By services</Tab>
+            <Tab id="versions">By versions</Tab>
+            <Tab id="services">By services</Tab>
           </TabList>
-          <TabPanel id="tab1">
+          <TabPanel id="versions">
             <LibraryDefinitionVersionsCard system={system!} name={name!} />
           </TabPanel>
-          <TabPanel id="tab2">
-            <LibraryDefinitionAllServicesCard system={system!} name={name!} />
+          <TabPanel id="services">
+            <LibraryDefinitionServicesCard system={system!} name={name!} />
           </TabPanel>
         </Tabs>
       </Container>

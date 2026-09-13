@@ -116,7 +116,7 @@ interface LibraryServicesCardProps {
   componentName?: string;
 }
 
-type LibraryDefinitionAllServiceTableProps = {
+type LibraryDefinitionServiceTableProps = {
   title: string;
   rows: TableRow[];
   version?: string;
@@ -124,13 +124,13 @@ type LibraryDefinitionAllServiceTableProps = {
   setSelectedDependency: (type: DependentsType) => void;
 };
 
-const LibraryDefinitionAllServiceTable = ({
+const LibraryDefinitionServiceTable = ({
   title,
   rows,
   version,
   selectedDependency,
   setSelectedDependency,
-}: LibraryDefinitionAllServiceTableProps) => {
+}: LibraryDefinitionServiceTableProps) => {
   const { tableProps, search } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -195,7 +195,7 @@ const LibraryDefinitionAllServiceTable = ({
         </>
       }
     >
-      <Box>
+      <Box>        
         <Table
           columnConfig={COLUMNS}
           {...tableProps}
@@ -210,7 +210,7 @@ const LibraryDefinitionAllServiceTable = ({
   );
 };
 
-export const LibraryDefinitionAllServicesCard = ({
+export const LibraryDefinitionServicesCard = ({
   system,
   name,
   version,
@@ -304,7 +304,7 @@ export const LibraryDefinitionAllServicesCard = ({
   if (!libraryVersions) return null;
 
   return (
-    <LibraryDefinitionAllServiceTable
+    <LibraryDefinitionServiceTable
       key={`${name}-${selectedDependency}-${rows.length}`}
       title={title}
       rows={rows}
