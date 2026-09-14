@@ -8,8 +8,10 @@ import {
   FullPage,
   PluginHeader,
   Container,
+  Select,
+  Button,
 } from '@backstage/ui';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useGetHealthData } from '../../hooks';
 import {
   ApplicationHealthData,
@@ -23,6 +25,7 @@ import {
   Progress,
 } from '@internal/plugin-components-react';
 import styles from './HealthDashboardPage.module.css';
+import { RiRestartLine } from '@remixicon/react';
 
 const emptyState = () => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
@@ -88,76 +91,114 @@ const columns: ColumnConfig<TableRow>[] = [
   getEnvironmentColumn('prd'),
 ];
 
-const HealthDashboardPageContent = () => {
+const REFRESH_INTERVALS = [
+  { label: 'Off', id: '0' },
+  { label: '5s', id: '5000' },
+  { label: '10s', id: '10000' },
+  { label: '30s', id: '30000' },
+  { label: '1m', id: '60000' },
+  { label: '5m', id: '300000' },
+];
+
+export const HealthDashboardPage = () => {
   const getHealthData = useGetHealthData();
-  const isFirstRender = useRef(true);
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
   );
+  const [refreshInterval, setRefreshInterval] = useState<number>(30000);
+
+  // Wrap getData in useCallback so useTable gets a stable reference
+  const loadData = useCallback(() => {
+    return fetchData(getHealthData, setHealthDataErrors);
+  }, [getHealthData]);
 
   const { tableProps, reload } = useTable({
     mode: 'complete',
-    getData: () => fetchData(getHealthData, setHealthDataErrors),
+    getData: loadData,
     paginationOptions: {
       type: 'none',
     },
   });
 
+  // Handle auto-refresh interval
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
+    // If 'Off' (0ms) is selected, do not set an interval
+    if (refreshInterval <= 0) {
+      return undefined;
     }
-    reload();
-  }, [reload]);
 
-  const pageContent = (
-    <Container
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      {healthDataErrors.map((sourceError, index) => (
-        <Box mb="4" key={`${sourceError.source}-${index}`}>
-          <ResponseErrorPanel
-            title={`Failed to get ${sourceError.source} health data`}
-            error={new Error(sourceError.message)}
-          />
-        </Box>
-      ))}
-      {tableProps.error && (
-        <ResponseErrorPanel
-          title="Failed to render Health data"
-          error={tableProps.error}
-        />
-      )}
-      {tableProps.isPending && <Progress />}
-      <Table
-        columnConfig={columns}
-        {...tableProps}
-        pagination={{
-          type: 'none',
-        }}
-        emptyState={emptyState()}
-        className={`denseTable ${styles.healthTable}`}
-      />
-    </Container>
-  );
+    const interval = setInterval(() => {
+      console.log(`Auto-refreshing health data every ${refreshInterval}ms`);
+      reload();
+    }, refreshInterval);
 
-  return pageContent;
-};
+    return () => clearInterval(interval);
+  }, [refreshInterval, reload]);
 
-export const HealthDashboardPage = () => {
   return (
     <>
       <PluginHeader
         title="Health Dashboard k8s"
-        customActions={<InformationPopup content={POPUP_CONTENT} />}
+        customActions={
+          <>
+            <Box style={{ display: 'flex', alignItems: 'center', }}>
+              <Button
+                variant="secondary"
+                onClick={() => reload()}
+                iconEnd={<RiRestartLine />}
+                isDisabled={tableProps.isPending}
+              >
+                Refresh
+              </Button>
+              <Select
+                onChange={selected => {
+                  setRefreshInterval(parseInt(selected?.toString() ?? '0', 10));
+                }}
+                label=""
+                options={REFRESH_INTERVALS}
+                value={refreshInterval.toString()}
+                aria-label="Auto-refresh interval"
+              />
+            </Box>
+            <InformationPopup content={POPUP_CONTENT} />
+          </>
+        }
       />
       <FullPage>
-        <HealthDashboardPageContent />
+        <Container
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {healthDataErrors.map((sourceError, index) => (
+            <Box mb="4" key={`${sourceError.source}-${index}`}>
+              <ResponseErrorPanel
+                title={`Failed to get ${sourceError.source} health data`}
+                error={new Error(sourceError.message)}
+              />
+            </Box>
+          ))}
+          {tableProps.error && (
+            <ResponseErrorPanel
+              title="Failed to render Health data"
+              error={tableProps.error}
+            />
+          )}
+          {tableProps.isPending && <Progress />}
+          {(!tableProps.isPending) && (
+            <Table
+              columnConfig={columns}
+              {...tableProps}
+              pagination={{
+                type: 'none',
+              }}
+              emptyState={emptyState()}
+              className={`denseTable ${styles.healthTable}`}
+            />
+          )}
+        </Container>
       </FullPage>
     </>
   );
