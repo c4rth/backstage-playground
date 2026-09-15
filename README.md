@@ -2,9 +2,9 @@
 
 ## node
 
-version 24.12.0
+version 24.21.0
 
-headers: https://nodejs.org/download/release/v24.12.0/
+headers: https://nodejs.org/download/release/v24.21.0/
 
 ## bump versions
 

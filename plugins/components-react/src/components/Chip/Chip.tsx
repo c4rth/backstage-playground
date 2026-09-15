@@ -124,10 +124,10 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     },
     ref,
   ) => {
-    const isClickable = clickable || !!onClick;
+    const isClickable = !!onClick;
 
     const chipStyles = {
-      ...getChipStyles(color, variant, size, isClickable, disabled),
+      ...getChipStyles(color, variant, size, clickable, disabled),
       ...style,
     };
 

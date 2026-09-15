@@ -68,6 +68,7 @@ export const DefaultEditor = (props: Props) => {
                 <Chip
                   key={m}
                   label={m}
+                  clickable={true}
                   onClick={() => setMode && setMode(m)}
                   color={mode === m ? 'primary' : 'default'}
                 />
