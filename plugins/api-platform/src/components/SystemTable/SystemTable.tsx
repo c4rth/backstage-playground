@@ -22,7 +22,7 @@ import {
   useStoredOwnership,
   useStoredSearch,
 } from '../common';
-import { LinkComponentDisplayName } from '@internal/plugin-components-react';
+import { LinkComponentDisplayName, Progress } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { apiPlatformBackendApiRef } from '../../plugin';
@@ -171,7 +171,17 @@ export const SystemTable = () => {
 
   useReloadOnChange(reload, [ownershipType]);
 
-  if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
+ if (tableProps.error) {
+    return (
+      <ResponseErrorPanel
+        title="Failed to load Systems"
+        error={tableProps.error}
+      />
+    );
+  }
+  if (tableProps.isPending) {
+    return <Progress />;
+  }
 
   return (
     <Container style={{ height: '100%' }}>

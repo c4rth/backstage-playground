@@ -1,6 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
-import { LinkComponentDisplayName } from '@internal/plugin-components-react';
+import { LinkComponentDisplayName, Progress } from '@internal/plugin-components-react';
 import {
   OwnershipType,
   ServiceDefinition,
@@ -149,9 +149,9 @@ const getData = async <T extends BaseTableRow>(
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as ServiceDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -159,15 +159,15 @@ const getData = async <T extends BaseTableRow>(
 
   const res = result
     ? {
-        data: result.items.map(toRow),
-        totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
-      }
+      data: result.items.map(toRow),
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    }
     : {
-        data: [],
-        totalCount: 0,
-        page: 0,
-      };
+      data: [],
+      totalCount: 0,
+      page: 0,
+    };
   return res;
 };
 
@@ -234,7 +234,17 @@ export function BaseServiceTable<T extends BaseTableRow>({
 
   useReloadOnChange(reload, [ownershipType, dependentsType]);
 
-  if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
+  if (tableProps.error) {
+    return (
+      <ResponseErrorPanel
+        title="Failed to load Services"
+        error={tableProps.error}
+      />
+    );
+  }
+  if (tableProps.isPending) {
+    return <Progress />;
+  }
 
   return (
     <Container style={{ height: '100%' }}>

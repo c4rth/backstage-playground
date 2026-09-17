@@ -178,7 +178,7 @@ export const LibraryTable = () => {
   if (tableProps.error) {
     return (
       <ResponseErrorPanel
-        title="Failed to call AppRegistry"
+        title="Failed to load libraries"
         error={tableProps.error}
       />
     );

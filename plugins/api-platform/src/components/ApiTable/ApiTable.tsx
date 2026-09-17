@@ -24,6 +24,7 @@ import {
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
+  Progress,
 } from '@internal/plugin-components-react';
 import {
   Box,
@@ -225,7 +226,17 @@ export const ApiTable = () => {
 
   useReloadOnChange(reload, [ownershipType, selectedType]);
 
-  if (tableProps.error) return <ResponseErrorPanel error={tableProps.error} />;
+  if (tableProps.error) {
+    return (
+      <ResponseErrorPanel
+        title="Failed to load APIs"
+        error={tableProps.error}
+      />
+    );
+  }
+  if (tableProps.isPending) {
+    return <Progress />;
+  }
 
   return (
     <Container style={{ height: '100%' }}>
