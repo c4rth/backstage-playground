@@ -27,6 +27,7 @@ import { DarkThemeProvider, LightThemeProvider } from '../brand/customThemes';
 import { CustomAnalyticsApi } from '@internal/plugin-analytics';
 import { IdentityProviders } from '@backstage/core-components';
 import { RiSunFill, RiMoonLine } from '@remixicon/react';
+import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
 
 const autoLogout = AppRootElementBlueprint.make({
   name: 'auto-logout',

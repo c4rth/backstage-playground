@@ -13,10 +13,6 @@
   /* Themes */
   [data-theme-mode='light'] {
 
-    --bui-font-text: Roboto;
-    --bui-font-title: Roboto;
-    --bui-font-regular: Roboto;
-
     --bui-accent-bg: #c30045;
     --bui-accent-bg-hover: rgb(166, 0, 59);
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);

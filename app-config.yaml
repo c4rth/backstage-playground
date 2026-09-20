@@ -11,6 +11,10 @@ app:
     - sub-page:scaffolder/templates:
         config:
           enableBackstageUi: true
+    - page:techdocs:
+        config:
+          # Options available: 'owned' | 'starred' | 'all'
+          initialFilter: all
   support:
     url: https://github.com/c4rth # Used by common ErrorPage
     items: # Used by common SupportButton component
