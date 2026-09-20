@@ -1,5 +1,5 @@
 app:
-  title: Carth Backstage App
+  title: Carth Backstage
   baseUrl: http://localhost:3000
   extensions:
     - api:home/visits

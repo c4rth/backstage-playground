@@ -23,7 +23,7 @@ import {
   microsoftAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
-import { DarkThemeProvider, LightThemeProvider } from './customThemes';
+import { DarkThemeProvider, LightThemeProvider } from '../brand/customThemes';
 import { CustomAnalyticsApi } from '@internal/plugin-analytics';
 import { IdentityProviders } from '@backstage/core-components';
 import { RiSunFill, RiMoonLine } from '@remixicon/react';
@@ -104,7 +104,7 @@ const signInProviders: IdentityProviders = [
   {
     id: 'microsoft-auth-provider',
     title: 'Authenticated',
-    message: 'Sign in using Microsoft Entra ID',
+    message: 'Sign in using Microsoft Entra ID.',
     apiRef: microsoftAuthApiRef,
   },
   'guest',

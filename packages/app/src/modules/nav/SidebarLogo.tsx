@@ -1,7 +1,6 @@
 import { sidebarConfig, useSidebarOpenState } from '@backstage/core-components';
 import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
-import { LogoFull } from './LogoFull';
-import { LogoIcon } from './LogoIcon';
+import { LogoFull, LogoIcon } from '../brand'; 
 import styles from './SidebarLogo.module.css';
 import { Link } from '@backstage/ui';
 

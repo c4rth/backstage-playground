@@ -31,6 +31,7 @@ function createCustomBaseTheme(
   pageTheme: PageTheme,
 ): UnifiedTheme {
   return createUnifiedTheme({
+    fontFamily: 'Roboto',
     palette: {
       ...palette,
       primary: {
