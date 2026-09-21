@@ -23,7 +23,6 @@ import {
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
-  Progress,
 } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
@@ -182,9 +181,6 @@ export const LibraryTable = () => {
         error={tableProps.error}
       />
     );
-  }
-  if (tableProps.isPending) {
-    return <Progress />;
   }
 
   return (

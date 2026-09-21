@@ -24,7 +24,6 @@ import {
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
-  Progress,
 } from '@internal/plugin-components-react';
 import {
   Box,
@@ -233,9 +232,6 @@ export const ApiTable = () => {
         error={tableProps.error}
       />
     );
-  }
-  if (tableProps.isPending) {
-    return <Progress />;
   }
 
   return (

@@ -1,6 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
-import { LinkComponentDisplayName, Progress } from '@internal/plugin-components-react';
+import { LinkComponentDisplayName, } from '@internal/plugin-components-react';
 import {
   OwnershipType,
   ServiceDefinition,
@@ -241,9 +241,6 @@ export function BaseServiceTable<T extends BaseTableRow>({
         error={tableProps.error}
       />
     );
-  }
-  if (tableProps.isPending) {
-    return <Progress />;
   }
 
   return (
