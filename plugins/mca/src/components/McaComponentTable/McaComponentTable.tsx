@@ -7,7 +7,7 @@ import {
 } from '@internal/plugin-mca-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef, McaComponentsBackendApi } from '../../api';
-import { memo, useEffect, useState, useRef } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   Link,
   useTable,
@@ -236,7 +236,6 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
   const [mcaVersions, setMcaVersions] = useState<McaVersions>();
   const [countRows, setCountRows] = useState<number>(0);
   const [error, setError] = useState<Error | null>(null);
-  const isFirstRender = useRef(true);
 
   const { initialSearch, storeSearch } = useStoredSearch(STORAGE_KEY);
   const columns = getColumns(mcaVersions);

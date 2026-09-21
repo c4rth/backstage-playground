@@ -10,7 +10,6 @@ import {
   Header,
   Button,
   Text,
-  Cell,
   SortDescriptor,
   DialogTrigger,
   Dialog,
@@ -213,9 +212,7 @@ const columns: ColumnConfig<TableRow>[] = [
     isRowHeader: true,
     isSortable: true,
     cell: ({ name }: TableRow) => (
-      <Cell>
-        <Text weight="bold">{name || '-'}</Text>
-      </Cell>
+      <CellText title={name || '-'} />
     ),
   },
   {
