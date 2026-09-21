@@ -1,4 +1,4 @@
-import { CodeSnippet } from '@backstage/core-components';
+import { CodeSnippet, CopyTextButton } from '@backstage/core-components';
 import { ApiEntity } from '@backstage/catalog-model';
 import {
   EntityInfoCard,
@@ -84,6 +84,7 @@ export const ApiDefinitionInfoCard = () => {
   const artifactUrl = `https://dev.azure.com/${organization}/${project}/_artifacts/feed/${feedName}/maven/${groupId}%2F${artifactId}/overview/${apiVersion?.toUpperCase()}`;
   const artifactText = `${groupId}:${artifactId}:${apiVersion}`;
   const platformUrl = `https://${apiDns}/api-resolved/${project}/${apiName}/${apiVersion}`;
+  const mockUrl = `https://${apiDns}/api-mock/${project}/${apiName}/${apiVersion}`;
 
   const mavenXml = `
 <dependency>
@@ -132,14 +133,32 @@ export const ApiDefinitionInfoCard = () => {
           </Box>
           <Box mt="6">
             <AboutField label="API Platform URL">
-              <LinkComponentDisplayName
-                href={platformUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                text={platformUrl}
-                type="url"
-                regular
-              />
+              <Flex gap="2" align="center">
+                <LinkComponentDisplayName
+                  href={platformUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  text={platformUrl}
+                  type="url"
+                  regular
+                />
+                <CopyTextButton text={platformUrl} />
+              </Flex>
+            </AboutField>
+          </Box>
+          <Box mt="6">
+            <AboutField label="API Mock URL">
+              <Flex gap="2" align="center">
+                <LinkComponentDisplayName
+                  href={mockUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  text={mockUrl}
+                  type="url"
+                  regular
+                />
+                <CopyTextButton text={mockUrl}  />
+              </Flex>
             </AboutField>
           </Box>
         </>
