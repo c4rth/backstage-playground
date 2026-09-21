@@ -202,7 +202,6 @@ const getData = async (
   return {
     data: items,
     totalCount,
-    page: Math.floor(pageStart / pageLimit),
   };
 };
 

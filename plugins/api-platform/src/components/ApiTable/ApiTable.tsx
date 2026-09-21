@@ -17,13 +17,13 @@ import { useState } from 'react';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import {
   ComponentOwnership,
-  useReloadOnChange,
   useStoredOwnership,
-  useStoredSearch,
 } from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
+  useReloadOnChange,
+  useStoredSearch,
 } from '@internal/plugin-components-react';
 import {
   Box,
@@ -91,12 +91,10 @@ const getData = async (
     ? {
         data: result.items.map(toEntityRow),
         totalCount: result.totalCount,
-        page: Math.floor(result.offset / result.limit),
       }
     : {
         data: [],
         totalCount: 0,
-        page: 0,
       };
 };
 

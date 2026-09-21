@@ -1,6 +1,10 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
-import { LinkComponentDisplayName, } from '@internal/plugin-components-react';
+import { 
+  LinkComponentDisplayName,
+  useReloadOnChange,
+  useStoredSearch,
+ } from '@internal/plugin-components-react';
 import {
   OwnershipType,
   ServiceDefinition,
@@ -13,9 +17,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
 import {
-  useReloadOnChange,
   useStoredOwnership,
-  useStoredSearch,
 } from '../common';
 import {
   Box,
@@ -161,12 +163,10 @@ const getData = async <T extends BaseTableRow>(
     ? {
       data: result.items.map(toRow),
       totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
     }
     : {
       data: [],
       totalCount: 0,
-      page: 0,
     };
   return res;
 };

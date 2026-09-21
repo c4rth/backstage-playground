@@ -23,6 +23,10 @@ import {
   CardHeader,
   CardBody,
 } from '@backstage/ui';
+import {
+  useReloadOnChange,
+  useStoredSearch,
+} from '@internal/plugin-components-react';
 
 type TableRow = {
   id: number;
@@ -198,9 +202,9 @@ async function getData(
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as McaComponentListOptions['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as McaComponentListOptions['orderBy'])
       : undefined,
     type: type,
   });
@@ -208,13 +212,11 @@ async function getData(
     return {
       data: result.items.map(toEntityRow),
       totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
     };
   }
   return {
     data: [],
     totalCount: 0,
-    page: 0,
   };
 }
 
@@ -236,7 +238,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
   const [error, setError] = useState<Error | null>(null);
   const isFirstRender = useRef(true);
 
-  const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
+  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_KEY);
   const columns = getColumns(mcaVersions);
 
   useEffect(() => {
@@ -273,13 +275,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
     initialSort: { column: 'component', direction: 'ascending' },
   });
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    reload();
-  }, [type, reload]);
+  useReloadOnChange(reload, [type]);
 
   if (error) return <ResponseErrorPanel error={error} />;
 
@@ -294,7 +290,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
                 placeholder="Filter..."
                 value={search.value}
                 onChange={str => {
-                  sessionStorage.setItem(STORAGE_KEY, str ?? '');
+                  storeSearch(str);
                   search.onChange(str);
                 }}
                 aria-label="Filter"

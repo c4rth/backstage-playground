@@ -3,6 +3,9 @@ import {
   McaBaseType,
   McaBaseTypeListOptions,
 } from '@internal/plugin-mca-common';
+import {
+  useStoredSearch,
+} from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
@@ -82,22 +85,20 @@ const getData = async (
     search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as McaBaseTypeListOptions['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as McaBaseTypeListOptions['orderBy'])
       : undefined,
   });
   if (result) {
     return {
       data: result.items.map(toTableRow),
       totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
     };
   }
   return {
     data: [],
     totalCount: 0,
-    page: 0,
   };
 };
 
@@ -105,7 +106,7 @@ export const McaBaseTypeTable = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const [countRows, setCountRows] = useState(0);
-  const initialSearch = sessionStorage.getItem(STORAGE_KEY) || '';
+  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_KEY);
 
   const fetchData = async ({
     offset,
@@ -154,7 +155,7 @@ export const McaBaseTypeTable = memo(() => {
                 placeholder="Filter..."
                 value={search.value}
                 onChange={str => {
-                  sessionStorage.setItem(STORAGE_KEY, str ?? '');
+                  storeSearch(str);
                   search.onChange(str);
                 }}
                 aria-label="Filter"

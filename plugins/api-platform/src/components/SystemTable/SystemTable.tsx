@@ -18,11 +18,13 @@ import {
 import { useState } from 'react';
 import {
   ComponentOwnership,
-  useReloadOnChange,
   useStoredOwnership,
-  useStoredSearch,
 } from '../common';
-import { LinkComponentDisplayName, } from '@internal/plugin-components-react';
+import { 
+  LinkComponentDisplayName,
+  useReloadOnChange,
+  useStoredSearch,
+ } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { apiPlatformBackendApiRef } from '../../plugin';
@@ -110,13 +112,11 @@ const getData = async (
     return {
       data: result.items.map(toEntityRow),
       totalCount: result.totalCount,
-      page: Math.floor(result.offset / result.limit),
     };
   }
   return {
     data: [],
     totalCount: 0,
-    page: 0,
   };
 };
 

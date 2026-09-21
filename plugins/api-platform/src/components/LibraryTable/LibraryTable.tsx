@@ -16,13 +16,13 @@ import {
 } from '@backstage/ui';
 import {
   ComponentOwnership,
-  useReloadOnChange,
   useStoredOwnership,
-  useStoredSearch,
 } from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
+  useReloadOnChange,
+  useStoredSearch,
 } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
@@ -155,9 +155,6 @@ export const LibraryTable = () => {
           item.description.toLowerCase().includes(lowerQuery) ||
           item.system.toLowerCase().includes(lowerQuery),
       );
-    },
-    onSearchChange: newSearch => {
-      storeSearch(newSearch);
     },
     sortFn: (items, { column, direction }) => {
       const desc = direction === 'descending' ? -1 : 1;
