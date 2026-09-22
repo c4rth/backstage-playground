@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/core-plugin-api';
-import { useStoredSearch } from '@internal/plugin-components-react';
+import { useStoredValue } from '@internal/plugin-components-react';
 import { McaComponentTable } from '../McaComponentTable';
 import {
   InformationPopup,
@@ -51,7 +51,7 @@ export const McaComponentExplorerPage = () => {
     return mcaApi.getCsvLastModifiedDate();
   }, [mcaApi]);
 
-  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredSearch(STORAGE_KEY, DEFAULT_TYPE);
+  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredValue<McaComponentType>(STORAGE_KEY, DEFAULT_TYPE);
 
   const handleSelectChange = (selected: string) => {
     const normalizedType = normalizeComponentType(selected);

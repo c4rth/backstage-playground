@@ -3,7 +3,7 @@ import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
 import { 
   LinkComponentDisplayName,
   useReloadOnChange,
-  useStoredSearch,
+  useStoredValue,
  } from '@internal/plugin-components-react';
 import {
   OwnershipType,
@@ -190,7 +190,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
   const [ownershipType, setOwnershipType] =
     useStoredOwnership(storageOwnershipKey);
   const [dependentsType, setDependentsType] = useState<DependentsType>('all');
-  const { initialValue, storeValue } = useStoredSearch(storageSearchKey);
+  const { initialValue, storeValue } = useStoredValue(storageSearchKey);
 
   const fetchData = async ({
     offset,

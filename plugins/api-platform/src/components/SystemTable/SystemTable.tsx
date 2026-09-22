@@ -23,7 +23,7 @@ import {
 import { 
   LinkComponentDisplayName,
   useReloadOnChange,
-  useStoredSearch,
+  useStoredValue,
  } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
@@ -126,7 +126,7 @@ function getTitle(ownership: OwnershipType, countRows: number) {
 
 export const SystemTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const { initialValue, storeValue } = useStoredSearch(STORAGE_SEARCH_KEY);
+  const { initialValue, storeValue } = useStoredValue(STORAGE_SEARCH_KEY);
   const [countRows, setCountRows] = useState(0);
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,

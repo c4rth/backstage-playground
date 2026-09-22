@@ -4,7 +4,7 @@ import {
   McaBaseTypeListOptions,
 } from '@internal/plugin-mca-common';
 import {
-  useStoredSearch,
+  useStoredValue,
 } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
@@ -106,7 +106,7 @@ export const McaBaseTypeTable = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const [countRows, setCountRows] = useState(0);
-  const { initialValue, storeValue } = useStoredSearch(STORAGE_KEY);
+  const { initialValue, storeValue } = useStoredValue(STORAGE_KEY);
 
   const fetchData = async ({
     offset,

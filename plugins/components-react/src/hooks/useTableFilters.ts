@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useStoredValue(storageKey: string, defaultValue = ''): {
-  initialValue: string;
-  storeValue: (search: string | null | undefined) => void;
+export function useStoredValue<T extends string = string>(
+  storageKey: string, 
+  defaultValue: T = '' as T
+): {
+  initialValue: T;
+  storeValue: (search: T | null | undefined) => void;
 } {
-  const [initialValue] = useState(
-    () => sessionStorage.getItem(storageKey) ?? defaultValue,
+  const [initialValue] = useState<T>(
+    () => (sessionStorage.getItem(storageKey) as T | null) ?? defaultValue,
   );
 
   return {

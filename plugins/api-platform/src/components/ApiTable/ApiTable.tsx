@@ -23,7 +23,7 @@ import {
   ComponentDisplayName,
   LinkComponentDisplayName,
   useReloadOnChange,
-  useStoredSearch,
+  useStoredValue,
 } from '@internal/plugin-components-react';
 import {
   Box,
@@ -176,8 +176,8 @@ export const ApiTable = () => {
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
   );
-  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredSearch(STORAGE_TYPE_KEY);
-  const { initialValue, storeValue } = useStoredSearch(STORAGE_SEARCH_KEY);
+  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredValue<OpenApiType>(STORAGE_TYPE_KEY);
+  const { initialValue, storeValue } = useStoredValue(STORAGE_SEARCH_KEY);
 
   const fetchData = async ({
     offset,

@@ -22,7 +22,7 @@ import {
   ComponentDisplayName,
   LinkComponentDisplayName,
   useReloadOnChange,
-  useStoredSearch,
+  useStoredValue,
 } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
@@ -133,7 +133,7 @@ export const LibraryTable = () => {
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
   );
-  const { initialValue, storeValue } = useStoredSearch(STORAGE_SEARCH_KEY);
+  const { initialValue, storeValue } = useStoredValue(STORAGE_SEARCH_KEY);
 
   const { tableProps, search, reload } = useTable({
     mode: 'complete',

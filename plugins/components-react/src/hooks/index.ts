@@ -1,4 +1,4 @@
 export {
   useReloadOnChange,
-  useStoredValue as useStoredSearch,
+  useStoredValue,
 } from './useTableFilters';

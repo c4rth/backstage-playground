@@ -25,7 +25,7 @@ import {
 } from '@backstage/ui';
 import {
   useReloadOnChange,
-  useStoredSearch,
+  useStoredValue,
 } from '@internal/plugin-components-react';
 
 type TableRow = {
@@ -237,7 +237,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
   const [countRows, setCountRows] = useState<number>(0);
   const [error, setError] = useState<Error | null>(null);
 
-  const { initialValue, storeValue } = useStoredSearch(STORAGE_KEY);
+  const { initialValue, storeValue } = useStoredValue(STORAGE_KEY);
   const columns = getColumns(mcaVersions);
 
   useEffect(() => {
