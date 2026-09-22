@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.55.0",
+  "releaseVersion": "1.55.1",
   "packages": [
     {
       "name": "@backstage/app-defaults",
@@ -95,7 +95,7 @@
     },
     {
       "name": "@backstage/cli-module-package-manager-yarn",
-      "version": "0.1.1"
+      "version": "0.1.2"
     },
     {
       "name": "@backstage/cli-module-test-jest",
@@ -811,7 +811,7 @@
     },
     {
       "name": "@backstage/plugin-techdocs",
-      "version": "1.18.1"
+      "version": "1.18.2"
     },
     {
       "name": "@backstage/plugin-techdocs-addons-test-utils",
