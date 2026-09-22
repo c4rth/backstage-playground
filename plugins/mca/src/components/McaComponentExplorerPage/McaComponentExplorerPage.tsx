@@ -1,10 +1,10 @@
 import { useApi } from '@backstage/core-plugin-api';
+import { useStoredSearch } from '@internal/plugin-components-react';
 import { McaComponentTable } from '../McaComponentTable';
 import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-components-react';
-import { useState } from 'react';
 import { McaComponentType } from '@internal/plugin-mca-common';
 import {
   Alert,
@@ -37,11 +37,6 @@ const componentTypes: Option[] = [
   { label: 'All components', id: 'all' },
 ];
 
-function getInitialType(): McaComponentType {
-  const storedType = sessionStorage.getItem(STORAGE_KEY);
-  return (storedType as McaComponentType) || DEFAULT_TYPE;
-}
-
 function normalizeComponentType(type: string): McaComponentType {
   const validTypes = ['operation', 'element', 'all'] as const;
   return validTypes.includes(type as McaComponentType)
@@ -56,13 +51,10 @@ export const McaComponentExplorerPage = () => {
     return mcaApi.getCsvLastModifiedDate();
   }, [mcaApi]);
 
-  const [selectedType, setSelectedType] = useState<McaComponentType>(() =>
-    getInitialType(),
-  );
+  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredSearch(STORAGE_KEY, DEFAULT_TYPE);
 
   const handleSelectChange = (selected: string) => {
     const normalizedType = normalizeComponentType(selected);
-    sessionStorage.setItem(STORAGE_KEY, normalizedType);
     setSelectedType(normalizedType);
   };
 
@@ -112,7 +104,7 @@ export const McaComponentExplorerPage = () => {
               </Grid.Item>
             </Grid.Root>
           </Box>
-          <McaComponentTable type={selectedType} />
+          <McaComponentTable type={selectedType as McaComponentType} />
         </Container>
       </FullPage>
     </>

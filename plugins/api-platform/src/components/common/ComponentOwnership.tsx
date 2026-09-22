@@ -1,7 +1,6 @@
 import { Box } from '@backstage/ui';
 import { OwnershipType } from '@internal/plugin-api-platform-common';
-import { Chip } from '@internal/plugin-components-react';
-import { useState } from 'react';
+import { Chip, useStoredSearch, } from '@internal/plugin-components-react';
 import { useApi, identityApiRef } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 
@@ -16,9 +15,7 @@ export const ComponentOwnership = ({
   storageKey,
   handleOwnershipChange,
 }: ComponentOwnershipProps) => {
-  const [selectedType, setSelectedType] = useState<OwnershipType>(() =>
-    sessionStorage.getItem(storageKey) === 'owned' ? 'owned' : 'all',
-  );
+  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredSearch(storageKey, 'all');
   const identityApi = useApi(identityApiRef);
 
   const {
@@ -35,7 +32,6 @@ export const ComponentOwnership = ({
   }, [identityApi]);
 
   const handleSelectChange = (type: OwnershipType) => {
-    sessionStorage.setItem(storageKey, type);
     setSelectedType(type);
     handleOwnershipChange(type);
   };

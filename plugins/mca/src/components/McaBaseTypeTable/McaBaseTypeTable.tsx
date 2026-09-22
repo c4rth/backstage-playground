@@ -106,7 +106,7 @@ export const McaBaseTypeTable = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const [countRows, setCountRows] = useState(0);
-  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_KEY);
+  const { initialValue, storeValue } = useStoredSearch(STORAGE_KEY);
 
   const fetchData = async ({
     offset,
@@ -131,7 +131,7 @@ export const McaBaseTypeTable = memo(() => {
       pageSize: 20,
       pageSizeOptions: [10, 20, 50],
     },
-    initialSearch,
+    initialSearch: initialValue,
     initialSort: { column: 'baseType', direction: 'ascending' },
   });
 
@@ -155,7 +155,7 @@ export const McaBaseTypeTable = memo(() => {
                 placeholder="Filter..."
                 value={search.value}
                 onChange={str => {
-                  storeSearch(str);
+                  storeValue(str);
                   search.onChange(str);
                 }}
                 aria-label="Filter"

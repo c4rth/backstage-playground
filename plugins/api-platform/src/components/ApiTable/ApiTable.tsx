@@ -176,12 +176,8 @@ export const ApiTable = () => {
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
   );
-  const [selectedType, setSelectedType] = useState<OpenApiType>(() =>
-    sessionStorage.getItem(STORAGE_TYPE_KEY)
-      ? (sessionStorage.getItem(STORAGE_TYPE_KEY) as OpenApiType)
-      : 'all',
-  );
-  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_SEARCH_KEY);
+  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredSearch(STORAGE_TYPE_KEY);
+  const { initialValue, storeValue } = useStoredSearch(STORAGE_SEARCH_KEY);
 
   const fetchData = async ({
     offset,
@@ -197,7 +193,7 @@ export const ApiTable = () => {
     const result = await getData(
       apiPlatformApi,
       ownershipType,
-      selectedType,
+      selectedType as OpenApiType,
       offset,
       pageSize,
       sort,
@@ -218,7 +214,7 @@ export const ApiTable = () => {
       column: 'name',
       direction: 'ascending',
     },
-    initialSearch,
+    initialSearch: initialValue,
   });
 
   useReloadOnChange(reload, [ownershipType, selectedType]);
@@ -237,7 +233,7 @@ export const ApiTable = () => {
       <Card>
         <CardHeader>
           <Header
-            title={getTitle(ownershipType, selectedType, countRows)}
+            title={getTitle(ownershipType, selectedType as OpenApiType, countRows)}
             customActions={
               <>
                 <ComponentOwnership
@@ -261,7 +257,7 @@ export const ApiTable = () => {
                   placeholder="Filter..."
                   value={search.value}
                   onChange={str => {
-                    storeSearch(str);
+                    storeValue(str);
                     search.onChange(str);
                   }}
                   aria-label="Filter"

@@ -237,7 +237,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
   const [countRows, setCountRows] = useState<number>(0);
   const [error, setError] = useState<Error | null>(null);
 
-  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_KEY);
+  const { initialValue, storeValue } = useStoredSearch(STORAGE_KEY);
   const columns = getColumns(mcaVersions);
 
   useEffect(() => {
@@ -270,7 +270,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
       pageSize: 20,
       pageSizeOptions: [10, 20, 50],
     },
-    initialSearch,
+    initialSearch: initialValue,
     initialSort: { column: 'component', direction: 'ascending' },
   });
 
@@ -289,7 +289,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
                 placeholder="Filter..."
                 value={search.value}
                 onChange={str => {
-                  storeSearch(str);
+                  storeValue(str);
                   search.onChange(str);
                 }}
                 aria-label="Filter"

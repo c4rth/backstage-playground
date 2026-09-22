@@ -126,7 +126,7 @@ function getTitle(ownership: OwnershipType, countRows: number) {
 
 export const SystemTable = () => {
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_SEARCH_KEY);
+  const { initialValue, storeValue } = useStoredSearch(STORAGE_SEARCH_KEY);
   const [countRows, setCountRows] = useState(0);
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
@@ -166,7 +166,7 @@ export const SystemTable = () => {
       column: 'name',
       direction: 'ascending',
     },
-    initialSearch,
+    initialSearch: initialValue,
   });
 
   useReloadOnChange(reload, [ownershipType]);
@@ -196,7 +196,7 @@ export const SystemTable = () => {
                   placeholder="Filter..."
                   value={search.value}
                   onChange={str => {
-                    storeSearch(str);
+                    storeValue(str);
                     search.onChange(str);
                   }}
                   aria-label="Filter"

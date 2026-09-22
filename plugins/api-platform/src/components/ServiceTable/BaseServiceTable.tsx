@@ -190,7 +190,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
   const [ownershipType, setOwnershipType] =
     useStoredOwnership(storageOwnershipKey);
   const [dependentsType, setDependentsType] = useState<DependentsType>('all');
-  const { initialSearch, storeSearch } = useStoredSearch(storageSearchKey);
+  const { initialValue, storeValue } = useStoredSearch(storageSearchKey);
 
   const fetchData = async ({
     offset,
@@ -229,7 +229,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
       column: 'name',
       direction: 'ascending',
     },
-    initialSearch,
+    initialSearch: initialValue,
   });
 
   useReloadOnChange(reload, [ownershipType, dependentsType]);
@@ -267,7 +267,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
                   placeholder="Filter..."
                   value={search.value}
                   onChange={str => {
-                    storeSearch(str);
+                    storeValue(str);
                     search.onChange(str);
                   }}
                   aria-label="Filter"

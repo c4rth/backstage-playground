@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useStoredSearch(storageKey: string): {
-  initialSearch: string;
-  storeSearch: (search: string | null | undefined) => void;
+export function useStoredValue(storageKey: string, defaultValue = ''): {
+  initialValue: string;
+  storeValue: (search: string | null | undefined) => void;
 } {
-  const [initialSearch] = useState(
-    () => sessionStorage.getItem(storageKey) ?? '',
+  const [initialValue] = useState(
+    () => sessionStorage.getItem(storageKey) ?? defaultValue,
   );
 
   return {
-    initialSearch,
-    storeSearch: search => sessionStorage.setItem(storageKey, search ?? ''),
+    initialValue,
+    storeValue: search => sessionStorage.setItem(storageKey, search ?? ''),
   };
 }
 

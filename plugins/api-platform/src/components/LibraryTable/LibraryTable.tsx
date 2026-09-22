@@ -133,7 +133,7 @@ export const LibraryTable = () => {
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
   );
-  const { initialSearch, storeSearch } = useStoredSearch(STORAGE_SEARCH_KEY);
+  const { initialValue, storeValue } = useStoredSearch(STORAGE_SEARCH_KEY);
 
   const { tableProps, search, reload } = useTable({
     mode: 'complete',
@@ -145,7 +145,7 @@ export const LibraryTable = () => {
     paginationOptions: {
       type: 'none',
     },
-    initialSearch: initialSearch,
+    initialSearch: initialValue,
     searchFn: (items, query) => {
       const lowerQuery = query.toLowerCase();
       return items.filter(
@@ -197,7 +197,7 @@ export const LibraryTable = () => {
                     placeholder="Filter..."
                     value={search.value}
                     onChange={str => {
-                      storeSearch(str);
+                      storeValue(str);
                       search.onChange(str);
                     }}
                     aria-label="Filter"
