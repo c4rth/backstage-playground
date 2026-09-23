@@ -176,7 +176,7 @@ export const ApiTable = () => {
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
   );
-  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredValue<OpenApiType>(STORAGE_TYPE_KEY);
+  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredValue<OpenApiType>(STORAGE_TYPE_KEY, 'all');
   const { initialValue, storeValue } = useStoredValue(STORAGE_SEARCH_KEY);
 
   const fetchData = async ({
@@ -193,7 +193,7 @@ export const ApiTable = () => {
     const result = await getData(
       apiPlatformApi,
       ownershipType,
-      selectedType as OpenApiType,
+      selectedType,
       offset,
       pageSize,
       sort,
@@ -246,8 +246,9 @@ export const ApiTable = () => {
                     name="apiType"
                     size="medium"
                     value={selectedType}
-                    onChange={v => {
-                      setSelectedType(v as OpenApiType);
+                    onChange={selected => {
+                      console.log(`Selected API type changed to: ${selected}`);
+                      setSelectedType(selected as OpenApiType);
                     }}
                     aria-label="API Type"
                     options={API_TYPES}

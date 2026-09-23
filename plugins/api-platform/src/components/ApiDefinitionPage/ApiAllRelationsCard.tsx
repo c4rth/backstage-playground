@@ -27,7 +27,6 @@ import { useGetApiVersions } from '../../hooks';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
-  Progress,
 } from '@internal/plugin-components-react';
 import { Table, useTable, ColumnConfig, Cell, CellText } from '@backstage/ui';
 
@@ -213,13 +212,11 @@ export const ApiAllRelationsCard = ({
 
   const {
     apiVersions,
-    loading: versionsLoading,
     error: versionsError,
   } = useGetApiVersions(system, apiName);
 
   const {
     value: allServices = [],
-    loading: servicesLoading,
     error: servicesError,
   } = useAsync(async () => {
     if (!apiVersions?.length || !apiName) return [];
@@ -257,12 +254,7 @@ export const ApiAllRelationsCard = ({
   }, [apiVersions, catalogApi, dependency, apiName]);
 
   const rows = allServices.map(toRow);
-  const loading = versionsLoading || servicesLoading;
   const error = versionsError || servicesError;
-
-  if (loading) {
-    return <Progress />;
-  }
 
   if (error) {
     return (

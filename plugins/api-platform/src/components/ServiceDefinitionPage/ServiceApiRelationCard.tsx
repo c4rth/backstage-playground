@@ -24,7 +24,6 @@ import {
   ComponentDisplayName,
   LinkComponentDisplayName,
 } from '@internal/plugin-components-react';
-import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   id: number;
@@ -163,7 +162,6 @@ export const ServiceApiRelationCard = ({
 
   const {
     value: entities = [],
-    loading,
     error,
   } = useAsync(async () => {
     const relationType =
@@ -219,10 +217,6 @@ export const ServiceApiRelationCard = ({
   const title = dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs';
 
   const rows = entities?.map(toRow) ?? [];
-
-  if (loading) {
-    return <Progress />;
-  }
 
   if (error) {
     return (

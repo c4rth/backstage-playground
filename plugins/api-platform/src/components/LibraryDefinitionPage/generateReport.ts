@@ -67,7 +67,7 @@ export async function generateReport(
     XLSX.utils.book_append_sheet(
       workbook,
       worksheet,
-      `${libraryName}-${libVersion.version}`,
+      `${libVersion.version}`,
     );
   }
 

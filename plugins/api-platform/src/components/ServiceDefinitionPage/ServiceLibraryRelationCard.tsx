@@ -23,7 +23,6 @@ import {
   ComponentDisplayName,
   LinkComponentDisplayName,
 } from '@internal/plugin-components-react';
-import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   id: number;
@@ -171,7 +170,6 @@ export const ServiceLibraryRelationCard = () => {
 
   const {
     value: entities = [],
-    loading,
     error,
   } = useAsync(async () => {
     const allRelations =
@@ -219,10 +217,6 @@ export const ServiceLibraryRelationCard = () => {
   }, [entity, catalogApi]);
 
   const rows = entities?.map(toRow) ?? [];
-
-  if (loading) {
-    return <Progress />;
-  }
 
   if (error) {
     return <ResponseErrorPanel title="Error loading Libraries" error={error} />;

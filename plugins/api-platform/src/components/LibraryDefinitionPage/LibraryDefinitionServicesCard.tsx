@@ -23,7 +23,6 @@ import { useGetLibraryVersions } from '../..';
 import { DependentsToggle } from '../common';
 import { BaseTableRow, buildColumns, renderVersionList } from '../ServiceTable';
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
-import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = BaseTableRow;
 
@@ -222,13 +221,11 @@ export const LibraryDefinitionServicesCard = ({
 
   const {
     libraryVersions,
-    loading: loadingLibVersions,
     error: errorLibVersion,
   } = useGetLibraryVersions(system!, name!, false);
 
   const {
     value: allServices = [],
-    loading,
     error,
   } = useAsync(async () => {
     if (!name) return [];
@@ -287,10 +284,6 @@ export const LibraryDefinitionServicesCard = ({
     version,
     componentName,
   ]);
-
-  if (loading || loadingLibVersions) {
-    return <Progress />;
-  }
 
   if (error || errorLibVersion) {
     return (

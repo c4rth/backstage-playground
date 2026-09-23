@@ -7,13 +7,16 @@ export function useStoredValue<T extends string = string>(
   initialValue: T;
   storeValue: (search: T | null | undefined) => void;
 } {
-  const [initialValue] = useState<T>(
+  const [initialValue, storeNewValue] = useState<T>(
     () => (sessionStorage.getItem(storageKey) as T | null) ?? defaultValue,
   );
 
   return {
     initialValue,
-    storeValue: search => sessionStorage.setItem(storageKey, search ?? ''),
+    storeValue: search => {
+      sessionStorage.setItem(storageKey, search ?? '');
+      storeNewValue((search ?? defaultValue) as T);
+    },
   };
 }
 

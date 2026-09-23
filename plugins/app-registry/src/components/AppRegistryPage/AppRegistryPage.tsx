@@ -29,7 +29,6 @@ import {
   ColumnConfig,
   Box,
 } from '@backstage/ui';
-import { Progress } from '@internal/plugin-components-react';
 
 type TableRow = {
   id: number;
@@ -242,9 +241,6 @@ export const AppRegistryPage = () => {
         error={tableProps.error}
       />
     );
-  }
-  if (tableProps.isPending) {
-    return <Progress />;
   }
 
   return (

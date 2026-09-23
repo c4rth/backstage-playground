@@ -2,7 +2,6 @@ import { ResponseErrorPanel } from '@backstage/core-components';
 import { Cell, ColumnConfig, Table, useTable, CellText } from '@backstage/ui';
 import {
   LinkComponentDisplayName,
-  Progress,
 } from '@internal/plugin-components-react';
 import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
@@ -110,17 +109,13 @@ export const LibraryDefinitionVersionsCard = ({
   system,
   name,
 }: LibraryVersionsCardProps) => {
-  const { libraryVersions, loading, error } = useGetLibraryVersions(
+  const { libraryVersions, error } = useGetLibraryVersions(
     system!,
     name!,
   );
 
   const rows =
     libraryVersions?.map((l, idx) => toRow(l, system, name, idx)) ?? [];
-
-  if (loading) {
-    return <Progress />;
-  }
 
   if (error) {
     return (

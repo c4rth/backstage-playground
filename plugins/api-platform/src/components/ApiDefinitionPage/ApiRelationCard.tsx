@@ -26,7 +26,6 @@ import {
   LinkComponentDisplayName,
 } from '@internal/plugin-components-react';
 import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
-import { Progress } from '@backstage/frontend-plugin-api';
 
 type TableRow = {
   id: number;
@@ -193,7 +192,6 @@ export const ApiRelationCard = ({ dependency }: ApiRelationCardProps) => {
 
   const {
     value: entities,
-    loading,
     error,
   } = useAsync(
     () => fetchEntities(catalogApi, entity, dependency),
@@ -201,10 +199,6 @@ export const ApiRelationCard = ({ dependency }: ApiRelationCardProps) => {
   );
 
   const rows = entities?.map(toRow) ?? [];
-
-  if (loading) {
-    return <Progress />;
-  }
 
   if (error) {
     return (
