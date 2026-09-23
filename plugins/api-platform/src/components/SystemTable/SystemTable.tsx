@@ -201,7 +201,7 @@ export const SystemTable = () => {
                   }}
                   aria-label="Filter"
                   startCollapsed
-                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                  size="medium"
                 />
               </>
             }

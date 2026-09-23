@@ -65,3 +65,5 @@ catalog:
       target: ../../examples/templates/sb-init/template.yaml
     - type: file
       target: ../../examples/templates/template/template.yaml
+    - type: file
+      target: ../../examples/templates/template2/template2.yaml

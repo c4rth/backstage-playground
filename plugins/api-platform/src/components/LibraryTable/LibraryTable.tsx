@@ -202,7 +202,7 @@ export const LibraryTable = () => {
                     }}
                     aria-label="Filter"
                     startCollapsed
-                    style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                    size="medium"
                   />
                 </>
               }

@@ -103,7 +103,7 @@ export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
                 }}
                 aria-label="Filter"
                 startCollapsed
-                style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                size="medium"
               />
             }
           />

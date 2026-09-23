@@ -10,6 +10,16 @@
 
 :root {
 
+  .bui-SearchField {
+    &[data-startcollapsed='true'] {
+      &[data-collapsed='false'] {
+        flex-basis: 400px;
+        width: 400px;
+        max-width: 400px;
+      }
+    }
+  }
+
   /* Themes */
   [data-theme-mode='light'] {
 

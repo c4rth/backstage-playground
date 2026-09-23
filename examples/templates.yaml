@@ -12,3 +12,5 @@ spec:
     - ./templates/azdo-run3-template/template.yaml
     - ./templates/azdo-run4-template/template.yaml
     - ./templates/sb-init/template.yaml
+    - ./templates/template/template.yaml
+    - ./templates/template2/template2.yaml

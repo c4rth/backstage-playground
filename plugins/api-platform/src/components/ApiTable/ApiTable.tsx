@@ -79,9 +79,9 @@ const getData = async (
     search: search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as ApiDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
     apiType,
@@ -89,13 +89,13 @@ const getData = async (
 
   return result
     ? {
-        data: result.items.map(toEntityRow),
-        totalCount: result.totalCount,
-      }
+      data: result.items.map(toEntityRow),
+      totalCount: result.totalCount,
+    }
     : {
-        data: [],
-        totalCount: 0,
-      };
+      data: [],
+      totalCount: 0,
+    };
 };
 
 const COLUMNS: ColumnConfig<TableRow>[] = [
@@ -254,17 +254,17 @@ export const ApiTable = () => {
                     options={API_TYPES}
                   />
                 </Box>
-                <SearchField
-                  placeholder="Filter..."
-                  value={search.value}
-                  onChange={str => {
-                    storeValue(str);
-                    search.onChange(str);
-                  }}
-                  aria-label="Filter"
-                  startCollapsed
-                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
-                />
+                  <SearchField
+                    placeholder="Filter..."
+                    value={search.value}
+                    onChange={str => {
+                      storeValue(str);
+                      search.onChange(str);
+                    }}
+                    aria-label="Filter"
+                    size="medium"
+                    startCollapsed
+                  />
               </>
             }
           />

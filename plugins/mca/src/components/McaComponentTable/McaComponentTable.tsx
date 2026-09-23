@@ -294,7 +294,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
                 }}
                 aria-label="Filter"
                 startCollapsed
-                style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                size="medium"
               />
             }
           />

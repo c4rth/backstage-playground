@@ -272,7 +272,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
                   }}
                   aria-label="Filter"
                   startCollapsed
-                  style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                  size="medium"
                 />
               </>
             }

@@ -1,0 +1,58 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: depo-test-template2
+  title: Test Az Pipeline
+  description: Run a test Azure Pipeline
+spec:
+  owner: group:default/team-a.o
+  type: repository
+ 
+  parameters:
+    - title: "General Information"
+      properties:
+        project:
+          title: "DEFL code"
+          description: What is the DEFL code of the project?
+          type: string
+          ui:field: ProjectPicker
+        repo_name:
+          title: "Repository Name"
+          description: What is the name of the repository containing the TechDocs?
+          type: string
+        repo_url:
+          title: Azure DevOps
+          type: string
+          description: Azure DevOps authentication and authorization.
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - dev.azure.com
+            allowedOrganizations:
+              - Belfius-AzureCloud
+            allowedProjects:
+              - ${{ parameters.project }}
+      required:
+        - project
+        - repo_name
+        - repo_url
+      ui:order:
+        - project
+        - repo_name
+        - repo_url
+ 
+  steps:
+    - action: debug:log
+      id: write-debug-line
+      name: Write "Hello Backstage!" log line
+      input:
+        message: Hello Backstage!
+ 
+  output:
+    text:
+      - title: Summary
+        content: |
+          ## Completed
+          -  ${{parameters.project}}
+          -  ${{parameters.repo_name}}
+          -  ${{parameters.repo_url}}

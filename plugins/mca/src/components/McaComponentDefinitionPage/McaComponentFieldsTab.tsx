@@ -292,7 +292,7 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
                 }}
                 aria-label="Filter"
                 startCollapsed
-                style={{ marginLeft: 'auto', maxWidth: '300px' }}
+                size="medium"
               />
             }
           />
