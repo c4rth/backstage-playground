@@ -22,7 +22,7 @@ export const DependentsToggle = ({
       <Chip
         label="All services"
         color={selectedType === 'all' ? 'primary' : 'default'}
-        clickable={true}
+        clickable
         style={chipStyle}
         onClick={() => handleSelectChange('all')}
       />
@@ -30,13 +30,13 @@ export const DependentsToggle = ({
         label="Dependents"
         color={selectedType === 'yes' ? 'primary' : 'default'}
         style={chipStyle}
-        clickable={true}
+        clickable
         onClick={() => handleSelectChange('yes')}
       />
       <Chip
         label="Non-dependents"
         color={selectedType === 'no' ? 'primary' : 'default'}
-        clickable={true}
+        clickable
         style={chipStyle}
         onClick={() => handleSelectChange('no')}
       />

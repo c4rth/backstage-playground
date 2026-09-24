@@ -12,8 +12,9 @@ import { useTemplateSecrets } from '@backstage/plugin-scaffolder-react';
 import { scmAuthApiRef } from '@backstage/integration-react';
 import { AzureDevOpsRepoPickerFieldSchema } from './schemas';
 import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
-import { Select } from '@backstage/ui';
+import { Select, Text, Flex } from '@backstage/ui';
 import { azureDevOpsApiRef } from '../../api';
+import { RiLoaderLine } from '@remixicon/react';
 
 export { AzureDevOpsRepoPickerSchema } from './schemas';
 
@@ -88,7 +89,7 @@ export const AzureDevOpsRepoPicker = (
       fields: ['metadata.name'],
     });
 
-    let uniqueNames = Array.from(
+    const uniqueNames = Array.from(
       new Set(
         items.map(item => {
           // Extract ABCD from 'prd.10.gemz.ABCD.ado.x'
@@ -98,6 +99,9 @@ export const AzureDevOpsRepoPicker = (
         }),
       ),
     );
+
+    /* TODO: for test */
+    uniqueNames.push('java-playground');
 
     const result: Array<{
       id: string;
@@ -109,51 +113,77 @@ export const AzureDevOpsRepoPicker = (
   });
 
   useEffect(() => {
-    if (!selectedProject) {
-      setRepos([]);
-      setSelectedRepo(undefined);
-      return;
+    setRepos([]);
+    setSelectedRepo(undefined);
+    setBranches([]);
+    setSelectedBranch(undefined);
+    let active = true;
+
+    if (selectedProject) {
+      const fetchRepos = async () => {
+        setLoadingRepos(true);
+        const items = await azureDevOpsApi.getRepositories(
+          selectedProject,
+          allowedHost,
+          allowedOrganization,
+        );
+        if (!active) {
+          return;
+        }
+        const fetchedRepos =
+          items?.map(item => ({ id: item, label: item })) ?? [];
+        setRepos(fetchedRepos);
+        setLoadingRepos(false);
+      };
+
+      fetchRepos();
+    } else {
+      setLoadingRepos(false);
     }
 
-    const fetchRepos = async () => {
-      setLoadingRepos(true);
-      const items = await azureDevOpsApi.getRepositories(
-        selectedProject,
-        allowedHost,
-        allowedOrganization,
-      );
-      const fetchedRepos =
-        items?.map(item => ({ id: item, label: item })) ?? [];
-      setRepos(fetchedRepos);
-      setLoadingRepos(false);
+    return () => {
+      active = false;
     };
-
-    fetchRepos();
-  }, [selectedProject]);
+  }, [selectedProject, allowedHost, allowedOrganization, azureDevOpsApi]);
 
   useEffect(() => {
-    if (!selectedProject || !selectedRepo) {
-      setBranches([]);
-      setSelectedBranch(undefined);
-      return;
+    setSelectedBranch(undefined);
+    setBranches([]);
+    let active = true;
+
+    if (selectedProject && selectedRepo) {
+      const fetchBranches = async () => {
+        setLoadingBranches(true);
+        const items = await azureDevOpsApi.getBranches(
+          selectedProject,
+          selectedRepo,
+          allowedHost,
+          allowedOrganization,
+        );
+        if (!active) {
+          return;
+        }
+        const fetchedBranches =
+          items?.map(item => ({ id: item, label: item })) ?? [];
+        setBranches(fetchedBranches);
+        setLoadingBranches(false);
+      };
+
+      fetchBranches();
+    } else {
+      setLoadingBranches(false);
     }
 
-    const fetchBranches = async () => {
-      setLoadingBranches(true);
-      const items = await azureDevOpsApi.getBranches(
-        selectedProject,
-        selectedRepo,
-        allowedHost,
-        allowedOrganization,
-      );
-      const fetchedBranches =
-        items?.map(item => ({ id: item, label: item })) ?? [];
-      setBranches(fetchedBranches);
-      setLoadingBranches(false);
+    return () => {
+      active = false;
     };
-
-    fetchBranches();
-  }, [selectedProject, selectedRepo]);
+  }, [
+    selectedProject,
+    selectedRepo,
+    allowedHost,
+    allowedOrganization,
+    azureDevOpsApi,
+  ]);
 
   useDebounce(
     async () => {
@@ -185,36 +215,55 @@ export const AzureDevOpsRepoPicker = (
   const rawDescription = `${uiSchema['ui:description'] ?? schema.description} (${authStatus})`;
 
   return (
-    <ScaffolderField
-      rawErrors={rawErrors}
-      rawDescription={rawDescription}
-      required={required}
-      errors={errors}
-    >
+    <ScaffolderField rawErrors={rawErrors} required={required} errors={errors}>
+      <Flex direction="column">
+        <Text>{uiSchema['ui:title'] ?? schema.title}</Text>
+        <Text variant="body-small" color="secondary">
+          {rawDescription}
+        </Text>
+      </Flex>
       <Select
         loading={{ state: loadingProjects ? 'loading' : 'idle' }}
+        icon={loadingProjects ? <RiLoaderLine /> : undefined}
         name="project-label"
-        label={uiSchema['ui:title'] ?? schema.title}
+        label="Project"
         search
         value={selectedProject}
         options={projects}
+        placeholder="Select a project"
         onChange={selected => {
           const newValue = selected?.toString() ?? undefined;
+          setSelectedBranch(undefined);
+          setSelectedRepo(undefined);
           setSelectedProject(newValue);
+          onChange({
+            project: newValue ?? '',
+            repository: '',
+            branch: '',
+          });
         }}
         isRequired={required}
         aria-label="Project"
+        style={{ marginTop: '16px' }}
       />
       <Select
         loading={{ state: loadingRepos ? 'loading' : 'idle' }}
+        icon={loadingRepos ? <RiLoaderLine /> : undefined}
         name="repo-label"
         label="Repository"
         search
         value={selectedRepo}
         options={repos}
+        placeholder="Select a repository"
         onChange={selected => {
           const newValue = selected?.toString() ?? undefined;
+          setSelectedBranch(undefined);
           setSelectedRepo(newValue);
+          onChange({
+            project: selectedProject ?? '',
+            repository: newValue ?? '',
+            branch: '',
+          });
         }}
         isRequired={required}
         aria-label="Repository"
@@ -222,16 +271,21 @@ export const AzureDevOpsRepoPicker = (
       />
       <Select
         loading={{ state: loadingBranches ? 'loading' : 'idle' }}
+        icon={loadingBranches ? <RiLoaderLine /> : undefined}
         name="branch-label"
         label="Branch"
         search
-        value={selectedBranch}
+        value={selectedBranch ?? ''}
         options={branches}
+        placeholder="Select a branch"
         onChange={selected => {
           const newValue = selected?.toString() ?? undefined;
           setSelectedBranch(newValue);
-          const repoUrl = `https://${allowedHost}/${allowedOrganization}/${selectedProject}/${selectedRepo}?version=GB${newValue}`;
-          onChange(repoUrl);
+          onChange({
+            project: selectedProject ?? '',
+            repository: selectedRepo ?? '',
+            branch: newValue ?? '',
+          });
         }}
         isRequired={required}
         aria-label="Branch"

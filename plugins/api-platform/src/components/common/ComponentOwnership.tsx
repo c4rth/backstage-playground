@@ -47,14 +47,14 @@ export const ComponentOwnership = ({
         label="All"
         color={selectedType === 'all' ? 'primary' : 'default'}
         style={chipStyle}
-        clickable={true}
+        clickable
         onClick={() => handleSelectChange('all')}
       />
       <Chip
         label="Owned"
         color={selectedType === 'owned' ? 'primary' : 'default'}
         style={chipStyle}
-        clickable={true}
+        clickable
         onClick={() => handleSelectChange('owned')}
       />
     </Box>
