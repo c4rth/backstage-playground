@@ -15,6 +15,7 @@ import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
 import { Select, Text, Flex } from '@backstage/ui';
 import { azureDevOpsApiRef } from '../../api';
 import { RiLoaderLine } from '@remixicon/react';
+import { LoadingIcon } from './LoadingIcon';
 
 export { AzureDevOpsRepoPickerSchema } from './schemas';
 
@@ -224,7 +225,7 @@ export const AzureDevOpsRepoPicker = (
       </Flex>
       <Select
         loading={{ state: loadingProjects ? 'loading' : 'idle' }}
-        icon={loadingProjects ? <RiLoaderLine /> : undefined}
+        icon={loadingProjects ? <LoadingIcon /> : undefined}
         name="project-label"
         label="Project"
         search
@@ -248,7 +249,7 @@ export const AzureDevOpsRepoPicker = (
       />
       <Select
         loading={{ state: loadingRepos ? 'loading' : 'idle' }}
-        icon={loadingRepos ? <RiLoaderLine /> : undefined}
+        icon={loadingRepos ? <LoadingIcon /> : undefined}
         name="repo-label"
         label="Repository"
         search
@@ -271,7 +272,7 @@ export const AzureDevOpsRepoPicker = (
       />
       <Select
         loading={{ state: loadingBranches ? 'loading' : 'idle' }}
-        icon={loadingBranches ? <RiLoaderLine /> : undefined}
+        icon={loadingBranches ? <LoadingIcon /> : undefined}
         name="branch-label"
         label="Branch"
         search
