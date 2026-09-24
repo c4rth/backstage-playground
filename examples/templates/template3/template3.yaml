@@ -1,0 +1,54 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: depo-test-template2
+  title: Test Az Pipeline
+  description: Run a test Azure Pipeline
+spec:
+  owner: group:default/team-a.o
+  type: repository
+ 
+  parameters:
+    - title: "General Information"
+      properties:
+        azdo_repo:
+          title: "Repository Information"
+          description: What is the name of the project, repository and branch?
+          type: object
+          properties:
+            project:
+              type: string
+            repository:
+              type: string
+            branch:
+              type: string
+          required:
+            - project
+            - repository
+            - branch
+          ui:field: AzureDevOpsRepoPicker
+          ui:options:
+            allowedHost: dev.azure.com
+            allowedOrganization: abcd
+      required:
+        - azdo_repo
+      ui:order:
+        - azdo_repo
+ 
+  steps:
+    - action: debug:log
+      id: write-debug-line
+      name: Write "Hello Backstage!" log line
+      input:
+        message: Hello Backstage!
+ 
+  output:
+    text:
+      - title: Summary
+        content: |
+          ## Completed
+          -  ${{parameters.azdo_repo}}
+          -  ${{parameters.azdo_repo.project}}
+          -  ${{parameters.azdo_repo.repository}}
+          -  ${{parameters.azdo_repo.branch}}
+          ## End of Summary
