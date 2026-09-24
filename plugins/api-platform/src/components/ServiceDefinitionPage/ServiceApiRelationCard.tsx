@@ -160,10 +160,7 @@ export const ServiceApiRelationCard = ({
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
-  const {
-    value: entities = [],
-    error,
-  } = useAsync(async () => {
+  const { value: entities = [], error } = useAsync(async () => {
     const relationType =
       dependency === 'consumed' ? RELATION_CONSUMES_API : RELATION_PROVIDES_API;
     const allRelations =

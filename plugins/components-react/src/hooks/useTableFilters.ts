@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 export function useStoredValue<T extends string = string>(
-  storageKey: string, 
-  defaultValue: T = '' as T
+  storageKey: string,
+  defaultValue: T = '' as T,
 ): {
   initialValue: T;
   storeValue: (search: T | null | undefined) => void;

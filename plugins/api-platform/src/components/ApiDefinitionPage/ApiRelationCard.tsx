@@ -190,10 +190,7 @@ export const ApiRelationCard = ({ dependency }: ApiRelationCardProps) => {
   const catalogApi = useApi(catalogApiRef);
   const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
-  const {
-    value: entities,
-    error,
-  } = useAsync(
+  const { value: entities, error } = useAsync(
     () => fetchEntities(catalogApi, entity, dependency),
     [catalogApi, entity, dependency],
   );

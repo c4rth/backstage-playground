@@ -250,4 +250,3 @@ export function dummyCall(prd: boolean): EnvironmentHealthData {
   const data = prd ? prdData() : nonPrdData();
   return data;
 }
-

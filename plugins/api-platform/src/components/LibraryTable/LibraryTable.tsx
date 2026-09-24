@@ -14,10 +14,7 @@ import {
   CardBody,
   FullPage,
 } from '@backstage/ui';
-import {
-  ComponentOwnership,
-  useStoredOwnership,
-} from '../common';
+import { ComponentOwnership, useStoredOwnership } from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,

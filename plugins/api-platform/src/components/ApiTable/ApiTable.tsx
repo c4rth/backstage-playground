@@ -15,10 +15,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../plugin';
 import { useState } from 'react';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
-import {
-  ComponentOwnership,
-  useStoredOwnership,
-} from '../common';
+import { ComponentOwnership, useStoredOwnership } from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
@@ -79,9 +76,9 @@ const getData = async (
     search: search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ApiDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
     apiType,
@@ -89,13 +86,13 @@ const getData = async (
 
   return result
     ? {
-      data: result.items.map(toEntityRow),
-      totalCount: result.totalCount,
-    }
+        data: result.items.map(toEntityRow),
+        totalCount: result.totalCount,
+      }
     : {
-      data: [],
-      totalCount: 0,
-    };
+        data: [],
+        totalCount: 0,
+      };
 };
 
 const COLUMNS: ColumnConfig<TableRow>[] = [
@@ -176,7 +173,8 @@ export const ApiTable = () => {
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
   );
-  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredValue<OpenApiType>(STORAGE_TYPE_KEY, 'all');
+  const { initialValue: selectedType, storeValue: setSelectedType } =
+    useStoredValue<OpenApiType>(STORAGE_TYPE_KEY, 'all');
   const { initialValue, storeValue } = useStoredValue(STORAGE_SEARCH_KEY);
 
   const fetchData = async ({
@@ -233,7 +231,11 @@ export const ApiTable = () => {
       <Card>
         <CardHeader>
           <Header
-            title={getTitle(ownershipType, selectedType as OpenApiType, countRows)}
+            title={getTitle(
+              ownershipType,
+              selectedType as OpenApiType,
+              countRows,
+            )}
             customActions={
               <>
                 <ComponentOwnership
@@ -254,17 +256,17 @@ export const ApiTable = () => {
                     options={API_TYPES}
                   />
                 </Box>
-                  <SearchField
-                    placeholder="Filter..."
-                    value={search.value}
-                    onChange={str => {
-                      storeValue(str);
-                      search.onChange(str);
-                    }}
-                    aria-label="Filter"
-                    size="medium"
-                    startCollapsed
-                  />
+                <SearchField
+                  placeholder="Filter..."
+                  value={search.value}
+                  onChange={str => {
+                    storeValue(str);
+                    search.onChange(str);
+                  }}
+                  aria-label="Filter"
+                  size="medium"
+                  startCollapsed
+                />
               </>
             }
           />

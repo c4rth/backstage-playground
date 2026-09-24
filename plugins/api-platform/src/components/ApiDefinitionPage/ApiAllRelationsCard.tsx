@@ -210,48 +210,46 @@ export const ApiAllRelationsCard = ({
     entity?.metadata?.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '';
   const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
-  const {
-    apiVersions,
-    error: versionsError,
-  } = useGetApiVersions(system, apiName);
+  const { apiVersions, error: versionsError } = useGetApiVersions(
+    system,
+    apiName,
+  );
 
-  const {
-    value: allServices = [],
-    error: servicesError,
-  } = useAsync(async () => {
-    if (!apiVersions?.length || !apiName) return [];
+  const { value: allServices = [], error: servicesError } =
+    useAsync(async () => {
+      if (!apiVersions?.length || !apiName) return [];
 
-    const apiEntities = await catalogApi.getEntities({
-      filter: {
-        kind: ['API'],
-        [`metadata.annotations.${ANNOTATION_API_NAME}`]: [apiName],
-      },
-    });
-
-    const servicePromises = apiEntities.items
-      .filter(
-        apiEntity => apiEntity.metadata.annotations?.[ANNOTATION_API_VERSION],
-      )
-      .map(async apiEntity => {
-        const apiVersion =
-          apiEntity.metadata.annotations?.[
-            ANNOTATION_API_VERSION
-          ]?.toString() ?? '';
-        try {
-          const services = await fetchEntities(
-            catalogApi,
-            apiEntity,
-            dependency,
-          );
-          return services.map(service => ({ ...service, apiVersion }));
-        } catch {
-          return [];
-        }
+      const apiEntities = await catalogApi.getEntities({
+        filter: {
+          kind: ['API'],
+          [`metadata.annotations.${ANNOTATION_API_NAME}`]: [apiName],
+        },
       });
 
-    const serviceArrays = await Promise.all(servicePromises);
-    return serviceArrays.flat();
-  }, [apiVersions, catalogApi, dependency, apiName]);
+      const servicePromises = apiEntities.items
+        .filter(
+          apiEntity => apiEntity.metadata.annotations?.[ANNOTATION_API_VERSION],
+        )
+        .map(async apiEntity => {
+          const apiVersion =
+            apiEntity.metadata.annotations?.[
+              ANNOTATION_API_VERSION
+            ]?.toString() ?? '';
+          try {
+            const services = await fetchEntities(
+              catalogApi,
+              apiEntity,
+              dependency,
+            );
+            return services.map(service => ({ ...service, apiVersion }));
+          } catch {
+            return [];
+          }
+        });
+
+      const serviceArrays = await Promise.all(servicePromises);
+      return serviceArrays.flat();
+    }, [apiVersions, catalogApi, dependency, apiName]);
 
   const rows = allServices.map(toRow);
   const error = versionsError || servicesError;

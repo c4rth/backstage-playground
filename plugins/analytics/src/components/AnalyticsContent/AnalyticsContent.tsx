@@ -69,7 +69,10 @@ export const AnalyticsContent = () => {
     <Container>
       {isLoading && <Progress />}
       {error && (
-        <ResponseErrorPanel title="Failed to call Analytics API" error={error} />
+        <ResponseErrorPanel
+          title="Failed to call Analytics API"
+          error={error}
+        />
       )}
 
       {!isLoading && !error && (

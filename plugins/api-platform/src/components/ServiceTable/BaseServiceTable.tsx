@@ -1,10 +1,10 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentChip, DependentsToggle, ComponentOwnership } from '../common';
-import { 
+import {
   LinkComponentDisplayName,
   useReloadOnChange,
   useStoredValue,
- } from '@internal/plugin-components-react';
+} from '@internal/plugin-components-react';
 import {
   OwnershipType,
   ServiceDefinition,
@@ -16,9 +16,7 @@ import { useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
-import {
-  useStoredOwnership,
-} from '../common';
+import { useStoredOwnership } from '../common';
 import {
   Box,
   Cell,
@@ -151,9 +149,9 @@ const getData = async <T extends BaseTableRow>(
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ServiceDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ServiceDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType: toggleType === 'ownership' ? ownershipType : 'all',
     dependentsType: toggleType === 'dependents' ? dependentsType : undefined,
@@ -161,13 +159,13 @@ const getData = async <T extends BaseTableRow>(
 
   const res = result
     ? {
-      data: result.items.map(toRow),
-      totalCount: result.totalCount,
-    }
+        data: result.items.map(toRow),
+        totalCount: result.totalCount,
+      }
     : {
-      data: [],
-      totalCount: 0,
-    };
+        data: [],
+        totalCount: 0,
+      };
   return res;
 };
 

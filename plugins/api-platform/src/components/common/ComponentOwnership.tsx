@@ -15,7 +15,8 @@ export const ComponentOwnership = ({
   storageKey,
   handleOwnershipChange,
 }: ComponentOwnershipProps) => {
-  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredValue<OwnershipType>(storageKey, 'all');
+  const { initialValue: selectedType, storeValue: setSelectedType } =
+    useStoredValue<OwnershipType>(storageKey, 'all');
   const identityApi = useApi(identityApiRef);
 
   const {

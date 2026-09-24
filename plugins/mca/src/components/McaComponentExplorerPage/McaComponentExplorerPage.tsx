@@ -51,7 +51,8 @@ export const McaComponentExplorerPage = () => {
     return mcaApi.getCsvLastModifiedDate();
   }, [mcaApi]);
 
-  const { initialValue: selectedType, storeValue: setSelectedType } = useStoredValue<McaComponentType>(STORAGE_KEY, DEFAULT_TYPE);
+  const { initialValue: selectedType, storeValue: setSelectedType } =
+    useStoredValue<McaComponentType>(STORAGE_KEY, DEFAULT_TYPE);
 
   const handleSelectChange = (selected: string) => {
     const normalizedType = normalizeComponentType(selected);

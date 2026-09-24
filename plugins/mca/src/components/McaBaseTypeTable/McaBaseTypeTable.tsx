@@ -3,9 +3,7 @@ import {
   McaBaseType,
   McaBaseTypeListOptions,
 } from '@internal/plugin-mca-common';
-import {
-  useStoredValue,
-} from '@internal/plugin-components-react';
+import { useStoredValue } from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
@@ -85,9 +83,9 @@ const getData = async (
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as McaBaseTypeListOptions['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as McaBaseTypeListOptions['orderBy'])
       : undefined,
   });
   if (result) {

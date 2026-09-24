@@ -141,7 +141,7 @@ export const HealthDashboardPage = () => {
         title="Health Dashboard k8s"
         customActions={
           <>
-            <Box style={{ display: 'flex', alignItems: 'center', }}>
+            <Box style={{ display: 'flex', alignItems: 'center' }}>
               <Button
                 variant="secondary"
                 onClick={() => reload()}
@@ -187,7 +187,7 @@ export const HealthDashboardPage = () => {
             />
           )}
           {tableProps.isPending && <Progress />}
-          {(!tableProps.isPending) && (
+          {!tableProps.isPending && (
             <Table
               columnConfig={columns}
               {...tableProps}

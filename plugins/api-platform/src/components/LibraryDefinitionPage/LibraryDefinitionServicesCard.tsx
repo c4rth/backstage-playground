@@ -219,15 +219,13 @@ export const LibraryDefinitionServicesCard = ({
   const [selectedDependency, setSelectedDependency] =
     useState<DependentsType>('all');
 
-  const {
-    libraryVersions,
-    error: errorLibVersion,
-  } = useGetLibraryVersions(system!, name!, false);
+  const { libraryVersions, error: errorLibVersion } = useGetLibraryVersions(
+    system!,
+    name!,
+    false,
+  );
 
-  const {
-    value: allServices = [],
-    error,
-  } = useAsync(async () => {
+  const { value: allServices = [], error } = useAsync(async () => {
     if (!name) return [];
     const result = await fetchAllServices(apiPlatformApi);
     return result.items;

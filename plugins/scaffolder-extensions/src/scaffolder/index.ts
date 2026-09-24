@@ -1,1 +1,0 @@
-export { scaffolderExtensions } from './module';

@@ -157,7 +157,7 @@ export const ApiDefinitionInfoCard = () => {
                   type="url"
                   regular
                 />
-                <CopyTextButton text={mockUrl}  />
+                <CopyTextButton text={mockUrl} />
               </Flex>
             </AboutField>
           </Box>

@@ -125,7 +125,7 @@ integrations:
   azure:
     - host: dev.azure.com
       credentials:
-        #- personalAccessToken: ${ADO_PERSONAL_ACCESS_TOKEN}
+        #- personalAccessToken: ${AZDO_PERSONAL_ACCESS_TOKEN}
         # service principal auth
         #- tenantId: ${AZURE_TENANT_ID}
         #  clientId: ${AZURE_CLIENT_ID}

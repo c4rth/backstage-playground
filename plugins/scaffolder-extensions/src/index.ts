@@ -1,1 +1,1 @@
-export * from './scaffolder';
+export { scaffolderExtensions } from './plugin';

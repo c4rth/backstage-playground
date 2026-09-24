@@ -16,15 +16,12 @@ import {
   CardBody,
 } from '@backstage/ui';
 import { useState } from 'react';
+import { ComponentOwnership, useStoredOwnership } from '../common';
 import {
-  ComponentOwnership,
-  useStoredOwnership,
-} from '../common';
-import { 
   LinkComponentDisplayName,
   useReloadOnChange,
   useStoredValue,
- } from '@internal/plugin-components-react';
+} from '@internal/plugin-components-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { apiPlatformBackendApiRef } from '../../plugin';
@@ -171,7 +168,7 @@ export const SystemTable = () => {
 
   useReloadOnChange(reload, [ownershipType]);
 
- if (tableProps.error) {
+  if (tableProps.error) {
     return (
       <ResponseErrorPanel
         title="Failed to load Systems"

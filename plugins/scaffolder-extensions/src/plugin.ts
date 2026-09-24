@@ -8,7 +8,7 @@ const AlertMessageExtension = FormFieldBlueprint.make({
   name: 'AlertMessage',
   params: {
     field: async () =>
-      import('./AlertMessage').then(m =>
+      import('./extensions/AlertMessage').then(m =>
         createFormField({
           name: 'AlertMessage',
           component: m.AlertMessage,
@@ -21,7 +21,7 @@ const ProjectPickerFieldExtension = FormFieldBlueprint.make({
   name: 'project-picker',
   params: {
     field: async () =>
-      import('./ProjectPicker').then(m =>
+      import('./extensions/ProjectPicker').then(m =>
         createFormField({
           name: 'ProjectPicker',
           component: m.ProjectPicker,

@@ -9,7 +9,6 @@
 }
 
 :root {
-
   .bui-SearchField {
     &[data-startcollapsed='true'] {
       &[data-collapsed='false'] {
@@ -22,7 +21,6 @@
 
   /* Themes */
   [data-theme-mode='light'] {
-
     --bui-accent-bg: #c30045;
     --bui-accent-bg-hover: rgb(166, 0, 59);
     --bui-accent-bg-disabled: rgba(0, 0, 0, 0.12);

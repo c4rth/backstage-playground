@@ -211,9 +211,7 @@ const columns: ColumnConfig<TableRow>[] = [
     width: '20%',
     isRowHeader: true,
     isSortable: true,
-    cell: ({ name }: TableRow) => (
-      <CellText title={name || '-'} />
-    ),
+    cell: ({ name }: TableRow) => <CellText title={name || '-'} />,
   },
   {
     id: 'version',

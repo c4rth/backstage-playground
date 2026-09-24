@@ -64,11 +64,7 @@ export async function generateReport(
       { wch: 22 }, // PRD
     ];
 
-    XLSX.utils.book_append_sheet(
-      workbook,
-      worksheet,
-      `${libVersion.version}`,
-    );
+    XLSX.utils.book_append_sheet(workbook, worksheet, `${libVersion.version}`);
   }
 
   // By service - showing which library version is used in each environment

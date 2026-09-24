@@ -1,4 +1,1 @@
-export {
-  useReloadOnChange,
-  useStoredValue,
-} from './useTableFilters';
+export { useReloadOnChange, useStoredValue } from './useTableFilters';

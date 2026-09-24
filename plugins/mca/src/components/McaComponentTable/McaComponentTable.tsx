@@ -202,9 +202,9 @@ async function getData(
     search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as McaComponentListOptions['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as McaComponentListOptions['orderBy'])
       : undefined,
     type: type,
   });

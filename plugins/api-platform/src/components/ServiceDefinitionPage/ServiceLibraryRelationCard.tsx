@@ -168,10 +168,7 @@ export const ServiceLibraryRelationCard = () => {
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
-  const {
-    value: entities = [],
-    error,
-  } = useAsync(async () => {
+  const { value: entities = [], error } = useAsync(async () => {
     const allRelations =
       entity.relations?.filter(r => r.type === RELATION_DEPENDS_ON) ?? [];
 
