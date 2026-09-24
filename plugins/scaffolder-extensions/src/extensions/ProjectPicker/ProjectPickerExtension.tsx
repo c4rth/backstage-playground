@@ -120,6 +120,7 @@ export const ProjectPicker = (
           setSelectedProject(newValue);
           onChange(newValue);
         }}
+        isRequired={required}
         aria-label="Project"
       />
     </ScaffolderField>

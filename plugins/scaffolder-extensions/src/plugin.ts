@@ -1,8 +1,13 @@
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import {
+  ApiBlueprint,
+  createFrontendPlugin,
+} from '@backstage/frontend-plugin-api';
 import {
   createFormField,
   FormFieldBlueprint,
 } from '@backstage/plugin-scaffolder-react/alpha';
+import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+import { AzureDevOpsClient, azureDevOpsApiRef } from './api';
 
 const AlertMessageExtension = FormFieldBlueprint.make({
   name: 'AlertMessage',
@@ -30,7 +35,39 @@ const ProjectPickerFieldExtension = FormFieldBlueprint.make({
   },
 });
 
+const AzureDevOpsRepoPickerFieldExtension = FormFieldBlueprint.make({
+  name: 'azure-devops-repo-picker',
+  params: {
+    field: async () =>
+      import('./extensions/AzureDevOpsRepoPicker').then(m =>
+        createFormField({
+          name: 'AzureDevOpsRepoPicker',
+          component: m.AzureDevOpsRepoPicker,
+        }),
+      ),
+  },
+});
+
+const azureDevOpsApi = ApiBlueprint.make({
+  name: 'azure-devops',
+  params: defineParams =>
+    defineParams({
+      api: azureDevOpsApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new AzureDevOpsClient({ discoveryApi, fetchApi }),
+    }),
+});
+
 export const scaffolderExtensions = createFrontendPlugin({
   pluginId: 'custom-scaffolder-extensions',
-  extensions: [AlertMessageExtension, ProjectPickerFieldExtension],
+  extensions: [
+    AlertMessageExtension,
+    ProjectPickerFieldExtension,
+    AzureDevOpsRepoPickerFieldExtension,
+    azureDevOpsApi,
+  ],
 });

@@ -6,7 +6,7 @@
     "pluginId": "azure-devops",
     "pluginPackages": [
       "@internal/plugin-azure-devops",
-      "@backstage-community/plugin-azure-devops-backend",
+      "@internal/plugin-azure-devops-backend",
       "@backstage-community/plugin-azure-devops-common"
     ]
   },

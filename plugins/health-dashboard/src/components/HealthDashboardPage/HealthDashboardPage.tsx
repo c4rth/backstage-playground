@@ -128,7 +128,6 @@ export const HealthDashboardPage = () => {
     }
 
     const interval = setInterval(() => {
-      console.log(`Auto-refreshing health data every ${refreshInterval}ms`);
       reload();
     }, refreshInterval);
 

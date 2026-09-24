@@ -249,7 +249,6 @@ export const ApiTable = () => {
                     size="medium"
                     value={selectedType}
                     onChange={selected => {
-                      console.log(`Selected API type changed to: ${selected}`);
                       setSelectedType(selected as OpenApiType);
                     }}
                     aria-label="API Type"
