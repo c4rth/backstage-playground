@@ -617,7 +617,9 @@ export class AzureDevOpsApi {
       await client.getRepositories(projectName);
 
     const repos: string[] = repositories
-      ? repositories.map(repo => repo?.name ?? '')
+      ? repositories
+        .filter(repo => repo?.isDisabled === false)
+        .map(repo => repo?.name ?? '')
       : [];
     const reposFiltered: string[] = repos.filter(repo => repo !== '');
     return reposFiltered.sort((a, b) => a.localeCompare(b));
