@@ -34,7 +34,6 @@
     "@backstage/plugin-scaffolder": "backstage:^",
     "@backstage/plugin-scaffolder-react": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@remixicon/react": ">=4.6.0 <4.9.0",
     "react-use": "^17.6.0"
   },
   "devDependencies": {

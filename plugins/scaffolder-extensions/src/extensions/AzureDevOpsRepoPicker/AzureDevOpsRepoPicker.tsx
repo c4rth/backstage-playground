@@ -14,7 +14,6 @@ import { AzureDevOpsRepoPickerFieldSchema } from './schemas';
 import { ScaffolderField } from '@backstage/plugin-scaffolder-react/alpha';
 import { Select, Text, Flex } from '@backstage/ui';
 import { azureDevOpsApiRef } from '../../api';
-import { RiLoaderLine } from '@remixicon/react';
 import { LoadingIcon } from './LoadingIcon';
 
 export { AzureDevOpsRepoPickerSchema } from './schemas';

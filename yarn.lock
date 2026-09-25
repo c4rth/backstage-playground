@@ -5901,7 +5901,6 @@ __metadata:
     "@backstage/plugin-scaffolder": "backstage:^"
     "@backstage/plugin-scaffolder-react": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
     react: "npm:^18.0.2"
     react-use: "npm:^17.6.0"
@@ -5937,7 +5936,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@internal/plugin-techdocs-addon-drawio@workspace:^, @internal/plugin-techdocs-addon-drawio@workspace:plugins/techdocs-addon-drawio":
+"@internal/plugin-techdocs-addon-drawio@workspace:plugins/techdocs-addon-drawio":
   version: 0.0.0-use.local
   resolution: "@internal/plugin-techdocs-addon-drawio@workspace:plugins/techdocs-addon-drawio"
   dependencies:
@@ -14524,7 +14523,6 @@ __metadata:
     "@internal/plugin-mca": "workspace:^"
     "@internal/plugin-permissions-common": "workspace:^"
     "@internal/plugin-scaffolder-extensions": "workspace:^"
-    "@internal/plugin-techdocs-addon-drawio": "workspace:^"
     "@internal/plugin-techdocs-addon-mermaid": "workspace:^"
     "@internal/plugin-toolkit": "workspace:^"
     "@playwright/test": "npm:^1.32.3"

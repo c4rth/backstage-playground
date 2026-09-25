@@ -31,7 +31,6 @@ import mcaPlugin from '@internal/plugin-mca';
 import { scaffolderExtensions } from '@internal/plugin-scaffolder-extensions';
 import { searchCustomizations } from './modules/search';
 import { techDocsMermaidAddonModule } from '@internal/plugin-techdocs-addon-mermaid';
-import { techDocsDrawIoAddonModule } from '@internal/plugin-techdocs-addon-drawio';
 import {
   catalogPluginProtected,
   scaffolderPluginProtected,
@@ -69,7 +68,6 @@ const app = createApp({
     searchPlugin,
     techdocsPlugin,
     techDocsMermaidAddonModule,
-    techDocsDrawIoAddonModule,
     userSettingsPlugin,
     visualizerPlugin,
     //
