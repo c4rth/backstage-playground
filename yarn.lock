@@ -5901,6 +5901,7 @@ __metadata:
     "@backstage/plugin-scaffolder": "backstage:^"
     "@backstage/plugin-scaffolder-react": "backstage:^"
     "@backstage/ui": "backstage:^"
+    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
     react: "npm:^18.0.2"
     react-use: "npm:^17.6.0"
