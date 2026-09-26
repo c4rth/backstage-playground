@@ -96,6 +96,10 @@
   background-color: var(--bui-bg-neutral-1);
 }
 
+.wrapper :global(.swagger-ui .info p) {
+  font-family: var(--bui-font-regular);
+  color: var(--bui-fg-secondary);
+}
 .wrapper :global(.swagger-ui .opblock-summary-method),
 .wrapper :global(.swagger-ui .info a) {
   font-family: var(--bui-font-regular);
