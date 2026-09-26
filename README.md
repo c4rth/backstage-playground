@@ -13,7 +13,7 @@ yarn backstage-cli versions:bump
 ```
 
 ```sh
-curl -o backstage-manifest.json https://versions.backstage.io/v1/releases/1.55.1/manifest.json
+curl -o backstage-manifest.json https://versions.backstage.io/v1/releases/1.55.2/manifest.json
 ```
 
 ## install packages

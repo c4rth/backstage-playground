@@ -29,7 +29,7 @@ spec:
           ui:field: AzureDevOpsRepoPicker
           ui:options:
             allowedHost: dev.azure.com
-            allowedOrganization: abcd
+            allowedOrganization: thierrycarels0265
       required:
         - azdo_repo
       ui:order:

@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.55.1",
+  "releaseVersion": "1.55.2",
   "packages": [
     {
       "name": "@backstage/app-defaults",
@@ -831,7 +831,7 @@
     },
     {
       "name": "@backstage/plugin-techdocs-node",
-      "version": "2.0.0"
+      "version": "2.0.1"
     },
     {
       "name": "@backstage/plugin-techdocs-react",

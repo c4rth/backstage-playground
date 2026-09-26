@@ -57,6 +57,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@protobufjs/inquire": "1.1.2",
+    "got": "11.7.0",
     "nan": "2.27.0"
   },
   "prettier": "@backstage/cli/config/prettier",
@@ -74,5 +75,5 @@
       "@asyncapi/react-component"
     ]
   },
-  "packageManager": "yarn@4.18.0"
+  "packageManager": "yarn@4.18.1"
 }
