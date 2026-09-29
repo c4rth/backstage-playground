@@ -254,7 +254,11 @@ catalog:
   disableRelationsCompatibility: true
   # processingInterval: false
   # processingInterval: { hours: 1 }
+  processingInterval: { years: 1 }
   # stitchingStrategy: {mode: 'immediate' }
+  stitchingStrategy:
+    pollingInterval: { hours: 1 }
+    stitchTimeout: { minutes: 1 }
   orphanStrategy: delete
   rules:
     - allow:

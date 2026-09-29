@@ -34,7 +34,7 @@
     "clean": "backstage-cli package clean"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops-common": "^0.26.0",
+    "@backstage-community/plugin-azure-devops-common": "^0.27.0",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
