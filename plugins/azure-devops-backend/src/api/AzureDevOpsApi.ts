@@ -618,8 +618,8 @@ export class AzureDevOpsApi {
 
     const repos: string[] = repositories
       ? repositories
-        .filter(repo => repo?.isDisabled === false)
-        .map(repo => repo?.name ?? '')
+          .filter(repo => repo?.isDisabled === false)
+          .map(repo => repo?.name ?? '')
       : [];
     const reposFiltered: string[] = repos.filter(repo => repo !== '');
     return reposFiltered.sort((a, b) => a.localeCompare(b));

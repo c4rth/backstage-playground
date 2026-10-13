@@ -60,8 +60,9 @@ export const ApiDefinitionPage = () => {
 
   const isLinterAvailable =
     apiEntity && isApiDocsSpectralLinterAvailable(apiEntity);
-  const isMcaApi =
-    apiEntity?.metadata.annotations?.['api.depo.be/type'] === 'mca';
+  const apiType = apiEntity?.metadata.annotations?.['api.depo.be/type'] ?? '';
+  const hideLintTab =
+    apiType === 'mca' || apiType === 'public' || apiType === 'third-party';
 
   return (
     <AsyncEntityProvider loading={loading} error={error} entity={apiEntity}>
@@ -95,7 +96,7 @@ export const ApiDefinitionPage = () => {
         tabs={[
           { id: 'openapi', label: 'OpenAPI', href: '.' },
           { id: 'raw', label: 'Raw', href: 'raw' },
-          ...(isLinterAvailable && !isMcaApi
+          ...(isLinterAvailable && !hideLintTab
             ? [{ id: 'lint', label: 'Lint', href: 'lint' }]
             : []),
           { id: 'services', label: 'Services', href: 'services' },
@@ -107,7 +108,7 @@ export const ApiDefinitionPage = () => {
           <Routes>
             <Route path="/" element={<ApiDefinitionSwaggerCard />} />
             <Route path="raw" element={<ApiDefinitionRawCard />} />
-            {isLinterAvailable && !isMcaApi && (
+            {isLinterAvailable && !hideLintTab && (
               <Route
                 path="lint"
                 element={<EntityApiDocsSpectralLinterCard />}

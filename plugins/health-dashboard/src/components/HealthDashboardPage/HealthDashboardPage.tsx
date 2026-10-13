@@ -18,7 +18,11 @@ import {
   HealthDataError,
   HealthDataResponse,
 } from '../../types';
-import { HealthProbeCell } from './HealthProbeCell';
+import {
+  HealthProbeCell,
+  OTHER_STATUS_COLOR,
+  STATUS_COLORS,
+} from './HealthProbeCell';
 import {
   InformationPopup,
   InformationPopupContent,
@@ -38,6 +42,29 @@ const POPUP_CONTENT = (
     text1="View the health dashboard for applications deployed in k8s. This screen displays each application and the health status reported for each environment."
     text2="The health status reflects the response returned by the applications, helping you quickly identify which services are healthy and which require attention."
   />
+);
+
+const LEGEND_ITEMS = [
+  ...Object.entries(STATUS_COLORS).map(([status, color]) => ({
+    label: status,
+    color,
+  })),
+  { label: 'other', color: OTHER_STATUS_COLOR },
+];
+
+const Legend = () => (
+  <div className={styles.legend} aria-label="Status color legend">
+    <b>Legend</b>
+    {LEGEND_ITEMS.map(({ label, color }) => (
+      <div key={label} className={styles.legendItem}>
+        <span
+          className={styles.legendBullet}
+          style={{ backgroundColor: color }}
+        />
+        {label}
+      </div>
+    ))}
+  </div>
 );
 
 type TableRow = {
@@ -163,6 +190,7 @@ export const HealthDashboardPage = () => {
           </>
         }
       />
+      <Legend />
       <FullPage>
         <Container
           style={{

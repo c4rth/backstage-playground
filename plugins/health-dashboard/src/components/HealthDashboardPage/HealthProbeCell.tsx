@@ -41,13 +41,14 @@ const StatusTable = memo(
   ),
 );
 
-const STATUS_COLORS: Record<number, string> = {
+export const STATUS_COLORS: Record<number, string> = {
   200: '#4caf50',
   202: '#2196f3',
   404: '#9e9e9e',
 };
+export const OTHER_STATUS_COLOR = '#f44336';
 const getBulletColor = (status: number): string =>
-  STATUS_COLORS[status] ?? '#f44336';
+  STATUS_COLORS[status] ?? OTHER_STATUS_COLOR;
 
 const getHealthUrl = (probeUrl: string | undefined): string => {
   if (!probeUrl) {

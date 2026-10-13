@@ -10,10 +10,9 @@ export const OpenApiDefinition = ({
   definition,
   ...swaggerUiProps
 }: OpenApiDefinitionProps) => {
-
   return (
     <div className={styles.wrapper}>
-      <SwaggerUI 
+      <SwaggerUI
         spec={definition}
         deepLinking
         displayOperationId={true}
