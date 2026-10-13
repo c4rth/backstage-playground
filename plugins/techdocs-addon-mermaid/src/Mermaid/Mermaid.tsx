@@ -24,6 +24,7 @@ import { MermaidProps } from './props';
 import { BackstageTheme } from '@backstage/theme';
 import { ZoomHandler } from './zoomHandler';
 import { deepMerge } from './utils';
+import zenuml from '@mermaid-js/mermaid-zenuml';
 
 export function selectConfig(
   backstagePalette: PaletteType,
@@ -49,8 +50,89 @@ export function selectConfig(
 
 let diagramId = 0;
 
+const candidateSelectors = [
+  '.highlighttable',
+  '.highlight',
+  'pre.mermaid',
+  '.mermaid',
+  '.language-mermaid',
+];
+const lineNumberSelectors = '.linenos, .linenodiv, .lnt';
+
+const stripLineNumberGutters = (text: string): string => {
+  const lines = text.split('\n');
+  if (lines.length < 2) {
+    return text.trim();
+  }
+
+  const stripped: string[] = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    const expected = String(index + 1);
+    const line = lines[index];
+    if (line === expected) {
+      stripped.push('');
+      continue;
+    }
+    if (line.startsWith(`${expected} `) || line.startsWith(`${expected}\t`)) {
+      stripped.push(line.slice(expected.length + 1));
+      continue;
+    }
+    const nextChar = line.charAt(expected.length);
+    if (
+      line.startsWith(expected) &&
+      nextChar !== '' &&
+      /[A-Za-z%]/.test(nextChar)
+    ) {
+      stripped.push(line.slice(expected.length));
+      continue;
+    }
+    return text.trim();
+  }
+  return stripped.join('\n').trim();
+};
+
+const getDiagramSource = (element: HTMLElement): string => {
+  // const sourceRoot = element.matches('code')
+  //  ? element
+  //  : (element.querySelector('code') ?? element);
+  const sourceRoot = element.localName === 'code'
+    ? element
+    : (element.querySelector('code') ?? element);
+  const clone = sourceRoot.cloneNode(true);
+  if (clone instanceof HTMLElement) {
+    clone.querySelectorAll(lineNumberSelectors).forEach(node => node.remove());
+  }
+  return stripLineNumberGutters(clone.textContent ?? '');
+};
+
+/**
+ * mkdocs tags a highlighted block with the fence language, either on the
+ * wrapper or on the nested `pre`/`code`, e.g. `language-python`. Languages
+ * pygments has no lexer for - `mermaid` among them, depending on the mkdocs
+ * version - fall back to `language-text`.
+ */
+const languageClassPattern = /(?:^|\s)language-([\w-]+)/;
+
+const declaredLanguage = (element: HTMLElement): string | undefined => {
+  const carriers = [element, ...element.querySelectorAll('pre, code')];
+  for (const carrier of carriers) {
+    const match = languageClassPattern.exec(carrier.className);
+    if (match) {
+      return match[1];
+    }
+  }
+  return undefined;
+};
+
+const outermostCandidates = (elements: HTMLElement[]): HTMLElement[] => {
+  const unique = [...new Set(elements)];
+  return unique.filter(element =>
+    unique.every(other => other === element || !other.contains(element)),
+  );
+};
+
 const makeDiagram = async (
-  el: HTMLDivElement | HTMLPreElement,
+  el: HTMLElement,
   diagramText: string,
   properties: MermaidProps,
 ) => {
@@ -58,6 +140,7 @@ const makeDiagram = async (
 
   const diagramElement = document.createElement('div');
   diagramElement.className = 'mermaid';
+  diagramElement.dataset.mermaidRendered = 'true';
   // Clip the element when outside parent when panning
   diagramElement.style.overflow = 'hidden';
 
@@ -87,11 +170,7 @@ const makeDiagram = async (
 };
 
 export const MermaidAddon = (properties: MermaidProps) => {
-  const highlightTables = useShadowRootElements<HTMLDivElement>([
-    '.highlighttable',
-  ]);
-  const highlightDivs = useShadowRootElements<HTMLDivElement>(['.highlight']);
-  const mermaidPreBlocks = useShadowRootElements<HTMLPreElement>(['.mermaid']);
+  const candidates = useShadowRootElements<HTMLElement>(candidateSelectors);
   const theme = useTheme<BackstageTheme>();
 
   const [initialized, setInitialized] = useState(false);
@@ -100,15 +179,19 @@ export const MermaidAddon = (properties: MermaidProps) => {
     if (initialized) {
       return;
     }
-    const config: MermaidConfig = selectConfig(theme.palette.type, properties);
-    if (properties.iconLoaders) {
-      mermaid.registerIconPacks(properties.iconLoaders);
-    }
-    if (properties.layoutLoaders) {
-      mermaid.registerLayoutLoaders(properties.layoutLoaders);
-    }
-    mermaid.initialize({ suppressErrorRendering: true, ...config });
-    setInitialized(true);
+    const initialize = async () => {
+      await mermaid.registerExternalDiagrams([zenuml]);
+      const config: MermaidConfig = selectConfig(theme.palette.type, properties);
+      if (properties.iconLoaders) {
+        mermaid.registerIconPacks(properties.iconLoaders);
+      }
+      if (properties.layoutLoaders) {
+        mermaid.registerLayoutLoaders(properties.layoutLoaders);
+      }
+      mermaid.initialize({ suppressErrorRendering: true, ...config });
+      setInitialized(true);
+    };
+    initialize();
   }, [initialized, properties, theme.palette.type]);
 
   useEffect(() => {
@@ -116,90 +199,39 @@ export const MermaidAddon = (properties: MermaidProps) => {
       return;
     }
 
-    highlightTables.forEach(highlightTable => {
-      if (!highlightTable.classList.contains('language-text')) {
+    outermostCandidates(candidates).forEach(candidate => {
+      if (
+        candidate.style.display === 'none' ||
+        candidate.dataset.mermaidRendered === 'true'
+      ) {
         return;
       }
 
-      // Skip already processed
-      if (highlightTable.style.display === 'none') {
+      const diagramText = getDiagramSource(candidate);
+      if (!diagramText) {
         return;
       }
 
-      const codeBlock = highlightTable.querySelector('code');
-      if (!codeBlock) {
-        return;
+      const language = declaredLanguage(candidate);
+      const isExplicitMermaid =
+        language === 'mermaid' || candidate.matches('pre.mermaid, .mermaid');
+
+      if (!isExplicitMermaid) {
+        // A block that declares a language is an ordinary code sample. Only
+        // undeclared and `text` blocks are guessed at, otherwise snippets that
+        // happen to start with `graph`, `info` or `pie` get mistaken for
+        // diagrams.
+        if (language && language !== 'text') {
+          return;
+        }
+        if (!isMermaidCode(diagramText)) {
+          return;
+        }
       }
 
-      const diagramText = codeBlock.textContent || '';
-
-      // Ideally we could detect mermaid based on some annotation, but use a regex for now
-      if (!isMermaidCode(diagramText)) {
-        return;
-      }
-
-      makeDiagram(highlightTable, diagramText, properties);
+      makeDiagram(candidate, diagramText, properties);
     });
-  }, [initialized, highlightTables, properties]);
-
-  useEffect(() => {
-    if (!initialized) {
-      return;
-    }
-
-    highlightDivs.forEach(highlightDiv => {
-      if (!highlightDiv.classList.contains('language-text')) {
-        return;
-      }
-
-      // Skip already processed
-      if (highlightDiv.style.display === 'none') {
-        return;
-      }
-
-      // skip mkdocs-material < 9 code blocks (handled above)
-      const table = highlightDiv.querySelector('table');
-      if (!table) {
-        return;
-      }
-
-      const codeBlock = highlightDiv.querySelector('code');
-      if (!codeBlock) {
-        return;
-      }
-
-      const diagramText = codeBlock.textContent || '';
-
-      // Ideally we could detect mermaid based on some annotation, but use a regex for now
-      if (!isMermaidCode(diagramText)) {
-        return;
-      }
-
-      makeDiagram(highlightDiv, diagramText, properties);
-    });
-  }, [initialized, highlightDivs, properties]);
-
-  useEffect(() => {
-    if (!initialized) {
-      return;
-    }
-
-    mermaidPreBlocks.forEach(mermaidPreBlock => {
-      // Skip already processed
-      if (mermaidPreBlock.style.display === 'none') {
-        return;
-      }
-
-      const codeBlock = mermaidPreBlock.querySelector('code');
-      if (!codeBlock) {
-        return;
-      }
-
-      const diagramText = codeBlock.textContent || '';
-
-      makeDiagram(mermaidPreBlock, diagramText, properties);
-    });
-  }, [initialized, mermaidPreBlocks, properties]);
+  }, [initialized, candidates, properties]);
 
   return null;
 };

@@ -20,7 +20,8 @@ export const isMermaidCode = (code: string): boolean => {
   try {
     mermaid.detectType(code);
     return true;
-  } catch (_) {
+  } catch (e) {
+    console.error('Failed to detect mermaid code:', e);
     return false;
   }
 };
