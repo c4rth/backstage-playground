@@ -9,6 +9,7 @@ import {
   Table,
   Text,
   useTable,
+  Column,
 } from '@backstage/ui';
 import { TopFeature } from '../../api/CustomAnalyticsApi';
 
@@ -49,6 +50,11 @@ const columns: ColumnConfig<TableRow>[] = [
         <Box style={centerStyle}>{item.uniqueVisitors}</Box>
       </Cell>
     ),
+    header: () => (
+      <Column id="uniqueVisitors" className="centered-col-header">
+        <Text weight="bold">Unique Visitors</Text>
+      </Column>
+    ),
   },
   {
     id: 'totalHits',
@@ -58,6 +64,11 @@ const columns: ColumnConfig<TableRow>[] = [
       <Cell>
         <Box style={centerStyle}>{item.totalHits}</Box>
       </Cell>
+    ),
+    header: () => (
+      <Column id="totalHits" className="centered-col-header">
+        <Text weight="bold">Total Hits</Text>
+      </Column>
     ),
   },
 ];

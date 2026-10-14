@@ -52,7 +52,6 @@ backend:
           subject: mcp-clients
         accessRestrictions:
           - plugin: mcp-actions
-          - plugin: catalog
 
   baseUrl: http://localhost:7007
   listen:
