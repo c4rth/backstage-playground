@@ -45,11 +45,12 @@ const POPUP_CONTENT = (
 );
 
 const LEGEND_ITEMS = [
-  ...Object.entries(STATUS_COLORS).map(([status, color]) => ({
-    label: status,
+  ...Object.entries(STATUS_COLORS).map(([status, { color, label}]) => ({
+    status,
     color,
+    label
   })),
-  { label: 'other', color: OTHER_STATUS_COLOR },
+  { status: 'other', color: OTHER_STATUS_COLOR.color, label: OTHER_STATUS_COLOR.label },
 ];
 
 const Legend = () => (
