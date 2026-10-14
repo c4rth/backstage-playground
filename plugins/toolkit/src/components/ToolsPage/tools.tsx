@@ -1,6 +1,5 @@
 import { lazy } from 'react';
 import { Tool } from './types';
-import { JsonDecoder } from '../Tools/JsonDecoder';
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
@@ -10,6 +9,7 @@ const LoremIpsum = lazy(() => import('../Tools/LoremIpsum'));
 const JSONataTester = lazy(() => import('../Tools/jsonata/JSONataTester'));
 const StringUtilities = lazy(() => import('../Tools/StringUtilities'));
 const CryptoCoder = lazy(() => import('../Tools/CryptoCoder'));
+const JsonFormater = lazy(() => import('../Tools/JsonFormater'));
 
 export const defaultTools: Tool[] = [
   {
@@ -42,11 +42,11 @@ export const defaultTools: Tool[] = [
     description: 'Test JSONata expressions',
   },
   {
-    id: 'json-decoder',
-    name: 'JSON Decoder',
-    component: <JsonDecoder />,
+    id: 'json-formater',
+    name: 'JSON Formater',
+    component: <JsonFormater />,
     category: 'Decode',
-    description: 'Decode JSON strings',
+    description: 'Format JSON strings',
   },
   {
     id: 'crypto-coder',

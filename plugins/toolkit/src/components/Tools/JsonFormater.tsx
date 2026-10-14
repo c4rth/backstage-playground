@@ -5,7 +5,7 @@ import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
 import { appThemeApiRef } from '@backstage/core-plugin-api';
 
-export const JsonDecoder = () => {
+export const JsonFormater = () => {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState<any>(undefined);
   const appThemeApi = useApi(appThemeApiRef);
@@ -17,7 +17,7 @@ export const JsonDecoder = () => {
     return currentThemeId?.includes('dark') ?? preferedColor;
   });
 
-  const JsonDecoderOutput = (props: {
+  const JsonFormaterOutput = (props: {
     json?: any;
     signatureVerified?: boolean | null;
     verificationError?: string;
@@ -104,9 +104,9 @@ export const JsonDecoder = () => {
       mode="Decode"
       setInput={setInput}
       output={output}
-      rightContent={<JsonDecoderOutput json={output} />}
+      rightContent={<JsonFormaterOutput json={output} />}
     />
   );
 };
 
-export default JsonDecoder;
+export default JsonFormater;
