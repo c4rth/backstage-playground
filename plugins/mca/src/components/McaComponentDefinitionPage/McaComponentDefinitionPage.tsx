@@ -7,7 +7,7 @@ import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { Select, Option, PluginHeader, Container, Header } from '@backstage/ui';
 import { RiBubbleChartLine } from '@remixicon/react';
-import { Progress } from '@internal/plugin-components-react';
+import { Progress, useDocumentTitle } from '@internal/plugin-components-react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { componentRouteRef } from '../../routes';
 import { McaComponentDefinitionTabs } from './McaComponentDefinitionTabs';
@@ -75,6 +75,7 @@ export const McaComponentDefinitionPage = memo(() => {
   const mcaApi = useApi(mcaComponentsBackendApiRef);
   const { name } = useRouteRefParams(componentRouteRef);
   const [searchParams] = useSearchParams();
+  useDocumentTitle(`MCA Component - ${name}`);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

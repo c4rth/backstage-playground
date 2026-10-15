@@ -1,5 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { useEffect, useState } from 'react';
@@ -27,6 +28,7 @@ export const McaBaseTypeDefinitionPage = () => {
   const configApi = useApi(configApiRef);
   const { name } = useRouteRefParams(baseTypeRouteRef);
   const navigate = useNavigate();
+  useDocumentTitle(`MCA BaseType - ${name}`);
 
   const [error, setError] = useState<Error | null>(null);
   const [baseType, setBaseType] = useState<McaBaseType>();

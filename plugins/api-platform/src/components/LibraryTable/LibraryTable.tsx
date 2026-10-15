@@ -18,6 +18,7 @@ import { ComponentOwnership, useStoredOwnership } from '../common';
 import {
   ComponentDisplayName,
   LinkComponentDisplayName,
+  useDocumentTitle,
   useReloadOnChange,
   useStoredValue,
 } from '@internal/plugin-components-react';
@@ -126,6 +127,7 @@ const emptyState = () => (
 );
 
 export const LibraryTable = () => {
+  useDocumentTitle('Library Explorer');
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,

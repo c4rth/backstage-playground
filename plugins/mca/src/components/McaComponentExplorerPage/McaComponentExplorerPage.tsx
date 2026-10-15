@@ -1,5 +1,8 @@
 import { useApi } from '@backstage/core-plugin-api';
-import { useStoredValue } from '@internal/plugin-components-react';
+import {
+  useStoredValue,
+  useDocumentTitle,
+} from '@internal/plugin-components-react';
 import { McaComponentTable } from '../McaComponentTable';
 import {
   InformationPopup,
@@ -45,6 +48,7 @@ function normalizeComponentType(type: string): McaComponentType {
 }
 
 export const McaComponentExplorerPage = () => {
+  useDocumentTitle('MCA Components');
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const { value: lastModifiedDate } = useAsync(async () => {

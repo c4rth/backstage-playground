@@ -1,5 +1,6 @@
 import { RiShapesLine } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/core-plugin-api';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import {
   AsyncEntityProvider,
   entityRouteRef,
@@ -16,6 +17,7 @@ import {
 export const SystemDefinitionPage = () => {
   const { name } = useRouteRefParams(entityRouteRef);
   const { systemDefinition, loading, error } = useGetSystem(name);
+  useDocumentTitle(`System - ${name}`);
 
   return (
     <AsyncEntityProvider

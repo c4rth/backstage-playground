@@ -2,6 +2,7 @@ import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-components-react';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import { McaBaseTypeTable } from '../McaBaseTypeTable/McaBaseTypeTable';
 import { Container, FullPage, PluginHeader } from '@backstage/ui';
 import { RiAlbumLine } from '@remixicon/react';
@@ -14,6 +15,7 @@ const POPUP_CONTENT = (
 );
 
 export const McaBaseTypeExplorerPage = () => {
+  useDocumentTitle('MCA BaseTypes');
   return (
     <>
       <PluginHeader

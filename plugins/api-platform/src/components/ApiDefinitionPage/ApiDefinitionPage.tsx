@@ -7,6 +7,7 @@ import { ApiEntity } from '@backstage/catalog-model';
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
 import { Container, Header, PluginHeader, Select } from '@backstage/ui';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import { RiPuzzleFill } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { apiPlatformApiDefinitionRouteRef } from '../../routes';
@@ -18,11 +19,14 @@ import {
 } from './ApiDefinitionCards';
 import { ApiDefinitionSwaggerCard } from './ApiDefinitionCards';
 import { EntityApiDocsSpectralLinterCard } from '@internal/plugin-api-docs-spectral-linter';
+import type { ComponentProps } from 'react';
 
 export const ApiDefinitionPage = () => {
   const { system, name } = useRouteRefParams(apiPlatformApiDefinitionRouteRef);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
+
+  useDocumentTitle(`API - ${name}`);
 
   const { apiVersions, loading, error } = useGetApiVersions(
     system ?? API_NO_SYSTEM,
@@ -49,6 +53,25 @@ export const ApiDefinitionPage = () => {
     selectedVersion && versions.some(version => version.id === selectedVersion)
       ? selectedVersion
       : defaultVersion;
+
+  const handleVersionChange: NonNullable<
+    ComponentProps<typeof Select>['onChange']
+  > = selected => {
+    const versionId = selected?.toString();
+    setSelectedVersion(versionId);
+    setSearchParams(currentParams => {
+      const nextParams = new URLSearchParams(currentParams);
+      const version = versions.find(option => option.id === versionId);
+
+      if (version) {
+        nextParams.set('version', version.label);
+      } else {
+        nextParams.delete('version');
+      }
+
+      return nextParams;
+    });
+  };
 
   useEffect(() => {
     if (activeVersion) {
@@ -80,11 +103,7 @@ export const ApiDefinitionPage = () => {
             label: 'Version',
             value: (
               <Select
-                onChange={selected => {
-                  setSelectedVersion(
-                    selected ? selected.toString() : undefined,
-                  );
-                }}
+                onChange={handleVersionChange}
                 options={versions}
                 value={activeVersion}
                 style={{ minWidth: '200px' }}

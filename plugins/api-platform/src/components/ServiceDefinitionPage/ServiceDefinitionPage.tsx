@@ -1,5 +1,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ComponentProps } from 'react';
 import { useGetServiceVersions } from '../../hooks/useGetServiceVersions';
 import { ComponentEntity } from '@backstage/catalog-model';
 import {
@@ -9,6 +10,7 @@ import {
 import { Routes, Route, useSearchParams } from 'react-router-dom';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { Container, PluginHeader, Select, Header } from '@backstage/ui';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import { RiCpuLine } from '@remixicon/react';
 import { useRouteRefParams } from '@backstage/frontend-plugin-api';
 import { apiPlatformServiceDefinitionRouteRef } from '../../routes';
@@ -59,7 +61,7 @@ export const ServiceDefinitionPage = () => {
   const { system, name } = useRouteRefParams(
     apiPlatformServiceDefinitionRouteRef,
   );
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
   const queryEnv = searchParams.get('env');
   const {
@@ -78,6 +80,7 @@ export const ServiceDefinitionPage = () => {
   >(undefined);
   const isInitialLoad = useRef(true);
   const catalogApi = useApi(catalogApiRef);
+  useDocumentTitle(`Service - ${name}`);
 
   const mapVersionEnv = useMemo(
     () => parseServiceDefinition(serviceDefinition),
@@ -116,6 +119,62 @@ export const ServiceDefinitionPage = () => {
       ? Array.from(selectedSvc.keys()).map(s => ({ label: s, id: s }))
       : [];
   }, [selectedVersion, mapVersionEnv]);
+
+  const handleVersionChange: NonNullable<
+    ComponentProps<typeof Select>['onChange']
+  > = selected => {
+    const version = selected?.toString();
+    const versionEnvironments = version
+      ? mapVersionEnv.get(version)
+      : undefined;
+    const environment =
+      selectedEnvironment && versionEnvironments?.has(selectedEnvironment)
+        ? selectedEnvironment
+        : versionEnvironments?.keys().next().value;
+
+    isInitialLoad.current = false;
+    setSelectedVersion(version);
+    setSelectedEnvironment(environment);
+    setSearchParams(currentParams => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (version) {
+        nextParams.set('version', version);
+      } else {
+        nextParams.delete('version');
+      }
+
+      if (environment) {
+        nextParams.set('env', environment);
+      } else {
+        nextParams.delete('env');
+      }
+
+      return nextParams;
+    });
+  };
+
+  const handleEnvironmentChange: NonNullable<
+    ComponentProps<typeof Select>['onChange']
+  > = selected => {
+    const environment = selected?.toString();
+
+    isInitialLoad.current = false;
+    setSelectedEnvironment(environment);
+    setSearchParams(currentParams => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (selectedVersion) {
+        nextParams.set('version', selectedVersion);
+      }
+
+      if (environment) {
+        nextParams.set('env', environment);
+      } else {
+        nextParams.delete('env');
+      }
+
+      return nextParams;
+    });
+  };
 
   useEffect(() => {
     if (selectedVersion && !selectedEnvironment && environments.length > 0) {
@@ -172,11 +231,7 @@ export const ServiceDefinitionPage = () => {
             label: 'Version',
             value: (
               <Select
-                onChange={selected => {
-                  setSelectedVersion(
-                    selected ? selected.toString() : undefined,
-                  );
-                }}
+                onChange={handleVersionChange}
                 options={versions}
                 value={selectedVersion}
                 style={{ minWidth: '50px' }}
@@ -188,11 +243,7 @@ export const ServiceDefinitionPage = () => {
             label: 'Environment',
             value: (
               <Select
-                onChange={selected =>
-                  setSelectedEnvironment(
-                    selected ? selected.toString() : undefined,
-                  )
-                }
+                onChange={handleEnvironmentChange}
                 options={environments}
                 value={selectedEnvironment}
                 style={{ minWidth: '50px' }}

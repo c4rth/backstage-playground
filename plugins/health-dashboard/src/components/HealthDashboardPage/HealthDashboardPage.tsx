@@ -27,6 +27,7 @@ import {
   InformationPopup,
   InformationPopupContent,
   Progress,
+  useDocumentTitle,
 } from '@internal/plugin-components-react';
 import styles from './HealthDashboardPage.module.css';
 import { RiRestartLine } from '@remixicon/react';
@@ -45,12 +46,16 @@ const POPUP_CONTENT = (
 );
 
 const LEGEND_ITEMS = [
-  ...Object.entries(STATUS_COLORS).map(([status, { color, label}]) => ({
+  ...Object.entries(STATUS_COLORS).map(([status, { color, label }]) => ({
     status,
     color,
-    label
+    label,
   })),
-  { status: 'other', color: OTHER_STATUS_COLOR.color, label: OTHER_STATUS_COLOR.label },
+  {
+    status: 'other',
+    color: OTHER_STATUS_COLOR.color,
+    label: OTHER_STATUS_COLOR.label,
+  },
 ];
 
 const Legend = () => (
@@ -129,6 +134,7 @@ const REFRESH_INTERVALS = [
 ];
 
 export const HealthDashboardPage = () => {
+  useDocumentTitle('Health Dashboard');
   const getHealthData = useGetHealthData();
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],

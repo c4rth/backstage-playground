@@ -1,4 +1,5 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import { LibraryDefinitionVersionsCard } from './LibraryDefinitionVersionsCard';
 import { LibraryDefinitionServicesCard } from './LibraryDefinitionServicesCard';
 import { useEffect, useState } from 'react';
@@ -48,6 +49,7 @@ export const LibraryDefinitionVersionsPage = ({
     LibraryDefinition[] | undefined
   >(undefined);
 
+  useDocumentTitle(`Library - ${name}`);
   useEffect(() => {
     if (!name || !system) return;
 

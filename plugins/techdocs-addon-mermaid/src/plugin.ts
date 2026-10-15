@@ -1,18 +1,18 @@
-import { createElement } from "react";
+import { createElement } from 'react';
 import {
   AddonBlueprint,
   TechDocsAddonOptions,
-} from "@backstage/plugin-techdocs-react/alpha";
-import { MermaidAddon } from "./Mermaid";
+} from '@backstage/plugin-techdocs-react/alpha';
+import { MermaidAddon } from './Mermaid';
 import {
   createFrontendModule,
   useApi,
   configApiRef,
-} from "@backstage/frontend-plugin-api";
-import type { Config } from "@backstage/config";
-import type { IconLoader, MermaidProps } from "./Mermaid/props";
-import type { MermaidConfig } from "mermaid";
-import type { IconifyJSON } from "@iconify/types";
+} from '@backstage/frontend-plugin-api';
+import type { Config } from '@backstage/config';
+import type { IconLoader, MermaidProps } from './Mermaid/props';
+import type { MermaidConfig } from 'mermaid';
+import type { IconifyJSON } from '@iconify/types';
 
 /**
  * Resolves a configured icon pack's `package` value into a fetchable URL
@@ -29,8 +29,8 @@ export function resolveIconPackUrl(packageOrUrl: string): string {
     return packageOrUrl;
   }
 
-  const segments = packageOrUrl.split("/");
-  const hasSubpath = packageOrUrl.startsWith("@")
+  const segments = packageOrUrl.split('/');
+  const hasSubpath = packageOrUrl.startsWith('@')
     ? segments.length > 2
     : segments.length > 1;
 
@@ -39,9 +39,9 @@ export function resolveIconPackUrl(packageOrUrl: string): string {
 }
 
 export function readIconLoader(iconPackConfig: Config): IconLoader {
-  const name = iconPackConfig.getString("name");
-  const icons = iconPackConfig.getOptional<IconifyJSON>("icons");
-  const pkg = iconPackConfig.getOptionalString("package");
+  const name = iconPackConfig.getString('name');
+  const icons = iconPackConfig.getOptional<IconifyJSON>('icons');
+  const pkg = iconPackConfig.getOptionalString('package');
 
   if (icons) {
     return { name, icons };
@@ -85,27 +85,28 @@ export function readIconLoader(iconPackConfig: Config): IconLoader {
  */
 const ConfiguredMermaidAddon = () => {
   const config = useApi(configApiRef);
-  const mermaidConfig = config.getOptionalConfig("techdocs.addons.mermaid");
+  const mermaidConfig = config.getOptionalConfig('techdocs.addons.mermaid');
 
   const props: MermaidProps = {};
 
   if (mermaidConfig) {
-    props.lightConfig = mermaidConfig.getOptional<MermaidConfig>("lightConfig");
-    props.darkConfig = mermaidConfig.getOptional<MermaidConfig>("darkConfig");
-    props.config = mermaidConfig.getOptional<MermaidConfig>("config");
-    props.enableZoom = mermaidConfig.getOptionalBoolean("enableZoom") ?? false;
+    props.lightConfig = mermaidConfig.getOptional<MermaidConfig>('lightConfig');
+    props.darkConfig = mermaidConfig.getOptional<MermaidConfig>('darkConfig');
+    props.config = mermaidConfig.getOptional<MermaidConfig>('config');
+    props.enableZoom = mermaidConfig.getOptionalBoolean('enableZoom') ?? false;
 
-    const zoomConfig = mermaidConfig.getOptionalConfig("zoomOptions");
+    const zoomConfig = mermaidConfig.getOptionalConfig('zoomOptions');
     if (zoomConfig) {
       props.zoomOptions = {
-        scaleExtent: zoomConfig.getOptional<[number, number]>("scaleExtent"),
-        translateExtent: zoomConfig.getOptional<
-          [[number, number], [number, number]]
-        >("translateExtent"),
+        scaleExtent: zoomConfig.getOptional<[number, number]>('scaleExtent'),
+        translateExtent:
+          zoomConfig.getOptional<[[number, number], [number, number]]>(
+            'translateExtent',
+          ),
       };
     }
 
-    const iconPacksConfig = mermaidConfig.getOptionalConfigArray("iconPacks");
+    const iconPacksConfig = mermaidConfig.getOptionalConfigArray('iconPacks');
     if (iconPacksConfig) {
       props.iconLoaders = iconPacksConfig.map(readIconLoader);
     }
@@ -115,18 +116,18 @@ const ConfiguredMermaidAddon = () => {
 };
 
 const mermaidAddonParams: TechDocsAddonOptions = {
-  name: "Mermaid",
-  location: "Content",
+  name: 'Mermaid',
+  location: 'Content',
   component: ConfiguredMermaidAddon,
 };
 
 export const techDocsMermaidAddon = AddonBlueprint.make({
-  name: "mermaid",
+  name: 'mermaid',
   params: mermaidAddonParams,
 });
 
 export const techDocsMermaidAddonModule = createFrontendModule({
-  pluginId: "techdocs",
+  pluginId: 'techdocs',
   extensions: [techDocsMermaidAddon],
 });
 

@@ -1,4 +1,5 @@
 import { SystemTable } from '../SystemTable';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import {
   InformationPopup,
   InformationPopupContent,
@@ -14,6 +15,7 @@ const POPUP_CONTENT = (
 );
 
 export const SystemExplorerPage = () => {
+  useDocumentTitle('System Explorer');
   return (
     <>
       <PluginHeader

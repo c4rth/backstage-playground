@@ -1,6 +1,7 @@
 import { ComponentChip } from '../common';
 import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { Flex, ColumnConfig, Column, Text, FullPage } from '@backstage/ui';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import {
   BaseServiceTable,
   BaseTableRow,
@@ -63,14 +64,17 @@ const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
 
 const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
 
-export const LibraryByServiceTable = () => (
-  <FullPage>
-    <BaseServiceTable<TableRow>
-      columns={COLUMNS}
-      toRow={toRow}
-      toggleType="dependents"
-      storageOwnershipKey="serviceLibrariesTablePageOwner"
-      storageSearchKey="serviceLibrariesTablePageSearch"
-    />
-  </FullPage>
-);
+export const LibraryByServiceTable = () => {
+  useDocumentTitle('Library By Service');
+  return (
+    <FullPage>
+      <BaseServiceTable<TableRow>
+        columns={COLUMNS}
+        toRow={toRow}
+        toggleType="dependents"
+        storageOwnershipKey="serviceLibrariesTablePageOwner"
+        storageSearchKey="serviceLibrariesTablePageSearch"
+      />
+    </FullPage>
+  );
+};

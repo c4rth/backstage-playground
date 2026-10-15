@@ -95,9 +95,10 @@ const getDiagramSource = (element: HTMLElement): string => {
   // const sourceRoot = element.matches('code')
   //  ? element
   //  : (element.querySelector('code') ?? element);
-  const sourceRoot = element.localName === 'code'
-    ? element
-    : (element.querySelector('code') ?? element);
+  const sourceRoot =
+    element.localName === 'code'
+      ? element
+      : (element.querySelector('code') ?? element);
   const clone = sourceRoot.cloneNode(true);
   if (clone instanceof HTMLElement) {
     clone.querySelectorAll(lineNumberSelectors).forEach(node => node.remove());
@@ -181,7 +182,10 @@ export const MermaidAddon = (properties: MermaidProps) => {
     }
     const initialize = async () => {
       await mermaid.registerExternalDiagrams([zenuml]);
-      const config: MermaidConfig = selectConfig(theme.palette.type, properties);
+      const config: MermaidConfig = selectConfig(
+        theme.palette.type,
+        properties,
+      );
       if (properties.iconLoaders) {
         mermaid.registerIconPacks(properties.iconLoaders);
       }

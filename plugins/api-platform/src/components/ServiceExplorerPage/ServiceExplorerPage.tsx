@@ -1,4 +1,5 @@
 import { ServiceTable } from '../ServiceTable';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import {
   InformationPopup,
   InformationPopupContent,
@@ -15,6 +16,7 @@ const INFO_POPUP_CONTENT = (
 );
 
 export const ServiceExplorerPage = () => {
+  useDocumentTitle('Service Explorer');
   return (
     <>
       <PluginHeader

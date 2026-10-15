@@ -3,6 +3,7 @@ import {
   HomePageStarredEntities,
   HomePageTopVisited,
 } from '@backstage/plugin-home';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import { HomePageSearchBar } from '@backstage/plugin-search';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import { Container, FullPage, Grid } from '@backstage/ui';
@@ -14,6 +15,7 @@ const searchBarClasses = {
 };
 
 export const HomePage = () => {
+  useDocumentTitle('Home');
   return (
     <SearchContextProvider>
       <style>{`

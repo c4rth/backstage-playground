@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import {
@@ -28,6 +29,8 @@ export const LibraryDefinitionDetailPage = ({
   const [error, setError] = useState<Error | undefined>(undefined);
   const catalogApi = useApi(catalogApiRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
+
+  useDocumentTitle(`Library - ${name} - ${version}`);
 
   const headerTitle = `${name} - ${version}`;
 

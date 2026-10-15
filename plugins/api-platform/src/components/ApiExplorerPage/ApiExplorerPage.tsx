@@ -1,4 +1,5 @@
 import { ApiTable } from '../ApiTable';
+import { useDocumentTitle } from '@internal/plugin-components-react';
 import {
   InformationPopup,
   InformationPopupContent,
@@ -15,6 +16,7 @@ const INFO_POPUP_CONTENT = (
 );
 
 export const ApiExplorerPage = () => {
+  useDocumentTitle('API Explorer');
   return (
     <>
       <PluginHeader
