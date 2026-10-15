@@ -64,6 +64,10 @@ export const ServiceDefinitionPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
   const queryEnv = searchParams.get('env');
+  const withSearchParams = (href: string) => {
+    const query = searchParams.toString();
+    return query ? `${href}?${query}` : href;
+  };
   const {
     item: serviceDefinition,
     loading,
@@ -253,26 +257,62 @@ export const ServiceDefinitionPage = () => {
           },
         ]}
         tabs={[
-          { id: 'overview', label: 'Overview', href: '.' },
-          { id: 'dependencies', label: 'Dependencies', href: 'dependencies' },
-          { id: 'app-registry', label: 'App Registry', href: 'app-registry' },
+          {
+            id: 'overview',
+            label: 'Overview',
+            href: withSearchParams('.'),
+          },
+          {
+            id: 'dependencies',
+            label: 'Dependencies',
+            href: withSearchParams('dependencies'),
+          },
+          {
+            id: 'app-registry',
+            label: 'App Registry',
+            href: withSearchParams('app-registry'),
+          },
           ...(azurePipelines
-            ? [{ id: 'ci-cd', label: 'CI/CD', href: 'ci-cd' }]
+            ? [
+                {
+                  id: 'ci-cd',
+                  label: 'CI/CD',
+                  href: withSearchParams('ci-cd'),
+                },
+              ]
             : []),
           ...(azureDevOps
-            ? [{ id: 'git-tags', label: 'Git Tags', href: 'git-tags' }]
+            ? [
+                {
+                  id: 'git-tags',
+                  label: 'Git Tags',
+                  href: withSearchParams('git-tags'),
+                },
+              ]
             : []),
           ...(azureDevOps
-            ? [{ id: 'readme', label: 'Readme', href: 'readme' }]
+            ? [
+                {
+                  id: 'readme',
+                  label: 'Readme',
+                  href: withSearchParams('readme'),
+                },
+              ]
             : []),
           ...(sonarQube
-            ? [{ id: 'sonar', label: 'SonarQube', href: 'sonarqube' }]
+            ? [
+                {
+                  id: 'sonar',
+                  label: 'SonarQube',
+                  href: withSearchParams('sonarqube'),
+                },
+              ]
             : []),
         ]}
       />
       <Container>
         {serviceEntity && (
-          <Routes>
+          <Routes key={`${selectedVersion ?? ''}:${selectedEnvironment ?? ''}`}>
             <Route path="/" element={<ServiceDefinitionOverviewCard />} />
             <Route
               path="dependencies"

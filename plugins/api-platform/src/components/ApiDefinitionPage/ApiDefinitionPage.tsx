@@ -54,6 +54,11 @@ export const ApiDefinitionPage = () => {
       ? selectedVersion
       : defaultVersion;
 
+  const withSearchParams = (href: string) => {
+    const query = searchParams.toString();
+    return query ? `${href}?${query}` : href;
+  };
+
   const handleVersionChange: NonNullable<
     ComponentProps<typeof Select>['onChange']
   > = selected => {
@@ -113,18 +118,22 @@ export const ApiDefinitionPage = () => {
           },
         ]}
         tabs={[
-          { id: 'openapi', label: 'OpenAPI', href: '.' },
-          { id: 'raw', label: 'Raw', href: 'raw' },
+          { id: 'openapi', label: 'OpenAPI', href: withSearchParams('.') },
+          { id: 'raw', label: 'Raw', href: withSearchParams('raw') },
           ...(isLinterAvailable && !hideLintTab
-            ? [{ id: 'lint', label: 'Lint', href: 'lint' }]
+            ? [{ id: 'lint', label: 'Lint', href: withSearchParams('lint') }]
             : []),
-          { id: 'services', label: 'Services', href: 'services' },
-          { id: 'info', label: 'Info', href: 'info' },
+          {
+            id: 'services',
+            label: 'Services',
+            href: withSearchParams('services'),
+          },
+          { id: 'info', label: 'Info', href: withSearchParams('info') },
         ]}
       />
       <Container>
         {apiEntity && (
-          <Routes>
+          <Routes key={`${selectedVersion ?? ''}`}>
             <Route path="/" element={<ApiDefinitionSwaggerCard />} />
             <Route path="raw" element={<ApiDefinitionRawCard />} />
             {isLinterAvailable && !hideLintTab && (
