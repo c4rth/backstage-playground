@@ -60,14 +60,14 @@ const LEGEND_ITEMS = [
 
 const Legend = () => (
   <div className={styles.legend} aria-label="Status color legend">
-    <b>Legend</b>
-    {LEGEND_ITEMS.map(({ label, color }) => (
+    <b>Health Status</b>
+    {LEGEND_ITEMS.map(({ status, label, color }) => (
       <div key={label} className={styles.legendItem}>
         <span
           className={styles.legendBullet}
           style={{ backgroundColor: color }}
         />
-        {label}
+        {label} ({status})
       </div>
     ))}
   </div>
