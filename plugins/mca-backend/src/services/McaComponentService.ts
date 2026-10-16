@@ -23,8 +23,10 @@ import {
 } from '@internal/plugin-mca-common';
 import { Config } from '@backstage/config';
 import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from '../task';
-import { InputError } from '@backstage/errors';
-import { getMcaBaseTypeJavadoc } from './javadoc';
+import {
+  getMcaBaseTypeJavadoc,
+  getMcaBaseTypeJavadocAsset,
+} from './javadoc';
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -39,22 +41,6 @@ const DEFAULT_MCA_VERSIONS: McaVersions = {
   p3Version: 'P+3',
   p4Version: 'P+4',
 };
-
-function getJavadocAssetContentType(path: string): string | undefined {
-  const extension = path.split('.').pop()?.toLowerCase();
-  const contentTypes: Record<string, string> = {
-    css: 'text/css',
-    gif: 'image/gif',
-    ico: 'image/x-icon',
-    jpeg: 'image/jpeg',
-    jpg: 'image/jpeg',
-    js: 'application/javascript',
-    png: 'image/png',
-    svg: 'image/svg+xml',
-  };
-
-  return extension ? contentTypes[extension] : undefined;
-}
 
 export class McaComponentService implements McaService {
   private readonly logger: LoggerService;
@@ -190,27 +176,7 @@ export class McaComponentService implements McaService {
   async getMcaBaseTypeJavadocAsset(request: {
     path: string;
   }): Promise<McaJavadocAsset> {
-    if (request.path.startsWith('/') || request.path.includes('..')) {
-      throw new InputError('Invalid Javadoc asset path');
-    }
-
-    const sourceUrl = new URL(request.path, `${this.baseTypesUrl}/`);
-    if (!sourceUrl.href.startsWith(`${this.baseTypesUrl}/`)) {
-      throw new InputError('Invalid Javadoc asset path');
-    }
-
-    const response = await fetch(sourceUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Javadoc asset: ${response.statusText}`);
-    }
-
-    return {
-      content: Buffer.from(await response.arrayBuffer()),
-      contentType:
-        getJavadocAssetContentType(request.path) ??
-        response.headers.get('content-type') ??
-        undefined,
-    };
+    return getMcaBaseTypeJavadocAsset(request, this.baseTypesUrl);
   }
 
   async getLastModifiedDate(): Promise<Date | undefined> {

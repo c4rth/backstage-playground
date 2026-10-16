@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { InputError } from '@backstage/errors';
+import { McaJavadocAsset } from './types';
 
 type McaBaseTypeJavadocRequest = {
   baseType: string;
@@ -7,6 +8,22 @@ type McaBaseTypeJavadocRequest = {
 };
 
 type JavadocDocument = ReturnType<typeof cheerio.load>;
+
+function getJavadocAssetContentType(path: string): string | undefined {
+  const extension = path.split('.').pop()?.toLowerCase();
+  const contentTypes: Record<string, string> = {
+    css: 'text/css',
+    gif: 'image/gif',
+    ico: 'image/x-icon',
+    jpeg: 'image/jpeg',
+    jpg: 'image/jpeg',
+    js: 'application/javascript',
+    png: 'image/png',
+    svg: 'image/svg+xml',
+  };
+
+  return extension ? contentTypes[extension] : undefined;
+}
 
 function getSourceUrl(
   request: McaBaseTypeJavadocRequest,
@@ -120,4 +137,31 @@ export async function getMcaBaseTypeJavadoc(
   appendNavigationHandler($, appBaseUrl);
   rewriteAssetUrls($, sourceUrl, baseTypesUrl);
   return $.html();
+}
+
+export async function getMcaBaseTypeJavadocAsset(
+  request: { path: string },
+  baseTypesUrl: string,
+): Promise<McaJavadocAsset> {
+  if (request.path.startsWith('/') || request.path.includes('..')) {
+    throw new InputError('Invalid Javadoc asset path');
+  }
+
+  const sourceUrl = new URL(request.path, `${baseTypesUrl}/`);
+  if (!sourceUrl.href.startsWith(`${baseTypesUrl}/`)) {
+    throw new InputError('Invalid Javadoc asset path');
+  }
+
+  const response = await fetch(sourceUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch Javadoc asset: ${response.statusText}`);
+  }
+
+  return {
+    content: Buffer.from(await response.arrayBuffer()),
+    contentType:
+      getJavadocAssetContentType(request.path) ??
+      response.headers.get('content-type') ??
+      undefined,
+  };
 }
