@@ -23,8 +23,8 @@ import {
 } from '@internal/plugin-mca-common';
 import { Config } from '@backstage/config';
 import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from '../task';
-import * as cheerio from 'cheerio';
 import { InputError } from '@backstage/errors';
+import { getMcaBaseTypeJavadoc } from './javadoc';
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -180,71 +180,11 @@ export class McaComponentService implements McaService {
     baseType: string;
     packageName: string;
   }): Promise<string> {
-    if (
-      !/^[\w.]+$/.test(request.packageName) ||
-      !/^[\w$]+$/.test(request.baseType)
-    ) {
-      throw new InputError('Invalid Javadoc path');
-    }
-
-    const sourceUrl = new URL(
-      `${request.packageName.replace(/\./g, '/')}/${request.baseType}.html`,
-      `${this.baseTypesUrl}/`,
+    return getMcaBaseTypeJavadoc(
+      request,
+      this.baseTypesUrl,
+      this.appBaseUrl,
     );
-    const response = await fetch(sourceUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Javadoc: ${response.statusText}`);
-    }
-
-    const $ = cheerio.load(await response.text());
-    $('.skipNav, .topNav, .navList, .subNav, .bottomNav').remove();
-    $('a[href]').each((_index, element) => {
-      const href = $(element).attr('href');
-      if (!href) return;
-
-      const linkUrl = new URL(href, sourceUrl);
-      const match = linkUrl.pathname.match(
-        /\/(?:javadoc|basetypes)\/dexia\/opmk\/basetypes\/.+\/(?:([^/]+)\.html|(dexia\.opmk\.basetypes(?:\.[\w$]+)+))$/,
-      );
-      const linkedBaseType = match?.[1] ?? match?.[2]?.split('.').pop();
-      if (!linkedBaseType) return;
-
-      $(element).attr(
-        'href',
-        `${this.appBaseUrl}/mca/basetypes/${encodeURIComponent(linkedBaseType)}`,
-      );
-      $(element).attr('data-mca-basetype', linkedBaseType);
-    });
-    $('body').append(`
-      <script>
-        document.addEventListener('click', function (event) {
-          var link = event.target.closest('a[data-mca-basetype]');
-          if (!link) return;
-          event.preventDefault();
-          parent.postMessage(
-            { type: 'mca-basetype-navigation', baseType: link.dataset.mcaBasetype },
-            ${JSON.stringify(this.appBaseUrl)},
-          );
-        });
-      </script>
-    `);
-    $('link[href], script[src], img[src]').each((_index, element) => {
-      const attribute = element.tagName === 'link' ? 'href' : 'src';
-      const assetUrl = $(element).attr(attribute);
-      if (!assetUrl) return;
-
-      const resolvedUrl = new URL(assetUrl, sourceUrl);
-      if (!resolvedUrl.href.startsWith(`${this.baseTypesUrl}/`)) return;
-
-      $(element).attr(
-        attribute,
-        `/api/mca/basetypes/javadoc/assets?path=${encodeURIComponent(
-          resolvedUrl.href.slice(`${this.baseTypesUrl}/`.length),
-        )}`,
-      );
-    });
-
-    return $.html();
   }
 
   async getMcaBaseTypeJavadocAsset(request: {

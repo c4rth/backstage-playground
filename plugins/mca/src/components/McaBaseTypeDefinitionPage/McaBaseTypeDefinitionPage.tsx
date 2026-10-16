@@ -55,6 +55,7 @@ export const McaBaseTypeDefinitionPage = () => {
   if (baseType && backendBaseUrl) {
     const searchParams = new URLSearchParams({
       packageName: baseType.packageName || '',
+      'is-external': 'true',
     });
     baseTypeUrl = `${backendBaseUrl}/api/mca/basetypes/javadoc/${encodeURIComponent(baseType.baseType)}?${searchParams}`;
   }
