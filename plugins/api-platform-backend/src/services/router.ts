@@ -49,7 +49,7 @@ export interface RouterOptions {
   serviceService: ServiceService;
   apiService: ApiService;
   libraryService: LibraryService;
-  catalogService: ApiPlatformCatalogService;
+  apiPlatformCatalogService: ApiPlatformCatalogService;
 }
 
 export async function createRouter(
@@ -63,7 +63,7 @@ export async function createRouter(
     serviceService,
     apiService,
     libraryService,
-    catalogService,
+    apiPlatformCatalogService,
   } = options;
 
   const router = Router();
@@ -141,16 +141,18 @@ export async function createRouter(
   // Endpoints: /catalog
 
   router.post('/catalog', async (req, res) => {
-    res.status(201).json(await catalogService.registerCatalogInfo(req.body));
+    res
+      .status(201)
+      .json(await apiPlatformCatalogService.registerCatalogInfo(req.body));
   });
 
   router.delete('/catalog/:kind/:name', async (req, res) => {
-    const response = await catalogService.unregisterCatalogInfo(req);
+    const response = await apiPlatformCatalogService.unregisterCatalogInfo(req);
     res.status(response.returnCode).json({ message: response.message });
   });
 
   router.patch('/catalog/:kind/:name', async (req, res) => {
-    const response = await catalogService.refreshCatalogInfo({
+    const response = await apiPlatformCatalogService.refreshCatalogInfo({
       name: req.params.name,
       kind: req.params.kind,
     });

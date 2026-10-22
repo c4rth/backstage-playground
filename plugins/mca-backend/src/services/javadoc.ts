@@ -83,10 +83,7 @@ function rewriteBaseTypeLinks(
   });
 }
 
-function appendNavigationHandler(
-  $: JavadocDocument,
-  appBaseUrl: string,
-): void {
+function appendNavigationHandler($: JavadocDocument, appBaseUrl: string): void {
   $('body').append(`
     <script>
       document.addEventListener('click', function (event) {

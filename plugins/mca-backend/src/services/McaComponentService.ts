@@ -23,10 +23,8 @@ import {
 } from '@internal/plugin-mca-common';
 import { Config } from '@backstage/config';
 import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from '../task';
-import {
-  getMcaBaseTypeJavadoc,
-  getMcaBaseTypeJavadocAsset,
-} from './javadoc';
+import { getMcaBaseTypeJavadoc, getMcaBaseTypeJavadocAsset } from './javadoc';
+import { getMcaXmlData } from './osml';
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -47,6 +45,7 @@ export class McaComponentService implements McaService {
   private readonly mcaComponentsStore: McaComponentStore;
   private readonly baseTypesUrl: string;
   private readonly appBaseUrl: string;
+  private readonly operationsUrl: string;
 
   constructor(options: McaServiceOptions) {
     this.logger = options.logger;
@@ -57,6 +56,9 @@ export class McaComponentService implements McaService {
     this.appBaseUrl = options.config
       .getString('app.baseUrl')
       .replace(/\/$/, '');
+    this.operationsUrl = options.config.getString(
+      'mcaComponents.operations.baseUrl',
+    );
     this.logger.info('Initializing McaService');
     this.createScheduledTask(
       options.config,
@@ -72,37 +74,53 @@ export class McaComponentService implements McaService {
     mcaComponentsStore: McaComponentStore,
     scheduler: SchedulerService,
   ) {
-    const scheduleOperations =
-      readSchedulerServiceTaskScheduleDefinitionFromConfig(
-        config.getConfig('mcaComponents.operations.schedule'),
-      );
-    await scheduler.scheduleTask({
-      ...scheduleOperations,
-      id: 'update-all-operations-csv',
-      fn: async () => {
-        McaOperationScheduledTask.create({
-          logger,
-          mcaComponentsStore,
-          config,
-        }).runAsync();
-      },
-    });
+    const operationsTaskEnabled =
+      config.getOptionalBoolean('mcaComponents.operations.scheduleEnabled') ??
+      true;
 
-    const scheduleBaseTypes =
-      readSchedulerServiceTaskScheduleDefinitionFromConfig(
-        config.getConfig('mcaComponents.baseTypes.schedule'),
-      );
-    await scheduler.scheduleTask({
-      ...scheduleBaseTypes,
-      id: 'update-basetypes',
-      fn: async () => {
-        McaBaseTypeScheduledTask.create({
-          logger,
-          mcaComponentsStore,
-          config,
-        }).runAsync();
-      },
-    });
+    if (!operationsTaskEnabled) {
+      logger.info('Operations processing is disabled in the configuration');
+    } else {
+      const scheduleOperations =
+        readSchedulerServiceTaskScheduleDefinitionFromConfig(
+          config.getConfig('mcaComponents.operations.schedule'),
+        );
+      await scheduler.scheduleTask({
+        ...scheduleOperations,
+        id: 'update-all-operations-csv',
+        fn: async () => {
+          McaOperationScheduledTask.create({
+            logger,
+            mcaComponentsStore,
+            config,
+          }).runAsync();
+        },
+      });
+    }
+
+    const baseTypesTaskEnabled =
+      config.getOptionalBoolean('mcaComponents.baseTypes.scheduleEnabled') ??
+      true;
+
+    if (!baseTypesTaskEnabled) {
+      logger.info('BaseTypes processing is disabled in the configuration');
+    } else {
+      const scheduleBaseTypes =
+        readSchedulerServiceTaskScheduleDefinitionFromConfig(
+          config.getConfig('mcaComponents.baseTypes.schedule'),
+        );
+      await scheduler.scheduleTask({
+        ...scheduleBaseTypes,
+        id: 'update-basetypes',
+        fn: async () => {
+          McaBaseTypeScheduledTask.create({
+            logger,
+            mcaComponentsStore,
+            config,
+          }).runAsync();
+        },
+      });
+    }
   }
 
   async getMcaComponentsCount(request: {
@@ -132,6 +150,13 @@ export class McaComponentService implements McaService {
     component: string;
   }): Promise<McaComponent | undefined> {
     return this.mcaComponentsStore.getMcaComponent(request.component);
+  }
+
+  async getMcaComponentDefinition(request: {
+    component: string;
+    refP: string;
+  }): Promise<string | undefined> {
+    return getMcaXmlData(this.operationsUrl, request.component, request.refP);
   }
 
   async getMcaVersions(): Promise<McaVersions> {
@@ -166,11 +191,7 @@ export class McaComponentService implements McaService {
     baseType: string;
     packageName: string;
   }): Promise<string> {
-    return getMcaBaseTypeJavadoc(
-      request,
-      this.baseTypesUrl,
-      this.appBaseUrl,
-    );
+    return getMcaBaseTypeJavadoc(request, this.baseTypesUrl, this.appBaseUrl);
   }
 
   async getMcaBaseTypeJavadocAsset(request: {

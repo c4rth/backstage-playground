@@ -1,7 +1,6 @@
 import {
   ApiBlueprint,
   PageBlueprint,
-  configApiRef,
   createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
@@ -31,10 +30,9 @@ const mcaApi = ApiBlueprint.make({
       deps: {
         discoveryApi: discoveryApiRef,
         fetchApi: fetchApiRef,
-        configApi: configApiRef,
       },
-      factory: ({ discoveryApi, fetchApi, configApi }) =>
-        new McaComponentsBackendClient({ discoveryApi, fetchApi, configApi }),
+      factory: ({ discoveryApi, fetchApi }) =>
+        new McaComponentsBackendClient({ discoveryApi, fetchApi }),
     }),
 });
 
@@ -135,10 +133,9 @@ export const mcaComponentPlugin = createPlugin({
       deps: {
         discoveryApi: discoveryApiRef,
         fetchApi: fetchApiRef,
-        configApi: configApiRef,
       },
-      factory: ({ discoveryApi, fetchApi, configApi }) =>
-        new McaComponentsBackendClient({ discoveryApi, fetchApi, configApi }),
+      factory: ({ discoveryApi, fetchApi }) =>
+        new McaComponentsBackendClient({ discoveryApi, fetchApi }),
     }),
   ],
 });

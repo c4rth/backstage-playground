@@ -48,6 +48,19 @@ export async function createRouter(
     res.json(result);
   });
 
+  router.get('/mca/components/:component/definition', async (req, res) => {
+    const asset = await mcaService.getMcaComponentDefinition({
+      component: req.params.component,
+      refP: String(req.query.refP ?? ''),
+    });
+    if (asset) {
+      res.type('application/xml');
+      res.send(asset);
+    } else {
+      res.status(404).json({ message: 'Component definition not found' });
+    }
+  });
+
   router.get('/mca/count', async (req, res) => {
     const type = req.query.type as McaComponentType;
     const result = await mcaService.getMcaComponentsCount({ type });

@@ -51,6 +51,11 @@ export interface McaService {
     component: string;
   }): Promise<McaComponent | undefined>;
 
+  getMcaComponentDefinition(request: {
+    component: string;
+    refP: string;
+  }): Promise<string | undefined>;
+
   getMcaVersions(): Promise<McaVersions>;
 
   listMcaBaseTypes(

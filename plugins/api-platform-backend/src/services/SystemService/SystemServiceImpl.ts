@@ -156,6 +156,7 @@ export class SystemServiceImpl implements SystemService {
           CATALOG_METADATA_NAME,
           CATALOG_METADATA_DESCRIPTION,
           CATALOG_RELATIONS,
+          CATALOG_SPEC_OWNER,
         ],
       },
       { credentials: await this.auth.getOwnServiceCredentials() },

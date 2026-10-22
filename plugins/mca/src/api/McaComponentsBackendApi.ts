@@ -1,5 +1,4 @@
 import {
-  ConfigApi,
   createApiRef,
   DiscoveryApi,
   FetchApi,
@@ -51,20 +50,12 @@ export interface McaComponentsBackendApi {
 export class McaComponentsBackendClient implements McaComponentsBackendApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
-  private readonly configApi: ConfigApi;
   private baseUrlCache: string | null = null;
   private baseUrlPromise: Promise<string> | null = null;
-  private backendBaseUrl: string;
 
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    fetchApi: FetchApi;
-    configApi: ConfigApi;
-  }) {
+  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
-    this.configApi = options.configApi;
-    this.backendBaseUrl = this.configApi.getString('backend.baseUrl');
   }
 
   private async getMcaBaseUrl(): Promise<string> {
@@ -105,35 +96,6 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
         );
       }
       return await response.json();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  private async fetchOctetStreamAsText(url: URL): Promise<string> {
-    try {
-      const response = await this.fetchApi.fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      const buffer = await response.arrayBuffer();
-      const charset = response.headers
-        .get('content-type')
-        ?.match(/charset=([\w-]+)/i)?.[1];
-      if (charset) {
-        try {
-          return new TextDecoder(charset).decode(buffer);
-        } catch {
-          /* unknown label — fall through */
-        }
-      }
-
-      try {
-        return new TextDecoder('utf-8', { fatal: true }).decode(buffer);
-      } catch {
-        return new TextDecoder('windows-1252').decode(buffer);
-      }
     } catch (error) {
       throw error;
     }
@@ -182,23 +144,21 @@ export class McaComponentsBackendClient implements McaComponentsBackendApi {
     component: string,
     refP: string,
   ): Promise<string | undefined> {
-    const extension = component.startsWith('Operation') ? 'osml' : 'esml';
+    const baseUrl = await this.getMcaBaseUrl();
     const encodedComponent = encodeURIComponent(component.trim());
-    const encodedRefP = encodeURIComponent(
-      refP.trim().replace(/^P/, '').replace(/^0+/, ''),
-    );
-
-    const searchParams = this.buildQueryParams({
-      env: 'TST',
-      myCurrentP: encodedRefP,
-    });
-
     const url = new URL(
-      `${this.backendBaseUrl}/api/proxy/operations-sources/api/v1/sources/OPER/${encodedComponent}.${extension}`,
+      `${baseUrl}/mca/components/${encodedComponent}/definition`,
     );
-    url.search = searchParams.toString();
-
-    return this.fetchOctetStreamAsText(url);
+    url.search = this.buildQueryParams({ refP }).toString();
+    return this.fetchApi.fetch(url).then(async response => {
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(
+          `HTTP ${response.status}: ${errorBody || response.statusText}`,
+        );
+      }
+      return response.text();
+    });
   }
 
   async getMcaVersions(): Promise<McaVersions> {

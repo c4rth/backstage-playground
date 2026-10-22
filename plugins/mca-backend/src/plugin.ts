@@ -4,6 +4,8 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './services/router';
 import { mcaComponentServiceRef } from './services/McaComponentService';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
+import { registerMcpActions } from './mcp-actions';
 
 /**
  * mcaComponentsBackendPlugin backend plugin
@@ -17,8 +19,10 @@ export const mcaComponentsBackendPlugin = createBackendPlugin({
       deps: {
         httpRouter: coreServices.httpRouter,
         mcaService: mcaComponentServiceRef,
+        actionsRegistry: actionsRegistryServiceRef,
+        logger: coreServices.logger,
       },
-      async init({ httpRouter, mcaService }) {
+      async init({ httpRouter, mcaService, actionsRegistry, logger }) {
         httpRouter.use(
           await createRouter({
             mcaService,
@@ -31,6 +35,11 @@ export const mcaComponentsBackendPlugin = createBackendPlugin({
         httpRouter.addAuthPolicy({
           path: '/basetypes/javadoc',
           allow: 'unauthenticated',
+        });
+        registerMcpActions({
+          actionsRegistry,
+          logger,
+          mcaService,
         });
       },
     });

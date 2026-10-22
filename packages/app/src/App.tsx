@@ -2,6 +2,7 @@ import { createApp } from '@backstage/frontend-defaults';
 // Legacy Plugins
 import { shortcutsNfsPlugin } from './legacyPlugins';
 // NFS
+import authPlugin from '@backstage/plugin-auth';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogGraphPlugin from '@backstage/plugin-catalog-graph/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
@@ -54,6 +55,7 @@ const app = createApp({
     scaffolderExtensions,
     toolkitPlugin,
     // Nfs plugins
+    authPlugin,
     catalogPlugin,
     catalogGraphPlugin,
     catalogImportPlugin,

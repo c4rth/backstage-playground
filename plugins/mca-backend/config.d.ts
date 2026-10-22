@@ -21,6 +21,10 @@ export interface Config {
       /**
        * @visibility backend
        */
+      scheduleEnabled?: boolean;
+      /**
+       * @visibility backend
+       */
       schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
     };
     /**
@@ -30,7 +34,15 @@ export interface Config {
       /**
        * @visibility backend
        */
+      baseUrl?: string;
+      /**
+       * @visibility backend
+       */
       csvBaseUrl?: string;
+      /**
+       * @visibility backend
+       */
+      scheduleEnabled?: boolean;
       /**
        * @visibility backend
        */

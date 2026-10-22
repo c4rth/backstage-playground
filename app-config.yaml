@@ -49,9 +49,12 @@ backend:
       - type: static
         options:
           token: 'mcp-token'
-          subject: mcp-clients
+          subject: mcp-token
         accessRestrictions:
+          - plugin: api-platform
+          - plugin: mca
           - plugin: mcp-actions
+          - plugin: auth
 
   baseUrl: http://localhost:7007
   listen:
@@ -93,7 +96,31 @@ backend:
 
   actions:
     pluginSources:
-      - catalog
+      #- catalog
+      - auth
+      - api-platform
+      - mca
+
+auth:
+  clientIdMetadataDocuments:
+    enabled: false
+
+# auth:
+#   clientIdMetadataDocuments:
+#     enabled: true
+#     # VS Code uses CIMD: its client_id is hosted at https://vscode.dev/
+#     allowedClientIdPatterns:
+#       - 'https://vscode.dev/*'
+#       - 'https://claude.ai/*'
+#     allowedRedirectUriPatterns:
+#       - 'http://localhost:*'
+#       - 'http://localhost:*/*'
+#       - 'http://127.0.0.1:*'
+#       - 'http://127.0.0.1:*/*'
+#       - 'http://[::1]:*'
+#       - 'http://[::1]:*/*'
+#       - 'https://vscode.dev/redirect'
+#       - 'vscode://*'
 
 permission:
   enabled: true
@@ -151,20 +178,6 @@ proxy:
       target: http://localhost:8080
       allowedMethods: ['GET']
       allowedHeaders: ['Accept', 'x-api-version']
-      # changeOrigin: true
-      # Change to "false" in case of using self hosted cluster with a self-signed certificate
-      secure: false
-    '/operations-sources':
-      target: http://localhost:8080
-      allowedMethods: ['GET']
-      allowedHeaders: ['Accept']
-      # changeOrigin: true
-      # Change to "false" in case of using self hosted cluster with a self-signed certificate
-      secure: false
-    '/base-types':
-      target: http://localhost:8080/basetypes
-      allowedMethods: ['GET']
-      allowedHeaders: ['Accept']
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
@@ -353,12 +366,15 @@ mcaComponents:
   baseTypes:
     baseUrl: http://localhost:8080/basetypes
     listBaseUrl: http://localhost:8080/basetypes/allclasses-frame.html
+    scheduleEnabled: false
     schedule:
       frequency: PT2M
       timeout: PT30S
       initialDelay: PT1M
   operations:
+    baseUrl: http://localhost:8080/api/v1/sources/OPER
     csvBaseUrl: http://localhost:8080/mca/alloperations.csv
+    scheduleEnabled: false
     schedule:
       frequency: PT2M
       timeout: PT30S

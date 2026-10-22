@@ -6055,6 +6055,7 @@ __metadata:
     csv-parser: "npm:^3.2.1"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
+    fast-xml-parser: "npm:^5.11.0"
     knex: "npm:^3.1.0"
   languageName: unknown
   linkType: soft
