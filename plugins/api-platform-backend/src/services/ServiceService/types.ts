@@ -21,4 +21,9 @@ export interface ServiceService {
     system: string;
     serviceName: string;
   }): Promise<ServiceDefinition>;
+
+  getServiceRelations(request: {
+    system: string;
+    serviceName: string;
+  }): Promise<any>;
 }

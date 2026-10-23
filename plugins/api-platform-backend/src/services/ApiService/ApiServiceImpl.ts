@@ -11,7 +11,7 @@ import {
   ANNOTATION_API_PROJECT,
   ANNOTATION_API_VERSION,
   ApiDefinitionListResult,
-  ApiRelationDefinition,
+  ApiRelationsDefinition,
   ApiVersionDefinition,
   CATALOG_KIND,
   CATALOG_METADATA,
@@ -31,6 +31,11 @@ import {
   CATALOG_SPEC_OWNER,
   ANNOTATION_API_TYPE,
   CATALOG_METADATA_API_TYPE,
+  ApiRelationType,
+  ANNOTATION_SERVICE_VERSION,
+  ANNOTATION_SERVICE_PLATFORM,
+  ANNOTATION_SERVICE_NAME,
+  ANNOTATION_SERVICE_IMAGE_VERSION,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
@@ -360,13 +365,13 @@ export class ApiServiceImpl implements ApiService {
   async getApiRelations(request: {
     system: string;
     apiName: string;
-    relationType: 'provider' | 'consumer';
-  }): Promise<ApiRelationDefinition[]> {
+    relationType: ApiRelationType;
+  }): Promise<ApiRelationsDefinition[]> {
     const entities = await this.catalog.getEntities(
       {
         filter: {
           kind: ['API'],
-          'metadata.annotations."api.depo.be/name"': request.apiName,
+          'metadata.annotations.api.depo.be/name': request.apiName,
           'spec.system': request.system,
         },
         fields: [
@@ -383,7 +388,7 @@ export class ApiServiceImpl implements ApiService {
     const relationTypeFilter =
       request.relationType === 'provider' ? 'apiProvidedBy' : 'apiConsumedBy';
 
-    const relations: ApiRelationDefinition[] = [];
+    const relations: ApiRelationsDefinition[] = [];
     for (const entity of entities.items) {
       const apiVersion =
         entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
@@ -393,11 +398,36 @@ export class ApiServiceImpl implements ApiService {
       const entityRelations = entity.relations;
       if (!entityRelations?.length) continue;
 
-      const services: ApiRelationDefinition['services'] = [];
+      const services: ApiRelationsDefinition['services'] = [];
       for (const relation of entityRelations) {
         if (relation.type === relationTypeFilter) {
+          const svcEntity = await this.catalog.getEntityByRef(
+            relation.targetRef,
+            {
+              credentials: await this.auth.getOwnServiceCredentials(),
+            },
+          );
           services.push({
-            entityRef: relation.targetRef,
+            service: {
+              name:
+                svcEntity?.metadata.annotations?.[
+                  ANNOTATION_SERVICE_NAME
+                ]?.toString() || '',
+              owner: svcEntity?.spec?.owner?.toString() || '',
+              environment: svcEntity?.spec?.lifecycle?.toString() || '',
+              version:
+                svcEntity?.metadata.annotations?.[
+                  ANNOTATION_SERVICE_VERSION
+                ]?.toString() || '',
+              imageVersion:
+                svcEntity?.metadata.annotations?.[
+                  ANNOTATION_SERVICE_IMAGE_VERSION
+                ]?.toString() || '',
+              platform:
+                svcEntity?.metadata.annotations?.[
+                  ANNOTATION_SERVICE_PLATFORM
+                ]?.toString() || '',
+            },
             version: apiVersion,
             lifecycle: relation.type,
           });

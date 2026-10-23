@@ -23,6 +23,8 @@ export type OpenApiType =
 
 export type SortDirection = 'ascending' | 'descending';
 
+export type ApiRelationType = 'provider' | 'consumer';
+
 export type ApiVersionDefinition = {
   entityRef: string;
   version: string;
@@ -30,12 +32,19 @@ export type ApiVersionDefinition = {
 };
 
 export type ApiRelationServiceDefinition = {
-  entityRef: string;
+  service: {
+    name: string;
+    owner: string;
+    environment: string;
+    version: string;
+    imageVersion: string;
+    platform: string;
+  };
   version: string;
   lifecycle: string;
 };
 
-export type ApiRelationDefinition = {
+export type ApiRelationsDefinition = {
   apiVersion: string;
   services: ApiRelationServiceDefinition[];
 };
@@ -143,6 +152,24 @@ export type ServiceDefinitionsListRequest = {
   userEntityRef?: string | undefined;
   dependsOn?: string;
   dependentsType?: DependentsType;
+};
+
+export type ServiceRelationApiDefinition = {
+  name: string;
+  owner: string;
+  version: string;
+};
+
+export type ServiceRelationsDefinition = {
+  name: string;
+  environment: string;
+  version: string;
+  imageVersion: string;
+  platform: string;
+  apis: {
+    consumed: ServiceRelationApiDefinition[];
+    provided: ServiceRelationApiDefinition[];
+  };
 };
 
 // Systems

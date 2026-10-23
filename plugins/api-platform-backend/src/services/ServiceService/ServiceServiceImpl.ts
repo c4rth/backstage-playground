@@ -7,11 +7,11 @@ import {
 } from '@backstage/backend-plugin-api';
 import { ServiceService } from './types';
 import {
-  ANNOTATION_IMAGE_VERSION,
+  ANNOTATION_SERVICE_IMAGE_VERSION,
   ANNOTATION_SERVICE_NAME,
   ANNOTATION_SERVICE_PLATFORM,
   ANNOTATION_SERVICE_VERSION,
-  CATALOG_METADATA_IMAGE_VERSION,
+  CATALOG_METADATA_SERVICE_IMAGE_VERSION,
   CATALOG_METADATA_NAME,
   CATALOG_METADATA_NAMESPACE,
   CATALOG_METADATA_SERVICE_NAME,
@@ -29,9 +29,19 @@ import {
   ServiceDefinitionsOptions,
   ServiceVersionDefinition,
   SortDirection,
+  ServiceRelationsDefinition,
+  ServiceRelationApiDefinition,
+  ANNOTATION_API_NAME,
+  ANNOTATION_API_PROJECT,
+  ANNOTATION_API_VERSION,
+  CATALOG_RELATIONS,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery } from '@backstage/catalog-client';
-import { Entity } from '@backstage/catalog-model';
+import {
+  Entity,
+  RELATION_CONSUMES_API,
+  RELATION_PROVIDES_API,
+} from '@backstage/catalog-model';
 import {
   fetchCatalogEntitiesWithOwnership,
   getUserGroups,
@@ -71,13 +81,12 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined):
   };
 }
 
-async function innerGetServices(
+async function innerGetServiceEntities(
   catalog: CatalogService,
   auth: AuthService,
-  orderBy: ServiceDefinitionsOptions | undefined,
   serviceName?: string,
   system?: string,
-): Promise<ServiceDefinition[]> {
+): Promise<Entity[]> {
   const entities = await catalog.getEntities(
     {
       filter: getFilter(serviceName, system),
@@ -87,11 +96,12 @@ async function innerGetServices(
         CATALOG_METADATA_SERVICE_NAME,
         CATALOG_METADATA_SERVICE_PLATFORM,
         CATALOG_METADATA_SERVICE_VERSION,
-        CATALOG_METADATA_IMAGE_VERSION,
+        CATALOG_METADATA_SERVICE_IMAGE_VERSION,
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_SPEC_OWNER,
         CATALOG_SPEC_DEPENDS_ON,
+        CATALOG_RELATIONS,
       ],
       order: {
         field: CATALOG_METADATA_NAME,
@@ -101,7 +111,23 @@ async function innerGetServices(
     { credentials: await auth.getOwnServiceCredentials() },
   );
 
-  return processServiceEntities(entities.items, orderBy);
+  return entities.items;
+}
+
+async function innerGetServices(
+  catalog: CatalogService,
+  auth: AuthService,
+  orderBy: ServiceDefinitionsOptions | undefined,
+  serviceName?: string,
+  system?: string,
+): Promise<ServiceDefinition[]> {
+  const entities = await innerGetServiceEntities(
+    catalog,
+    auth,
+    serviceName,
+    system,
+  );
+  return processServiceEntities(entities, orderBy);
 }
 
 // Shared function to fetch service entities with ownership filter
@@ -274,8 +300,9 @@ function processServiceEntities(
     defVersion.environments[lifecycle as keyof typeof defVersion.environments] =
       {
         imageVersion:
-          entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString() ||
-          '?',
+          entity.metadata.annotations?.[
+            ANNOTATION_SERVICE_IMAGE_VERSION
+          ]?.toString() || '?',
         entityRef: `component:${entity.metadata.namespace}/${entity.metadata.name}`,
         platform: platforms,
         dependencies: dependsOnList,
@@ -350,7 +377,7 @@ export class ServiceServiceImpl implements ServiceService {
         CATALOG_METADATA_SERVICE_NAME,
         CATALOG_METADATA_SERVICE_PLATFORM,
         CATALOG_METADATA_SERVICE_VERSION,
-        CATALOG_METADATA_IMAGE_VERSION,
+        CATALOG_METADATA_SERVICE_IMAGE_VERSION,
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_LIFECYCLE,
         CATALOG_SPEC_OWNER,
@@ -406,6 +433,103 @@ export class ServiceServiceImpl implements ServiceService {
       }
     );
   }
+
+  async getServiceRelations(request: {
+    system: string;
+    serviceName: string;
+  }): Promise<ServiceRelationsDefinition[]> {
+    const { system, serviceName } = request;
+    // Filter by both serviceName and system at catalog level to minimize data fetched
+    const entities = await innerGetServiceEntities(
+      this.catalog,
+      this.auth,
+      serviceName,
+      system,
+    );
+
+    const apiRefs = [
+      ...new Set(
+        entities.flatMap(
+          entity =>
+            entity.relations
+              ?.filter(
+                relation =>
+                  relation.type === RELATION_CONSUMES_API ||
+                  relation.type === RELATION_PROVIDES_API,
+              )
+              .map(relation => relation.targetRef) ?? [],
+        ),
+      ),
+    ];
+    const apiEntities = new Map<string, Entity | undefined>();
+    if (apiRefs.length > 0) {
+      const credentials = await this.auth.getOwnServiceCredentials();
+      const resolvedEntities = await Promise.all(
+        apiRefs.map(targetRef =>
+          this.catalog.getEntityByRef(targetRef, { credentials }),
+        ),
+      );
+      apiRefs.forEach((targetRef, index) => {
+        apiEntities.set(targetRef, resolvedEntities[index]);
+      });
+    }
+
+    const getApiDefinitions = (
+      entity: Entity,
+      relationType: string,
+    ): ServiceRelationApiDefinition[] =>
+      (entity.relations ?? [])
+        .filter(relation => relation.type === relationType)
+        .flatMap(relation => {
+          const apiEntity = apiEntities.get(relation.targetRef);
+          return apiEntity
+            ? [
+                {
+                  name:
+                    apiEntity.metadata.annotations?.[
+                      ANNOTATION_API_NAME
+                    ]?.toString() || '',
+                  owner:
+                    apiEntity.metadata.annotations?.[
+                      ANNOTATION_API_PROJECT
+                    ]?.toString() || '',
+                  version:
+                    apiEntity.metadata.annotations?.[
+                      ANNOTATION_API_VERSION
+                    ]?.toString() || '',
+                },
+              ]
+            : [];
+        });
+
+    const relations: ServiceRelationsDefinition[] = [];
+    for (const svcEntity of entities) {
+      relations.push({
+        name:
+          svcEntity?.metadata.annotations?.[
+            ANNOTATION_SERVICE_NAME
+          ]?.toString() || '',
+        environment: svcEntity?.spec?.lifecycle?.toString() || '',
+        version:
+          svcEntity?.metadata.annotations?.[
+            ANNOTATION_SERVICE_VERSION
+          ]?.toString() || '',
+        imageVersion:
+          svcEntity?.metadata.annotations?.[
+            ANNOTATION_SERVICE_IMAGE_VERSION
+          ]?.toString() || '',
+        platform:
+          svcEntity?.metadata.annotations?.[
+            ANNOTATION_SERVICE_PLATFORM
+          ]?.toString() || '',
+        apis: {
+          consumed: getApiDefinitions(svcEntity, RELATION_CONSUMES_API),
+          provided: getApiDefinitions(svcEntity, RELATION_PROVIDES_API),
+        },
+      });
+    }
+    return relations;
+  }
 }
 
 export const serviceServiceRef = createServiceRef<ServiceService>({
@@ -419,12 +543,12 @@ export const serviceServiceRef = createServiceRef<ServiceService>({
         catalog: catalogServiceRef,
       },
       async factory({ logger, catalog, auth }) {
-        const systemService = new ServiceServiceImpl({
+        const serviceService = new ServiceServiceImpl({
           logger,
           catalog,
           auth,
         });
-        return systemService;
+        return serviceService;
       },
     }),
 });

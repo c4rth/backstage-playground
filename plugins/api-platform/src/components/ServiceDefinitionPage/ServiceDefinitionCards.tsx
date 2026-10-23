@@ -10,7 +10,7 @@ import {
   EntityCatalogGraphCard,
 } from '@backstage/plugin-catalog-graph';
 import {
-  ANNOTATION_IMAGE_VERSION,
+  ANNOTATION_SERVICE_IMAGE_VERSION,
   ANNOTATION_SERVICE_PLATFORM,
 } from '@internal/plugin-api-platform-common';
 import { ServiceApiRelationCard } from './ServiceApiRelationCard';
@@ -42,7 +42,7 @@ export const ServiceDefinitionOverviewCard = () => {
     entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] || 'cloud'
   ).toString();
   const imageVersion =
-    entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString();
+    entity.metadata.annotations?.[ANNOTATION_SERVICE_IMAGE_VERSION]?.toString();
   const entityRef = getCompoundEntityRef(entity);
   const hasDocs = Boolean(
     entity.metadata.annotations?.['backstage.io/techdocs-ref'],

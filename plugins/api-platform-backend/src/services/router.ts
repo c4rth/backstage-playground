@@ -14,6 +14,7 @@ import {
   SERVICEDEFINITIONS_FIELDS,
   ServiceInformation,
   SYSTEMDEFINITIONS_FIELDS,
+  ApiRelationType,
 } from '@internal/plugin-api-platform-common';
 import {
   parseOrderByParam,
@@ -22,7 +23,6 @@ import {
   parseApiTypeParam,
   parseDependentsParam,
 } from './ApiService/utils';
-import { RelationType } from './ApiService/types';
 import { LibraryService } from './LibraryService';
 import { ServiceInformationService } from './ServiceInformationService';
 
@@ -129,9 +129,9 @@ export async function createRouter(
   router.get('/apis/relations/:system/:apiName', async (req, res) => {
     const { system, apiName } = req.params;
     const relationTypeParam = req.query.relationType;
-    let relationType: RelationType = 'provider';
+    let relationType: ApiRelationType = 'provider';
     if (relationTypeParam === 'provider' || relationTypeParam === 'consumer') {
-      relationType = relationTypeParam as RelationType;
+      relationType = relationTypeParam as ApiRelationType;
     }
     res.json(
       await apiService.getApiRelations({ system, apiName, relationType }),

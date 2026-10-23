@@ -11,7 +11,7 @@ import {
 import {
   ANNOTATION_API_NAME,
   ANNOTATION_API_VERSION,
-  ANNOTATION_IMAGE_VERSION,
+  ANNOTATION_SERVICE_IMAGE_VERSION,
   ANNOTATION_SERVICE_NAME,
   ANNOTATION_SERVICE_PLATFORM,
   ANNOTATION_SERVICE_VERSION,
@@ -74,7 +74,7 @@ const getServiceInfo = (entity: Entity): EntityInfo | null => {
 
   const description = entity.metadata.description ?? '';
   const imageVersion =
-    entity.metadata.annotations?.[ANNOTATION_IMAGE_VERSION] ?? 'n/a';
+    entity.metadata.annotations?.[ANNOTATION_SERVICE_IMAGE_VERSION] ?? 'n/a';
   const platform =
     entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] ??
     DEFAULT_PLATFORM;

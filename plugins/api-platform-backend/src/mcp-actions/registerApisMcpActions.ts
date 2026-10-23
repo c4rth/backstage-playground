@@ -157,4 +157,46 @@ export function registerApisMcpActions(options: {
       };
     },
   });
+
+  actionsRegistry.register({
+    name: 'get-api-dependencies',
+    title: 'API dependencies by Name and Version Action',
+    description: `
+    Get API dependencies information by name and version.
+    The dependencies include both consumer and provider services relationships of the API.
+    `,
+    attributes: {
+      destructive: false,
+      readOnly: true,
+      idempotent: true,
+    },
+    schema: {
+      input: z =>
+        z.object({
+          system: z.string().describe('The system of the API to query'),
+          name: z.string().describe('The name of the API to query'),
+          version: z.string().describe('The version of the API to query'),
+        }),
+      output: z => z.object({}).passthrough(),
+    },
+    action: async ({ input }) => {
+      logger.debug('Executing get-api-dependencies action with input:', input);
+      const consumerServices = await apiService.getApiRelations({
+        system: input.system,
+        apiName: input.name,
+        relationType: 'consumer',
+      });
+      const providerServices = await apiService.getApiRelations({
+        system: input.system,
+        apiName: input.name,
+        relationType: 'provider',
+      });
+      return {
+        output: {
+          consumer: consumerServices,
+          provider: providerServices,
+        },
+      };
+    },
+  });
 }

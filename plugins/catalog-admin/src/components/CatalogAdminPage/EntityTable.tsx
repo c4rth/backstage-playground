@@ -31,7 +31,7 @@ import {
   ANNOTATION_API_VERSION,
   ANNOTATION_LIBRARY_VERSION,
   ANNOTATION_SERVICE_VERSION,
-  ANNOTATION_IMAGE_VERSION,
+  ANNOTATION_SERVICE_IMAGE_VERSION,
 } from '@internal/plugin-api-platform-common';
 import { RiDeleteBin6Line } from '@remixicon/react';
 import { apiPlatformBackendApiRef } from '@internal/plugin-api-platform';
@@ -123,8 +123,9 @@ function mapEntityToTableRow(
       name: names.join(' - '),
       system: entity.spec?.system?.toString() ?? '-',
       version:
-        entity.metadata?.annotations?.[ANNOTATION_IMAGE_VERSION]?.toString() ??
-        '?',
+        entity.metadata?.annotations?.[
+          ANNOTATION_SERVICE_IMAGE_VERSION
+        ]?.toString() ?? '?',
       entityName: entity.metadata.name,
       location:
         entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',

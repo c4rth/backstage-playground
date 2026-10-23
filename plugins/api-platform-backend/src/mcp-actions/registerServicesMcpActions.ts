@@ -22,7 +22,10 @@ export function registerServicesMcpActions(options: {
   actionsRegistry.register({
     name: 'get-services',
     title: 'Services Action',
-    description: 'Get All Services information',
+    description: `
+      Get All Services information.
+      No dependencies are provided.
+    `,
     attributes: {
       destructive: false,
       readOnly: true,
@@ -78,6 +81,44 @@ export function registerServicesMcpActions(options: {
       });
       return {
         output: { service },
+      };
+    },
+  });
+
+  actionsRegistry.register({
+    name: 'get-service-dependencies',
+    title: 'Service Dependencies Action',
+    description: `
+    Get Service dependencies information by name and version.
+    The dependencies include both consumed and provided APIs relationships of the service.
+    `,
+    attributes: {
+      destructive: false,
+      readOnly: true,
+      idempotent: true,
+    },
+    schema: {
+      input: z =>
+        z.object({
+          system: z
+            .string()
+            .describe('The name of the system of the service to query'),
+          name: z.string().describe('The name of the service to query'),
+        }),
+      // TODO: is there a better way to do this?
+      output: z => z.object({}).passthrough(),
+    },
+    action: async ({ input }) => {
+      logger.debug(
+        'Executing get-service-dependencies action with input:',
+        input,
+      );
+      const relations = await serviceService.getServiceRelations({
+        system: input.system,
+        serviceName: input.name,
+      });
+      return {
+        output: { relations },
       };
     },
   });
