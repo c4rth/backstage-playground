@@ -101,27 +101,6 @@ backend:
       - api-platform
       - mca
 
-auth:
-  clientIdMetadataDocuments:
-    enabled: false
-
-# auth:
-#   clientIdMetadataDocuments:
-#     enabled: true
-#     # VS Code uses CIMD: its client_id is hosted at https://vscode.dev/
-#     allowedClientIdPatterns:
-#       - 'https://vscode.dev/*'
-#       - 'https://claude.ai/*'
-#     allowedRedirectUriPatterns:
-#       - 'http://localhost:*'
-#       - 'http://localhost:*/*'
-#       - 'http://127.0.0.1:*'
-#       - 'http://127.0.0.1:*/*'
-#       - 'http://[::1]:*'
-#       - 'http://[::1]:*/*'
-#       - 'https://vscode.dev/redirect'
-#       - 'vscode://*'
-
 permission:
   enabled: true
   # Custom policy configuration
