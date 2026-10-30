@@ -1,4 +1,4 @@
-.PHONY: tsc install run clean run-prod pod-up pod-down prettier lint
+.PHONY: tsc install run clean run-prod podman prettier lint
 
 tsc:
 	yarn tsc
@@ -22,14 +22,15 @@ clean:
 	yarn clean
 	rm -rf node_modules yarn.lock
 
-pod-up:
-	podman compose -f docker-db-compose.yml up -d
-
-pod-down:
-	podman compose -f docker-db-compose.yml down
+podman:
+	podman compose -f docker-db-compose.yml $(word 2,$(MAKECMDGOALS))
 
 prettier:
 	yarn prettier:check --write .
 
 lint:
 	yarn lint:all
+
+# Prevent make from treating arguments as separate file targets
+%:
+	@:
