@@ -27,7 +27,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@internal/plugin-components-react": "workspace:^",
-    "swagger-ui-react": "^5.33.0"
+    "swagger-ui-react": "^5.34.1"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",

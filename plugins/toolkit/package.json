@@ -42,7 +42,7 @@
     "@backstage/ui": "backstage:^",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/language": "^6.12.4",
-    "@faker-js/faker": "^10.5.0",
+    "@faker-js/faker": "^10.6.0",
     "@internal/plugin-components-react": "workspace:^",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "@uiw/codemirror-theme-vscode": "^4.25.11",
