@@ -1,8 +1,15 @@
-import { forwardRef, CSSProperties, ReactElement, ReactNode } from 'react';
+import {
+  forwardRef,
+  CSSProperties,
+  HTMLAttributes,
+  ReactElement,
+  ReactNode,
+} from 'react';
+import { useFocusable, useObjectRef } from 'react-aria';
 import { Button } from 'react-aria-components';
 
 export interface ChipProps {
-  /** The label content of the chip */
+  /** The label content of the chip, wrapping when space is limited */
   label: ReactNode;
   /** Icon element to display at the start of the chip */
   icon?: ReactElement;
@@ -29,16 +36,17 @@ const getChipStyles = (
   variant: ChipProps['variant'],
   size: ChipProps['size'],
   clickable: boolean,
-  disabled: boolean,
 ): CSSProperties => {
   const baseStyles: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     boxSizing: 'border-box',
+    flexShrink: 0,
+    maxWidth: '100%',
     fontFamily: 'var(--bui-font-regular)',
     fontWeight: 'var(--bui-font-weight-regular)',
-    whiteSpace: 'nowrap',
+    whiteSpace: 'normal',
     cursor: clickable ? 'pointer' : 'default',
     outline: 0,
     textDecoration: 'none',
@@ -48,15 +56,10 @@ const getChipStyles = (
     position: 'relative',
     transition:
       'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    height: size === 'small' ? '24px' : '32px',
+    minHeight: size === 'small' ? '24px' : '32px',
     fontSize: size === 'small' ? '0.8125rem' : '0.875rem',
     borderRadius: size === 'small' ? '12px' : '16px',
   };
-
-  if (disabled) {
-    baseStyles.opacity = 0.38;
-    baseStyles.pointerEvents = 'none';
-  }
 
   // Color and variant styles
   if (variant === 'filled') {
@@ -84,13 +87,12 @@ const getLabelStyles = (
   variant: ChipProps['variant'],
   size: ChipProps['size'],
 ): CSSProperties => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  paddingLeft: size === 'small' ? '8px' : '12px',
-  paddingRight: size === 'small' ? '8px' : '12px',
-  whiteSpace: 'nowrap',
-  display: 'flex',
-  alignItems: 'center',
+  minWidth: 0,
+  overflowWrap: 'anywhere',
+  paddingLeft: size === 'small' ? '4px' : '8px',
+  paddingRight: size === 'small' ? '4px' : '8px',
+  whiteSpace: 'normal',
+  display: 'block',
   color:
     variant === 'filled' && color === 'primary'
       ? 'var(--bui-white)'
@@ -101,12 +103,23 @@ const getIconStyles = (size: ChipProps['size']): CSSProperties => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginLeft: size === 'small' ? '4px' : '5px',
-  marginRight: size === 'small' ? '-4px' : '-6px',
-  width: size === 'small' ? '16px' : '18px',
-  height: size === 'small' ? '16px' : '18px',
+  flexShrink: 0,
+  width: size === 'small' ? '12px' : '14px',
+  height: size === 'small' ? '12px' : '14px',
   color: 'var(--bui-fg-primary)',
 });
+
+const ChipContainer = forwardRef<
+  HTMLDivElement,
+  HTMLAttributes<HTMLDivElement>
+>((props, ref) => {
+  const objectRef = useObjectRef(ref);
+  const { focusableProps } = useFocusable(props, objectRef);
+
+  return <div {...focusableProps} {...props} ref={objectRef} />;
+});
+
+ChipContainer.displayName = 'ChipContainer';
 
 export const Chip = forwardRef<HTMLDivElement, ChipProps>(
   (
@@ -118,8 +131,6 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       size = 'medium',
       variant = 'filled',
       clickable = false,
-      disabled = false,
-      className = '',
       style,
     },
     ref,
@@ -127,7 +138,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     const isClickable = !!onClick;
 
     const chipStyles = {
-      ...getChipStyles(color, variant, size, clickable, disabled),
+      ...getChipStyles(color, variant, size, clickable),
       ...style,
     };
 
@@ -142,10 +153,8 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       return (
         <Button
           ref={ref as any}
-          className={className}
           style={chipStyles}
           onPress={onClick}
-          isDisabled={disabled}
           aria-label={label as string | undefined}
         >
           {content}
@@ -154,9 +163,9 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     }
 
     return (
-      <div ref={ref} className={className} style={chipStyles}>
+      <ChipContainer ref={ref} style={chipStyles}>
         {content}
-      </div>
+      </ChipContainer>
     );
   },
 );

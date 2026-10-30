@@ -51,7 +51,10 @@ export const renderVersionList = (
   <Cell>
     <Flex direction="column" align="center" style={{ gap: 12 }}>
       {serviceDefinition.versions?.map((version, idx) => (
-        <Box key={`${version.version ?? 'version'}-${idx}`}>
+        <Box
+          key={`${version.version ?? 'version'}-${idx}`}
+          style={{ minWidth: 0, maxWidth: '100%' }}
+        >
           {renderItem(version, idx)}
         </Box>
       ))}

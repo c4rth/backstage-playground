@@ -1,7 +1,7 @@
 import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-common';
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { Chip } from '@internal/plugin-components-react';
-import { Text, TooltipTrigger, Tooltip, Flex, Box, Link } from '@backstage/ui';
+import { Text, TooltipTrigger, Tooltip, Flex, Link } from '@backstage/ui';
 
 export type ComponentChipProps = {
   index?: number;
@@ -96,30 +96,36 @@ export const ComponentChip = ({
   const chipIcon = text ? undefined : platformIcon;
 
   const tooltipContent = service ? (
-    <Box>
-      <Text>
-        Platform: <b>{service.platform}</b>
-      </Text>
-      <br />
-      <Text>
-        Version: <b>{service.imageVersion}</b>
-      </Text>
-      <br />
-      {service.dependencies && service.dependencies.length > 0 && (
-        <>
-          <Text>Dependencies:</Text>
-          <Flex direction="column" gap="spacing-1">
-            {service.dependencies.map(dep => (
-              <Text key={dep}>
-                <Text>
-                  - <b>{dep}</b>
-                </Text>
-              </Text>
-            ))}
-          </Flex>
-        </>
-      )}
-    </Box>
+    <table aria-label="Service details" style={{ borderSpacing: '8px 4px' }}>
+      <tbody>
+        <tr>
+          <th scope="row" style={{ textAlign: 'left', verticalAlign: 'top' }}>
+            Version
+          </th>
+          <td>{service.imageVersion}</td>
+        </tr>
+        <tr>
+          <th scope="row" style={{ textAlign: 'left', verticalAlign: 'top' }}>
+            Platform
+          </th>
+          <td>{service.platform}</td>
+        </tr>
+        {service.dependencies && service.dependencies.length > 0 && (
+          <tr>
+            <th scope="row" style={{ textAlign: 'left', verticalAlign: 'top' }}>
+              Dependencies
+            </th>
+            <td>
+              <Flex direction="column" gap="spacing-1">
+                {service.dependencies.map(dep => (
+                  <Text key={dep}>{dep}</Text>
+                ))}
+              </Flex>
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   ) : null;
 
   const clickable = !!link;
@@ -156,7 +162,13 @@ export const ComponentChip = ({
       weight="bold"
       color="info"
       standalone
-      style={{ padding: 0, margin: 0 }}
+      style={{
+        display: 'inline-flex',
+        minWidth: 0,
+        maxWidth: '100%',
+        padding: 0,
+        margin: 0,
+      }}
     >
       {content}
     </Link>
