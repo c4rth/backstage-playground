@@ -3,6 +3,7 @@ import {
   ServiceDefinition,
   ServiceDefinitionListResult,
   ServiceDefinitionsListRequest,
+  ServiceRelationsDefinition,
 } from '@internal/plugin-api-platform-common';
 
 export interface ServiceService {
@@ -25,5 +26,6 @@ export interface ServiceService {
   getServiceRelations(request: {
     system: string;
     serviceName: string;
-  }): Promise<any>;
+    imageVersion?: string;
+  }): Promise<ServiceRelationsDefinition[]>;
 }

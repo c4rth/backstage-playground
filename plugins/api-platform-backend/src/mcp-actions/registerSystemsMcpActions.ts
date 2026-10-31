@@ -4,7 +4,8 @@ import { LoggerService, AuthService } from '@backstage/backend-plugin-api';
 import { SystemService } from '../services/SystemService';
 import { ServiceService } from '../services/ServiceService';
 import { ApiService } from '../services/ApiService';
-import type { OwnershipType } from '@internal/plugin-api-platform-common';
+import { MAX_LIST_LIMIT } from '@internal/plugin-api-platform-common';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 
 export function registerSystemsMcpActions(options: {
   actionsRegistry: ActionsRegistryService;
@@ -21,8 +22,18 @@ export function registerSystemsMcpActions(options: {
 
   actionsRegistry.register({
     name: 'get-systems',
-    title: 'Systems Action',
-    description: 'Get All Systems (or Teams or DEFLs) information',
+    title: 'Catalog Systems by page',
+    description: `
+      Browse catalog entities of kind System across all owners. The systems
+      page includes items, offset, limit, totalCount, and hasMore; each item
+      exposes name, system (the canonical System name), namespace, entityRef,
+      and owner directly. offset defaults to 0; limit
+      defaults to 20; limit must be between 1 and ${MAX_LIST_LIMIT}. Request
+      offset + limit to continue. Optional search matches name or owner.
+      Optional orderBy sorts by one field: name, description, or owner
+      (ascending or descending). Use get-system-by-name for one System's
+      related API, service, and library names.
+    `,
     attributes: {
       destructive: false,
       readOnly: true,
@@ -31,9 +42,15 @@ export function registerSystemsMcpActions(options: {
     schema: {
       input: z =>
         z.object({
-          ownershipType: z
-            .string()
-            .describe('The ownership type of the systems to query'),
+          offset: z.number().int().min(0).optional(),
+          limit: z.number().int().min(1).max(MAX_LIST_LIMIT).optional(),
+          search: z.string().optional(),
+          orderBy: z
+            .object({
+              field: z.enum(['name', 'description', 'owner']),
+              direction: z.enum(['ascending', 'descending']),
+            })
+            .optional(),
         }),
       // TODO: is there a better way to do this?
       output: z => z.object({}).passthrough(),
@@ -42,23 +59,43 @@ export function registerSystemsMcpActions(options: {
       logger.debug('Executing get-systems action with input:', input);
       // Implement the logic to get the system information here
 
-      const ownershipType = input.ownershipType as OwnershipType;
-
       const systems = await systemService.listSystems({
-        ownershipType,
+        ownershipType: 'all',
+        offset: input.offset,
+        limit: input.limit,
+        search: input.search,
+        orderBy: input.orderBy,
       });
       return {
-        output: { systems },
+        output: {
+          systems: {
+            ...systems,
+            items: systems.items.map(entity => ({
+              kind: entity.kind,
+              name: entity.metadata.name,
+              system: entity.metadata.name,
+              namespace: entity.metadata.namespace,
+              entityRef: stringifyEntityRef(entity),
+              owner: entity.spec?.owner?.toString() ?? '',
+            })),
+          },
+        },
       };
     },
   });
 
   actionsRegistry.register({
     name: 'get-system-by-name',
-    title: 'System by Name Action',
+    title: 'System details and related entity names',
     description: `
-    Get System information.
-    Aliases for System are Team and DEFL and can be used as well.
+      Look up a catalog System by its exact metadata.name (name); no namespace
+      input or pagination is supported. Team and DEFL are domain aliases for
+      System terminology, not separate Group lookups and not a guarantee that
+      a Group entity exists. Returns system with direct name, canonical system,
+      namespace, entityRef, owner, and catalog entity fields, plus deduplicated
+      apis, services, and libraries arrays of related logical names. Use
+      get-systems to browse available Systems, or
+      get-members-of-system-by-name for users matched through the System owner.
     `,
     attributes: {
       destructive: false,
@@ -78,17 +115,34 @@ export function registerSystemsMcpActions(options: {
 
       const system = await systemService.getSystem(input.name);
       return {
-        output: { system },
+        output: {
+          system: {
+            ...system,
+            name: system.entity?.metadata.name,
+            system: system.entity?.metadata.name,
+            namespace: system.entity?.metadata.namespace,
+            entityRef: system.entity
+              ? stringifyEntityRef(system.entity)
+              : undefined,
+            owner: system.entity?.spec?.owner?.toString() ?? '',
+          },
+        },
       };
     },
   });
 
   actionsRegistry.register({
     name: 'get-members-of-system-by-name',
-    title: 'Members of System by Name Action',
+    title: 'Users matching a System owner',
     description: `
-    Get members of a System by Name.
-    Aliases for System are Team and DEFL and can be used as well.
+      Find users for a catalog System identified by its exact metadata.name
+      (name). Returns system and members; members are User catalog entities
+      whose spec.memberOf matches the System's spec.owner. This is owner-group
+      membership, not traversal of System relations; Team and DEFL aliases do
+      not create or imply a Group entity. The system result includes direct
+      name, canonical system, namespace, entityRef, and owner fields. A System
+      with no owner cannot be queried this way. Use get-system-by-name for
+      related APIs, services, and libraries instead.
     `,
     attributes: {
       destructive: false,
@@ -137,15 +191,26 @@ export function registerSystemsMcpActions(options: {
 
           return childEntities;
         } catch (error) {
-          console.error('Failed to fetch system members', error);
+          throw new Error(`Failed to fetch members for system ${input.name}`);
         }
-        return [];
       };
 
       const members = await fetchSystemMembers();
 
       return {
-        output: { system, members },
+        output: {
+          system: {
+            ...system,
+            name: system.entity?.metadata.name,
+            system: system.entity?.metadata.name,
+            namespace: system.entity?.metadata.namespace,
+            entityRef: system.entity
+              ? stringifyEntityRef(system.entity)
+              : undefined,
+            owner,
+          },
+          members,
+        },
       };
     },
   });

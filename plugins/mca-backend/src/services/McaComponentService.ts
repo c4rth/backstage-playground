@@ -25,6 +25,7 @@ import { Config } from '@backstage/config';
 import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from '../task';
 import { getMcaBaseTypeJavadoc, getMcaBaseTypeJavadocAsset } from './javadoc';
 import { getMcaXmlData } from './osml';
+import { XMLParser } from 'fast-xml-parser';
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -202,6 +203,50 @@ export class McaComponentService implements McaService {
 
   async getLastModifiedDate(): Promise<Date | undefined> {
     return this.mcaComponentsStore.getLastModifiedDate();
+  }
+
+  async getParsedMcaComponentDefinition(request: {
+    component: string;
+    refP: string;
+  }): Promise<{ result?: any; error?: Error }> {
+    try {
+      const definition = await this.getMcaComponentDefinition(request);
+      if (!definition) {
+        throw new Error(`Component definition for ${request.component} not found`);
+      }
+      const xmlParser = new XMLParser({
+        ignoreAttributes: false,
+        attributeNamePrefix: '',
+        allowBooleanAttributes: true,
+        trimValues: true,
+        transformTagName: tagName => {
+          if (tagName === 'constructor') {
+            return '_constructor';
+          }
+          return tagName;
+        },
+      });
+      const parsedDefinition = xmlParser.parse(definition);
+      let output;
+      if (!parsedDefinition || !parsedDefinition['OPERATION'] || !parsedDefinition['element']) {
+        throw new Error(`Failed to parse component definition for ${request.component} - not an operation nor an element`);
+      }
+      if (parsedDefinition.OPERATION) {
+        if (!parsedDefinition['OPERATION']['SPECIFICATION'] || !parsedDefinition['OPERATION']['SPECIFICATION']['OperationAnalyse']) {
+          throw new Error(`Invalid operation specification for ${request.component}`);
+        }
+        output =
+          parsedDefinition['OPERATION']['SPECIFICATION']['OperationAnalyse'];
+      } else {
+        if (!parsedDefinition['element']['fields']) {
+          throw new Error(`Invalid element specification for ${request.component}`);
+        }
+        output = parsedDefinition['element']['fields'];
+      }
+      return { result: output };
+    } catch (error) {
+      return { error: error as Error };
+    }
   }
 }
 

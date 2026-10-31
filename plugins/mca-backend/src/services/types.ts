@@ -78,4 +78,9 @@ export interface McaService {
   }): Promise<McaJavadocAsset>;
 
   getLastModifiedDate(): Promise<Date | undefined>;
+
+  getParsedMcaComponentDefinition(request: {
+    component: string;
+    refP: string;
+  }): Promise<{ result?: any; error?: Error }>;
 }

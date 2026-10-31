@@ -14,10 +14,15 @@ export function registerMcaBasetypeMcpActions(options: {
 
   actionsRegistry.register({
     name: 'get-mca-basetype',
-    title: 'MCA Basetype Action',
+    title: 'MCA base-type Javadoc by exact name',
     description: `
-        Get MCA Basetype API documentation, including class declaration, description, inheritance, fields, constructors, methods and documentation tags.
-        `,
+      Retrieve parsed JavaDoc for the exact MCA base-type name (name). Returns
+      javaDoc with baseType, packageName, title, signature, description,
+      inheritance, documentation tags, fields, constructors, methods, and
+      inheritedMembers. The full documentation is returned without pagination.
+      Use this for base-type class documentation, not for an MCA component's
+      XML definition; use get-mca-component-definition for that.
+    `,
     attributes: {
       destructive: false,
       readOnly: true,

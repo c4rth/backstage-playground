@@ -24,6 +24,8 @@ import {
   SystemDefinitionsOptions,
   OwnershipType,
   ANNOTATION_LIBRARY_NAME,
+  createPage,
+  normalizePagination,
 } from '@internal/plugin-api-platform-common';
 import { getUserGroups, isUserGuest } from '../common/utils';
 import {
@@ -97,12 +99,14 @@ export class SystemServiceImpl implements SystemService {
   async listSystems(
     request: SystemDefinitionsListRequest,
   ): Promise<SystemDefinitionListResult> {
-    const offset = request.offset ?? 0;
-    const limit = request.limit ?? 20;
+    const { offset, limit } = normalizePagination(
+      request.offset,
+      request.limit,
+    );
     const ownershipType = request.ownershipType ?? 'all';
 
     if (ownershipType === 'owned' && isUserGuest(request.userEntityRef)) {
-      return { items: [], offset, limit, totalCount: 0 };
+      return createPage([], offset, limit, 0);
     }
 
     const userGroupRefs =
@@ -111,7 +115,7 @@ export class SystemServiceImpl implements SystemService {
         : [];
 
     if (ownershipType === 'owned' && userGroupRefs.length === 0) {
-      return { items: [], offset, limit, totalCount: 0 };
+      return createPage([], offset, limit, 0);
     }
 
     const filter =
@@ -138,12 +142,7 @@ export class SystemServiceImpl implements SystemService {
       { credentials: await this.auth.getOwnServiceCredentials() },
     );
 
-    return {
-      items: systems.items,
-      offset,
-      limit,
-      totalCount: systems.totalItems,
-    };
+    return createPage(systems.items, offset, limit, systems.totalItems);
   }
 
   async getSystem(systemName: string): Promise<SystemDefinition> {

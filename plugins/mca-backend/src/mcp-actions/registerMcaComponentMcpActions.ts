@@ -1,7 +1,6 @@
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { McaService } from '../services';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 export function registerMcaComponentMcpActions(options: {
   actionsRegistry: ActionsRegistryService;
@@ -14,11 +13,14 @@ export function registerMcaComponentMcpActions(options: {
 
   actionsRegistry.register({
     name: 'get-mca-component',
-    title: 'MCA Component Action',
+    title: 'MCA component metadata by exact name',
     description: `
-        Get MCA Component information.
-        Provides detailed information about a specific MCA component: package name, versions, and other metadata.
-        `,
+      Look up one MCA component by its exact component identifier (name).
+      Returns component metadata: component, prdVersion, p1Version, p2Version,
+      p3Version, p4Version, applicationCode, and packageName. This is metadata,
+      not the XML definition. Use get-mca-component-definition when you need
+      the parsed definition for a release.
+    `,
     attributes: {
       destructive: false,
       readOnly: true,
@@ -45,14 +47,16 @@ export function registerMcaComponentMcpActions(options: {
 
   actionsRegistry.register({
     name: 'get-mca-component-definition',
-    title: 'MCA Component Action',
+    title: 'MCA component definition by name and release',
     description: `
-        Get MCA Component definition.
-        An MCA component can be a MCA operation or a MCA element.
-        Returns the XML definition as a JSON object using the frontend mapping:
-        attributes have plain names, text content uses #text, and repeated elements
-        become arrays. Numeric and boolean text values are converted automatically.
-        `,
+      Retrieve the parsed XML definition for an MCA operation or element,
+      identified by its exact component identifier (name). Optional refP selects
+      the P-release; when omitted, the component's prdVersion from its metadata
+      is used. Returns result as JSON using the frontend mapping: attributes
+      have plain names, text content uses #text, repeated elements become
+      arrays, and numeric/boolean text is converted. Use
+      get-mca-component to discover metadata and available release versions.
+    `,
     attributes: {
       destructive: false,
       readOnly: true,
@@ -74,8 +78,8 @@ export function registerMcaComponentMcpActions(options: {
         'Executing get-mca-component-definition action with input:',
         input,
       );
-      let refP = input.refP || '';
-      if (!input.refP) {
+      let refP = input.refP;
+      if (!refP) {
         const component = await mcaService.getMcaComponent({
           component: input.name,
         });
@@ -84,45 +88,18 @@ export function registerMcaComponentMcpActions(options: {
         }
         refP = component?.prdVersion;
       }
-      const componentDefinition = await mcaService.getMcaComponentDefinition({
-        component: input.name,
-        refP: refP,
-      });
+      const { result, error } =
+        await mcaService.getParsedMcaComponentDefinition({
+          component: input.name,
+          refP: refP,
+        });
 
-      if (!componentDefinition) {
-        throw new Error(`Component definition for ${input.name} not found`);
-      }
-      const validation = XMLValidator.validate(componentDefinition, {
-        allowBooleanAttributes: true,
-      });
-      if (validation !== true) {
-        throw new Error(
-          `Invalid XML definition for ${input.name}: ${validation.err.msg} (line ${validation.err.line})`,
-        );
-      }
-      const xmlParser = new XMLParser({
-        ignoreAttributes: false,
-        attributeNamePrefix: '',
-        allowBooleanAttributes: true,
-        trimValues: true,
-        transformTagName: tagName => {
-          if (tagName === 'constructor') {
-            return '_constructor';
-          }
-          return tagName;
-        },
-      });
-      const parsedDefinition: any = xmlParser.parse(componentDefinition);
-      let output;
-      if (parsedDefinition.OPERATION) {
-        output =
-          parsedDefinition['OPERATION']['SPECIFICATION']['OperationAnalyse'];
-      } else {
-        output = parsedDefinition['element']['fields'];
+      if (error) {
+        throw error;
       }
 
       return {
-        output: { output },
+        output: { result },
       };
     },
   });

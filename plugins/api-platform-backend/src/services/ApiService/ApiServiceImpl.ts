@@ -36,10 +36,12 @@ import {
   ANNOTATION_SERVICE_PLATFORM,
   ANNOTATION_SERVICE_NAME,
   ANNOTATION_SERVICE_IMAGE_VERSION,
+  createPage,
+  normalizePagination,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery, EntityOrderQuery } from '@backstage/catalog-client';
 import * as semver from 'semver';
-import { Entity } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   fetchCatalogEntitiesWithOwnership,
   getUserGroups,
@@ -52,7 +54,13 @@ import {
 
 const DEFAULT_SEMVER = new semver.SemVer('0.0.0');
 
-function getFilter(apiName: string, system: string): EntityFilterQuery {
+function getFilter(apiName: string, system?: string): EntityFilterQuery {
+  if (system === undefined) {
+    return {
+      kind: ['API'],
+      'metadata.annotations.api.depo.be/name': apiName,
+    };
+  }
   if (system === API_NO_SYSTEM) {
     return {
       kind: ['API'],
@@ -69,13 +77,13 @@ function getFilter(apiName: string, system: string): EntityFilterQuery {
 async function innerGetApiVersions(
   catalog: CatalogService,
   auth: AuthService,
-  system: string,
+  system: string | undefined,
   apiName: string,
 ): Promise<ApiVersionDefinition[]> {
   const entities = await catalog.getEntities(
     {
       filter: getFilter(apiName, system),
-      fields: [CATALOG_METADATA],
+      fields: [CATALOG_KIND, CATALOG_METADATA, CATALOG_SPEC_SYSTEM],
     },
     { credentials: await auth.getOwnServiceCredentials() },
   );
@@ -87,7 +95,12 @@ async function innerGetApiVersions(
     if (!version) continue;
 
     versions.push({
-      entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
+      name:
+        entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ??
+        apiName,
+      system: entity.spec?.system?.toString(),
+      namespace: entity.metadata.namespace,
+      entityRef: stringifyEntityRef(entity),
       version,
       project:
         entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
@@ -127,14 +140,64 @@ function getLatestByApiName(entities: Entity[], search?: string): Entity[] {
 
     const version = semver.parse(versionStr) ?? DEFAULT_SEMVER;
 
-    const mapKey = `${system}-${apiName}`;
+    const mapKey = JSON.stringify([system, apiName]);
     const existing = latest.get(mapKey);
-    if (!existing || version.compare(existing.version) > 0) {
+    const comparison = existing ? version.compare(existing.version) : 1;
+    const entityRef = `${item.metadata.namespace}/${item.metadata.name}`;
+    const existingEntityRef = existing
+      ? `${existing.entity.metadata.namespace}/${existing.entity.metadata.name}`
+      : '';
+    if (
+      !existing ||
+      comparison > 0 ||
+      (comparison === 0 && entityRef.localeCompare(existingEntityRef) < 0)
+    ) {
       latest.set(mapKey, { entity: item, version });
     }
   }
 
   return Array.from(latest.values(), ({ entity }) => entity);
+}
+
+function compareEntityValues(a: string, b: string): number {
+  return a.localeCompare(b);
+}
+
+function sortApiEntities(
+  entities: Entity[],
+  orderBy: ApiDefinitionsOptions | undefined,
+): Entity[] {
+  const direction = orderBy?.direction === 'descending' ? -1 : 1;
+  const field = orderBy?.field ?? 'name';
+  const getValue = (entity: Entity, key: ApiDefinitionsOptions['field']) => {
+    switch (key) {
+      case 'description':
+        return entity.metadata.description?.toString() ?? '';
+      case 'system':
+        return entity.spec?.system?.toString() ?? '';
+      case 'type':
+        return (
+          entity.metadata.annotations?.[ANNOTATION_API_TYPE]?.toString() ?? ''
+        );
+      default:
+        return (
+          entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ?? ''
+        );
+    }
+  };
+  return entities.sort((a, b) => {
+    const primary = compareEntityValues(getValue(a, field), getValue(b, field));
+    if (primary !== 0) return primary * direction;
+    const system = compareEntityValues(
+      getValue(a, 'system'),
+      getValue(b, 'system'),
+    );
+    if (system !== 0) return system;
+    return compareEntityValues(
+      `${a.metadata.namespace}/${a.metadata.name}`,
+      `${b.metadata.namespace}/${b.metadata.name}`,
+    );
+  });
 }
 
 function getOrder(
@@ -283,9 +346,11 @@ export class ApiServiceImpl implements ApiService {
       [
         CATALOG_KIND,
         CATALOG_METADATA_NAME,
+        CATALOG_METADATA_NAMESPACE,
         CATALOG_METADATA_DESCRIPTION,
         CATALOG_METADATA_API_NAME,
         CATALOG_METADATA_API_TYPE,
+        CATALOG_METADATA_API_PROJECT,
         CATALOG_METADATA_API_VERSION,
         CATALOG_SPEC_SYSTEM,
         CATALOG_SPEC_OWNER,
@@ -299,21 +364,19 @@ export class ApiServiceImpl implements ApiService {
     // Combine filtering and grouping in single pass
     const latestEntities = getLatestByApiName(entities, request.search);
 
-    const offset = request.offset ?? 0;
-    const limit = request.limit ?? 20;
+    const { offset, limit } = normalizePagination(
+      request.offset,
+      request.limit,
+    );
     const totalCount = latestEntities.length;
+    const sortedEntities = sortApiEntities(latestEntities, request.orderBy);
+    const items = sortedEntities.slice(offset, offset + limit);
 
-    // Only slice if needed - avoid creating new array when returning all
-    const items =
-      offset === 0 && limit >= totalCount
-        ? latestEntities
-        : latestEntities.slice(offset, offset + limit);
-
-    return { items, offset, limit, totalCount };
+    return createPage(items, offset, limit, totalCount);
   }
 
   async getApiVersions(request: {
-    system: string;
+    system?: string;
     apiName: string;
   }): Promise<ApiVersionDefinition[]> {
     return innerGetApiVersions(
@@ -325,7 +388,7 @@ export class ApiServiceImpl implements ApiService {
   }
 
   async getApiMatchingVersion(request: {
-    system: string;
+    system?: string;
     apiName: string;
     apiVersion: string;
   }): Promise<ApiVersionDefinition | undefined> {
@@ -338,10 +401,13 @@ export class ApiServiceImpl implements ApiService {
           },
         },
         fields: [
+          CATALOG_KIND,
           CATALOG_METADATA_NAME,
           CATALOG_METADATA_NAMESPACE,
+          CATALOG_METADATA_API_NAME,
           CATALOG_METADATA_API_VERSION,
           CATALOG_METADATA_API_PROJECT,
+          CATALOG_SPEC_SYSTEM,
         ],
         limit: 1,
       },
@@ -355,7 +421,12 @@ export class ApiServiceImpl implements ApiService {
     }
 
     return {
-      entityRef: `api:${entity.metadata.namespace}/${entity.metadata.name}`,
+      name:
+        entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ??
+        request.apiName,
+      system: entity.spec?.system?.toString(),
+      namespace: entity.metadata.namespace,
+      entityRef: stringifyEntityRef(entity),
       version,
       project:
         entity.metadata.annotations?.[ANNOTATION_API_PROJECT]?.toString() || '',
@@ -363,8 +434,9 @@ export class ApiServiceImpl implements ApiService {
   }
 
   async getApiRelations(request: {
-    system: string;
+    system?: string;
     apiName: string;
+    apiVersion?: string;
     relationType: ApiRelationType;
   }): Promise<ApiRelationsDefinition[]> {
     const entities = await this.catalog.getEntities(
@@ -372,12 +444,17 @@ export class ApiServiceImpl implements ApiService {
         filter: {
           kind: ['API'],
           'metadata.annotations.api.depo.be/name': request.apiName,
-          'spec.system': request.system,
+          ...(request.system === undefined
+            ? {}
+            : { 'spec.system': request.system }),
         },
         fields: [
+          CATALOG_KIND,
           CATALOG_METADATA_NAME,
+          CATALOG_METADATA_NAMESPACE,
           CATALOG_METADATA_API_NAME,
           CATALOG_METADATA_API_VERSION,
+          CATALOG_SPEC_SYSTEM,
           CATALOG_RELATIONS,
         ],
       },
@@ -392,7 +469,12 @@ export class ApiServiceImpl implements ApiService {
     for (const entity of entities.items) {
       const apiVersion =
         entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
-      if (!apiVersion) continue;
+      if (
+        !apiVersion ||
+        (request.apiVersion !== undefined && apiVersion !== request.apiVersion)
+      ) {
+        continue;
+      }
 
       // Build services array directly without intermediate filter array
       const entityRelations = entity.relations;
@@ -413,6 +495,9 @@ export class ApiServiceImpl implements ApiService {
                 svcEntity?.metadata.annotations?.[
                   ANNOTATION_SERVICE_NAME
                 ]?.toString() || '',
+              system: svcEntity?.spec?.system?.toString(),
+              namespace: svcEntity?.metadata.namespace,
+              entityRef: relation.targetRef,
               owner: svcEntity?.spec?.owner?.toString() || '',
               environment: svcEntity?.spec?.lifecycle?.toString() || '',
               version:
@@ -435,7 +520,17 @@ export class ApiServiceImpl implements ApiService {
       }
 
       if (services.length > 0) {
-        relations.push({ apiVersion, services });
+        relations.push({
+          name:
+            entity.metadata.annotations?.[ANNOTATION_API_NAME]?.toString() ??
+            request.apiName,
+          system: entity.spec?.system?.toString(),
+          namespace: entity.metadata.namespace,
+          entityRef: stringifyEntityRef(entity),
+          apiVersion,
+          version: apiVersion,
+          services,
+        });
       }
     }
     return relations;

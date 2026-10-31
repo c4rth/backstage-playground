@@ -9,24 +9,20 @@ import { useFocusable, useObjectRef } from 'react-aria';
 import { Button } from 'react-aria-components';
 
 export interface ChipProps {
-  /** The label content of the chip, wrapping when space is limited */
+  /** The label content of the chip, truncated with ellipsis when it overflows */
   label: ReactNode;
   /** Icon element to display at the start of the chip */
   icon?: ReactElement;
   /** Callback fired when chip is clicked */
   onClick?: () => void;
   /** The color of the chip */
-  color?: 'default' | 'primary' | 'secondary' | string;
+  color?: 'default' | 'primary' | 'secondary' | 'outlined' | string;
   /** The size of the chip */
   size?: 'small' | 'medium';
   /** The variant to use */
   variant?: 'filled' | 'outlined';
   /** If true, the chip will appear clickable and will raise on hover */
   clickable?: boolean;
-  /** If true, the chip should be displayed in a disabled state */
-  disabled?: boolean;
-  /** Additional CSS class name */
-  className?: string;
   /** Inline styles */
   style?: CSSProperties;
 }
@@ -46,7 +42,7 @@ const getChipStyles = (
     maxWidth: '100%',
     fontFamily: 'var(--bui-font-regular)',
     fontWeight: 'var(--bui-font-weight-regular)',
-    whiteSpace: 'normal',
+    whiteSpace: 'nowrap',
     cursor: clickable ? 'pointer' : 'default',
     outline: 0,
     textDecoration: 'none',
@@ -56,7 +52,7 @@ const getChipStyles = (
     position: 'relative',
     transition:
       'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    minHeight: size === 'small' ? '24px' : '32px',
+    height: size === 'small' ? '24px' : '32px',
     fontSize: size === 'small' ? '0.8125rem' : '0.875rem',
     borderRadius: size === 'small' ? '12px' : '16px',
   };
@@ -72,6 +68,10 @@ const getChipStyles = (
     } else if (color === 'default') {
       baseStyles.backgroundColor = 'var(--bui-bg-neutral-1, #e0e0e0)';
       // baseStyles.color = 'var(--bui-black)';
+    } else if (color === 'outlined') {
+      baseStyles.backgroundColor = 'transparent';
+      baseStyles.border =
+        '1px solid color-mix(in srgb, var(--bui-accent-bg) 20%, transparent)';
     } else {
       baseStyles.backgroundColor = color;
     }
@@ -88,10 +88,11 @@ const getLabelStyles = (
   size: ChipProps['size'],
 ): CSSProperties => ({
   minWidth: 0,
-  overflowWrap: 'anywhere',
-  paddingLeft: size === 'small' ? '4px' : '8px',
-  paddingRight: size === 'small' ? '4px' : '8px',
-  whiteSpace: 'normal',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  paddingLeft: size === 'small' ? '8px' : '12px',
+  paddingRight: size === 'small' ? '8px' : '12px',
+  whiteSpace: 'nowrap',
   display: 'block',
   color:
     variant === 'filled' && color === 'primary'

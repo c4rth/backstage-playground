@@ -25,6 +25,7 @@ describe('get-mca-component-definition', () => {
     getMcaBaseTypeJavadoc: jest.fn(),
     getMcaBaseTypeJavadocAsset: jest.fn(),
     getLastModifiedDate: jest.fn(),
+    getParsedMcaComponentDefinition: jest.fn(),
   };
 
   beforeEach(() => {

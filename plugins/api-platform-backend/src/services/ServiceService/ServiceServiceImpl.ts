@@ -35,12 +35,15 @@ import {
   ANNOTATION_API_PROJECT,
   ANNOTATION_API_VERSION,
   CATALOG_RELATIONS,
+  createPage,
+  normalizePagination,
 } from '@internal/plugin-api-platform-common';
 import { EntityFilterQuery } from '@backstage/catalog-client';
 import {
   Entity,
   RELATION_CONSUMES_API,
   RELATION_PROVIDES_API,
+  stringifyEntityRef,
 } from '@backstage/catalog-model';
 import {
   fetchCatalogEntitiesWithOwnership,
@@ -73,7 +76,13 @@ function getSortOrder(order: ServiceDefinitionsOptions | undefined):
       order: SortDirection;
     }
   | undefined {
-  if (!order) return undefined;
+  if (!order) {
+    return {
+      field1: 'system',
+      field2: 'serviceName',
+      order: 'ascending',
+    };
+  }
   return {
     field1: order.field === 'name' ? 'serviceName' : 'system',
     field2: order.field === 'name' ? 'system' : 'serviceName',
@@ -264,13 +273,13 @@ function processServiceEntities(
     }
 
     const lifecycle = entity.spec.lifecycle?.toString().toLowerCase() || '-';
-    const mapKey = `${system}-${name}`;
+    const mapKey = JSON.stringify([system, name]);
 
     // Get or create service definition
     let def = mapServices.get(mapKey);
     if (!def) {
       def = {
-        name: mapKey,
+        name: `${system}-${name}`,
         serviceName: name,
         owner: entity.spec.owner?.toString() || '',
         system,
@@ -319,19 +328,15 @@ function processServiceEntities(
   const svcDefs = Array.from(mapServices.values());
 
   // Sort by order
-  if (orderBy) {
-    const order = getSortOrder(orderBy);
-    if (order) {
-      svcDefs.sort((a, b) => {
-        const compare1 = a[order.field1].localeCompare(b[order.field1]);
-        if (compare1 !== 0) {
-          return order.order === 'ascending' ? compare1 : -compare1;
-        }
-        const compare2 = a[order.field2].localeCompare(b[order.field2]);
-        return order.order === 'ascending' ? compare2 : -compare2;
-      });
+  const order = getSortOrder(orderBy)!;
+  svcDefs.sort((a, b) => {
+    const compare1 = a[order.field1].localeCompare(b[order.field1]);
+    if (compare1 !== 0) {
+      return order.order === 'ascending' ? compare1 : -compare1;
     }
-  }
+    const compare2 = a[order.field2].localeCompare(b[order.field2]);
+    return order.order === 'ascending' ? compare2 : -compare2;
+  });
 
   return svcDefs;
 }
@@ -396,17 +401,14 @@ export class ServiceServiceImpl implements ServiceService {
       request.dependentsType,
     );
 
-    const offset = request.offset ?? 0;
+    const { offset, limit } = normalizePagination(
+      request.offset,
+      request.limit,
+    );
     const totalCount = services.length;
-    const limit = request.limit ?? totalCount - offset;
+    const items = services.slice(offset, offset + limit);
 
-    // Only slice if needed - avoid creating new array when returning all
-    const items =
-      offset === 0 && limit >= totalCount
-        ? services
-        : services.slice(offset, offset + limit);
-
-    return { items, offset, limit, totalCount };
+    return createPage(items, offset, limit, totalCount);
   }
 
   async getServiceVersions(request: {
@@ -437,15 +439,25 @@ export class ServiceServiceImpl implements ServiceService {
   async getServiceRelations(request: {
     system: string;
     serviceName: string;
+    imageVersion?: string;
   }): Promise<ServiceRelationsDefinition[]> {
-    const { system, serviceName } = request;
+    const { system, serviceName, imageVersion } = request;
     // Filter by both serviceName and system at catalog level to minimize data fetched
-    const entities = await innerGetServiceEntities(
+    const fetchedEntities = await innerGetServiceEntities(
       this.catalog,
       this.auth,
       serviceName,
       system,
     );
+    const entities =
+      imageVersion === undefined
+        ? fetchedEntities
+        : fetchedEntities.filter(
+            entity =>
+              entity.metadata.annotations?.[
+                ANNOTATION_SERVICE_IMAGE_VERSION
+              ]?.toString() === imageVersion,
+          );
 
     const apiRefs = [
       ...new Set(
@@ -489,6 +501,9 @@ export class ServiceServiceImpl implements ServiceService {
                     apiEntity.metadata.annotations?.[
                       ANNOTATION_API_NAME
                     ]?.toString() || '',
+                  system: apiEntity.spec?.system?.toString(),
+                  namespace: apiEntity.metadata.namespace,
+                  entityRef: relation.targetRef,
                   owner:
                     apiEntity.metadata.annotations?.[
                       ANNOTATION_API_PROJECT
@@ -509,6 +524,10 @@ export class ServiceServiceImpl implements ServiceService {
           svcEntity?.metadata.annotations?.[
             ANNOTATION_SERVICE_NAME
           ]?.toString() || '',
+        system: svcEntity?.spec?.system?.toString(),
+        namespace: svcEntity?.metadata.namespace || '',
+        entityRef: stringifyEntityRef(svcEntity),
+        owner: svcEntity?.spec?.owner?.toString() || '',
         environment: svcEntity?.spec?.lifecycle?.toString() || '',
         version:
           svcEntity?.metadata.annotations?.[

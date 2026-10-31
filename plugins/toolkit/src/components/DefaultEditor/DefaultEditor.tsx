@@ -70,7 +70,7 @@ export const DefaultEditor = (props: Props) => {
                   label={m}
                   clickable
                   onClick={() => setMode && setMode(m)}
-                  color={mode === m ? 'primary' : 'default'}
+                  color={mode === m ? 'primary' : 'outlined'}
                 />
               ))}
             </>

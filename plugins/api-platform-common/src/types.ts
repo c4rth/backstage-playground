@@ -26,6 +26,9 @@ export type SortDirection = 'ascending' | 'descending';
 export type ApiRelationType = 'provider' | 'consumer';
 
 export type ApiVersionDefinition = {
+  name: string;
+  system?: string;
+  namespace?: string;
   entityRef: string;
   version: string;
   project: string;
@@ -34,6 +37,9 @@ export type ApiVersionDefinition = {
 export type ApiRelationServiceDefinition = {
   service: {
     name: string;
+    system?: string;
+    namespace?: string;
+    entityRef: string;
     owner: string;
     environment: string;
     version: string;
@@ -45,7 +51,12 @@ export type ApiRelationServiceDefinition = {
 };
 
 export type ApiRelationsDefinition = {
+  name: string;
+  system?: string;
+  namespace?: string;
+  entityRef: string;
   apiVersion: string;
+  version: string;
   services: ApiRelationServiceDefinition[];
 };
 
@@ -64,6 +75,7 @@ export type ApiDefinitionListResult = {
   offset: number;
   limit: number;
   totalCount: number;
+  hasMore: boolean;
 };
 
 export type ApiDefinitionsOptions = {
@@ -116,6 +128,7 @@ export type ServiceDefinitionListResult = {
   offset: number;
   limit: number;
   totalCount: number;
+  hasMore: boolean;
 };
 
 export type ServiceApisDefinition = {
@@ -156,12 +169,19 @@ export type ServiceDefinitionsListRequest = {
 
 export type ServiceRelationApiDefinition = {
   name: string;
+  system?: string;
+  namespace?: string;
+  entityRef: string;
   owner: string;
   version: string;
 };
 
 export type ServiceRelationsDefinition = {
   name: string;
+  system?: string;
+  namespace?: string;
+  entityRef: string;
+  owner: string;
   environment: string;
   version: string;
   imageVersion: string;
@@ -212,6 +232,7 @@ export type SystemDefinitionListResult = {
   offset: number;
   limit: number;
   totalCount: number;
+  hasMore: boolean;
 };
 
 // Libraries

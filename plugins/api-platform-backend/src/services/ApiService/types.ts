@@ -20,19 +20,20 @@ export interface ApiService {
   ): Promise<ApiDefinitionListResult>;
 
   getApiVersions(request: {
-    system: string;
+    system?: string;
     apiName: string;
   }): Promise<ApiVersionDefinition[]>;
 
   getApiMatchingVersion(request: {
-    system: string;
+    system?: string;
     apiName: string;
     apiVersion: string;
   }): Promise<ApiVersionDefinition | undefined>;
 
   getApiRelations(request: {
-    system: string;
+    system?: string;
     apiName: string;
+    apiVersion?: string;
     relationType: ApiRelationType;
   }): Promise<ApiRelationsDefinition[]>;
 }

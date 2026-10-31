@@ -21,21 +21,21 @@ export const DependentsToggle = ({
     <Box display="flex">
       <Chip
         label="All services"
-        color={selectedType === 'all' ? 'primary' : 'default'}
+        color={selectedType === 'all' ? 'primary' : 'outlined'}
         clickable
         style={chipStyle}
         onClick={() => handleSelectChange('all')}
       />
       <Chip
         label="Dependents"
-        color={selectedType === 'yes' ? 'primary' : 'default'}
+        color={selectedType === 'yes' ? 'primary' : 'outlined'}
         style={chipStyle}
         clickable
         onClick={() => handleSelectChange('yes')}
       />
       <Chip
         label="Non-dependents"
-        color={selectedType === 'no' ? 'primary' : 'default'}
+        color={selectedType === 'no' ? 'primary' : 'outlined'}
         clickable
         style={chipStyle}
         onClick={() => handleSelectChange('no')}
