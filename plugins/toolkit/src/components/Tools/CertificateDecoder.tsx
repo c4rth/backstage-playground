@@ -5,6 +5,7 @@ import { AttributeTypeAndValue, Certificate } from 'pkijs';
 import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
 import { appThemeApiRef } from '@backstage/core-plugin-api';
+import { InputError, } from '@backstage/errors';
 
 const exampleCertificate = `-----BEGIN CERTIFICATE-----
 MIICMzCCAZygAwIBAgIJALiPnVsvq8dsMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNV
@@ -35,11 +36,11 @@ export function parsePemCertificates(
     try {
       const decoded = atob(pemText);
       if (!decoded.includes('BEGIN CERTIFICATE')) {
-        throw new Error('Decoded base64 does not contain PEM certificate');
+        throw new InputError('Decoded base64 does not contain PEM certificate');
       }
       pemText = decoded;
     } catch {
-      throw new Error('Invalid input: not PEM and not base64 of PEM');
+      throw new InputError('Invalid input: not PEM and not base64 of PEM');
     }
   }
 
@@ -49,7 +50,7 @@ export function parsePemCertificates(
   const matches = Array.from(pemText.matchAll(certRegex));
 
   if (matches.length === 0) {
-    throw new Error('No certificates found in input');
+    throw new InputError('No certificates found in input');
   }
 
   const results: Array<{ cert: Certificate; der: ArrayBuffer }> = [];

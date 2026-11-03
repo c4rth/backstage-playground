@@ -52,6 +52,7 @@
     "@backstage/plugin-search-backend-module-pg": "backstage:^",
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
+    "@backstage/plugin-techdocs-backend-module-zensical": "backstage:^",
     "@internal/plugin-analytics-backend": "workspace:^",
     "@internal/plugin-api-platform-backend": "workspace:^",
     "@internal/plugin-azure-devops-backend": "workspace:^",

@@ -7,7 +7,6 @@ const backend = createBackend();
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
 backend.add(import('@backstage/plugin-scaffolder-backend'));
-backend.add(import('@backstage/plugin-techdocs-backend'));
 backend.add(import('@backstage/plugin-events-backend'));
 
 // auth plugin
@@ -49,6 +48,10 @@ backend.add(import('@internal/plugin-search-backend-module-mca'));
 // notifications plugin
 // backend.add(import('@backstage/plugin-signals-backend'));
 // backend.add(import('@backstage/plugin-notifications-backend'));
+
+// techdocs plugin
+backend.add(import('@backstage/plugin-techdocs-backend'));
+backend.add(import('@backstage/plugin-techdocs-backend-module-zensical'));
 
 // Azure DevOps
 backend.add(import('@internal/plugin-azure-devops-backend'));

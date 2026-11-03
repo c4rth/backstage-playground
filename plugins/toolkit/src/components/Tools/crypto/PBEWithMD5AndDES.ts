@@ -8,6 +8,7 @@ import {
   CBC,
   Pkcs7,
 } from 'crypto-es';
+import { InputError, } from '@backstage/errors';
 
 export class PBEWithMD5AndDES {
   private static readonly ITERATIONS = 1000;
@@ -72,7 +73,7 @@ export class PBEWithMD5AndDES {
       // 1. Decode Base64 input
       const fullCipherWordArray = Base64.parse(encryptedText);
       if (fullCipherWordArray.sigBytes <= 8) {
-        throw new Error('input is too short or not a valid encrypted payload');
+        throw new InputError('input is too short or not a valid encrypted payload');
       }
 
       // 2. Extract salt (first 8 bytes / 2 words)
@@ -83,7 +84,7 @@ export class PBEWithMD5AndDES {
       const cipherTextWords = fullCipherWordArray.words.slice(2);
       const cipherTextLength = fullCipherWordArray.sigBytes - 8;
       if (cipherTextLength <= 0 || cipherTextLength % 8 !== 0) {
-        throw new Error('ciphertext length is invalid');
+        throw new InputError('ciphertext length is invalid');
       }
       const cipherText = WordArray.create(cipherTextWords, cipherTextLength);
 

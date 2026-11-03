@@ -4,7 +4,7 @@
 
 version 24.21.0
 
-headers: https://nodejs.org/download/release/v24.21.0/
+headers: https://nodejs.org/download/release/v24.22.2/
 
 ## bump versions
 
@@ -13,7 +13,7 @@ yarn backstage-cli versions:bump
 ```
 
 ```sh
-curl -o backstage-manifest.json https://versions.backstage.io/v1/releases/1.56.2/manifest.json
+curl -o backstage-manifest.json https://versions.backstage.io/v1/releases/1.56.3/manifest.json
 ```
 
 ## install packages

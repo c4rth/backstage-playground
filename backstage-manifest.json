@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.56.2",
+  "releaseVersion": "1.56.3",
   "requirements": {
     "node": "22 || 24"
   },
@@ -226,7 +226,7 @@
     },
     {
       "name": "@techdocs/cli",
-      "version": "1.13.0"
+      "version": "1.14.0"
     },
     {
       "name": "@backstage/test-utils",
@@ -834,7 +834,11 @@
     },
     {
       "name": "@backstage/plugin-techdocs-backend",
-      "version": "2.4.0"
+      "version": "2.4.1"
+    },
+    {
+      "name": "@backstage/plugin-techdocs-backend-module-zensical",
+      "version": "0.1.0"
     },
     {
       "name": "@backstage/plugin-techdocs-common",
@@ -846,7 +850,7 @@
     },
     {
       "name": "@backstage/plugin-techdocs-node",
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     {
       "name": "@backstage/plugin-techdocs-react",
