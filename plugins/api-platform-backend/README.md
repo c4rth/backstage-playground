@@ -37,6 +37,11 @@ required. Any catalog kind is supported. References are canonicalized
 case-insensitively. Invalid references and missing entities produce errors;
 catalog failures propagate. This read-only lookup uses the same service
 credentials as the other API Platform actions, with no pagination or chunking.
+For kinds starting with `api` (case-insensitive) whose `spec.type` is `openapi`,
+string `spec.definition` values are parsed from YAML or JSON into objects.
+Parsing failures and non-object definitions are logged and the original string
+is retained. Other entity fields, API formats and already-parsed definitions
+are unchanged.
 
 MCP outputs default to compact identity summaries; successful REST and
 frontend payloads are unchanged. Invalid inputs, missing resources, and

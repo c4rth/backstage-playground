@@ -327,6 +327,93 @@ describe('compact API Platform MCP responses', () => {
     },
   );
 
+  it.each(['API', 'api', 'ApiDefinition'])(
+    'parses OpenAPI YAML definitions for kind %s without mutating the catalog entity',
+    async kind => {
+      const definition =
+        'openapi: 3.0.3\ninfo:\n  title: Example\n  version: 1.0.0\npaths: {}\n';
+      const entity: Entity = {
+        ...systemEntity,
+        kind,
+        spec: { type: 'openapi', owner: 'team', definition },
+      };
+      catalog.getEntityByRef.mockResolvedValue(entity);
+      expect(
+        await invoke('get-entity-by-ref', {
+          entityRef: `${kind}:default/demo`,
+        }),
+      ).toEqual({
+        entityRef: `${kind.toLowerCase()}:default/demo`,
+        entity: {
+          ...entity,
+          spec: {
+            ...entity.spec,
+            definition: {
+              openapi: '3.0.3',
+              info: { title: 'Example', version: '1.0.0' },
+              paths: {},
+            },
+          },
+        },
+      });
+      expect(entity.spec?.definition).toBe(definition);
+      expect(logger.warn).not.toHaveBeenCalled();
+    },
+  );
+
+  it('parses JSON OpenAPI definitions', async () => {
+    const definition = { openapi: '3.1.0', paths: {} };
+    const entity: Entity = {
+      ...systemEntity,
+      kind: 'API',
+      spec: { type: 'openapi', definition: JSON.stringify(definition) },
+    };
+    catalog.getEntityByRef.mockResolvedValue(entity);
+    expect(
+      await invoke('get-entity-by-ref', { entityRef: 'api:default/demo' }),
+    ).toEqual({
+      entityRef: 'api:default/demo',
+      entity: { ...entity, spec: { ...entity.spec, definition } },
+    });
+  });
+
+  it.each(['openapi: [', '', 'null', 'scalar', '- item'])(
+    'preserves an invalid or non-object OpenAPI definition %j and logs a warning',
+    async definition => {
+      const entity: Entity = {
+        ...systemEntity,
+        kind: 'API',
+        spec: { type: 'openapi', definition },
+      };
+      catalog.getEntityByRef.mockResolvedValue(entity);
+      expect(
+        await invoke('get-entity-by-ref', { entityRef: 'api:default/demo' }),
+      ).toEqual({ entityRef: 'api:default/demo', entity });
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('preserving original YAML'),
+        expect.any(Error),
+      );
+    },
+  );
+
+  it.each([
+    { kind: 'Component', spec: { type: 'openapi', definition: 'paths: {}' } },
+    { kind: 'API', spec: { type: 'asyncapi', definition: 'channels: {}' } },
+    { kind: 'API', spec: { type: 'graphql', definition: 'type Query {}' } },
+    { kind: 'API', spec: { type: 'openapi', definition: { paths: {} } } },
+    { kind: 'API', spec: { type: 'openapi' } },
+    { kind: 'API' },
+  ])('preserves definitions outside string OpenAPI APIs: %j', async fields => {
+    const entity: Entity = { ...systemEntity, ...fields };
+    catalog.getEntityByRef.mockResolvedValue(entity);
+    const entityRef = `${entity.kind.toLowerCase()}:default/demo`;
+    expect(await invoke('get-entity-by-ref', { entityRef })).toEqual({
+      entityRef,
+      entity,
+    });
+    expect(logger.warn).not.toHaveBeenCalled();
+  });
+
   it.each([
     '',
     ' ',

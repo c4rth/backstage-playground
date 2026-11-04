@@ -1,8 +1,13 @@
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogService } from '@backstage/plugin-catalog-node';
-import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
-import { InputError, NotFoundError } from '@backstage/errors';
+import {
+  Entity,
+  parseEntityRef,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
+import { InputError, NotFoundError, toError } from '@backstage/errors';
+import { parse } from 'yaml';
 import {
   logMcpActionExecution,
   logMcpActionRegistration,
@@ -31,7 +36,10 @@ export function registerEntitiesMcpActions(options: {
       reconstruction are applied. Supports any catalog kind, not just APIs,
       services or Systems. Returns canonical entityRef and the full entity,
       including metadata, spec and relations wherever present, without projection,
-      pagination or chunking. Invalid references and missing entities are errors.
+      pagination or chunking. For kinds starting with api (case-insensitive) and
+      spec.type=openapi, spec.definition is parsed into an object; invalid YAML
+      or non-object definitions are preserved unchanged.
+      Invalid references and missing entities are errors.
       Use get-apis, get-services or get-systems for discovery; use the dependency
       tools for resolved relationship summaries rather than raw catalog relations.
     `,
@@ -54,11 +62,33 @@ export function registerEntitiesMcpActions(options: {
       }
       const entityRef = stringifyEntityRef(parseEntityRef(ref));
       logMcpActionExecution(logger, 'get-entity-by-ref', { entityRef });
-      const entity = await catalog.getEntityByRef(entityRef, {
+      let entity = await catalog.getEntityByRef(entityRef, {
         credentials: await auth.getOwnServiceCredentials(),
       });
       if (!entity) {
         throw new NotFoundError(`Entity ${entityRef} not found`);
+      }
+      if (
+        entity.kind.toLowerCase().startsWith('api') &&
+        entity.spec?.type === 'openapi' &&
+        typeof entity.spec.definition === 'string'
+      ) {
+        try {
+          const definition: Entity['spec'] = parse(entity.spec.definition);
+          if (
+            !definition ||
+            typeof definition !== 'object' ||
+            Array.isArray(definition)
+          ) {
+            throw new InputError('OpenAPI definition must be an object');
+          }
+          entity = { ...entity, spec: { ...entity.spec, definition } };
+        } catch (error) {
+          logger.warn(
+            `Failed to parse OpenAPI definition for ${entityRef}; preserving original YAML`,
+            toError(error),
+          );
+        }
       }
       return { output: { entityRef: stringifyEntityRef(entity), entity } };
     },
