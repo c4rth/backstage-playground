@@ -1,4 +1,38 @@
 import { InputError } from '@backstage/errors';
+import type { McaComponentType } from '@internal/plugin-mca-common';
+
+export function parseIntegerParam(
+  value: unknown,
+  name: string,
+  defaultValue: number,
+  min: number,
+  max: number,
+): number {
+  if (value === undefined) return defaultValue;
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) {
+    throw new InputError(`${name} must be an integer`);
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < min || parsed > max) {
+    throw new InputError(`${name} must be between ${min} and ${max}`);
+  }
+  return parsed;
+}
+
+export function parseMcaComponentType(value: unknown): McaComponentType {
+  const allowedTypes = ['all', 'element', 'operation'] as const;
+  if (value === undefined) return 'all';
+  const componentType =
+    typeof value === 'string'
+      ? allowedTypes.find(allowedType => allowedType === value)
+      : undefined;
+  if (!componentType) {
+    throw new InputError(
+      "type must be one of 'all', 'element', or 'operation'",
+    );
+  }
+  return componentType;
+}
 
 export const parseOrderByParam = <T extends readonly string[]>(
   str: unknown,

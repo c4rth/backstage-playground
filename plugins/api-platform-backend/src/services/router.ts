@@ -22,7 +22,9 @@ import {
   parseOwnershipParam,
   parseApiTypeParam,
   parseDependentsParam,
+  parseIntegerParam,
 } from './ApiService/utils';
+import { InputError, NotFoundError } from '@backstage/errors';
 import { LibraryService } from './LibraryService';
 import { ServiceInformationService } from './ServiceInformationService';
 
@@ -72,8 +74,8 @@ export async function createRouter(
   // Endpoints: /apis
 
   router.get('/apis/definitions', async (req, res) => {
-    const offset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const offset = parseIntegerParam(req.query.offset, 'offset', 0);
+    const limit = parseIntegerParam(req.query.limit, 'limit', 20);
     const orderBy = parseOrderByParam(req.query.orderBy, APIDEFINITIONS_FIELDS);
     const search = parseSearchParam(req.query.search);
     const ownershipType = parseOwnershipParam(req.query.ownershipType) || 'all';
@@ -120,9 +122,17 @@ export async function createRouter(
     '/apis/definitions/:system/:apiName/:apiVersion',
     async (req, res) => {
       const { system, apiName, apiVersion } = req.params;
-      res.json(
-        await apiService.getApiMatchingVersion({ system, apiName, apiVersion }),
-      );
+      const api = await apiService.getApiMatchingVersion({
+        system,
+        apiName,
+        apiVersion,
+      });
+      if (!api) {
+        throw new NotFoundError(
+          `API ${apiName} version ${apiVersion} not found`,
+        );
+      }
+      res.json(api);
     },
   );
 
@@ -130,8 +140,16 @@ export async function createRouter(
     const { system, apiName } = req.params;
     const relationTypeParam = req.query.relationType;
     let relationType: ApiRelationType = 'provider';
-    if (relationTypeParam === 'provider' || relationTypeParam === 'consumer') {
-      relationType = relationTypeParam as ApiRelationType;
+    if (relationTypeParam !== undefined) {
+      if (
+        relationTypeParam !== 'provider' &&
+        relationTypeParam !== 'consumer'
+      ) {
+        throw new InputError(
+          "relationType must be either 'provider' or 'consumer'",
+        );
+      }
+      relationType = relationTypeParam;
     }
     res.json(
       await apiService.getApiRelations({ system, apiName, relationType }),
@@ -147,16 +165,16 @@ export async function createRouter(
   });
 
   router.delete('/catalog/:kind/:name', async (req, res) => {
-    const response = await apiPlatformCatalogService.unregisterCatalogInfo(req);
-    res.status(response.returnCode).json({ message: response.message });
+    await apiPlatformCatalogService.unregisterCatalogInfo(req);
+    res.status(204).end();
   });
 
   router.patch('/catalog/:kind/:name', async (req, res) => {
-    const response = await apiPlatformCatalogService.refreshCatalogInfo({
+    const message = await apiPlatformCatalogService.refreshCatalogInfo({
       name: req.params.name,
       kind: req.params.kind,
     });
-    res.status(response.returnCode).json({ message: response.message });
+    res.status(200).json({ message });
   });
 
   // Endpoints: /services
@@ -175,10 +193,8 @@ export async function createRouter(
   });
 
   router.get('/services/definitions', async (req, res) => {
-    const offset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = req.query.limit
-      ? parseInt(req.query.limit as string, 10)
-      : undefined;
+    const offset = parseIntegerParam(req.query.offset, 'offset', 0);
+    const limit = parseIntegerParam(req.query.limit, 'limit');
     const orderBy = parseOrderByParam(
       req.query.orderBy,
       SERVICEDEFINITIONS_FIELDS,
@@ -238,8 +254,8 @@ export async function createRouter(
 
   // Endpoints: /systems
   router.get('/systems/definitions', async (req, res) => {
-    const offset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const offset = parseIntegerParam(req.query.offset, 'offset', 0);
+    const limit = parseIntegerParam(req.query.limit, 'limit', 20);
     const orderBy = parseOrderByParam(
       req.query.orderBy,
       SYSTEMDEFINITIONS_FIELDS,
@@ -282,8 +298,8 @@ export async function createRouter(
   // Endpoints: /libraries
 
   router.get('/libraries/definitions', async (req, res) => {
-    const offset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const offset = parseIntegerParam(req.query.offset, 'offset', 0);
+    const limit = parseIntegerParam(req.query.limit, 'limit', 20);
     const orderBy = parseOrderByParam(
       req.query.orderBy,
       LIBRARYDEFINITIONS_FIELDS,
@@ -312,7 +328,15 @@ export async function createRouter(
     '/libraries/definitions/:system/:libraryName',
     async (req, res) => {
       const { system, libraryName } = req.params;
-      const servicesCount = req.query.servicesCount === 'false' ? false : true;
+      const servicesCountParam = req.query.servicesCount;
+      if (
+        servicesCountParam !== undefined &&
+        servicesCountParam !== 'true' &&
+        servicesCountParam !== 'false'
+      ) {
+        throw new InputError("servicesCount must be either 'true' or 'false'");
+      }
+      const servicesCount = servicesCountParam !== 'false';
       res.json(
         await libraryService.getLibraryVersions({
           system,

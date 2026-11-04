@@ -82,5 +82,5 @@ export interface McaService {
   getParsedMcaComponentDefinition(request: {
     component: string;
     refP: string;
-  }): Promise<{ result?: any; error?: Error }>;
+  }): Promise<{ result?: unknown; error?: Error }>;
 }

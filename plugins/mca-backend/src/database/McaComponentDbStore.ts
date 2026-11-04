@@ -22,6 +22,7 @@ import {
   McaComponentOrderByOptions,
 } from '../services/types';
 import { McaComponentStore } from './types';
+import { InputError } from '@backstage/errors';
 
 const migrationsDir = resolvePackagePath(
   '@internal/plugin-mca-backend', // Package name
@@ -47,7 +48,7 @@ function mapMcaComponentOrderByField(field: string): string {
     case 'packageName':
       return 'package_name';
     default:
-      throw new Error(`Invalid order by field: ${field}`);
+      throw new InputError(`Invalid order by field: ${field}`);
   }
 }
 
@@ -58,7 +59,7 @@ function mapMcaBaseTypeOrderByField(field: string): string {
     case 'packageName':
       return 'package_name';
     default:
-      throw new Error(`Invalid order by field: ${field}`);
+      throw new InputError(`Invalid order by field: ${field}`);
   }
 }
 

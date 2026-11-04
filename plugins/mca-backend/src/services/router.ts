@@ -3,9 +3,17 @@ import Router from 'express-promise-router';
 import {
   MCABASETYPE_FIELDS,
   MCACOMPONENT_FIELDS,
-  McaComponentType,
 } from '@internal/plugin-mca-common';
-import { parseOrderByParam, parseSearchParam } from './utils';
+import {
+  parseIntegerParam,
+  parseMcaComponentType,
+  parseOrderByParam,
+  parseSearchParam,
+} from './utils';
+import { NotFoundError } from '@backstage/errors';
+
+const DEFAULT_PAGE_LIMIT = 20;
+const MAX_PAGE_LIMIT = 100;
 import { McaService } from './types';
 
 export interface RouterOptions {
@@ -22,11 +30,23 @@ export async function createRouter(
   router.use(express.json());
 
   router.get('/mca/components', async (req, res) => {
-    const offset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const offset = parseIntegerParam(
+      req.query.offset,
+      'offset',
+      0,
+      0,
+      Number.MAX_SAFE_INTEGER,
+    );
+    const limit = parseIntegerParam(
+      req.query.limit,
+      'limit',
+      DEFAULT_PAGE_LIMIT,
+      1,
+      MAX_PAGE_LIMIT,
+    );
     const orderBy = parseOrderByParam(req.query.orderBy, MCACOMPONENT_FIELDS);
     const search = parseSearchParam(req.query.search);
-    const type = (req.query.type || 'all') as McaComponentType;
+    const type = parseMcaComponentType(req.query.type);
     const result = await mcaService.listMcaComponents({
       limit,
       offset,
@@ -42,8 +62,7 @@ export async function createRouter(
       component: req.params.component,
     });
     if (!result) {
-      res.status(404).json({ message: 'Component not found' });
-      return;
+      throw new NotFoundError(`Component ${req.params.component} not found`);
     }
     res.json(result);
   });
@@ -53,16 +72,17 @@ export async function createRouter(
       component: req.params.component,
       refP: String(req.query.refP ?? ''),
     });
-    if (asset) {
-      res.type('application/xml');
-      res.send(asset);
-    } else {
-      res.status(404).json({ message: 'Component definition not found' });
+    if (!asset) {
+      throw new NotFoundError(
+        `Component definition for ${req.params.component} not found`,
+      );
     }
+    res.type('application/xml');
+    res.send(asset);
   });
 
   router.get('/mca/count', async (req, res) => {
-    const type = req.query.type as McaComponentType;
+    const type = parseMcaComponentType(req.query.type);
     const result = await mcaService.getMcaComponentsCount({ type });
     res.json(result);
   });
@@ -75,8 +95,7 @@ export async function createRouter(
   router.get('/mca/last-modified', async (_req, res) => {
     const result = await mcaService.getLastModifiedDate();
     if (!result) {
-      res.status(404).json({ message: 'Last modified date not found' });
-      return;
+      throw new NotFoundError('Last modified date not found');
     }
     res.json({ lastModifiedDate: result });
   });
@@ -87,8 +106,20 @@ export async function createRouter(
   });
 
   router.get('/basetypes/components', async (req, res) => {
-    const offset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = parseInt(req.query.limit as string, 10) || 20;
+    const offset = parseIntegerParam(
+      req.query.offset,
+      'offset',
+      0,
+      0,
+      Number.MAX_SAFE_INTEGER,
+    );
+    const limit = parseIntegerParam(
+      req.query.limit,
+      'limit',
+      DEFAULT_PAGE_LIMIT,
+      1,
+      MAX_PAGE_LIMIT,
+    );
     const orderBy = parseOrderByParam(req.query.orderBy, MCABASETYPE_FIELDS);
     const search = parseSearchParam(req.query.search);
     const result = await mcaService.listMcaBaseTypes({
@@ -105,8 +136,7 @@ export async function createRouter(
       baseType: req.params.baseType,
     });
     if (!result) {
-      res.status(404).json({ message: 'Base type not found' });
-      return;
+      throw new NotFoundError(`Base type ${req.params.baseType} not found`);
     }
     res.json(result);
   });

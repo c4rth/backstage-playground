@@ -1,27 +1,20 @@
 import { Entity } from '@backstage/catalog-model';
-
-export type UnregisterResponse = {
-  message: string;
-  returnCode: number;
-};
-
-export type RefreshResponse = {
-  message: string;
-  returnCode: number;
-};
+import type { Request } from 'express';
 
 export interface ApiPlatformCatalogService {
   registerCatalogInfo(request: {
     target: string;
     kind: string;
-  }): Promise<String>;
+  }): Promise<string>;
   getEntityByName(request: {
     name: string;
     kind: string;
   }): Promise<Entity | undefined>;
-  unregisterCatalogInfo(request: any): Promise<UnregisterResponse>;
+  unregisterCatalogInfo(
+    request: Request<{ kind: string; name: string }>,
+  ): Promise<void>;
   refreshCatalogInfo(request: {
     name: string;
     kind: string;
-  }): Promise<RefreshResponse>;
+  }): Promise<string>;
 }

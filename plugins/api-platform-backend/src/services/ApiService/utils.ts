@@ -1,11 +1,31 @@
 import { InputError } from '@backstage/errors';
 import {
   DependentsType,
+  MAX_LIST_LIMIT,
   OpenApiType,
   OPENAPITYPE_LIST,
   OwnershipType,
   SortDirection,
 } from '@internal/plugin-api-platform-common';
+
+export function parseIntegerParam(
+  value: unknown,
+  name: string,
+  defaultValue?: number,
+): number | undefined {
+  if (value === undefined) return defaultValue;
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) {
+    throw new InputError(`${name} must be a non-negative integer`);
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed)) {
+    throw new InputError(`${name} must be a safe integer`);
+  }
+  if (name === 'limit' && (parsed < 1 || parsed > MAX_LIST_LIMIT)) {
+    throw new InputError(`limit must be between 1 and ${MAX_LIST_LIMIT}`);
+  }
+  return parsed;
+}
 
 export const parseOrderByParam = <T extends readonly string[]>(
   str: unknown,
@@ -69,6 +89,6 @@ export const parseDependentsParam = (
   if (typeof str !== 'string')
     throw new InputError('invalid type query, must be a string');
   if (!['all', 'yes', 'no'].includes(str))
-    throw new InputError("invalid type query, must be 'all' or 'owned'");
+    throw new InputError("invalid dependentsType, must be 'all', 'yes', or 'no'");
   return str as 'all' | 'yes' | 'no';
 };

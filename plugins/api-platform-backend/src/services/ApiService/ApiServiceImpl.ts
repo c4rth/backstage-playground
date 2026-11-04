@@ -21,7 +21,12 @@ import {
   CATALOG_METADATA_DESCRIPTION,
   CATALOG_METADATA_NAME,
   CATALOG_METADATA_NAMESPACE,
+  CATALOG_METADATA_SERVICE_IMAGE_VERSION,
+  CATALOG_METADATA_SERVICE_NAME,
+  CATALOG_METADATA_SERVICE_PLATFORM,
+  CATALOG_METADATA_SERVICE_VERSION,
   CATALOG_RELATIONS,
+  CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_SYSTEM,
   API_NO_SYSTEM,
   ApiDefinitionsOptions,
@@ -465,58 +470,88 @@ export class ApiServiceImpl implements ApiService {
     const relationTypeFilter =
       request.relationType === 'provider' ? 'apiProvidedBy' : 'apiConsumedBy';
 
-    const relations: ApiRelationsDefinition[] = [];
-    for (const entity of entities.items) {
+    const apiEntities = entities.items.flatMap(entity => {
       const apiVersion =
         entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
       if (
         !apiVersion ||
         (request.apiVersion !== undefined && apiVersion !== request.apiVersion)
       ) {
-        continue;
+        return [];
       }
 
-      // Build services array directly without intermediate filter array
-      const entityRelations = entity.relations;
-      if (!entityRelations?.length) continue;
+      const serviceRelations = (entity.relations ?? []).filter(
+        relation => relation.type === relationTypeFilter,
+      );
+      return serviceRelations.length > 0
+        ? [{ entity, apiVersion, serviceRelations }]
+        : [];
+    });
+    const serviceRefs = [
+      ...new Set(
+        apiEntities.flatMap(({ serviceRelations }) =>
+          serviceRelations.map(relation => relation.targetRef),
+        ),
+      ),
+    ];
+    const serviceEntities = new Map<string, Entity | undefined>();
+    if (serviceRefs.length > 0) {
+      const credentials = await this.auth.getOwnServiceCredentials();
+      const resolvedServices = await this.catalog.getEntitiesByRefs(
+        {
+          entityRefs: serviceRefs,
+          fields: [
+            CATALOG_KIND,
+            CATALOG_METADATA_NAME,
+            CATALOG_METADATA_NAMESPACE,
+            CATALOG_METADATA_SERVICE_NAME,
+            CATALOG_METADATA_SERVICE_PLATFORM,
+            CATALOG_METADATA_SERVICE_VERSION,
+            CATALOG_METADATA_SERVICE_IMAGE_VERSION,
+            CATALOG_SPEC_SYSTEM,
+            CATALOG_SPEC_OWNER,
+            CATALOG_SPEC_LIFECYCLE,
+          ],
+        },
+        { credentials },
+      );
+      serviceRefs.forEach((serviceRef, index) => {
+        serviceEntities.set(serviceRef, resolvedServices.items[index]);
+      });
+    }
 
+    const relations: ApiRelationsDefinition[] = [];
+    for (const { entity, apiVersion, serviceRelations } of apiEntities) {
       const services: ApiRelationsDefinition['services'] = [];
-      for (const relation of entityRelations) {
-        if (relation.type === relationTypeFilter) {
-          const svcEntity = await this.catalog.getEntityByRef(
-            relation.targetRef,
-            {
-              credentials: await this.auth.getOwnServiceCredentials(),
-            },
-          );
-          services.push({
-            service: {
-              name:
-                svcEntity?.metadata.annotations?.[
-                  ANNOTATION_SERVICE_NAME
-                ]?.toString() || '',
-              system: svcEntity?.spec?.system?.toString(),
-              namespace: svcEntity?.metadata.namespace,
-              entityRef: relation.targetRef,
-              owner: svcEntity?.spec?.owner?.toString() || '',
-              environment: svcEntity?.spec?.lifecycle?.toString() || '',
-              version:
-                svcEntity?.metadata.annotations?.[
-                  ANNOTATION_SERVICE_VERSION
-                ]?.toString() || '',
-              imageVersion:
-                svcEntity?.metadata.annotations?.[
-                  ANNOTATION_SERVICE_IMAGE_VERSION
-                ]?.toString() || '',
-              platform:
-                svcEntity?.metadata.annotations?.[
-                  ANNOTATION_SERVICE_PLATFORM
-                ]?.toString() || '',
-            },
-            version: apiVersion,
-            lifecycle: relation.type,
-          });
-        }
+      for (const relation of serviceRelations) {
+        const svcEntity = serviceEntities.get(relation.targetRef);
+        services.push({
+          service: {
+            name:
+              svcEntity?.metadata.annotations?.[
+                ANNOTATION_SERVICE_NAME
+              ]?.toString() || '',
+            system: svcEntity?.spec?.system?.toString(),
+            namespace: svcEntity?.metadata.namespace,
+            entityRef: relation.targetRef,
+            owner: svcEntity?.spec?.owner?.toString() || '',
+            environment: svcEntity?.spec?.lifecycle?.toString() || '',
+            version:
+              svcEntity?.metadata.annotations?.[
+                ANNOTATION_SERVICE_VERSION
+              ]?.toString() || '',
+            imageVersion:
+              svcEntity?.metadata.annotations?.[
+                ANNOTATION_SERVICE_IMAGE_VERSION
+              ]?.toString() || '',
+            platform:
+              svcEntity?.metadata.annotations?.[
+                ANNOTATION_SERVICE_PLATFORM
+              ]?.toString() || '',
+          },
+          version: apiVersion,
+          lifecycle: relation.type,
+        });
       }
 
       if (services.length > 0) {

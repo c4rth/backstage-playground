@@ -1,5 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import { NotFoundError } from '@backstage/errors';
 import { memo, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { McaComponent } from '@internal/plugin-mca-common';
@@ -37,7 +38,7 @@ async function getMca(
 ): Promise<McaComponent> {
   const mca = await mcaApi.getMcaComponent(name);
   if (!mca) {
-    throw new Error(`MCA component ${name} not found`);
+    throw new NotFoundError(`MCA component ${name} not found`);
   }
   return mca;
 }

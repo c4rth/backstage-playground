@@ -32,6 +32,7 @@
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@internal/mcp-common": "workspace:^",
     "@internal/plugin-mca-common": "workspace:^",
     "cheerio": "^1.2.0",
     "csv-parser": "^3.2.1",
@@ -42,7 +43,8 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@types/express": "^4.17.6"
+    "@types/express": "^4.17.6",
+    "zod": "^4.6.7"
   },
   "files": [
     "dist",

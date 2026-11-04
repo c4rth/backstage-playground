@@ -1,5 +1,9 @@
 import * as cheerio from 'cheerio';
-import { InputError } from '@backstage/errors';
+import {
+  InputError,
+  NotFoundError,
+  ServiceUnavailableError,
+} from '@backstage/errors';
 import { McaJavadocAsset } from './types';
 
 type McaBaseTypeJavadocRequest = {
@@ -43,12 +47,26 @@ function getSourceUrl(
 }
 
 async function fetchJavadoc(sourceUrl: URL): Promise<string> {
-  const response = await fetch(sourceUrl);
+  let response: Response;
+  try {
+    response = await fetch(sourceUrl);
+  } catch (error) {
+    throw new ServiceUnavailableError('Failed to fetch Javadoc', error);
+  }
+  if (response.status === 404) {
+    throw new NotFoundError(`Javadoc not found at ${sourceUrl}`);
+  }
   if (!response.ok) {
-    throw new Error(`Failed to fetch Javadoc: ${response.statusText}`);
+    throw new ServiceUnavailableError(
+      `Failed to fetch Javadoc: ${response.status} ${response.statusText}`,
+    );
   }
 
-  return response.text();
+  try {
+    return await response.text();
+  } catch (error) {
+    throw new ServiceUnavailableError('Failed to read Javadoc response', error);
+  }
 }
 
 function removeNavigation($: JavadocDocument): void {
@@ -149,13 +167,33 @@ export async function getMcaBaseTypeJavadocAsset(
     throw new InputError('Invalid Javadoc asset path');
   }
 
-  const response = await fetch(sourceUrl);
+  let response: Response;
+  try {
+    response = await fetch(sourceUrl);
+  } catch (error) {
+    throw new ServiceUnavailableError('Failed to fetch Javadoc asset', error);
+  }
+  if (response.status === 404) {
+    throw new NotFoundError(`Javadoc asset not found: ${request.path}`);
+  }
   if (!response.ok) {
-    throw new Error(`Failed to fetch Javadoc asset: ${response.statusText}`);
+    throw new ServiceUnavailableError(
+      `Failed to fetch Javadoc asset: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  let content: Buffer;
+  try {
+    content = Buffer.from(await response.arrayBuffer());
+  } catch (error) {
+    throw new ServiceUnavailableError(
+      'Failed to read Javadoc asset response',
+      error,
+    );
   }
 
   return {
-    content: Buffer.from(await response.arrayBuffer()),
+    content,
     contentType:
       getJavadocAssetContentType(request.path) ??
       response.headers.get('content-type') ??

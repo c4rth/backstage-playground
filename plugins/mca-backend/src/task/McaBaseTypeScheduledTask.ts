@@ -2,6 +2,7 @@ import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import * as cheerio from 'cheerio';
 import { McaComponentStore } from '../database';
+import { ServiceUnavailableError, toError } from '@backstage/errors';
 
 export type McaBaseTypeScheduledTaskOptions = {
   logger: LoggerService;
@@ -33,10 +34,18 @@ export class McaBaseTypeScheduledTask {
     );
 
     try {
-      const response = await fetch(listBaseTypesBaseUrl);
+      let response: Response;
+      try {
+        response = await fetch(listBaseTypesBaseUrl);
+      } catch (error) {
+        throw new ServiceUnavailableError(
+          'Failed to fetch BaseTypes HTML',
+          error,
+        );
+      }
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch BaseTypes HTML: ${response.statusText}`,
+        throw new ServiceUnavailableError(
+          `Failed to fetch BaseTypes HTML: ${response.status} ${response.statusText}`,
         );
       }
 
@@ -71,8 +80,10 @@ export class McaBaseTypeScheduledTask {
         );
         this.logger.info(`Processed ${baseTypes.length} base types`);
       }
-    } catch (error: any) {
-      this.logger.error(`Error fetching BaseTypes HTML: ${error.message}`);
+    } catch (error) {
+      this.logger.error(
+        `Error fetching BaseTypes HTML: ${toError(error).message}`,
+      );
     }
   }
 }

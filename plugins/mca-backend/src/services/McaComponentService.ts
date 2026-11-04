@@ -26,6 +26,12 @@ import { McaOperationScheduledTask, McaBaseTypeScheduledTask } from '../task';
 import { getMcaBaseTypeJavadoc, getMcaBaseTypeJavadocAsset } from './javadoc';
 import { getMcaXmlData } from './osml';
 import { XMLParser } from 'fast-xml-parser';
+import {
+  CustomErrorBase,
+  NotFoundError,
+  ServiceUnavailableError,
+  toError,
+} from '@backstage/errors';
 
 export interface McaServiceOptions {
   logger: LoggerService;
@@ -208,11 +214,13 @@ export class McaComponentService implements McaService {
   async getParsedMcaComponentDefinition(request: {
     component: string;
     refP: string;
-  }): Promise<{ result?: any; error?: Error }> {
+  }): Promise<{ result?: unknown; error?: Error }> {
     try {
       const definition = await this.getMcaComponentDefinition(request);
       if (!definition) {
-        throw new Error(`Component definition for ${request.component} not found`);
+        throw new NotFoundError(
+          `Component definition for ${request.component} not found`,
+        );
       }
       const xmlParser = new XMLParser({
         ignoreAttributes: false,
@@ -228,24 +236,42 @@ export class McaComponentService implements McaService {
       });
       const parsedDefinition = xmlParser.parse(definition);
       let output;
-      if (!parsedDefinition || !parsedDefinition['OPERATION'] || !parsedDefinition['element']) {
-        throw new Error(`Failed to parse component definition for ${request.component} - not an operation nor an element`);
+      if (
+        !parsedDefinition ||
+        (!parsedDefinition.OPERATION && !parsedDefinition.element)
+      ) {
+        throw new ServiceUnavailableError(
+          `Failed to parse component definition for ${request.component} - not an operation nor an element`,
+        );
       }
       if (parsedDefinition.OPERATION) {
-        if (!parsedDefinition['OPERATION']['SPECIFICATION'] || !parsedDefinition['OPERATION']['SPECIFICATION']['OperationAnalyse']) {
-          throw new Error(`Invalid operation specification for ${request.component}`);
+        const operation =
+          parsedDefinition.OPERATION.SPECIFICATION?.OperationAnalyse;
+        if (!operation) {
+          throw new ServiceUnavailableError(
+            `Invalid operation specification for ${request.component}`,
+          );
         }
-        output =
-          parsedDefinition['OPERATION']['SPECIFICATION']['OperationAnalyse'];
+        output = operation;
       } else {
-        if (!parsedDefinition['element']['fields']) {
-          throw new Error(`Invalid element specification for ${request.component}`);
+        if (!parsedDefinition.element.fields) {
+          throw new ServiceUnavailableError(
+            `Invalid element specification for ${request.component}`,
+          );
         }
-        output = parsedDefinition['element']['fields'];
+        output = parsedDefinition.element.fields;
       }
       return { result: output };
     } catch (error) {
-      return { error: error as Error };
+      return {
+        error:
+          error instanceof CustomErrorBase
+            ? error
+            : new ServiceUnavailableError(
+                `Failed to parse component definition for ${request.component}`,
+                toError(error),
+              ),
+      };
     }
   }
 }

@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import { ServiceUnavailableError } from '@backstage/errors';
 
 type DocumentationTag = {
   label: string;
@@ -58,7 +59,9 @@ export function parseJavadoc(html: string) {
     description.children('pre, .type-signature').first(),
   );
   if (!signature) {
-    throw new Error('Invalid Javadoc: class declaration not found');
+    throw new ServiceUnavailableError(
+      'Invalid Javadoc: class declaration not found',
+    );
   }
 
   function members(kind: string): JavadocMember[] {

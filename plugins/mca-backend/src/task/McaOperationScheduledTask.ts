@@ -3,6 +3,7 @@ import { Config } from '@backstage/config';
 import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { McaComponentStore } from '../database';
+import { ServiceUnavailableError, toError } from '@backstage/errors';
 
 export type McaOperationScheduledTaskOptions = {
   logger: LoggerService;
@@ -49,9 +50,16 @@ export class McaOperationScheduledTask {
       `Scheduled task: get all operations CSV from ${allOperationsCsvBaseUrl}`,
     );
     try {
-      const response = await fetch(allOperationsCsvBaseUrl);
+      let response: Response;
+      try {
+        response = await fetch(allOperationsCsvBaseUrl);
+      } catch (error) {
+        throw new ServiceUnavailableError('Failed to fetch CSV', error);
+      }
       if (!response.ok) {
-        throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+        throw new ServiceUnavailableError(
+          `Failed to fetch CSV: ${response.status} ${response.statusText}`,
+        );
       }
 
       const lastModified = response.headers.get('Last-Modified');
@@ -159,8 +167,8 @@ export class McaOperationScheduledTask {
             reject(error);
           });
       });
-    } catch (error: any) {
-      this.logger.error(`Error fetching CSV: ${error.message}`);
+    } catch (error) {
+      this.logger.error(`Error fetching CSV: ${toError(error).message}`);
       throw error;
     }
   }

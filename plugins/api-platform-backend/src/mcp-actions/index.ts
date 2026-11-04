@@ -6,6 +6,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { registerApisMcpActions } from './registerApisMcpActions';
 import { registerServicesMcpActions } from './registerServicesMcpActions';
 import { registerSystemsMcpActions } from './registerSystemsMcpActions';
+import { registerEntitiesMcpActions } from './registerEntitiesMcpActions';
 import { SystemService } from '../services/SystemService';
 import { ServiceService } from '../services/ServiceService';
 import { ApiService } from '../services/ApiService';
@@ -22,4 +23,5 @@ export function registerMcpActions(options: {
   registerApisMcpActions(options);
   registerServicesMcpActions(options);
   registerSystemsMcpActions(options);
+  registerEntitiesMcpActions(options);
 }

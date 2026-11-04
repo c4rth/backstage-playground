@@ -1,5 +1,6 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { NotFoundError } from '@backstage/errors';
 import { useDocumentTitle } from '@internal/plugin-components-react';
 import { mcaComponentsBackendApiRef } from '../../api';
 import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
@@ -18,7 +19,7 @@ async function getBaseType(
 ): Promise<McaBaseType> {
   const mca = await mcaApi.getMcaBaseType(name);
   if (!mca) {
-    throw new Error(`MCA basetype ${name} not found`);
+    throw new NotFoundError(`MCA basetype ${name} not found`);
   }
   return mca;
 }

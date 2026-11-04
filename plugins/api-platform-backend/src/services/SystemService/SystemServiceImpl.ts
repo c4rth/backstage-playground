@@ -32,6 +32,7 @@ import {
   CatalogService,
   catalogServiceRef,
 } from '@backstage/plugin-catalog-node';
+import { NotFoundError } from '@backstage/errors';
 
 export interface SystemServiceOptions {
   logger: LoggerService;
@@ -162,8 +163,11 @@ export class SystemServiceImpl implements SystemService {
     );
 
     const entity = systemEntities.items[0];
+    if (!entity) {
+      throw new NotFoundError(`System ${systemName} not found`);
+    }
 
-    if (!entity?.relations || entity.relations.length === 0) {
+    if (!entity.relations || entity.relations.length === 0) {
       return { entity, apis: [], services: [], libraries: [] };
     }
 

@@ -4,14 +4,22 @@ import { LoggerService, AuthService } from '@backstage/backend-plugin-api';
 import { SystemService } from '../services/SystemService';
 import { ServiceService } from '../services/ServiceService';
 import { ApiService } from '../services/ApiService';
-import type { OpenApiType } from '@internal/plugin-api-platform-common';
 import {
   ANNOTATION_API_NAME,
   ANNOTATION_API_PROJECT,
   ANNOTATION_API_TYPE,
   ANNOTATION_API_VERSION,
+  OPENAPITYPE_LIST,
 } from '@internal/plugin-api-platform-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  logMcpActionExecution,
+  logMcpActionRegistration,
+  pageItems,
+  READ_ONLY_ACTION_ATTRIBUTES,
+} from '@internal/mcp-common/src';
+import { NotFoundError } from '@backstage/errors';
+import { apiPlatformOutputSchemas } from './outputSchemas';
 
 export function registerApisMcpActions(options: {
   actionsRegistry: ActionsRegistryService;
@@ -24,7 +32,7 @@ export function registerApisMcpActions(options: {
 }) {
   const { actionsRegistry, logger, apiService } = options;
 
-  logger.info('Registering API MCP actions');
+  logMcpActionRegistration(logger, 'API');
 
   actionsRegistry.register({
     name: 'get-apis',
@@ -35,26 +43,27 @@ export function registerApisMcpActions(options: {
       envelope with items, offset, limit, and totalCount; each item is the
       latest semantic version for one logical API name and System, not every
       version. Each item exposes name, system, namespace, entityRef, version,
-      type, project, description, and owner as direct fields. The scope
+      type, project, complete description, and owner as direct fields.
+      All fields for the selected page are returned without truncation or
+      JSON chunking.
+      The scope
       includes all owners. offset defaults to 0; limit
       defaults to 20; limit must be between 1 and 100. hasMore indicates
-      whether another page exists; request offset + limit to continue.
+      whether another page exists; request apis.nextOffset to continue.
+      Pagination occurs in memory after loading all matching catalog entities
+      and grouping their latest versions; limit bounds the response, not loading.
       Optional search matches API name, System, project, type, or description.
       Optional orderBy sorts by name, description, System, or type (ascending
       or descending), with
       stable tie-breaking. Use get-api-versions-by-name to list every version
       of a known API, or get-api-by-name-and-version to retrieve one version.
     `,
-    attributes: {
-      destructive: false,
-      readOnly: true,
-      idempotent: true,
-    },
+    attributes: READ_ONLY_ACTION_ATTRIBUTES,
     schema: {
       input: z =>
         z.object({
           apiType: z
-            .custom<OpenApiType>()
+            .enum(OPENAPITYPE_LIST)
             .describe('The type of the API to query'),
           offset: z.number().int().min(0).optional(),
           limit: z.number().int().min(1).max(100).optional(),
@@ -66,11 +75,10 @@ export function registerApisMcpActions(options: {
             })
             .optional(),
         }),
-      // TODO: is there a better way to do this?
-      output: z => z.object({}).passthrough(),
+      output: z => apiPlatformOutputSchemas(z).apis,
     },
     action: async ({ input }) => {
-      logger.debug('Executing get-apis action with input:', input);
+      logMcpActionExecution(logger, 'get-apis', input);
       const apis = await apiService.listApis({
         apiType: input.apiType,
         ownershipType: 'all',
@@ -81,7 +89,7 @@ export function registerApisMcpActions(options: {
       });
       return {
         output: {
-          apis: {
+          apis: pageItems({
             ...apis,
             items: apis.items.map(entity => ({
               name:
@@ -106,7 +114,7 @@ export function registerApisMcpActions(options: {
               description: entity.metadata.description?.toString() ?? '',
               owner: entity.spec?.owner?.toString() ?? '',
             })),
-          },
+          }),
         },
       };
     },
@@ -116,21 +124,19 @@ export function registerApisMcpActions(options: {
     name: 'get-api-versions-by-name',
     title: 'API versions by API name, optionally scoped to a System',
     description: `
-      List every version for the logical API name supplied in name. Optionally
+      List all versions for the logical API name supplied in name. Optionally
       provide system to restrict results to that System; omit it to search
       across all Systems. Team and DEFL are domain aliases for System names;
       they do not trigger a Group lookup or imply that a Group entity exists.
-      Returns apis as entries with name, system, namespace, entityRef, version,
-      and project, sorted by descending semantic version; there is no
-      pagination. Pass name, system, and version directly to
+      Returns apis as an array containing every matching version.
+      Entries include name, system, namespace, entityRef, version and project,
+      sorted by descending semantic version. There is no pagination,
+      truncation or JSON chunking.
+      Pass name, system, and version directly to
       get-api-dependencies. Use get-apis to discover logical API names, or
       get-api-by-name-and-version to retrieve a specific version.
     `,
-    attributes: {
-      destructive: false,
-      readOnly: true,
-      idempotent: true,
-    },
+    attributes: READ_ONLY_ACTION_ATTRIBUTES,
     schema: {
       input: z =>
         z.object({
@@ -140,21 +146,16 @@ export function registerApisMcpActions(options: {
             .describe('Optional System name to scope the API lookup'),
           name: z.string().describe('The name of the API to query'),
         }),
-      output: z => z.object({}).passthrough(),
+      output: z => apiPlatformOutputSchemas(z).apiVersions,
     },
     action: async ({ input }) => {
-      logger.debug(
-        'Executing get-api-versions-by-name action with input:',
-        input,
-      );
+      logMcpActionExecution(logger, 'get-api-versions-by-name', input);
 
       const apis = await apiService.getApiVersions({
         system: input.system,
         apiName: input.name,
       });
-      return {
-        output: { apis },
-      };
+      return { output: { apis } };
     },
   });
 
@@ -167,17 +168,13 @@ export function registerApisMcpActions(options: {
       to search across all Systems. The version is matched by prefix, not exact
       equality, and the first matching catalog entity is returned. The output
       field api contains name, system, namespace, entityRef, version, and
-      project; it can be undefined when there is no match. Team and DEFL are
+      project. Missing APIs are reported as not found. Team and DEFL are
       domain aliases for System names, not Group lookups. If a version prefix
       could match multiple releases or Systems, first use
       get-api-versions-by-name to choose a more
       specific result. Use get-apis to discover API names.
     `,
-    attributes: {
-      destructive: false,
-      readOnly: true,
-      idempotent: true,
-    },
+    attributes: READ_ONLY_ACTION_ATTRIBUTES,
     schema: {
       input: z =>
         z.object({
@@ -188,22 +185,22 @@ export function registerApisMcpActions(options: {
           name: z.string().describe('The name of the API to query'),
           version: z.string().describe('The version of the API to query'),
         }),
-      output: z => z.object({}).passthrough(),
+      output: z => apiPlatformOutputSchemas(z).api,
     },
     action: async ({ input }) => {
-      logger.debug(
-        'Executing get-api-by-name-and-version action with input:',
-        input,
-      );
+      logMcpActionExecution(logger, 'get-api-by-name-and-version', input);
 
       const api = await apiService.getApiMatchingVersion({
         system: input.system,
         apiName: input.name,
         apiVersion: input.version,
       });
-      return {
-        output: { api },
-      };
+      if (!api) {
+        throw new NotFoundError(
+          `API ${input.name} version ${input.version} not found`,
+        );
+      }
+      return { output: { api } };
     },
   });
 
@@ -215,19 +212,21 @@ export function registerApisMcpActions(options: {
       Find services related to a logical API name (name). Optionally provide
       system to restrict results to that System; omit it to search across all
       Systems. Team and DEFL are domain aliases for System names; they do not
-      imply a Group entity. The required version is matched exactly. Returns
-      consumer and provider arrays grouped by API identity, including name,
-      system, namespace, entityRef, apiVersion, and version. Each related
-      service includes name, system, namespace, entityRef, owner, environment,
-      version, imageVersion, and platform. Pass name, system, and version
+      imply a Group entity. The required version is matched exactly.
+      By default returns summary with consumerCount and providerCount (service
+      environment relationships, not distinct logical services). details=true
+      returns relations as a page of {direction, api, service, lifecycle}.
+      API/service fields include reusable name, system, namespace, entityRef
+      and version identifiers; services also include environment, imageVersion,
+      owner and platform. direction defaults to all; environment is an optional
+      exact filter. offset defaults to 0; limit defaults to 20 (maximum 100);
+      request relations.nextOffset to continue. All matching relations are
+      loaded, resolved, filtered and sorted before pagination in memory;
+      limit bounds the response, not loading. Pass name, system, and version
       directly from get-api-versions-by-name; omit system only to search all
       Systems.
     `,
-    attributes: {
-      destructive: false,
-      readOnly: true,
-      idempotent: true,
-    },
+    attributes: READ_ONLY_ACTION_ATTRIBUTES,
     schema: {
       input: z =>
         z.object({
@@ -237,27 +236,74 @@ export function registerApisMcpActions(options: {
             .describe('Optional System name to scope the API lookup'),
           name: z.string().describe('The name of the API to query'),
           version: z.string().describe('The version of the API to query'),
+          details: z.boolean().optional(),
+          direction: z.enum(['all', 'consumer', 'provider']).optional(),
+          environment: z.string().optional(),
+          offset: z.number().int().min(0).optional(),
+          limit: z.number().int().min(1).max(100).optional(),
         }),
-      output: z => z.object({}).passthrough(),
+      output: z => apiPlatformOutputSchemas(z).apiDependencies,
     },
     action: async ({ input }) => {
-      logger.debug('Executing get-api-dependencies action with input:', input);
-      const consumerServices = await apiService.getApiRelations({
-        system: input.system,
-        apiName: input.name,
-        apiVersion: input.version,
-        relationType: 'consumer',
-      });
-      const providerServices = await apiService.getApiRelations({
-        system: input.system,
-        apiName: input.name,
-        apiVersion: input.version,
-        relationType: 'provider',
-      });
+      logMcpActionExecution(logger, 'get-api-dependencies', input);
+      const [consumerServices, providerServices] = await Promise.all([
+        apiService.getApiRelations({
+          system: input.system,
+          apiName: input.name,
+          apiVersion: input.version,
+          relationType: 'consumer',
+        }),
+        apiService.getApiRelations({
+          system: input.system,
+          apiName: input.name,
+          apiVersion: input.version,
+          relationType: 'provider',
+        }),
+      ]);
+      const relations = [
+        ...consumerServices.flatMap(({ services, ...api }) =>
+          services.map(({ service, lifecycle }) => ({
+            direction: 'consumer' as const,
+            api,
+            service,
+            lifecycle,
+          })),
+        ),
+        ...providerServices.flatMap(({ services, ...api }) =>
+          services.map(({ service, lifecycle }) => ({
+            direction: 'provider' as const,
+            api,
+            service,
+            lifecycle,
+          })),
+        ),
+      ]
+        .filter(
+          relation =>
+            (!input.direction ||
+              input.direction === 'all' ||
+              relation.direction === input.direction) &&
+            (!input.environment ||
+              relation.service.environment === input.environment),
+        )
+        .sort(
+          (a, b) =>
+            a.api.entityRef.localeCompare(b.api.entityRef) ||
+            a.direction.localeCompare(b.direction) ||
+            a.service.entityRef.localeCompare(b.service.entityRef),
+        );
       return {
         output: {
-          consumer: consumerServices,
-          provider: providerServices,
+          name: input.name,
+          system: input.system,
+          version: input.version,
+          summary: {
+            consumerCount: relations.filter(r => r.direction === 'consumer')
+              .length,
+            providerCount: relations.filter(r => r.direction === 'provider')
+              .length,
+          },
+          ...(input.details ? { relations: pageItems(relations, input) } : {}),
         },
       };
     },

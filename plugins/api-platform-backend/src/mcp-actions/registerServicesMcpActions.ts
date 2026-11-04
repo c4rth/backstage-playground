@@ -5,6 +5,14 @@ import { SystemService } from '../services/SystemService';
 import { ServiceService } from '../services/ServiceService';
 import { ApiService } from '../services/ApiService';
 import { MAX_LIST_LIMIT } from '@internal/plugin-api-platform-common';
+import {
+  logMcpActionExecution,
+  logMcpActionRegistration,
+  pageItems,
+  READ_ONLY_ACTION_ATTRIBUTES,
+} from '@internal/mcp-common/src';
+import { parseEntityRef } from '@backstage/catalog-model';
+import { apiPlatformOutputSchemas } from './outputSchemas';
 
 export function registerServicesMcpActions(options: {
   actionsRegistry: ActionsRegistryService;
@@ -17,30 +25,28 @@ export function registerServicesMcpActions(options: {
 }) {
   const { actionsRegistry, logger, serviceService } = options;
 
-  logger.info('Registering Service MCP actions');
+  logMcpActionRegistration(logger, 'Service');
 
   actionsRegistry.register({
     name: 'get-services',
-    title: 'Service definitions and environments by page',
+    title: 'Service summaries by page',
     description: `
       Browse service definitions across all Systems and owners. The services
       page includes items, offset, limit, totalCount, and hasMore. offset
       defaults to 0; limit defaults to 20 and must be between 1 and ${MAX_LIST_LIMIT}.
-      Request offset + limit to continue. Optional search matches service name
+      Request services.nextOffset to continue. All matching catalog entities
+      are loaded and grouped before pagination in memory; limit bounds the
+      response, not loading. Optional search matches service name
       or System; orderBy sorts by name or System (ascending or descending)
       with stable tie-breaking. Optional dependsOn and dependentsType filter
-      declared dependency relationships. Each service includes name,
-      serviceName (the logical name), owner, system, and versions; each version
-      contains environment records with imageVersion, entityRef (including the
-      catalog namespace/name), platform, and declared dependencies. Use
-      get-service-versions for one service, or
+      declared dependency relationships. Each summary includes name and
+      serviceName (both logical names), catalogName (the synthesized name),
+      owner, system, versionCount and environmentCount. No environment
+      definitions or dependency arrays are included. Use get-service-versions
+      with section=environments or section=dependencies to retrieve them, or
       get-service-dependencies for consumed/provided API relationships.
     `,
-    attributes: {
-      destructive: false,
-      readOnly: true,
-      idempotent: true,
-    },
+    attributes: READ_ONLY_ACTION_ATTRIBUTES,
     schema: {
       input: z =>
         z.object({
@@ -56,11 +62,10 @@ export function registerServicesMcpActions(options: {
           dependsOn: z.string().optional(),
           dependentsType: z.enum(['all', 'yes', 'no']).optional(),
         }),
-      // TODO: is there a better way to do this?
-      output: z => z.object({}).passthrough(),
+      output: z => apiPlatformOutputSchemas(z).services,
     },
     action: async ({ input }) => {
-      logger.debug('Executing get-services action with input:', input);
+      logMcpActionExecution(logger, 'get-services', input);
 
       const services = await serviceService.listServices({
         ownershipType: 'all',
@@ -72,7 +77,24 @@ export function registerServicesMcpActions(options: {
         dependentsType: input.dependentsType,
       });
       return {
-        output: { services },
+        output: {
+          services: pageItems({
+            ...services,
+            items: services.items.map(service => ({
+              name: service.serviceName,
+              serviceName: service.serviceName,
+              catalogName: service.name,
+              owner: service.owner,
+              system: service.system,
+              versionCount: service.versions.length,
+              environmentCount: service.versions.reduce(
+                (count, version) =>
+                  count + Object.keys(version.environments).length,
+                0,
+              ),
+            })),
+          }),
+        },
       };
     },
   });
@@ -81,20 +103,20 @@ export function registerServicesMcpActions(options: {
     name: 'get-service-versions',
     title: 'Service versions by System and service name',
     description: `
-      Retrieve the version and environment definitions for the service
-      identified by its logical name (name) and System name (system). Returns
-      service with name, serviceName, owner, system, and versions; each version
-      contains its environment records. There is no version or environment
-      filter, so all matching versions and environments are returned without
-      pagination. If no catalog entry matches, the returned placeholder has an
-      empty owner and versions array. Use get-services to discover service
+      Browse a service's versions by logical name (name) and System (system).
+      Returns service identity and a page. section defaults to versions: items
+      contain version and available environment names only. section=environments
+      returns version, environment, imageVersion, entityRef, namespace, platform
+      and dependencyCount; section=dependencies returns one declared dependency
+      per item with those environment identifiers. Optional version and
+      environment filters match exactly. offset defaults to 0; limit defaults
+      to 20 (maximum 100); request page.nextOffset to continue. All matching
+      service versions and environments are loaded before filtering, sorting
+      and pagination in memory; limit bounds the response, not loading. A missing service
+      has an empty owner and page. Use get-services to discover service
       names, or get-service-dependencies for consumed/provided API relations.
     `,
-    attributes: {
-      destructive: false,
-      readOnly: true,
-      idempotent: true,
-    },
+    attributes: READ_ONLY_ACTION_ATTRIBUTES,
     schema: {
       input: z =>
         z.object({
@@ -102,18 +124,88 @@ export function registerServicesMcpActions(options: {
             .string()
             .describe('The name of the system of the service to query'),
           name: z.string().describe('The name of the service to query'),
+          section: z
+            .enum(['versions', 'environments', 'dependencies'])
+            .optional(),
+          version: z.string().optional(),
+          environment: z.string().optional(),
+          offset: z.number().int().min(0).optional(),
+          limit: z.number().int().min(1).max(MAX_LIST_LIMIT).optional(),
         }),
-      // TODO: is there a better way to do this?
-      output: z => z.object({}).passthrough(),
+      output: z => apiPlatformOutputSchemas(z).serviceVersions,
     },
     action: async ({ input }) => {
-      logger.debug('Executing get-service-version action with input:', input);
+      logMcpActionExecution(logger, 'get-service-version', input);
       const service = await serviceService.getServiceVersions({
         system: input.system,
         serviceName: input.name,
       });
+      const versions = service.versions.filter(
+        v => !input.version || v.version === input.version,
+      );
+      const environments = versions
+        .flatMap(v =>
+          Object.entries(v.environments)
+            .filter(
+              ([environment]) =>
+                !input.environment || environment === input.environment,
+            )
+            .map(([environment, definition]) => ({
+              version: v.version,
+              environment,
+              ...definition,
+              namespace: parseEntityRef(definition.entityRef).namespace,
+            })),
+        )
+        .sort(
+          (a, b) =>
+            a.version.localeCompare(b.version, undefined, { numeric: true }) ||
+            a.environment.localeCompare(b.environment) ||
+            a.entityRef.localeCompare(b.entityRef),
+        );
+      const section = input.section ?? 'versions';
+      const items = (() => {
+        if (section === 'versions') {
+          return versions
+            .filter(
+              v =>
+                !input.environment ||
+                Object.keys(v.environments).includes(input.environment),
+            )
+            .map(v => ({
+              version: v.version,
+              environments: Object.keys(v.environments)
+                .filter(e => !input.environment || e === input.environment)
+                .sort(),
+            }))
+            .sort((a, b) =>
+              a.version.localeCompare(b.version, undefined, { numeric: true }),
+            );
+        }
+        if (section === 'environments') {
+          return environments.map(({ dependencies, ...environment }) => ({
+            ...environment,
+            dependencyCount: dependencies.length,
+          }));
+        }
+        return environments.flatMap(({ dependencies, ...environment }) =>
+          [...dependencies]
+            .sort()
+            .map(dependency => ({ ...environment, dependency })),
+        );
+      })();
       return {
-        output: { service },
+        output: {
+          service: {
+            name: service.serviceName,
+            serviceName: service.serviceName,
+            catalogName: service.name,
+            system: service.system,
+            owner: service.owner,
+          },
+          section,
+          page: pageItems<(typeof items)[number]>(items, input),
+        },
       };
     },
   });
@@ -125,20 +217,20 @@ export function registerServicesMcpActions(options: {
       Find API relationships for the service identified by its logical name
       (name) and System name (system). Optional imageVersion restricts results
       to service catalog entities with that exact image-version annotation.
-      There are no version, environment, or direction filters, so both consumed
-      and provided API relations for every matching version and environment
-      are returned. Each relations entry includes logical service name, system,
-      namespace, entityRef, owner, environment, version, imageVersion, platform,
-      and apis.consumed/provided arrays. Each API entry includes name, system,
-      namespace, entityRef, owner, and version. These API relations are
-      distinct from the declared dependencies included in get-services and
-      get-service-versions.
+      Optional version and environment match exactly; direction defaults to all
+      (consumed and provided). By default returns summary with environmentCount,
+      consumedCount and providedCount. details=true returns relations as a page
+      of {direction, service, api}, one API relationship per item. Service fields
+      include logical name, system, namespace, entityRef, owner, environment,
+      version, imageVersion and platform; API fields include name, system,
+      namespace, entityRef, owner and version. offset defaults to 0; limit defaults
+      to 20 (maximum 100); request relations.nextOffset to continue.
+      All matching relations are loaded and resolved before filtering, sorting
+      and pagination in memory; limit bounds the response, not loading. These API
+      relations differ from declared dependencies in get-service-versions
+      section=dependencies.
     `,
-    attributes: {
-      destructive: false,
-      readOnly: true,
-      idempotent: true,
-    },
+    attributes: READ_ONLY_ACTION_ATTRIBUTES,
     schema: {
       input: z =>
         z.object({
@@ -150,22 +242,63 @@ export function registerServicesMcpActions(options: {
             .string()
             .optional()
             .describe('Optional exact service image version to filter by'),
+          details: z.boolean().optional(),
+          version: z.string().optional(),
+          environment: z.string().optional(),
+          direction: z.enum(['all', 'consumed', 'provided']).optional(),
+          offset: z.number().int().min(0).optional(),
+          limit: z.number().int().min(1).max(MAX_LIST_LIMIT).optional(),
         }),
-      // TODO: is there a better way to do this?
-      output: z => z.object({}).passthrough(),
+      output: z => apiPlatformOutputSchemas(z).serviceDependencies,
     },
     action: async ({ input }) => {
-      logger.debug(
-        'Executing get-service-dependencies action with input:',
-        input,
-      );
+      logMcpActionExecution(logger, 'get-service-dependencies', input);
       const relations = await serviceService.getServiceRelations({
         system: input.system,
         serviceName: input.name,
         imageVersion: input.imageVersion,
       });
+      const environments = relations.filter(
+        r =>
+          (!input.version || r.version === input.version) &&
+          (!input.environment || r.environment === input.environment),
+      );
+      const items = environments
+        .flatMap(({ apis, ...service }) => [
+          ...apis.consumed.map(api => ({
+            direction: 'consumed' as const,
+            service,
+            api,
+          })),
+          ...apis.provided.map(api => ({
+            direction: 'provided' as const,
+            service,
+            api,
+          })),
+        ])
+        .filter(
+          r =>
+            !input.direction ||
+            input.direction === 'all' ||
+            r.direction === input.direction,
+        )
+        .sort(
+          (a, b) =>
+            a.service.entityRef.localeCompare(b.service.entityRef) ||
+            a.direction.localeCompare(b.direction) ||
+            a.api.entityRef.localeCompare(b.api.entityRef),
+        );
       return {
-        output: { relations },
+        output: {
+          name: input.name,
+          system: input.system,
+          summary: {
+            environmentCount: environments.length,
+            consumedCount: items.filter(r => r.direction === 'consumed').length,
+            providedCount: items.filter(r => r.direction === 'provided').length,
+          },
+          ...(input.details ? { relations: pageItems(items, input) } : {}),
+        },
       };
     },
   });
