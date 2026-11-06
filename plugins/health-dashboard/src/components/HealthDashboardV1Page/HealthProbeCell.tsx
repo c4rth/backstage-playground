@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { HealthProbe } from '../../types';
+import { HealthV1Probe } from '../../types';
 import { TooltipTrigger, Cell, Tooltip, ButtonLink, Box } from '@backstage/ui';
 
 const cellStyle = { paddingRight: '8px' } as const;
@@ -63,7 +63,7 @@ const getHealthUrl = (probeUrl: string | undefined): string => {
 };
 
 export const HealthProbeCell = memo(
-  ({ healthProbe }: { healthProbe: HealthProbe | undefined }) => {
+  ({ healthProbe }: { healthProbe: HealthV1Probe | undefined }) => {
     if (!healthProbe || !healthProbe.returnedHttpStatus) {
       return (
         <Cell>

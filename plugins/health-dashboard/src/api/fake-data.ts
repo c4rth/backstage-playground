@@ -1,4 +1,4 @@
-import { EnvironmentHealthData, HealthProbe } from '../types';
+import { EnvironmentHealthV1Data, HealthV1Probe } from '../types';
 
 const NON_PRD_CONFIG: Record<string, string[]> = {
   tst: [
@@ -158,7 +158,7 @@ function formatDate(date: Date, separator: string): string {
 function generateRandomProbe(
   application: string,
   environment: string,
-): HealthProbe {
+): HealthV1Probe {
   const now = new Date();
   const startedDate = new Date(
     now.getTime() - Math.floor(Math.random() * 24 * 60 * 60 * 1000),
@@ -191,7 +191,7 @@ function generateRandomProbe(
   const path = getRandomElement(PATH_SECTIONS);
   const healthUrl = `https://${host}/${path}/${application.toLowerCase()}/actuator/health`;
 
-  let statusObj: HealthProbe['status'];
+  let statusObj: HealthV1Probe['status'];
   if (status === 200) {
     statusObj = {
       service: `Service OK (${environment.toUpperCase()})`,
@@ -226,8 +226,8 @@ function generateRandomProbe(
 
 function generateHealthData(
   envConfig: Record<string, string[]>,
-): EnvironmentHealthData {
-  const result: EnvironmentHealthData = {};
+): EnvironmentHealthV1Data {
+  const result: EnvironmentHealthV1Data = {};
   for (const [env, apps] of Object.entries(envConfig)) {
     result[env] = {};
     for (const app of apps) {
@@ -237,16 +237,16 @@ function generateHealthData(
   return result;
 }
 
-export const generateNonPrdData = (): EnvironmentHealthData =>
+export const generateNonPrdData = (): EnvironmentHealthV1Data =>
   generateHealthData(NON_PRD_CONFIG);
 
-export const generatePrdData = (): EnvironmentHealthData =>
+export const generatePrdData = (): EnvironmentHealthV1Data =>
   generateHealthData(PRD_CONFIG);
 
 export const nonPrdData = generateNonPrdData;
 export const prdData = generatePrdData;
 
-export function dummyCall(prd: boolean): EnvironmentHealthData {
+export function dummyCall(prd: boolean): EnvironmentHealthV1Data {
   const data = prd ? prdData() : nonPrdData();
   return data;
 }

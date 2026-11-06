@@ -6,17 +6,17 @@ import {
   useTable,
   Table,
   FullPage,
-  PluginHeader,
   Container,
   Select,
   Button,
+  Header,
 } from '@backstage/ui';
 import { useCallback, useEffect, useState } from 'react';
-import { useGetHealthData } from '../../hooks';
+import { useGetHealthV1Data } from '../../hooks';
 import {
-  ApplicationHealthData,
+  ApplicationHealthV1Data,
   HealthDataError,
-  HealthDataResponse,
+  HealthV1DataResponse,
 } from '../../types';
 import {
   HealthProbeCell,
@@ -29,7 +29,7 @@ import {
   Progress,
   useDocumentTitle,
 } from '@internal/plugin-components-react';
-import styles from './HealthDashboardPage.module.css';
+import styles from './HealthDashboardV1Page.module.css';
 import { RiRestartLine } from '@remixicon/react';
 
 const emptyState = () => (
@@ -75,11 +75,11 @@ const Legend = () => (
 
 type TableRow = {
   id: number;
-  healthData: ApplicationHealthData;
+  healthData: ApplicationHealthV1Data;
 };
 
 const toTableRow = (
-  healthData: ApplicationHealthData,
+  healthData: ApplicationHealthV1Data,
   idx: number,
 ): TableRow => ({
   id: idx,
@@ -87,7 +87,7 @@ const toTableRow = (
 });
 
 async function fetchData(
-  getHealthData: () => Promise<HealthDataResponse | undefined>,
+  getHealthData: () => Promise<HealthV1DataResponse | undefined>,
   setErrors: (errors: HealthDataError[]) => void,
 ) {
   const response = await getHealthData();
@@ -133,9 +133,9 @@ const REFRESH_INTERVALS = [
   { label: '5m', id: '300000' },
 ];
 
-export const HealthDashboardPage = () => {
-  useDocumentTitle('Health Dashboard');
-  const getHealthData = useGetHealthData();
+export const HealthDashboardV1Page = () => {
+  useDocumentTitle('Health Dashboard v1');
+  const getHealthData = useGetHealthV1Data();
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
   );
@@ -169,9 +169,11 @@ export const HealthDashboardPage = () => {
   }, [refreshInterval, reload]);
 
   return (
-    <>
-      <PluginHeader
-        title="Health Dashboard k8s"
+    <FullPage>
+      <Legend />
+      <Header
+        title="Health Dashboard v1"
+        sticky
         customActions={
           <>
             <Box style={{ display: 'flex', alignItems: 'center' }}>
@@ -197,43 +199,40 @@ export const HealthDashboardPage = () => {
           </>
         }
       />
-      <Legend />
-      <FullPage>
-        <Container
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          {healthDataErrors.map((sourceError, index) => (
-            <Box mb="4" key={`${sourceError.source}-${index}`}>
-              <ResponseErrorPanel
-                title={`Failed to get ${sourceError.source} health data`}
-                error={new Error(sourceError.message)}
-              />
-            </Box>
-          ))}
-          {tableProps.error && (
+      <Container
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {healthDataErrors.map((sourceError, index) => (
+          <Box mb="4" key={`${sourceError.source}-${index}`}>
             <ResponseErrorPanel
-              title="Failed to render Health data"
-              error={tableProps.error}
+              title={`Failed to get ${sourceError.source} health data`}
+              error={new Error(sourceError.message)}
             />
-          )}
-          {tableProps.isPending && <Progress />}
-          {!tableProps.isPending && (
-            <Table
-              columnConfig={columns}
-              {...tableProps}
-              pagination={{
-                type: 'none',
-              }}
-              emptyState={emptyState()}
-              className={`denseTable ${styles.healthTable}`}
-            />
-          )}
-        </Container>
-      </FullPage>
-    </>
+          </Box>
+        ))}
+        {tableProps.error && (
+          <ResponseErrorPanel
+            title="Failed to render Health data"
+            error={tableProps.error}
+          />
+        )}
+        {tableProps.isPending && <Progress />}
+        {!tableProps.isPending && (
+          <Table
+            columnConfig={columns}
+            {...tableProps}
+            pagination={{
+              type: 'none',
+            }}
+            emptyState={emptyState()}
+            className={`denseTable ${styles.healthTable}`}
+          />
+        )}
+      </Container>
+    </FullPage>
   );
 };

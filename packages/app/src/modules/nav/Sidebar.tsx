@@ -58,7 +58,7 @@ export const SidebarContent = NavContentBlueprint.make({
           {nav.take('page:api-platform/library-explorer')}
           {nav.take('page:mca/mca-components')}
           {nav.take('page:mca/mca-basetypes')}
-          {nav.take('page:health-dashboard/health-dashboard')}
+          {nav.take('page:health-dashboards/dashboard-explorer')}
           {nav.take('page:techdocs')}
           {nav.take('page:scaffolder')}
           {nav.take('page:catalog')}

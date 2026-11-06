@@ -13,8 +13,5 @@ export interface ApiPlatformCatalogService {
   unregisterCatalogInfo(
     request: Request<{ kind: string; name: string }>,
   ): Promise<void>;
-  refreshCatalogInfo(request: {
-    name: string;
-    kind: string;
-  }): Promise<string>;
+  refreshCatalogInfo(request: { name: string; kind: string }): Promise<string>;
 }

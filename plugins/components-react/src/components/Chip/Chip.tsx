@@ -16,7 +16,9 @@ export interface ChipProps {
   /** Callback fired when chip is clicked */
   onClick?: () => void;
   /** The color of the chip */
-  color?: 'default' | 'primary' | 'secondary' | 'outlined' | string;
+  chipColor?: 'default' | 'primary' | 'secondary' | 'outlined' | string;
+  /** The color of the label text */
+  labelColor?: string;
   /** The size of the chip */
   size?: 'small' | 'medium';
   /** The variant to use */
@@ -28,7 +30,7 @@ export interface ChipProps {
 }
 
 const getChipStyles = (
-  color: ChipProps['color'],
+  color: ChipProps['chipColor'],
   variant: ChipProps['variant'],
   size: ChipProps['size'],
   clickable: boolean,
@@ -83,9 +85,10 @@ const getChipStyles = (
 };
 
 const getLabelStyles = (
-  color: ChipProps['color'],
+  chipColor: ChipProps['chipColor'],
   variant: ChipProps['variant'],
   size: ChipProps['size'],
+  labelColor?: ChipProps['labelColor'],
 ): CSSProperties => ({
   minWidth: 0,
   overflow: 'hidden',
@@ -94,10 +97,9 @@ const getLabelStyles = (
   paddingRight: size === 'small' ? '8px' : '12px',
   whiteSpace: 'nowrap',
   display: 'block',
-  color:
-    variant === 'filled' && color === 'primary'
+  color: labelColor ?? (variant === 'filled' && chipColor === 'primary'
       ? 'var(--bui-white)'
-      : 'var(--bui-fg-primary)',
+      : 'var(--bui-fg-primary)'),
 });
 
 const getIconStyles = (size: ChipProps['size']): CSSProperties => ({
@@ -128,7 +130,8 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       label,
       icon,
       onClick,
-      color = 'default',
+      chipColor: color = 'default',
+      labelColor,
       size = 'medium',
       variant = 'filled',
       clickable = false,
@@ -146,7 +149,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     const content = (
       <>
         {icon && <span style={getIconStyles(size)}>{icon}</span>}
-        <span style={getLabelStyles(color, variant, size)}>{label}</span>
+        <span style={getLabelStyles(color, variant, size, labelColor)}>{label}</span>
       </>
     );
 

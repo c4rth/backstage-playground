@@ -89,6 +89,8 @@ export const parseDependentsParam = (
   if (typeof str !== 'string')
     throw new InputError('invalid type query, must be a string');
   if (!['all', 'yes', 'no'].includes(str))
-    throw new InputError("invalid dependentsType, must be 'all', 'yes', or 'no'");
+    throw new InputError(
+      "invalid dependentsType, must be 'all', 'yes', or 'no'",
+    );
   return str as 'all' | 'yes' | 'no';
 };

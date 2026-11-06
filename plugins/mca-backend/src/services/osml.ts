@@ -1,7 +1,4 @@
-import {
-  NotFoundError,
-  ServiceUnavailableError,
-} from '@backstage/errors';
+import { NotFoundError, ServiceUnavailableError } from '@backstage/errors';
 
 function buildQueryParams(
   params: Record<string, string | number | undefined>,

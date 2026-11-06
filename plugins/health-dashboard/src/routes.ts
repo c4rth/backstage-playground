@@ -1,5 +1,5 @@
 import { createRouteRef } from '@backstage/core-plugin-api';
 
-export const rootRouteRef = createRouteRef({
-  id: 'health-dashboard',
+export const healthDashboardsRouteRef = createRouteRef({
+  id: 'health-dashboards',
 });

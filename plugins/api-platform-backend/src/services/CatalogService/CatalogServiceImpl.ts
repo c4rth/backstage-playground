@@ -7,9 +7,7 @@ import {
   PermissionsService,
   HttpAuthService,
 } from '@backstage/backend-plugin-api';
-import {
-  ApiPlatformCatalogService,
-} from './types';
+import { ApiPlatformCatalogService } from './types';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   CATALOG_KIND,

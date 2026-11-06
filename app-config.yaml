@@ -160,20 +160,33 @@ proxy:
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
-    '/health-probes-prd':
-      target: 'http://localhost:8080/health-probes-prd'
+    '/health-probes-v1-prd':
+      target: 'http://localhost:8080/health-probes-v1-prd'
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
-    '/health-probes-nonprd':
-      target: 'http://localhost:8080/health-probes-nonprd'
+      pathRewrite:
+        '^/api/proxy/health-probes-v1-prd': ''
+    '/health-probes-v1-nonprd':
+      target: 'http://localhost:8080/health-probes-v1-nonprd'
       allowedMethods: ['GET']
       allowedHeaders: ['Accept']
       # changeOrigin: true
       # Change to "false" in case of using self hosted cluster with a self-signed certificate
       secure: false
+      pathRewrite:
+        '^/api/proxy/health-probes-v1-nonprd': ''
+    '/health-probes-v2':
+      target: 'http://localhost:8080/health-probes-v2'
+      allowedMethods: ['GET']
+      allowedHeaders: ['Accept']
+      # changeOrigin: true
+      # Change to "false" in case of using self hosted cluster with a self-signed certificate
+      secure: false
+      pathRewrite:
+        '^/api/proxy/health-probes-v2': ''
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
@@ -336,9 +349,13 @@ appRegistry:
   version: v2
 
 healthProbes:
-  proxyEndpoints:
-    - /health-probes-prd
-    - /health-probes-nonprd
+  v1:
+    proxyEndpoints:
+      - /health-probes-v1-prd
+      - /health-probes-v1-nonprd
+  v2:
+    proxyEndpoints:
+      - /health-probes-v2
 
 mcaComponents:
   serviceBaseUrl: http://localhost:8080

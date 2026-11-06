@@ -5,7 +5,7 @@ import { AttributeTypeAndValue, Certificate } from 'pkijs';
 import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
 import { appThemeApiRef } from '@backstage/core-plugin-api';
-import { InputError, } from '@backstage/errors';
+import { InputError } from '@backstage/errors';
 
 const exampleCertificate = `-----BEGIN CERTIFICATE-----
 MIICMzCCAZygAwIBAgIJALiPnVsvq8dsMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNV
