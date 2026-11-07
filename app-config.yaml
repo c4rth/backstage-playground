@@ -55,6 +55,7 @@ backend:
           - plugin: mca
           - plugin: mcp-actions
           - plugin: auth
+          - plugin: search
 
   baseUrl: http://localhost:7007
   listen:
@@ -100,6 +101,7 @@ backend:
       - auth
       - api-platform
       - mca
+      - search
 
 permission:
   enabled: true
