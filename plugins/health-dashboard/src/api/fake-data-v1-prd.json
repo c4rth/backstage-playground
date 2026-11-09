@@ -1,0 +1,122 @@
+{
+  "prd": {
+    "A7K2": {
+      "defl": "A7K2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://corelane.tech/cluster/a7k2/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "11/11/2026 05:04:44",
+        "server": "svc-a7k2-071dfd-7ad91"
+      }
+    },
+    "M3P8": {
+      "defl": "M3P8",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://sunfield.cloud/system/m3p8/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "Q9W1": {
+      "defl": "Q9W1",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://orange-ridge.dev/sites/q9w1/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "10/11/2026 21:55:22",
+        "server": "svc-q9w1-d2d700-8dda6"
+      }
+    },
+    "Z4N6": {
+      "defl": "Z4N6",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://horizon-lab.io/sites/z4n6/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "10/11/2026 21:04:45",
+        "server": "svc-z4n6-71372c-9c634"
+      }
+    },
+    "B2T5": {
+      "defl": "B2T5",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://quartz-grid.io/sites/b2t5/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "11/11/2026 10:40:37",
+        "server": "svc-b2t5-3d9552-f1ec6"
+      }
+    },
+    "H8R3": {
+      "defl": "H8R3",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://redline.tech/apps/h8r3/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "10/11/2026 18:05:37",
+        "server": "svc-h8r3-39b733-bedbd"
+      }
+    },
+    "L5C9": {
+      "defl": "L5C9",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://cloudframe.org/env/l5c9/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "11/11/2026 01:29:44",
+        "server": "svc-l5c9-f6b601-dfc26"
+      }
+    },
+    "V1D7": {
+      "defl": "V1D7",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://sunfield.cloud/apps/v1d7/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "11/11/2026 04:20:20",
+        "server": "svc-v1d7-58460a-5749b"
+      }
+    },
+    "N6X4": {
+      "defl": "N6X4",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://green-node.io/runtime/n6x4/actuator/health",
+      "status": {
+        "service": "Service OK (PRD)",
+        "started": "10/11/2026 21:52:05",
+        "server": "svc-n6x4-e3ef9e-0488f"
+      }
+    },
+    "R3F0": {
+      "defl": "R3F0",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 202,
+      "healthUrl": "https://blue-crest.net/pods/r3f0/actuator/health",
+      "status": {
+        "service": "Service Starting (PRD)",
+        "started": "10/11/2026 11:37:01",
+        "server": "svc-r3f0-a057cf-094aa"
+      }
+    }
+  }
+}

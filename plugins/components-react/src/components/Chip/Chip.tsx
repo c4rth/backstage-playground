@@ -97,7 +97,9 @@ const getLabelStyles = (
   paddingRight: size === 'small' ? '8px' : '12px',
   whiteSpace: 'nowrap',
   display: 'block',
-  color: labelColor ?? (variant === 'filled' && chipColor === 'primary'
+  color:
+    labelColor ??
+    (variant === 'filled' && chipColor === 'primary'
       ? 'var(--bui-white)'
       : 'var(--bui-fg-primary)'),
 });
@@ -149,7 +151,9 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     const content = (
       <>
         {icon && <span style={getIconStyles(size)}>{icon}</span>}
-        <span style={getLabelStyles(color, variant, size, labelColor)}>{label}</span>
+        <span style={getLabelStyles(color, variant, size, labelColor)}>
+          {label}
+        </span>
       </>
     );
 

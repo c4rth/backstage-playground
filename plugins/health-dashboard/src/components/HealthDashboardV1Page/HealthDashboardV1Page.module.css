@@ -1,6 +1,14 @@
-.healthTable :global(.bui-TableResizableContainer),
-.healthTable :global(.bui-TableScrollContainer) {
+.healthTable :global(.bui-TableResizableContainer) {
+  min-width: 0;
   overflow: visible;
+}
+
+.healthTable :global(.bui-TableScrollContainer) {
+  overflow-x: auto;
+}
+
+.healthTable :global(.bui-TableRow:hover) {
+  background-color: #c3004520;
 }
 
 .healthTable :global(.bui-TableCell) {
@@ -30,19 +38,20 @@
 }
 
 .healthTable {
-  width: 50%;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1100px;
+  min-width: 0;
   background-color: var(--bui-bg-neutral-1);
-  padding: 16px;
+  padding: clamp(8px, 2vw, 16px);
 }
 
 .legend {
-  position: fixed;
-  top: 140px;
-  right: 20px;
-  z-index: 10;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  box-sizing: border-box;
+  max-width: 100%;
   padding: 8px 12px;
   font-size: var(--bui-font-size-2);
   background-color: var(--bui-bg-neutral-1);
@@ -55,10 +64,57 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .legendBullet {
   width: 1em;
   height: 1em;
+  flex-shrink: 0;
   border-radius: 50%;
+}
+
+.legend > b {
+  flex-basis: 100%;
+}
+
+.refreshControls {
+  position: relative;
+}
+
+@media (min-width: 1401px) and (min-height: 601px) {
+  .legend {
+    position: absolute;
+    top: calc(100% + var(--bui-space-2));
+    right: 0;
+    z-index: 10;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 4px;
+    width: max-content;
+    max-width: none;
+  }
+
+  .legend > b {
+    flex-basis: auto;
+  }
+}
+
+.statusButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.statusButton:focus-visible {
+  outline: 2px solid var(--bui-border-1);
+  outline-offset: 2px;
 }

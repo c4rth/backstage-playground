@@ -4,89 +4,56 @@ import {
   ColumnConfig,
   Container,
   FullPage,
-  Grid,
+  Flex,
   Header,
   Select,
   Table,
   useTable,
-  ButtonIcon,
-  Row,
   CellText,
+  Column,
+  Text,
+  Box,
 } from '@backstage/ui';
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { RiInfoCardLine } from '@remixicon/react';
-import { HealthDataError, HealthV2Data, HealthV2Probe } from '../../types';
+import { Button as AriaButton } from 'react-aria-components';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { HealthDataError, HealthV2Data } from '../../types';
 import { useGetHealthV2Data } from '../../hooks';
 
 import {
   InformationPopup,
   InformationPopupContent,
-  Chip,
   Progress,
   useDocumentTitle,
 } from '@internal/plugin-components-react';
 import styles from './HealthDashboardV2Page.module.css';
+import {
+  aggregateTechnicalStatus,
+  buildHealthMatrix,
+  getEnvironmentNames,
+  HealthV2MatrixRow,
+} from './healthMatrix';
+import {
+  HealthDetailsSelection,
+  HealthDetailsSheet,
+} from '../common/HealthDetailsSheet';
 
 const POPUP_CONTENT = (
   <InformationPopupContent
-    text1="View the health dashboard for applications deployed in k8s. This screen displays each application and the health status reported for each environment."
-    text2="The health status reflects the response returned by the applications, helping you quickly identify which services are healthy and which require attention."
+    text1="View application health by platform component and environment."
+    text2="For each environment, RED means at least one probe is red; GREEN means all probes are green. Other statuses are shown as UNKNOWN."
   />
 );
 
 const ALL_OPTION = { label: 'All', id: 'All' };
 
-const ALL_ENVIRONMENTS = [
-  ALL_OPTION,
-  { label: 'PRD', id: 'PRD' },
-  { label: 'PTP', id: 'PTP' },
-  { label: 'UAT', id: 'UAT' },
-  { label: 'GTU', id: 'GTU' },
-  { label: 'TST', id: 'TST' },
-];
+type HealthV2TableRow = HealthV2MatrixRow;
 
-type HealthV2TableRow = HealthV2Probe & {
-  id: number;
-  isExpanded: boolean;
-  toggleDetails: () => void;
-};
-
-const ExpandedDetails = ({ probe }: { probe: HealthV2TableRow }) => {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number | 'auto'>(0);
-
-  useLayoutEffect(() => {
-    if (contentRef.current) {
-      setHeight(contentRef.current.scrollHeight);
-    }
-  }, []);
-
-  return (
-    <div
-      ref={contentRef}
-      className={styles.detailsContent}
-      style={{
-        height,
-        opacity: height === 0 ? 0 : 1,
-      }}
-      onTransitionEnd={event => {
-        if (event.propertyName === 'height') {
-          setHeight('auto');
-        }
-      }}
-    >
-      <pre>{JSON.stringify(probe, null, 2)}</pre>
-    </div>
-  );
-};
+const centerStyle = {
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+} as const;
 
 const getTechnicalStatusColor = (status: string): string => {
   switch (status.toUpperCase()) {
@@ -95,143 +62,135 @@ const getTechnicalStatusColor = (status: string): string => {
     case 'RED':
       return '#f44336';
     default:
-      return 'default';
+      return '#9e9e9e';
   }
 };
 
-const getEnvironmentColor = (environment: string): string => {
-  switch (environment.toUpperCase()) {
-    case 'PRD':
-      return '#d1fae5';
-    case 'PTP':
-      return '#dbeafe';
-    case 'UAT':
-      return '#fef3c7';
-    case 'GTU':
-      return '#ede9fe';
-    case 'TST':
-      return '#e5e7eb';
-    default:
-      return 'default';
-  }
-};
+const statusBulletStyle = (color: string) =>
+  ({
+    borderRadius: '50%',
+    width: '1em',
+    height: '1em',
+    backgroundColor: color,
+  }) as const;
 
-const columns: ColumnConfig<HealthV2TableRow>[] = [
-  {
-    id: 'environment',
-    label: 'Env',
-    isRowHeader: true,
-    cell: item => (
-      <Cell>
-        <Chip
-          label={item.environment}
-          chipColor={getEnvironmentColor(item.environment)}
-          size="small"
-        />
-      </Cell>
-    ),
-    width: '3%',
-  },
+const identityColumns: ColumnConfig<HealthV2TableRow>[] = [
   {
     id: 'application',
-    label: 'DEFL',
+    label: 'Application',
+    isRowHeader: true,
     cell: item => (
       <Cell>
         <b>{item.application}</b>
       </Cell>
     ),
-    width: '5%',
-  },
-  {
-    id: 'platformComponent',
-    label: 'Platform',
-    cell: item => <CellText title={item.platformComponent ?? '-'} />,
-    width: '10%',
+    width: '20%',
+    minWidth: 160,
   },
   {
     id: 'component',
     label: 'Component',
-    cell: item => <CellText title={item.component} />,
-    width: '15%',
+    cell: item => <CellText title={item.component ?? '-'} />,
+    width: '40%',
+    minWidth: 240,
   },
-  {
-    id: 'region',
-    label: 'Region',
-    cell: item => <CellText title={item.region ?? '-'} />,
-    width: '5%',
-  },
-  {
-    id: 'technicalStatus',
-    label: 'Status',
-    cell: item => (
-      <Cell>
-        <Chip
-          label={item.httpStatusCode}
-          chipColor={getTechnicalStatusColor(item.technicalStatus)}
-          size="small"
-          style={{ minWidth: '40px' }}
-        />
-      </Cell>
-    ),
-    width: '5%',
-  },
-  {
-    id: 'response',
-    label: 'Response',
-    cell: item => {
-      const response = item.response ?? '-';
+];
 
+function getEnvironmentColumn(
+  environment: string,
+  onSelect: (row: HealthV2TableRow, environment: string) => void,
+): ColumnConfig<HealthV2TableRow> {
+  return {
+    id: environment,
+    label: environment,
+    cell: item => {
+      const probes = item.environments[environment];
+      if (!probes?.length) {
+        return (
+          <Cell>
+            <Box style={centerStyle}>-</Box>
+          </Cell>
+        );
+      }
+      const status = aggregateTechnicalStatus(probes);
       return (
         <Cell>
-          <div
-            title={item.response ?? undefined}
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {response}
-          </div>
+          <Box style={centerStyle}>
+            <AriaButton
+              className={styles.statusButton}
+              aria-label={`Show ${environment} health details for ${item.application} - ${item.component ?? '-'}`}
+              onPress={() => onSelect(item, environment)}
+            >
+              <span
+                aria-hidden="true"
+                style={statusBulletStyle(getTechnicalStatusColor(status))}
+              />
+            </AriaButton>
+          </Box>
         </Cell>
       );
     },
-    width: '50%',
-  },
-  {
-    id: 'details',
-    label: '',
-    cell: item => (
-      <Cell>
-        <ButtonIcon
-          size="small"
-          variant="tertiary"
-          icon={<RiInfoCardLine />}
-          aria-label={`${
-            item.isExpanded ? 'Hide' : 'Show'
-          } details for ${item.application}`}
-          aria-expanded={item.isExpanded}
-          onClick={item.toggleDetails}
-        />
-      </Cell>
+    header: () => (
+      <Column id={environment} className="centered-col-header">
+        <Text weight="bold">{environment}</Text>
+      </Column>
     ),
-    width: '3%',
-  },
-];
+    width: '8%',
+    minWidth: 64,
+  };
+}
 
 export const HealthDashboardV2Page = () => {
   useDocumentTitle('Health Dashboard v2');
 
   const getHealthData = useGetHealthV2Data();
   const [healthData, setHealthData] = useState<HealthV2Data>({});
-  const [selectedEnvironment, setSelectedEnvironment] = useState('All');
-  const [selectedApplication, setSelectedApplication] = useState('All');
-  const [expandedRowId, setExpandedRowId] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedApplications = useMemo(
+    () =>
+      (searchParams.get('application') ?? '')
+        .split(',')
+        .filter(application => application && application !== ALL_OPTION.id),
+    [searchParams],
+  );
+  const updateApplications = (applications: string[]) => {
+    setSearchParams(currentParams => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (applications.length) {
+        nextParams.set('application', applications.join(','));
+      } else {
+        nextParams.delete('application');
+      }
+      return nextParams;
+    });
+  };
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
   );
   const [loadError, setLoadError] = useState<Error>();
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedEnvironment, setSelectedEnvironment] =
+    useState<HealthDetailsSelection | null>(null);
+
+  const handleEnvironmentSelect = useCallback(
+    (row: HealthV2TableRow, environment: string) => {
+      const probes = row.environments[environment];
+      if (probes?.length) {
+        setSelectedEnvironment({
+          title: `${row.application} - ${environment}`,
+          subtitle: row.component ?? '-',
+          sections: probes.map((probe, index) => ({
+            id: `${probe.healthProbeUrl}-${index}`,
+            fields: Object.entries(probe).map(([label, value]) => ({
+              label,
+              value,
+            })),
+          })),
+        });
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -280,57 +239,25 @@ export const HealthDashboardV2Page = () => {
     ];
   }, [healthData]);
 
-  const filteredHealthData = useMemo(() => {
-    const environments =
-      selectedEnvironment === 'All'
-        ? Object.entries(healthData)
-        : Object.entries(healthData).filter(
-            ([environment]) => environment === selectedEnvironment,
-          );
-    const filtered: HealthV2Data = {};
+  const environmentNames = useMemo(
+    () => getEnvironmentNames(healthData),
+    [healthData],
+  );
 
-    environments.forEach(([environment, groups]) => {
-      Object.entries(groups).forEach(([group, applications]) => {
-        const matchingApplications = Object.fromEntries(
-          Object.entries(applications).filter(
-            ([, probe]) =>
-              selectedApplication === 'All' ||
-              probe.application === selectedApplication,
-          ),
-        );
-
-        if (Object.keys(matchingApplications).length > 0) {
-          filtered[environment] ??= {};
-          filtered[environment][group] = matchingApplications;
-        }
-      });
-    });
-
-    return filtered;
-  }, [healthData, selectedApplication, selectedEnvironment]);
-
-  const toggleDetails = useCallback((rowId: number) => {
-    setExpandedRowId(currentRowId => (currentRowId === rowId ? null : rowId));
-  }, []);
-
-  const tableRows = useMemo(() => {
-    let id = 0;
-
-    return Object.entries(filteredHealthData).flatMap(([environment, groups]) =>
-      Object.values(groups).flatMap(applications =>
-        Object.values(applications).map(probe => {
-          const rowId = id++;
-          return {
-            ...probe,
-            environment,
-            id: rowId,
-            isExpanded: expandedRowId === rowId,
-            toggleDetails: () => toggleDetails(rowId),
-          };
-        }),
+  const columns = useMemo(
+    () => [
+      ...identityColumns,
+      ...environmentNames.map(environment =>
+        getEnvironmentColumn(environment, handleEnvironmentSelect),
       ),
-    );
-  }, [expandedRowId, filteredHealthData, toggleDetails]);
+    ],
+    [environmentNames, handleEnvironmentSelect],
+  );
+
+  const tableRows = useMemo(
+    () => buildHealthMatrix(healthData, selectedApplications),
+    [healthData, selectedApplications],
+  );
 
   const { tableProps } = useTable({
     mode: 'complete',
@@ -350,9 +277,46 @@ export const HealthDashboardV2Page = () => {
     <FullPage>
       <Header
         title="Health Dashboard v2"
-        customActions={<InformationPopup content={POPUP_CONTENT} />}
+        sticky
+        customActions={
+          <>
+            <Flex style={{ alignItems: 'center' }}>
+              <Text>Applications</Text>
+              <Select
+                label=""
+                search
+                selectionMode="multiple"
+                options={applicationOptions}
+                value={
+                  selectedApplications.length
+                    ? selectedApplications
+                    : [ALL_OPTION.id]
+                }
+                onChange={selected => {
+                  updateApplications(
+                    selected.includes(ALL_OPTION.id) &&
+                      selectedApplications.length > 0
+                      ? []
+                      : selected
+                          .map(String)
+                          .filter(application => application !== ALL_OPTION.id),
+                  );
+                }}
+                aria-label="Application"
+                style={{ minWidth: '150px' }}
+              />
+            </Flex>
+            <InformationPopup content={POPUP_CONTENT} />
+          </>
+        }
       />
-      <Container>
+      <Container
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         {healthDataErrors.map((sourceError, index) => (
           <ResponseErrorPanel
             key={`${sourceError.source}-${index}`}
@@ -366,74 +330,22 @@ export const HealthDashboardV2Page = () => {
             error={loadError}
           />
         )}
-        <Grid.Root columns="2" gap="10" mt="4" mb="4">
-          <Grid.Item>
-            <Select
-              label="Environment"
-              search
-              options={ALL_ENVIRONMENTS}
-              value={selectedEnvironment}
-              onChange={selected => {
-                setSelectedEnvironment(selected?.toString() ?? 'All');
-                setExpandedRowId(null);
-              }}
-              aria-label="Environment"
-            />
-          </Grid.Item>
-          <Grid.Item>
-            <Select
-              label="Application"
-              search
-              options={applicationOptions}
-              value={selectedApplication}
-              onChange={selected => {
-                setSelectedApplication(selected?.toString() ?? 'All');
-                setExpandedRowId(null);
-              }}
-              aria-label="Application"
-            />
-          </Grid.Item>
-        </Grid.Root>
         {isLoading ? (
           <Progress />
         ) : (
-          <>
-            <Table
-              columnConfig={columns}
-              {...tableProps}
-              rowConfig={({ item }) => (
-                <Fragment key={item.id}>
-                  <Row
-                    id={String(item.id)}
-                    columns={columns}
-                    children={column => column.cell(item)}
-                  />
-                  {item.isExpanded && (
-                    <Row
-                      id={`details-${item.id}`}
-                      columns={[
-                        {
-                          id: 'full-details',
-                          label: 'Details',
-                          cell: (detailItem: HealthV2TableRow) => (
-                            <Cell colSpan={columns.length}>
-                              <ExpandedDetails probe={detailItem} />
-                            </Cell>
-                          ),
-                        },
-                      ]}
-                      children={column => column.cell(item)}
-                    />
-                  )}
-                </Fragment>
-              )}
-              pagination={{ type: 'none' }}
-              emptyState={emptyState}
-              className={`denseTable ${styles.healthTable}`}
-            />
-          </>
+          <Table
+            columnConfig={columns}
+            {...tableProps}
+            pagination={{ type: 'none' }}
+            emptyState={emptyState}
+            className={`denseTable ${styles.healthTable}`}
+          />
         )}
       </Container>
+      <HealthDetailsSheet
+        selection={selectedEnvironment}
+        onClose={() => setSelectedEnvironment(null)}
+      />
     </FullPage>
   );
 };

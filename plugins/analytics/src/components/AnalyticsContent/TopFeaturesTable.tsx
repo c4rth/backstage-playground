@@ -51,7 +51,7 @@ const columns: ColumnConfig<TableRow>[] = [
       </Cell>
     ),
     header: () => (
-      <Column id="uniqueVisitors" className="centered-col-header">
+      <Column id="uniqueVisitors" className="centered-col-header" allowsSorting>
         <Text weight="bold">Unique Visitors</Text>
       </Column>
     ),
@@ -66,7 +66,7 @@ const columns: ColumnConfig<TableRow>[] = [
       </Cell>
     ),
     header: () => (
-      <Column id="totalHits" className="centered-col-header">
+      <Column id="totalHits" className="centered-col-header" allowsSorting>
         <Text weight="bold">Total Hits</Text>
       </Column>
     ),
@@ -112,13 +112,11 @@ export const TopFeaturesTable = ({ data }: { data: TableRow[] }) => {
         {data.length === 0 ? (
           <p>No feature navigation data yet.</p>
         ) : (
-          <Box style={{ height: '100%', overflow: 'auto' }}>
-            <Table
-              columnConfig={columns}
-              {...tableProps}
-              className="denseTable"
-            />
-          </Box>
+          <Table
+            columnConfig={columns}
+            {...tableProps}
+            className="denseTable"
+          />
         )}
       </CardBody>
     </Card>

@@ -8,8 +8,15 @@ import {
 export interface AnalyticsBackend {
   getDailyUniqueUsers(days: number): Promise<DailyVisitor[]>;
   getTopFeatures(count: number, days: number): Promise<TopFeature[]>;
+  getMcpActions(days: number): Promise<McpActionMetric[]>;
   getPluginIds(): Promise<string[]>;
 }
+
+export type McpActionMetric = {
+  toolName: string;
+  succeeded: number;
+  failed: number;
+};
 
 export type TopFeature = {
   featureName: string;
@@ -107,6 +114,17 @@ export class AnalyticsBackendApi implements AnalyticsBackend {
     } catch (error) {
       return [];
     }
+  }
+
+  async getMcpActions(days: number): Promise<McpActionMetric[]> {
+    const baseUrl = await this.getAnalyticsBaseUrl();
+    const url = new URL(`${baseUrl}/metrics/mcp-actions?days=${days}`);
+    const response = await this.fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch MCP action metrics: ${response.status}`);
+    }
+    const data: { actions: McpActionMetric[] } = await response.json();
+    return data.actions;
   }
 }
 

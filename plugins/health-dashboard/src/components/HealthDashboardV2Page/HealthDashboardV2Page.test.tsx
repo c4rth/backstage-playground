@@ -1,0 +1,226 @@
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { useGetHealthV2Data } from '../../hooks';
+import { HealthV2DataResponse, HealthV2Probe } from '../../types';
+import { HealthDashboardV2Page } from './HealthDashboardV2Page';
+
+jest.mock('../../hooks');
+jest.mock('@internal/plugin-components-react', () => ({
+  InformationPopup: () => null,
+  InformationPopupContent: () => null,
+  Progress: () => null,
+  useDocumentTitle: () => {},
+}));
+jest.mock('../common/HealthDetailsSheet', () => ({
+  HealthDetailsSheet: () => null,
+}));
+jest.mock('@backstage/core-components', () => ({
+  ResponseErrorPanel: () => null,
+}));
+jest.mock('@backstage/ui', () => {
+  const actual = jest.requireActual('@backstage/ui');
+  return {
+    ...actual,
+    FullPage: ({ children }: { children: React.ReactNode }) => children,
+    Header: ({ customActions }: { customActions: React.ReactNode }) =>
+      customActions,
+    Container: ({ children }: { children: React.ReactNode }) => children,
+    Select: ({
+      value,
+      options,
+      onChange,
+      selectionMode,
+    }: {
+      value: string[];
+      options: { id: string; label: string }[];
+      onChange: (value: string[]) => void;
+      selectionMode: 'single' | 'multiple';
+    }) => (
+      <select
+        aria-label="Application"
+        multiple={selectionMode === 'multiple'}
+        value={value}
+        onChange={event =>
+          onChange(
+            Array.from(event.target.selectedOptions, option => option.value),
+          )
+        }
+      >
+        {options.map(option => (
+          <option key={option.id} value={option.id}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    ),
+    useTable: ({ data }: { data: unknown[] }) => ({
+      tableProps: { data },
+    }),
+    Table: ({ data }: { data: { id: string; application: string }[] }) => (
+      <ul>
+        {data.map(row => (
+          <li key={row.id}>{row.application}</li>
+        ))}
+      </ul>
+    ),
+  };
+});
+
+describe('HealthDashboardV2Page application URL filter', () => {
+  let router: ReturnType<typeof createMemoryRouter>;
+  const application = 'App & services/one';
+  const response: HealthV2DataResponse = {
+    healthData: {
+      TST: {
+        group: Object.fromEntries(
+          [application, 'Other', 'Unselected'].map(name => [
+            name,
+            {
+              application: name,
+              component: 'component',
+              environment: 'TST',
+              technicalStatus: 'GREEN',
+              httpStatusCode: 200,
+              response: null,
+              executionTime: 0,
+              timestamp: '',
+              ip: null,
+              region: null,
+              downstreamStatus: '',
+              functionalStatus: '',
+              applicationType: '',
+              platformComponent: null,
+              platformService: null,
+              healthProbeUrl: '',
+              akscluster: null,
+            } satisfies HealthV2Probe,
+          ]),
+        ),
+      },
+    },
+    errors: [],
+  };
+  const getHealthData = jest.fn().mockResolvedValue(response);
+
+  beforeEach(() => {
+    jest.mocked(useGetHealthV2Data).mockReturnValue(getHealthData);
+  });
+
+  afterEach(() => {
+    router.dispose();
+  });
+
+  async function renderPage(search = '') {
+    router = createMemoryRouter(
+      [{ path: '/health-dashboards/v2', element: <HealthDashboardV2Page /> }],
+      { initialEntries: [`/health-dashboards/v2${search}`] },
+    );
+    render(
+      <RouterProvider router={router} future={{ v7_startTransition: true }} />,
+    );
+    await screen.findByRole('option', { name: application });
+  }
+
+  function selectedApplication() {
+    return screen.getByRole<HTMLSelectElement>('listbox').value;
+  }
+
+  function applications() {
+    return screen.getAllByRole('listitem').map(row => row.textContent);
+  }
+
+  async function selectApplication(...values: string[]) {
+    await act(async () => {
+      const select = screen.getByRole<HTMLSelectElement>('listbox');
+      Array.from(select.options).forEach(option => {
+        option.selected = values.includes(option.value);
+      });
+      fireEvent.change(select);
+    });
+  }
+
+  it('restores a bookmarked application after loading data', async () => {
+    await renderPage(`?application=${encodeURIComponent(application)}`);
+
+    expect(selectedApplication()).toBe(application);
+    expect(applications()).toEqual([application]);
+  });
+
+  it('defaults to all applications without a query parameter', async () => {
+    await renderPage();
+
+    expect(selectedApplication()).toBe('All');
+    expect(applications()).toEqual([application, 'Other', 'Unselected']);
+    expect(router.state.location.search).toBe('');
+  });
+
+  it('updates the URL, preserves other parameters, and supports back/forward', async () => {
+    await renderPage('?view=compact');
+    await selectApplication('All', application);
+
+    const params = new URLSearchParams(router.state.location.search);
+    expect(params.get('application')).toBe(application);
+    expect(params.get('view')).toBe('compact');
+    expect(applications()).toEqual([application]);
+
+    await selectApplication(application, 'Other');
+    const multipleParams = new URLSearchParams(router.state.location.search);
+    expect(multipleParams.getAll('application')).toEqual([
+      `${application},Other`,
+    ]);
+    expect(multipleParams.get('view')).toBe('compact');
+    expect(applications()).toEqual([application, 'Other']);
+
+    await selectApplication('All', application, 'Other');
+    expect(router.state.location.search).toBe('?view=compact');
+    expect(applications()).toEqual([application, 'Other', 'Unselected']);
+
+    await act(async () => router.navigate(-1));
+    expect(selectedApplication()).toBe(application);
+    expect(applications()).toEqual([application, 'Other']);
+
+    await act(async () => router.navigate(1));
+    expect(selectedApplication()).toBe('All');
+    expect(applications()).toEqual([application, 'Other', 'Unselected']);
+  });
+
+  it('restores multiple applications from a comma-separated URL', async () => {
+    await renderPage(
+      `?application=${encodeURIComponent(`${application},Other`)}`,
+    );
+
+    expect(
+      Array.from(
+        screen.getByRole<HTMLSelectElement>('listbox').selectedOptions,
+        option => option.value,
+      ),
+    ).toEqual([application, 'Other']);
+    expect(applications()).toEqual([application, 'Other']);
+  });
+
+  it('deselects applications and resets to all after deselecting the last one', async () => {
+    await renderPage(
+      `?view=compact&application=${encodeURIComponent(`${application},Other`)}`,
+    );
+
+    await selectApplication('Other');
+    expect(applications()).toEqual(['Other']);
+    expect(
+      new URLSearchParams(router.state.location.search).get('application'),
+    ).toBe('Other');
+
+    await selectApplication();
+    expect(applications()).toEqual([application, 'Other', 'Unselected']);
+    expect(selectedApplication()).toBe('All');
+    expect(router.state.location.search).toBe('?view=compact');
+  });
+
+  it('resets to all when the selection is cleared', async () => {
+    await renderPage(`?application=${encodeURIComponent(application)}`);
+    await selectApplication();
+
+    expect(selectedApplication()).toBe('All');
+    expect(applications()).toEqual([application, 'Other', 'Unselected']);
+    expect(router.state.location.search).toBe('');
+  });
+});

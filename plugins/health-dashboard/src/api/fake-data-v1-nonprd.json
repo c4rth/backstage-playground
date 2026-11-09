@@ -1,0 +1,706 @@
+{
+  "tst": {
+    "AAAA": {
+      "defl": "AAAA",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://redline.tech/services/aaaa/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 23:54:31",
+        "server": "svc-aaaa-dbeb8f-f9c08"
+      }
+    },
+    "A7K2": {
+      "defl": "A7K2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://alpha-grid.dev/sites/a7k2/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 20:21:16",
+        "server": "svc-a7k2-759906-91214"
+      }
+    },
+    "M3P8": {
+      "defl": "M3P8",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://blueforge.dev/env/m3p8/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 04:21:22",
+        "server": "svc-m3p8-95b4ee-8ab94"
+      }
+    },
+    "Q9W1": {
+      "defl": "Q9W1",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://peakline.cloud/runtime/q9w1/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 07:36:12",
+        "server": "svc-q9w1-cad4b6-5b8ca"
+      }
+    },
+    "Z4N6": {
+      "defl": "Z4N6",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://skyline-node.tech/health/z4n6/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "B2T5": {
+      "defl": "B2T5",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://redline.tech/env/b2t5/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 13:59:32",
+        "server": "svc-b2t5-060d36-fa917"
+      }
+    },
+    "H8R3": {
+      "defl": "H8R3",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 502,
+      "healthUrl": "https://kitefield.org/apps/h8r3/actuator/health",
+      "status": {
+        "errorMessage": "502 BAD_GATEWAY"
+      }
+    },
+    "L5C9": {
+      "defl": "L5C9",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://steel-cloud.net/apps/l5c9/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "V1D7": {
+      "defl": "V1D7",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://quartz-grid.io/system/v1d7/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "N6X4": {
+      "defl": "N6X4",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://sunfield.cloud/env/n6x4/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 14:33:19",
+        "server": "svc-n6x4-9ecc7c-37932"
+      }
+    },
+    "R3F0": {
+      "defl": "R3F0",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://nova-grid.dev/tenant/r3f0/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 00:58:01",
+        "server": "svc-r3f0-31df66-11d47"
+      }
+    },
+    "C8M1": {
+      "defl": "C8M1",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://blue-crest.net/tenant/c8m1/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 20:54:37",
+        "server": "svc-c8m1-fc0d24-5ec70"
+      }
+    },
+    "P4L7": {
+      "defl": "P4L7",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://ops-lane.io/env/p4l7/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 16:18:37",
+        "server": "svc-p4l7-1b44db-0d23b"
+      }
+    },
+    "T9Q2": {
+      "defl": "T9Q2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://steel-cloud.net/runtime/t9q2/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 06:52:47",
+        "server": "svc-t9q2-8b308a-f36e9"
+      }
+    },
+    "K6R4": {
+      "defl": "K6R4",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 502,
+      "healthUrl": "https://skyline-node.tech/env/k6r4/actuator/health",
+      "status": {
+        "errorMessage": "502 BAD_GATEWAY"
+      }
+    },
+    "D2X9": {
+      "defl": "D2X9",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://delta-circuit.net/tenant/d2x9/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "W1F3": {
+      "defl": "W1F3",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://skybridge.net/health/w1f3/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 16:41:23",
+        "server": "svc-w1f3-dac7c2-26843"
+      }
+    },
+    "Y7N5": {
+      "defl": "Y7N5",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://delta-circuit.net/runtime/y7n5/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 10:10:02",
+        "server": "svc-y7n5-7d68d4-92837"
+      }
+    },
+    "G3V8": {
+      "defl": "G3V8",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://sunharbor.dev/health/g3v8/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "J5S6": {
+      "defl": "J5S6",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://blue-crest.net/cluster/j5s6/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 11:14:59",
+        "server": "svc-j5s6-e9384f-52bcf"
+      }
+    },
+    "U0H2": {
+      "defl": "U0H2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://lumen-core.org/runtime/u0h2/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 21:47:25",
+        "server": "svc-u0h2-5eda49-220b3"
+      }
+    },
+    "E4K9": {
+      "defl": "E4K9",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://horizon-lab.io/apps/e4k9/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 15:57:05",
+        "server": "svc-e4k9-08bd56-f4c3e"
+      }
+    },
+    "S2B4": {
+      "defl": "S2B4",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://quartz-grid.io/health/s2b4/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 03:54:47",
+        "server": "svc-s2b4-4a510e-87e6d"
+      }
+    },
+    "F9T1": {
+      "defl": "F9T1",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://delta-farm.app/system/f9t1/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 08:01:10",
+        "server": "svc-f9t1-4f5911-c2eba"
+      }
+    },
+    "X6P3": {
+      "defl": "X6P3",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://peakline.cloud/health/x6p3/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 01:16:47",
+        "server": "svc-x6p3-621895-0d1fb"
+      }
+    },
+    "I8D5": {
+      "defl": "I8D5",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 202,
+      "healthUrl": "https://ocean-grid.net/apps/i8d5/actuator/health",
+      "status": {
+        "service": "Service Starting (TST)",
+        "started": "10/11/2026 13:51:56",
+        "server": "svc-i8d5-8ab739-9ee41"
+      }
+    },
+    "O3W7": {
+      "defl": "O3W7",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://quartz-grid.io/env/o3w7/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    },
+    "R8L2": {
+      "defl": "R8L2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://lumen-core.org/health/r8l2/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 20:45:55",
+        "server": "svc-r8l2-c57b65-2d756"
+      }
+    },
+    "B7Y0": {
+      "defl": "B7Y0",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://delta-circuit.net/pods/b7y0/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "11/11/2026 02:44:39",
+        "server": "svc-b7y0-496823-af2be"
+      }
+    },
+    "N1C6": {
+      "defl": "N1C6",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://green-node.io/health/n1c6/actuator/health",
+      "status": {
+        "service": "Service OK (TST)",
+        "started": "10/11/2026 20:28:24",
+        "server": "svc-n1c6-839e0a-1b2be"
+      }
+    },
+    "Q2M8": {
+      "defl": "Q2M8",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://corelane.tech/sites/q2m8/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    }
+  },
+  "gtu": {
+    "A7K2": {
+      "defl": "A7K2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://silver-fleet.cloud/runtime/a7k2/actuator/health",
+      "status": {
+        "service": "Service OK (GTU)",
+        "started": "11/11/2026 05:41:14",
+        "server": "svc-a7k2-2f25be-f5d89"
+      }
+    },
+    "M3P8": {
+      "defl": "M3P8",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://sunharbor.dev/pods/m3p8/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "Q9W1": {
+      "defl": "Q9W1",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://delta-harbor.dev/services/q9w1/actuator/health",
+      "status": {
+        "service": "Service OK (GTU)",
+        "started": "11/11/2026 08:29:44",
+        "server": "svc-q9w1-cb1ad7-d7883"
+      }
+    },
+    "Z4N6": {
+      "defl": "Z4N6",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://peakline.cloud/system/z4n6/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "B2T5": {
+      "defl": "B2T5",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 202,
+      "healthUrl": "https://redline.tech/cluster/b2t5/actuator/health",
+      "status": {
+        "service": "Service Starting (GTU)",
+        "started": "10/11/2026 17:02:03",
+        "server": "svc-b2t5-c42f24-988d1"
+      }
+    },
+    "H8R3": {
+      "defl": "H8R3",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://ocean-grid.net/pods/h8r3/actuator/health",
+      "status": {
+        "service": "Service OK (GTU)",
+        "started": "11/11/2026 03:07:28",
+        "server": "svc-h8r3-b7876b-5b759"
+      }
+    },
+    "L5C9": {
+      "defl": "L5C9",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://sunfield.cloud/env/l5c9/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    },
+    "V1D7": {
+      "defl": "V1D7",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://iron-bridge.app/tenant/v1d7/actuator/health",
+      "status": {
+        "service": "Service OK (GTU)",
+        "started": "10/11/2026 22:24:49",
+        "server": "svc-v1d7-435065-3e84b"
+      }
+    },
+    "N6X4": {
+      "defl": "N6X4",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://silver-fleet.cloud/system/n6x4/actuator/health",
+      "status": {
+        "service": "Service OK (GTU)",
+        "started": "10/11/2026 12:52:15",
+        "server": "svc-n6x4-bfa585-86825"
+      }
+    },
+    "R3F0": {
+      "defl": "R3F0",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://skyline-node.tech/tenant/r3f0/actuator/health",
+      "status": {
+        "service": "Service OK (GTU)",
+        "started": "10/11/2026 17:15:17",
+        "server": "svc-r3f0-a9538e-bfb49"
+      }
+    }
+  },
+  "uat": {
+    "A7K2": {
+      "defl": "A7K2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://skyline-node.tech/env/a7k2/actuator/health",
+      "status": {
+        "service": "Service OK (UAT)",
+        "started": "11/11/2026 07:08:18",
+        "server": "svc-a7k2-8e2c0d-497b6"
+      }
+    },
+    "M3P8": {
+      "defl": "M3P8",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://delta-circuit.net/sites/m3p8/actuator/health",
+      "status": {
+        "service": "Service OK (UAT)",
+        "started": "11/11/2026 09:23:01",
+        "server": "svc-m3p8-8f82c0-db2ee"
+      }
+    },
+    "Q9W1": {
+      "defl": "Q9W1",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://blue-crest.net/cluster/q9w1/actuator/health",
+      "status": {
+        "service": "Service OK (UAT)",
+        "started": "10/11/2026 20:38:29",
+        "server": "svc-q9w1-f43e2b-0d490"
+      }
+    },
+    "Z4N6": {
+      "defl": "Z4N6",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://ocean-grid.net/health/z4n6/actuator/health",
+      "status": {
+        "service": "Service OK (UAT)",
+        "started": "10/11/2026 17:51:07",
+        "server": "svc-z4n6-6b1b37-21e23"
+      }
+    },
+    "B2T5": {
+      "defl": "B2T5",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 500,
+      "healthUrl": "https://horizon-lab.io/health/b2t5/actuator/health",
+      "status": {
+        "errorMessage": "500 INTERNAL_SERVER_ERROR"
+      }
+    },
+    "H8R3": {
+      "defl": "H8R3",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://delta-farm.app/sites/h8r3/actuator/health",
+      "status": {
+        "service": "Service OK (UAT)",
+        "started": "10/11/2026 19:08:53",
+        "server": "svc-h8r3-613df5-60fff"
+      }
+    },
+    "L5C9": {
+      "defl": "L5C9",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 404,
+      "healthUrl": "https://green-node.io/tenant/l5c9/actuator/health",
+      "status": {
+        "errorMessage": "404 NOT_FOUND"
+      }
+    },
+    "V1D7": {
+      "defl": "V1D7",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://nova-grid.dev/apps/v1d7/actuator/health",
+      "status": {
+        "service": "Service OK (UAT)",
+        "started": "11/11/2026 04:07:05",
+        "server": "svc-v1d7-89a592-9db2c"
+      }
+    },
+    "N6X4": {
+      "defl": "N6X4",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 202,
+      "healthUrl": "https://blueforge.dev/tenant/n6x4/actuator/health",
+      "status": {
+        "service": "Service Starting (UAT)",
+        "started": "11/11/2026 09:49:45",
+        "server": "svc-n6x4-1f372f-10359"
+      }
+    },
+    "R3F0": {
+      "defl": "R3F0",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://blue-crest.net/system/r3f0/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    }
+  },
+  "ptp": {
+    "A7K2": {
+      "defl": "A7K2",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://red-harbor.com/services/a7k2/actuator/health",
+      "status": {
+        "service": "Service OK (PTP)",
+        "started": "10/11/2026 21:25:31",
+        "server": "svc-a7k2-f2e7a1-dc41b"
+      }
+    },
+    "M3P8": {
+      "defl": "M3P8",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 503,
+      "healthUrl": "https://skybridge.net/services/m3p8/actuator/health",
+      "status": {
+        "errorMessage": "503 SERVICE_UNAVAILABLE"
+      }
+    },
+    "Q9W1": {
+      "defl": "Q9W1",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://orange-ridge.dev/apps/q9w1/actuator/health",
+      "status": {
+        "service": "Service OK (PTP)",
+        "started": "10/11/2026 17:11:07",
+        "server": "svc-q9w1-63c938-b17c2"
+      }
+    },
+    "Z4N6": {
+      "defl": "Z4N6",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 502,
+      "healthUrl": "https://sunfield.cloud/system/z4n6/actuator/health",
+      "status": {
+        "errorMessage": "502 BAD_GATEWAY"
+      }
+    },
+    "B2T5": {
+      "defl": "B2T5",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://redline.tech/runtime/b2t5/actuator/health",
+      "status": {
+        "service": "Service OK (PTP)",
+        "started": "10/11/2026 21:42:18",
+        "server": "svc-b2t5-93634b-f821d"
+      }
+    },
+    "H8R3": {
+      "defl": "H8R3",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://iron-bridge.app/cluster/h8r3/actuator/health",
+      "status": {
+        "service": "Service OK (PTP)",
+        "started": "10/11/2026 18:08:40",
+        "server": "svc-h8r3-78a5f3-01648"
+      }
+    },
+    "L5C9": {
+      "defl": "L5C9",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 502,
+      "healthUrl": "https://quartz-grid.io/sites/l5c9/actuator/health",
+      "status": {
+        "errorMessage": "502 BAD_GATEWAY"
+      }
+    },
+    "V1D7": {
+      "defl": "V1D7",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": false,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://delta-circuit.net/cluster/v1d7/actuator/health",
+      "status": {
+        "service": "Service OK (PTP)",
+        "started": "11/11/2026 09:26:19",
+        "server": "svc-v1d7-78ec4a-20e89"
+      }
+    },
+    "N6X4": {
+      "defl": "N6X4",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://sunharbor.dev/health/n6x4/actuator/health",
+      "status": {
+        "service": "Service OK (PTP)",
+        "started": "11/11/2026 02:52:18",
+        "server": "svc-n6x4-61cb0f-dd649"
+      }
+    },
+    "R3F0": {
+      "defl": "R3F0",
+      "lastRefresh": "11-11-2026 11:08:06",
+      "applicationStarted": true,
+      "returnedHttpStatus": 200,
+      "healthUrl": "https://sunharbor.dev/cluster/r3f0/actuator/health",
+      "status": {
+        "service": "Service OK (PTP)",
+        "started": "11/11/2026 08:11:17",
+        "server": "svc-r3f0-6879e9-6d02a"
+      }
+    }
+  }
+}

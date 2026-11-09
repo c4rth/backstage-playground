@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.56.3",
+  "releaseVersion": "1.56.4",
   "requirements": {
     "node": "22 || 24"
   },

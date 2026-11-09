@@ -13,6 +13,7 @@ import { AnalyticsScheduledTask } from '../task';
 import {
   AnalyticsStore,
   analyticsStoreServiceRef,
+  McpActionMetric,
   TopFeature,
 } from '../database';
 import { DailyVisitor } from '../database/types';
@@ -85,6 +86,21 @@ export class AnalyticsDbService implements AnalyticsService {
     const event = req.body;
     const visitorId = this.getVisitorId(req);
     await this.analyticsStore.storeAnalyticsEvent(visitorId, event);
+  }
+
+  async logMcpAction(
+    toolName: string,
+    outcome: 'succeeded' | 'failed',
+  ): Promise<void> {
+    await this.analyticsStore.storeAnalyticsEvent('guest-mcp-anonymous', {
+      action: 'mcp-tool-call',
+      subject: toolName,
+      context: { pluginId: 'mcp-actions', extension: outcome },
+    });
+  }
+
+  async getMcpActions(days: number): Promise<McpActionMetric[]> {
+    return this.analyticsStore.getMcpActions(days);
   }
 
   async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {

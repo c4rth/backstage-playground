@@ -5,9 +5,16 @@ export interface AnalyticsStore {
     count: number,
     days: number,
   ): Promise<TopFeature[]>;
+  getMcpActions(days: number): Promise<McpActionMetric[]>;
 
   deleteOldAnalyticsData(thresholdInDays: number): Promise<void>;
 }
+
+export type McpActionMetric = {
+  toolName: string;
+  succeeded: number;
+  failed: number;
+};
 
 export type TopFeature = {
   featureName: string;

@@ -154,7 +154,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
 
 const API_TYPES = [
   ...OPENAPITYPE_LIST.map(type => ({
-    value: type,
+    id: type,
     label: type.charAt(0).toUpperCase() + type.slice(1),
   })),
 ];
@@ -164,7 +164,7 @@ function getTitle(
   apiType: OpenApiType,
   count: number,
 ): string {
-  return `${ownershipType === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : (API_TYPES.find(t => t.value === apiType)?.label ?? '')} APIs (${count})`;
+  return `${ownershipType === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : (API_TYPES.find(t => t.id === apiType)?.label ?? '')} APIs (${count})`;
 }
 
 export const ApiTable = () => {

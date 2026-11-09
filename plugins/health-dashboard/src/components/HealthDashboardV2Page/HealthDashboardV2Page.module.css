@@ -1,6 +1,22 @@
-.healthTable :global(.bui-TableResizableContainer),
-.healthTable :global(.bui-TableScrollContainer) {
+.healthTable :global(.bui-TableResizableContainer) {
+  min-width: 0;
   overflow: visible;
+}
+
+.healthTable :global(.bui-TableScrollContainer) {
+  overflow-x: auto;
+}
+
+.healthTable :global(.bui-TableRow:hover) {
+  background-color: #c3004520;
+}
+
+.healthTable :global(.bui-TableCell) {
+  font-size: var(--bui-font-size-3);
+  min-width: 0;
+  overflow: hidden;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .healthTable :global(.bui-TableHeader .bui-TableHead) {
@@ -10,21 +26,29 @@
   background-color: var(--bui-bg-neutral-1);
 }
 
-.detailsContent {
-  overflow: hidden;
-  transition:
-    height 220ms ease,
-    opacity 220ms ease;
+.healthTable {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1100px;
+  min-width: 0;
+  background-color: var(--bui-bg-neutral-1);
+  padding: clamp(8px, 2vw, 16px);
 }
 
-.detailsContent pre {
-  margin: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+.statusButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .detailsContent {
-    transition: none;
-  }
+.statusButton:focus-visible {
+  outline: 2px solid var(--bui-border-1);
+  outline-offset: 2px;
 }

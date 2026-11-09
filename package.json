@@ -72,10 +72,5 @@
       "prettier --write"
     ]
   },
-  "jest": {
-    "transformModules": [
-      "@asyncapi/react-component"
-    ]
-  },
   "packageManager": "yarn@4.18.1"
 }

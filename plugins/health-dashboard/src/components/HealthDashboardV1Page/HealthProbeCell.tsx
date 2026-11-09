@@ -1,14 +1,13 @@
-import { memo } from 'react';
 import { HealthV1Probe } from '../../types';
-import { TooltipTrigger, Cell, Tooltip, ButtonLink, Box } from '@backstage/ui';
+import { Box, Cell } from '@backstage/ui';
+import { Button as AriaButton } from 'react-aria-components';
+import styles from './HealthDashboardV1Page.module.css';
 
-const cellStyle = { paddingRight: '8px' } as const;
 const centerStyle = {
   width: '100%',
   display: 'flex',
   justifyContent: 'center',
 } as const;
-const tooltipStyle = { maxWidth: '50em' } as const;
 const bulletStyle = (color: string) =>
   ({
     borderRadius: '50%',
@@ -16,30 +15,6 @@ const bulletStyle = (color: string) =>
     height: '1em',
     backgroundColor: color,
   }) as const;
-
-const StatusTable = memo(
-  ({
-    status,
-  }: {
-    status: {
-      errorMessage?: string;
-      [key: string]: any;
-    };
-  }) => (
-    <table>
-      <tbody>
-        {Object.entries(status).map(([key, value]) => (
-          <tr key={key}>
-            <td style={cellStyle}>
-              <b>{key}</b>
-            </td>
-            <td>{value}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  ),
-);
 
 export const STATUS_COLORS: Record<number, { color: string; label: string }> = {
   200: { color: '#4caf50', label: 'OK' },
@@ -52,49 +27,41 @@ export const OTHER_STATUS_COLOR = { color: '#f44336', label: 'Error' };
 const getBulletColor = (status: number): string =>
   STATUS_COLORS[status]?.color ?? OTHER_STATUS_COLOR.color;
 
-const getHealthUrl = (probeUrl: string | undefined): string => {
-  if (!probeUrl) {
-    return '';
-  }
-  if (probeUrl.startsWith('http')) {
-    return probeUrl;
-  }
-  return `https://${probeUrl}`;
-};
-
-export const HealthProbeCell = memo(
-  ({ healthProbe }: { healthProbe: HealthV1Probe | undefined }) => {
-    if (!healthProbe || !healthProbe.returnedHttpStatus) {
-      return (
-        <Cell>
-          <Box style={centerStyle}>-</Box>
-        </Cell>
-      );
-    }
-
-    const bulletColor = getBulletColor(healthProbe.returnedHttpStatus);
-
+export const HealthProbeCell = ({
+  healthProbe,
+  application,
+  environment,
+  onSelect,
+}: {
+  healthProbe: HealthV1Probe | undefined;
+  application: string;
+  environment: string;
+  onSelect: (probe: HealthV1Probe) => void;
+}) => {
+  if (!healthProbe || !healthProbe.returnedHttpStatus) {
     return (
       <Cell>
-        <Box style={centerStyle}>
-          <TooltipTrigger delay={500} closeDelay={100}>
-            <ButtonLink
-              variant="tertiary"
-              href={getHealthUrl(healthProbe.healthUrl)}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: bulletColor }}
-            >
-              <Box style={bulletStyle(bulletColor)}>
-                <></>
-              </Box>
-            </ButtonLink>
-            <Tooltip placement="bottom" style={tooltipStyle}>
-              <StatusTable status={healthProbe.status} />
-            </Tooltip>
-          </TooltipTrigger>
-        </Box>
+        <Box style={centerStyle}>-</Box>
       </Cell>
     );
-  },
-);
+  }
+
+  const bulletColor = getBulletColor(healthProbe.returnedHttpStatus);
+
+  return (
+    <Cell>
+      <Box style={centerStyle}>
+        <AriaButton
+          className={styles.statusButton}
+          aria-label={`Show ${environment.toUpperCase()} health details for ${application}`}
+          onPress={() => onSelect(healthProbe)}
+        >
+          <span
+            aria-hidden="true"
+            style={bulletStyle(bulletColor)}
+          />
+        </AriaButton>
+      </Box>
+    </Cell>
+  );
+};

@@ -7,7 +7,13 @@ import {
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
-import { AnalyticsStore, DailyVisitor, TopFeature } from './types';
+import {
+  AnalyticsStore,
+  DailyVisitor,
+  McpActionMetric,
+  TopFeature,
+} from './types';
+import { aggregateMcpActions } from './aggregateMcpActions';
 
 const migrationsDir = resolvePackagePath(
   '@internal/plugin-analytics-backend', // Package name
@@ -58,6 +64,7 @@ export class AnalyticsDbStore implements AnalyticsStore {
 
   async getTotalDailyUniqueVisitors(days: number): Promise<DailyVisitor[]> {
     const query = this.db('analytics_events')
+      .whereNot('action', 'mcp-tool-call')
       .select(this.db.raw("to_char(created_at, 'YYYY-MM-DD') as date"))
       .select(
         this.db.raw(
@@ -91,6 +98,27 @@ export class AnalyticsDbStore implements AnalyticsStore {
       visitors: Number(row.visitors ?? 0),
       guests: Number(row.guests ?? 0),
     }));
+  }
+
+  async getMcpActions(days: number): Promise<McpActionMetric[]> {
+    const query = this.db('analytics_events')
+      .select('subject', 'extension')
+      .count('id as count')
+      .where('action', 'mcp-tool-call')
+      .groupBy('subject', 'extension')
+      .orderBy('count', 'desc');
+    if (days === 0) {
+      query.whereRaw(
+        "created_at >= CURRENT_DATE AND created_at < CURRENT_DATE + INTERVAL '1 day'",
+      );
+    } else {
+      query.where(
+        'created_at',
+        '>=',
+        this.db.raw("NOW() - (? * INTERVAL '1 day')", [days]),
+      );
+    }
+    return aggregateMcpActions(await query);
   }
 
   async getTopFeaturesByUniqueVisitors(

@@ -1,9 +1,11 @@
 import { createBackend } from '@backstage/backend-defaults';
 import { customPermissionPolicyModule } from './plugins/policy';
 import { microsoftGraphTransformerModule } from './plugins/msgraph';
+import { mcpAnalyticsAuditor } from './plugins/mcpAnalyticsAuditor';
 
 const backend = createBackend();
 
+backend.add(mcpAnalyticsAuditor);
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
 backend.add(import('@backstage/plugin-scaffolder-backend'));

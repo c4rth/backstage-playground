@@ -40,10 +40,13 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@internal/plugin-components-react": "workspace:^",
-    "@remixicon/react": ">=4.6.0 <4.9.0"
+    "@remixicon/react": ">=4.6.0 <4.9.0",
+    "react-aria-components": "^1.22.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/react": "^18.0.0",
     "react": "^18.0.2"
   },

@@ -1,12 +1,24 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useEffect, useState } from 'react';
 import { analyticsBackendApiRef } from '../../api';
-import { Box, Container, Flex, Select } from '@backstage/ui';
+import {
+  Box,
+  Container,
+  Flex,
+  Select,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+} from '@backstage/ui';
 import { DailyVisitor } from '../../api/CustomAnalyticsApi';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { DailyUsersChart } from './DailyUsersChart';
 import { TopFeaturesTable, TableRow, toRow } from './TopFeaturesTable';
 import { Progress } from '@internal/plugin-components-react';
+import { McpActionMetric } from '../../api/AnalyticsBackendApi';
+import { McpActionsTable } from './McpActionsTable';
+import styles from './AnalyticsContent.module.css';
 
 const daysToShowOptions = [
   { label: 'Today', id: '0' },
@@ -22,6 +34,7 @@ export const AnalyticsContent = () => {
     DailyVisitor[]
   >([]);
   const [topFeatures, setTopFeatures] = useState<TableRow[]>([]);
+  const [mcpActions, setMcpActions] = useState<McpActionMetric[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [daysToShow, setDaysToShow] = useState(7);
@@ -34,9 +47,10 @@ export const AnalyticsContent = () => {
       setError(null);
 
       try {
-        const [count, features] = await Promise.all([
+        const [count, features, actions] = await Promise.all([
           analyticsApi.getDailyUniqueUsers(daysToShow),
           analyticsApi.getTopFeatures(100, daysToShow),
+          analyticsApi.getMcpActions(daysToShow),
         ]);
 
         if (!isMounted) {
@@ -45,6 +59,7 @@ export const AnalyticsContent = () => {
 
         setDailyUniqueVisitors(count);
         setTopFeatures(features.map(toRow));
+        setMcpActions(actions);
       } catch (e) {
         if (!isMounted) {
           return;
@@ -66,7 +81,7 @@ export const AnalyticsContent = () => {
   }, [analyticsApi, daysToShow]);
 
   return (
-    <Container>
+    <Container className={styles.container}>
       {isLoading && <Progress />}
       {error && (
         <ResponseErrorPanel
@@ -76,7 +91,7 @@ export const AnalyticsContent = () => {
       )}
 
       {!isLoading && !error && (
-        <Flex direction="column" style={{ height: '85vh' }}>
+        <Flex direction="column" style={{ height: '100%', minHeight: 0 }}>
           <Box style={{ flexShrink: 0, marginBottom: '8px' }}>
             <Select
               onChange={selected => {
@@ -92,7 +107,31 @@ export const AnalyticsContent = () => {
             <DailyUsersChart data={dailyUniqueVisitors} />
           </Box>
           <Box style={{ flex: 1, minHeight: 0 }}>
-            <TopFeaturesTable data={topFeatures} />
+            <Tabs
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                minHeight: 0,
+              }}
+            >
+              <TabList>
+                <Tab id="top-features">Top Features</Tab>
+                <Tab id="mcp-actions">MCP Actions</Tab>
+              </TabList>
+              <TabPanel
+                id="top-features"
+                style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}
+              >
+                <TopFeaturesTable data={topFeatures} />
+              </TabPanel>
+              <TabPanel
+                id="mcp-actions"
+                style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}
+              >
+                <McpActionsTable data={mcpActions} />
+              </TabPanel>
+            </Tabs>
           </Box>
         </Flex>
       )}

@@ -14,21 +14,24 @@ backend:
       - matchers:
           plugin: scaffolder
         level: debug
-      - matchers:
-          plugin: mca
-        level: info
-      - matchers:
-          plugin: api-platform
-        level: debug
+      #- matchers:
+      #    plugin: mca
+      #  level: info
+      #- matchers:
+      #    plugin: api-platform
+      #  level: debug
       - matchers:
           plugin: analytics
         level: debug
-      - matchers:
-          plugin: azure-devops
-        level: debug
-      - matchers:
-          plugin: azdo
-        level: debug
+      #- matchers:
+      #    plugin: azure-devops
+      #  level: debug
+      #- matchers:
+      #    plugin: azdo
+      #  level: debug
+      # - matchers:
+      #    plugin: mcp-actions
+      #  level: debug
 
       #- matchers:
       #    plugin: search

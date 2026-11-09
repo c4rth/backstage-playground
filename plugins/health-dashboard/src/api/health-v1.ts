@@ -5,7 +5,7 @@ import {
   HealthV1Data,
   HealthV1Probe,
 } from '../types';
-import { dummyCall } from './fake-data';
+import { dummyCallV1 } from './fake-data-v1';
 import { createHeaders, toErrorMessage } from './utils';
 
 function sortHealthDataByApplication(
@@ -41,29 +41,29 @@ export async function fetchHealthV1Data(options: {
   const { endpointPath, baseUrl, fetchApi, featureFlagsApi } = options;
 
   try {
-    let data: EnvironmentHealthV1Data;
+    let response: Response;
 
     if (featureFlagsApi.isActive('mock-health-dashboard')) {
       const isPrdProbe =
         endpointPath.toLowerCase().includes('prd') &&
         !endpointPath.toLowerCase().includes('nonprd');
-      data = dummyCall(isPrdProbe);
+      response = dummyCallV1(isPrdProbe);
     } else {
       const url = new URL(`${baseUrl}/api/proxy${endpointPath}`);
-      const response = await fetchApi.fetch(url, {
+      response = await fetchApi.fetch(url, {
         method: 'GET',
         headers: createHeaders(),
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `HTTP ${response.status}: Failed to fetch health data - ${errorText}`,
-        );
-      }
-
-      data = (await response.json()) as EnvironmentHealthV1Data;
     }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `HTTP ${response.status}: Failed to fetch health data - ${errorText}`,
+      );
+    }
+
+    const data = (await response.json()) as EnvironmentHealthV1Data;
 
     if (!data) {
       throw new Error('Invalid response: expected health data object');

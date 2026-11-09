@@ -11,18 +11,15 @@ import {
   Button,
   Header,
 } from '@backstage/ui';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetHealthV1Data } from '../../hooks';
 import {
   ApplicationHealthV1Data,
   HealthDataError,
+  HealthV1Probe,
   HealthV1DataResponse,
 } from '../../types';
-import {
-  HealthProbeCell,
-  OTHER_STATUS_COLOR,
-  STATUS_COLORS,
-} from './HealthProbeCell';
+import { HealthProbeCell, OTHER_STATUS_COLOR, STATUS_COLORS } from './HealthProbeCell';
 import {
   InformationPopup,
   InformationPopupContent,
@@ -31,6 +28,10 @@ import {
 } from '@internal/plugin-components-react';
 import styles from './HealthDashboardV1Page.module.css';
 import { RiRestartLine } from '@remixicon/react';
+import {
+  HealthDetailsSelection,
+  HealthDetailsSheet,
+} from '../common/HealthDetailsSheet';
 
 const emptyState = () => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
@@ -95,35 +96,6 @@ async function fetchData(
   return response?.healthData.map(toTableRow) ?? [];
 }
 
-const getEnvironmentColumn = (env: string): ColumnConfig<TableRow> => ({
-  id: env,
-  label: env.toUpperCase(),
-  cell: item => (
-    <HealthProbeCell healthProbe={item.healthData.environments[env]} />
-  ),
-  width: '15%',
-});
-
-const columns: ColumnConfig<TableRow>[] = [
-  {
-    id: 'app',
-    label: 'APPLICATION',
-    isRowHeader: true,
-    cell: item => (
-      <Cell>
-        <b>{item.healthData.application.toUpperCase()}</b>
-      </Cell>
-    ),
-    isSortable: true,
-    width: '25%',
-  },
-  getEnvironmentColumn('tst'),
-  getEnvironmentColumn('gtu'),
-  getEnvironmentColumn('uat'),
-  getEnvironmentColumn('ptp'),
-  getEnvironmentColumn('prd'),
-];
-
 const REFRESH_INTERVALS = [
   { label: 'Off', id: '0' },
   { label: '5s', id: '5000' },
@@ -140,6 +112,66 @@ export const HealthDashboardV1Page = () => {
     [],
   );
   const [refreshInterval, setRefreshInterval] = useState<number>(30000);
+  const [selectedProbe, setSelectedProbe] =
+    useState<HealthDetailsSelection | null>(null);
+
+  const handleProbeSelect = useCallback(
+    (application: string, environment: string, probe: HealthV1Probe) => {
+      setSelectedProbe({
+        title: `${application.toUpperCase()} - ${environment.toUpperCase()}`,
+        sections: [
+          {
+            id: 'probe',
+            fields: [
+              ...Object.entries(probe)
+                .filter(([key]) => key !== 'status')
+                .map(([label, value]) => ({ label, value })),
+              ...Object.entries(probe.status).map(([key, value]) => ({
+                label: `status.${key}`,
+                value,
+              })),
+            ],
+          },
+        ],
+      });
+    },
+    [],
+  );
+
+  const columns = useMemo<ColumnConfig<TableRow>[]>(
+    () => [
+      {
+        id: 'app',
+        label: 'APPLICATION',
+        isRowHeader: true,
+        cell: item => (
+          <Cell>
+            <b>{item.healthData.application.toUpperCase()}</b>
+          </Cell>
+        ),
+        isSortable: true,
+        width: '25%',
+        minWidth: 160,
+      },
+      ...['tst', 'gtu', 'uat', 'ptp', 'prd'].map(env => ({
+        id: env,
+        label: env.toUpperCase(),
+        cell: (item: TableRow) => (
+          <HealthProbeCell
+            healthProbe={item.healthData.environments[env]}
+            application={item.healthData.application}
+            environment={env}
+            onSelect={probe =>
+              handleProbeSelect(item.healthData.application, env, probe)
+            }
+          />
+        ),
+        width: '15%' as const,
+        minWidth: 64,
+      })),
+    ],
+    [handleProbeSelect],
+  );
 
   // Wrap getData in useCallback so useTable gets a stable reference
   const loadData = useCallback(() => {
@@ -170,13 +202,21 @@ export const HealthDashboardV1Page = () => {
 
   return (
     <FullPage>
-      <Legend />
       <Header
         title="Health Dashboard v1"
         sticky
         customActions={
           <>
-            <Box style={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              className={styles.refreshControls}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 'var(--bui-space-2)',
+              }}
+            >
+              <Box style={{ display: 'flex', alignItems: 'center' }}>
               <Button
                 variant="secondary"
                 onClick={() => reload()}
@@ -194,6 +234,8 @@ export const HealthDashboardV1Page = () => {
                 value={refreshInterval.toString()}
                 aria-label="Auto-refresh interval"
               />
+              </Box>
+              <Legend />
             </Box>
             <InformationPopup content={POPUP_CONTENT} />
           </>
@@ -233,6 +275,10 @@ export const HealthDashboardV1Page = () => {
           />
         )}
       </Container>
+      <HealthDetailsSheet
+        selection={selectedProbe}
+        onClose={() => setSelectedProbe(null)}
+      />
     </FullPage>
   );
 };

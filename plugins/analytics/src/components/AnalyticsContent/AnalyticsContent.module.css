@@ -1,0 +1,11 @@
+.container {
+  height: max(0px, calc(100dvh - var(--bui-header-height, 0px) - 16px));
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 599.95px) {
+  .container {
+    height: max(0px, calc(100dvh - var(--bui-header-height, 0px) - 72px));
+  }
+}

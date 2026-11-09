@@ -1,0 +1,84 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.sheet {
+  position: relative;
+  width: min(60rem, 90vw);
+  height: 100%;
+  background-color: var(--bui-bg-neutral-1);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.2);
+}
+
+.content {
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  outline: none;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--bui-border-1);
+}
+
+.title,
+.subtitle {
+  margin: 0;
+}
+
+.subtitle {
+  margin-top: 4px;
+}
+
+.section {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--bui-border-1);
+  overflow-x: auto;
+}
+
+.details {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.detail:last-child,
+.detail:last-child th,
+.detail:last-child td {
+  border-bottom: 0;
+}
+
+.detail th,
+.detail td {
+  padding: 6px 12px 6px 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.detail th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.detail td {
+  overflow-wrap: anywhere;
+}
+
+.formattedJson {
+  margin: 0;
+  white-space: pre;
+}

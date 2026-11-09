@@ -1,5 +1,6 @@
 import { FeatureFlagsApi, FetchApi } from '@backstage/core-plugin-api';
 import { HealthV2Data } from '../types';
+import { dummyCallV2 } from './fake-data-v2';
 import { createHeaders, toErrorMessage } from './utils';
 
 const ENVIRONMENT_ORDER = ['PRD', 'PTP', 'UAT', 'GTU', 'TST'];
@@ -13,15 +14,17 @@ export async function fetchHealthV2Data(options: {
   const { endpointPath, baseUrl, fetchApi, featureFlagsApi } = options;
 
   try {
-    if (featureFlagsApi.isActive('mock-health-dashboard')) {
-      return {};
-    }
+    let response: Response;
 
-    const url = new URL(`${baseUrl}/api/proxy${endpointPath}`);
-    const response = await fetchApi.fetch(url, {
-      method: 'GET',
-      headers: createHeaders(),
-    });
+    if (featureFlagsApi.isActive('mock-health-dashboard')) {
+      response = dummyCallV2();
+    } else {
+      const url = new URL(`${baseUrl}/api/proxy${endpointPath}`);
+      response = await fetchApi.fetch(url, {
+        method: 'GET',
+        headers: createHeaders(),
+      });
+    }
 
     if (!response.ok) {
       const errorText = await response.text();

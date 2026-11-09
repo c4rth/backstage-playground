@@ -16,12 +16,14 @@ export const analyticsPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
+        httpAuth: coreServices.httpAuth,
         analyticsService: analyticsServiceRef,
       },
-      async init({ httpRouter, analyticsService }) {
+      async init({ httpRouter, httpAuth, analyticsService }) {
         httpRouter.use(
           await createRouter({
             analyticsService,
+            httpAuth,
           }),
         );
         httpRouter.addAuthPolicy({
