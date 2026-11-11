@@ -9,7 +9,11 @@ import { API_NO_SYSTEM } from '@internal/plugin-api-platform-common';
 import { Container, Header, PluginHeader, Select } from '@backstage/ui';
 import { useDocumentTitle } from '@internal/plugin-components-react';
 import { RiPuzzleFill } from '@remixicon/react';
-import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import {
+  useRouteRefParams,
+  useTranslationRef,
+} from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 import { apiPlatformApiDefinitionRouteRef } from '../../routes';
 import { isApiDocsSpectralLinterAvailable } from '@internal/plugin-api-docs-spectral-linter';
 import {
@@ -22,11 +26,12 @@ import { EntityApiDocsSpectralLinterCard } from '@internal/plugin-api-docs-spect
 import type { ComponentProps } from 'react';
 
 export const ApiDefinitionPage = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { system, name } = useRouteRefParams(apiPlatformApiDefinitionRouteRef);
   const [searchParams, setSearchParams] = useSearchParams();
   const queryVersion = searchParams.get('version');
 
-  useDocumentTitle(`API - ${name}`);
+  useDocumentTitle(t('apiDefinition.documentTitle', { name }));
 
   const { apiVersions, loading, error } = useGetApiVersions(
     system ?? API_NO_SYSTEM,
@@ -97,7 +102,7 @@ export const ApiDefinitionPage = () => {
       <PluginHeader
         icon={<RiPuzzleFill fontSize="inherit" />}
         breadcrumbs={[
-          { label: 'APIs', href: '/api-platform/api' },
+          { label: t('apiDefinition.breadcrumb'), href: '/api-platform/api' },
           { label: name, href: '' },
         ]}
       />
@@ -105,30 +110,48 @@ export const ApiDefinitionPage = () => {
         title={name}
         metadata={[
           {
-            label: 'Version',
+            label: t('apiDefinition.version'),
             value: (
               <Select
                 onChange={handleVersionChange}
                 options={versions}
                 value={activeVersion}
                 style={{ minWidth: '200px' }}
-                aria-label="Version"
+                aria-label={t('apiDefinition.version')}
               />
             ),
           },
         ]}
         tabs={[
-          { id: 'openapi', label: 'OpenAPI', href: withSearchParams('.') },
-          { id: 'raw', label: 'Raw', href: withSearchParams('raw') },
+          {
+            id: 'openapi',
+            label: t('apiDefinition.tabs.openapi'),
+            href: withSearchParams('.'),
+          },
+          {
+            id: 'raw',
+            label: t('apiDefinition.tabs.raw'),
+            href: withSearchParams('raw'),
+          },
           ...(isLinterAvailable && !hideLintTab
-            ? [{ id: 'lint', label: 'Lint', href: withSearchParams('lint') }]
+            ? [
+                {
+                  id: 'lint',
+                  label: t('apiDefinition.tabs.lint'),
+                  href: withSearchParams('lint'),
+                },
+              ]
             : []),
           {
             id: 'services',
-            label: 'Services',
+            label: t('apiDefinition.tabs.services'),
             href: withSearchParams('services'),
           },
-          { id: 'info', label: 'Info', href: withSearchParams('info') },
+          {
+            id: 'info',
+            label: t('apiDefinition.tabs.info'),
+            href: withSearchParams('info'),
+          },
         ]}
       />
       <Container>

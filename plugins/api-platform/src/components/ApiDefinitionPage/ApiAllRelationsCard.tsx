@@ -1,4 +1,9 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import {
   Entity,
   parseEntityRef,
@@ -18,8 +23,10 @@ import {
   ANNOTATION_API_VERSION,
   ANNOTATION_SERVICE_NAME,
   ANNOTATION_SERVICE_VERSION,
+  CATALOG_METADATA,
   CATALOG_METADATA_SERVICE_NAME,
   CATALOG_METADATA_SERVICE_VERSION,
+  CATALOG_RELATIONS,
   CATALOG_SPEC_LIFECYCLE,
   CATALOG_SPEC_SYSTEM,
 } from '@internal/plugin-api-platform-common';
@@ -39,9 +46,11 @@ type TableRow = {
   readonly svcSystem: string;
 };
 
-const serviceColumns: ColumnConfig<TableRow>[] = [
+const getServiceColumns = (
+  t: ApiPlatformTranslator,
+): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '50%',
     id: 'svcName',
     isRowHeader: true,
@@ -56,13 +65,13 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'API Version',
+    label: t('table.columns.apiVersion'),
     width: '20%',
     id: 'apiVersion',
     cell: ({ apiVersion }: TableRow) => <CellText title={apiVersion} />,
   },
   {
-    label: 'Version',
+    label: t('table.columns.version'),
     width: '10%',
     id: 'svcVersion',
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
@@ -76,7 +85,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'Environment',
+    label: t('table.columns.environment'),
     width: '10%',
     id: 'svcEnvironment',
     cell: ({ svcName, svcVersion, svcEnvironment, svcSystem }: TableRow) => (
@@ -90,7 +99,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'System',
+    label: t('table.columns.system'),
     width: '10%',
     id: 'svcSystem',
     cell: ({ svcSystem }: TableRow) =>
@@ -172,6 +181,7 @@ type ApiAllRelationsTableProps = {
 };
 
 const ApiAllRelationsTable = ({ title, rows }: ApiAllRelationsTableProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { tableProps } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -185,14 +195,14 @@ const ApiAllRelationsTable = ({ title, rows }: ApiAllRelationsTableProps) => {
   });
 
   return (
-    <EntityInfoCard title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={title}>
       <Table
-        columnConfig={serviceColumns}
+        columnConfig={getServiceColumns(t)}
         {...tableProps}
         pagination={{
           type: 'none',
         }}
-        emptyState={<div>No data available</div>}
+        emptyState={<div>{t('table.empty')}</div>}
         className="denseTable"
       />
     </EntityInfoCard>
@@ -202,13 +212,13 @@ const ApiAllRelationsTable = ({ title, rows }: ApiAllRelationsTableProps) => {
 export const ApiAllRelationsCard = ({
   dependency,
 }: ApiAllRelationsCardProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
   const system = entity.spec?.system?.toString() ?? '';
   const apiName =
     entity?.metadata?.annotations?.[ANNOTATION_API_NAME]?.toString() ?? '';
-  const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
   const { apiVersions, error: versionsError } = useGetApiVersions(
     system,
@@ -224,6 +234,12 @@ export const ApiAllRelationsCard = ({
           kind: ['API'],
           [`metadata.annotations.${ANNOTATION_API_NAME}`]: [apiName],
         },
+        fields: [
+          CATALOG_METADATA,
+          CATALOG_SPEC_LIFECYCLE,
+          CATALOG_SPEC_SYSTEM,
+          CATALOG_RELATIONS
+        ],
       });
 
       const servicePromises = apiEntities.items
@@ -257,7 +273,11 @@ export const ApiAllRelationsCard = ({
   if (error) {
     return (
       <ResponseErrorPanel
-        title={`Error loading ${title.toLowerCase()}`}
+        title={t(
+          dependency === 'consumer'
+            ? 'apiRelations.consumersError'
+            : 'apiRelations.providersError',
+        )}
         error={error}
       />
     );
@@ -266,7 +286,12 @@ export const ApiAllRelationsCard = ({
   return (
     <ApiAllRelationsTable
       key={`${dependency}-${rows.length}`}
-      title={title}
+      title={t(
+        dependency === 'consumer'
+          ? 'apiRelations.consumers'
+          : 'apiRelations.providers',
+        { total: String(rows.length) },
+      )}
       rows={rows}
     />
   );

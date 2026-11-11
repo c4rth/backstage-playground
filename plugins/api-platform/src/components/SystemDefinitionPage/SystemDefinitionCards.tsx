@@ -15,6 +15,8 @@ import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { RiFileFill } from '@remixicon/react';
 import { Box, Grid, Flex, ButtonLink } from '@backstage/ui';
 import { SystemDefinition } from '@internal/plugin-api-platform-common';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 interface SystemDefinitionCardProps {
   system: string;
@@ -75,6 +77,7 @@ export const SystemDefinitionMembersCard = () => {
 };
 
 export const SystemDefinitionInfoCard = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity();
   const entityRef = getCompoundEntityRef(entity);
   const hasDocs = Boolean(
@@ -85,7 +88,7 @@ export const SystemDefinitionInfoCard = () => {
     <Grid.Root columns="12">
       <Grid.Item colSpan="6">
         <EntityInfoCard
-          title="About"
+          title={t('systemDefinition.about')}
           headerActions={
             <ButtonLink
               href={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
@@ -97,7 +100,7 @@ export const SystemDefinitionInfoCard = () => {
           }
         >
           <Box mb="4">
-            <AboutField label="System reference">
+            <AboutField label={t('systemDefinition.reference')}>
               <EntityRefLink entityRef={entity} />
             </AboutField>
           </Box>

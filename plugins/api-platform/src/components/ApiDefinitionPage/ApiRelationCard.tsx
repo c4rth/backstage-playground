@@ -1,4 +1,9 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import {
   Entity,
   parseEntityRef,
@@ -35,9 +40,11 @@ type TableRow = {
   environment: string;
 };
 
-const serviceColumns: ColumnConfig<TableRow>[] = [
+const getServiceColumns = (
+  t: ApiPlatformTranslator,
+): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '50%',
     id: 'name',
     isRowHeader: true,
@@ -52,7 +59,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'Version',
+    label: t('table.columns.version'),
     width: '20%',
     id: 'version',
     cell: ({ system, name, version, environment }: TableRow) => (
@@ -66,7 +73,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'Environment',
+    label: t('table.columns.environment'),
     width: '15%',
     id: 'environment',
     cell: ({ system, name, version, environment }: TableRow) => (
@@ -80,7 +87,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'System',
+    label: t('table.columns.system'),
     width: '15%',
     id: 'system',
     cell: ({ system }: TableRow) =>
@@ -158,6 +165,7 @@ type ApiRelationTableProps = {
 };
 
 const ApiRelationTable = ({ title, rows }: ApiRelationTableProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { tableProps } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -171,14 +179,14 @@ const ApiRelationTable = ({ title, rows }: ApiRelationTableProps) => {
   });
 
   return (
-    <EntityInfoCard title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={title}>
       <Table
-        columnConfig={serviceColumns}
+        columnConfig={getServiceColumns(t)}
         {...tableProps}
         pagination={{
           type: 'none',
         }}
-        emptyState={<div>No data available</div>}
+        emptyState={<div>{t('table.empty')}</div>}
         className="denseTable"
       />
     </EntityInfoCard>
@@ -186,9 +194,9 @@ const ApiRelationTable = ({ title, rows }: ApiRelationTableProps) => {
 };
 
 export const ApiRelationCard = ({ dependency }: ApiRelationCardProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
-  const title = dependency === 'consumer' ? 'Consumers' : 'Providers';
 
   const { value: entities, error } = useAsync(
     () => fetchEntities(catalogApi, entity, dependency),
@@ -200,7 +208,11 @@ export const ApiRelationCard = ({ dependency }: ApiRelationCardProps) => {
   if (error) {
     return (
       <ResponseErrorPanel
-        title={`Error loading ${title.toLowerCase()}`}
+        title={t(
+          dependency === 'consumer'
+            ? 'apiRelations.consumersError'
+            : 'apiRelations.providersError',
+        )}
         error={error}
       />
     );
@@ -209,7 +221,12 @@ export const ApiRelationCard = ({ dependency }: ApiRelationCardProps) => {
   return (
     <ApiRelationTable
       key={`${dependency}-${rows.length}`}
-      title={title}
+      title={t(
+        dependency === 'consumer'
+          ? 'apiRelations.consumers'
+          : 'apiRelations.providers',
+        { total: String(rows.length) },
+      )}
       rows={rows}
     />
   );

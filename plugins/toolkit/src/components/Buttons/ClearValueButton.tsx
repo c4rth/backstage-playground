@@ -1,5 +1,7 @@
 import { RiCloseCircleLine } from '@remixicon/react';
 import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 type Props = {
   setValue: (input: string) => void;
@@ -8,6 +10,7 @@ type Props = {
 };
 
 export const ClearValueButton = (props: Props) => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   return (
     <TooltipTrigger>
       <Button
@@ -16,10 +19,10 @@ export const ClearValueButton = (props: Props) => {
         onClick={() => props.setValue(props.defaultValue || '')}
         variant="tertiary"
       >
-        Clear
+        {t('buttons.clear')}
       </Button>
       <Tooltip placement="bottom">
-        {props.tooltip || 'Clear the current value'}
+        {props.tooltip || t('buttons.clearTooltip')}
       </Tooltip>
     </TooltipTrigger>
   );

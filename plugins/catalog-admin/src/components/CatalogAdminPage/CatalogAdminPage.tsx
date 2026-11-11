@@ -12,20 +12,21 @@ import { useState, useEffect } from 'react';
 import { EntityTable } from './EntityTable';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { catalogAdminTranslationRef } from '../../translation';
 import { CATALOG_METADATA_NAME } from '@internal/plugin-api-platform-common';
 import { EntityValidationContent } from '@backstage-community/plugin-entity-validation';
 import { ImportStepper } from '@backstage/plugin-catalog-import';
 
-const kindOptions = [
-  { label: 'API', id: 'api' },
-  { label: 'Library', id: 'library' },
-  { label: 'Service', id: 'service' },
-  { label: 'TechDocs', id: 'techdocs' },
-  { label: 'Template', id: 'template' },
-];
-
 export const CatalogAdminPage = () => {
+  const { t } = useTranslationRef(catalogAdminTranslationRef);
+  const kindOptions = [
+    { label: t('page.filters.api'), id: 'api' },
+    { label: t('page.filters.library'), id: 'library' },
+    { label: t('page.filters.service'), id: 'service' },
+    { label: t('page.filters.techdocs'), id: 'techdocs' },
+    { label: t('page.filters.template'), id: 'template' },
+  ];
   const [kind, setKind] = useState('api');
   const [system, setSystem] = useState<string | null>(null);
   const [systemOptions, setSystemOptions] = useState<
@@ -56,20 +57,20 @@ export const CatalogAdminPage = () => {
       })
       .catch(err => {
         toastApi.post({
-          title: `Failed to load systems: ${err}`,
+          title: t('page.loadSystemsError', { error: String(err) }),
           status: 'danger',
           timeout: 1500,
         });
       });
-  }, [catalogApi, toastApi]);
+  }, [catalogApi, toastApi, t]);
 
   return (
     <Container>
       <Tabs>
         <TabList>
-          <Tab id="tab1">Catalog</Tab>
-          <Tab id="tab2">Import</Tab>
-          <Tab id="tab3">Entity Validation</Tab>
+          <Tab id="tab1">{t('page.tabs.catalog')}</Tab>
+          <Tab id="tab2">{t('page.tabs.import')}</Tab>
+          <Tab id="tab3">{t('page.tabs.validation')}</Tab>
         </TabList>
         <TabPanel id="tab1">
           <>
@@ -80,10 +81,10 @@ export const CatalogAdminPage = () => {
                     setSystem(selected ? selected.toString() : null);
                   }}
                   search
-                  label="System"
+                  label={t('page.filters.system')}
                   options={systemOptions}
                   value={system ?? ''}
-                  aria-label="System"
+                  aria-label={t('page.filters.system')}
                 />
               </Grid.Item>
               <Grid.Item>
@@ -91,18 +92,14 @@ export const CatalogAdminPage = () => {
                   onChange={selected => {
                     setKind(selected!.toString());
                   }}
-                  label="Kind"
+                  label={t('page.filters.kind')}
                   options={kindOptions}
                   value={kind.toString()}
-                  aria-label="Kind"
+                  aria-label={t('page.filters.kind')}
                 />
               </Grid.Item>
             </Grid.Root>
-            {!system && (
-              <p>
-                Please select a system to view the entities associated with it.
-              </p>
-            )}
+            {!system && <p>{t('page.selectSystem')}</p>}
             {system && system !== '' && (
               <EntityTable kind={kind} system={system} />
             )}

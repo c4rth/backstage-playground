@@ -7,6 +7,8 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { McaComponentSnippet } from '../McaComponentSnippet';
 import { parseUrlLocations } from '../McaComponentAboutTab';
 import { Route, Routes } from 'react-router-dom';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef } from '../../translation';
 
 export interface McaOperationDefinitionTabsProps {
   parsedDefinition: any;
@@ -54,6 +56,7 @@ function getOperationNodes(parsedDefinition: any): NodesType {
 
 export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
   ({ parsedDefinition, rawXml }) => {
+    const { t } = useTranslationRef(mcaTranslationRef);
     const configApi = useApi(configApiRef);
     const urlLocations = useMemo<UrlLocations>(
       () =>
@@ -70,24 +73,22 @@ export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
         if (!nodes.operationAnalyze) {
           return {
             ...nodes,
-            error: new Error(
-              'Invalid operation definition: operation analysis not found',
-            ),
+            error: new Error(t('operationDefinition.missingAnalysis')),
           };
         }
         if (!nodes.operation) {
           return {
             ...nodes,
-            error: new Error(
-              'Invalid operation definition: required node not found',
-            ),
+            error: new Error(t('operationDefinition.missingNode')),
           };
         }
         if (!nodes.operationType) {
           return {
             ...nodes,
             error: new Error(
-              `Unknown operation type: ${nodes.operationAnalyze?.type || 'undefined'}`,
+              t('operationDefinition.unknownType', {
+                type: nodes.operationAnalyze?.type || 'undefined',
+              }),
             ),
           };
         }
@@ -101,7 +102,7 @@ export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
           error: e instanceof Error ? e : new Error(String(e)),
         };
       }
-    }, [parsedDefinition]);
+    }, [parsedDefinition, t]);
 
     if (error) {
       return <ResponseErrorPanel error={error} />;

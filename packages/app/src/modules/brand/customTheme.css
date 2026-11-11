@@ -1,13 +1,3 @@
-@font-face {
-  font-family: 'MyCustomFont';
-  /* src: url('https://www.belfius.be/site/fonts/otf/Belfius21-Regular.otf') format('opentype'); */
-  /* src: url('http://localhost:3000/Belfius21-Regular.otf') format('opentype'); */
-  src: url('http://localhost:3000/Roboto-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   .bui-SearchField {
     &[data-startcollapsed='true'] {

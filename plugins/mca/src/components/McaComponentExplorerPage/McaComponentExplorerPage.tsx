@@ -23,22 +23,11 @@ import {
 import { mcaComponentsBackendApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import { RiBubbleChartLine } from '@remixicon/react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef } from '../../translation';
 
 const STORAGE_KEY = 'mcaComponentExplorerPageType';
 const DEFAULT_TYPE = 'operation';
-
-const POPUP_CONTENT = (
-  <InformationPopupContent
-    text1="Explore all MCA components (operations and elements) registered in Backstage. This screen provides a searchable and filterable table of components, allowing you to quickly find, review, and navigate to detailed information about each operation or element in your platform."
-    text2="The MCA Components Explorer helps you maintain visibility and control over your organization's MCA operations and elements, making it easy to discover, document, and govern your technical building blocks."
-  />
-);
-
-const componentTypes: Option[] = [
-  { label: 'Operations', id: 'operation' },
-  { label: 'Elements', id: 'element' },
-  { label: 'All components', id: 'all' },
-];
 
 function normalizeComponentType(type: string): McaComponentType {
   const validTypes = ['operation', 'element', 'all'] as const;
@@ -48,7 +37,13 @@ function normalizeComponentType(type: string): McaComponentType {
 }
 
 export const McaComponentExplorerPage = () => {
-  useDocumentTitle('MCA Components');
+  const { t } = useTranslationRef(mcaTranslationRef);
+  useDocumentTitle(t('componentExplorer.title'));
+  const componentTypes: Option[] = [
+    { label: t('componentExplorer.operations'), id: 'operation' },
+    { label: t('componentExplorer.elements'), id: 'element' },
+    { label: t('componentExplorer.allComponents'), id: 'all' },
+  ];
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const { value: lastModifiedDate } = useAsync(async () => {
@@ -66,9 +61,18 @@ export const McaComponentExplorerPage = () => {
   return (
     <>
       <PluginHeader
-        title="MCA Components"
+        title={t('componentExplorer.title')}
         icon={<RiBubbleChartLine fontSize="inherit" />}
-        customActions={<InformationPopup content={POPUP_CONTENT} />}
+        customActions={
+          <InformationPopup
+            content={
+              <InformationPopupContent
+                text={t('componentExplorer.description')}
+                comment={t('componentExplorer.purpose')}
+              />
+            }
+          />
+        }
       />
       <FullPage>
         <Container>
@@ -79,10 +83,10 @@ export const McaComponentExplorerPage = () => {
                   onChange={selected =>
                     handleSelectChange(selected!.toString())
                   }
-                  label="Type"
+                  label={t('componentExplorer.type')}
                   options={componentTypes}
                   value={selectedType}
-                  aria-label="Type"
+                  aria-label={t('componentExplorer.type')}
                 />
               </Grid.Item>
               <Grid.Item colSpan="2">
@@ -96,13 +100,17 @@ export const McaComponentExplorerPage = () => {
                   <Alert
                     status="warning"
                     icon
-                    title="Only MCA components promoted to PRD or those where P is &ge; to the current PRD P value are visible."
+                    title={t('componentExplorer.visibility')}
                     style={{ width: 'fit-content', alignSelf: 'flex-end' }}
                   />
                   <Alert
                     status="info"
                     icon
-                    title={`Last updated: ${lastModifiedDate?.toLocaleString('fr-BE') || 'Unknown'}`}
+                    title={t('componentExplorer.lastUpdated', {
+                      date:
+                        lastModifiedDate?.toLocaleString('fr-BE') ||
+                        t('componentExplorer.unknownDate'),
+                    })}
                     style={{ width: 'fit-content', alignSelf: 'flex-end' }}
                   />
                 </Flex>

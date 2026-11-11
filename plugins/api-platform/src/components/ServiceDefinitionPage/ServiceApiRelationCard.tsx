@@ -1,4 +1,9 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import {
   Entity,
@@ -32,9 +37,11 @@ type TableRow = {
   system: string;
 };
 
-const serviceColumns: ColumnConfig<TableRow>[] = [
+const getServiceColumns = (
+  t: ApiPlatformTranslator,
+): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '50%',
     id: 'name',
     isRowHeader: true,
@@ -54,7 +61,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
       ),
   },
   {
-    label: 'Version',
+    label: t('table.columns.version'),
     width: '35%',
     id: 'version',
     cell: ({ system, name, version }: TableRow) =>
@@ -73,7 +80,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
       ),
   },
   {
-    label: 'System',
+    label: t('table.columns.system'),
     width: '15%',
     id: 'system',
     cell: ({ system }: TableRow) =>
@@ -127,6 +134,7 @@ const ServiceApiRelationTable = ({
   title,
   rows,
 }: ServiceApiRelationTableProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { tableProps } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -140,14 +148,14 @@ const ServiceApiRelationTable = ({
   });
 
   return (
-    <EntityInfoCard title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={title}>
       <Table
-        columnConfig={serviceColumns}
+        columnConfig={getServiceColumns(t)}
         {...tableProps}
         pagination={{
           type: 'none',
         }}
-        emptyState={<div>No data available</div>}
+        emptyState={<div>{t('table.empty')}</div>}
         className="denseTable"
       />
     </EntityInfoCard>
@@ -157,6 +165,7 @@ const ServiceApiRelationTable = ({
 export const ServiceApiRelationCard = ({
   dependency,
 }: ServiceApiRelationCardProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
@@ -208,17 +217,21 @@ export const ServiceApiRelationCard = ({
   }, [entity, dependency, catalogApi]);
 
   if (error) {
-    return <ResponseErrorPanel title="Error" error={error} />;
+    return (
+      <ResponseErrorPanel title={t('serviceRelations.error')} error={error} />
+    );
   }
-
-  const title = dependency === 'consumed' ? 'Consumed APIs' : 'Provided APIs';
 
   const rows = entities?.map(toRow) ?? [];
 
   if (error) {
     return (
       <ResponseErrorPanel
-        title={`Error loading ${title.toLowerCase()}`}
+        title={t(
+          dependency === 'consumed'
+            ? 'serviceRelations.consumedError'
+            : 'serviceRelations.providedError',
+        )}
         error={error}
       />
     );
@@ -227,7 +240,12 @@ export const ServiceApiRelationCard = ({
   return (
     <ServiceApiRelationTable
       key={`${dependency}-${rows.length}`}
-      title={title}
+      title={t(
+        dependency === 'consumed'
+          ? 'serviceRelations.consumed'
+          : 'serviceRelations.provided',
+        { total: String(rows.length) },
+      )}
       rows={rows}
     />
   );

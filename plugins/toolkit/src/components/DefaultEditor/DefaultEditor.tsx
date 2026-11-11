@@ -8,6 +8,18 @@ import {
 import { Box, Flex, Grid, TextAreaField } from '@backstage/ui';
 import { Chip } from '@internal/plugin-components-react';
 import styles from '../styles/customTextAreaField.module.css';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
+
+type EditorMode =
+  | 'Decode'
+  | 'Encode'
+  | 'Camel'
+  | 'Snake'
+  | 'Kebab'
+  | 'Upper'
+  | 'Lower'
+  | 'Capitalize';
 
 type Props = {
   input: string;
@@ -16,7 +28,7 @@ type Props = {
   mode?: string;
   minRows?: number;
   setMode?: (value: string) => void;
-  modes?: Array<string>;
+  modes?: EditorMode[];
   leftContent?: ReactElement;
   extraLeftContent?: ReactElement;
   rightContent?: ReactElement;
@@ -28,6 +40,7 @@ type Props = {
 };
 
 export const DefaultEditor = (props: Props) => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const {
     input,
     setInput,
@@ -67,7 +80,7 @@ export const DefaultEditor = (props: Props) => {
               {modes.map(m => (
                 <Chip
                   key={m}
-                  label={m}
+                  label={t(`editor.modes.${m}`)}
                   clickable
                   onClick={() => setMode && setMode(m)}
                   chipColor={mode === m ? 'primary' : 'outlined'}
@@ -110,7 +123,7 @@ export const DefaultEditor = (props: Props) => {
             {leftContent ?? (
               <TextAreaField
                 className={styles.customTextAreaField}
-                aria-label="Input"
+                aria-label={t('editor.input')}
                 value={input}
                 onChange={text => setInput(text)}
                 rows={minRows}
@@ -144,7 +157,7 @@ export const DefaultEditor = (props: Props) => {
             {rightContent ?? (
               <TextAreaField
                 className={styles.customTextAreaField}
-                aria-label="Output"
+                aria-label={t('editor.output')}
                 value={output || ''}
                 rows={minRows}
                 isReadOnly

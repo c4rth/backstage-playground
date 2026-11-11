@@ -3,7 +3,8 @@ import { DefaultEditor } from '../DefaultEditor';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 import { appThemeApiRef } from '@backstage/core-plugin-api';
 import ReactJson from 'react-json-view';
 import { Box } from '@backstage/ui';
@@ -14,6 +15,7 @@ const exampleJwt =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ';
 
 export const JwtDecoder = () => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const toastApi = useApi(toastApiRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
@@ -33,7 +35,7 @@ export const JwtDecoder = () => {
 
   const showError = useCallback(
     (attribute: string) => {
-      const errorMessage = `Couldn't encode JWT token: missing attribute ${attribute}`;
+      const errorMessage = t('jwt.missingAttribute', { attribute });
       setOutput(errorMessage);
       toastApi.post({
         title: errorMessage,
@@ -42,7 +44,7 @@ export const JwtDecoder = () => {
       });
       return false;
     },
-    [toastApi],
+    [toastApi, t],
   );
 
   const keyExists = useCallback(
@@ -117,10 +119,14 @@ export const JwtDecoder = () => {
                   textAlign: 'center',
                 }}
               >
-                Signature:{' '}
+                {t('jwt.signature')}{' '}
                 {props.signatureVerified
-                  ? '✓ Verified'
-                  : `✗ Invalid${props.verificationError ? ` - ${props.verificationError}` : ''}`}
+                  ? t('jwt.verified')
+                  : t('jwt.invalid', {
+                      detail: props.verificationError
+                        ? ` - ${props.verificationError}`
+                        : '',
+                    })}
               </Box>
             )}
             {props.signatureVerified === null && (
@@ -134,7 +140,7 @@ export const JwtDecoder = () => {
                   textAlign: 'center',
                 }}
               >
-                Signature: Verification not performed
+                {t('jwt.notVerified')}
               </Box>
             )}{' '}
             <div
@@ -174,7 +180,7 @@ export const JwtDecoder = () => {
             }}
           >
             <Box>
-              <i>No JWT data available</i>
+              <i>{t('jwt.empty')}</i>
             </Box>
           </div>
         )}
@@ -217,7 +223,7 @@ export const JwtDecoder = () => {
               const tenantId = issuer.split('/')[3];
               jwksUri = `https://login.microsoftonline.com/${tenantId}/discovery/keys?appid=00000000-0000-0000-0000-000000000000`;
             } else {
-              setVerificationError('Unknown issuer - cannot verify signature');
+              setVerificationError(t('jwt.unknownIssuer'));
               return;
             }
 
@@ -230,17 +236,17 @@ export const JwtDecoder = () => {
           } catch (error) {
             setSignatureVerified(false);
             const errorMessage =
-              error instanceof Error ? error.message : 'Unknown error';
+              error instanceof Error ? error.message : t('jwt.unknownError');
             setVerificationError(errorMessage);
           }
         })();
       } catch (error) {
-        setOutput(`Couldn't decode JWT token: ${error}`);
+        setOutput(t('jwt.decodeError', { detail: String(error) }));
       }
     } else {
       setOutput('');
     }
-  }, [input, headerExists, keyExists, payloadExists]);
+  }, [input, headerExists, keyExists, payloadExists, t]);
 
   return (
     <DefaultEditor

@@ -33,8 +33,11 @@ import {
 } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import { isAzureDevOpsAvailable } from '@internal/plugin-azure-devops';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 export const ServiceDefinitionOverviewCard = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity<ComponentEntity>();
 
   const configApi = useApi(configApiRef);
@@ -62,7 +65,7 @@ export const ServiceDefinitionOverviewCard = () => {
     <Grid.Root columns="12">
       <Grid.Item colSpan="6">
         <EntityInfoCard
-          title="About"
+          title={t('serviceDefinition.about')}
           headerActions={
             <Link
               href={`/docs/${entityRef.namespace}/${entityRef.kind}/${entityRef.name}`}
@@ -80,25 +83,27 @@ export const ServiceDefinitionOverviewCard = () => {
           <Box>
             <Grid.Root columns="12">
               <Grid.Item colSpan="4">
-                <AboutField label="Service reference">
+                <AboutField label={t('serviceDefinition.reference')}>
                   <EntityRefLink entityRef={entity} />
                 </AboutField>
               </Grid.Item>
 
               <Grid.Item colSpan="4">
-                <AboutField label="Platform">
+                <AboutField label={t('serviceDefinition.platform')}>
                   <Text variant="body-medium">{platform}</Text>
                 </AboutField>
               </Grid.Item>
 
               <Grid.Item colSpan="4">
-                <AboutField label="Image version">
-                  <Text variant="body-medium">{imageVersion || 'N/A'}</Text>
+                <AboutField label={t('serviceDefinition.imageVersion')}>
+                  <Text variant="body-medium">
+                    {imageVersion || t('serviceDefinition.unavailable')}
+                  </Text>
                 </AboutField>
               </Grid.Item>
 
               <Grid.Item colSpan="12">
-                <AboutField label="Repository">
+                <AboutField label={t('serviceDefinition.repository')}>
                   {repository && repositoryUrl ? (
                     <LinkComponentDisplayName
                       href={repositoryUrl}
@@ -131,11 +136,12 @@ export const ServiceDefinitionOverviewCard = () => {
 };
 
 export const ServiceDefinitionDependenciesCard = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   return (
     <Tabs key="tabs-dependencies" defaultSelectedKey="tab2-1">
       <TabList>
-        <Tab id="tab2-1">APIs</Tab>
-        <Tab id="tab2-2">Libraries</Tab>
+        <Tab id="tab2-1">{t('serviceDefinition.apis')}</Tab>
+        <Tab id="tab2-2">{t('serviceDefinition.libraries')}</Tab>
       </TabList>
       <TabPanel id="tab2-1">
         <Flex direction="column" gap="4">

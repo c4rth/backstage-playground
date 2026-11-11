@@ -5,6 +5,7 @@ import {
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
 import { AnalyticsBackendApi, analyticsBackendApiRef } from './api';
+import { analyticsMetadata } from './translation';
 
 const analyticsApi = ApiBlueprint.make({
   name: 'analytics-backend-api',
@@ -22,6 +23,6 @@ const analyticsApi = ApiBlueprint.make({
 
 export default createFrontendPlugin({
   pluginId: 'analytics',
-  title: 'Analytics',
+  title: analyticsMetadata.title,
   extensions: [analyticsApi],
 });

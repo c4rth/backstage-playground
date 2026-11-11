@@ -13,3 +13,4 @@ export {
   ApiSearchResultListItem,
 } from './plugin';
 export * from './hooks';
+export { apiPlatformTranslationRef } from './translation';

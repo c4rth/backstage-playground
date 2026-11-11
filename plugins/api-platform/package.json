@@ -69,6 +69,10 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/react": "^18.0.0",
     "react": "^18.0.2"
   },

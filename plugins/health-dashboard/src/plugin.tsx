@@ -7,6 +7,7 @@ import {
   featureFlagsApiRef,
   fetchApiRef,
   createRouteRef,
+  translationApiRef,
 } from '@backstage/frontend-plugin-api';
 import { RiHeartPulseFill } from '@remixicon/react';
 import {
@@ -14,6 +15,7 @@ import {
   healthDashboardBackendApiRef,
 } from './api';
 import { healthDashboardsRouteRef } from './routes';
+import { healthDashboardMetadata } from './translation';
 
 const healthProveV1RouteRef = createRouteRef();
 const healthProveV2RouteRef = createRouteRef();
@@ -22,7 +24,7 @@ const healthDashboardsPage = PageBlueprint.make({
   name: 'dashboard-explorer',
   params: {
     icon: <RiHeartPulseFill fontSize="inherit" />,
-    title: 'Health Dashboards',
+    title: healthDashboardMetadata.title,
     path: '/health-dashboards',
     routeRef: healthDashboardsRouteRef,
   },
@@ -34,7 +36,7 @@ const healthDashboardV1Page = SubPageBlueprint.make({
   params: {
     path: 'v1',
     routeRef: healthProveV1RouteRef,
-    title: 'Health Dashboards V1',
+    title: healthDashboardMetadata.v1Title,
     loader: () =>
       import('./components/HealthDashboardV1Page').then(m => (
         <m.HealthDashboardV1Page />
@@ -48,7 +50,7 @@ const healthDashboardV2Page = SubPageBlueprint.make({
   params: {
     path: 'v2',
     routeRef: healthProveV2RouteRef,
-    title: 'Health Dashboards V2',
+    title: healthDashboardMetadata.v2Title,
     loader: () =>
       import('./components/HealthDashboardV2Page').then(m => (
         <m.HealthDashboardV2Page />
@@ -65,27 +67,28 @@ const healthDashboardApi = ApiBlueprint.make({
         configApi: configApiRef,
         fetchApi: fetchApiRef,
         featureFlagsApi: featureFlagsApiRef,
+        translationApi: translationApiRef,
       },
-      factory: ({ configApi, fetchApi, featureFlagsApi }) =>
+      factory: ({ configApi, fetchApi, featureFlagsApi, translationApi }) =>
         new HealthDashboardBackendClient({
           configApi,
           fetchApi,
           featureFlagsApi,
+          translationApi,
         }),
     }),
 });
 
 export default createFrontendPlugin({
   pluginId: 'health-dashboards',
-  title: 'Health Dashboards',
+  title: healthDashboardMetadata.title,
   routes: {
     healthDashboards: healthDashboardsRouteRef,
   },
   featureFlags: [
     {
       name: 'mock-health-dashboard',
-      description:
-        'Enable the mock health dashboard endpoint for testing purposes',
+      description: healthDashboardMetadata.mockDescription,
     },
   ],
   extensions: [

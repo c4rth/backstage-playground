@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { Tool } from './types';
+import { ToolkitTranslator } from '../../translation';
 
 const Base64Encode = lazy(() => import('../Tools/Base64Encode'));
 const JwtDecoder = lazy(() => import('../Tools/JwtDecoder'));
@@ -11,69 +12,69 @@ const StringUtilities = lazy(() => import('../Tools/StringUtilities'));
 const CryptoCoder = lazy(() => import('../Tools/CryptoCoder'));
 const JsonFormater = lazy(() => import('../Tools/JsonFormater'));
 
-export const defaultTools: Tool[] = [
+export const getDefaultTools = (t: ToolkitTranslator): Tool[] => [
   {
     id: 'jwt-decoder-encode',
-    name: 'JSON Web Token',
+    name: t('tools.jwt.name'),
     component: <JwtDecoder />,
-    category: 'Encode/Decode',
-    description: 'Encode and decode JSON Web Tokens',
+    category: t('tools.categories.encodeDecode'),
+    description: t('tools.jwt.description'),
     aliases: ['jwt'],
   },
   {
     id: 'base64-encode',
-    name: 'Base64',
+    name: t('tools.base64.name'),
     component: <Base64Encode />,
-    category: 'Encode/Decode',
-    description: 'Encode and decode base64 strings',
+    category: t('tools.categories.encodeDecode'),
+    description: t('tools.base64.description'),
   },
   {
     id: 'certificate-decoder',
-    name: 'Certificate Decoder',
+    name: t('tools.certificate.name'),
     component: <CertificateDecoder />,
-    category: 'Decode',
-    description: 'Decode PEM certificate',
+    category: t('tools.categories.decode'),
+    description: t('tools.certificate.description'),
   },
   {
     id: 'jsonata-tester',
-    name: 'JSONata Tester',
+    name: t('tools.jsonata.name'),
     component: <JSONataTester />,
-    category: 'Encode/Decode',
-    description: 'Test JSONata expressions',
+    category: t('tools.categories.encodeDecode'),
+    description: t('tools.jsonata.description'),
   },
   {
     id: 'json-formater',
-    name: 'JSON Formater',
+    name: t('tools.json.name'),
     component: <JsonFormater />,
-    category: 'Decode',
-    description: 'Format JSON strings',
+    category: t('tools.categories.decode'),
+    description: t('tools.json.description'),
   },
   {
     id: 'crypto-coder',
-    name: 'Ciphers',
+    name: t('tools.crypto.name'),
     component: <CryptoCoder />,
-    category: 'Encode/Decode',
-    description: 'Encrypt and decrypt strings',
+    category: t('tools.categories.encodeDecode'),
+    description: t('tools.crypto.description'),
   },
   {
     id: 'cron-decoder',
-    name: 'Cron Decoder',
+    name: t('tools.cron.name'),
     component: <CronDecoder />,
-    category: 'Decode',
-    description: 'Decode cron expressions',
+    category: t('tools.categories.decode'),
+    description: t('tools.cron.description'),
   },
   {
     id: 'lorem-ipsum-generate',
-    name: 'Lorem Ipsum',
+    name: t('tools.lorem.name'),
     component: <LoremIpsum />,
-    category: 'Generate',
-    description: 'Generate random text for placeholders',
+    category: t('tools.categories.generate'),
+    description: t('tools.lorem.description'),
   },
   {
     id: 'string-utilities',
-    name: 'String Utilities',
+    name: t('tools.string.name'),
     component: <StringUtilities />,
-    category: 'Utilities',
-    description: 'Various string manipulation tools',
+    category: t('tools.categories.utilities'),
+    description: t('tools.string.description'),
   },
 ];

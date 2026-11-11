@@ -12,6 +12,8 @@ import {
   Header,
 } from '@backstage/ui';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { healthDashboardTranslationRef } from '../../translation';
 import { useGetHealthV1Data } from '../../hooks';
 import {
   ApplicationHealthV1Data,
@@ -33,46 +35,31 @@ import {
   HealthDetailsSheet,
 } from '../common/HealthDetailsSheet';
 
-const emptyState = () => (
-  <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-    No health data found.
-  </div>
-);
+const Legend = () => {
+  const { t } = useTranslationRef(healthDashboardTranslationRef);
+  const items = [
+    { status: '200', label: t('dashboardV1Page.legend.ok'), ...STATUS_COLORS[200] },
+    { status: '202', label: t('dashboardV1Page.legend.accepted'), ...STATUS_COLORS[202] },
+    { status: '404', label: t('dashboardV1Page.legend.notFound'), ...STATUS_COLORS[404] },
+    { status: '503', label: t('dashboardV1Page.legend.unavailable'), ...STATUS_COLORS[503] },
+    { status: t('dashboardV1Page.legend.other'), label: t('dashboardV1Page.legend.error'), ...OTHER_STATUS_COLOR },
+  ];
 
-const POPUP_CONTENT = (
-  <InformationPopupContent
-    text1="View the health dashboard for applications deployed in k8s. This screen displays each application and the health status reported for each environment."
-    text2="The health status reflects the response returned by the applications, helping you quickly identify which services are healthy and which require attention."
-  />
-);
-
-const LEGEND_ITEMS = [
-  ...Object.entries(STATUS_COLORS).map(([status, { color, label }]) => ({
-    status,
-    color,
-    label,
-  })),
-  {
-    status: 'other',
-    color: OTHER_STATUS_COLOR.color,
-    label: OTHER_STATUS_COLOR.label,
-  },
-];
-
-const Legend = () => (
-  <div className={styles.legend} aria-label="Status color legend">
-    <b>Health Status</b>
-    {LEGEND_ITEMS.map(({ status, label, color }) => (
-      <div key={label} className={styles.legendItem}>
-        <span
-          className={styles.legendBullet}
-          style={{ backgroundColor: color }}
-        />
-        {label} ({status})
-      </div>
-    ))}
-  </div>
-);
+  return (
+    <div className={styles.legend} aria-label={t('dashboardV1Page.legend.label')}>
+      <b>{t('dashboardV1Page.legend.title')}</b>
+      {items.map(({ status, label, color }) => (
+        <div key={status} className={styles.legendItem}>
+          <span
+            className={styles.legendBullet}
+            style={{ backgroundColor: color }}
+          />
+          {t('dashboardV1Page.legend.item', { label, status })}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 type TableRow = {
   id: number;
@@ -96,17 +83,17 @@ async function fetchData(
   return response?.healthData.map(toTableRow) ?? [];
 }
 
-const REFRESH_INTERVALS = [
-  { label: 'Off', id: '0' },
-  { label: '5s', id: '5000' },
-  { label: '10s', id: '10000' },
-  { label: '30s', id: '30000' },
-  { label: '1m', id: '60000' },
-  { label: '5m', id: '300000' },
-];
-
 export const HealthDashboardV1Page = () => {
-  useDocumentTitle('Health Dashboard v1');
+  const { t } = useTranslationRef(healthDashboardTranslationRef);
+  useDocumentTitle(t('dashboardV1Page.title'));
+  const refreshIntervals = [
+    { label: t('dashboardV1Page.refresh.off'), id: '0' },
+    { label: t('dashboardV1Page.refresh.fiveSeconds'), id: '5000' },
+    { label: t('dashboardV1Page.refresh.tenSeconds'), id: '10000' },
+    { label: t('dashboardV1Page.refresh.thirtySeconds'), id: '30000' },
+    { label: t('dashboardV1Page.refresh.oneMinute'), id: '60000' },
+    { label: t('dashboardV1Page.refresh.fiveMinutes'), id: '300000' },
+  ];
   const getHealthData = useGetHealthV1Data();
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
@@ -118,7 +105,10 @@ export const HealthDashboardV1Page = () => {
   const handleProbeSelect = useCallback(
     (application: string, environment: string, probe: HealthV1Probe) => {
       setSelectedProbe({
-        title: `${application.toUpperCase()} - ${environment.toUpperCase()}`,
+        title: t('dashboardV1Page.details.title', {
+          application: application.toUpperCase(),
+          environment: environment.toUpperCase(),
+        }),
         sections: [
           {
             id: 'probe',
@@ -135,14 +125,14 @@ export const HealthDashboardV1Page = () => {
         ],
       });
     },
-    [],
+    [t],
   );
 
   const columns = useMemo<ColumnConfig<TableRow>[]>(
     () => [
       {
         id: 'app',
-        label: 'APPLICATION',
+        label: t('dashboardV1Page.applicationColumn'),
         isRowHeader: true,
         cell: item => (
           <Cell>
@@ -170,7 +160,7 @@ export const HealthDashboardV1Page = () => {
         minWidth: 64,
       })),
     ],
-    [handleProbeSelect],
+    [handleProbeSelect, t],
   );
 
   // Wrap getData in useCallback so useTable gets a stable reference
@@ -203,7 +193,7 @@ export const HealthDashboardV1Page = () => {
   return (
     <FullPage>
       <Header
-        title="Health Dashboard v1"
+        title={t('dashboardV1Page.title')}
         sticky
         customActions={
           <>
@@ -223,21 +213,26 @@ export const HealthDashboardV1Page = () => {
                 iconEnd={<RiRestartLine />}
                 isDisabled={tableProps.isPending}
               >
-                Refresh
+                {t('dashboardV1Page.refresh.button')}
               </Button>
               <Select
                 onChange={selected => {
                   setRefreshInterval(parseInt(selected?.toString() ?? '0', 10));
                 }}
                 label=""
-                options={REFRESH_INTERVALS}
+                options={refreshIntervals}
                 value={refreshInterval.toString()}
-                aria-label="Auto-refresh interval"
+                aria-label={t('dashboardV1Page.refresh.intervalLabel')}
               />
               </Box>
               <Legend />
             </Box>
-            <InformationPopup content={POPUP_CONTENT} />
+            <InformationPopup content={
+              <InformationPopupContent
+                text={t('dashboardV1Page.description')}
+                comment={t('dashboardV1Page.statusDescription')}
+              />
+            } />
           </>
         }
       />
@@ -251,14 +246,14 @@ export const HealthDashboardV1Page = () => {
         {healthDataErrors.map((sourceError, index) => (
           <Box mb="4" key={`${sourceError.source}-${index}`}>
             <ResponseErrorPanel
-              title={`Failed to get ${sourceError.source} health data`}
+              title={t('dashboardV1Page.errors.source', { source: sourceError.source })}
               error={new Error(sourceError.message)}
             />
           </Box>
         ))}
         {tableProps.error && (
           <ResponseErrorPanel
-            title="Failed to render Health data"
+            title={t('dashboardV1Page.errors.render')}
             error={tableProps.error}
           />
         )}
@@ -270,7 +265,11 @@ export const HealthDashboardV1Page = () => {
             pagination={{
               type: 'none',
             }}
-            emptyState={emptyState()}
+            emptyState={
+              <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
+                {t('dashboardV1Page.emptyState')}
+              </div>
+            }
             className={`denseTable ${styles.healthTable}`}
           />
         )}

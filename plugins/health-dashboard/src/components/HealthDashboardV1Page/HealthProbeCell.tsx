@@ -2,6 +2,8 @@ import { HealthV1Probe } from '../../types';
 import { Box, Cell } from '@backstage/ui';
 import { Button as AriaButton } from 'react-aria-components';
 import styles from './HealthDashboardV1Page.module.css';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { healthDashboardTranslationRef } from '../../translation';
 
 const centerStyle = {
   width: '100%',
@@ -16,13 +18,13 @@ const bulletStyle = (color: string) =>
     backgroundColor: color,
   }) as const;
 
-export const STATUS_COLORS: Record<number, { color: string; label: string }> = {
-  200: { color: '#4caf50', label: 'OK' },
-  202: { color: '#2196f3', label: 'XXX' },
-  404: { color: '#9e9e9e', label: 'Not Found' },
-  503: { color: '#ffc107', label: 'Unavailable' },
+export const STATUS_COLORS: Record<number, { color: string }> = {
+  200: { color: '#4caf50' },
+  202: { color: '#2196f3' },
+  404: { color: '#9e9e9e' },
+  503: { color: '#ffc107' },
 };
-export const OTHER_STATUS_COLOR = { color: '#f44336', label: 'Error' };
+export const OTHER_STATUS_COLOR = { color: '#f44336' };
 
 const getBulletColor = (status: number): string =>
   STATUS_COLORS[status]?.color ?? OTHER_STATUS_COLOR.color;
@@ -38,6 +40,7 @@ export const HealthProbeCell = ({
   environment: string;
   onSelect: (probe: HealthV1Probe) => void;
 }) => {
+  const { t } = useTranslationRef(healthDashboardTranslationRef);
   if (!healthProbe || !healthProbe.returnedHttpStatus) {
     return (
       <Cell>
@@ -53,7 +56,10 @@ export const HealthProbeCell = ({
       <Box style={centerStyle}>
         <AriaButton
           className={styles.statusButton}
-          aria-label={`Show ${environment.toUpperCase()} health details for ${application}`}
+          aria-label={t('dashboardV1Page.details.showHealth', {
+            environment: environment.toUpperCase(),
+            application,
+          })}
           onPress={() => onSelect(healthProbe)}
         >
           <span

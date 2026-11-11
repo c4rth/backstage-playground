@@ -1,6 +1,10 @@
 import { ANNOTATION_LOCATION, Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  catalogAdminTranslationRef,
+  CatalogAdminTranslator,
+} from '../../translation';
 import { useState, useEffect, useRef } from 'react';
 import {
   CellText,
@@ -45,7 +49,11 @@ type TableRow = {
   location: string;
 };
 
-function getFilter(kind: string, system: string): EntityFilterQuery {
+function getFilter(
+  kind: string,
+  system: string,
+  t: CatalogAdminTranslator,
+): EntityFilterQuery {
   if (kind === 'api') {
     return {
       kind: ['API'],
@@ -75,13 +83,14 @@ function getFilter(kind: string, system: string): EntityFilterQuery {
       'spec.system': system,
     };
   }
-  throw new Error(`Unsupported kind: ${kind}`);
+  throw new Error(t('table.unsupportedKind', { kind }));
 }
 
 function mapEntityToTableRow(
   kind: string,
   idx: number,
   entity: Entity,
+  t: CatalogAdminTranslator,
 ): TableRow {
   if (kind === 'api') {
     return {
@@ -151,7 +160,7 @@ function mapEntityToTableRow(
         entity.metadata?.annotations?.[ANNOTATION_LOCATION]?.toString() ?? '-',
     };
   }
-  throw new Error(`Unsupported kind: ${kind}`);
+  throw new Error(t('table.unsupportedKind', { kind }));
 }
 
 function sortItems(items: TableRow[], sort: SortDescriptor | null): TableRow[] {
@@ -181,9 +190,10 @@ const getData = async (
   offset: number,
   pageSize: number,
   sort: SortDescriptor | null,
+  t: CatalogAdminTranslator,
 ) => {
   const result = await catalogApi.getEntities({
-    filter: getFilter(kind, system),
+    filter: getFilter(kind, system, t),
   });
 
   if (!result) {
@@ -191,7 +201,7 @@ const getData = async (
   }
 
   let items = result.items.map((entity, idx) =>
-    mapEntityToTableRow(kind, idx, entity),
+    mapEntityToTableRow(kind, idx, entity, t),
   );
   items = sortItems(items, sort);
 
@@ -205,10 +215,10 @@ const getData = async (
   };
 };
 
-const columns: ColumnConfig<TableRow>[] = [
+const getColumns = (t: CatalogAdminTranslator): ColumnConfig<TableRow>[] => [
   {
     id: 'name',
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '20%',
     isRowHeader: true,
     isSortable: true,
@@ -216,20 +226,20 @@ const columns: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'version',
-    label: 'Version',
+    label: t('table.columns.version'),
     width: '10%',
     isSortable: true,
     cell: ({ version }: TableRow) => <CellText title={version || '-'} />,
   },
   {
     id: 'entityName',
-    label: 'Entity',
+    label: t('table.columns.entity'),
     width: '20%',
     cell: ({ entityName }: TableRow) => <CellText title={entityName || '-'} />,
   },
   {
     id: 'location',
-    label: 'Location',
+    label: t('table.columns.location'),
     width: '45%',
     cell: ({ location }: TableRow) => <CellText title={location || '-'} />,
   },
@@ -241,6 +251,23 @@ export interface EntityTableProps {
 }
 
 export const EntityTable = ({ kind, system }: EntityTableProps) => {
+  const { t } = useTranslationRef(catalogAdminTranslationRef);
+  const columns = getColumns(t);
+  const titleKeys = {
+    api: 'table.titles.api',
+    library: 'table.titles.library',
+    service: 'table.titles.service',
+    techdocs: 'table.titles.techdocs',
+    template: 'table.titles.template',
+  } as const;
+  const getTitle = () => {
+    if (!(kind in titleKeys)) {
+      throw new Error(t('table.unsupportedKind', { kind }));
+    }
+    return t(titleKeys[kind as keyof typeof titleKeys], {
+      system: system ?? '?',
+    });
+  };
   const [selected, setSelected] = useState<Set<string | number> | 'all'>(
     new Set(),
   );
@@ -262,6 +289,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
       offset,
       pageSize,
       sort,
+      t,
     );
     return result;
   };
@@ -294,13 +322,16 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
       try {
         await apiPlatformApi.unregisterEntity(apiKind, entityName);
         toastApi.post({
-          title: `Successfully deleted entity: ${entityName}`,
+          title: t('table.delete.success', { entity: entityName }),
           status: 'success',
           timeout: 1500,
         });
       } catch (error) {
         toastApi.post({
-          title: `Failed to delete entity: ${entityName} - ${error}`,
+          title: t('table.delete.error', {
+            entity: entityName,
+            error: String(error),
+          }),
           status: 'danger',
           timeout: 1500,
         });
@@ -317,13 +348,16 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
       try {
         await apiPlatformApi.refreshEntity(apiKind, entityName);
         toastApi.post({
-          title: `Successfully refreshed entity: ${entityName}`,
+          title: t('table.refresh.success', { entity: entityName }),
           status: 'success',
           timeout: 1500,
         });
       } catch (error) {
         toastApi.post({
-          title: `Failed to refresh entity: ${entityName} - ${error}`,
+          title: t('table.refresh.error', {
+            entity: entityName,
+            error: String(error),
+          }),
           status: 'danger',
           timeout: 1500,
         });
@@ -353,7 +387,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
       <Card>
         <CardHeader>
           <Header
-            title={`${kind.charAt(0).toUpperCase() + kind.slice(1)}s of ${system ?? '?'}`}
+            title={getTitle()}
             sticky
             customActions={
               <>
@@ -365,17 +399,22 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                       selected === 'all' ? false : selected.size === 0
                     }
                   >
-                    Refresh ({selected === 'all' ? 'all' : selected.size})
+                    {t('table.refresh.button', {
+                      selection:
+                        selected === 'all'
+                          ? t('table.refresh.all')
+                          : String(selected.size),
+                    })}
                   </Button>
                   <Dialog>
-                    <DialogHeader>Confirm Refresh</DialogHeader>
+                    <DialogHeader>{t('table.refresh.title')}</DialogHeader>
                     <DialogBody>
                       <Text>
-                        Are you sure you want to refresh{' '}
                         {selected === 'all'
-                          ? 'all items'
-                          : `${selected.size} items`}
-                        ?
+                          ? t('table.refresh.confirmAll')
+                          : t('table.refresh.confirmItems', {
+                              total: String(selected.size),
+                            })}
                       </Text>
                       <Flex direction="column" mt="2" gap="1">
                         {getSelectedEntityNames().map(entityName => (
@@ -385,7 +424,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                     </DialogBody>
                     <DialogFooter>
                       <Button variant="secondary" slot="close">
-                        Cancel
+                        {t('table.refresh.cancel')}
                       </Button>
                       <Button
                         destructive
@@ -393,7 +432,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                         slot="close"
                         onClick={refreshSelected}
                       >
-                        Refresh
+                        {t('table.refresh.action')}
                       </Button>
                     </DialogFooter>
                   </Dialog>
@@ -407,17 +446,22 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                       selected === 'all' ? false : selected.size === 0
                     }
                   >
-                    Delete ({selected === 'all' ? 'all' : selected.size})
+                    {t('table.delete.button', {
+                      selection:
+                        selected === 'all'
+                          ? t('table.delete.all')
+                          : String(selected.size),
+                    })}
                   </Button>
                   <Dialog>
-                    <DialogHeader>Confirm Deletion</DialogHeader>
+                    <DialogHeader>{t('table.delete.title')}</DialogHeader>
                     <DialogBody>
                       <Text>
-                        Are you sure you want to delete{' '}
                         {selected === 'all'
-                          ? 'all items'
-                          : `${selected.size} items`}
-                        ?
+                          ? t('table.delete.confirmAll')
+                          : t('table.delete.confirmItems', {
+                              total: String(selected.size),
+                            })}
                       </Text>
                       <Flex direction="column" mt="2" gap="1">
                         {getSelectedEntityNames().map(entityName => (
@@ -427,7 +471,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                     </DialogBody>
                     <DialogFooter>
                       <Button variant="secondary" slot="close">
-                        Cancel
+                        {t('table.delete.cancel')}
                       </Button>
                       <Button
                         destructive
@@ -435,7 +479,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
                         slot="close"
                         onClick={deleteSelected}
                       >
-                        Delete
+                        {t('table.delete.action')}
                       </Button>
                     </DialogFooter>
                   </Dialog>
@@ -455,7 +499,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
               selected,
               onSelectionChange: setSelected,
             }}
-            emptyState={<div>No data available</div>}
+            emptyState={<div>{t('table.empty')}</div>}
             className="denseTable"
           />
         </CardBody>

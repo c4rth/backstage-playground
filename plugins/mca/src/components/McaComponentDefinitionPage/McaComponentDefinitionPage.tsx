@@ -9,25 +9,34 @@ import { McaComponentsBackendApi } from '../../api/McaComponentsBackendApi';
 import { Select, Option, PluginHeader, Container, Header } from '@backstage/ui';
 import { RiBubbleChartLine } from '@remixicon/react';
 import { Progress, useDocumentTitle } from '@internal/plugin-components-react';
-import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import {
+  useRouteRefParams,
+  useTranslationRef,
+} from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef, McaTranslator } from '../../translation';
 import { componentRouteRef } from '../../routes';
 import { McaComponentDefinitionTabs } from './McaComponentDefinitionTabs';
 
-function mapMcaVersions(mca: McaComponent | undefined): Option[] {
+function mapMcaVersions(
+  mca: McaComponent | undefined,
+  t: McaTranslator,
+): Option[] {
   if (!mca) return [];
 
   const versions = [
-    { version: mca.p4Version, suffix: '' },
-    { version: mca.p3Version, suffix: '' },
-    { version: mca.p2Version, suffix: '' },
-    { version: mca.p1Version, suffix: '' },
-    { version: mca.prdVersion, suffix: ' (PRD)' },
+    { version: mca.p4Version, production: false },
+    { version: mca.p3Version, production: false },
+    { version: mca.p2Version, production: false },
+    { version: mca.p1Version, production: false },
+    { version: mca.prdVersion, production: true },
   ];
 
   return versions
     .filter(({ version }) => version)
-    .map(({ version, suffix }) => ({
-      label: `${version}${suffix}`,
+    .map(({ version, production }) => ({
+      label: production
+        ? t('componentDefinition.productionVersion', { version: version! })
+        : version!,
       id: version!,
     }));
 }
@@ -35,10 +44,11 @@ function mapMcaVersions(mca: McaComponent | undefined): Option[] {
 async function getMca(
   mcaApi: McaComponentsBackendApi,
   name: string,
+  t: McaTranslator,
 ): Promise<McaComponent> {
   const mca = await mcaApi.getMcaComponent(name);
   if (!mca) {
-    throw new NotFoundError(`MCA component ${name} not found`);
+    throw new NotFoundError(t('componentDefinition.notFound', { name }));
   }
   return mca;
 }
@@ -51,32 +61,61 @@ function getMcaComponentType(componentName: string): McaComponentType {
   return 'unknown';
 }
 
-function getTabs(componentType: McaComponentType) {
+function getTabs(componentType: McaComponentType, t: McaTranslator) {
   if (componentType === 'operation') {
     return [
-      { id: 'overview', label: 'Overview', href: '.' },
-      { id: 'inputfields', label: 'Input Fields', href: 'inputfields' },
-      { id: 'outputfields', label: 'Output Fields', href: 'outputfields' },
-      { id: 'methods', label: 'Methods', href: 'methods' },
-      { id: 'raw', label: 'Raw', href: 'raw' },
+      {
+        id: 'overview',
+        label: t('componentDefinition.tabs.overview'),
+        href: '.',
+      },
+      {
+        id: 'inputfields',
+        label: t('componentDefinition.tabs.inputFields'),
+        href: 'inputfields',
+      },
+      {
+        id: 'outputfields',
+        label: t('componentDefinition.tabs.outputFields'),
+        href: 'outputfields',
+      },
+      {
+        id: 'methods',
+        label: t('componentDefinition.tabs.methods'),
+        href: 'methods',
+      },
+      { id: 'raw', label: t('componentDefinition.tabs.raw'), href: 'raw' },
     ];
   }
   if (componentType === 'element') {
     return [
-      { id: 'overview', label: 'Overview', href: '.' },
-      { id: 'fields', label: 'Fields', href: 'fields' },
-      { id: 'methods', label: 'Methods', href: 'methods' },
-      { id: 'raw', label: 'Raw', href: 'raw' },
+      {
+        id: 'overview',
+        label: t('componentDefinition.tabs.overview'),
+        href: '.',
+      },
+      {
+        id: 'fields',
+        label: t('componentDefinition.tabs.fields'),
+        href: 'fields',
+      },
+      {
+        id: 'methods',
+        label: t('componentDefinition.tabs.methods'),
+        href: 'methods',
+      },
+      { id: 'raw', label: t('componentDefinition.tabs.raw'), href: 'raw' },
     ];
   }
   return [];
 }
 
 export const McaComponentDefinitionPage = memo(() => {
+  const { t } = useTranslationRef(mcaTranslationRef);
   const mcaApi = useApi(mcaComponentsBackendApiRef);
   const { name } = useRouteRefParams(componentRouteRef);
   const [searchParams] = useSearchParams();
-  useDocumentTitle(`MCA Component - ${name}`);
+  useDocumentTitle(t('componentDefinition.title', { name }));
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -93,17 +132,18 @@ export const McaComponentDefinitionPage = memo(() => {
     setVersions([]);
     setLoading(true);
     setError(null);
-    getMca(mcaApi, name!)
+    getMca(mcaApi, name!, t)
       .then(component => setMca(component))
       .catch(err => setError(err))
       .finally(() => setLoading(false));
-  }, [name, mcaApi]);
+  }, [name, mcaApi, t]);
 
   useEffect(() => {
-    if (!selectedVersion && mca) {
-      const data = mapMcaVersions(mca);
+    if (mca) {
+      const data = mapMcaVersions(mca, t);
       setVersions(data);
 
+      if (selectedVersion) return;
       let selVersion: string | undefined;
       if (
         isInitialLoad.current &&
@@ -117,20 +157,23 @@ export const McaComponentDefinitionPage = memo(() => {
       }
       if (selVersion) setSelectedVersion(selVersion);
     }
-  }, [mca, queryVersion, selectedVersion]);
+  }, [mca, queryVersion, selectedVersion, t]);
 
   if (error) return <ResponseErrorPanel error={error} />;
   if (loading || !selectedVersion) return <Progress />;
 
   const componentType = getMcaComponentType(mca?.component ?? '');
-  const tabs = getTabs(componentType);
+  const tabs = getTabs(componentType, t);
 
   return (
     <>
       <PluginHeader
         icon={<RiBubbleChartLine fontSize="inherit" />}
         breadcrumbs={[
-          { label: 'MCA Components', href: '/mca/components' },
+          {
+            label: t('componentDefinition.breadcrumb'),
+            href: '/mca/components',
+          },
           { label: name, href: '' },
         ]}
       />
@@ -138,7 +181,7 @@ export const McaComponentDefinitionPage = memo(() => {
         title={name}
         metadata={[
           {
-            label: 'Version',
+            label: t('componentDefinition.version'),
             value: (
               <Select
                 onChange={selected => {
@@ -148,7 +191,7 @@ export const McaComponentDefinitionPage = memo(() => {
                 }}
                 options={versions}
                 value={selectedVersion}
-                aria-label="Version"
+                aria-label={t('componentDefinition.version')}
               />
             ),
           },

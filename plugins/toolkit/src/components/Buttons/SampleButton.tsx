@@ -1,5 +1,7 @@
 import { RiEditBoxLine } from '@remixicon/react';
 import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 type Props = {
   sample: string;
@@ -7,6 +9,7 @@ type Props = {
 };
 
 export const SampleButton = (props: Props) => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   return (
     <TooltipTrigger>
       <Button
@@ -15,9 +18,9 @@ export const SampleButton = (props: Props) => {
         onClick={() => props.setInput(props.sample)}
         variant="tertiary"
       >
-        Sample
+        {t('buttons.sample')}
       </Button>
-      <Tooltip placement="bottom">Copy sample to input</Tooltip>
+      <Tooltip placement="bottom">{t('buttons.sampleTooltip')}</Tooltip>
     </TooltipTrigger>
   );
 };

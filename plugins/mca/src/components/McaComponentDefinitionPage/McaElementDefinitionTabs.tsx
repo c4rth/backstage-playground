@@ -5,32 +5,35 @@ import { McaComponentMethodsTab } from './McaComponentMethodsTab';
 import { memo, useMemo } from 'react';
 import { McaComponentSnippet } from '../McaComponentSnippet';
 import { Route, Routes } from 'react-router-dom';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef, McaTranslator } from '../../translation';
 
 export interface McaElementDefinitionTabsProps {
   parsedDefinition: any;
   rawXml: string;
 }
 
-function getElement(parsedDefinition: any) {
+function getElement(parsedDefinition: any, t: McaTranslator) {
   const element = parsedDefinition?.element;
   if (!element) {
-    throw new Error('Invalid element definition: required node not found');
+    throw new Error(t('elementDefinition.invalid'));
   }
   return element;
 }
 
 export const McaElementDefinitionTabs = memo<McaElementDefinitionTabsProps>(
   ({ parsedDefinition, rawXml }) => {
+    const { t } = useTranslationRef(mcaTranslationRef);
     const { element, error } = useMemo(() => {
       try {
-        return { element: getElement(parsedDefinition), error: null };
+        return { element: getElement(parsedDefinition, t), error: null };
       } catch (e) {
         return {
           element: null,
           error: e instanceof Error ? e : new Error(String(e)),
         };
       }
-    }, [parsedDefinition]);
+    }, [parsedDefinition, t]);
 
     if (error) {
       return <ResponseErrorPanel error={error} />;

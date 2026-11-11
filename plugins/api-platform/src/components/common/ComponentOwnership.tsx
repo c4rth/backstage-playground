@@ -3,6 +3,8 @@ import { OwnershipType } from '@internal/plugin-api-platform-common';
 import { Chip, useStoredValue } from '@internal/plugin-components-react';
 import { useApi, identityApiRef } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 interface ComponentOwnershipProps {
   storageKey: string;
@@ -15,6 +17,7 @@ export const ComponentOwnership = ({
   storageKey,
   handleOwnershipChange,
 }: ComponentOwnershipProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { initialValue: selectedType, storeValue: setSelectedType } =
     useStoredValue<OwnershipType>(storageKey, 'all');
   const identityApi = useApi(identityApiRef);
@@ -44,14 +47,14 @@ export const ComponentOwnership = ({
   return (
     <Box display="flex">
       <Chip
-        label="All"
+        label={t('ownership.all')}
         chipColor={selectedType === 'all' ? 'primary' : 'outlined'}
         style={chipStyle}
         clickable
         onClick={() => handleSelectChange('all')}
       />
       <Chip
-        label="Owned"
+        label={t('ownership.owned')}
         chipColor={selectedType === 'owned' ? 'primary' : 'outlined'}
         style={chipStyle}
         clickable

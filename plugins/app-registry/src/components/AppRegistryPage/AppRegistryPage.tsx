@@ -2,6 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { ComponentEntity } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  appRegistryTranslationRef,
+  AppRegistryTranslator,
+} from '../../translation';
 import { useGetOperations } from '../../hooks';
 import {
   ANNOTATION_SERVICE_NAME,
@@ -39,22 +44,25 @@ const PdpMappingTable = ({
   mapping,
 }: {
   mapping: { valuePath: string; pdpField: string }[];
-}) => (
-  <Grid.Root columns="2" mt="var(--bui-space-3)">
-    <Grid.Item>
-      <b>Value Path</b>
-    </Grid.Item>
-    <Grid.Item>
-      <b>PDP Field</b>
-    </Grid.Item>
-    {mapping.map(row => (
-      <>
-        <Grid.Item>{row.valuePath}</Grid.Item>
-        <Grid.Item>{row.pdpField}</Grid.Item>
-      </>
-    ))}
-  </Grid.Root>
-);
+}) => {
+  const { t } = useTranslationRef(appRegistryTranslationRef);
+  return (
+    <Grid.Root columns="2" mt="var(--bui-space-3)">
+      <Grid.Item>
+        <b>{t('abac.valuePath')}</b>
+      </Grid.Item>
+      <Grid.Item>
+        <b>{t('abac.pdpField')}</b>
+      </Grid.Item>
+      {mapping.map(row => (
+        <>
+          <Grid.Item>{row.valuePath}</Grid.Item>
+          <Grid.Item>{row.pdpField}</Grid.Item>
+        </>
+      ))}
+    </Grid.Root>
+  );
+};
 
 const AbacTooltip = ({
   icon,
@@ -75,7 +83,10 @@ const AbacTooltip = ({
   </TooltipTrigger>
 );
 
-const renderAbacCell = (operation: AppRegistryOperation) => {
+const renderAbacCell = (
+  operation: AppRegistryOperation,
+  t: AppRegistryTranslator,
+) => {
   if (!operation.abac) {
     return (
       <AbacTooltip
@@ -83,7 +94,7 @@ const renderAbacCell = (operation: AppRegistryOperation) => {
           <RiIndeterminateCircleLine color="var(--bui-accent-fg-disabled)" />
         }
       >
-        No ABAC
+        {t('abac.none')}
       </AbacTooltip>
     );
   }
@@ -91,7 +102,7 @@ const renderAbacCell = (operation: AppRegistryOperation) => {
     return (
       <AbacTooltip icon={<RiAddCircleFill color="primary" />}>
         <Text variant="title-x-small">
-          <b>PDP Mapping</b>
+          <b>{t('abac.mapping')}</b>
         </Text>
         <PdpMappingTable mapping={operation.pdpMapping} />
       </AbacTooltip>
@@ -99,14 +110,14 @@ const renderAbacCell = (operation: AppRegistryOperation) => {
   }
   return (
     <AbacTooltip icon={<RiCheckboxCircleFill color="primary" />}>
-      No PDP mapping
+      {t('abac.noMapping')}
     </AbacTooltip>
   );
 };
 
-const emptyState = () => (
+const emptyState = (t: AppRegistryTranslator) => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-    No operations found.
+    {t('page.empty')}
   </div>
 );
 
@@ -118,10 +129,10 @@ const toTableRow = (
   operation,
 });
 
-const columns: ColumnConfig<TableRow>[] = [
+const getColumns = (t: AppRegistryTranslator): ColumnConfig<TableRow>[] => [
   {
     id: 'method',
-    label: 'Method',
+    label: t('page.columns.method'),
     isRowHeader: true,
     cell: item => <CellText title={item.operation.method} />,
     isSortable: true,
@@ -129,7 +140,7 @@ const columns: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'name',
-    label: 'Name',
+    label: t('page.columns.name'),
     cell: item => (
       <Cell style={{ paddingLeft: 'var(--bui-space-3)' }}>
         {item.operation.name}
@@ -140,17 +151,17 @@ const columns: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'abac',
-    label: 'ABAC',
+    label: t('page.columns.abac'),
     cell: item => (
       <Cell style={{ paddingLeft: 'var(--bui-space-3)' }}>
-        {renderAbacCell(item.operation)}
+        {renderAbacCell(item.operation, t)}
       </Cell>
     ),
     width: '10%',
   },
   {
     id: 'bFunction',
-    label: 'B-Function',
+    label: t('page.columns.bFunction'),
     cell: item => <CellText title={item.operation.bFunction ?? '-'} />,
     isSortable: true,
     width: '10%',
@@ -174,6 +185,7 @@ async function fetchData(
 }
 
 export const AppRegistryPage = () => {
+  const { t } = useTranslationRef(appRegistryTranslationRef);
   const { entity } = useEntity<ComponentEntity>();
   const system = entity.spec.system;
   const appName =
@@ -236,10 +248,7 @@ export const AppRegistryPage = () => {
 
   if (tableProps.error) {
     return (
-      <ResponseErrorPanel
-        title="Failed to call AppRegistry"
-        error={tableProps.error}
-      />
+      <ResponseErrorPanel title={t('page.apiError')} error={tableProps.error} />
     );
   }
 
@@ -247,7 +256,7 @@ export const AppRegistryPage = () => {
     <Card>
       <CardHeader>
         <Text variant="title-small" weight="bold">
-          Operations
+          {t('page.title')}
         </Text>
       </CardHeader>
       <CardBody style={{ padding: '0' }}>
@@ -259,12 +268,12 @@ export const AppRegistryPage = () => {
           }}
         >
           <Table
-            columnConfig={columns}
+            columnConfig={getColumns(t)}
             {...tableProps}
             pagination={{
               type: 'none',
             }}
-            emptyState={emptyState()}
+            emptyState={emptyState(t)}
             className="denseTable"
           />
         </Box>

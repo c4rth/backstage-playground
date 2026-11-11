@@ -4,9 +4,11 @@ import {
   ServiceDefinitionListResult,
 } from '@internal/plugin-api-platform-common';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
+import { ApiPlatformTranslator } from '../../translation';
 
 export const fetchAllServices = async (
   apiPlatformApi: ApiPlatformBackendApi,
+  t: ApiPlatformTranslator,
 ): Promise<ServiceDefinitionListResult> => {
   const items: ServiceDefinition[] = [];
   let offset = 0;
@@ -20,9 +22,7 @@ export const fetchAllServices = async (
       limit: MAX_LIST_LIMIT,
     });
     if (page.hasMore && page.items.length === 0) {
-      throw new Error(
-        'Service listing returned an empty page with more results available',
-      );
+      throw new Error(t('report.emptyPage'));
     }
     items.push(...page.items);
     offset += page.items.length;

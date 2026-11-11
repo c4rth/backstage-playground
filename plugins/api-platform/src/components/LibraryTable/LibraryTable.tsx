@@ -1,4 +1,9 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   Container,
@@ -40,10 +45,10 @@ type TableRow = {
   system: string;
 };
 
-const columns: ColumnConfig<TableRow>[] = [
+const getColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [
   {
     id: 'name',
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '25%',
     isRowHeader: true,
     isSortable: true,
@@ -59,7 +64,7 @@ const columns: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'latestVersion',
-    label: 'Latest Version',
+    label: t('table.columns.latestVersion'),
     width: '15%',
     cell: ({ latestVersion }: TableRow) => (
       <CellText title={latestVersion || '-'} />
@@ -67,7 +72,7 @@ const columns: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'description',
-    label: 'Description',
+    label: t('table.columns.description'),
     width: '50%',
     cell: ({ description }: TableRow) => (
       <CellText title={description || '-'} />
@@ -75,7 +80,7 @@ const columns: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'system',
-    label: 'System',
+    label: t('table.columns.system'),
     width: '10%',
     cell: ({ system }: TableRow) =>
       system === '-' ? (
@@ -120,14 +125,15 @@ const fetchData = async (
   return result ? result.items.map(toEntityRow) : [];
 };
 
-const emptyState = () => (
+const emptyState = (t: ApiPlatformTranslator) => (
   <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-    No libraries found.
+    {t('libraryTable.empty')}
   </div>
 );
 
 export const LibraryTable = () => {
-  useDocumentTitle('Library Explorer');
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
+  useDocumentTitle(t('libraryTable.documentTitle'));
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [ownershipType, setOwnershipType] = useStoredOwnership(
     STORAGE_OWNERSHIP_KEY,
@@ -173,7 +179,7 @@ export const LibraryTable = () => {
   if (tableProps.error) {
     return (
       <ResponseErrorPanel
-        title="Failed to load libraries"
+        title={t('libraryTable.loadError')}
         error={tableProps.error}
       />
     );
@@ -185,7 +191,11 @@ export const LibraryTable = () => {
         <Card>
           <CardHeader>
             <Header
-              title={`${ownershipType === 'owned' ? 'Owned' : 'All'} Libraries`}
+              title={t(
+                ownershipType === 'owned'
+                  ? 'libraryTable.ownedTitle'
+                  : 'libraryTable.allTitle',
+              )}
               customActions={
                 <>
                   <ComponentOwnership
@@ -193,13 +203,13 @@ export const LibraryTable = () => {
                     handleOwnershipChange={setOwnershipType}
                   />
                   <SearchField
-                    placeholder="Filter..."
+                    placeholder={t('table.filterPlaceholder')}
                     value={search.value}
                     onChange={str => {
                       storeValue(str);
                       search.onChange(str);
                     }}
-                    aria-label="Filter"
+                    aria-label={t('table.filterLabel')}
                     startCollapsed
                     size="medium"
                   />
@@ -210,12 +220,12 @@ export const LibraryTable = () => {
           <CardBody>
             <Table
               key={ownershipType}
-              columnConfig={columns}
+              columnConfig={getColumns(t)}
               {...tableProps}
               pagination={{
                 type: 'none',
               }}
-              emptyState={emptyState()}
+              emptyState={emptyState(t)}
               className="denseTable"
               style={{ paddingBottom: '16px' }}
             />

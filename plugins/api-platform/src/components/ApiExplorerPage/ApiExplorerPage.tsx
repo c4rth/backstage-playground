@@ -4,25 +4,29 @@ import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-components-react';
-import { getStringForKey } from '../common';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 import { FullPage, PluginHeader } from '@backstage/ui';
 import { RiPuzzleFill } from '@remixicon/react';
 
-const INFO_POPUP_CONTENT = (
-  <InformationPopupContent
-    text1={getStringForKey('ApiExplorerPage.text1')}
-    text2={getStringForKey('ApiExplorerPage.text2')}
-  />
-);
-
 export const ApiExplorerPage = () => {
-  useDocumentTitle('API Explorer');
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
+  useDocumentTitle(t('apiExplorer.documentTitle'));
   return (
     <>
       <PluginHeader
-        title="APIs"
+        title={t('apiExplorer.title')}
         icon={<RiPuzzleFill fontSize="inherit" />}
-        customActions={<InformationPopup content={INFO_POPUP_CONTENT} />}
+        customActions={
+          <InformationPopup
+            content={
+              <InformationPopupContent
+                text={t('apiExplorer.introduction')}
+                comment={t('apiExplorer.purpose')}
+              />
+            }
+          />
+        }
       />
       <FullPage>
         <ApiTable />

@@ -1,21 +1,25 @@
-import { defaultTools } from './tools';
-import { useCallback, useState } from 'react';
-import { Tool } from './types';
+import { getDefaultTools } from './tools';
+import { useCallback, useMemo, useState } from 'react';
 import { ToolContainer } from './ToolContainer';
 import { Box, Grid, List, ListRow } from '@backstage/ui';
 import { useAnalytics } from '@backstage/core-plugin-api';
 import styles from './ToolsContainer.module.css';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 export const ToolsContainer = () => {
-  const tools = defaultTools;
+  const { t } = useTranslationRef(toolkitTranslationRef);
+  const tools = useMemo(() => getDefaultTools(t), [t]);
   const analytics = useAnalytics();
 
-  const [selectedTool, setSelectedTool] = useState<Tool>(tools[0]);
+  const [selectedToolId, setSelectedToolId] = useState(tools[0].id);
+  const selectedTool =
+    tools.find(tool => tool.id === selectedToolId) ?? tools[0];
 
   const handleSelectedChange = useCallback(
     (toolId: string) => {
-      setSelectedTool(
-        defaultTools.find(tool => tool.id === toolId) ?? tools[0],
+      setSelectedToolId(
+        (tools.find(tool => tool.id === toolId) ?? tools[0]).id,
       );
       analytics.captureEvent('navigate', `/tools/${toolId}`);
     },
@@ -39,7 +43,7 @@ export const ToolsContainer = () => {
           }}
         >
           <List
-            aria-label="Tools"
+            aria-label={t('page.tools')}
             selectedKeys={[selectedTool.id]}
             selectionMode="single"
             onSelectionChange={keys => {

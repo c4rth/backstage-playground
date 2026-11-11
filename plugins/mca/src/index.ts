@@ -1,4 +1,5 @@
 export { default } from './plugin';
+export { mcaTranslationRef } from './translation';
 export { McaComponentExplorerPage } from './components/McaComponentExplorerPage';
 export { McaBaseTypeExplorerPage } from './components/McaBaseTypeExplorerPage';
 export { McaComponentDefinitionPage } from './components/McaComponentDefinitionPage';

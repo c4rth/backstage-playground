@@ -14,6 +14,8 @@ import {
 import { RiAsterisk } from '@remixicon/react';
 import { memo, useEffect, useRef, useState } from 'react';
 import { MarkdownContent } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef, McaTranslator } from '../../translation';
 
 type FieldInfo = {
   kind: 'component' | 'basetype' | 'unknown';
@@ -59,23 +61,28 @@ function getElementKind(className?: string, elementType?: string): FieldInfo {
 }
 
 const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
+  const { t } = useTranslationRef(mcaTranslationRef);
   const { field } = row;
 
   if (field.kind === 'component') {
     if (field.clientElement) {
       return (
         <div>
-          {field.clientElement} of{' '}
-          {field.name && (
-            <Link
-              href={`/mca/${field.clientKind}/${field.name}`}
-              weight="bold"
-              color="info"
-              standalone
-            >
-              {field.name}
-            </Link>
-          )}
+          {t('fields.clientElement', {
+            client: field.clientElement,
+            element: field.name ? (
+              <Link
+                href={`/mca/${field.clientKind}/${field.name}`}
+                weight="bold"
+                color="info"
+                standalone
+              >
+                {field.name}
+              </Link>
+            ) : (
+              ''
+            ),
+          })}
         </div>
       );
     }
@@ -107,9 +114,9 @@ const ClassNameRenderer = memo<{ row: TableRow }>(({ row }) => {
   return <div>{field.name}</div>;
 });
 
-const commonColumns: ColumnConfig<TableRow>[] = [
+const getColumns = (t: McaTranslator): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('fields.name'),
     width: '20%',
     id: 'name',
     isRowHeader: true,
@@ -120,7 +127,7 @@ const commonColumns: ColumnConfig<TableRow>[] = [
           {row.mandatory && (
             <RiAsterisk
               size={12}
-              aria-label="Mandatory field"
+              aria-label={t('fields.mandatory')}
               style={{
                 verticalAlign: 'text-top',
                 marginLeft: 2,
@@ -134,7 +141,7 @@ const commonColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'Class',
+    label: t('fields.class'),
     width: '25%',
     id: 'className',
     cell: rowData => (
@@ -144,7 +151,7 @@ const commonColumns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'Description',
+    label: t('fields.description'),
     width: '55%',
     id: 'description',
     cell: ({ description }) => (
@@ -229,18 +236,27 @@ function getFields(data: any, fieldType: 'element' | 'input' | 'output') {
   return data?.outputFields?.field;
 }
 
-function getDefaultTitle(fieldType: 'element' | 'input' | 'output') {
-  if (fieldType === 'element') return 'Fields';
-  if (fieldType === 'input') return 'Input Fields';
-  return 'Output Fields';
+function getDefaultTitle(
+  fieldType: 'element' | 'input' | 'output',
+  t: McaTranslator,
+) {
+  if (fieldType === 'element') return t('fields.elementTitle');
+  if (fieldType === 'input') return t('fields.inputTitle');
+  return t('fields.outputTitle');
 }
 
 export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
   ({ data, fieldType, title }) => {
+    const { t } = useTranslationRef(mcaTranslationRef);
     const fields = getFields(data, fieldType);
     const rows = toTableRows(fields, fieldType);
-    const columns = commonColumns;
-    const defaultTitle = getDefaultTitle(fieldType);
+    const columns = getColumns(t);
+    const defaultTitle = getDefaultTitle(fieldType, t);
+    const emptyMessages = {
+      element: 'fields.emptyElement',
+      input: 'fields.emptyInput',
+      output: 'fields.emptyOutput',
+    } as const;
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const [tableMaxHeight, setTableMaxHeight] = useState<number>();
 
@@ -282,15 +298,18 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
       <Card>
         <CardHeader>
           <Header
-            title={`${title || defaultTitle} (${rows.length})`}
+            title={t('fields.title', {
+              title: title || defaultTitle,
+              total: String(rows.length),
+            })}
             customActions={
               <SearchField
-                placeholder="Filter..."
+                placeholder={t('fields.filterPlaceholder')}
                 value={search.value}
                 onChange={str => {
                   search.onChange(str);
                 }}
-                aria-label="Filter"
+                aria-label={t('fields.filterLabel')}
                 startCollapsed
                 size="medium"
               />
@@ -306,7 +325,7 @@ export const McaComponentFieldsTab = memo<McaComponentFieldsTabProps>(
               key={`table-${fieldType}`}
               {...tableProps}
               columnConfig={columns}
-              emptyState={<div>No fields found for this {fieldType}.</div>}
+              emptyState={<div>{t(emptyMessages[fieldType])}</div>}
               className="denseTable"
             />
           </CardBody>

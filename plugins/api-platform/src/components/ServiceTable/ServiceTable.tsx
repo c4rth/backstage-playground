@@ -5,6 +5,8 @@ import {
   ServiceVersionDefinition,
 } from '@internal/plugin-api-platform-common';
 import { ColumnConfig, Text, Column } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 import {
   BaseServiceTable,
   BaseTableRow,
@@ -101,15 +103,16 @@ const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
   createEnvironmentColumn('prd'),
 ];
 
-const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
-
-export const ServiceTable = () => (
-  <>
-    <BaseServiceTable<TableRow>
-      columns={COLUMNS}
-      toRow={toRow}
-      storageOwnershipKey="servicesTablePageOwner"
-      storageSearchKey="servicesTablePageSearch"
-    />
-  </>
-);
+export const ServiceTable = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
+  return (
+    <>
+      <BaseServiceTable<TableRow>
+        columns={buildColumns<TableRow>(ENV_COLUMNS, t)}
+        toRow={toRow}
+        storageOwnershipKey="servicesTablePageOwner"
+        storageSearchKey="servicesTablePageSearch"
+      />
+    </>
+  );
+};

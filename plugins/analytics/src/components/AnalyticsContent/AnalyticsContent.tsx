@@ -19,16 +19,18 @@ import { Progress } from '@internal/plugin-components-react';
 import { McpActionMetric } from '../../api/AnalyticsBackendApi';
 import { McpActionsTable } from './McpActionsTable';
 import styles from './AnalyticsContent.module.css';
-
-const daysToShowOptions = [
-  { label: 'Today', id: '0' },
-  { label: 'Last 24 hours', id: '1' },
-  { label: 'Last 7 days', id: '7' },
-  { label: 'Last 14 days', id: '14' },
-  { label: 'Last 30 days', id: '30' },
-];
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { analyticsTranslationRef } from '../../translation';
 
 export const AnalyticsContent = () => {
+  const { t } = useTranslationRef(analyticsTranslationRef);
+  const daysToShowOptions = [
+    { label: t('content.today'), id: '0' },
+    { label: t('content.lastDay'), id: '1' },
+    { label: t('content.lastWeek'), id: '7' },
+    { label: t('content.lastTwoWeeks'), id: '14' },
+    { label: t('content.lastMonth'), id: '30' },
+  ];
   const analyticsApi = useApi(analyticsBackendApiRef);
   const [dailyUniqueVisitors, setDailyUniqueVisitors] = useState<
     DailyVisitor[]
@@ -65,7 +67,7 @@ export const AnalyticsContent = () => {
           return;
         }
 
-        setError(new Error('Failed to load analytics metrics'));
+        setError(new Error(t('content.loadError')));
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -78,16 +80,13 @@ export const AnalyticsContent = () => {
     return () => {
       isMounted = false;
     };
-  }, [analyticsApi, daysToShow]);
+  }, [analyticsApi, daysToShow, t]);
 
   return (
     <Container className={styles.container}>
       {isLoading && <Progress />}
       {error && (
-        <ResponseErrorPanel
-          title="Failed to call Analytics API"
-          error={error}
-        />
+        <ResponseErrorPanel title={t('content.apiError')} error={error} />
       )}
 
       {!isLoading && !error && (
@@ -97,10 +96,10 @@ export const AnalyticsContent = () => {
               onChange={selected => {
                 setDaysToShow(parseInt(selected?.toString() ?? '0', 10));
               }}
-              label="Date Range"
+              label={t('content.dateRange')}
               options={daysToShowOptions}
               value={daysToShow.toString()}
-              aria-label="Date Range"
+              aria-label={t('content.dateRange')}
             />
           </Box>
           <Box style={{ flex: '0 0 25%', minHeight: 0 }}>
@@ -116,8 +115,8 @@ export const AnalyticsContent = () => {
               }}
             >
               <TabList>
-                <Tab id="top-features">Top Features</Tab>
-                <Tab id="mcp-actions">MCP Actions</Tab>
+                <Tab id="top-features">{t('content.topFeatures')}</Tab>
+                <Tab id="mcp-actions">{t('content.mcpActions')}</Tab>
               </TabList>
               <TabPanel
                 id="top-features"

@@ -4,8 +4,11 @@ import { Box } from '@backstage/ui';
 import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
 import { appThemeApiRef } from '@backstage/core-plugin-api';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 export const JsonFormater = () => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState<any>(undefined);
   const appThemeApi = useApi(appThemeApiRef);
@@ -73,7 +76,7 @@ export const JsonFormater = () => {
             }}
           >
             <Box>
-              <i>No JSON data available</i>
+              <i>{t('json.empty')}</i>
             </Box>
           </div>
         )}
@@ -91,12 +94,12 @@ export const JsonFormater = () => {
       try {
         setOutput(JSON.parse(value));
       } catch (error) {
-        setOutput(`Couldn't decode JSON: ${error}`);
+        setOutput(t('json.decodeError', { detail: String(error) }));
       }
     } else {
       setOutput(undefined);
     }
-  }, [input]);
+  }, [input, t]);
 
   return (
     <DefaultEditor

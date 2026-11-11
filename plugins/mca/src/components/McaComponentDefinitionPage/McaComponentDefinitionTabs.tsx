@@ -6,6 +6,8 @@ import { McaElementDefinitionTabs } from './McaElementDefinitionTabs';
 import { memo, useMemo } from 'react';
 import { XMLParser } from 'fast-xml-parser';
 import { Progress } from '@internal/plugin-components-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef } from '../../translation';
 
 function getComponentType(
   componentName: string,
@@ -35,6 +37,7 @@ export interface McaComponentDefinitionTabsProps {
 
 export const McaComponentDefinitionTabs = memo<McaComponentDefinitionTabsProps>(
   ({ mca, version }) => {
+    const { t } = useTranslationRef(mcaTranslationRef);
     const { rawXml, loading, error } = useGetMcaComponentDefinition(
       mca.component,
       version,
@@ -82,7 +85,13 @@ export const McaComponentDefinitionTabs = memo<McaComponentDefinitionTabsProps>(
       default:
         return (
           <ResponseErrorPanel
-            error={new Error(`Unknown MCA component type: ${mca.component}`)}
+            error={
+              new Error(
+                t('componentDefinition.unknownType', {
+                  component: mca.component,
+                }),
+              )
+            }
           />
         );
     }

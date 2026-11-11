@@ -4,6 +4,8 @@ import { AboutField } from '@backstage/plugin-catalog';
 import { Grid, Text } from '@backstage/ui';
 import { memo } from 'react';
 import styles from './McaElementAboutTab.module.css';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef } from '../../translation';
 
 export interface McaElementAboutTabProps {
   element: any;
@@ -26,19 +28,20 @@ const FieldDisplay = memo<{
 ));
 
 export const McaElementAboutTab = ({ element }: McaElementAboutTabProps) => {
+  const { t } = useTranslationRef(mcaTranslationRef);
   const fieldConfigs = [
     {
-      label: 'Package',
+      label: t('elementAbout.package'),
       value: element?.package,
     },
     {
-      label: 'Extends',
+      label: t('elementAbout.extends'),
       value: element?.superClass,
     },
   ];
 
   return (
-    <EntityInfoCard title="About">
+    <EntityInfoCard title={t('elementAbout.title')}>
       <Grid.Root columns="1">
         {fieldConfigs.map(config => (
           <FieldDisplay
@@ -48,7 +51,7 @@ export const McaElementAboutTab = ({ element }: McaElementAboutTabProps) => {
             className={styles.value}
           />
         ))}
-        <AboutField label="Description">
+        <AboutField label={t('elementAbout.description')}>
           <MarkdownContent content={element?.description || ''} />
         </AboutField>
       </Grid.Root>

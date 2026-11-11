@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { DefaultEditor } from '../DefaultEditor';
 import cronstrue from 'cronstrue';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 export const CronDecoder = () => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
 
@@ -16,11 +19,13 @@ export const CronDecoder = () => {
       setOutput(text);
     } catch (error) {
       setOutput(
-        `Error: ${error instanceof Error ? error.message : 'Invalid cron expression'}`,
+        t('cron.error', {
+          detail: error instanceof Error ? error.message : t('cron.invalid'),
+        }),
       );
       return;
     }
-  }, [input]);
+  }, [input, t]);
 
   return (
     <DefaultEditor

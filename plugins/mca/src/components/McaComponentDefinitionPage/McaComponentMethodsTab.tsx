@@ -11,6 +11,8 @@ import {
   CardHeader,
 } from '@backstage/ui';
 import { memo, useMemo } from 'react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef, McaTranslator } from '../../translation';
 
 export interface McaComponentMethodsTabProps {
   data: any;
@@ -22,9 +24,9 @@ type MethodRow = {
   name: string;
 };
 
-const columns: ColumnConfig<MethodRow>[] = [
+const getColumns = (t: McaTranslator): ColumnConfig<MethodRow>[] => [
   {
-    label: 'Method Name',
+    label: t('methods.name'),
     width: '100%',
     id: 'name',
     isRowHeader: true,
@@ -65,6 +67,8 @@ function getMethods(data: any): MethodRow[] {
 
 export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
   ({ data, componentType = 'element' }) => {
+    const { t } = useTranslationRef(mcaTranslationRef);
+    const columns = getColumns(t);
     const methods = useMemo(() => getMethods(data), [data]);
 
     const { tableProps, search } = useTable({
@@ -93,15 +97,15 @@ export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
       <Card>
         <CardHeader>
           <Header
-            title={`Implemented Methods (${methods.length})`}
+            title={t('methods.title', { total: String(methods.length) })}
             customActions={
               <SearchField
-                placeholder="Filter..."
+                placeholder={t('methods.filterPlaceholder')}
                 value={search.value}
                 onChange={str => {
                   search.onChange(str);
                 }}
-                aria-label="Filter"
+                aria-label={t('methods.filterLabel')}
                 startCollapsed
                 size="medium"
               />
@@ -114,7 +118,13 @@ export const McaComponentMethodsTab = memo<McaComponentMethodsTabProps>(
             {...tableProps}
             columnConfig={columns}
             emptyState={
-              <div>No implemented methods found for this {componentType}.</div>
+              <div>
+                {t(
+                  componentType === 'element'
+                    ? 'methods.emptyElement'
+                    : 'methods.emptyOperation',
+                )}
+              </div>
             }
             className="denseTable"
           />

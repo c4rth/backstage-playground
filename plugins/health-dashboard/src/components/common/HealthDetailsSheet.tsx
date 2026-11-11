@@ -8,6 +8,8 @@ import {
   SheetOverlay,
 } from 'react-aria-components';
 import styles from './HealthDetailsSheet.module.css';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { healthDashboardTranslationRef } from '../../translation';
 
 export type HealthDetailsField = {
   label: string;
@@ -103,7 +105,9 @@ function renderValue(label: string, value: unknown) {
 export const HealthDetailsSheet = ({
   selection,
   onClose,
-}: HealthDetailsSheetProps) => (
+}: HealthDetailsSheetProps) => {
+  const { t } = useTranslationRef(healthDashboardTranslationRef);
+  return (
   <SheetOverlay
     isOpen={selection !== null}
     onOpenChange={isOpen => {
@@ -137,7 +141,7 @@ export const HealthDetailsSheet = ({
               </div>
               <ButtonIcon
                 icon={<RiCloseLargeLine />}
-                aria-label="Close health details"
+                aria-label={t('healthDetails.close')}
                 onClick={onClose}
               />
             </header>
@@ -160,4 +164,5 @@ export const HealthDetailsSheet = ({
       </SheetContent>
     </Sheet>
   </SheetOverlay>
-);
+  );
+};

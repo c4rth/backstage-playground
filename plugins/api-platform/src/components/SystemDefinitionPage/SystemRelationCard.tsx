@@ -1,6 +1,11 @@
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
 import { useTable, ColumnConfig, Cell, Table } from '@backstage/ui';
 import { LinkComponentDisplayName } from '@internal/plugin-components-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 
 type TableRow = {
   id: number;
@@ -8,9 +13,9 @@ type TableRow = {
   system: string;
 };
 
-const apiColumns: ColumnConfig<TableRow>[] = [
+const getApiColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '100%',
     id: 'name',
     isRowHeader: true,
@@ -26,9 +31,11 @@ const apiColumns: ColumnConfig<TableRow>[] = [
   },
 ];
 
-const serviceColumns: ColumnConfig<TableRow>[] = [
+const getServiceColumns = (
+  t: ApiPlatformTranslator,
+): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '100%',
     id: 'name',
     isRowHeader: true,
@@ -44,9 +51,11 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
   },
 ];
 
-const libraryColumns: ColumnConfig<TableRow>[] = [
+const getLibraryColumns = (
+  t: ApiPlatformTranslator,
+): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '100%',
     id: 'name',
     isRowHeader: true,
@@ -79,21 +88,25 @@ export const SystemRelationCard = ({
   dependency,
   data,
 }: SystemPlatformRelationCardProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
+  const rows = data.map((item, idx) => toRow(item, idx, system));
   let columns: ColumnConfig<TableRow>[];
   let title: string;
+  let empty: string;
 
   if (dependency === 'api') {
-    columns = apiColumns;
-    title = 'APIs';
+    columns = getApiColumns(t);
+    title = t('systemRelations.apis', { total: String(rows.length) });
+    empty = t('systemRelations.noApis');
   } else if (dependency === 'library') {
-    columns = libraryColumns;
-    title = 'Libraries';
+    columns = getLibraryColumns(t);
+    title = t('systemRelations.libraries', { total: String(rows.length) });
+    empty = t('systemRelations.noLibraries');
   } else {
-    columns = serviceColumns;
-    title = 'Services';
+    columns = getServiceColumns(t);
+    title = t('systemRelations.services', { total: String(rows.length) });
+    empty = t('systemRelations.noServices');
   }
-
-  const rows = data.map((item, idx) => toRow(item, idx, system));
 
   const { tableProps } = useTable({
     mode: 'complete',
@@ -119,12 +132,12 @@ export const SystemRelationCard = ({
   });
 
   return (
-    <EntityInfoCard title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={title}>
       <Table
         columnConfig={columns}
         {...tableProps}
         className="denseTable"
-        emptyState={`No ${title.toLowerCase()} found for this system.`}
+        emptyState={empty}
       />
     </EntityInfoCard>
   );

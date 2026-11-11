@@ -12,6 +12,11 @@ import {
   Box,
 } from '@backstage/ui';
 import { McpActionMetric } from '../../api/AnalyticsBackendApi';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  analyticsTranslationRef,
+  AnalyticsTranslator,
+} from '../../translation';
 
 type Row = McpActionMetric & { id: string };
 
@@ -21,17 +26,17 @@ const centerStyle = {
   justifyContent: 'center',
 } as const;
 
-const columns: ColumnConfig<Row>[] = [
+const getColumns = (t: AnalyticsTranslator): ColumnConfig<Row>[] => [
   {
     id: 'toolName',
-    label: 'MCP tool',
+    label: t('mcpActions.columns.toolName'),
     isRowHeader: true,
     isSortable: true,
     cell: item => <CellText title={item.toolName} />,
   },
   {
     id: 'succeeded',
-    label: 'Succeeded',
+    label: t('mcpActions.columns.succeeded'),
     isSortable: true,
     cell: item => (
       <Cell>
@@ -40,13 +45,13 @@ const columns: ColumnConfig<Row>[] = [
     ),
     header: () => (
       <Column id="succeeded" className="centered-col-header" allowsSorting>
-        <Text weight="bold">Succeeded</Text>
+        <Text weight="bold">{t('mcpActions.columns.succeeded')}</Text>
       </Column>
     ),
   },
   {
     id: 'failed',
-    label: 'Failed',
+    label: t('mcpActions.columns.failed'),
     isSortable: true,
     cell: item => (
       <Cell>
@@ -55,13 +60,15 @@ const columns: ColumnConfig<Row>[] = [
     ),
     header: () => (
       <Column id="failed" className="centered-col-header" allowsSorting>
-        <Text weight="bold">Failed</Text>
+        <Text weight="bold">{t('mcpActions.columns.failed')}</Text>
       </Column>
     ),
   },
 ];
 
 export const McpActionsTable = ({ data }: { data: McpActionMetric[] }) => {
+  const { t } = useTranslationRef(analyticsTranslationRef);
+  const columns = getColumns(t);
   const { tableProps } = useTable({
     mode: 'complete',
     data: data.map(item => ({
@@ -92,11 +99,11 @@ export const McpActionsTable = ({ data }: { data: McpActionMetric[] }) => {
   return (
     <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardHeader>
-        <Text variant="title-x-small">MCP tool calls</Text>
+        <Text variant="title-x-small">{t('mcpActions.title')}</Text>
       </CardHeader>
       <CardBody style={{ flexGrow: 1, minHeight: 0, overflow: 'auto' }}>
         {data.length === 0 ? (
-          <p>No MCP tool calls yet.</p>
+          <p>{t('mcpActions.empty')}</p>
         ) : (
           <Table
             columnConfig={columns}

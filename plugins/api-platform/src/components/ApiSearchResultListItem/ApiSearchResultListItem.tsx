@@ -8,6 +8,8 @@ import { Link } from '@backstage/core-components';
 import { Box, Text } from '@backstage/ui';
 import { Chip } from '@internal/plugin-components-react';
 import { RiCpuLine, RiPuzzleFill, RiShapesFill } from '@remixicon/react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 export interface ApiSearchResultListItemProps {
   icon?: ReactNode | ((result: IndexableDocument) => ReactNode);
@@ -33,6 +35,7 @@ function getIcon(kind: string, defaultIcon: ReactNode) {
 export const ApiSearchResultListItem = (
   props: ApiSearchResultListItemProps,
 ) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const result = props.result as any;
   const highlight = props.highlight as ResultHighlight;
 
@@ -101,27 +104,30 @@ export const ApiSearchResultListItem = (
         <Box>
           {result.kind && (
             <Chip
-              label={`Kind: ${result.kind}`}
+              label={t('search.kind', { value: result.kind })}
               size="small"
               style={{ marginRight: '0.5rem' }}
             />
           )}
           {result.type && (
             <Chip
-              label={`Type: ${result.type}`}
+              label={t('search.type', { value: result.type })}
               size="small"
               style={{ marginRight: '0.5rem' }}
             />
           )}
           {result.lifecycle && (
             <Chip
-              label={`lifecycle: ${result.lifecycle}`}
+              label={t('search.lifecycle', { value: result.lifecycle })}
               size="small"
               style={{ marginRight: '0.5rem' }}
             />
           )}
           {result.owner && (
-            <Chip label={`Owner: ${result.owner}`} size="small" />
+            <Chip
+              label={t('search.owner', { value: result.owner })}
+              size="small"
+            />
           )}
         </Box>
       </Box>

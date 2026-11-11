@@ -12,6 +12,11 @@ import {
   Column,
 } from '@backstage/ui';
 import { TopFeature } from '../../api/CustomAnalyticsApi';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  analyticsTranslationRef,
+  AnalyticsTranslator,
+} from '../../translation';
 
 export type TableRow = {
   id: number;
@@ -33,17 +38,17 @@ const centerStyle = {
   justifyContent: 'center',
 } as const;
 
-const columns: ColumnConfig<TableRow>[] = [
+const getColumns = (t: AnalyticsTranslator): ColumnConfig<TableRow>[] => [
   {
     id: 'featureName',
-    label: 'Feature Name',
+    label: t('topFeatures.columns.featureName'),
     isRowHeader: true,
     isSortable: true,
     cell: item => <CellText title={item.featureName} />,
   },
   {
     id: 'uniqueVisitors',
-    label: 'Unique Visitors',
+    label: t('topFeatures.columns.uniqueVisitors'),
     isSortable: true,
     cell: item => (
       <Cell>
@@ -52,13 +57,13 @@ const columns: ColumnConfig<TableRow>[] = [
     ),
     header: () => (
       <Column id="uniqueVisitors" className="centered-col-header" allowsSorting>
-        <Text weight="bold">Unique Visitors</Text>
+        <Text weight="bold">{t('topFeatures.columns.uniqueVisitors')}</Text>
       </Column>
     ),
   },
   {
     id: 'totalHits',
-    label: 'Total Hits',
+    label: t('topFeatures.columns.totalHits'),
     isSortable: true,
     cell: item => (
       <Cell>
@@ -67,13 +72,15 @@ const columns: ColumnConfig<TableRow>[] = [
     ),
     header: () => (
       <Column id="totalHits" className="centered-col-header" allowsSorting>
-        <Text weight="bold">Total Hits</Text>
+        <Text weight="bold">{t('topFeatures.columns.totalHits')}</Text>
       </Column>
     ),
   },
 ];
 
 export const TopFeaturesTable = ({ data }: { data: TableRow[] }) => {
+  const { t } = useTranslationRef(analyticsTranslationRef);
+  const columns = getColumns(t);
   const { tableProps } = useTable({
     mode: 'complete',
     data,
@@ -105,12 +112,12 @@ export const TopFeaturesTable = ({ data }: { data: TableRow[] }) => {
     <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardHeader>
         <Text variant="title-x-small">
-          Top features by unique visitors ({data.length})
+          {t('topFeatures.title', { total: String(data.length) })}
         </Text>
       </CardHeader>
       <CardBody style={{ flexGrow: 1, minHeight: 0, overflow: 'auto' }}>
         {data.length === 0 ? (
-          <p>No feature navigation data yet.</p>
+          <p>{t('topFeatures.empty')}</p>
         ) : (
           <Table
             columnConfig={columns}

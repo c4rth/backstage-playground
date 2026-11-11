@@ -6,9 +6,11 @@ import {
   createFrontendPlugin,
   featureFlagsApiRef,
   fetchApiRef,
+  translationApiRef,
 } from '@backstage/frontend-plugin-api';
 import { AppRegistryBackendClient, appRegistryBackendApiRef } from './api';
 import { rootRouteRef } from './routes';
+import { appRegistryMetadata } from './translation';
 
 /** @alpha */
 const appRegistryPage = PageBlueprint.make({
@@ -30,16 +32,22 @@ const appRegistryApi = ApiBlueprint.make({
         configApi: configApiRef,
         fetchApi: fetchApiRef,
         featureFlagsApi: featureFlagsApiRef,
+        translationApi: translationApiRef,
       },
-      factory: ({ configApi, fetchApi, featureFlagsApi }) =>
-        new AppRegistryBackendClient({ configApi, fetchApi, featureFlagsApi }),
+      factory: ({ configApi, fetchApi, featureFlagsApi, translationApi }) =>
+        new AppRegistryBackendClient({
+          configApi,
+          fetchApi,
+          featureFlagsApi,
+          translationApi,
+        }),
     }),
 });
 
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'app-registry',
-  title: 'App Registry',
+  title: appRegistryMetadata.title,
   icon: <RiApps2Line />,
   routes: {
     root: rootRouteRef,
@@ -47,7 +55,7 @@ export default createFrontendPlugin({
   featureFlags: [
     {
       name: 'mock-app-registry',
-      description: 'Enable the mock app registry endpoint for testing purposes',
+      description: appRegistryMetadata.mockDescription,
     },
   ],
   extensions: [appRegistryPage, appRegistryApi],

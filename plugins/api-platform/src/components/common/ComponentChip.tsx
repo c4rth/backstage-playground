@@ -2,6 +2,8 @@ import { ServiceEnvironmentDefinition } from '@internal/plugin-api-platform-comm
 import { RiCloudFill, RiGlobalLine, RiHomeOfficeLine } from '@remixicon/react';
 import { Chip } from '@internal/plugin-components-react';
 import { Text, TooltipTrigger, Tooltip, Flex, Link } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 export type ComponentChipProps = {
   index?: number;
@@ -89,6 +91,7 @@ export const ComponentChip = ({
   service,
   backgroundColor = 'auto',
 }: ComponentChipProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const chipStyles = getChipStyles(index, backgroundColor);
 
   const platformIcon = getPlatformIcon(service?.platform);
@@ -96,24 +99,24 @@ export const ComponentChip = ({
   const chipIcon = text ? undefined : platformIcon;
 
   const tooltipContent = service ? (
-    <table aria-label="Service details" style={{ borderSpacing: '8px 4px' }}>
+    <table aria-label={t('chip.details')} style={{ borderSpacing: '8px 4px' }}>
       <tbody>
         <tr>
           <th scope="row" style={{ textAlign: 'left', verticalAlign: 'top' }}>
-            Version
+            {t('chip.version')}
           </th>
           <td>{service.imageVersion}</td>
         </tr>
         <tr>
           <th scope="row" style={{ textAlign: 'left', verticalAlign: 'top' }}>
-            Platform
+            {t('chip.platform')}
           </th>
           <td>{service.platform}</td>
         </tr>
         {service.dependencies && service.dependencies.length > 0 && (
           <tr>
             <th scope="row" style={{ textAlign: 'left', verticalAlign: 'top' }}>
-              Dependencies
+              {t('chip.dependencies')}
             </th>
             <td>
               <Flex direction="column" gap="spacing-1">

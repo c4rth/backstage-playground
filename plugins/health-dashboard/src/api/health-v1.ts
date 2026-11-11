@@ -7,6 +7,7 @@ import {
 } from '../types';
 import { dummyCallV1 } from './fake-data-v1';
 import { createHeaders, toErrorMessage } from './utils';
+import { HealthDashboardTranslator } from '../translation';
 
 function sortHealthDataByApplication(
   data: EnvironmentHealthV1Data,
@@ -37,8 +38,9 @@ export async function fetchHealthV1Data(options: {
   baseUrl: string;
   fetchApi: FetchApi;
   featureFlagsApi: FeatureFlagsApi;
+  t: HealthDashboardTranslator;
 }): Promise<HealthV1Data> {
-  const { endpointPath, baseUrl, fetchApi, featureFlagsApi } = options;
+  const { endpointPath, baseUrl, fetchApi, featureFlagsApi, t } = options;
 
   try {
     let response: Response;
@@ -59,18 +61,21 @@ export async function fetchHealthV1Data(options: {
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `HTTP ${response.status}: Failed to fetch health data - ${errorText}`,
+        t('api.errors.http', {
+          status: String(response.status),
+          error: errorText,
+        }),
       );
     }
 
     const data = (await response.json()) as EnvironmentHealthV1Data;
 
     if (!data) {
-      throw new Error('Invalid response: expected health data object');
+      throw new Error(t('api.errors.invalidResponse'));
     }
 
     return sortHealthDataByApplication(data);
   } catch (error) {
-    throw new Error(`Failed to get health data: ${toErrorMessage(error)}`);
+    throw new Error(t('api.errors.fetch', { error: toErrorMessage(error, t) }));
   }
 }

@@ -6,7 +6,8 @@ import { RiFileCopy2Line, RiFileDownloadFill } from '@remixicon/react';
 import { MouseEventHandler, Suspense, lazy, useEffect } from 'react';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef } from '../../translation';
 import { Progress } from '@internal/plugin-components-react';
 
 const LightAsync = lazy(async () => {
@@ -22,6 +23,7 @@ export interface McaComponentSnippetProps {
 }
 
 export function McaComponentSnippet(props: McaComponentSnippetProps) {
+  const { t } = useTranslationRef(mcaTranslationRef);
   const { filename, data } = props;
   const toastApi = useApi(toastApiRef);
   const errorApi = useApi(errorApiRef);
@@ -37,7 +39,7 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
     e.stopPropagation();
     copyToClipboard(data);
     toastApi.post({
-      title: 'Copied to clipboard!',
+      title: t('snippet.copied'),
       status: 'success',
       timeout: 2000,
     });
@@ -91,10 +93,10 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
             icon={
               <RiFileCopy2Line style={{ width: '1.5em', height: '1.5em' }} />
             }
-            aria-label="Copy XML to clipboard"
+            aria-label={t('snippet.copy')}
           />
           <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
-            Copy XML to clipboard
+            {t('snippet.copy')}
           </Tooltip>
         </TooltipTrigger>
         <TooltipTrigger trigger="hover" delay={500}>
@@ -105,10 +107,10 @@ export function McaComponentSnippet(props: McaComponentSnippetProps) {
             icon={
               <RiFileDownloadFill style={{ width: '1.5em', height: '1.5em' }} />
             }
-            aria-label="Download XML"
+            aria-label={t('snippet.download')}
           />
           <Tooltip placement="bottom" style={{ maxWidth: '50rem' }}>
-            Download XML
+            {t('snippet.download')}
           </Tooltip>
         </TooltipTrigger>
       </Flex>

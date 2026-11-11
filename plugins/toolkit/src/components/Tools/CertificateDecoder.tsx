@@ -6,6 +6,8 @@ import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
 import { appThemeApiRef } from '@backstage/core-plugin-api';
 import { InputError } from '@backstage/errors';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef, ToolkitTranslator } from '../../translation';
 
 const exampleCertificate = `-----BEGIN CERTIFICATE-----
 MIICMzCCAZygAwIBAgIJALiPnVsvq8dsMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNV
@@ -25,6 +27,7 @@ pAqEAuV4DNoxQKKWmhVv+J0ptMWD25Pnpxeq5sXzghfJnslJlQND
 
 export function parsePemCertificates(
   input: string,
+  t: ToolkitTranslator,
 ): Array<{ cert: Certificate; der: ArrayBuffer }> {
   let pemText = input.trim();
 
@@ -36,11 +39,11 @@ export function parsePemCertificates(
     try {
       const decoded = atob(pemText);
       if (!decoded.includes('BEGIN CERTIFICATE')) {
-        throw new InputError('Decoded base64 does not contain PEM certificate');
+        throw new InputError(t('certificate.decodedNotPem'));
       }
       pemText = decoded;
     } catch {
-      throw new InputError('Invalid input: not PEM and not base64 of PEM');
+      throw new InputError(t('certificate.invalidInput'));
     }
   }
 
@@ -50,7 +53,7 @@ export function parsePemCertificates(
   const matches = Array.from(pemText.matchAll(certRegex));
 
   if (matches.length === 0) {
-    throw new InputError('No certificates found in input');
+    throw new InputError(t('certificate.noneFound'));
   }
 
   const results: Array<{ cert: Certificate; der: ArrayBuffer }> = [];
@@ -65,7 +68,7 @@ export function parsePemCertificates(
     // Parse ASN.1
     const asn1 = asn1js.fromBER(der.buffer);
     if (asn1.offset === -1) {
-      throw new Error('Failed to parse certificate');
+      throw new Error(t('certificate.parseError'));
     }
 
     const cert = new Certificate({ schema: asn1.result });
@@ -75,21 +78,20 @@ export function parsePemCertificates(
   return results;
 }
 
-const oidMap: Record<string, string> = {
-  '2.5.4.3': 'Common Name (CN)',
-  '2.5.4.10': 'Organization (O)',
-  '2.5.4.11': 'Organizational Unit (OU)',
-  '2.5.4.6': 'Country',
-  '2.5.4.7': 'Locality',
-  '2.5.4.8': 'State/Province',
-  '2.5.4.5': 'Serial Number',
-  '2.5.4.12': 'Domain Component',
-  '2.5.4.15': 'Business Category',
-  '1.2.840.113549.1.9.1': 'Email',
-  '1.3.6.1.4.1.311.60.2.1.3': 'Country',
-};
-
-function formatName(attrs: AttributeTypeAndValue[]) {
+function formatName(attrs: AttributeTypeAndValue[], t: ToolkitTranslator) {
+  const oidMap: Record<string, string> = {
+    '2.5.4.3': t('certificate.fields.commonName'),
+    '2.5.4.10': t('certificate.fields.organization'),
+    '2.5.4.11': t('certificate.fields.organizationalUnit'),
+    '2.5.4.6': t('certificate.fields.country'),
+    '2.5.4.7': t('certificate.fields.locality'),
+    '2.5.4.8': t('certificate.fields.province'),
+    '2.5.4.5': t('certificate.fields.serialNumber'),
+    '2.5.4.12': t('certificate.fields.domainComponent'),
+    '2.5.4.15': t('certificate.fields.businessCategory'),
+    '1.2.840.113549.1.9.1': t('certificate.fields.email'),
+    '1.3.6.1.4.1.311.60.2.1.3': t('certificate.fields.country'),
+  };
   let names = {};
   attrs.forEach(tv => {
     const name = oidMap[tv.type] || tv.type;
@@ -112,6 +114,7 @@ async function computeFingerprint(
 }
 
 export const CertificateDecoder = () => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const [input, setInput] = useState('');
   const [info, setInfo] = useState<any>(null);
   const appThemeApi = useApi(appThemeApiRef);
@@ -173,7 +176,7 @@ export const CertificateDecoder = () => {
             }}
           >
             <div>
-              <i>No Certificate data available</i>
+              <i>{t('certificate.empty')}</i>
             </div>
           </div>
         )}
@@ -188,7 +191,7 @@ export const CertificateDecoder = () => {
         return;
       }
       try {
-        const certificates = parsePemCertificates(input);
+        const certificates = parsePemCertificates(input, t);
 
         // Process all certificates
         const certInfos = await Promise.all(
@@ -196,14 +199,14 @@ export const CertificateDecoder = () => {
             const sha256 = await computeFingerprint(der, 'SHA-256');
 
             return {
-              [`Certificate ${index + 1}`]: {
-                subject: formatName(cert.subject.typesAndValues),
-                issuer: formatName(cert.issuer.typesAndValues),
+              [t('certificate.title', { number: String(index + 1) })]: {
+                subject: formatName(cert.subject.typesAndValues, t),
+                issuer: formatName(cert.issuer.typesAndValues, t),
                 notBefore: cert.notBefore.value.toString(),
                 notAfter: cert.notAfter.value.toString(),
                 serialNumber: cert.serialNumber.valueBlock.toString(),
                 version: cert.version,
-                'SHA-256 Fingerprint': sha256,
+                [t('certificate.fingerprint')]: sha256,
               },
             };
           }),
@@ -211,17 +214,19 @@ export const CertificateDecoder = () => {
 
         // If single certificate, show it directly; otherwise show array
         if (certInfos.length === 1) {
-          setInfo(certInfos[0]['Certificate 1']);
+          setInfo(certInfos[0][t('certificate.title', { number: '1' })]);
         } else {
           setInfo(Object.assign({}, ...certInfos));
         }
       } catch (error) {
-        setInfo({ message: `Couldn't decode certificate: ${error}` });
+        setInfo({
+          message: t('certificate.decodeError', { detail: String(error) }),
+        });
       }
     };
 
     decodeCertificate();
-  }, [input]);
+  }, [input, t]);
 
   return (
     <DefaultEditor

@@ -4,25 +4,29 @@ import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-components-react';
-import { getStringForKey } from '../common';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 import { FullPage, PluginHeader } from '@backstage/ui';
 import { RiCpuLine } from '@remixicon/react';
 
-const INFO_POPUP_CONTENT = (
-  <InformationPopupContent
-    text1={getStringForKey('ServicePlatformExplorerPage.text1')}
-    text2={getStringForKey('ServicePlatformExplorerPage.text2')}
-  />
-);
-
 export const ServiceExplorerPage = () => {
-  useDocumentTitle('Service Explorer');
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
+  useDocumentTitle(t('serviceExplorer.documentTitle'));
   return (
     <>
       <PluginHeader
-        title="Services"
+        title={t('serviceExplorer.title')}
         icon={<RiCpuLine fontSize="inherit" />}
-        customActions={<InformationPopup content={INFO_POPUP_CONTENT} />}
+        customActions={
+          <InformationPopup
+            content={
+              <InformationPopupContent
+                text={t('serviceExplorer.introduction')}
+                comment={t('serviceExplorer.purpose')}
+              />
+            }
+          />
+        }
       />
       <FullPage>
         <ServiceTable />

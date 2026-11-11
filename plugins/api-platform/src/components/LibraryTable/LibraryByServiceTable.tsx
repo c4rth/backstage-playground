@@ -9,6 +9,8 @@ import {
   renderVersionList,
 } from '../ServiceTable';
 import { RiCloseCircleLine } from '@remixicon/react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 type TableRow = BaseTableRow;
 
@@ -62,14 +64,13 @@ const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
   createEnvironmentColumn('prd'),
 ];
 
-const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
-
 export const LibraryByServiceTable = () => {
-  useDocumentTitle('Library By Service');
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
+  useDocumentTitle(t('libraryTable.byServiceDocumentTitle'));
   return (
     <FullPage>
       <BaseServiceTable<TableRow>
-        columns={COLUMNS}
+        columns={buildColumns<TableRow>(ENV_COLUMNS, t)}
         toRow={toRow}
         toggleType="dependents"
         storageOwnershipKey="serviceLibrariesTablePageOwner"

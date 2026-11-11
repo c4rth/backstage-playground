@@ -21,6 +21,7 @@ import {
 } from '@backstage/plugin-search-react';
 import { McaComponentSearchResultListItemProps } from './components/McaComponentSearchResultListItem';
 import { createPlugin } from '@backstage/core-plugin-api';
+import { mcaMetadata } from './translation';
 
 const mcaApi = ApiBlueprint.make({
   name: 'mca-components-backend-api',
@@ -41,7 +42,7 @@ const mcaComponentsExplorerPage = PageBlueprint.make({
   params: {
     noHeader: true,
     icon: <RiBubbleChartLine fontSize="inherit" />,
-    title: 'MCA Operations',
+    title: mcaMetadata.operationsTitle,
     path: '/mca/components',
     routeRef: componentsRouteRef,
     loader: () =>
@@ -69,7 +70,7 @@ const mcaBaseTypesExplorerPage = PageBlueprint.make({
   params: {
     noHeader: true,
     icon: <RiAlbumLine fontSize="inherit" />,
-    title: 'MCA BaseTypes',
+    title: mcaMetadata.baseTypesTitle,
     path: '/mca/basetypes',
     routeRef: baseTypesRouteRef,
     loader: () =>
@@ -108,7 +109,7 @@ export const McaSearchResultListItemExtension =
 
 export default createFrontendPlugin({
   pluginId: 'mca',
-  title: 'MCA',
+  title: mcaMetadata.title,
   routes: {
     components: componentsRouteRef,
     baseTypes: baseTypesRouteRef,

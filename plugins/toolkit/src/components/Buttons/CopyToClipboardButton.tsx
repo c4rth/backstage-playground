@@ -1,7 +1,8 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { RiClipboardLine } from '@remixicon/react';
 import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 type Props = {
   output: string | number;
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export const CopyToClipboardButton = (props: Props) => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const toastApi = useApi(toastApiRef);
 
   const copyToClipboard = () => {
@@ -16,14 +18,14 @@ export const CopyToClipboardButton = (props: Props) => {
       .writeText(props.output.toString())
       .then(() => {
         toastApi.post({
-          title: 'Copied to clipboard!',
+          title: t('buttons.copySuccess'),
           status: 'success',
           timeout: 2000,
         });
       })
       .catch(() => {
         toastApi.post({
-          title: 'Failed to copy to clipboard!',
+          title: t('buttons.copyError'),
           status: 'warning',
           timeout: 2000,
         });
@@ -38,10 +40,10 @@ export const CopyToClipboardButton = (props: Props) => {
         onClick={copyToClipboard}
         variant="tertiary"
       >
-        Copy
+        {t('buttons.copy')}
       </Button>
       <Tooltip placement="bottom">
-        {props.title || 'Copy output to clipboard'}
+        {props.title || t('buttons.copyTooltip')}
       </Tooltip>
     </TooltipTrigger>
   );

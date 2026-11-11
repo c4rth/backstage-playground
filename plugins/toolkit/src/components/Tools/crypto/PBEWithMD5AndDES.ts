@@ -9,6 +9,7 @@ import {
   Pkcs7,
 } from 'crypto-es';
 import { InputError } from '@backstage/errors';
+import { ToolkitTranslator } from '../../../translation';
 
 export class PBEWithMD5AndDES {
   private static readonly ITERATIONS = 1000;
@@ -16,7 +17,11 @@ export class PBEWithMD5AndDES {
   /**
    * Encrypts a plain text string using PBEWithMD5AndDES.
    */
-  public static encrypt(plainText: string, password: string | null): string {
+  public static encrypt(
+    plainText: string,
+    password: string | null,
+    t: ToolkitTranslator,
+  ): string {
     if (!password) {
       return plainText;
     }
@@ -50,7 +55,7 @@ export class PBEWithMD5AndDES {
       // 5. Convert to Base64
       return combinedWordArray.toString(Base64);
     } catch (error) {
-      return PBEWithMD5AndDES.formatCryptoError('encrypt', error);
+      return PBEWithMD5AndDES.formatCryptoError('encrypt', error, t);
     }
   }
 
@@ -60,6 +65,7 @@ export class PBEWithMD5AndDES {
   public static decrypt(
     encryptedText: string,
     password: string | null,
+    t: ToolkitTranslator,
   ): string {
     if (!password) {
       return encryptedText;
@@ -73,9 +79,7 @@ export class PBEWithMD5AndDES {
       // 1. Decode Base64 input
       const fullCipherWordArray = Base64.parse(encryptedText);
       if (fullCipherWordArray.sigBytes <= 8) {
-        throw new InputError(
-          'input is too short or not a valid encrypted payload',
-        );
+        throw new InputError(t('crypto.shortPayload'));
       }
 
       // 2. Extract salt (first 8 bytes / 2 words)
@@ -86,7 +90,7 @@ export class PBEWithMD5AndDES {
       const cipherTextWords = fullCipherWordArray.words.slice(2);
       const cipherTextLength = fullCipherWordArray.sigBytes - 8;
       if (cipherTextLength <= 0 || cipherTextLength % 8 !== 0) {
-        throw new InputError('ciphertext length is invalid');
+        throw new InputError(t('crypto.invalidLength'));
       }
       const cipherText = WordArray.create(cipherTextWords, cipherTextLength);
 
@@ -107,17 +111,21 @@ export class PBEWithMD5AndDES {
       // 6. Convert decrypted word array to UTF-8 string
       return decryptedWordArray.toString(Utf8);
     } catch (error) {
-      return PBEWithMD5AndDES.formatCryptoError('decrypt', error);
+      return PBEWithMD5AndDES.formatCryptoError('decrypt', error, t);
     }
   }
 
   private static formatCryptoError(
     operation: 'encrypt' | 'decrypt',
     error: unknown,
+    t: ToolkitTranslator,
   ): string {
     const detail =
       error instanceof Error && error.message ? `: ${error.message}` : '';
-    return `Cannot ${operation}${detail}`;
+    return t(
+      operation === 'encrypt' ? 'crypto.cannotEncrypt' : 'crypto.cannotDecrypt',
+      { detail },
+    );
   }
 
   /**

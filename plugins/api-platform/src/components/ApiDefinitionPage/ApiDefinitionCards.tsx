@@ -1,4 +1,6 @@
 import { CodeSnippet, CopyTextButton } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 import { ApiEntity } from '@backstage/catalog-model';
 import {
   EntityInfoCard,
@@ -37,6 +39,7 @@ export const ApiDefinitionRawCard = () => {
 };
 
 export const ApiDefinitionServicesCard = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity<ApiEntity>();
   const apiVersion =
     entity.metadata.annotations?.[ANNOTATION_API_VERSION]?.toString();
@@ -45,7 +48,7 @@ export const ApiDefinitionServicesCard = () => {
     <Tabs key="tabs-services" defaultSelectedKey="tab-api-version">
       <TabList>
         <Tab id="tab-api-version">{apiVersion}</Tab>
-        <Tab id="tab-api-all-versions">All versions</Tab>
+        <Tab id="tab-api-all-versions">{t('apiDefinition.allVersions')}</Tab>
       </TabList>
       <TabPanel id="tab-api-version">
         <Flex direction="column" gap="4">
@@ -64,6 +67,7 @@ export const ApiDefinitionServicesCard = () => {
 };
 
 export const ApiDefinitionInfoCard = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity<ApiEntity>();
   const configApi = useApi(configApiRef);
 
@@ -101,9 +105,9 @@ export const ApiDefinitionInfoCard = () => {
     entity.metadata.annotations?.['api.depo.be/project'] === 'dead';
 
   return (
-    <EntityInfoCard title="About">
+    <EntityInfoCard title={t('apiDefinition.about')}>
       <Box mb="4">
-        <AboutField label="Catalog reference">
+        <AboutField label={t('apiDefinition.catalogReference')}>
           <EntityRefLink entityRef={entity!} />
         </AboutField>
       </Box>
@@ -111,7 +115,7 @@ export const ApiDefinitionInfoCard = () => {
       {!isMcaApi && !isDeadCommonComponents && (
         <>
           <Box mt="6">
-            <AboutField label="Azure Artifact">
+            <AboutField label={t('apiDefinition.artifact')}>
               <LinkComponentDisplayName
                 href={artifactUrl}
                 text={artifactText}
@@ -123,7 +127,7 @@ export const ApiDefinitionInfoCard = () => {
             </AboutField>
           </Box>
           <Box mt="6">
-            <AboutField label="Maven Snippet">
+            <AboutField label={t('apiDefinition.mavenSnippet')}>
               <CodeSnippet
                 text={mavenXml}
                 language="xmlDoc"
@@ -132,7 +136,7 @@ export const ApiDefinitionInfoCard = () => {
             </AboutField>
           </Box>
           <Box mt="6">
-            <AboutField label="API Platform URL">
+            <AboutField label={t('apiDefinition.platformUrl')}>
               <Flex gap="2" align="center">
                 <LinkComponentDisplayName
                   href={platformUrl}
@@ -147,7 +151,7 @@ export const ApiDefinitionInfoCard = () => {
             </AboutField>
           </Box>
           <Box mt="6">
-            <AboutField label="API Mock URL">
+            <AboutField label={t('apiDefinition.mockUrl')}>
               <Flex gap="2" align="center">
                 <LinkComponentDisplayName
                   href={mockUrl}
@@ -165,7 +169,7 @@ export const ApiDefinitionInfoCard = () => {
       )}
       {isMcaApi && (
         <Box mt="6">
-          <AboutField label="MCA Operation">
+          <AboutField label={t('apiDefinition.mcaOperation')}>
             <LinkComponentDisplayName
               href={`/mca/components/${entity.metadata.annotations?.['api.depo.be/name']}`}
               text={`${entity.metadata.annotations?.['api.depo.be/name']}`}
@@ -176,7 +180,7 @@ export const ApiDefinitionInfoCard = () => {
       )}
       {isDeadCommonComponents && (
         <Box mt="6">
-          <AboutField label="API Platform URL">
+          <AboutField label={t('apiDefinition.platformUrl')}>
             <Link
               href={`https://${apiDns}/api-domains/common/${apiName}/${apiVersion}`}
               weight="bold"

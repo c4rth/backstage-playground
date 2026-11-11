@@ -5,6 +5,8 @@ import { Grid, Text, Link } from '@backstage/ui';
 import { memo } from 'react';
 import styles from './McaOperationAboutTab.module.css';
 import { convertUrlLocation, UrlLocations } from './convertUrlLocations';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef } from '../../translation';
 
 const FieldDisplay = memo<{
   label: string;
@@ -17,6 +19,7 @@ const FieldDisplay = memo<{
   className: string;
   showCopyButton?: boolean;
 }>(({ label, value, className, showCopyButton = false }) => {
+  const { t } = useTranslationRef(mcaTranslationRef);
   let displayValue: string | number | boolean = '-';
   let isLink = false;
   let href = '';
@@ -74,7 +77,7 @@ const FieldDisplay = memo<{
               variant="body-small"
               style={{ fontSize: '0.85em', color: 'gray' }}
             >
-              original: {originalUrl}
+              {t('operationAbout.originalUrl', { url: originalUrl })}
             </Text>
           </>
         )}
@@ -91,45 +94,68 @@ export interface McaOperationAboutTabProps {
 
 export const McaOperationAboutTab = memo<McaOperationAboutTabProps>(
   ({ operationAnalyze, operation, urlLocations }) => {
+    const { t } = useTranslationRef(mcaTranslationRef);
     const fieldConfigs = [
-      { label: 'Package', value: operationAnalyze?.package, xs: 6 },
-      { label: 'Extends', value: operationAnalyze?.type, xs: 6 },
-      { label: 'Operation Version', value: operationAnalyze?.version, xs: 6 },
-      { label: 'Operation Type', value: operationAnalyze?.cobolName, xs: 6 },
       {
-        label: 'Flow Controller',
+        label: t('operationAbout.package'),
+        value: operationAnalyze?.package,
+        xs: 6,
+      },
+      {
+        label: t('operationAbout.extends'),
+        value: operationAnalyze?.type,
+        xs: 6,
+      },
+      {
+        label: t('operationAbout.version'),
+        value: operationAnalyze?.version,
+        xs: 6,
+      },
+      {
+        label: t('operationAbout.type'),
+        value: operationAnalyze?.cobolName,
+        xs: 6,
+      },
+      {
+        label: t('operationAbout.flowController'),
         value: operationAnalyze?.flowControlerName,
         xs: 6,
       },
-      { label: 'BS', value: operationAnalyze?.bsName, xs: 6 },
-      { label: 'B-Function', value: operationAnalyze?.bfunction, xs: 12 },
+      { label: t('operationAbout.bs'), value: operationAnalyze?.bsName, xs: 6 },
       {
-        label: 'FIC',
+        label: t('operationAbout.bFunction'),
+        value: operationAnalyze?.bfunction,
+        xs: 12,
+      },
+      {
+        label: t('operationAbout.fic'),
         value: convertUrlLocation(operationAnalyze?.ficLocation, urlLocations),
         xs: 12,
         showCopyButton: Boolean(operationAnalyze?.ficLocation),
       },
       {
-        label: 'TIC',
+        label: t('operationAbout.tic'),
         value: convertUrlLocation(operationAnalyze?.ticLocation, urlLocations),
         xs: 12,
         showCopyButton: Boolean(operationAnalyze?.ticLocation),
       },
       {
-        label: 'CIC',
+        label: t('operationAbout.cic'),
         value: convertUrlLocation(operationAnalyze?.cicLocation, urlLocations),
         xs: 12,
         showCopyButton: Boolean(operationAnalyze?.cicLocation),
       },
       {
-        label: 'Caching',
-        value: operation?.useCache ? 'TRUE' : 'FALSE',
+        label: t('operationAbout.caching'),
+        value: operation?.useCache
+          ? t('operationAbout.cacheEnabled')
+          : t('operationAbout.cacheDisabled'),
         xs: 12,
       },
     ];
 
     return (
-      <EntityInfoCard title="About">
+      <EntityInfoCard title={t('operationAbout.title')}>
         <Grid.Root columns="1">
           {fieldConfigs.map(config => (
             <FieldDisplay
@@ -141,7 +167,7 @@ export const McaOperationAboutTab = memo<McaOperationAboutTabProps>(
             />
           ))}
           <Grid.Item>
-            <AboutField label="Description">
+            <AboutField label={t('operationAbout.description')}>
               <MarkdownContent content={operationAnalyze?.description || ''} />
             </AboutField>
           </Grid.Item>

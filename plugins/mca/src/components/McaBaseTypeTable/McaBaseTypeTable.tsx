@@ -23,6 +23,8 @@ import {
   CardHeader,
   CardBody,
 } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef, McaTranslator } from '../../translation';
 
 type TableRow = {
   id: number;
@@ -30,10 +32,10 @@ type TableRow = {
   packageName: string;
 };
 
-const columns: ColumnConfig<TableRow>[] = [
+const getColumns = (t: McaTranslator): ColumnConfig<TableRow>[] => [
   {
     id: 'baseType',
-    label: 'Name',
+    label: t('baseTypeTable.name'),
     width: '50%',
     isRowHeader: true,
     isSortable: true,
@@ -52,7 +54,7 @@ const columns: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'packageName',
-    label: 'Package',
+    label: t('baseTypeTable.package'),
     width: '50%',
     cell: ({ packageName }: TableRow) => (
       <CellText title={packageName || '-'} />
@@ -101,6 +103,8 @@ const getData = async (
 };
 
 export const McaBaseTypeTable = memo(() => {
+  const { t } = useTranslationRef(mcaTranslationRef);
+  const columns = getColumns(t);
   const mcaApi = useApi(mcaComponentsBackendApiRef);
 
   const [countRows, setCountRows] = useState(0);
@@ -136,7 +140,7 @@ export const McaBaseTypeTable = memo(() => {
   if (tableProps.error) {
     return (
       <ResponseErrorPanel
-        title="Failed to call MCA API"
+        title={t('baseTypeTable.error')}
         error={tableProps.error}
       />
     );
@@ -147,16 +151,16 @@ export const McaBaseTypeTable = memo(() => {
       <Card>
         <CardHeader>
           <Header
-            title={`BaseTypes (${countRows})`}
+            title={t('baseTypeTable.title', { total: String(countRows) })}
             customActions={
               <SearchField
-                placeholder="Filter..."
+                placeholder={t('baseTypeTable.filterPlaceholder')}
                 value={search.value}
                 onChange={str => {
                   storeValue(str);
                   search.onChange(str);
                 }}
-                aria-label="Filter"
+                aria-label={t('baseTypeTable.filterLabel')}
                 startCollapsed
                 size="medium"
               />
@@ -168,7 +172,7 @@ export const McaBaseTypeTable = memo(() => {
             key="table-basetypes"
             {...tableProps}
             columnConfig={columns}
-            emptyState={<div>No data available</div>}
+            emptyState={<div>{t('baseTypeTable.empty')}</div>}
             className="denseTable"
           />
         </CardBody>

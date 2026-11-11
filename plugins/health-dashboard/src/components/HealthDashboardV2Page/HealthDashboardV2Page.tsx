@@ -19,6 +19,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { HealthDataError, HealthV2Data } from '../../types';
 import { useGetHealthV2Data } from '../../hooks';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  healthDashboardTranslationRef,
+  HealthDashboardTranslator,
+} from '../../translation';
 
 import {
   InformationPopup,
@@ -38,14 +43,7 @@ import {
   HealthDetailsSheet,
 } from '../common/HealthDetailsSheet';
 
-const POPUP_CONTENT = (
-  <InformationPopupContent
-    text1="View application health by platform component and environment."
-    text2="For each environment, RED means at least one probe is red; GREEN means all probes are green. Other statuses are shown as UNKNOWN."
-  />
-);
-
-const ALL_OPTION = { label: 'All', id: 'All' };
+const ALL_APPLICATIONS_ID = 'All';
 
 type HealthV2TableRow = HealthV2MatrixRow;
 
@@ -74,31 +72,10 @@ const statusBulletStyle = (color: string) =>
     backgroundColor: color,
   }) as const;
 
-const identityColumns: ColumnConfig<HealthV2TableRow>[] = [
-  {
-    id: 'application',
-    label: 'Application',
-    isRowHeader: true,
-    cell: item => (
-      <Cell>
-        <b>{item.application}</b>
-      </Cell>
-    ),
-    width: '20%',
-    minWidth: 160,
-  },
-  {
-    id: 'component',
-    label: 'Component',
-    cell: item => <CellText title={item.component ?? '-'} />,
-    width: '40%',
-    minWidth: 240,
-  },
-];
-
 function getEnvironmentColumn(
   environment: string,
   onSelect: (row: HealthV2TableRow, environment: string) => void,
+  t: HealthDashboardTranslator,
 ): ColumnConfig<HealthV2TableRow> {
   return {
     id: environment,
@@ -118,7 +95,11 @@ function getEnvironmentColumn(
           <Box style={centerStyle}>
             <AriaButton
               className={styles.statusButton}
-              aria-label={`Show ${environment} health details for ${item.application} - ${item.component ?? '-'}`}
+              aria-label={t('dashboardV2Page.details.showHealth', {
+                environment,
+                application: item.application,
+                component: item.component ?? '-',
+              })}
               onPress={() => onSelect(item, environment)}
             >
               <span
@@ -141,7 +122,8 @@ function getEnvironmentColumn(
 }
 
 export const HealthDashboardV2Page = () => {
-  useDocumentTitle('Health Dashboard v2');
+  const { t } = useTranslationRef(healthDashboardTranslationRef);
+  useDocumentTitle(t('dashboardV2Page.title'));
 
   const getHealthData = useGetHealthV2Data();
   const [healthData, setHealthData] = useState<HealthV2Data>({});
@@ -150,7 +132,7 @@ export const HealthDashboardV2Page = () => {
     () =>
       (searchParams.get('application') ?? '')
         .split(',')
-        .filter(application => application && application !== ALL_OPTION.id),
+        .filter(application => application && application !== ALL_APPLICATIONS_ID),
     [searchParams],
   );
   const updateApplications = (applications: string[]) => {
@@ -177,7 +159,10 @@ export const HealthDashboardV2Page = () => {
       const probes = row.environments[environment];
       if (probes?.length) {
         setSelectedEnvironment({
-          title: `${row.application} - ${environment}`,
+          title: t('dashboardV2Page.details.title', {
+            application: row.application,
+            environment,
+          }),
           subtitle: row.component ?? '-',
           sections: probes.map((probe, index) => ({
             id: `${probe.healthProbeUrl}-${index}`,
@@ -189,7 +174,7 @@ export const HealthDashboardV2Page = () => {
         });
       }
     },
-    [],
+    [t],
   );
 
   useEffect(() => {
@@ -205,7 +190,7 @@ export const HealthDashboardV2Page = () => {
       .catch(error => {
         if (isMounted) {
           setLoadError(
-            error instanceof Error ? error : new Error('Unknown error'),
+            error instanceof Error ? error : new Error(t('dashboardV2Page.errors.unknown')),
           );
         }
       })
@@ -218,7 +203,7 @@ export const HealthDashboardV2Page = () => {
     return () => {
       isMounted = false;
     };
-  }, [getHealthData]);
+  }, [getHealthData, t]);
 
   const applicationOptions = useMemo(() => {
     const applications = new Set<string>();
@@ -232,26 +217,44 @@ export const HealthDashboardV2Page = () => {
     });
 
     return [
-      ALL_OPTION,
+      { label: t('dashboardV2Page.filters.allApplications'), id: ALL_APPLICATIONS_ID },
       ...Array.from(applications)
         .sort((left, right) => left.localeCompare(right))
         .map(application => ({ label: application, id: application })),
     ];
-  }, [healthData]);
+  }, [healthData, t]);
 
   const environmentNames = useMemo(
     () => getEnvironmentNames(healthData),
     [healthData],
   );
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnConfig<HealthV2TableRow>[]>(
     () => [
-      ...identityColumns,
+      {
+        id: 'application',
+        label: t('dashboardV2Page.columns.application'),
+        isRowHeader: true,
+        cell: item => (
+          <Cell>
+            <b>{item.application}</b>
+          </Cell>
+        ),
+        width: '20%',
+        minWidth: 160,
+      },
+      {
+        id: 'component',
+        label: t('dashboardV2Page.columns.component'),
+        cell: item => <CellText title={item.component ?? '-'} />,
+        width: '40%',
+        minWidth: 240,
+      },
       ...environmentNames.map(environment =>
-        getEnvironmentColumn(environment, handleEnvironmentSelect),
+        getEnvironmentColumn(environment, handleEnvironmentSelect, t),
       ),
     ],
-    [environmentNames, handleEnvironmentSelect],
+    [environmentNames, handleEnvironmentSelect, t],
   );
 
   const tableRows = useMemo(
@@ -269,19 +272,19 @@ export const HealthDashboardV2Page = () => {
 
   const emptyState = (
     <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-      No health data found.
+      {t('dashboardV2Page.emptyState')}
     </div>
   );
 
   return (
     <FullPage>
       <Header
-        title="Health Dashboard v2"
+        title={t('dashboardV2Page.title')}
         sticky
         customActions={
           <>
             <Flex style={{ alignItems: 'center' }}>
-              <Text>Applications</Text>
+              <Text>{t('dashboardV2Page.filters.applications')}</Text>
               <Select
                 label=""
                 search
@@ -290,23 +293,28 @@ export const HealthDashboardV2Page = () => {
                 value={
                   selectedApplications.length
                     ? selectedApplications
-                    : [ALL_OPTION.id]
+                    : [ALL_APPLICATIONS_ID]
                 }
                 onChange={selected => {
                   updateApplications(
-                    selected.includes(ALL_OPTION.id) &&
+                    selected.includes(ALL_APPLICATIONS_ID) &&
                       selectedApplications.length > 0
                       ? []
                       : selected
                           .map(String)
-                          .filter(application => application !== ALL_OPTION.id),
+                          .filter(application => application !== ALL_APPLICATIONS_ID),
                   );
                 }}
-                aria-label="Application"
+                aria-label={t('dashboardV2Page.filters.applicationLabel')}
                 style={{ minWidth: '150px' }}
               />
             </Flex>
-            <InformationPopup content={POPUP_CONTENT} />
+            <InformationPopup content={
+              <InformationPopupContent
+                text={t('dashboardV2Page.description')}
+                comment={t('dashboardV2Page.statusDescription')}
+              />
+            } />
           </>
         }
       />
@@ -320,13 +328,13 @@ export const HealthDashboardV2Page = () => {
         {healthDataErrors.map((sourceError, index) => (
           <ResponseErrorPanel
             key={`${sourceError.source}-${index}`}
-            title={`Failed to get ${sourceError.source} health data`}
+            title={t('dashboardV2Page.errors.source', { source: sourceError.source })}
             error={new Error(sourceError.message)}
           />
         ))}
         {loadError && (
           <ResponseErrorPanel
-            title="Failed to load Health data"
+            title={t('dashboardV2Page.errors.load')}
             error={loadError}
           />
         )}

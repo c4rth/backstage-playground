@@ -4,6 +4,7 @@ import {
   createFrontendPlugin,
   createRouteRef,
 } from '@backstage/frontend-plugin-api';
+import { toolkitMetadata } from './translation';
 
 const rootRouteRef = createRouteRef();
 
@@ -18,7 +19,7 @@ const toolsPage = PageBlueprint.make({
 
 export default createFrontendPlugin({
   pluginId: 'toolkit',
-  title: 'Dev Tools',
+  title: toolkitMetadata.title,
   icon: <RiWrenchFill />,
   routes: {
     root: rootRouteRef,

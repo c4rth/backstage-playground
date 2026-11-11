@@ -23,6 +23,8 @@ import { useGetLibraryVersions } from '../..';
 import { DependentsToggle } from '../common';
 import { BaseTableRow, buildColumns, renderVersionList } from '../ServiceTable';
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 type TableRow = BaseTableRow;
 
@@ -60,8 +62,6 @@ const ENV_COLUMNS: ColumnConfig<TableRow>[] = [
   createEnvironmentColumn('ptp'),
   createEnvironmentColumn('prd'),
 ];
-
-const COLUMNS = buildColumns<TableRow>(ENV_COLUMNS);
 
 const toRow = (
   libraryVersions: LibraryDefinition[],
@@ -130,6 +130,7 @@ const LibraryDefinitionServiceTable = ({
   selectedDependency,
   setSelectedDependency,
 }: LibraryDefinitionServiceTableProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { tableProps, search } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -182,12 +183,12 @@ const LibraryDefinitionServiceTable = ({
             />
           )}
           <SearchField
-            placeholder="Filter..."
+            placeholder={t('table.filterPlaceholder')}
             value={search.value}
             onChange={str => {
               search.onChange(str);
             }}
-            aria-label="Filter"
+            aria-label={t('table.filterLabel')}
             startCollapsed
             size="medium"
           />
@@ -196,12 +197,12 @@ const LibraryDefinitionServiceTable = ({
     >
       <Box>
         <Table
-          columnConfig={COLUMNS}
+          columnConfig={buildColumns<TableRow>(ENV_COLUMNS, t)}
           {...tableProps}
           pagination={{
             type: 'none',
           }}
-          emptyState={<div>No data available</div>}
+          emptyState={<div>{t('table.empty')}</div>}
           className="denseTable"
         />
       </Box>
@@ -215,6 +216,7 @@ export const LibraryDefinitionServicesCard = ({
   version,
   componentName,
 }: LibraryServicesCardProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [selectedDependency, setSelectedDependency] =
     useState<DependentsType>('all');
@@ -227,11 +229,15 @@ export const LibraryDefinitionServicesCard = ({
 
   const { value: allServices = [], error } = useAsync(async () => {
     if (!name) return [];
-    const result = await fetchAllServices(apiPlatformApi);
+    const result = await fetchAllServices(apiPlatformApi, t);
     return result.items;
-  }, [apiPlatformApi, name]);
+  }, [apiPlatformApi, name, t]);
 
-  const title = version ? `Dependent Services` : 'All services';
+  const title = t(
+    version
+      ? 'libraryDefinition.dependentServices'
+      : 'libraryDefinition.allServices',
+  );
 
   const rows = useMemo(() => {
     if (!libraryVersions) return [];
@@ -286,7 +292,7 @@ export const LibraryDefinitionServicesCard = ({
   if (error || errorLibVersion) {
     return (
       <ResponseErrorPanel
-        title="Error loading Library Versions"
+        title={t('libraryDefinition.versionsError')}
         error={error || errorLibVersion!}
       />
     );

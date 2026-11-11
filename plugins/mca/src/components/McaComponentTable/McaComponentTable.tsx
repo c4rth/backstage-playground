@@ -27,6 +27,8 @@ import {
   useReloadOnChange,
   useStoredValue,
 } from '@internal/plugin-components-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef, McaTranslator } from '../../translation';
 
 type TableRow = {
   id: number;
@@ -40,11 +42,14 @@ type TableRow = {
   packageName: string;
 };
 
-function getColumns(versions?: McaVersions): ColumnConfig<TableRow>[] {
+function getColumns(
+  t: McaTranslator,
+  versions?: McaVersions,
+): ColumnConfig<TableRow>[] {
   const columns: ColumnConfig<TableRow>[] = [
     {
       id: 'component',
-      label: 'Name',
+      label: t('componentTable.name'),
       width: '40%',
       isRowHeader: true,
       isSortable: true,
@@ -58,7 +63,7 @@ function getColumns(versions?: McaVersions): ColumnConfig<TableRow>[] {
     },
     {
       id: 'prdVersion',
-      label: 'Baseline',
+      label: t('componentTable.baseline'),
       width: '6%',
       isSortable: true,
       cell: row => (
@@ -160,12 +165,12 @@ function getColumns(versions?: McaVersions): ColumnConfig<TableRow>[] {
     },
     {
       id: 'packageName',
-      label: 'Package',
+      label: t('componentTable.package'),
       width: '20%',
       cell: row => <CellText title={row.packageName} />,
     },
     {
-      label: 'System',
+      label: t('componentTable.system'),
       width: '10%',
       id: 'applicationCode',
       cell: row => <CellText title={row.applicationCode} />,
@@ -220,11 +225,11 @@ async function getData(
   };
 }
 
-function getTitle(type: McaComponentType) {
-  if (type === 'operation') return 'Operations';
-  if (type === 'element') return 'Elements';
-  if (type === 'all') return 'All components';
-  return 'Unknown type';
+function getTitle(type: McaComponentType, t: McaTranslator) {
+  if (type === 'operation') return t('componentTable.operations');
+  if (type === 'element') return t('componentTable.elements');
+  if (type === 'all') return t('componentTable.allComponents');
+  return t('componentTable.unknownType');
 }
 
 type McaComponentTableProps = {
@@ -232,13 +237,14 @@ type McaComponentTableProps = {
 };
 
 export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
+  const { t } = useTranslationRef(mcaTranslationRef);
   const mcaApi = useApi(mcaComponentsBackendApiRef);
   const [mcaVersions, setMcaVersions] = useState<McaVersions>();
   const [countRows, setCountRows] = useState<number>(0);
   const [error, setError] = useState<Error | null>(null);
 
   const { initialValue, storeValue } = useStoredValue(STORAGE_KEY);
-  const columns = getColumns(mcaVersions);
+  const columns = getColumns(t, mcaVersions);
 
   useEffect(() => {
     mcaApi
@@ -283,16 +289,19 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
       <Card>
         <CardHeader>
           <Header
-            title={`${getTitle(type)} (${countRows})`}
+            title={t('componentTable.title', {
+              type: getTitle(type, t),
+              total: String(countRows),
+            })}
             customActions={
               <SearchField
-                placeholder="Filter..."
+                placeholder={t('componentTable.filterPlaceholder')}
                 value={search.value}
                 onChange={str => {
                   storeValue(str);
                   search.onChange(str);
                 }}
-                aria-label="Filter"
+                aria-label={t('componentTable.filterLabel')}
                 startCollapsed
                 size="medium"
               />
@@ -304,7 +313,7 @@ export const McaComponentTable = memo<McaComponentTableProps>(({ type }) => {
             key={`table-${type}`}
             {...tableProps}
             columnConfig={columns}
-            emptyState={<div>No data available</div>}
+            emptyState={<div>{t('componentTable.empty')}</div>}
             className="denseTable"
           />
         </CardBody>

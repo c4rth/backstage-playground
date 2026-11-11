@@ -14,6 +14,11 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { apiPlatformBackendApiRef } from '../../plugin';
 import { useState } from 'react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import { ApiPlatformBackendApi } from '../../api/ApiPlatformBackendApi';
 import { ComponentOwnership, useStoredOwnership } from '../common';
 import {
@@ -95,11 +100,11 @@ const getData = async (
       };
 };
 
-const COLUMNS: ColumnConfig<TableRow>[] = [
+const getColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [
   {
     id: 'name',
     width: '35%',
-    label: 'Name',
+    label: t('table.columns.name'),
     isRowHeader: true,
     isSortable: true,
     cell: ({ system, name }: TableRow) => (
@@ -114,7 +119,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'description',
-    label: 'Description',
+    label: t('table.columns.description'),
     width: '45%',
     isSortable: true,
     cell: ({ description }: TableRow) => (
@@ -125,7 +130,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
   },
   {
     id: 'type',
-    label: 'Type',
+    label: t('table.columns.type'),
     width: '10%',
     isSortable: true,
     cell: ({ type }: TableRow) => <CellText title={type} />,
@@ -133,7 +138,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
   {
     id: 'system',
     width: '10%',
-    label: 'System',
+    label: t('table.columns.system'),
     isSortable: true,
     cell: ({ system }: TableRow) =>
       system === '-' ? (
@@ -152,22 +157,33 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
   },
 ];
 
-const API_TYPES = [
+const getApiTypes = (t: ApiPlatformTranslator) => [
   ...OPENAPITYPE_LIST.map(type => ({
     id: type,
-    label: type.charAt(0).toUpperCase() + type.slice(1),
+    label: t(`apiTable.types.${type}`),
   })),
 ];
 
 function getTitle(
+  t: ApiPlatformTranslator,
   ownershipType: OwnershipType,
   apiType: OpenApiType,
   count: number,
 ): string {
-  return `${ownershipType === 'owned' ? 'Owned' : 'All'} ${apiType === 'all' ? '' : (API_TYPES.find(t => t.id === apiType)?.label ?? '')} APIs (${count})`;
+  return t(
+    ownershipType === 'owned' ? 'apiTable.ownedTitle' : 'apiTable.allTitle',
+    {
+      type:
+        apiType === 'all'
+          ? ''
+          : (getApiTypes(t).find(option => option.id === apiType)?.label ?? ''),
+      total: String(count),
+    },
+  );
 }
 
 export const ApiTable = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
   const [ownershipType, setOwnershipType] = useStoredOwnership(
@@ -220,7 +236,7 @@ export const ApiTable = () => {
   if (tableProps.error) {
     return (
       <ResponseErrorPanel
-        title="Failed to load APIs"
+        title={t('apiTable.loadError')}
         error={tableProps.error}
       />
     );
@@ -232,6 +248,7 @@ export const ApiTable = () => {
         <CardHeader>
           <Header
             title={getTitle(
+              t,
               ownershipType,
               selectedType as OpenApiType,
               countRows,
@@ -251,18 +268,18 @@ export const ApiTable = () => {
                     onChange={selected => {
                       setSelectedType(selected as OpenApiType);
                     }}
-                    aria-label="API Type"
-                    options={API_TYPES}
+                    aria-label={t('apiTable.typeLabel')}
+                    options={getApiTypes(t)}
                   />
                 </Box>
                 <SearchField
-                  placeholder="Filter..."
+                  placeholder={t('table.filterPlaceholder')}
                   value={search.value}
                   onChange={str => {
                     storeValue(str);
                     search.onChange(str);
                   }}
-                  aria-label="Filter"
+                  aria-label={t('table.filterLabel')}
                   size="medium"
                   startCollapsed
                 />
@@ -274,8 +291,8 @@ export const ApiTable = () => {
           <Table
             key={`table-${selectedType}-${ownershipType}`}
             {...tableProps}
-            columnConfig={COLUMNS}
-            emptyState={<div>No data available</div>}
+            columnConfig={getColumns(t)}
+            emptyState={<div>{t('table.empty')}</div>}
             className="denseTable"
           />
         </CardBody>

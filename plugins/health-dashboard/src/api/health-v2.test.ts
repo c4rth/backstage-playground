@@ -5,8 +5,14 @@ import { dummyCallV2 } from './fake-data-v2';
 import fixtureData from './fake-data-v2.json';
 import v1Fixture from './fake-data-v1-prd.json';
 import { fetchHealthV2Data } from './health-v2';
+import { mockApis } from '@backstage/frontend-test-utils';
+import { healthDashboardTranslationRef } from '../translation';
 
 const fixture: HealthV2Data = fixtureData;
+const translation = mockApis.translation().getTranslation(healthDashboardTranslationRef);
+if (!translation.ready) {
+  throw new Error('Test translations are not ready');
+}
 
 describe('fetchHealthV2Data', () => {
   const fetchApi: jest.Mocked<FetchApi> = { fetch: jest.fn() };
@@ -21,6 +27,7 @@ describe('fetchHealthV2Data', () => {
     baseUrl: 'https://backstage.example.com',
     fetchApi,
     featureFlagsApi,
+    t: translation.t,
   };
 
   beforeEach(() => {

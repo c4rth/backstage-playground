@@ -5,6 +5,11 @@ import semver from 'semver';
 import { LibraryDefinition } from '@internal/plugin-api-platform-common';
 import { useGetLibraryVersions } from '../..';
 import { EntityInfoCard } from '@backstage/plugin-catalog-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 
 type TableRow = {
   readonly id: number;
@@ -15,9 +20,9 @@ type TableRow = {
   readonly entityRef: string;
 };
 
-const columns: ColumnConfig<TableRow>[] = [
+const getColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [
   {
-    label: 'Version',
+    label: t('table.columns.version'),
     width: '50%',
     id: 'libraryVersion',
     isRowHeader: true,
@@ -33,7 +38,7 @@ const columns: ColumnConfig<TableRow>[] = [
     ),
   },
   {
-    label: 'Used by # Services',
+    label: t('table.columns.services'),
     width: '50%',
     id: 'svcNumber',
     cell: ({ svcNumber }: TableRow) => <CellText title={`${svcNumber}`} />,
@@ -65,6 +70,7 @@ type LibraryVersionsTableProps = {
 };
 
 const LibraryVersionsTable = ({ title, rows }: LibraryVersionsTableProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { tableProps } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -89,14 +95,14 @@ const LibraryVersionsTable = ({ title, rows }: LibraryVersionsTableProps) => {
   });
 
   return (
-    <EntityInfoCard title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={title}>
       <Table
-        columnConfig={columns}
+        columnConfig={getColumns(t)}
         {...tableProps}
         pagination={{
           type: 'none',
         }}
-        emptyState={<div>No data available</div>}
+        emptyState={<div>{t('table.empty')}</div>}
         className="denseTable"
       />
     </EntityInfoCard>
@@ -107,6 +113,7 @@ export const LibraryDefinitionVersionsCard = ({
   system,
   name,
 }: LibraryVersionsCardProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { libraryVersions, error } = useGetLibraryVersions(system!, name!);
 
   const rows =
@@ -115,7 +122,7 @@ export const LibraryDefinitionVersionsCard = ({
   if (error) {
     return (
       <ResponseErrorPanel
-        title="Error loading Library Versions"
+        title={t('libraryDefinition.versionsError')}
         error={error}
       />
     );
@@ -124,7 +131,7 @@ export const LibraryDefinitionVersionsCard = ({
   return (
     <LibraryVersionsTable
       key={`lib-${name}-${rows.length}`}
-      title="Library Versions"
+      title={t('libraryDefinition.versions', { total: String(rows.length) })}
       rows={rows}
     />
   );

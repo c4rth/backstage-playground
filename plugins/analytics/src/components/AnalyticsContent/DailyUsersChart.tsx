@@ -10,6 +10,8 @@ import {
   Bar,
   TooltipProps,
 } from 'recharts';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { analyticsTranslationRef } from '../../translation';
 
 interface PayloadItem {
   name: string;
@@ -25,6 +27,7 @@ interface CustomTooltipProps extends TooltipProps<number, string> {
 }
 
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  const { t } = useTranslationRef(analyticsTranslationRef);
   if (active && payload && payload.length) {
     const total = payload.reduce(
       (sum, entry) => sum + (Number(entry.value) || 0),
@@ -52,7 +55,10 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
         </p>
         {payload.map((entry, index) => (
           <div key={index} style={{ color: entry.color, fontSize: '14px' }}>
-            • {entry.name}: {entry.value}
+            {t('dailyUsers.tooltipEntry', {
+              name: entry.name,
+              value: String(entry.value),
+            })}
           </div>
         ))}
         <p
@@ -63,7 +69,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
             marginTop: '4px',
           }}
         >
-          Total: {total}
+          {t('dailyUsers.total', { total: String(total) })}
         </p>
       </div>
     );
@@ -79,6 +85,7 @@ const formatDisplayDate = (dateStr: string) => {
 };
 
 export const DailyUsersChart = ({ data }: { data: DailyVisitor[] }) => {
+  const { t } = useTranslationRef(analyticsTranslationRef);
   return (
     <Card
       style={{
@@ -90,11 +97,11 @@ export const DailyUsersChart = ({ data }: { data: DailyVisitor[] }) => {
       }}
     >
       <CardHeader>
-        <Text variant="title-x-small">Daily unique users</Text>
+        <Text variant="title-x-small">{t('dailyUsers.title')}</Text>
       </CardHeader>
       <CardBody style={{ flexGrow: 1, minHeight: 0 }}>
         {data.length === 0 ? (
-          <p>No daily unique user data yet.</p>
+          <p>{t('dailyUsers.empty')}</p>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
@@ -105,9 +112,15 @@ export const DailyUsersChart = ({ data }: { data: DailyVisitor[] }) => {
                 domain={[0, dataMax => Math.max(2, Math.ceil(dataMax))]}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="visitors" stackId="a" fill="var(--bui-accent-bg)" />
+              <Bar
+                dataKey="visitors"
+                name={t('dailyUsers.visitors')}
+                stackId="a"
+                fill="var(--bui-accent-bg)"
+              />
               <Bar
                 dataKey="guests"
+                name={t('dailyUsers.guests')}
                 stackId="a"
                 fill="color-mix(in srgb, var(--bui-accent-bg) 50%, transparent)"
               />

@@ -3,6 +3,13 @@ import { dummyCallV1 } from './fake-data-v1';
 import nonPrdFixture from './fake-data-v1-nonprd.json';
 import prdFixture from './fake-data-v1-prd.json';
 import { fetchHealthV1Data } from './health-v1';
+import { mockApis } from '@backstage/frontend-test-utils';
+import { healthDashboardTranslationRef } from '../translation';
+
+const translation = mockApis.translation().getTranslation(healthDashboardTranslationRef);
+if (!translation.ready) {
+  throw new Error('Test translations are not ready');
+}
 
 describe('fetchHealthV1Data', () => {
   const fetchApi: jest.Mocked<FetchApi> = { fetch: jest.fn() };
@@ -17,6 +24,7 @@ describe('fetchHealthV1Data', () => {
     baseUrl: 'https://backstage.example.com',
     fetchApi,
     featureFlagsApi,
+    t: translation.t,
   };
 
   beforeEach(() => {

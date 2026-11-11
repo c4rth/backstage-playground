@@ -8,6 +8,7 @@ import {
   createApiRef,
   createApiFactory,
   createRouteRef,
+  translationApiRef,
 } from '@backstage/frontend-plugin-api';
 import { ApiPlatformBackendApi, ApiPlatformBackendClient } from './api';
 import {
@@ -34,13 +35,14 @@ import {
 } from '@backstage/plugin-search-react';
 import { ApiSearchResultListItemProps } from './components/ApiSearchResultListItem';
 import { createPlugin } from '@backstage/core-plugin-api';
+import { apiPlatformMetadata } from './translation';
 
 const apiExplorerPage = PageBlueprint.make({
   name: 'api-explorer',
   params: {
     noHeader: true,
     icon: <RiPuzzleFill fontSize="inherit" />,
-    title: 'APIs',
+    title: apiPlatformMetadata.apis,
     path: '/api-platform/api',
     routeRef: apiPlatformRouteRef,
     loader: () =>
@@ -79,7 +81,7 @@ const serviceExplorerPage = PageBlueprint.make({
   params: {
     noHeader: true,
     icon: <RiCpuLine fontSize="inherit" />,
-    title: 'Services',
+    title: apiPlatformMetadata.services,
     path: '/api-platform/service',
     routeRef: apiPlatformServiceRouteRef,
     loader: () =>
@@ -107,7 +109,7 @@ const systemExplorerPage = PageBlueprint.make({
   params: {
     noHeader: true,
     icon: <RiShapesLine fontSize="inherit" />,
-    title: 'Systems',
+    title: apiPlatformMetadata.systems,
     path: '/api-platform/system',
     routeRef: apiPlatformSystemRouteRef,
     loader: () =>
@@ -134,7 +136,7 @@ const libraryExplorerPage = PageBlueprint.make({
   name: 'library-explorer',
   params: {
     icon: <RiBookShelfLine fontSize="inherit" />,
-    title: 'Libraries',
+    title: apiPlatformMetadata.libraries,
     path: '/api-platform/library',
     routeRef: apiPlatformLibraryRouteRef,
   },
@@ -154,7 +156,7 @@ const libraryListSubPage = SubPageBlueprint.make({
   params: {
     path: 'libraries',
     routeRef: libraryListRouteRef,
-    title: 'By libraries',
+    title: apiPlatformMetadata.byLibraries,
     loader: () =>
       import('./components/LibraryTable').then(m => <m.LibraryTable />),
   },
@@ -171,7 +173,7 @@ const libraryByServiceSubPage = SubPageBlueprint.make({
   params: {
     path: 'by-services',
     routeRef: libraryByServiceRouteRef,
-    title: 'By services',
+    title: apiPlatformMetadata.byServices,
     loader: () =>
       import('./components/LibraryTable').then(m => (
         <m.LibraryByServiceTable />
@@ -225,15 +227,20 @@ const apiPlatformApi = ApiBlueprint.make({
       deps: {
         discoveryApi: discoveryApiRef,
         fetchApi: fetchApiRef,
+        translationApi: translationApiRef,
       },
-      factory: ({ discoveryApi, fetchApi }) =>
-        new ApiPlatformBackendClient({ discoveryApi, fetchApi }),
+      factory: ({ discoveryApi, fetchApi, translationApi }) =>
+        new ApiPlatformBackendClient({
+          discoveryApi,
+          fetchApi,
+          translationApi,
+        }),
     }),
 });
 
 export default createFrontendPlugin({
   pluginId: 'api-platform',
-  title: 'API Platform',
+  title: apiPlatformMetadata.title,
   routes: {
     apiExplorer: apiPlatformRouteRef,
     apiNoSystem: apiPlatformApiNoSystemRouteRef,
@@ -269,9 +276,17 @@ export const apiPlatformPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: apiPlatformBackendApiRef,
-      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
-      factory: ({ discoveryApi, fetchApi }) =>
-        new ApiPlatformBackendClient({ discoveryApi, fetchApi }),
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+        translationApi: translationApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi, translationApi }) =>
+        new ApiPlatformBackendClient({
+          discoveryApi,
+          fetchApi,
+          translationApi,
+        }),
     }),
   ],
 });

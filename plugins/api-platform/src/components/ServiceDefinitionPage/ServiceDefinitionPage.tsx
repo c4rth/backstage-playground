@@ -12,7 +12,11 @@ import { ServiceDefinition } from '@internal/plugin-api-platform-common';
 import { Container, PluginHeader, Select, Header } from '@backstage/ui';
 import { useDocumentTitle } from '@internal/plugin-components-react';
 import { RiCpuLine } from '@remixicon/react';
-import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import {
+  useRouteRefParams,
+  useTranslationRef,
+} from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 import { apiPlatformServiceDefinitionRouteRef } from '../../routes';
 import {
   isAzureDevOpsAvailable,
@@ -58,6 +62,7 @@ function parseServiceDefinition(
 }
 
 export const ServiceDefinitionPage = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { system, name } = useRouteRefParams(
     apiPlatformServiceDefinitionRouteRef,
   );
@@ -84,7 +89,7 @@ export const ServiceDefinitionPage = () => {
   >(undefined);
   const isInitialLoad = useRef(true);
   const catalogApi = useApi(catalogApiRef);
-  useDocumentTitle(`Service - ${name}`);
+  useDocumentTitle(t('serviceDefinition.documentTitle', { name }));
 
   const mapVersionEnv = useMemo(
     () => parseServiceDefinition(serviceDefinition),
@@ -224,7 +229,10 @@ export const ServiceDefinitionPage = () => {
       <PluginHeader
         icon={<RiCpuLine fontSize="inherit" />}
         breadcrumbs={[
-          { label: 'Services', href: '/api-platform/service' },
+          {
+            label: t('serviceDefinition.breadcrumb'),
+            href: '/api-platform/service',
+          },
           { label: name, href: '' },
         ]}
       />
@@ -232,26 +240,26 @@ export const ServiceDefinitionPage = () => {
         title={name}
         metadata={[
           {
-            label: 'Version',
+            label: t('serviceDefinition.version'),
             value: (
               <Select
                 onChange={handleVersionChange}
                 options={versions}
                 value={selectedVersion}
                 style={{ minWidth: '50px' }}
-                aria-label="Version"
+                aria-label={t('serviceDefinition.version')}
               />
             ),
           },
           {
-            label: 'Environment',
+            label: t('serviceDefinition.environment'),
             value: (
               <Select
                 onChange={handleEnvironmentChange}
                 options={environments}
                 value={selectedEnvironment}
                 style={{ minWidth: '50px' }}
-                aria-label="Environment"
+                aria-label={t('serviceDefinition.environment')}
               />
             ),
           },
@@ -259,24 +267,24 @@ export const ServiceDefinitionPage = () => {
         tabs={[
           {
             id: 'overview',
-            label: 'Overview',
+            label: t('serviceDefinition.tabs.overview'),
             href: withSearchParams('.'),
           },
           {
             id: 'dependencies',
-            label: 'Dependencies',
+            label: t('serviceDefinition.tabs.dependencies'),
             href: withSearchParams('dependencies'),
           },
           {
             id: 'app-registry',
-            label: 'App Registry',
+            label: t('serviceDefinition.tabs.appRegistry'),
             href: withSearchParams('app-registry'),
           },
           ...(azurePipelines
             ? [
                 {
                   id: 'ci-cd',
-                  label: 'CI/CD',
+                  label: t('serviceDefinition.tabs.cicd'),
                   href: withSearchParams('ci-cd'),
                 },
               ]
@@ -285,7 +293,7 @@ export const ServiceDefinitionPage = () => {
             ? [
                 {
                   id: 'git-tags',
-                  label: 'Git Tags',
+                  label: t('serviceDefinition.tabs.gitTags'),
                   href: withSearchParams('git-tags'),
                 },
               ]
@@ -294,7 +302,7 @@ export const ServiceDefinitionPage = () => {
             ? [
                 {
                   id: 'readme',
-                  label: 'Readme',
+                  label: t('serviceDefinition.tabs.readme'),
                   href: withSearchParams('readme'),
                 },
               ]
@@ -303,7 +311,7 @@ export const ServiceDefinitionPage = () => {
             ? [
                 {
                   id: 'sonar',
-                  label: 'SonarQube',
+                  label: t('serviceDefinition.tabs.sonar'),
                   href: withSearchParams('sonarqube'),
                 },
               ]

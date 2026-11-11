@@ -16,6 +16,11 @@ import {
   CardBody,
 } from '@backstage/ui';
 import { useState } from 'react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import { ComponentOwnership, useStoredOwnership } from '../common';
 import {
   LinkComponentDisplayName,
@@ -38,11 +43,11 @@ type TableRow = {
   owner: string;
 };
 
-const COLUMNS: ColumnConfig<TableRow>[] = [
+const getColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [
   {
     id: 'name',
     width: '25%',
-    label: 'Name',
+    label: t('table.columns.name'),
     isRowHeader: true,
     isSortable: true,
     cell: ({ name }: TableRow) => (
@@ -54,7 +59,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
   {
     id: 'description',
     width: '50%',
-    label: 'Description',
+    label: t('table.columns.description'),
     isSortable: true,
     cell: ({ description }: TableRow) => (
       <CellText title={description || '-'} />
@@ -63,7 +68,7 @@ const COLUMNS: ColumnConfig<TableRow>[] = [
   {
     id: 'owner',
     width: '25%',
-    label: 'Owner',
+    label: t('table.columns.owner'),
     isSortable: true,
     cell: ({ owner }: TableRow) => (
       <Cell>
@@ -117,11 +122,8 @@ const getData = async (
   };
 };
 
-function getTitle(ownership: OwnershipType, countRows: number) {
-  return `${ownership === 'owned' ? 'Owned' : 'All'} Systems (${countRows})`;
-}
-
 export const SystemTable = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const { initialValue, storeValue } = useStoredValue(STORAGE_SEARCH_KEY);
   const [countRows, setCountRows] = useState(0);
@@ -171,7 +173,7 @@ export const SystemTable = () => {
   if (tableProps.error) {
     return (
       <ResponseErrorPanel
-        title="Failed to load Systems"
+        title={t('systemTable.loadError')}
         error={tableProps.error}
       />
     );
@@ -182,7 +184,12 @@ export const SystemTable = () => {
       <Card>
         <CardHeader>
           <Header
-            title={getTitle(ownershipType, countRows)}
+            title={t(
+              ownershipType === 'owned'
+                ? 'systemTable.ownedTitle'
+                : 'systemTable.allTitle',
+              { total: String(countRows) },
+            )}
             customActions={
               <>
                 <ComponentOwnership
@@ -190,13 +197,13 @@ export const SystemTable = () => {
                   handleOwnershipChange={setOwnershipType}
                 />
                 <SearchField
-                  placeholder="Filter..."
+                  placeholder={t('table.filterPlaceholder')}
                   value={search.value}
                   onChange={str => {
                     storeValue(str);
                     search.onChange(str);
                   }}
-                  aria-label="Filter"
+                  aria-label={t('table.filterLabel')}
                   startCollapsed
                   size="medium"
                 />
@@ -208,8 +215,8 @@ export const SystemTable = () => {
           <Table
             key={`table-${ownershipType}`}
             {...tableProps}
-            columnConfig={COLUMNS}
-            emptyState={<div>No data available</div>}
+            columnConfig={getColumns(t)}
+            emptyState={<div>{t('table.empty')}</div>}
             className="denseTable"
           />
         </CardBody>

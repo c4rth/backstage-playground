@@ -4,33 +4,36 @@ import { PBEWithMD5AndDES } from './crypto/PBEWithMD5AndDES';
 import { Flex, TextAreaField, TextField, Select, Option } from '@backstage/ui';
 import styles from '../styles/customTextAreaField.module.css';
 import { AES, DES, TripleDES, Rabbit, RC4, Utf8 } from 'crypto-es';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef, ToolkitTranslator } from '../../translation';
 
-const algorithms: Option[] = [
-  { label: 'AES', id: 'aes' },
-  { label: 'DES', id: 'des' },
-  { label: 'TripleDES', id: 'tripledes' },
-  { label: 'Rabbit', id: 'rabbit' },
-  { label: 'RC4', id: 'rc4' },
-  { label: 'PBEWithMD5AndDES (jasypt)', id: 'pbestring' },
+const getAlgorithms = (t: ToolkitTranslator): Option[] => [
+  { label: t('crypto.algorithms.aes'), id: 'aes' },
+  { label: t('crypto.algorithms.des'), id: 'des' },
+  { label: t('crypto.algorithms.tripledes'), id: 'tripledes' },
+  { label: t('crypto.algorithms.rabbit'), id: 'rabbit' },
+  { label: t('crypto.algorithms.rc4'), id: 'rc4' },
+  { label: t('crypto.algorithms.pbestring'), id: 'pbestring' },
 ];
 
 export const CryptoCoder = () => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [secretKey, setSecretKey] = useState('my-secret');
   const [mode, setMode] = useState('Encode');
   const [algorithm, setAlgorithm] = useState('aes');
 
-  function setDecryptedText(value: any) {
-    const decryptedText = value.toString(Utf8);
-    if (!decryptedText) {
-      setOutput('Error while decrypting: Invalid input or secret key');
-    } else {
-      setOutput(decryptedText);
-    }
-  }
-
   useEffect(() => {
+    function setDecryptedText(value: any) {
+      const decryptedText = value.toString(Utf8);
+      if (!decryptedText) {
+        setOutput(t('crypto.invalidInput'));
+      } else {
+        setOutput(decryptedText);
+      }
+    }
+
     if (!input) {
       setOutput('');
       return;
@@ -55,13 +58,13 @@ export const CryptoCoder = () => {
             setOutput(RC4.encrypt(input, secretKey).toString());
             break;
           case 'pbestring':
-            setOutput(PBEWithMD5AndDES.encrypt(input, secretKey));
+            setOutput(PBEWithMD5AndDES.encrypt(input, secretKey, t));
             break;
           default:
             setOutput(AES.encrypt(input, secretKey).toString());
         }
       } catch (error) {
-        setOutput(`Error while encrypting: ${error}`);
+        setOutput(t('crypto.encryptError', { detail: String(error) }));
       }
     } else {
       try {
@@ -82,16 +85,16 @@ export const CryptoCoder = () => {
             setDecryptedText(RC4.decrypt(input, secretKey));
             break;
           case 'pbestring':
-            setDecryptedText(PBEWithMD5AndDES.decrypt(input, secretKey));
+            setDecryptedText(PBEWithMD5AndDES.decrypt(input, secretKey, t));
             break;
           default:
             setDecryptedText(AES.decrypt(input, secretKey));
         }
       } catch (error) {
-        setOutput(`Error while decrypting: ${error}`);
+        setOutput(t('crypto.decryptError', { detail: String(error) }));
       }
     }
-  }, [input, mode, secretKey, algorithm]);
+  }, [input, mode, secretKey, algorithm, t]);
 
   return (
     <DefaultEditor
@@ -109,19 +112,19 @@ export const CryptoCoder = () => {
           <Select
             style={{ flex: '0 0 auto' }}
             onChange={v => setAlgorithm(v as string)}
-            label="Algorithm"
+            label={t('crypto.algorithm')}
             value={algorithm}
-            options={algorithms}
-            aria-label="Algorithm"
+            options={getAlgorithms(t)}
+            aria-label={t('crypto.algorithm')}
           />
           <TextField
             style={{ flex: '0 0 auto', marginBottom: '8px', marginTop: '8px' }}
-            label="Secret key"
+            label={t('crypto.secretKey')}
             value={secretKey}
             onChange={text => setSecretKey(text)}
           />
           <TextAreaField
-            aria-label="Input"
+            aria-label={t('editor.input')}
             className={styles.customTextAreaField}
             style={{ flex: '1 1 auto', minHeight: 0 }}
             value={input}

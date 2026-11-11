@@ -1,4 +1,9 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import { Table, useTable, ColumnConfig, Cell } from '@backstage/ui';
 import {
   Entity,
@@ -32,9 +37,11 @@ type TableRow = {
   valid: boolean;
 };
 
-const serviceColumns: ColumnConfig<TableRow>[] = [
+const getServiceColumns = (
+  t: ApiPlatformTranslator,
+): ColumnConfig<TableRow>[] => [
   {
-    label: 'Name',
+    label: t('table.columns.name'),
     width: '50%',
     id: 'name',
     isRowHeader: true,
@@ -54,7 +61,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
       ),
   },
   {
-    label: 'Version',
+    label: t('table.columns.version'),
     width: '35%',
     id: 'version',
     cell: ({ system, name, version, valid }: TableRow) =>
@@ -73,7 +80,7 @@ const serviceColumns: ColumnConfig<TableRow>[] = [
       ),
   },
   {
-    label: 'System',
+    label: t('table.columns.system'),
     width: '15%',
     id: 'system',
     cell: ({ system, valid }: TableRow) =>
@@ -137,6 +144,7 @@ const ServiceLibraryRelationTable = ({
   title,
   rows,
 }: ServiceLibraryRelationTableProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { tableProps } = useTable({
     mode: 'complete',
     getData: () => rows,
@@ -150,14 +158,14 @@ const ServiceLibraryRelationTable = ({
   });
 
   return (
-    <EntityInfoCard title={`${title} (${rows.length})`}>
+    <EntityInfoCard title={title}>
       <Table
-        columnConfig={serviceColumns}
+        columnConfig={getServiceColumns(t)}
         {...tableProps}
         pagination={{
           type: 'none',
         }}
-        emptyState={<div>No data available</div>}
+        emptyState={<div>{t('table.empty')}</div>}
         className="denseTable"
       />
     </EntityInfoCard>
@@ -165,6 +173,7 @@ const ServiceLibraryRelationTable = ({
 };
 
 export const ServiceLibraryRelationCard = () => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
@@ -216,13 +225,18 @@ export const ServiceLibraryRelationCard = () => {
   const rows = entities?.map(toRow) ?? [];
 
   if (error) {
-    return <ResponseErrorPanel title="Error loading Libraries" error={error} />;
+    return (
+      <ResponseErrorPanel
+        title={t('serviceRelations.librariesError')}
+        error={error}
+      />
+    );
   }
 
   return (
     <ServiceLibraryRelationTable
       key={`service-library-${rows.length}`}
-      title="Libraries"
+      title={t('serviceRelations.libraries', { total: String(rows.length) })}
       rows={rows}
     />
   );

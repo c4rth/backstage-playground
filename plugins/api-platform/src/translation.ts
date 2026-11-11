@@ -1,0 +1,241 @@
+import {
+  createTranslationRef,
+  TranslationFunction,
+} from '@backstage/frontend-plugin-api';
+
+export const apiPlatformMetadata = {
+  title: 'API Platform',
+  apis: 'APIs',
+  services: 'Services',
+  systems: 'Systems',
+  libraries: 'Libraries',
+  byLibraries: 'By libraries',
+  byServices: 'By services',
+} as const;
+
+export const apiPlatformTranslationRef = createTranslationRef({
+  id: 'plugin.api-platform',
+  messages: {
+    apiExplorer: {
+      title: 'APIs',
+      documentTitle: 'API Explorer',
+      introduction:
+        'Explore all API definitions registered in Backstage. This screen provides a searchable and filterable table of APIs, including their names, descriptions, and associated systems. Use this view to quickly find, review, and navigate to detailed information about each API in your platform.',
+      purpose:
+        "The API Explorer helps you maintain visibility and control over your organization's APIs, making it easy to discover, document, and govern your API landscape.",
+    },
+    serviceExplorer: {
+      title: 'Services',
+      documentTitle: 'Service Explorer',
+      introduction:
+        'Browse all service definitions registered in Backstage. This screen provides a searchable and filterable table of services, including their names, descriptions, and associated metadata. Use this view to quickly find, review, and navigate to detailed information about each service in your platform.',
+      purpose:
+        "The Service Explorer helps you maintain visibility and control over your organization's services, making it easy to discover, document, and govern your service landscape.",
+    },
+    systemExplorer: {
+      title: 'Systems',
+      documentTitle: 'System Explorer',
+      introduction:
+        'View all system definitions registered in Backstage. This screen provides a searchable and filterable table of systems, including their names, descriptions, and related metadata. Use this view to quickly find, review, and navigate to detailed information about each system in your platform.',
+      purpose:
+        "The System Explorer helps you maintain visibility and control over your organization's systems, making it easy to discover, document, and govern your technical landscape.",
+    },
+    table: {
+      filterPlaceholder: 'Filter...',
+      filterLabel: 'Filter',
+      empty: 'No data available',
+      columns: {
+        name: 'Name',
+        description: 'Description',
+        type: 'Type',
+        system: 'System',
+        owner: 'Owner',
+        version: 'Version',
+        apiVersion: 'API Version',
+        environment: 'Environment',
+        latestVersion: 'Latest Version',
+        services: 'Used by # Services',
+      },
+    },
+    ownership: { all: 'All', owned: 'Owned' },
+    dependents: {
+      all: 'All services',
+      yes: 'Dependents',
+      no: 'Non-dependents',
+    },
+    apiTable: {
+      ownedTitle: 'Owned {{type}} APIs ({{total}})',
+      allTitle: 'All {{type}} APIs ({{total}})',
+      loadError: 'Failed to load APIs',
+      typeLabel: 'API Type',
+      types: {
+        all: 'All',
+        enterprise: 'Enterprise',
+        public: 'Public',
+        experience: 'Experience',
+        inner: 'Inner',
+        'third-party': 'Third-party',
+        mca: 'Mca',
+      },
+    },
+    serviceTable: {
+      ownedTitle: 'Owned Services ({{total}})',
+      allTitle: 'All Services ({{total}})',
+      title: 'Services ({{total}})',
+      loadError: 'Failed to load Services',
+    },
+    systemTable: {
+      ownedTitle: 'Owned Systems ({{total}})',
+      allTitle: 'All Systems ({{total}})',
+      loadError: 'Failed to load Systems',
+    },
+    libraryTable: {
+      documentTitle: 'Library Explorer',
+      byServiceDocumentTitle: 'Library By Service',
+      ownedTitle: 'Owned Libraries',
+      allTitle: 'All Libraries',
+      empty: 'No libraries found.',
+      loadError: 'Failed to load libraries',
+    },
+    apiDefinition: {
+      documentTitle: 'API - {{name}}',
+      breadcrumb: 'APIs',
+      version: 'Version',
+      tabs: {
+        openapi: 'OpenAPI',
+        raw: 'Raw',
+        lint: 'Lint',
+        services: 'Services',
+        info: 'Info',
+      },
+      allVersions: 'All versions',
+      about: 'About',
+      catalogReference: 'Catalog reference',
+      artifact: 'Azure Artifact',
+      mavenSnippet: 'Maven Snippet',
+      platformUrl: 'API Platform URL',
+      mockUrl: 'API Mock URL',
+      mcaOperation: 'MCA Operation',
+    },
+    apiRelations: {
+      consumers: 'Consumers ({{total}})',
+      providers: 'Providers ({{total}})',
+      consumersError: 'Error loading consumers',
+      providersError: 'Error loading providers',
+    },
+    serviceDefinition: {
+      documentTitle: 'Service - {{name}}',
+      breadcrumb: 'Services',
+      version: 'Version',
+      environment: 'Environment',
+      tabs: {
+        overview: 'Overview',
+        dependencies: 'Dependencies',
+        appRegistry: 'App Registry',
+        cicd: 'CI/CD',
+        gitTags: 'Git Tags',
+        readme: 'Readme',
+        sonar: 'SonarQube',
+      },
+      about: 'About',
+      reference: 'Service reference',
+      platform: 'Platform',
+      imageVersion: 'Image version',
+      unavailable: 'N/A',
+      repository: 'Repository',
+      apis: 'APIs',
+      libraries: 'Libraries',
+    },
+    serviceRelations: {
+      consumed: 'Consumed APIs ({{total}})',
+      provided: 'Provided APIs ({{total}})',
+      error: 'Error',
+      consumedError: 'Error loading consumed apis',
+      providedError: 'Error loading provided apis',
+      libraries: 'Libraries ({{total}})',
+      librariesError: 'Error loading Libraries',
+    },
+    systemDefinition: {
+      documentTitle: 'System - {{name}}',
+      breadcrumb: 'Systems',
+      ownership: 'Ownership',
+      members: 'Members',
+      info: 'Info',
+      about: 'About',
+      reference: 'System reference',
+    },
+    systemRelations: {
+      apis: 'APIs ({{total}})',
+      services: 'Services ({{total}})',
+      libraries: 'Libraries ({{total}})',
+      noApis: 'No apis found for this system.',
+      noServices: 'No services found for this system.',
+      noLibraries: 'No libraries found for this system.',
+    },
+    libraryDefinition: {
+      documentTitle: 'Library - {{name}}',
+      versionDocumentTitle: 'Library - {{name}} - {{version}}',
+      versionTitle: '{{name}} - {{version}}',
+      breadcrumb: 'Libraries',
+      generateReport: 'Generate report',
+      reportError: 'Error generating report',
+      byVersions: 'By versions',
+      byServices: 'By services',
+      versions: 'Library Versions ({{total}})',
+      versionsError: 'Error loading Library Versions',
+      dependentServices: 'Dependent Services',
+      allServices: 'All services',
+    },
+    report: {
+      noVersions: 'No library versions to generate report',
+      emptyPage:
+        'Service listing returned an empty page with more results available',
+      system: 'System',
+      serviceName: 'ServiceName',
+      serviceVersion: 'ServiceVersion',
+      byService: 'By Service',
+    },
+    about: {
+      description: 'description',
+      noDescription: 'No Description',
+      owner: 'owner',
+      noOwner: 'No Owner',
+      domain: 'domain',
+      noDomain: 'No Domain',
+      system: 'System',
+      noSystem: 'No System',
+      parent: 'Parent Component',
+      noParent: 'No Parent Component',
+      type: 'Type',
+      lifecycle: 'Lifecycle',
+      tags: 'Tags',
+      noTags: 'No Tags',
+    },
+    chip: {
+      details: 'Service details',
+      version: 'Version',
+      platform: 'Platform',
+      dependencies: 'Dependencies',
+    },
+    search: {
+      kind: 'Kind: {{value}}',
+      type: 'Type: {{value}}',
+      lifecycle: 'lifecycle: {{value}}',
+      owner: 'Owner: {{value}}',
+    },
+    api: {
+      apiNameRequired: 'API name is required',
+      serviceNameRequired:
+        "System and service name are required : '{{system}}' '{{serviceName}}'",
+      systemNameRequired: 'System name is required',
+      libraryNameRequired: 'Library name is required',
+      unregisterError:
+        'Failed to unregister entity: HTTP {{status}} - {{detail}}',
+      refreshError: 'Failed to refresh entity: HTTP {{status}} - {{detail}}',
+    },
+  },
+});
+
+export type ApiPlatformTranslator = TranslationFunction<
+  typeof apiPlatformTranslationRef.T
+>;

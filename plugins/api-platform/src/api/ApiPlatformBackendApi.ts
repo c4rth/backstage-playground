@@ -1,4 +1,6 @@
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { TranslationApi } from '@backstage/frontend-plugin-api';
+import { getApiPlatformTranslator } from './translation';
 import {
   ApiDefinitionsListRequest,
   ApiDefinitionListResult,
@@ -69,12 +71,18 @@ export interface ApiPlatformBackendApi {
 export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
+  private readonly translationApi: TranslationApi;
   private baseUrlCache: string | null = null;
   private baseUrlPromise: Promise<string> | null = null;
 
-  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi }) {
+  constructor(options: {
+    discoveryApi: DiscoveryApi;
+    fetchApi: FetchApi;
+    translationApi: TranslationApi;
+  }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
+    this.translationApi = options.translationApi;
   }
 
   private async getBaseUrl(): Promise<string> {
@@ -199,7 +207,10 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     system: string,
     apiName: string,
   ): Promise<ApiVersionDefinition[]> {
-    if (!apiName?.trim()) throw new Error('API name is required');
+    if (!apiName?.trim()) {
+      const t = await getApiPlatformTranslator(this.translationApi);
+      throw new Error(t('api.apiNameRequired'));
+    }
     const path = `/apis/definitions/${encodeURIComponent(system)}/${encodeURIComponent(apiName)}`;
     const versions = await this.fetchJson<ApiVersionDefinition[]>(path);
     return Array.isArray(versions) ? versions : [];
@@ -229,9 +240,8 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     serviceName: string,
   ): Promise<ServiceDefinition> {
     if (!system?.trim() || !serviceName?.trim()) {
-      throw new Error(
-        `System and service name are required : '${system}' '${serviceName}'`,
-      );
+      const t = await getApiPlatformTranslator(this.translationApi);
+      throw new Error(t('api.serviceNameRequired', { system, serviceName }));
     }
 
     const encodedSystemName = encodeURIComponent(system);
@@ -262,7 +272,8 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
   async getSystem(systemName: string): Promise<SystemDefinition> {
     if (!systemName?.trim()) {
-      throw new Error('System name is required');
+      const t = await getApiPlatformTranslator(this.translationApi);
+      throw new Error(t('api.systemNameRequired'));
     }
 
     const encodedSystemName = encodeURIComponent(systemName);
@@ -288,7 +299,10 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
     libraryName: string,
     servicesCount: boolean,
   ): Promise<LibraryDefinition[]> {
-    if (!libraryName?.trim()) throw new Error('Library name is required');
+    if (!libraryName?.trim()) {
+      const t = await getApiPlatformTranslator(this.translationApi);
+      throw new Error(t('api.libraryNameRequired'));
+    }
     const path = `/libraries/definitions/${encodeURIComponent(system)}/${encodeURIComponent(libraryName)}?servicesCount=${servicesCount}`;
     const versions = await this.fetchJson<LibraryDefinition[]>(path);
     return Array.isArray(versions) ? versions : [];
@@ -304,8 +318,12 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
     const response = await this.fetchApi.fetch(url, { method: 'DELETE' });
     if (!response.ok) {
+      const t = await getApiPlatformTranslator(this.translationApi);
       throw new Error(
-        `Failed to unregister entity: HTTP ${response.status} - ${response.statusText}`,
+        t('api.unregisterError', {
+          status: String(response.status),
+          detail: response.statusText,
+        }),
       );
     }
   }
@@ -318,8 +336,12 @@ export class ApiPlatformBackendClient implements ApiPlatformBackendApi {
 
     const response = await this.fetchApi.fetch(url, { method: 'PATCH' });
     if (!response.ok) {
+      const t = await getApiPlatformTranslator(this.translationApi);
       throw new Error(
-        `Failed to refresh entity: HTTP ${response.status} - ${response.statusText}`,
+        t('api.refreshError', {
+          status: String(response.status),
+          detail: response.statusText,
+        }),
       );
     }
   }

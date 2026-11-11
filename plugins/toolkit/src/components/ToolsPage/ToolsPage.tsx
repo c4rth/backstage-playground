@@ -1,9 +1,12 @@
 import { ToolsContainer } from './ToolsContainer';
 import { Box, FullPage } from '@backstage/ui';
 import { useDocumentTitle } from '@internal/plugin-components-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 export const ToolsPage = () => {
-  useDocumentTitle('Dev Tools');
+  const { t } = useTranslationRef(toolkitTranslationRef);
+  useDocumentTitle(t('page.documentTitle'));
   return (
     <>
       <FullPage>

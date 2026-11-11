@@ -4,23 +4,27 @@ import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-components-react';
-import { getStringForKey } from '../common';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 import { FullPage, PluginHeader } from '@backstage/ui';
 
-const POPUP_CONTENT = (
-  <InformationPopupContent
-    text1={getStringForKey('SystemPlatformExplorerPage.text1')}
-    text2={getStringForKey('SystemPlatformExplorerPage.text2')}
-  />
-);
-
 export const SystemExplorerPage = () => {
-  useDocumentTitle('System Explorer');
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
+  useDocumentTitle(t('systemExplorer.documentTitle'));
   return (
     <>
       <PluginHeader
-        title="Systems"
-        customActions={<InformationPopup content={POPUP_CONTENT} />}
+        title={t('systemExplorer.title')}
+        customActions={
+          <InformationPopup
+            content={
+              <InformationPopupContent
+                text={t('systemExplorer.introduction')}
+                comment={t('systemExplorer.purpose')}
+              />
+            }
+          />
+        }
       />
       <FullPage>
         <SystemTable />

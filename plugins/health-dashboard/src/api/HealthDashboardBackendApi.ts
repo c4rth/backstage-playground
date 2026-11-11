@@ -4,6 +4,7 @@ import {
   FetchApi,
   FeatureFlagsApi,
 } from '@backstage/core-plugin-api';
+import { TranslationApi } from '@backstage/frontend-plugin-api';
 import {
   ApplicationHealthV1Data,
   HealthV1DataResponse,
@@ -12,7 +13,7 @@ import {
 } from '../types';
 import { fetchHealthV1Data } from './health-v1';
 import { fetchHealthV2Data } from './health-v2';
-import { toErrorMessage } from './utils';
+import { getHealthDashboardTranslator, toErrorMessage } from './utils';
 
 export const healthDashboardBackendApiRef =
   createApiRef<HealthDashboardBackendApi>({
@@ -30,14 +31,17 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
   private readonly baseUrl: string;
   private readonly v1ProxyEndpoints: string[];
   private readonly v2ProxyEndpoints: string[];
+  private readonly translationApi: TranslationApi;
 
   constructor(options: {
     configApi: ConfigApi;
     fetchApi: FetchApi;
     featureFlagsApi: FeatureFlagsApi;
+    translationApi: TranslationApi;
   }) {
     this.fetchApi = options.fetchApi;
     this.featureFlagsApi = options.featureFlagsApi;
+    this.translationApi = options.translationApi;
     this.baseUrl = options.configApi.getString('backend.baseUrl');
     this.v1ProxyEndpoints = options.configApi.getStringArray(
       'healthProbes.v1.proxyEndpoints',
@@ -48,13 +52,14 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
   }
 
   async getHealthV1Data(): Promise<HealthV1DataResponse> {
+    const t = await getHealthDashboardTranslator(this.translationApi);
     if (this.v1ProxyEndpoints.length === 0) {
       return {
         healthData: [],
         errors: [
           {
             source: 'healthProbes.v1.proxyEndpoints',
-            message: 'No v1 probe endpoints configured',
+            message: t('api.errors.noV1Endpoints'),
           },
         ],
       };
@@ -67,6 +72,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
           baseUrl: this.baseUrl,
           fetchApi: this.fetchApi,
           featureFlagsApi: this.featureFlagsApi,
+          t,
         }),
       ),
     );
@@ -80,7 +86,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
 
       errors.push({
         source: endpointPath,
-        message: toErrorMessage(result.reason),
+        message: toErrorMessage(result.reason, t),
       });
       return [];
     });
@@ -114,13 +120,14 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
   }
 
   async getHealthV2Data(): Promise<HealthV2DataResponse> {
+    const t = await getHealthDashboardTranslator(this.translationApi);
     if (this.v2ProxyEndpoints.length === 0) {
       return {
         healthData: {},
         errors: [
           {
             source: 'healthProbes.v2.proxyEndpoints',
-            message: 'No v2 probe endpoints configured',
+            message: t('api.errors.noV2Endpoints'),
           },
         ],
       };
@@ -133,6 +140,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
           baseUrl: this.baseUrl,
           fetchApi: this.fetchApi,
           featureFlagsApi: this.featureFlagsApi,
+          t,
         }),
       ),
     );
@@ -170,7 +178,7 @@ export class HealthDashboardBackendClient implements HealthDashboardBackendApi {
 
       errors.push({
         source: endpointPath,
-        message: toErrorMessage(result.reason),
+        message: toErrorMessage(result.reason, t),
       });
     });
 

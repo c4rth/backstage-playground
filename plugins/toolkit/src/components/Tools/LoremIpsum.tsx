@@ -11,12 +11,15 @@ import {
   TextAreaField,
 } from '@backstage/ui';
 import styles from '../styles/customTextAreaField.module.css';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../translation';
 
 const randomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * max) + min;
 };
 
 export const LoremIpsum = () => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const [output, setOutput] = useState('');
   const [multiplier, setMultiplier] = useState(1);
   const [fakerType, setFakerType] = useState('line');
@@ -162,37 +165,40 @@ export const LoremIpsum = () => {
 
   const fakerTypes: Option[] = useMemo(
     () => [
-      { label: 'Address', id: 'address' },
-      { label: 'BIC', id: 'bic' },
-      { label: 'Catch phrase', id: 'catch-phrase' },
-      { label: 'Credit card', id: 'credit-card' },
-      { label: 'Cron', id: 'cron' },
-      { label: 'Datetime', id: 'datetime' },
-      { label: 'Domain', id: 'domain' },
-      { label: 'Emoji', id: 'emoji' },
-      { label: 'Hack', id: 'hack' },
-      { label: 'Hex', id: 'hex' },
-      { label: 'IBAN', id: 'iban' },
-      { label: 'IMEI', id: 'imei' },
-      { label: 'IPv4', id: 'ipv4' },
-      { label: 'IPv6', id: 'ipv6' },
-      { label: 'Job title', id: 'job-title' },
-      { label: 'Line', id: 'line' },
-      { label: 'MAC', id: 'mac' },
-      { label: 'Name', id: 'name' },
-      { label: 'Number', id: 'number' },
-      { label: 'Paragraph', id: 'paragraph' },
-      { label: 'Password', id: 'password' },
-      { label: 'Product description', id: 'product-description' },
-      { label: 'Product name', id: 'product-name' },
-      { label: 'Slug', id: 'slug' },
-      { label: 'String', id: 'string' },
-      { label: 'URL', id: 'url' },
-      { label: 'User agent', id: 'user-agent' },
-      { label: 'UUID', id: 'uuid' },
-      { label: 'Word', id: 'word' },
+      { label: t('lorem.types.address'), id: 'address' },
+      { label: t('lorem.types.bic'), id: 'bic' },
+      { label: t('lorem.types.catch-phrase'), id: 'catch-phrase' },
+      { label: t('lorem.types.credit-card'), id: 'credit-card' },
+      { label: t('lorem.types.cron'), id: 'cron' },
+      { label: t('lorem.types.datetime'), id: 'datetime' },
+      { label: t('lorem.types.domain'), id: 'domain' },
+      { label: t('lorem.types.emoji'), id: 'emoji' },
+      { label: t('lorem.types.hack'), id: 'hack' },
+      { label: t('lorem.types.hex'), id: 'hex' },
+      { label: t('lorem.types.iban'), id: 'iban' },
+      { label: t('lorem.types.imei'), id: 'imei' },
+      { label: t('lorem.types.ipv4'), id: 'ipv4' },
+      { label: t('lorem.types.ipv6'), id: 'ipv6' },
+      { label: t('lorem.types.job-title'), id: 'job-title' },
+      { label: t('lorem.types.line'), id: 'line' },
+      { label: t('lorem.types.mac'), id: 'mac' },
+      { label: t('lorem.types.name'), id: 'name' },
+      { label: t('lorem.types.number'), id: 'number' },
+      { label: t('lorem.types.paragraph'), id: 'paragraph' },
+      { label: t('lorem.types.password'), id: 'password' },
+      {
+        label: t('lorem.types.product-description'),
+        id: 'product-description',
+      },
+      { label: t('lorem.types.product-name'), id: 'product-name' },
+      { label: t('lorem.types.slug'), id: 'slug' },
+      { label: t('lorem.types.string'), id: 'string' },
+      { label: t('lorem.types.url'), id: 'url' },
+      { label: t('lorem.types.user-agent'), id: 'user-agent' },
+      { label: t('lorem.types.uuid'), id: 'uuid' },
+      { label: t('lorem.types.word'), id: 'word' },
     ],
-    [],
+    [t],
   );
 
   return (
@@ -205,10 +211,10 @@ export const LoremIpsum = () => {
           <Grid.Item colSpan="2">
             <Select
               onChange={selected => setFakerType(selected as string)}
-              label="Fake Data"
+              label={t('lorem.type')}
               value={fakerType.toString()}
               options={fakerTypes}
-              aria-label="Fake Data"
+              aria-label={t('lorem.type')}
             />
           </Grid.Item>
           <Grid.Item colSpan="1">
@@ -216,10 +222,10 @@ export const LoremIpsum = () => {
               onChange={selected =>
                 setMultiplier(Number.parseInt(selected as string, 10))
               }
-              label="Count"
+              label={t('lorem.count')}
               value={multiplier.toString()}
               options={multipliers}
-              aria-label="Count"
+              aria-label={t('lorem.count')}
             />
           </Grid.Item>
           <Grid.Item
@@ -232,9 +238,12 @@ export const LoremIpsum = () => {
               size="small"
               variant="tertiary"
             >
-              Generate
+              {t('lorem.generate')}
             </Button>
-            <ClearValueButton setValue={setOutput} tooltip="Clear output" />
+            <ClearValueButton
+              setValue={setOutput}
+              tooltip={t('lorem.clearTooltip')}
+            />
             <CopyToClipboardButton output={output} />
           </Grid.Item>
         </Grid.Root>
@@ -249,7 +258,7 @@ export const LoremIpsum = () => {
       >
         <TextAreaField
           className={styles.customTextAreaField}
-          aria-label="Output"
+          aria-label={t('lorem.output')}
           value={output || ''}
         />
       </Grid.Item>

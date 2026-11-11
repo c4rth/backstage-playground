@@ -2,6 +2,7 @@ import { FeatureFlagsApi, FetchApi } from '@backstage/core-plugin-api';
 import { HealthV2Data } from '../types';
 import { dummyCallV2 } from './fake-data-v2';
 import { createHeaders, toErrorMessage } from './utils';
+import { HealthDashboardTranslator } from '../translation';
 
 const ENVIRONMENT_ORDER = ['PRD', 'PTP', 'UAT', 'GTU', 'TST'];
 
@@ -10,8 +11,9 @@ export async function fetchHealthV2Data(options: {
   baseUrl: string;
   fetchApi: FetchApi;
   featureFlagsApi: FeatureFlagsApi;
+  t: HealthDashboardTranslator;
 }): Promise<HealthV2Data> {
-  const { endpointPath, baseUrl, fetchApi, featureFlagsApi } = options;
+  const { endpointPath, baseUrl, fetchApi, featureFlagsApi, t } = options;
 
   try {
     let response: Response;
@@ -29,7 +31,10 @@ export async function fetchHealthV2Data(options: {
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `HTTP ${response.status}: Failed to fetch health data - ${errorText}`,
+        t('api.errors.http', {
+          status: String(response.status),
+          error: errorText,
+        }),
       );
     }
 
@@ -56,6 +61,6 @@ export async function fetchHealthV2Data(options: {
       }),
     );
   } catch (error) {
-    throw new Error(`Failed to get health data: ${toErrorMessage(error)}`);
+    throw new Error(t('api.errors.fetch', { error: toErrorMessage(error, t) }));
   }
 }

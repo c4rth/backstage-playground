@@ -9,27 +9,33 @@ import { useNavigate } from 'react-router-dom';
 import { McaBaseType } from '@internal/plugin-mca-common';
 import { Container, FullPage, PluginHeader } from '@backstage/ui';
 import { Progress } from '@internal/plugin-components-react';
-import { useRouteRefParams } from '@backstage/frontend-plugin-api';
+import {
+  useRouteRefParams,
+  useTranslationRef,
+} from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef, McaTranslator } from '../../translation';
 import { baseTypeRouteRef } from '../../routes';
 import { RiAlbumLine } from '@remixicon/react';
 
 async function getBaseType(
   mcaApi: McaComponentsBackendApi,
   name: string,
+  t: McaTranslator,
 ): Promise<McaBaseType> {
   const mca = await mcaApi.getMcaBaseType(name);
   if (!mca) {
-    throw new NotFoundError(`MCA basetype ${name} not found`);
+    throw new NotFoundError(t('baseTypeDefinition.notFound', { name }));
   }
   return mca;
 }
 
 export const McaBaseTypeDefinitionPage = () => {
+  const { t } = useTranslationRef(mcaTranslationRef);
   const mcaApi = useApi(mcaComponentsBackendApiRef);
   const configApi = useApi(configApiRef);
   const { name } = useRouteRefParams(baseTypeRouteRef);
   const navigate = useNavigate();
-  useDocumentTitle(`MCA BaseType - ${name}`);
+  useDocumentTitle(t('baseTypeDefinition.title', { name }));
 
   const [error, setError] = useState<Error | null>(null);
   const [baseType, setBaseType] = useState<McaBaseType>();
@@ -43,14 +49,14 @@ export const McaBaseTypeDefinitionPage = () => {
   }
 
   useEffect(() => {
-    getBaseType(mcaApi, name!)
+    getBaseType(mcaApi, name!, t)
       .then(result => {
         setBaseType(result);
       })
       .catch(err => {
         setError(err);
       });
-  }, [name, mcaApi]);
+  }, [name, mcaApi, t]);
 
   let baseTypeUrl: string | undefined;
   if (baseType && backendBaseUrl) {
@@ -88,11 +94,7 @@ export const McaBaseTypeDefinitionPage = () => {
   if (!backendBaseUrl) {
     return (
       <ResponseErrorPanel
-        error={
-          new Error(
-            'Backend URL not configured. Please check backend.baseUrl in app-config.yaml',
-          )
-        }
+        error={new Error(t('baseTypeDefinition.missingBackend'))}
       />
     );
   }
@@ -102,7 +104,7 @@ export const McaBaseTypeDefinitionPage = () => {
       <PluginHeader
         icon={<RiAlbumLine fontSize="inherit" />}
         breadcrumbs={[
-          { label: 'MCA BaseTypes', href: '/mca/basetypes' },
+          { label: t('baseTypeDefinition.breadcrumb'), href: '/mca/basetypes' },
           { label: name, href: `` },
         ]}
       />
@@ -117,7 +119,9 @@ export const McaBaseTypeDefinitionPage = () => {
               border: 0,
               visibility: iframeLoading ? 'hidden' : 'visible',
             }}
-            title={`BaseType :${baseTypeUrl}`}
+            title={t('baseTypeDefinition.frameTitle', {
+              url: String(baseTypeUrl),
+            })}
             onLoad={() => setIframeLoading(false)}
           />
         </Container>

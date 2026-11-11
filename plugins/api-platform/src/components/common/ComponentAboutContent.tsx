@@ -10,6 +10,8 @@ import {
 import { MarkdownContent } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
 import { Grid, Tag, TagGroup } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 export interface ComponentAboutContentProps {
   entity: Entity;
@@ -17,6 +19,7 @@ export interface ComponentAboutContentProps {
 
 /** @public */
 export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = props;
 
   const isSystem = entity.kind.toLocaleLowerCase('en-US') === 'system';
@@ -45,15 +48,15 @@ export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
   return (
     <Grid.Root columns="12">
       <Grid.Item colSpan="12">
-        <AboutField label="description">
+        <AboutField label={t('about.description')}>
           <MarkdownContent
-            content={entity?.metadata?.description || 'No Description'}
+            content={entity?.metadata?.description || t('about.noDescription')}
           />
         </AboutField>
       </Grid.Item>
 
       <Grid.Item colSpan="4">
-        <AboutField label="owner" value="No Owner">
+        <AboutField label={t('about.owner')} value={t('about.noOwner')}>
           {ownedByRelations.length > 0 && (
             <EntityRefLinks entityRefs={ownedByRelations} defaultKind="group" />
           )}
@@ -62,7 +65,7 @@ export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
 
       {(isSystem || partOfDomainRelations.length > 0) && (
         <Grid.Item colSpan="4">
-          <AboutField label="domain" value="No Domain">
+          <AboutField label={t('about.domain')} value={t('about.noDomain')}>
             {partOfDomainRelations.length > 0 && (
               <EntityRefLinks
                 entityRefs={partOfDomainRelations}
@@ -78,7 +81,7 @@ export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
         isResource ||
         partOfSystemRelations.length > 0) && (
         <Grid.Item colSpan="4">
-          <AboutField label="System" value="No System">
+          <AboutField label={t('about.system')} value={t('about.noSystem')}>
             {partOfSystemRelations.length > 0 && (
               <EntityRefLinks
                 entityRefs={partOfSystemRelations}
@@ -91,7 +94,7 @@ export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
 
       {isComponent && partOfComponentRelations.length > 0 && (
         <Grid.Item colSpan="4">
-          <AboutField label="Parent Component" value="No Parent Component">
+          <AboutField label={t('about.parent')} value={t('about.noParent')}>
             <EntityRefLinks
               entityRefs={partOfComponentRelations}
               defaultKind="component"
@@ -108,7 +111,10 @@ export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
         isLocation ||
         typeof entity?.spec?.type === 'string') && (
         <Grid.Item colSpan="4">
-          <AboutField label="Type" value={entity?.spec?.type as string} />
+          <AboutField
+            label={t('about.type')}
+            value={entity?.spec?.type as string}
+          />
         </Grid.Item>
       )}
 
@@ -117,15 +123,15 @@ export const ComponentAboutContent = (props: ComponentAboutContentProps) => {
         typeof entity?.spec?.lifecycle === 'string') && (
         <Grid.Item colSpan="4">
           <AboutField
-            label="Lifecycle"
+            label={t('about.lifecycle')}
             value={entity?.spec?.lifecycle as string}
           />
         </Grid.Item>
       )}
 
       <Grid.Item colSpan="4">
-        <AboutField label="Tags" value="No Tags">
-          <TagGroup aria-label="Tags">
+        <AboutField label={t('about.tags')} value={t('about.noTags')}>
+          <TagGroup aria-label={t('about.tags')}>
             {(entity?.metadata?.tags || []).map(tag => (
               <Tag key={tag}>{tag}</Tag>
             ))}

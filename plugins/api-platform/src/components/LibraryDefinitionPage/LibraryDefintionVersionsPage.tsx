@@ -26,6 +26,8 @@ import {
 } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
 import { Progress } from '@internal/plugin-components-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 interface LibraryDefinitionVersionsPageProps {
   system: string;
@@ -36,6 +38,7 @@ export const LibraryDefinitionVersionsPage = ({
   system,
   name,
 }: LibraryDefinitionVersionsPageProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const [libraryEntity, setLibraryEntity] = useState<
     ComponentEntity | undefined
   >(undefined);
@@ -49,7 +52,7 @@ export const LibraryDefinitionVersionsPage = ({
     LibraryDefinition[] | undefined
   >(undefined);
 
-  useDocumentTitle(`Library - ${name}`);
+  useDocumentTitle(t('libraryDefinition.documentTitle', { name }));
   useEffect(() => {
     if (!name || !system) return;
 
@@ -81,7 +84,7 @@ export const LibraryDefinitionVersionsPage = ({
     setGenerating(true);
     setErrorReport(null);
     try {
-      await generateReport(apiPlatformApi, name!, libraryVersions);
+      await generateReport(apiPlatformApi, name!, libraryVersions, t);
     } catch (errGenerate) {
       setErrorReport(errGenerate as Error);
     } finally {
@@ -94,7 +97,10 @@ export const LibraryDefinitionVersionsPage = ({
       <PluginHeader
         icon={<RiBookShelfLine fontSize="inherit" />}
         breadcrumbs={[
-          { label: 'Libraries', href: '/api-platform/library' },
+          {
+            label: t('libraryDefinition.breadcrumb'),
+            href: '/api-platform/library',
+          },
           { label: name, href: '' },
         ]}
         customActions={
@@ -104,7 +110,7 @@ export const LibraryDefinitionVersionsPage = ({
               isDisabled={loading || !!error}
               icon={<RiBookShelfLine />}
             />
-            <Tooltip>Generate report</Tooltip>
+            <Tooltip>{t('libraryDefinition.generateReport')}</Tooltip>
           </TooltipTrigger>
         }
       />
@@ -113,14 +119,14 @@ export const LibraryDefinitionVersionsPage = ({
         {generating && <Progress />}
         {errorReport && (
           <ResponseErrorPanel
-            title="Error generating report"
+            title={t('libraryDefinition.reportError')}
             error={errorReport}
           />
         )}
         <Tabs>
           <TabList>
-            <Tab id="versions">By versions</Tab>
-            <Tab id="services">By services</Tab>
+            <Tab id="versions">{t('libraryDefinition.byVersions')}</Tab>
+            <Tab id="services">{t('libraryDefinition.byServices')}</Tab>
           </TabList>
           <TabPanel id="versions">
             <LibraryDefinitionVersionsCard system={system!} name={name!} />

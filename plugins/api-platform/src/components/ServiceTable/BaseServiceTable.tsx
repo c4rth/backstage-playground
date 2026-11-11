@@ -13,6 +13,11 @@ import {
   DependentsType,
 } from '@internal/plugin-api-platform-common';
 import { useState } from 'react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import {
+  apiPlatformTranslationRef,
+  ApiPlatformTranslator,
+} from '../../translation';
 import { useApi } from '@backstage/core-plugin-api';
 import { ApiPlatformBackendApi } from '../../api';
 import { apiPlatformBackendApiRef } from '../../plugin';
@@ -62,8 +67,10 @@ export const renderVersionList = (
   </Cell>
 );
 
-const createNameColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
-  label: 'Name',
+const createNameColumn = <T extends BaseTableRow>(
+  t: ApiPlatformTranslator,
+): ColumnConfig<T> => ({
+  label: t('table.columns.name'),
   width: '25%',
   id: 'name',
   isSortable: true,
@@ -79,14 +86,16 @@ const createNameColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
   ),
 });
 
-const createVersionColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
-  label: 'Version',
+const createVersionColumn = <T extends BaseTableRow>(
+  t: ApiPlatformTranslator,
+): ColumnConfig<T> => ({
+  label: t('table.columns.version'),
   width: '5%',
   id: 'version',
   isSortable: false,
   header: () => (
     <Column id="version" className="centered-col-header">
-      <Text weight="bold">Version</Text>
+      <Text weight="bold">{t('table.columns.version')}</Text>
     </Column>
   ),
   cell: ({ serviceDefinition }) =>
@@ -100,8 +109,10 @@ const createVersionColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
     )),
 });
 
-const createSystemColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
-  label: 'System',
+const createSystemColumn = <T extends BaseTableRow>(
+  t: ApiPlatformTranslator,
+): ColumnConfig<T> => ({
+  label: t('table.columns.system'),
   width: '10%',
   id: 'system',
   isSortable: true,
@@ -118,12 +129,13 @@ const createSystemColumn = <T extends BaseTableRow>(): ColumnConfig<T> => ({
 
 export function buildColumns<T extends BaseTableRow>(
   environmentColumns: ColumnConfig<T>[],
+  t: ApiPlatformTranslator,
 ): ColumnConfig<T>[] {
   return [
-    createNameColumn<T>(),
-    createVersionColumn<T>(),
+    createNameColumn<T>(t),
+    createVersionColumn<T>(t),
     ...environmentColumns,
-    createSystemColumn<T>(),
+    createSystemColumn<T>(t),
   ];
 }
 
@@ -172,13 +184,6 @@ const getData = async <T extends BaseTableRow>(
   return res;
 };
 
-const getTitleLabel = (toggleType: ToggleType, ownership: OwnershipType) => {
-  if (toggleType === 'ownership') {
-    return `${ownership === 'owned' ? 'Owned' : 'All'} Services`;
-  }
-  return 'Services';
-};
-
 export function BaseServiceTable<T extends BaseTableRow>({
   columns,
   toRow,
@@ -186,6 +191,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
   storageSearchKey,
   toggleType = 'ownership',
 }: BaseServiceTableProps<T>) {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
   const [countRows, setCountRows] = useState(0);
   const [ownershipType, setOwnershipType] =
@@ -235,10 +241,20 @@ export function BaseServiceTable<T extends BaseTableRow>({
 
   useReloadOnChange(reload, [ownershipType, dependentsType]);
 
+  let title: string = t('serviceTable.title', { total: String(countRows) });
+  if (toggleType === 'ownership') {
+    title = t(
+      ownershipType === 'owned'
+        ? 'serviceTable.ownedTitle'
+        : 'serviceTable.allTitle',
+      { total: String(countRows) },
+    );
+  }
+
   if (tableProps.error) {
     return (
       <ResponseErrorPanel
-        title="Failed to load Services"
+        title={t('serviceTable.loadError')}
         error={tableProps.error}
       />
     );
@@ -249,7 +265,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
       <Card>
         <CardHeader>
           <Header
-            title={`${getTitleLabel(toggleType, ownershipType)} (${countRows})`}
+            title={title}
             customActions={
               <>
                 {toggleType === 'ownership' && (
@@ -265,13 +281,13 @@ export function BaseServiceTable<T extends BaseTableRow>({
                   />
                 )}
                 <SearchField
-                  placeholder="Filter..."
+                  placeholder={t('table.filterPlaceholder')}
                   value={search.value}
                   onChange={str => {
                     storeValue(str);
                     search.onChange(str);
                   }}
-                  aria-label="Filter"
+                  aria-label={t('table.filterLabel')}
                   startCollapsed
                   size="medium"
                 />
@@ -284,7 +300,7 @@ export function BaseServiceTable<T extends BaseTableRow>({
             key={`table-${ownershipType}-${dependentsType}`}
             {...tableProps}
             columnConfig={columns}
-            emptyState={<div>No data available</div>}
+            emptyState={<div>{t('table.empty')}</div>}
             className="denseTable"
           />
         </CardBody>

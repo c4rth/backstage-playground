@@ -14,6 +14,8 @@ import { jsonataLanguage } from './codemirror-jsonata';
 import { registerCustomFunctions, loadFuncBindings } from './jsonata-functions';
 import { useResizable } from '../../../hooks';
 import { useApi, appThemeApiRef } from '@backstage/core-plugin-api';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { toolkitTranslationRef } from '../../../translation';
 
 const sampleInput = JSON.stringify(
   {
@@ -96,6 +98,7 @@ const sampleInput = JSON.stringify(
 const sampleExpression = 'account.order.product.price';
 
 export const JSONataTester = () => {
+  const { t } = useTranslationRef(toolkitTranslationRef);
   const appThemeApi = useApi(appThemeApiRef);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
@@ -145,30 +148,33 @@ export const JSONataTester = () => {
     return val;
   };
 
-  const evaluate = useCallback(async (jsonStr: string, expr: string) => {
-    setError(null);
-    setResult(undefined);
-    if (!jsonStr || !expr) return;
-    try {
-      const data = JSON.parse(jsonStr);
-      const jsonataExpr = jsonata(expr);
-      registerCustomFunctions(jsonataExpr);
-      const funcBindings = await loadFuncBindings();
-      let pathresult = await jsonataExpr.evaluate(data, funcBindings);
-      if (typeof pathresult === 'undefined') {
-        pathresult = '** no match **';
-      } else {
-        pathresult = JSON.stringify(
-          pathresult,
-          (_, val) => formatValue(val),
-          2,
-        );
+  const evaluate = useCallback(
+    async (jsonStr: string, expr: string) => {
+      setError(null);
+      setResult(undefined);
+      if (!jsonStr || !expr) return;
+      try {
+        const data = JSON.parse(jsonStr);
+        const jsonataExpr = jsonata(expr);
+        registerCustomFunctions(jsonataExpr);
+        const funcBindings = await loadFuncBindings();
+        let pathresult = await jsonataExpr.evaluate(data, funcBindings);
+        if (typeof pathresult === 'undefined') {
+          pathresult = t('jsonata.noMatch');
+        } else {
+          pathresult = JSON.stringify(
+            pathresult,
+            (_, val) => formatValue(val),
+            2,
+          );
+        }
+        setResult(pathresult);
+      } catch (e: any) {
+        setError(e.message ?? String(e));
       }
-      setResult(pathresult);
-    } catch (e: any) {
-      setError(e.message ?? String(e));
-    }
-  }, []);
+    },
+    [t],
+  );
 
   useEffect(() => {
     evaluate(input, expression);
@@ -243,7 +249,7 @@ export const JSONataTester = () => {
           onMouseLeave={e =>
             (e.currentTarget.style.background = 'var(--bui-border-1)')
           }
-          aria-label="Resize horizontal divider"
+          aria-label={t('jsonata.resizeHorizontal')}
         />
 
         {/* Right Panel: Split (Top vs Bottom) */}
@@ -278,7 +284,7 @@ export const JSONataTester = () => {
             onMouseLeave={e =>
               (e.currentTarget.style.background = 'var(--bui-border-1)')
             }
-            aria-label="Resize vertical divider"
+            aria-label={t('jsonata.resizeVertical')}
           />
 
           {/* Bottom Right: Result */}

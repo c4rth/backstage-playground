@@ -53,23 +53,23 @@ export const InformationPopup = (props: InformationPopupProps) => {
 };
 
 export interface InformationPopupContentProps {
-  text1: string;
-  text2?: string;
+  text: string;
+  comment?: string;
 }
 
 export const InformationPopupContent = (
   props: InformationPopupContentProps,
 ) => {
-  const { text1, text2 } = props;
+  const { text, comment } = props;
   return (
     <Box style={{ whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
-      <Text variant="body-large">{text1}</Text>
-      {text2 && (
+      <Text variant="body-large">{text}</Text>
+      {comment && (
         <>
           <br />
           <Box mt="1">
             <Text variant="body-medium">
-              <i>{text2}</i>
+              <i>{comment}</i>
             </Text>
           </Box>
         </>

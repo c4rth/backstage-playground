@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { useGetHealthV2Data } from '../../hooks';
 import { HealthV2DataResponse, HealthV2Probe } from '../../types';
 import { HealthDashboardV2Page } from './HealthDashboardV2Page';
+import { mockApis, TestApiProvider } from '@backstage/frontend-test-utils';
 
 jest.mock('../../hooks');
 jest.mock('@internal/plugin-components-react', () => ({
@@ -15,6 +16,7 @@ jest.mock('../common/HealthDetailsSheet', () => ({
   HealthDetailsSheet: () => null,
 }));
 jest.mock('@backstage/core-components', () => ({
+  ...jest.requireActual('@backstage/core-components'),
   ResponseErrorPanel: () => null,
 }));
 jest.mock('@backstage/ui', () => {
@@ -116,7 +118,9 @@ describe('HealthDashboardV2Page application URL filter', () => {
       { initialEntries: [`/health-dashboards/v2${search}`] },
     );
     render(
-      <RouterProvider router={router} future={{ v7_startTransition: true }} />,
+      <TestApiProvider apis={[mockApis.translation(), mockApis.error()]}>
+        <RouterProvider router={router} future={{ v7_startTransition: true }} />
+      </TestApiProvider>,
     );
     await screen.findByRole('option', { name: application });
   }

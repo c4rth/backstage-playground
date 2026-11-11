@@ -7,6 +7,8 @@ import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { Box, Text, Link } from '@backstage/ui';
 import { Chip } from '@internal/plugin-components-react';
 import { RiAlbumLine } from '@remixicon/react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { mcaTranslationRef } from '../../translation';
 
 function getIcon(kind: string, defaultIcon: ReactNode) {
   if (kind === 'BaseType') {
@@ -26,6 +28,7 @@ export interface McaComponentSearchResultListItemProps {
 export const McaComponentSearchResultListItem = (
   props: McaComponentSearchResultListItemProps,
 ) => {
+  const { t } = useTranslationRef(mcaTranslationRef);
   const result = props.result as any;
   const highlight = props.highlight as ResultHighlight;
 
@@ -94,28 +97,34 @@ export const McaComponentSearchResultListItem = (
         <Box>
           {result.kind && (
             <Chip
-              label={`Kind: ${result.kind}`}
+              label={t('searchResult.kind', { kind: result.kind })}
               size="small"
               style={{ marginRight: '0.5rem' }}
             />
           )}
           {result.applicationCode && (
             <Chip
-              label={`Application Code: ${result.applicationCode}`}
+              label={t('searchResult.applicationCode', {
+                code: result.applicationCode,
+              })}
               size="small"
               style={{ marginRight: '0.5rem' }}
             />
           )}
           {result.prdVersion && (
             <Chip
-              label={`PRD: ${result.prdVersion}`}
+              label={t('searchResult.productionVersion', {
+                version: result.prdVersion,
+              })}
               size="small"
               style={{ marginRight: '0.5rem' }}
             />
           )}
           {result.otherVersions && result.otherVersions.length > 0 && (
             <Chip
-              label={`Other versions: ${result.otherVersions}`}
+              label={t('searchResult.otherVersions', {
+                versions: String(result.otherVersions),
+              })}
               size="small"
             />
           )}

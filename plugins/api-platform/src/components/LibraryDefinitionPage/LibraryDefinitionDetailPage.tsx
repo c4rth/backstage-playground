@@ -10,6 +10,8 @@ import { apiPlatformBackendApiRef } from '../../plugin';
 import { LibraryDefinitionServicesCard } from './LibraryDefinitionServicesCard';
 import { Container, PluginHeader, Header } from '@backstage/ui';
 import { RiBookShelfLine } from '@remixicon/react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { apiPlatformTranslationRef } from '../../translation';
 
 interface LibraryDefinitionDetailPageProps {
   system: string;
@@ -22,6 +24,7 @@ export const LibraryDefinitionDetailPage = ({
   name,
   version,
 }: LibraryDefinitionDetailPageProps) => {
+  const { t } = useTranslationRef(apiPlatformTranslationRef);
   const [libraryEntity, setLibraryEntity] = useState<
     ComponentEntity | undefined
   >(undefined);
@@ -30,9 +33,11 @@ export const LibraryDefinitionDetailPage = ({
   const catalogApi = useApi(catalogApiRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
 
-  useDocumentTitle(`Library - ${name} - ${version}`);
+  useDocumentTitle(
+    t('libraryDefinition.versionDocumentTitle', { name, version }),
+  );
 
-  const headerTitle = `${name} - ${version}`;
+  const headerTitle = t('libraryDefinition.versionTitle', { name, version });
 
   useEffect(() => {
     if (!name || !system) return;
@@ -68,7 +73,10 @@ export const LibraryDefinitionDetailPage = ({
       <PluginHeader
         icon={<RiBookShelfLine fontSize="inherit" />}
         breadcrumbs={[
-          { label: 'Libraries', href: '/api-platform/library' },
+          {
+            label: t('libraryDefinition.breadcrumb'),
+            href: '/api-platform/library',
+          },
           { label: name, href: `/api-platform/library/${system}/${name}` },
           { label: version, href: '' },
         ]}
