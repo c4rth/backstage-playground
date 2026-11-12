@@ -252,6 +252,11 @@ describe('HealthDashboardV2Page application URL filter', () => {
   it('refreshes health data when the refresh button is pressed', async () => {
     await renderPage();
 
+    expect(
+      screen.getByRole<HTMLSelectElement>('combobox', {
+        name: 'Auto-refresh interval',
+      }).value,
+    ).toBe('30000');
     expect(getHealthData).toHaveBeenCalledTimes(1);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
