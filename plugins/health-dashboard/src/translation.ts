@@ -59,6 +59,16 @@ export const healthDashboardTranslationRef = createTranslationRef({
       statusDescription:
         'For each environment, RED means at least one probe is red; GREEN means all probes are green. Other statuses are shown as UNKNOWN.',
       emptyState: 'No health data found.',
+      refresh: {
+        button: 'Refresh',
+        intervalLabel: 'Auto-refresh interval',
+        off: 'Off',
+        fiveSeconds: '5s',
+        tenSeconds: '10s',
+        thirtySeconds: '30s',
+        oneMinute: '1m',
+        fiveMinutes: '5m',
+      },
       filters: {
         applications: 'Applications',
         applicationLabel: 'Application',

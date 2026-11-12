@@ -207,23 +207,23 @@ export const HealthDashboardV1Page = () => {
               }}
             >
               <Box style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                variant="secondary"
-                onClick={() => reload()}
-                iconEnd={<RiRestartLine />}
-                isDisabled={tableProps.isPending}
-              >
-                {t('dashboardV1Page.refresh.button')}
-              </Button>
-              <Select
-                onChange={selected => {
-                  setRefreshInterval(parseInt(selected?.toString() ?? '0', 10));
-                }}
-                label=""
-                options={refreshIntervals}
-                value={refreshInterval.toString()}
-                aria-label={t('dashboardV1Page.refresh.intervalLabel')}
-              />
+                <Button
+                  variant="secondary"
+                  onClick={() => reload()}
+                  iconEnd={<RiRestartLine />}
+                  isDisabled={tableProps.isPending}
+                >
+                  {t('dashboardV1Page.refresh.button')}
+                </Button>
+                <Select
+                  onChange={selected => {
+                    setRefreshInterval(parseInt(selected?.toString() ?? '0', 10));
+                  }}
+                  label=""
+                  options={refreshIntervals}
+                  value={refreshInterval.toString()}
+                  aria-label={t('dashboardV1Page.refresh.intervalLabel')}
+                />
               </Box>
               <Legend />
             </Box>

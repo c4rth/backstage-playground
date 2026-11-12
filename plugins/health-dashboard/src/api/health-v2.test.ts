@@ -117,7 +117,7 @@ describe('fetchHealthV2Data', () => {
       new Set(['GREEN', 'GRAY']),
     );
     expect(new Set(probes.map(probe => probe.applicationType))).toEqual(
-      new Set(['osdfv2', 'Mendix']),
+      new Set(['compv2', 'Front']),
     );
     expect(probes.some(probe => probe.response === null)).toBe(true);
     expect(probes.some(probe => probe.platformComponent === null)).toBe(true);

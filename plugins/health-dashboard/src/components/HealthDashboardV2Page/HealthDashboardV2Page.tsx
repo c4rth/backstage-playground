@@ -6,6 +6,7 @@ import {
   FullPage,
   Flex,
   Header,
+  Button,
   Select,
   Table,
   useTable,
@@ -17,6 +18,7 @@ import {
 import { Button as AriaButton } from 'react-aria-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { RiRestartLine } from '@remixicon/react';
 import { HealthDataError, HealthV2Data } from '../../types';
 import { useGetHealthV2Data } from '../../hooks';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
@@ -125,8 +127,18 @@ export const HealthDashboardV2Page = () => {
   const { t } = useTranslationRef(healthDashboardTranslationRef);
   useDocumentTitle(t('dashboardV2Page.title'));
 
+  const refreshIntervals = [
+    { label: t('dashboardV2Page.refresh.off'), id: '0' },
+    { label: t('dashboardV2Page.refresh.fiveSeconds'), id: '5000' },
+    { label: t('dashboardV2Page.refresh.tenSeconds'), id: '10000' },
+    { label: t('dashboardV2Page.refresh.thirtySeconds'), id: '30000' },
+    { label: t('dashboardV2Page.refresh.oneMinute'), id: '60000' },
+    { label: t('dashboardV2Page.refresh.fiveMinutes'), id: '300000' },
+  ];
   const getHealthData = useGetHealthV2Data();
   const [healthData, setHealthData] = useState<HealthV2Data>({});
+  const [refreshInterval, setRefreshInterval] = useState<number>(30000);
+  const [reloadCount, setReloadCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedApplications = useMemo(
     () =>
@@ -180,6 +192,8 @@ export const HealthDashboardV2Page = () => {
   useEffect(() => {
     let isMounted = true;
 
+    setIsLoading(true);
+    setLoadError(undefined);
     getHealthData()
       .then(response => {
         if (isMounted) {
@@ -203,7 +217,19 @@ export const HealthDashboardV2Page = () => {
     return () => {
       isMounted = false;
     };
-  }, [getHealthData, t]);
+  }, [getHealthData, reloadCount, t]);
+
+  useEffect(() => {
+    if (refreshInterval <= 0) {
+      return undefined;
+    }
+
+    const interval = setInterval(() => {
+      setReloadCount(count => count + 1);
+    }, refreshInterval);
+
+    return () => clearInterval(interval);
+  }, [refreshInterval]);
 
   const applicationOptions = useMemo(() => {
     const applications = new Set<string>();
@@ -301,13 +327,33 @@ export const HealthDashboardV2Page = () => {
                       selectedApplications.length > 0
                       ? []
                       : selected
-                          .map(String)
-                          .filter(application => application !== ALL_APPLICATIONS_ID),
+                        .map(String)
+                        .filter(application => application !== ALL_APPLICATIONS_ID),
                   );
                 }}
                 aria-label={t('dashboardV2Page.filters.applicationLabel')}
                 style={{ minWidth: '150px' }}
               />
+              <Box style={{ display: 'flex', alignItems: 'center' }}>
+
+                <Button
+                  variant="secondary"
+                  onClick={() => setReloadCount(count => count + 1)}
+                  iconEnd={<RiRestartLine />}
+                  isDisabled={isLoading}
+                >
+                  {t('dashboardV2Page.refresh.button')}
+                </Button>
+                <Select
+                  onChange={selected => {
+                    setRefreshInterval(parseInt(selected?.toString() ?? '0', 10));
+                  }}
+                  label=""
+                  options={refreshIntervals}
+                  value={refreshInterval.toString()}
+                  aria-label={t('dashboardV2Page.refresh.intervalLabel')}
+                />
+              </Box>
             </Flex>
             <InformationPopup content={
               <InformationPopupContent

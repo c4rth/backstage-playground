@@ -27,26 +27,46 @@ jest.mock('@backstage/ui', () => {
     Header: ({ customActions }: { customActions: React.ReactNode }) =>
       customActions,
     Container: ({ children }: { children: React.ReactNode }) => children,
+    Button: ({
+      children,
+      onClick,
+      isDisabled,
+    }: {
+      children: React.ReactNode;
+      onClick: () => void;
+      isDisabled: boolean;
+    }) => (
+      <button disabled={isDisabled} onClick={onClick}>
+        {children}
+      </button>
+    ),
     Select: ({
       value,
       options,
       onChange,
       selectionMode,
+      'aria-label': ariaLabel,
     }: {
-      value: string[];
+      value: string | string[];
       options: { id: string; label: string }[];
-      onChange: (value: string[]) => void;
-      selectionMode: 'single' | 'multiple';
+      onChange: (value: string | string[]) => void;
+      selectionMode?: 'single' | 'multiple';
+      'aria-label': string;
     }) => (
       <select
-        aria-label="Application"
+        aria-label={ariaLabel}
         multiple={selectionMode === 'multiple'}
         value={value}
-        onChange={event =>
+        onChange={event => {
           onChange(
-            Array.from(event.target.selectedOptions, option => option.value),
-          )
-        }
+            selectionMode === 'multiple'
+              ? Array.from(
+                  event.target.selectedOptions,
+                  option => option.value,
+                )
+              : event.target.value,
+          );
+        }}
       >
         {options.map(option => (
           <option key={option.id} value={option.id}>
@@ -105,6 +125,7 @@ describe('HealthDashboardV2Page application URL filter', () => {
   const getHealthData = jest.fn().mockResolvedValue(response);
 
   beforeEach(() => {
+    getHealthData.mockClear();
     jest.mocked(useGetHealthV2Data).mockReturnValue(getHealthData);
   });
 
@@ -226,5 +247,16 @@ describe('HealthDashboardV2Page application URL filter', () => {
     expect(selectedApplication()).toBe('All');
     expect(applications()).toEqual([application, 'Other', 'Unselected']);
     expect(router.state.location.search).toBe('');
+  });
+
+  it('refreshes health data when the refresh button is pressed', async () => {
+    await renderPage();
+
+    expect(getHealthData).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+    });
+
+    expect(getHealthData).toHaveBeenCalledTimes(2);
   });
 });
