@@ -2,10 +2,7 @@ import { ResponseErrorPanel } from '@backstage/core-components';
 import {
   Cell,
   ColumnConfig,
-  Container,
-  FullPage,
   Flex,
-  Header,
   Button,
   Select,
   Table,
@@ -15,10 +12,8 @@ import {
   Text,
   Box,
 } from '@backstage/ui';
-import { Button as AriaButton } from 'react-aria-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { RiRestartLine } from '@remixicon/react';
 import { HealthDataError, HealthV2Data } from '../../types';
 import { useGetHealthV2Data } from '../../hooks';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
@@ -28,12 +23,9 @@ import {
 } from '../../translation';
 
 import {
-  InformationPopup,
-  InformationPopupContent,
   Progress,
   useDocumentTitle,
 } from '@internal/plugin-components-react';
-import styles from './HealthDashboardV2Page.module.css';
 import {
   aggregateTechnicalStatus,
   buildHealthMatrix,
@@ -41,13 +33,14 @@ import {
   HealthV2MatrixRow,
 } from './healthMatrix';
 import {
+  RefreshControls,
+  HealthDashboardEmptyState,
   HealthDetailsSelection,
-  HealthDetailsSheet,
-} from '../common/HealthDetailsSheet';
+  HealthDashboardLayout,
+} from '../common';
+import styles from '../common/HealthDashboard.module.css';
 
 const ALL_APPLICATIONS_ID = 'All';
-
-type HealthV2TableRow = HealthV2MatrixRow;
 
 const centerStyle = {
   width: '100%',
@@ -76,9 +69,9 @@ const statusBulletStyle = (color: string) =>
 
 function getEnvironmentColumn(
   environment: string,
-  onSelect: (row: HealthV2TableRow, environment: string) => void,
+  onSelect: (row: HealthV2MatrixRow, environment: string) => void,
   t: HealthDashboardTranslator,
-): ColumnConfig<HealthV2TableRow> {
+): ColumnConfig<HealthV2MatrixRow> {
   return {
     id: environment,
     label: environment,
@@ -95,7 +88,7 @@ function getEnvironmentColumn(
       return (
         <Cell>
           <Box style={centerStyle}>
-            <AriaButton
+            <Button
               className={styles.statusButton}
               aria-label={t('dashboardV2Page.details.showHealth', {
                 environment,
@@ -108,7 +101,7 @@ function getEnvironmentColumn(
                 aria-hidden="true"
                 style={statusBulletStyle(getTechnicalStatusColor(status))}
               />
-            </AriaButton>
+            </Button>
           </Box>
         </Cell>
       );
@@ -127,18 +120,10 @@ export const HealthDashboardV2Page = () => {
   const { t } = useTranslationRef(healthDashboardTranslationRef);
   useDocumentTitle(t('dashboardV2Page.title'));
 
-  const refreshIntervals = [
-    { label: t('dashboardV2Page.refresh.off'), id: '0' },
-    { label: t('dashboardV2Page.refresh.fiveSeconds'), id: '5000' },
-    { label: t('dashboardV2Page.refresh.tenSeconds'), id: '10000' },
-    { label: t('dashboardV2Page.refresh.thirtySeconds'), id: '30000' },
-    { label: t('dashboardV2Page.refresh.oneMinute'), id: '60000' },
-    { label: t('dashboardV2Page.refresh.fiveMinutes'), id: '300000' },
-  ];
   const getHealthData = useGetHealthV2Data();
   const [healthData, setHealthData] = useState<HealthV2Data>({});
-  const [refreshInterval, setRefreshInterval] = useState<number>(30000);
   const [reloadCount, setReloadCount] = useState(0);
+  const reload = useCallback(() => setReloadCount(count => count + 1), []);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedApplications = useMemo(
     () =>
@@ -167,7 +152,7 @@ export const HealthDashboardV2Page = () => {
     useState<HealthDetailsSelection | null>(null);
 
   const handleEnvironmentSelect = useCallback(
-    (row: HealthV2TableRow, environment: string) => {
+    (row: HealthV2MatrixRow, environment: string) => {
       const probes = row.environments[environment];
       if (probes?.length) {
         setSelectedEnvironment({
@@ -219,18 +204,6 @@ export const HealthDashboardV2Page = () => {
     };
   }, [getHealthData, reloadCount, t]);
 
-  useEffect(() => {
-    if (refreshInterval <= 0) {
-      return undefined;
-    }
-
-    const interval = setInterval(() => {
-      setReloadCount(count => count + 1);
-    }, refreshInterval);
-
-    return () => clearInterval(interval);
-  }, [refreshInterval]);
-
   const applicationOptions = useMemo(() => {
     const applications = new Set<string>();
 
@@ -255,7 +228,7 @@ export const HealthDashboardV2Page = () => {
     [healthData],
   );
 
-  const columns = useMemo<ColumnConfig<HealthV2TableRow>[]>(
+  const columns = useMemo<ColumnConfig<HealthV2MatrixRow>[]>(
     () => [
       {
         id: 'application',
@@ -296,110 +269,62 @@ export const HealthDashboardV2Page = () => {
     },
   });
 
-  const emptyState = (
-    <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-      {t('dashboardV2Page.emptyState')}
-    </div>
-  );
+  const emptyState = useMemo(() => <HealthDashboardEmptyState />, []);
 
   return (
-    <FullPage>
-      <Header
-        title={t('dashboardV2Page.title')}
-        sticky
-        customActions={
-          <>
-            <Flex style={{ alignItems: 'center' }}>
-              <Text>{t('dashboardV2Page.filters.applications')}</Text>
-              <Select
-                label=""
-                search
-                selectionMode="multiple"
-                options={applicationOptions}
-                value={
-                  selectedApplications.length
-                    ? selectedApplications
-                    : [ALL_APPLICATIONS_ID]
-                }
-                onChange={selected => {
-                  updateApplications(
-                    selected.includes(ALL_APPLICATIONS_ID) &&
-                      selectedApplications.length > 0
-                      ? []
-                      : selected
-                        .map(String)
-                        .filter(application => application !== ALL_APPLICATIONS_ID),
-                  );
-                }}
-                aria-label={t('dashboardV2Page.filters.applicationLabel')}
-                style={{ minWidth: '150px' }}
-              />
-              <Box style={{ display: 'flex', alignItems: 'center' }}>
-
-                <Button
-                  variant="secondary"
-                  onClick={() => setReloadCount(count => count + 1)}
-                  iconEnd={<RiRestartLine />}
-                  isDisabled={isLoading}
-                >
-                  {t('dashboardV2Page.refresh.button')}
-                </Button>
-                <Select
-                  onChange={selected => {
-                    setRefreshInterval(parseInt(selected?.toString() ?? '0', 10));
-                  }}
-                  label=""
-                  options={refreshIntervals}
-                  value={refreshInterval.toString()}
-                  aria-label={t('dashboardV2Page.refresh.intervalLabel')}
-                />
-              </Box>
-            </Flex>
-            <InformationPopup content={
-              <InformationPopupContent
-                text={t('dashboardV2Page.description')}
-                comment={t('dashboardV2Page.statusDescription')}
-              />
-            } />
-          </>
-        }
-      />
-      <Container
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        {healthDataErrors.map((sourceError, index) => (
-          <ResponseErrorPanel
-            key={`${sourceError.source}-${index}`}
-            title={t('dashboardV2Page.errors.source', { source: sourceError.source })}
-            error={new Error(sourceError.message)}
+    <HealthDashboardLayout
+      title={t('dashboardV2Page.title')}
+      description={t('dashboardV2Page.description')}
+      statusDescription={t('dashboardV2Page.statusDescription')}
+      sourceErrors={healthDataErrors}
+      selection={selectedEnvironment}
+      onCloseDetails={() => setSelectedEnvironment(null)}
+      actions={
+        <Flex style={{ alignItems: 'center' }}>
+          <Text>{t('dashboardV2Page.filters.applications')}</Text>
+          <Select
+            label=""
+            search
+            selectionMode="multiple"
+            options={applicationOptions}
+            value={
+              selectedApplications.length
+                ? selectedApplications
+                : [ALL_APPLICATIONS_ID]
+            }
+            onChange={selected => {
+              updateApplications(
+                selected.includes(ALL_APPLICATIONS_ID) &&
+                  selectedApplications.length > 0
+                  ? []
+                  : selected
+                    .map(String)
+                    .filter(application => application !== ALL_APPLICATIONS_ID),
+              );
+            }}
+            aria-label={t('dashboardV2Page.filters.applicationLabel')}
+            style={{ minWidth: '150px' }}
           />
-        ))}
-        {loadError && (
-          <ResponseErrorPanel
-            title={t('dashboardV2Page.errors.load')}
-            error={loadError}
-          />
-        )}
-        {isLoading ? (
-          <Progress />
-        ) : (
-          <Table
-            columnConfig={columns}
-            {...tableProps}
-            pagination={{ type: 'none' }}
-            emptyState={emptyState}
-            className={`denseTable ${styles.healthTable}`}
-          />
-        )}
-      </Container>
-      <HealthDetailsSheet
-        selection={selectedEnvironment}
-        onClose={() => setSelectedEnvironment(null)}
-      />
-    </FullPage>
+          <RefreshControls onRefresh={reload} isDisabled={isLoading} />
+        </Flex>
+      }
+    >
+      {loadError && (
+        <ResponseErrorPanel
+          title={t('dashboardV2Page.errors.load')}
+          error={loadError}
+        />
+      )}
+      {isLoading ? (
+        <Progress />
+      ) : (
+        <Table
+          columnConfig={columns}
+          {...tableProps}
+          emptyState={emptyState}
+          className={`denseTable ${styles.healthTable}`}
+        />
+      )}
+    </HealthDashboardLayout>
   );
 };

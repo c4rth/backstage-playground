@@ -1,7 +1,6 @@
 import { HealthV1Probe } from '../../types';
-import { Box, Cell } from '@backstage/ui';
-import { Button as AriaButton } from 'react-aria-components';
-import styles from './HealthDashboardV1Page.module.css';
+import { Box, Cell, Button } from '@backstage/ui';
+import styles from '../common/HealthDashboard.module.css';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { healthDashboardTranslationRef } from '../../translation';
 
@@ -54,7 +53,7 @@ export const HealthProbeCell = ({
   return (
     <Cell>
       <Box style={centerStyle}>
-        <AriaButton
+        <Button
           className={styles.statusButton}
           aria-label={t('dashboardV1Page.details.showHealth', {
             environment: environment.toUpperCase(),
@@ -66,7 +65,7 @@ export const HealthProbeCell = ({
             aria-hidden="true"
             style={bulletStyle(bulletColor)}
           />
-        </AriaButton>
+        </Button>
       </Box>
     </Cell>
   );

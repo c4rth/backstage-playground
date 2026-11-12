@@ -19,10 +19,32 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .overlay [data-sheet-scroll] {
-    scroll-behavior: smooth;
+  .sheet[data-entering] {
+    animation: sheet-slide-in 180ms ease-out;
+  }
+  .sheet[data-exiting] {
+    animation: sheet-slide-out 180ms ease-in;
   }
 }
+
+@keyframes sheet-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sheet-slide-out {
+  from {
+    transform: translateX(-100vw);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 
 .content {
   box-sizing: border-box;

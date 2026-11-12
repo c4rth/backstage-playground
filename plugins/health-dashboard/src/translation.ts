@@ -20,21 +20,11 @@ export const healthDashboardTranslationRef = createTranslationRef({
         'View the health dashboard for applications deployed in k8s. This screen displays each application and the health status reported for each environment.',
       statusDescription:
         'The health status reflects the response returned by the applications, helping you quickly identify which services are healthy and which require attention.',
-      emptyState: 'No health data found.',
-      applicationColumn: 'APPLICATION',
-      refresh: {
-        button: 'Refresh',
-        intervalLabel: 'Auto-refresh interval',
-        off: 'Off',
-        fiveSeconds: '5s',
-        tenSeconds: '10s',
-        thirtySeconds: '30s',
-        oneMinute: '1m',
-        fiveMinutes: '5m',
-      },
+      applicationColumn: 'Application',
       legend: {
         label: 'Status color legend',
         title: 'Health Status',
+        move: 'Move health status legend by dragging or using arrow keys',
         ok: 'OK',
         accepted: 'XXX',
         notFound: 'Not Found',
@@ -48,7 +38,6 @@ export const healthDashboardTranslationRef = createTranslationRef({
         showHealth: 'Show {{environment}} health details for {{application}}',
       },
       errors: {
-        source: 'Failed to get {{source}} health data',
         render: 'Failed to render Health data',
       },
     },
@@ -58,17 +47,6 @@ export const healthDashboardTranslationRef = createTranslationRef({
         'View application health by platform component and environment.',
       statusDescription:
         'For each environment, RED means at least one probe is red; GREEN means all probes are green. Other statuses are shown as UNKNOWN.',
-      emptyState: 'No health data found.',
-      refresh: {
-        button: 'Refresh',
-        intervalLabel: 'Auto-refresh interval',
-        off: 'Off',
-        fiveSeconds: '5s',
-        tenSeconds: '10s',
-        thirtySeconds: '30s',
-        oneMinute: '1m',
-        fiveMinutes: '5m',
-      },
       filters: {
         applications: 'Applications',
         applicationLabel: 'Application',
@@ -84,10 +62,23 @@ export const healthDashboardTranslationRef = createTranslationRef({
           'Show {{environment}} health details for {{application}} - {{component}}',
       },
       errors: {
-        source: 'Failed to get {{source}} health data',
         load: 'Failed to load Health data',
         unknown: 'Unknown error',
       },
+    },
+    dashboardCommon: {
+      emptyState: 'No health data found.',
+      sourceError: 'Failed to get {{source}} health data',
+    },
+    refreshControls: {
+      button: 'Refresh',
+      intervalLabel: 'Auto-refresh interval',
+      off: 'Off',
+      fiveSeconds: '5s',
+      tenSeconds: '10s',
+      thirtySeconds: '30s',
+      oneMinute: '1m',
+      fiveMinutes: '5m',
     },
     healthDetails: {
       close: 'Close health details',

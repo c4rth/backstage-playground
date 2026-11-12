@@ -5,13 +5,8 @@ import {
   ColumnConfig,
   useTable,
   Table,
-  FullPage,
-  Container,
-  Select,
-  Button,
-  Header,
 } from '@backstage/ui';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { healthDashboardTranslationRef } from '../../translation';
 import { useGetHealthV1Data } from '../../hooks';
@@ -21,45 +16,20 @@ import {
   HealthV1Probe,
   HealthV1DataResponse,
 } from '../../types';
-import { HealthProbeCell, OTHER_STATUS_COLOR, STATUS_COLORS } from './HealthProbeCell';
+import { HealthProbeCell } from './HealthProbeCell';
+import { HealthDashboardLegend } from './HealthDashboardLegend';
 import {
-  InformationPopup,
-  InformationPopupContent,
   Progress,
   useDocumentTitle,
 } from '@internal/plugin-components-react';
-import styles from './HealthDashboardV1Page.module.css';
-import { RiRestartLine } from '@remixicon/react';
 import {
+  RefreshControls,
+  HealthDashboardEmptyState,
+  HealthDashboardLayout,
   HealthDetailsSelection,
-  HealthDetailsSheet,
-} from '../common/HealthDetailsSheet';
-
-const Legend = () => {
-  const { t } = useTranslationRef(healthDashboardTranslationRef);
-  const items = [
-    { status: '200', label: t('dashboardV1Page.legend.ok'), ...STATUS_COLORS[200] },
-    { status: '202', label: t('dashboardV1Page.legend.accepted'), ...STATUS_COLORS[202] },
-    { status: '404', label: t('dashboardV1Page.legend.notFound'), ...STATUS_COLORS[404] },
-    { status: '503', label: t('dashboardV1Page.legend.unavailable'), ...STATUS_COLORS[503] },
-    { status: t('dashboardV1Page.legend.other'), label: t('dashboardV1Page.legend.error'), ...OTHER_STATUS_COLOR },
-  ];
-
-  return (
-    <div className={styles.legend} aria-label={t('dashboardV1Page.legend.label')}>
-      <b>{t('dashboardV1Page.legend.title')}</b>
-      {items.map(({ status, label, color }) => (
-        <div key={status} className={styles.legendItem}>
-          <span
-            className={styles.legendBullet}
-            style={{ backgroundColor: color }}
-          />
-          {t('dashboardV1Page.legend.item', { label, status })}
-        </div>
-      ))}
-    </div>
-  );
-};
+} from '../common';
+import styles from './HealthDashboardV1Page.module.css';
+import commonStyles from '../common/HealthDashboard.module.css';
 
 type TableRow = {
   id: number;
@@ -86,19 +56,10 @@ async function fetchData(
 export const HealthDashboardV1Page = () => {
   const { t } = useTranslationRef(healthDashboardTranslationRef);
   useDocumentTitle(t('dashboardV1Page.title'));
-  const refreshIntervals = [
-    { label: t('dashboardV1Page.refresh.off'), id: '0' },
-    { label: t('dashboardV1Page.refresh.fiveSeconds'), id: '5000' },
-    { label: t('dashboardV1Page.refresh.tenSeconds'), id: '10000' },
-    { label: t('dashboardV1Page.refresh.thirtySeconds'), id: '30000' },
-    { label: t('dashboardV1Page.refresh.oneMinute'), id: '60000' },
-    { label: t('dashboardV1Page.refresh.fiveMinutes'), id: '300000' },
-  ];
   const getHealthData = useGetHealthV1Data();
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
   );
-  const [refreshInterval, setRefreshInterval] = useState<number>(30000);
   const [selectedProbe, setSelectedProbe] =
     useState<HealthDetailsSelection | null>(null);
 
@@ -176,108 +137,45 @@ export const HealthDashboardV1Page = () => {
     },
   });
 
-  // Handle auto-refresh interval
-  useEffect(() => {
-    // If 'Off' (0ms) is selected, do not set an interval
-    if (refreshInterval <= 0) {
-      return undefined;
-    }
-
-    const interval = setInterval(() => {
-      reload();
-    }, refreshInterval);
-
-    return () => clearInterval(interval);
-  }, [refreshInterval, reload]);
-
   return (
-    <FullPage>
-      <Header
-        title={t('dashboardV1Page.title')}
-        sticky
-        customActions={
-          <>
-            <Box
-              className={styles.refreshControls}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                gap: 'var(--bui-space-2)',
-              }}
-            >
-              <Box style={{ display: 'flex', alignItems: 'center' }}>
-                <Button
-                  variant="secondary"
-                  onClick={() => reload()}
-                  iconEnd={<RiRestartLine />}
-                  isDisabled={tableProps.isPending}
-                >
-                  {t('dashboardV1Page.refresh.button')}
-                </Button>
-                <Select
-                  onChange={selected => {
-                    setRefreshInterval(parseInt(selected?.toString() ?? '0', 10));
-                  }}
-                  label=""
-                  options={refreshIntervals}
-                  value={refreshInterval.toString()}
-                  aria-label={t('dashboardV1Page.refresh.intervalLabel')}
-                />
-              </Box>
-              <Legend />
-            </Box>
-            <InformationPopup content={
-              <InformationPopupContent
-                text={t('dashboardV1Page.description')}
-                comment={t('dashboardV1Page.statusDescription')}
-              />
-            } />
-          </>
-        }
-      />
-      <Container
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        {healthDataErrors.map((sourceError, index) => (
-          <Box mb="4" key={`${sourceError.source}-${index}`}>
-            <ResponseErrorPanel
-              title={t('dashboardV1Page.errors.source', { source: sourceError.source })}
-              error={new Error(sourceError.message)}
-            />
-          </Box>
-        ))}
-        {tableProps.error && (
-          <ResponseErrorPanel
-            title={t('dashboardV1Page.errors.render')}
-            error={tableProps.error}
-          />
-        )}
-        {tableProps.isPending && <Progress />}
-        {!tableProps.isPending && (
-          <Table
-            columnConfig={columns}
-            {...tableProps}
-            pagination={{
-              type: 'none',
-            }}
-            emptyState={
-              <div style={{ padding: 'var(--bui-space-4)', textAlign: 'center' }}>
-                {t('dashboardV1Page.emptyState')}
-              </div>
-            }
-            className={`denseTable ${styles.healthTable}`}
-          />
-        )}
-      </Container>
-      <HealthDetailsSheet
-        selection={selectedProbe}
-        onClose={() => setSelectedProbe(null)}
-      />
-    </FullPage>
+    <HealthDashboardLayout
+      title={t('dashboardV1Page.title')}
+      description={t('dashboardV1Page.description')}
+      statusDescription={t('dashboardV1Page.statusDescription')}
+      sourceErrors={healthDataErrors}
+      spaceSourceErrors
+      selection={selectedProbe}
+      onCloseDetails={() => setSelectedProbe(null)}
+      actions={
+        <Box
+          className={styles.refreshControls}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            gap: 'var(--bui-space-2)',
+          }}
+        >
+          <RefreshControls onRefresh={reload} isDisabled={tableProps.isPending} />
+          <HealthDashboardLegend />
+        </Box>
+      }
+    >
+      {tableProps.error && (
+        <ResponseErrorPanel
+          title={t('dashboardV1Page.errors.render')}
+          error={tableProps.error}
+        />
+      )}
+      {tableProps.isPending && <Progress />}
+      {!tableProps.isPending && (
+        <Table
+          columnConfig={columns}
+          {...tableProps}
+          emptyState={<HealthDashboardEmptyState />}
+          className={`denseTable ${commonStyles.healthTable} ${styles.healthTable}`}
+        />
+      )}
+    </HealthDashboardLayout>
   );
 };

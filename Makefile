@@ -3,12 +3,12 @@
 tsc:
 	yarn tsc
 
-run:
+start:
 	export $$(grep -v '^#' .env | xargs) && \
 	NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" \
 	yarn start
 
-run-prod:
+start-prd:
 	export $$(grep -v '^#' .env | xargs) && \
 	NODE_OPTIONS="--max-old-space-size=1000 --no-node-snapshot" \
 	NODE_ENV=production \
