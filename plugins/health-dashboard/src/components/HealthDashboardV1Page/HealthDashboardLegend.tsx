@@ -1,12 +1,24 @@
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { RiDragMove2Line } from '@remixicon/react';
-import { KeyboardEvent, PointerEvent, useEffect, useRef, useState } from 'react';
+import {
+  KeyboardEvent,
+  PointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { healthDashboardTranslationRef } from '../../translation';
 import { OTHER_STATUS_COLOR, STATUS_COLORS } from './HealthProbeCell';
 import styles from './HealthDashboardV1Page.module.css';
 
 type Position = { left: number; top: number; width: number };
-type Drag = { pointerId: number; x: number; y: number; left: number; top: number };
+type Drag = {
+  pointerId: number;
+  x: number;
+  y: number;
+  left: number;
+  top: number;
+};
 
 function constrainPosition(position: Position, rect: DOMRect): Position {
   return {
@@ -22,11 +34,31 @@ export const HealthDashboardLegend = () => {
   const dragRef = useRef<Drag | null>(null);
   const [position, setPosition] = useState<Position | null>(null);
   const items = [
-    { status: '200', label: t('dashboardV1Page.legend.ok'), ...STATUS_COLORS[200] },
-    { status: '202', label: t('dashboardV1Page.legend.accepted'), ...STATUS_COLORS[202] },
-    { status: '404', label: t('dashboardV1Page.legend.notFound'), ...STATUS_COLORS[404] },
-    { status: '503', label: t('dashboardV1Page.legend.unavailable'), ...STATUS_COLORS[503] },
-    { status: t('dashboardV1Page.legend.other'), label: t('dashboardV1Page.legend.error'), ...OTHER_STATUS_COLOR },
+    {
+      status: '200',
+      label: t('dashboardV1Page.legend.ok'),
+      ...STATUS_COLORS[200],
+    },
+    {
+      status: '202',
+      label: t('dashboardV1Page.legend.accepted'),
+      ...STATUS_COLORS[202],
+    },
+    {
+      status: '404',
+      label: t('dashboardV1Page.legend.notFound'),
+      ...STATUS_COLORS[404],
+    },
+    {
+      status: '503',
+      label: t('dashboardV1Page.legend.unavailable'),
+      ...STATUS_COLORS[503],
+    },
+    {
+      status: t('dashboardV1Page.legend.other'),
+      label: t('dashboardV1Page.legend.error'),
+      ...OTHER_STATUS_COLOR,
+    },
   ];
 
   useEffect(() => {
@@ -67,11 +99,16 @@ export const HealthDashboardLegend = () => {
     if (dx === 0 && dy === 0) {
       return;
     }
-    setPosition(constrainPosition({
-      left: drag.left + dx,
-      top: drag.top + dy,
-      width: rect.width,
-    }, rect));
+    setPosition(
+      constrainPosition(
+        {
+          left: drag.left + dx,
+          top: drag.top + dy,
+          width: rect.width,
+        },
+        rect,
+      ),
+    );
   };
 
   const handlePointerEnd = (event: PointerEvent<HTMLButtonElement>) => {
@@ -93,11 +130,16 @@ export const HealthDashboardLegend = () => {
       return;
     }
     event.preventDefault();
-    setPosition(constrainPosition({
-      left: rect.left + offset[0],
-      top: rect.top + offset[1],
-      width: rect.width,
-    }, rect));
+    setPosition(
+      constrainPosition(
+        {
+          left: rect.left + offset[0],
+          top: rect.top + offset[1],
+          width: rect.width,
+        },
+        rect,
+      ),
+    );
   };
 
   return (
@@ -106,11 +148,15 @@ export const HealthDashboardLegend = () => {
       className={styles.legend}
       aria-label={t('dashboardV1Page.legend.label')}
       data-moved={position ? true : undefined}
-      style={position ? {
-        left: position.left,
-        top: position.top,
-        width: position.width,
-      } : undefined}
+      style={
+        position
+          ? {
+              left: position.left,
+              top: position.top,
+              width: position.width,
+            }
+          : undefined
+      }
     >
       <button
         type="button"

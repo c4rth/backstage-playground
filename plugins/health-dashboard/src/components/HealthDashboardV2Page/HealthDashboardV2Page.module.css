@@ -1,0 +1,49 @@
+.groupCell {
+  background-color: var(--bui-bg-neutral-2);
+  background-color: color-mix(
+    in srgb,
+    var(--bui-bg-neutral-2) 85%,
+    var(--bui-fg-primary)
+  );
+}
+
+:global([data-theme-mode='dark']) .groupCell {
+  background-color: color-mix(
+    in srgb,
+    var(--bui-bg-neutral-2) 85%,
+    var(--bui-fg-primary)
+  );
+}
+
+.groupRow {
+  cursor: pointer;
+}
+
+:global(.bui-TableRow:hover) .groupCell {
+  background-image: linear-gradient(#c3004520, #c3004520);
+}
+
+.groupToggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+}
+
+.groupToggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+.groupToggle:focus-visible {
+  outline: 2px solid var(--bui-border-1);
+  outline-offset: 2px;
+}

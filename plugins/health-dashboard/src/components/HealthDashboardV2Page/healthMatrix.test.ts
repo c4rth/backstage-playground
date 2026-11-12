@@ -3,6 +3,7 @@ import {
   aggregateTechnicalStatus,
   buildHealthMatrix,
   getEnvironmentNames,
+  groupHealthMatrix,
 } from './healthMatrix';
 
 function probe(
@@ -105,6 +106,17 @@ describe('health matrix', () => {
       'PRD',
       'LAB',
     ]);
+  });
+
+  it('groups components by application without losing their probes', () => {
+    const groups = groupHealthMatrix(buildHealthMatrix(data, ['app']));
+    expect(groups).toEqual([
+      {
+        application: 'app',
+        components: buildHealthMatrix(data, ['app']),
+      },
+    ]);
+    expect(groupHealthMatrix([])).toEqual([]);
   });
 
   it('prioritizes red, requires all green, and treats other statuses as unknown', () => {

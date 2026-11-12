@@ -7,10 +7,11 @@ import {
   Select,
   Table,
   useTable,
-  CellText,
   Column,
+  Row,
   Text,
   Box,
+  VisuallyHidden,
 } from '@backstage/ui';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -22,14 +23,13 @@ import {
   HealthDashboardTranslator,
 } from '../../translation';
 
-import {
-  Progress,
-  useDocumentTitle,
-} from '@internal/plugin-components-react';
+import { Progress, useDocumentTitle } from '@internal/plugin-components-react';
 import {
   aggregateTechnicalStatus,
   buildHealthMatrix,
   getEnvironmentNames,
+  groupHealthMatrix,
+  HealthV2ApplicationGroup,
   HealthV2MatrixRow,
 } from './healthMatrix';
 import {
@@ -39,8 +39,14 @@ import {
   HealthDashboardLayout,
 } from '../common';
 import styles from '../common/HealthDashboard.module.css';
+import groupStyles from './HealthDashboardV2Page.module.css';
+import { RiArrowDownSLine, RiArrowRightSLine } from '@remixicon/react';
 
 const ALL_APPLICATIONS_ID = 'All';
+
+type TableRow =
+  | (HealthV2ApplicationGroup & { id: string; kind: 'application' })
+  | (HealthV2MatrixRow & { kind: 'component' });
 
 const centerStyle = {
   width: '100%',
@@ -71,11 +77,14 @@ function getEnvironmentColumn(
   environment: string,
   onSelect: (row: HealthV2MatrixRow, environment: string) => void,
   t: HealthDashboardTranslator,
-): ColumnConfig<HealthV2MatrixRow> {
+): ColumnConfig<TableRow> {
   return {
     id: environment,
     label: environment,
     cell: item => {
+      if (item.kind === 'application') {
+        return <Cell className={groupStyles.groupCell} />;
+      }
       const probes = item.environments[environment];
       if (!probes?.length) {
         return (
@@ -111,8 +120,8 @@ function getEnvironmentColumn(
         <Text weight="bold">{environment}</Text>
       </Column>
     ),
-    width: '8%',
-    minWidth: 64,
+    width: '10%',
+    minWidth: 80,
   };
 }
 
@@ -129,7 +138,9 @@ export const HealthDashboardV2Page = () => {
     () =>
       (searchParams.get('application') ?? '')
         .split(',')
-        .filter(application => application && application !== ALL_APPLICATIONS_ID),
+        .filter(
+          application => application && application !== ALL_APPLICATIONS_ID,
+        ),
     [searchParams],
   );
   const updateApplications = (applications: string[]) => {
@@ -150,6 +161,20 @@ export const HealthDashboardV2Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEnvironment, setSelectedEnvironment] =
     useState<HealthDetailsSelection | null>(null);
+  const [collapsedApplications, setCollapsedApplications] = useState<
+    Set<string>
+  >(() => new Set());
+  const toggleApplication = useCallback((application: string) => {
+    setCollapsedApplications(current => {
+      const next = new Set(current);
+      if (next.has(application)) {
+        next.delete(application);
+      } else {
+        next.add(application);
+      }
+      return next;
+    });
+  }, []);
 
   const handleEnvironmentSelect = useCallback(
     (row: HealthV2MatrixRow, environment: string) => {
@@ -189,7 +214,9 @@ export const HealthDashboardV2Page = () => {
       .catch(error => {
         if (isMounted) {
           setLoadError(
-            error instanceof Error ? error : new Error(t('dashboardV2Page.errors.unknown')),
+            error instanceof Error
+              ? error
+              : new Error(t('dashboardV2Page.errors.unknown')),
           );
         }
       })
@@ -216,7 +243,10 @@ export const HealthDashboardV2Page = () => {
     });
 
     return [
-      { label: t('dashboardV2Page.filters.allApplications'), id: ALL_APPLICATIONS_ID },
+      {
+        label: t('dashboardV2Page.filters.allApplications'),
+        id: ALL_APPLICATIONS_ID,
+      },
       ...Array.from(applications)
         .sort((left, right) => left.localeCompare(right))
         .map(application => ({ label: application, id: application })),
@@ -228,24 +258,63 @@ export const HealthDashboardV2Page = () => {
     [healthData],
   );
 
-  const columns = useMemo<ColumnConfig<HealthV2MatrixRow>[]>(
+  const columns = useMemo<ColumnConfig<TableRow>[]>(
     () => [
       {
         id: 'application',
         label: t('dashboardV2Page.columns.application'),
         isRowHeader: true,
         cell: item => (
-          <Cell>
-            <b>{item.application}</b>
+          <Cell
+            className={
+              item.kind === 'application' ? groupStyles.groupCell : undefined
+            }
+          >
+            {item.kind === 'application' ? (
+              <button
+                type="button"
+                className={groupStyles.groupToggle}
+                aria-expanded={!collapsedApplications.has(item.application)}
+                aria-label={t('dashboardV2Page.summary.toggle', {
+                  application: item.application,
+                })}
+                onClick={event => {
+                  event.stopPropagation();
+                  toggleApplication(item.application);
+                }}
+              >
+                {collapsedApplications.has(item.application) ? (
+                  <RiArrowRightSLine aria-hidden="true" />
+                ) : (
+                  <RiArrowDownSLine aria-hidden="true" />
+                )}
+                <span>
+                  {item.application} ({item.components.length})
+                </span>
+              </button>
+            ) : (
+              <VisuallyHidden>{item.application}</VisuallyHidden>
+            )}
           </Cell>
         ),
-        width: '20%',
-        minWidth: 160,
+        width: '15%',
+        minWidth: 80,
       },
       {
         id: 'component',
         label: t('dashboardV2Page.columns.component'),
-        cell: item => <CellText title={item.component ?? '-'} />,
+        isRowHeader: true,
+        cell: item => (
+          <Cell
+            className={
+              item.kind === 'application' ? groupStyles.groupCell : undefined
+            }
+          >
+            {item.kind === 'component' && (
+              <span title={item.component ?? '-'}>{item.component ?? '-'}</span>
+            )}
+          </Cell>
+        ),
         width: '40%',
         minWidth: 240,
       },
@@ -253,12 +322,38 @@ export const HealthDashboardV2Page = () => {
         getEnvironmentColumn(environment, handleEnvironmentSelect, t),
       ),
     ],
-    [environmentNames, handleEnvironmentSelect, t],
+    [
+      collapsedApplications,
+      environmentNames,
+      handleEnvironmentSelect,
+      t,
+      toggleApplication,
+    ],
   );
 
-  const tableRows = useMemo(
-    () => buildHealthMatrix(healthData, selectedApplications),
-    [healthData, selectedApplications],
+  const tableRows = useMemo<TableRow[]>(
+    () =>
+      groupHealthMatrix(
+        buildHealthMatrix(healthData, selectedApplications),
+      ).flatMap(group => [
+        {
+          ...group,
+          id: JSON.stringify(['application', group.application]),
+          kind: 'application' as const,
+        },
+        ...(collapsedApplications.has(group.application)
+          ? []
+          : group.components.map(component => ({
+              ...component,
+              id: JSON.stringify([
+                'component',
+                component.application,
+                component.component,
+              ]),
+              kind: 'component' as const,
+            }))),
+      ]),
+    [healthData, selectedApplications, collapsedApplications],
   );
 
   const { tableProps } = useTable({
@@ -298,8 +393,10 @@ export const HealthDashboardV2Page = () => {
                   selectedApplications.length > 0
                   ? []
                   : selected
-                    .map(String)
-                    .filter(application => application !== ALL_APPLICATIONS_ID),
+                      .map(String)
+                      .filter(
+                        application => application !== ALL_APPLICATIONS_ID,
+                      ),
               );
             }}
             aria-label={t('dashboardV2Page.filters.applicationLabel')}
@@ -321,6 +418,22 @@ export const HealthDashboardV2Page = () => {
         <Table
           columnConfig={columns}
           {...tableProps}
+          rowConfig={({ item }) => (
+            <Row
+              id={item.id}
+              columns={columns}
+              className={
+                item.kind === 'application' ? groupStyles.groupRow : undefined
+              }
+              onAction={
+                item.kind === 'application'
+                  ? () => toggleApplication(item.application)
+                  : undefined
+              }
+            >
+              {column => column.cell(item)}
+            </Row>
+          )}
           emptyState={emptyState}
           className={`denseTable ${styles.healthTable}`}
         />

@@ -56,6 +56,9 @@ export const healthDashboardTranslationRef = createTranslationRef({
         application: 'Application',
         component: 'Component',
       },
+      summary: {
+        toggle: 'Toggle components for {{application}}',
+      },
       details: {
         title: '{{application}} - {{environment}}',
         showHealth:

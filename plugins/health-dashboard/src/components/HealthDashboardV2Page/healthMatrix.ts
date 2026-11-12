@@ -9,6 +9,29 @@ export type HealthV2MatrixRow = {
   environments: Record<string, HealthV2Probe[]>;
 };
 
+export type HealthV2ApplicationGroup = {
+  application: string;
+  components: HealthV2MatrixRow[];
+};
+
+export function groupHealthMatrix(
+  rows: HealthV2MatrixRow[],
+): HealthV2ApplicationGroup[] {
+  const groups = new Map<string, HealthV2ApplicationGroup>();
+  for (const row of rows) {
+    let group = groups.get(row.application);
+    if (!group) {
+      group = {
+        application: row.application,
+        components: [],
+      };
+      groups.set(row.application, group);
+    }
+    group.components.push(row);
+  }
+  return [...groups.values()];
+}
+
 export function getEnvironmentNames(data: HealthV2Data): string[] {
   const additional = Object.keys(data)
     .filter(environment => !ENVIRONMENTS.includes(environment))
