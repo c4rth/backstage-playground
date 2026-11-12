@@ -19,7 +19,7 @@
 }
 
 .overlay[data-entering] .sheet {
-  animation: sheet-slide-in 220ms ease-out both;
+  animation: sheet-slide-in 180ms ease-out both;
 }
 
 .overlay[data-exiting] .sheet {

@@ -2,7 +2,9 @@ import {
   ApiBlueprint,
   PageBlueprint,
   SubPageBlueprint,
+  ConfigApi,
   configApiRef,
+  createFrontendFeatureLoader,
   createFrontendPlugin,
   featureFlagsApiRef,
   fetchApiRef,
@@ -79,22 +81,31 @@ const healthDashboardApi = ApiBlueprint.make({
     }),
 });
 
-export default createFrontendPlugin({
-  pluginId: 'health-dashboards',
-  title: healthDashboardMetadata.title,
-  routes: {
-    healthDashboards: healthDashboardsRouteRef,
-  },
-  featureFlags: [
-    {
-      name: 'mock-health-dashboard',
-      description: healthDashboardMetadata.mockDescription,
+export function createHealthDashboardPlugin(config: ConfigApi) {
+  const v1Enabled = config.getOptionalBoolean('healthProbes.v1.enabled') ?? true;
+  const v2Enabled = config.getOptionalBoolean('healthProbes.v2.enabled') ?? true;
+
+  return createFrontendPlugin({
+    pluginId: 'health-dashboards',
+    title: healthDashboardMetadata.title,
+    routes: {
+      healthDashboards: healthDashboardsRouteRef,
     },
-  ],
-  extensions: [
-    healthDashboardsPage,
-    healthDashboardV1Page,
-    healthDashboardV2Page,
-    healthDashboardApi,
-  ],
+    featureFlags: [
+      {
+        name: 'mock-health-dashboard',
+        description: healthDashboardMetadata.mockDescription,
+      },
+    ],
+    extensions: [
+      ...(v1Enabled || v2Enabled ? [healthDashboardsPage] : []),
+      ...(v1Enabled ? [healthDashboardV1Page] : []),
+      ...(v2Enabled ? [healthDashboardV2Page] : []),
+      healthDashboardApi,
+    ],
+  });
+}
+
+export default createFrontendFeatureLoader({
+  loader: ({ config }) => [createHealthDashboardPlugin(config)],
 });
