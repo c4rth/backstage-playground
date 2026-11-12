@@ -6,7 +6,9 @@ import { fetchHealthV1Data } from './health-v1';
 import { mockApis } from '@backstage/frontend-test-utils';
 import { healthDashboardTranslationRef } from '../translation';
 
-const translation = mockApis.translation().getTranslation(healthDashboardTranslationRef);
+const translation = mockApis
+  .translation()
+  .getTranslation(healthDashboardTranslationRef);
 if (!translation.ready) {
   throw new Error('Test translations are not ready');
 }

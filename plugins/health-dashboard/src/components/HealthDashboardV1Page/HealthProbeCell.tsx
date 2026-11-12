@@ -61,10 +61,7 @@ export const HealthProbeCell = ({
           })}
           onPress={() => onSelect(healthProbe)}
         >
-          <span
-            aria-hidden="true"
-            style={bulletStyle(bulletColor)}
-          />
+          <span aria-hidden="true" style={bulletStyle(bulletColor)} />
         </Button>
       </Box>
     </Cell>

@@ -82,8 +82,10 @@ const healthDashboardApi = ApiBlueprint.make({
 });
 
 export function createHealthDashboardPlugin(config: ConfigApi) {
-  const v1Enabled = config.getOptionalBoolean('healthProbes.v1.enabled') ?? true;
-  const v2Enabled = config.getOptionalBoolean('healthProbes.v2.enabled') ?? true;
+  const v1Enabled =
+    config.getOptionalBoolean('healthProbes.v1.enabled') ?? true;
+  const v2Enabled =
+    config.getOptionalBoolean('healthProbes.v2.enabled') ?? true;
 
   return createFrontendPlugin({
     pluginId: 'health-dashboards',

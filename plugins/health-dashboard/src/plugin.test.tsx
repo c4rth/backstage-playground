@@ -52,13 +52,17 @@ describe('health dashboard configuration', () => {
       });
 
       expect(await screen.findByRole('tab', { name: enabledTab })).toBeTruthy();
-      expect(screen.queryByText(`${disabledVersion} dashboard content`)).toBeNull();
+      expect(
+        screen.queryByText(`${disabledVersion} dashboard content`),
+      ).toBeNull();
     },
   );
 
   it('omits the parent page when both dashboards are disabled', () => {
     const config = mockApis.config({
-      data: { healthProbes: { v1: { enabled: false }, v2: { enabled: false } } },
+      data: {
+        healthProbes: { v1: { enabled: false }, v2: { enabled: false } },
+      },
     });
     const plugin = createHealthDashboardPlugin(config);
 

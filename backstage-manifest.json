@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.56.4",
+  "releaseVersion": "1.56.5",
   "requirements": {
     "node": "22 || 24"
   },
@@ -226,7 +226,7 @@
     },
     {
       "name": "@techdocs/cli",
-      "version": "1.14.0"
+      "version": "1.14.1"
     },
     {
       "name": "@backstage/test-utils",
@@ -438,7 +438,7 @@
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-gitlab",
-      "version": "0.8.9"
+      "version": "0.8.10"
     },
     {
       "name": "@backstage/plugin-catalog-backend-module-gitlab-org",
@@ -686,7 +686,7 @@
     },
     {
       "name": "@backstage/plugin-scaffolder-backend",
-      "version": "4.2.1"
+      "version": "4.2.2"
     },
     {
       "name": "@backstage/plugin-scaffolder-backend-module-azure",
@@ -834,11 +834,11 @@
     },
     {
       "name": "@backstage/plugin-techdocs-backend",
-      "version": "2.4.1"
+      "version": "2.4.2"
     },
     {
       "name": "@backstage/plugin-techdocs-backend-module-zensical",
-      "version": "0.1.0"
+      "version": "0.1.1"
     },
     {
       "name": "@backstage/plugin-techdocs-common",
@@ -850,7 +850,7 @@
     },
     {
       "name": "@backstage/plugin-techdocs-node",
-      "version": "2.2.0"
+      "version": "2.2.1"
     },
     {
       "name": "@backstage/plugin-techdocs-react",

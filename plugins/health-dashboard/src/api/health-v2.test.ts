@@ -9,7 +9,9 @@ import { mockApis } from '@backstage/frontend-test-utils';
 import { healthDashboardTranslationRef } from '../translation';
 
 const fixture: HealthV2Data = fixtureData;
-const translation = mockApis.translation().getTranslation(healthDashboardTranslationRef);
+const translation = mockApis
+  .translation()
+  .getTranslation(healthDashboardTranslationRef);
 if (!translation.ready) {
   throw new Error('Test translations are not ready');
 }

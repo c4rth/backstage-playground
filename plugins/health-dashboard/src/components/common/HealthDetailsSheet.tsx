@@ -108,61 +108,61 @@ export const HealthDetailsSheet = ({
 }: HealthDetailsSheetProps) => {
   const { t } = useTranslationRef(healthDashboardTranslationRef);
   return (
-  <SheetOverlay
-    isOpen={selection !== null}
-    onOpenChange={isOpen => {
-      if (!isOpen) {
-        onClose();
-      }
-    }}
-    position="right"
-    className={styles.overlay}
-  >
-    <SheetBackdrop className={styles.backdrop} />
-    <Sheet className={styles.sheet}>
-      <SheetContent
-        className={styles.content}
-        aria-labelledby="health-details-title"
-      >
-        {selection && (
-          <>
-            <header className={styles.header}>
-              <div>
-                <Heading
-                  id="health-details-title"
-                  level={2}
-                  className={styles.title}
-                >
-                  {selection.title}
-                </Heading>
-                {selection.subtitle && (
-                  <p className={styles.subtitle}>{selection.subtitle}</p>
-                )}
-              </div>
-              <ButtonIcon
-                icon={<RiCloseLargeLine />}
-                aria-label={t('healthDetails.close')}
-                onClick={onClose}
-              />
-            </header>
-            {selection.sections.map(section => (
-              <section className={styles.section} key={section.id}>
-                <table className={styles.details}>
-                  <tbody>
-                    {section.fields.map(({ label, value }) => (
-                      <tr className={styles.detail} key={label}>
-                        <th scope="row">{label}</th>
-                        <td>{renderValue(label, value)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </section>
-            ))}
-          </>
-        )}
-      </SheetContent>
-    </Sheet>
-  </SheetOverlay>
+    <SheetOverlay
+      isOpen={selection !== null}
+      onOpenChange={isOpen => {
+        if (!isOpen) {
+          onClose();
+        }
+      }}
+      position="right"
+      className={styles.overlay}
+    >
+      <SheetBackdrop className={styles.backdrop} />
+      <Sheet className={styles.sheet}>
+        <SheetContent
+          className={styles.content}
+          aria-labelledby="health-details-title"
+        >
+          {selection && (
+            <>
+              <header className={styles.header}>
+                <div>
+                  <Heading
+                    id="health-details-title"
+                    level={2}
+                    className={styles.title}
+                  >
+                    {selection.title}
+                  </Heading>
+                  {selection.subtitle && (
+                    <p className={styles.subtitle}>{selection.subtitle}</p>
+                  )}
+                </div>
+                <ButtonIcon
+                  icon={<RiCloseLargeLine />}
+                  aria-label={t('healthDetails.close')}
+                  onClick={onClose}
+                />
+              </header>
+              {selection.sections.map(section => (
+                <section className={styles.section} key={section.id}>
+                  <table className={styles.details}>
+                    <tbody>
+                      {section.fields.map(({ label, value }) => (
+                        <tr className={styles.detail} key={label}>
+                          <th scope="row">{label}</th>
+                          <td>{renderValue(label, value)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </section>
+              ))}
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
+    </SheetOverlay>
   );
 };

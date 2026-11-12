@@ -1,11 +1,5 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
-import {
-  Box,
-  Cell,
-  ColumnConfig,
-  useTable,
-  Table,
-} from '@backstage/ui';
+import { Box, Cell, ColumnConfig, useTable, Table } from '@backstage/ui';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { healthDashboardTranslationRef } from '../../translation';
@@ -18,10 +12,7 @@ import {
 } from '../../types';
 import { HealthProbeCell } from './HealthProbeCell';
 import { HealthDashboardLegend } from './HealthDashboardLegend';
-import {
-  Progress,
-  useDocumentTitle,
-} from '@internal/plugin-components-react';
+import { Progress, useDocumentTitle } from '@internal/plugin-components-react';
 import {
   RefreshControls,
   HealthDashboardEmptyState,
@@ -156,7 +147,10 @@ export const HealthDashboardV1Page = () => {
             gap: 'var(--bui-space-2)',
           }}
         >
-          <RefreshControls onRefresh={reload} isDisabled={tableProps.isPending} />
+          <RefreshControls
+            onRefresh={reload}
+            isDisabled={tableProps.isPending}
+          />
           <HealthDashboardLegend />
         </Box>
       }

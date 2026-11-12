@@ -238,7 +238,7 @@ export const ApiAllRelationsCard = ({
           CATALOG_METADATA,
           CATALOG_SPEC_LIFECYCLE,
           CATALOG_SPEC_SYSTEM,
-          CATALOG_RELATIONS
+          CATALOG_RELATIONS,
         ],
       });
 
