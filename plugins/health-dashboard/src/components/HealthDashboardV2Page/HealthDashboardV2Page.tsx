@@ -345,6 +345,34 @@ export const HealthDashboardV2Page = () => {
 
   const emptyState = useMemo(() => <HealthDashboardEmptyState />, []);
 
+  const table = useMemo(
+    () => (
+      <Table
+        columnConfig={columns}
+        {...tableProps}
+        rowConfig={({ item }) => (
+          <Row
+            id={item.id}
+            columns={columns}
+            className={
+              item.kind === 'application' ? groupStyles.groupRow : undefined
+            }
+            onAction={
+              item.kind === 'application'
+                ? () => toggleApplication(item.application)
+                : undefined
+            }
+          >
+            {column => column.cell(item)}
+          </Row>
+        )}
+        emptyState={emptyState}
+        className={`denseTable ${styles.healthTable}`}
+      />
+    ),
+    [columns, tableProps, emptyState, toggleApplication],
+  );
+
   return (
     <HealthDashboardLayout
       title={t('dashboardV2Page.title')}
@@ -391,32 +419,7 @@ export const HealthDashboardV2Page = () => {
           error={loadError}
         />
       )}
-      {isLoading ? (
-        <Progress />
-      ) : (
-        <Table
-          columnConfig={columns}
-          {...tableProps}
-          rowConfig={({ item }) => (
-            <Row
-              id={item.id}
-              columns={columns}
-              className={
-                item.kind === 'application' ? groupStyles.groupRow : undefined
-              }
-              onAction={
-                item.kind === 'application'
-                  ? () => toggleApplication(item.application)
-                  : undefined
-              }
-            >
-              {column => column.cell(item)}
-            </Row>
-          )}
-          emptyState={emptyState}
-          className={`denseTable ${styles.healthTable}`}
-        />
-      )}
+      {isLoading ? <Progress /> : table}
     </HealthDashboardLayout>
   );
 };

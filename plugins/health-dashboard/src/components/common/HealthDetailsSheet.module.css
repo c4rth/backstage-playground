@@ -20,7 +20,6 @@
 }
 
 .section {
-  padding: 16px 0;
   border-bottom: 1px solid var(--bui-border-1);
   overflow-x: auto;
 }
