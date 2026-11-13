@@ -1,15 +1,6 @@
-import { ButtonIcon, Link } from '@backstage/ui';
-import { RiCloseLargeLine } from '@remixicon/react';
-import {
-  Heading,
-  Sheet,
-  SheetBackdrop,
-  SheetContent,
-  SheetOverlay,
-} from 'react-aria-components';
+import { Dialog, DialogBody, DialogHeader, Link } from '@backstage/ui';
+import { HealthStatusIndicator } from './HealthStatusIndicator';
 import styles from './HealthDetailsSheet.module.css';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
-import { healthDashboardTranslationRef } from '../../translation';
 
 export type HealthDetailsField = {
   label: string;
@@ -23,7 +14,6 @@ export type HealthDetailsSection = {
 
 export type HealthDetailsSelection = {
   title: string;
-  subtitle?: string;
   sections: HealthDetailsSection[];
 };
 
@@ -87,6 +77,20 @@ function renderValue(label: string, value: unknown) {
   const href = getUrlHref(label, value);
   const formatted = formatValue(value);
 
+  if (
+    ['downstreamStatus', 'functionalStatus', 'technicalStatus'].includes(
+      label,
+    ) &&
+    typeof value === 'string'
+  ) {
+    return (
+      <span className={styles.statusValue}>
+        <HealthStatusIndicator status={value} />
+        {formatted.text}
+      </span>
+    );
+  }
+
   if (href) {
     return (
       <Link href={href} target="_blank" rel="noopener noreferrer" color="info">
@@ -106,63 +110,40 @@ export const HealthDetailsSheet = ({
   selection,
   onClose,
 }: HealthDetailsSheetProps) => {
-  const { t } = useTranslationRef(healthDashboardTranslationRef);
   return (
-    <SheetOverlay
+    <Dialog
       isOpen={selection !== null}
       onOpenChange={isOpen => {
         if (!isOpen) {
           onClose();
         }
       }}
-      position="right"
-      className={styles.overlay}
+      width="min(60rem, 90vw)"
+      height="100%"
+      className={styles.modal}
+      data-health-details-overlay
     >
-      <SheetBackdrop className={styles.backdrop} />
-      <Sheet className={styles.sheet}>
-        <SheetContent
-          className={styles.content}
-          aria-labelledby="health-details-title"
-        >
-          {selection && (
-            <>
-              <header className={styles.header}>
-                <div>
-                  <Heading
-                    id="health-details-title"
-                    level={2}
-                    className={styles.title}
-                  >
-                    {selection.title}
-                  </Heading>
-                  {selection.subtitle && (
-                    <p className={styles.subtitle}>{selection.subtitle}</p>
-                  )}
-                </div>
-                <ButtonIcon
-                  icon={<RiCloseLargeLine />}
-                  aria-label={t('healthDetails.close')}
-                  onClick={onClose}
-                />
-              </header>
-              {selection.sections.map(section => (
-                <section className={styles.section} key={section.id}>
-                  <table className={styles.details}>
-                    <tbody>
-                      {section.fields.map(({ label, value }) => (
-                        <tr className={styles.detail} key={label}>
-                          <th scope="row">{label}</th>
-                          <td>{renderValue(label, value)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </section>
-              ))}
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
-    </SheetOverlay>
+      {selection && (
+        <>
+          <DialogHeader>{selection.title}</DialogHeader>
+          <DialogBody>
+            {selection.sections.map(section => (
+              <section className={styles.section} key={section.id}>
+                <table className={styles.details}>
+                  <tbody>
+                    {section.fields.map(({ label, value }) => (
+                      <tr className={styles.detail} key={label}>
+                        <th scope="row">{label}</th>
+                        <td>{renderValue(label, value)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </section>
+            ))}
+          </DialogBody>
+        </>
+      )}
+    </Dialog>
   );
 };

@@ -39,6 +39,7 @@ import {
   HealthDashboardLayout,
 } from '../common';
 import styles from '../common/HealthDashboard.module.css';
+import { HealthStatusIndicator } from '../common/HealthStatusIndicator';
 import groupStyles from './HealthDashboardV2Page.module.css';
 import { RiArrowDownSLine, RiArrowRightSLine } from '@remixicon/react';
 
@@ -53,25 +54,6 @@ const centerStyle = {
   display: 'flex',
   justifyContent: 'center',
 } as const;
-
-const getTechnicalStatusColor = (status: string): string => {
-  switch (status.toUpperCase()) {
-    case 'GREEN':
-      return '#4caf50';
-    case 'RED':
-      return '#f44336';
-    default:
-      return '#9e9e9e';
-  }
-};
-
-const statusBulletStyle = (color: string) =>
-  ({
-    borderRadius: '50%',
-    width: '1em',
-    height: '1em',
-    backgroundColor: color,
-  }) as const;
 
 function getEnvironmentColumn(
   environment: string,
@@ -106,10 +88,7 @@ function getEnvironmentColumn(
               })}
               onPress={() => onSelect(item, environment)}
             >
-              <span
-                aria-hidden="true"
-                style={statusBulletStyle(getTechnicalStatusColor(status))}
-              />
+              <HealthStatusIndicator status={status} />
             </Button>
           </Box>
         </Cell>
@@ -183,9 +162,9 @@ export const HealthDashboardV2Page = () => {
         setSelectedEnvironment({
           title: t('dashboardV2Page.details.title', {
             application: row.application,
+            component: row.component ?? '?',
             environment,
           }),
-          subtitle: row.component ?? '-',
           sections: probes.map((probe, index) => ({
             id: `${probe.healthProbeUrl}-${index}`,
             fields: Object.entries(probe).map(([label, value]) => ({

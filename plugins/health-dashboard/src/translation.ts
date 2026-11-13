@@ -60,7 +60,7 @@ export const healthDashboardTranslationRef = createTranslationRef({
         toggle: 'Toggle components for {{application}}',
       },
       details: {
-        title: '{{application}} - {{environment}}',
+        title: '{{application}} - {{component}} - {{environment}}',
         showHealth:
           'Show {{environment}} health details for {{application}} - {{component}}',
       },
