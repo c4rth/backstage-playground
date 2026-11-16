@@ -56,6 +56,7 @@
     "@material-table/core": "3.2.5",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "fast-xml-parser": "^5.11.0",
+    "fast-xml-validator": "^1.4.0",
     "react-syntax-highlighter": "^15.4.5",
     "react-use": "^17.6.0"
   },

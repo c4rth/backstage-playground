@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import mermaid from 'mermaid';
+import type { MermaidApi } from './loadMermaid';
 
-export const isMermaidCode = (code: string): boolean => {
+export const isMermaidCode = (code: string, mermaid: MermaidApi): boolean => {
   try {
-    mermaid.detectType(code);
-    return true;
-  } catch (e) {
-    console.error('Failed to detect mermaid code:', e);
-    return false;
+    mermaid.detectType(code)
+    return true
+  } catch (_) {
+    return false
   }
 };

@@ -44,6 +44,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage/config": "backstage:^",
+    "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-techdocs-react": "backstage:^",
@@ -79,6 +81,7 @@
     "@iconify/types": "^2.0.0",
     "@jest/environment-jsdom-abstract": "^30",
     "@mermaid-js/mermaid-zenuml": "^1.0.0",
+    "@svgr/core": "^6.0.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
@@ -88,6 +91,7 @@
     "@types/jsdom": "^27",
     "@types/node": "*",
     "@types/react": "^18.3.12",
+    "cross-fetch": "^3.1.5",
     "jest": "^30",
     "jsdom": "^27",
     "msw": "^1.0.0",

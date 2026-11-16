@@ -1,7 +1,7 @@
 import { mcaComponentsBackendApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { XMLValidator } from 'fast-xml-parser';
+import { SyntaxValidator, ValidationError } from 'fast-xml-validator';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { mcaTranslationRef } from '../translation';
 
@@ -15,13 +15,12 @@ export function useGetMcaComponentDefinition(component: string, refP: string) {
     const result = await api.getMcaComponentDefinition(component, refP);
     if (!result) return undefined;
 
-    const validationResult = XMLValidator.validate(result);
-    if (validationResult !== true) {
+    try {
+      SyntaxValidator.validate(result, { allowBooleanAttributes: true });
+    } catch (err) {
+      const { message, line } = err as ValidationError;
       throw new Error(
-        t('definition.invalidXml', {
-          message: validationResult.err.msg,
-          line: String(validationResult.err.line),
-        }),
+        t('definition.invalidXml', { message, line: String(line) }),
       );
     }
 

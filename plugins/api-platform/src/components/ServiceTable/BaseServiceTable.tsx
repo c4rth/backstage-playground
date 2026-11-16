@@ -51,7 +51,7 @@ export type ToggleType = 'ownership' | 'dependents';
 
 export const renderVersionList = (
   serviceDefinition: ServiceDefinition,
-  renderItem: (version: ServiceVersionDefinition, idx: number) => JSX.Element,
+  renderItem: (version: ServiceVersionDefinition, idx: number) => React.ReactNode,
 ) => (
   <Cell>
     <Flex direction="column" align="center" style={{ gap: 12 }}>

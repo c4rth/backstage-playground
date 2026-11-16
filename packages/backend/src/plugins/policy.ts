@@ -1,4 +1,6 @@
 import {
+  BackstageUserInfo,
+  UserInfoService,
   createBackendModule,
   coreServices,
 } from '@backstage/backend-plugin-api';
@@ -40,9 +42,19 @@ import {
   unprocessedEntitiesReadPermission,
 } from '@backstage/plugin-catalog-unprocessed-entities-common';
 
+function isUserPrincipal(principal: unknown): boolean {
+  return (
+    typeof principal === 'object' &&
+    principal !== null &&
+    'type' in principal &&
+    principal.type === 'user'
+  );
+}
+
 class CustomPermissionPolicy implements PermissionPolicy {
   private readonly superUserGroups: string[];
   private readonly customPermissions: Map<string, string[]>;
+  private readonly userInfo: UserInfoService;
   private static readonly DENY_PERMISSIONS = [
     catalogEntityCreatePermission,
     catalogEntityDeletePermission,
@@ -59,7 +71,8 @@ class CustomPermissionPolicy implements PermissionPolicy {
     templateManagementPermission,
   ];
 
-  constructor(config: Config) {
+  constructor(config: Config, userInfo: UserInfoService) {
+    this.userInfo = userInfo;
     this.superUserGroups =
       config.getOptionalStringArray('permission.rbac.admin.superUsers') ?? [];
     this.customPermissions = new Map(
@@ -72,20 +85,20 @@ class CustomPermissionPolicy implements PermissionPolicy {
   // Returns undefined if there's no custom rule for this permission.
   private resolveCustomPermission(
     permissionName: string,
-    user?: PolicyQueryUser,
+    userInfo?: BackstageUserInfo,
   ): AuthorizeResult.ALLOW | AuthorizeResult.DENY | undefined {
     const allowed = this.customPermissions.get(permissionName);
     if (!allowed) return undefined;
     const isAllowed =
-      user?.info?.ownershipEntityRefs.some(ref => allowed.includes(ref)) ??
+      userInfo?.ownershipEntityRefs.some(ref => allowed.includes(ref)) ??
       false;
     return isAllowed ? AuthorizeResult.ALLOW : AuthorizeResult.DENY;
   }
 
-  private isSuperUser(user?: PolicyQueryUser): boolean {
+  private isSuperUser(userInfo?: BackstageUserInfo): boolean {
     return (
       this.superUserGroups.length !== 0 &&
-      (user?.info?.ownershipEntityRefs.some(ref =>
+      (userInfo?.ownershipEntityRefs.some(ref =>
         this.superUserGroups.includes(ref),
       ) ??
         false)
@@ -96,9 +109,16 @@ class CustomPermissionPolicy implements PermissionPolicy {
     request: PolicyQuery,
     user?: PolicyQueryUser,
   ): Promise<PolicyDecision> {
-    const custom = this.resolveCustomPermission(request.permission.name, user);
+    const userInfo =
+      user && isUserPrincipal(user.credentials.principal)
+        ? await this.userInfo.getUserInfo(user.credentials)
+        : undefined;
+    const custom = this.resolveCustomPermission(
+      request.permission.name,
+      userInfo,
+    );
 
-    if (user?.info?.userEntityRef === 'user:default/guest') {
+    if (userInfo?.userEntityRef === 'user:default/guest') {
       if (custom === AuthorizeResult.ALLOW)
         return { result: AuthorizeResult.ALLOW };
       const isRead =
@@ -107,7 +127,7 @@ class CustomPermissionPolicy implements PermissionPolicy {
       return { result: isRead ? AuthorizeResult.ALLOW : AuthorizeResult.DENY };
     }
 
-    if (this.isSuperUser(user)) {
+    if (this.isSuperUser(userInfo)) {
       return { result: AuthorizeResult.ALLOW };
     }
 
@@ -130,9 +150,10 @@ export const customPermissionPolicyModule = createBackendModule({
       deps: {
         policy: policyExtensionPoint,
         config: coreServices.rootConfig,
+        userInfo: coreServices.userInfo,
       },
-      async init({ policy, config }) {
-        policy.setPolicy(new CustomPermissionPolicy(config));
+      async init({ policy, config, userInfo }) {
+        policy.setPolicy(new CustomPermissionPolicy(config, userInfo));
       },
     });
   },
