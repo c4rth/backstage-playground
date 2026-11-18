@@ -3,12 +3,10 @@ import {
   PageBlueprint,
   SubPageBlueprint,
   createFrontendPlugin,
-  discoveryApiRef,
-  fetchApiRef,
+  coreApis,
   createApiRef,
   createApiFactory,
   createRouteRef,
-  translationApiRef,
 } from '@backstage/frontend-plugin-api';
 import { ApiPlatformBackendApi, ApiPlatformBackendClient } from './api';
 import {
@@ -225,9 +223,9 @@ const apiPlatformApi = ApiBlueprint.make({
     defineParams({
       api: apiPlatformBackendApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
-        translationApi: translationApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
+        translationApi: coreApis.translation,
       },
       factory: ({ discoveryApi, fetchApi, translationApi }) =>
         new ApiPlatformBackendClient({
@@ -277,9 +275,9 @@ export const apiPlatformPlugin = createPlugin({
     createApiFactory({
       api: apiPlatformBackendApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
-        translationApi: translationApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
+        translationApi: coreApis.translation,
       },
       factory: ({ discoveryApi, fetchApi, translationApi }) =>
         new ApiPlatformBackendClient({

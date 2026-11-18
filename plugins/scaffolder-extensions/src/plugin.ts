@@ -6,7 +6,7 @@ import {
   createFormField,
   FormFieldBlueprint,
 } from '@backstage/plugin-scaffolder-react/alpha';
-import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import { AzureDevOpsClient, azureDevOpsApiRef } from './api';
 
 const AlertMessageExtension = FormFieldBlueprint.make({
@@ -54,8 +54,8 @@ const azureDevOpsApi = ApiBlueprint.make({
     defineParams({
       api: azureDevOpsApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
       },
       factory: ({ discoveryApi, fetchApi }) =>
         new AzureDevOpsClient({ discoveryApi, fetchApi }),

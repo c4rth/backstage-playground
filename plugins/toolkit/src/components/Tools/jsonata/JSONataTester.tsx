@@ -13,8 +13,8 @@ import { styles, dividerBaseStyle } from './styles';
 import { jsonataLanguage } from './codemirror-jsonata';
 import { registerCustomFunctions, loadFuncBindings } from './jsonata-functions';
 import { useResizable } from '../../../hooks';
-import { useApi, appThemeApiRef } from '@backstage/core-plugin-api';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { toolkitTranslationRef } from '../../../translation';
 
 const sampleInput = JSON.stringify(
@@ -99,7 +99,7 @@ const sampleExpression = 'account.order.product.price';
 
 export const JSONataTester = () => {
   const { t } = useTranslationRef(toolkitTranslationRef);
-  const appThemeApi = useApi(appThemeApiRef);
+  const appThemeApi = useApi(coreApis.appTheme);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
     const preferedColor = window.matchMedia(

@@ -11,15 +11,11 @@ import {
 } from '@backstage/integration-react';
 import {
   createFrontendModule,
-  analyticsApiRef,
   ApiBlueprint,
   AppRootElementBlueprint,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import {
-  configApiRef,
-  discoveryApiRef,
-  fetchApiRef,
-  identityApiRef,
   microsoftAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
@@ -41,7 +37,7 @@ const scmIntegrations = ApiBlueprint.make({
     defineParams({
       api: scmIntegrationsApiRef,
       deps: {
-        configApi: configApiRef,
+        configApi: coreApis.config,
       },
       factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
     }),
@@ -63,11 +59,11 @@ const analytics = ApiBlueprint.make({
   name: 'analytics',
   params: defineParams =>
     defineParams({
-      api: analyticsApiRef,
+      api: coreApis.analytics,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
-        identityApi: identityApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
+        identityApi: coreApis.identity,
       },
       factory: ({ discoveryApi, fetchApi, identityApi }) =>
         CustomAnalyticsApi.create({ discoveryApi, fetchApi, identityApi }),

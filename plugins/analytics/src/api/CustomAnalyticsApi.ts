@@ -5,11 +5,11 @@ import {
 } from '@backstage/core-plugin-api';
 import {
   AnalyticsEvent,
-  AnalyticsImplementation,
   DiscoveryApi,
   FetchApi,
   IdentityApi,
 } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementation } from '@backstage/plugin-app-react';
 
 export interface CustomAnalytics
   extends LegacyAnalyticsApi, AnalyticsImplementation {

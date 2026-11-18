@@ -1,9 +1,9 @@
 import { Box } from '@backstage/ui';
 import { OwnershipType } from '@internal/plugin-api-platform-common';
 import { Chip, useStoredValue } from '@internal/plugin-components-react';
-import { useApi, identityApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { apiPlatformTranslationRef } from '../../translation';
 
 interface ComponentOwnershipProps {
@@ -20,7 +20,7 @@ export const ComponentOwnership = ({
   const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { initialValue: selectedType, storeValue: setSelectedType } =
     useStoredValue<OwnershipType>(storageKey, 'all');
-  const identityApi = useApi(identityApiRef);
+  const identityApi = useApi(coreApis.identity);
 
   const {
     value: isGuest,

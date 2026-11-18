@@ -3,15 +3,14 @@ import { DefaultEditor } from '../DefaultEditor';
 import { Box } from '@backstage/ui';
 import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
-import { appThemeApiRef } from '@backstage/core-plugin-api';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { toolkitTranslationRef } from '../../translation';
 
 export const JsonFormater = () => {
   const { t } = useTranslationRef(toolkitTranslationRef);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState<any>(undefined);
-  const appThemeApi = useApi(appThemeApiRef);
+  const appThemeApi = useApi(coreApis.appTheme);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
     const preferedColor = window.matchMedia(

@@ -1,12 +1,15 @@
 import { sidebarConfig, useSidebarOpenState } from '@backstage/core-components';
-import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { LogoFull, LogoIcon } from '../brand';
 import styles from './SidebarLogo.module.css';
 import { Link } from '@backstage/ui';
+import {
+  coreApis,
+} from '@backstage/frontend-plugin-api';
 
 export const SidebarLogo = () => {
   const { isOpen } = useSidebarOpenState();
-  const appThemeApi = useApi(appThemeApiRef);
+  const appThemeApi = useApi(coreApis.appTheme);
   const themeId = appThemeApi.getActiveThemeId();
 
   const fullLogo = <LogoFull />;

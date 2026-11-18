@@ -1,7 +1,7 @@
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi,  } from '@backstage/core-plugin-api';
 import { RiClipboardLine } from '@remixicon/react';
 import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
-import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { coreApis, useTranslationRef } from '@backstage/frontend-plugin-api';
 import { toolkitTranslationRef } from '../../translation';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 
 export const CopyToClipboardButton = (props: Props) => {
   const { t } = useTranslationRef(toolkitTranslationRef);
-  const toastApi = useApi(toastApiRef);
+  const toastApi = useApi(coreApis.toast); 
 
   const copyToClipboard = () => {
     navigator.clipboard

@@ -3,11 +3,11 @@ import { McaOperationAboutTab, UrlLocations } from '../McaComponentAboutTab';
 import { memo, useMemo } from 'react';
 import { McaComponentFieldsTab } from './McaComponentFieldsTab';
 import { McaComponentMethodsTab } from './McaComponentMethodsTab';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { McaComponentSnippet } from '../McaComponentSnippet';
 import { parseUrlLocations } from '../McaComponentAboutTab';
 import { Route, Routes } from 'react-router-dom';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { mcaTranslationRef } from '../../translation';
 
 export interface McaOperationDefinitionTabsProps {
@@ -57,7 +57,7 @@ function getOperationNodes(parsedDefinition: any): NodesType {
 export const McaOperationDefinitionTabs = memo<McaOperationDefinitionTabsProps>(
   ({ parsedDefinition, rawXml }) => {
     const { t } = useTranslationRef(mcaTranslationRef);
-    const configApi = useApi(configApiRef);
+    const configApi = useApi(coreApis.config);
     const urlLocations = useMemo<UrlLocations>(
       () =>
         parseUrlLocations(

@@ -2,11 +2,8 @@ import { RiApps2Line } from '@remixicon/react';
 import {
   ApiBlueprint,
   PageBlueprint,
-  configApiRef,
   createFrontendPlugin,
-  featureFlagsApiRef,
-  fetchApiRef,
-  translationApiRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import { AppRegistryBackendClient, appRegistryBackendApiRef } from './api';
 import { rootRouteRef } from './routes';
@@ -29,10 +26,10 @@ const appRegistryApi = ApiBlueprint.make({
     defineParams({
       api: appRegistryBackendApiRef,
       deps: {
-        configApi: configApiRef,
-        fetchApi: fetchApiRef,
-        featureFlagsApi: featureFlagsApiRef,
-        translationApi: translationApiRef,
+        configApi: coreApis.config,
+        fetchApi: coreApis.fetch,
+        featureFlagsApi: coreApis.featureFlags,
+        translationApi: coreApis.translation,
       },
       factory: ({ configApi, fetchApi, featureFlagsApi, translationApi }) =>
         new AppRegistryBackendClient({

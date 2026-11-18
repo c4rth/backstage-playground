@@ -1,7 +1,7 @@
 import {
   ApiBlueprint,
-  configApiRef,
   createFrontendPlugin,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import {
   EntityCardBlueprint,
@@ -17,7 +17,7 @@ export const linterApi = ApiBlueprint.make({
     defineParams({
       api: linterApiRef,
       deps: {
-        configApi: configApiRef,
+        configApi: coreApis.config,
       },
       factory: ({ configApi }) => new LinterClient({ configApi }),
     }),

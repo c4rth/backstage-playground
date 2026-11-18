@@ -8,11 +8,9 @@ import {
   SidebarItem,
   SidebarScrollWrapper,
   SidebarSpace,
-  CatalogIcon,
-  DocsIcon,
 } from '@backstage/core-components';
 import { RiMenuSearchLine, RiBubbleChartLine } from '@remixicon/react';
-import { IconComponent } from '@backstage/core-plugin-api';
+import { IconComponent, useApi } from '@backstage/core-plugin-api';
 // Permission on menu
 import { RequirePermission } from '@backstage/plugin-permission-react';
 // Search
@@ -24,6 +22,7 @@ import { McaComponentSearchResultListItem } from '@internal/plugin-mca';
 import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
 import { notGuestPermission } from '@internal/plugin-permissions-common';
 import { Shortcuts } from '@backstage-community/plugin-shortcuts';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const SidebarContent = NavContentBlueprint.make({
   params: {
@@ -41,12 +40,12 @@ export const SidebarContent = NavContentBlueprint.make({
             <SidebarSearchModal
               icon={RiMenuSearchLine as IconComponent}
               resultItemComponents={[
-                <ApiSearchResultListItem icon={<CatalogIcon />} />,
+                <ApiSearchResultListItem icon={useApi(coreApis.icons).icon('catalog')} />,
                 <McaComponentSearchResultListItem
                   icon={<RiBubbleChartLine />}
                 />,
-                <CatalogSearchResultListItem icon={<CatalogIcon />} />,
-                <TechDocsSearchResultListItem icon={<DocsIcon />} />,
+                <CatalogSearchResultListItem icon={useApi(coreApis.icons).icon('catalog')} />,
+                <TechDocsSearchResultListItem icon={useApi(coreApis.icons).icon('docs')} />,
               ]}
             />
           </SidebarGroup>

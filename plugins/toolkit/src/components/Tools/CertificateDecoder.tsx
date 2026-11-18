@@ -4,9 +4,8 @@ import * as asn1js from 'asn1js';
 import { AttributeTypeAndValue, Certificate } from 'pkijs';
 import ReactJson from 'react-json-view';
 import { useApi } from '@backstage/core-plugin-api';
-import { appThemeApiRef } from '@backstage/core-plugin-api';
 import { InputError } from '@backstage/errors';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { toolkitTranslationRef, ToolkitTranslator } from '../../translation';
 
 const exampleCertificate = `-----BEGIN CERTIFICATE-----
@@ -117,7 +116,7 @@ export const CertificateDecoder = () => {
   const { t } = useTranslationRef(toolkitTranslationRef);
   const [input, setInput] = useState('');
   const [info, setInfo] = useState<any>(null);
-  const appThemeApi = useApi(appThemeApiRef);
+  const appThemeApi = useApi(coreApis.appTheme);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
     const preferedColor = window.matchMedia(

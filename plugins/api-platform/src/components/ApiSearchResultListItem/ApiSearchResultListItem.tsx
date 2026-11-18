@@ -4,8 +4,7 @@ import {
   ResultHighlight,
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
-import { Link } from '@backstage/core-components';
-import { Box, Text } from '@backstage/ui';
+import { Box, Text, Link } from '@backstage/ui';
 import { Chip } from '@internal/plugin-components-react';
 import { RiCpuLine, RiPuzzleFill, RiShapesFill } from '@remixicon/react';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
@@ -64,7 +63,7 @@ export const ApiSearchResultListItem = (
             marginBottom: '1rem',
           }}
         >
-          <Link noTrack to={result.apiPlatformLocation}>
+          <Link noTrack href={result.apiPlatformLocation}>
             <Text
               weight="bold"
               style={{ color: 'var(--bui-fg-announcement)', fontSize: '20px' }}

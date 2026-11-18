@@ -1,8 +1,7 @@
 import {
   ApiBlueprint,
   createFrontendPlugin,
-  discoveryApiRef,
-  fetchApiRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import {
@@ -18,8 +17,8 @@ const azureDevOpsApi = ApiBlueprint.make({
     defineParams({
       api: azureDevOpsApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
       },
       factory: ({ discoveryApi, fetchApi }) =>
         new AzureDevOpsClient({ discoveryApi, fetchApi }),

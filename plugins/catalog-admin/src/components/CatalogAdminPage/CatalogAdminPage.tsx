@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react';
 import { EntityTable } from './EntityTable';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { catalogAdminTranslationRef } from '../../translation';
 import { CATALOG_METADATA_NAME } from '@internal/plugin-api-platform-common';
 import { EntityValidationContent } from '@backstage-community/plugin-entity-validation';
@@ -34,7 +34,7 @@ export const CatalogAdminPage = () => {
   >([]);
 
   const catalogApi = useApi(catalogApiRef);
-  const toastApi = useApi(toastApiRef);
+  const toastApi = useApi(coreApis.toast);
 
   useEffect(() => {
     catalogApi

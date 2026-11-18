@@ -1,5 +1,5 @@
 import { CodeSnippet, CopyTextButton } from '@backstage/core-components';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { apiPlatformTranslationRef } from '../../translation';
 import { ApiEntity } from '@backstage/catalog-model';
 import {
@@ -15,7 +15,7 @@ import {
 } from '@internal/plugin-api-platform-common';
 import { OpenApiDefinitionWidget } from '@internal/plugin-api-swagger-docs';
 import { ApiRelationCard } from './ApiRelationCard';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { ApiAllRelationsCard } from './ApiAllRelationsCard';
 import { ComponentAboutContent } from '../common/ComponentAboutContent';
 import { Box, Tab, TabList, TabPanel, Tabs, Link, Flex } from '@backstage/ui';
@@ -69,7 +69,7 @@ export const ApiDefinitionServicesCard = () => {
 export const ApiDefinitionInfoCard = () => {
   const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity<ApiEntity>();
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
 
   const organization = configApi.getString('apiPlatform.organization');
   const feedName = configApi.getString('apiPlatform.feedName');

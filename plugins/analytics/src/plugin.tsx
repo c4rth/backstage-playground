@@ -1,8 +1,7 @@
 import {
   ApiBlueprint,
   createFrontendPlugin,
-  discoveryApiRef,
-  fetchApiRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import { AnalyticsBackendApi, analyticsBackendApiRef } from './api';
 import { analyticsMetadata } from './translation';
@@ -13,8 +12,8 @@ const analyticsApi = ApiBlueprint.make({
     defineParams({
       api: analyticsBackendApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
       },
       factory: ({ discoveryApi, fetchApi }) =>
         new AnalyticsBackendApi({ discoveryApi, fetchApi }),

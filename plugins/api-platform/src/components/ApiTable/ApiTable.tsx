@@ -1,6 +1,5 @@
 import {
   ResponseErrorPanel,
-  OverflowTooltip,
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
@@ -81,9 +80,9 @@ const getData = async (
     search: search,
     orderBy: sort
       ? ({
-          field: sort.column.toString(),
-          direction: sort.direction,
-        } as ApiDefinitionsListRequest['orderBy'])
+        field: sort.column.toString(),
+        direction: sort.direction,
+      } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
     apiType,
@@ -91,13 +90,13 @@ const getData = async (
 
   return result
     ? {
-        data: result.items.map(toEntityRow),
-        totalCount: result.totalCount,
-      }
+      data: result.items.map(toEntityRow),
+      totalCount: result.totalCount,
+    }
     : {
-        data: [],
-        totalCount: 0,
-      };
+      data: [],
+      totalCount: 0,
+    };
 };
 
 const getColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [
@@ -122,11 +121,7 @@ const getColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [
     label: t('table.columns.description'),
     width: '45%',
     isSortable: true,
-    cell: ({ description }: TableRow) => (
-      <Cell>
-        <OverflowTooltip text={description} line={2} />
-      </Cell>
-    ),
+    cell: ({ description }: TableRow) => <CellText title={description} />,
   },
   {
     id: 'type',

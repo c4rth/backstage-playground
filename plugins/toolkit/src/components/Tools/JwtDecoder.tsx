@@ -3,9 +3,8 @@ import { DefaultEditor } from '../DefaultEditor';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { coreApis, useTranslationRef } from '@backstage/frontend-plugin-api';
 import { toolkitTranslationRef } from '../../translation';
-import { appThemeApiRef } from '@backstage/core-plugin-api';
 import ReactJson from 'react-json-view';
 import { Box } from '@backstage/ui';
 
@@ -16,7 +15,7 @@ const exampleJwt =
 
 export const JwtDecoder = () => {
   const { t } = useTranslationRef(toolkitTranslationRef);
-  const toastApi = useApi(toastApiRef);
+  const toastApi = useApi(coreApis.toast);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [jwt, setJwt] = useState<any | undefined>(undefined);
@@ -24,7 +23,7 @@ export const JwtDecoder = () => {
     null,
   );
   const [verificationError, setVerificationError] = useState<string>('');
-  const appThemeApi = useApi(appThemeApiRef);
+  const appThemeApi = useApi(coreApis.appTheme);
   const [isDarkMode] = useState(() => {
     const currentThemeId = appThemeApi.getActiveThemeId();
     const preferedColor = window.matchMedia(

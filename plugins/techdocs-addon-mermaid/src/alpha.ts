@@ -7,7 +7,7 @@ import { MermaidAddon } from "./Mermaid";
 import {
   createFrontendModule,
   useApi,
-  configApiRef,
+  coreApis,
 } from "@backstage/frontend-plugin-api";
 import type { Config } from "@backstage/config";
 import type { IconLoader, MermaidProps } from "./Mermaid/props";
@@ -85,7 +85,7 @@ export function readIconLoader(iconPackConfig: Config): IconLoader {
  *   techdocs.addons.mermaid.iconPacks               — [{ name, icons? , package? }]
  */
 const ConfiguredMermaidAddon = () => {
-  const config = useApi(configApiRef);
+  const config = useApi(coreApis.config);
   const mermaidConfig = config.getOptionalConfig("techdocs.addons.mermaid");
 
   const props: MermaidProps = {};

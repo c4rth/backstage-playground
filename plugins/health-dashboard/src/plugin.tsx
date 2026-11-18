@@ -3,13 +3,10 @@ import {
   PageBlueprint,
   SubPageBlueprint,
   ConfigApi,
-  configApiRef,
   createFrontendFeatureLoader,
   createFrontendPlugin,
-  featureFlagsApiRef,
-  fetchApiRef,
   createRouteRef,
-  translationApiRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import { RiHeartPulseFill } from '@remixicon/react';
 import {
@@ -66,10 +63,10 @@ const healthDashboardApi = ApiBlueprint.make({
     defineParams({
       api: healthDashboardBackendApiRef,
       deps: {
-        configApi: configApiRef,
-        fetchApi: fetchApiRef,
-        featureFlagsApi: featureFlagsApiRef,
-        translationApi: translationApiRef,
+        configApi: coreApis.config,
+        fetchApi: coreApis.fetch,
+        featureFlagsApi: coreApis.featureFlags,
+        translationApi: coreApis.translation,
       },
       factory: ({ configApi, fetchApi, featureFlagsApi, translationApi }) =>
         new HealthDashboardBackendClient({

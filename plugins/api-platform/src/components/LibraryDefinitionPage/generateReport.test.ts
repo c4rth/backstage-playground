@@ -6,7 +6,7 @@ import {
   createFrontendModule,
   createTranslationMessages,
   TranslationApi,
-  translationApiRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import {
@@ -132,7 +132,7 @@ it('preserves report sheets, headings, data, and filename', async () => {
 it('translates report headings without changing rows or environment codes', async () => {
   let translationApi: TranslationApi | undefined;
   function CaptureApi() {
-    translationApi = useApi(translationApiRef);
+    translationApi = useApi(coreApis.translation);
     return null;
   }
   renderInTestApp(createElement(CaptureApi), {

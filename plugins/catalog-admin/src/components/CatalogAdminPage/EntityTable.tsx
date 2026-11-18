@@ -1,6 +1,6 @@
 import { ANNOTATION_LOCATION, Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { coreApis, useTranslationRef } from '@backstage/frontend-plugin-api';
 import {
   catalogAdminTranslationRef,
   CatalogAdminTranslator,
@@ -273,7 +273,7 @@ export const EntityTable = ({ kind, system }: EntityTableProps) => {
   );
   const catalogApi = useApi(catalogApiRef);
   const apiPlatformApi = useApi(apiPlatformBackendApiRef);
-  const toastApi = useApi(toastApiRef);
+  const toastApi = useApi(coreApis.toast);
   const isFirstRender = useRef(true);
   const prevKindSystem = useRef({ kind, system });
 

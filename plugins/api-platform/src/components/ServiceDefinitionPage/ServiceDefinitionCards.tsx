@@ -2,7 +2,7 @@ import {
   ComponentEntity,
   getCompoundEntityRef,
 } from '@backstage/catalog-model';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { EntityInfoCard, EntityRefLink } from '@backstage/plugin-catalog-react';
 import { AboutField } from '@backstage/plugin-catalog';
 import {
@@ -33,14 +33,14 @@ import {
 } from '@backstage/ui';
 import { RiFileFill } from '@remixicon/react';
 import { isAzureDevOpsAvailable } from '@internal/plugin-azure-devops';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { apiPlatformTranslationRef } from '../../translation';
 
 export const ServiceDefinitionOverviewCard = () => {
   const { t } = useTranslationRef(apiPlatformTranslationRef);
   const { entity } = useEntity<ComponentEntity>();
 
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const platform = (
     entity.metadata.annotations?.[ANNOTATION_SERVICE_PLATFORM] || 'cloud'
   ).toString();

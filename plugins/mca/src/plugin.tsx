@@ -3,8 +3,7 @@ import {
   PageBlueprint,
   createApiFactory,
   createFrontendPlugin,
-  discoveryApiRef,
-  fetchApiRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import { McaComponentsBackendClient, mcaComponentsBackendApiRef } from './api';
 import {
@@ -29,8 +28,8 @@ const mcaApi = ApiBlueprint.make({
     defineParams({
       api: mcaComponentsBackendApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
       },
       factory: ({ discoveryApi, fetchApi }) =>
         new McaComponentsBackendClient({ discoveryApi, fetchApi }),
@@ -132,8 +131,8 @@ export const mcaComponentPlugin = createPlugin({
     createApiFactory({
       api: mcaComponentsBackendApiRef,
       deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
+        discoveryApi: coreApis.discovery,
+        fetchApi: coreApis.fetch,
       },
       factory: ({ discoveryApi, fetchApi }) =>
         new McaComponentsBackendClient({ discoveryApi, fetchApi }),

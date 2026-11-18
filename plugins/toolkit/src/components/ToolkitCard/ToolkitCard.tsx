@@ -1,15 +1,15 @@
 import { HomePageToolkit } from '@backstage/plugin-home';
 import { useToolkitData } from '../../hooks/useToolkitData';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { ToolkitLink } from '../../types/types';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { Progress } from '@internal/plugin-components-react';
-import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { useTranslationRef, coreApis } from '@backstage/frontend-plugin-api';
 import { toolkitTranslationRef } from '../../translation';
 
 export const ToolkitCard = () => {
   const { t } = useTranslationRef(toolkitTranslationRef);
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const baseUrl = configApi.getString('app.baseUrl');
   const { data, error, isLoading } = useToolkitData(baseUrl) as {
     data: ToolkitLink[] | undefined;

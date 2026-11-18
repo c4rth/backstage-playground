@@ -4,9 +4,9 @@ import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
 import { Box, ButtonIcon, Flex, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { RiFileCopy2Line, RiFileDownloadFill } from '@remixicon/react';
 import { MouseEventHandler, Suspense, lazy, useEffect } from 'react';
-import { errorApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import useCopyToClipboard from 'react-use/esm/useCopyToClipboard';
-import { toastApiRef, useTranslationRef } from '@backstage/frontend-plugin-api';
+import { coreApis, useTranslationRef } from '@backstage/frontend-plugin-api';
 import { mcaTranslationRef } from '../../translation';
 import { Progress } from '@internal/plugin-components-react';
 
@@ -25,8 +25,8 @@ export interface McaComponentSnippetProps {
 export function McaComponentSnippet(props: McaComponentSnippetProps) {
   const { t } = useTranslationRef(mcaTranslationRef);
   const { filename, data } = props;
-  const toastApi = useApi(toastApiRef);
-  const errorApi = useApi(errorApiRef);
+  const toastApi = useApi(coreApis.toast);
+  const errorApi = useApi(coreApis.error);
   const [{ error }, copyToClipboard] = useCopyToClipboard();
 
   useEffect(() => {

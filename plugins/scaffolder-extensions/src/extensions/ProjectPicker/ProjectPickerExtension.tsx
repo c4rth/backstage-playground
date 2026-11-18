@@ -1,8 +1,7 @@
 import {
-  errorApiRef,
-  identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 import useDebounce from 'react-use/lib/useDebounce';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { NotFoundError } from '@backstage/errors';
@@ -32,9 +31,9 @@ export const ProjectPicker = (
   );
   const { secrets, setSecrets } = useTemplateSecrets();
 
-  const identityApi = useApi(identityApiRef);
+  const identityApi = useApi(coreApis.identity);
   const catalogApi = useApi(catalogApiRef);
-  const errorApi = useApi(errorApiRef);
+  const errorApi = useApi(coreApis.error);
   const scmAuthApi = useApi(scmAuthApiRef);
 
   const { requestUserCredentials } = uiSchema?.['ui:options'] ?? {};

@@ -1,5 +1,5 @@
 import { ResponseErrorPanel } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { NotFoundError } from '@backstage/errors';
 import { useDocumentTitle } from '@internal/plugin-components-react';
 import { mcaComponentsBackendApiRef } from '../../api';
@@ -12,6 +12,7 @@ import { Progress } from '@internal/plugin-components-react';
 import {
   useRouteRefParams,
   useTranslationRef,
+  coreApis,
 } from '@backstage/frontend-plugin-api';
 import { mcaTranslationRef, McaTranslator } from '../../translation';
 import { baseTypeRouteRef } from '../../routes';
@@ -32,7 +33,7 @@ async function getBaseType(
 export const McaBaseTypeDefinitionPage = () => {
   const { t } = useTranslationRef(mcaTranslationRef);
   const mcaApi = useApi(mcaComponentsBackendApiRef);
-  const configApi = useApi(configApiRef);
+  const configApi = useApi(coreApis.config);
   const { name } = useRouteRefParams(baseTypeRouteRef);
   const navigate = useNavigate();
   useDocumentTitle(t('baseTypeDefinition.title', { name }));
