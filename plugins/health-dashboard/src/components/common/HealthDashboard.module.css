@@ -4,7 +4,7 @@
 }
 
 .healthTable :global(.bui-TableScrollContainer) {
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 .healthTable :global(.bui-TableRow:hover) {

@@ -89,3 +89,13 @@ export function aggregateTechnicalStatus(
   }
   return 'UNKNOWN';
 }
+
+export function getApplicationEnvironmentStatus(
+  group: HealthV2ApplicationGroup,
+  environment: string,
+): 'RED' | 'GREEN' | 'UNKNOWN' | undefined {
+  const probes = group.components.flatMap(
+    component => component.environments[environment] ?? [],
+  );
+  return probes.length ? aggregateTechnicalStatus(probes) : undefined;
+}

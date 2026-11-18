@@ -2,6 +2,7 @@ import { HealthV2Data, HealthV2Probe } from '../../types';
 import {
   aggregateTechnicalStatus,
   buildHealthMatrix,
+  getApplicationEnvironmentStatus,
   getEnvironmentNames,
   groupHealthMatrix,
 } from './healthMatrix';
@@ -128,5 +129,18 @@ describe('health matrix', () => {
     expect(
       aggregateTechnicalStatus([probe('app', null, 'TST', 'green', 'x')]),
     ).toBe('GREEN');
+  });
+
+  it('summarizes application status per environment and omits empty environments', () => {
+    const app = groupHealthMatrix(buildHealthMatrix(data, ['app']))[0];
+    expect(getApplicationEnvironmentStatus(app, 'TST')).toBe('RED');
+    expect(getApplicationEnvironmentStatus(app, 'PRD')).toBe('GREEN');
+    expect(getApplicationEnvironmentStatus(app, 'UAT')).toBeUndefined();
+
+    const grayProbe = probe('gray', null, 'TST', 'GRAY', 'x');
+    const grayApp = groupHealthMatrix(
+      buildHealthMatrix({ TST: { group: { grayProbe } } }, []),
+    )[0];
+    expect(getApplicationEnvironmentStatus(grayApp, 'TST')).toBe('UNKNOWN');
   });
 });

@@ -27,6 +27,7 @@ import { Progress, useDocumentTitle } from '@internal/plugin-components-react';
 import {
   aggregateTechnicalStatus,
   buildHealthMatrix,
+  getApplicationEnvironmentStatus,
   getEnvironmentNames,
   groupHealthMatrix,
   HealthV2ApplicationGroup,
@@ -59,13 +60,23 @@ function getEnvironmentColumn(
   environment: string,
   onSelect: (row: HealthV2MatrixRow, environment: string) => void,
   t: HealthDashboardTranslator,
+  width: `${number}%`,
 ): ColumnConfig<TableRow> {
   return {
     id: environment,
     label: environment,
     cell: item => {
       if (item.kind === 'application') {
-        return <Cell className={groupStyles.groupCell} />;
+        const status = getApplicationEnvironmentStatus(item, environment);
+        return (
+          <Cell className={groupStyles.groupCell}>
+            {status && (
+              <Box style={centerStyle}>
+                <HealthStatusIndicator status={status} />
+              </Box>
+            )}
+          </Cell>
+        );
       }
       const probes = item.environments[environment];
       if (!probes?.length) {
@@ -99,8 +110,8 @@ function getEnvironmentColumn(
         <Text weight="bold">{environment}</Text>
       </Column>
     ),
-    width: '10%',
-    minWidth: 80,
+    width,
+    minWidth: 64,
   };
 }
 
@@ -122,6 +133,20 @@ export const HealthDashboardV2Page = () => {
         ),
     [searchParams],
   );
+  const [expandedApplications, setExpandedApplications] = useState<Set<string>>(
+    () => new Set(selectedApplications),
+  );
+  useEffect(() => {
+    setExpandedApplications(current => {
+      const newlySelectedApplications = selectedApplications.filter(
+        application => !current.has(application),
+      );
+      if (!newlySelectedApplications.length) {
+        return current;
+      }
+      return new Set([...current, ...newlySelectedApplications]);
+    });
+  }, [selectedApplications]);
   const updateApplications = (applications: string[]) => {
     setSearchParams(currentParams => {
       const nextParams = new URLSearchParams(currentParams);
@@ -132,6 +157,17 @@ export const HealthDashboardV2Page = () => {
       }
       return nextParams;
     });
+    const previouslySelectedApplications = new Set(selectedApplications);
+    const newlySelectedApplications = applications.filter(
+      application => !previouslySelectedApplications.has(application),
+    );
+    if (newlySelectedApplications.length) {
+      setExpandedApplications(current => {
+        const next = new Set(current);
+        newlySelectedApplications.forEach(application => next.add(application));
+        return next;
+      });
+    }
   };
   const [healthDataErrors, setHealthDataErrors] = useState<HealthDataError[]>(
     [],
@@ -140,16 +176,13 @@ export const HealthDashboardV2Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEnvironment, setSelectedEnvironment] =
     useState<HealthDetailsSelection | null>(null);
-  const [collapsedApplications, setCollapsedApplications] = useState<
-    Set<string>
-  >(() => new Set());
   const toggleApplication = useCallback((application: string) => {
-    setCollapsedApplications(current => {
+    setExpandedApplications(current => {
       const next = new Set(current);
-      if (next.has(application)) {
-        next.delete(application);
-      } else {
+      if (!next.has(application)) {
         next.add(application);
+      } else {
+        next.delete(application);
       }
       return next;
     });
@@ -237,8 +270,11 @@ export const HealthDashboardV2Page = () => {
     [healthData],
   );
 
-  const columns = useMemo<ColumnConfig<TableRow>[]>(
-    () => [
+  const columns = useMemo<ColumnConfig<TableRow>[]>(() => {
+    const environmentColumnWidth: `${number}%` = `${
+      44 / environmentNames.length
+    }%`;
+    return [
       {
         id: 'application',
         label: t('dashboardV2Page.columns.application'),
@@ -253,7 +289,7 @@ export const HealthDashboardV2Page = () => {
               <button
                 type="button"
                 className={groupStyles.groupToggle}
-                aria-expanded={!collapsedApplications.has(item.application)}
+                aria-expanded={expandedApplications.has(item.application)}
                 aria-label={t('dashboardV2Page.summary.toggle', {
                   application: item.application,
                 })}
@@ -262,7 +298,7 @@ export const HealthDashboardV2Page = () => {
                   toggleApplication(item.application);
                 }}
               >
-                {collapsedApplications.has(item.application) ? (
+                {!expandedApplications.has(item.application) ? (
                   <RiArrowRightSLine aria-hidden="true" />
                 ) : (
                   <RiArrowDownSLine aria-hidden="true" />
@@ -298,17 +334,21 @@ export const HealthDashboardV2Page = () => {
         minWidth: 240,
       },
       ...environmentNames.map(environment =>
-        getEnvironmentColumn(environment, handleEnvironmentSelect, t),
+        getEnvironmentColumn(
+          environment,
+          handleEnvironmentSelect,
+          t,
+          environmentColumnWidth,
+        ),
       ),
-    ],
-    [
-      collapsedApplications,
-      environmentNames,
-      handleEnvironmentSelect,
-      t,
-      toggleApplication,
-    ],
-  );
+    ];
+  }, [
+    expandedApplications,
+    environmentNames,
+    handleEnvironmentSelect,
+    t,
+    toggleApplication,
+  ]);
 
   const tableRows = useMemo<TableRow[]>(
     () =>
@@ -320,9 +360,8 @@ export const HealthDashboardV2Page = () => {
           id: JSON.stringify(['application', group.application]),
           kind: 'application' as const,
         },
-        ...(collapsedApplications.has(group.application)
-          ? []
-          : group.components.map(component => ({
+        ...(expandedApplications.has(group.application)
+          ? group.components.map(component => ({
               ...component,
               id: JSON.stringify([
                 'component',
@@ -330,9 +369,10 @@ export const HealthDashboardV2Page = () => {
                 component.component,
               ]),
               kind: 'component' as const,
-            }))),
+            }))
+          : []),
       ]),
-    [healthData, selectedApplications, collapsedApplications],
+    [healthData, selectedApplications, expandedApplications],
   );
 
   const { tableProps } = useTable({

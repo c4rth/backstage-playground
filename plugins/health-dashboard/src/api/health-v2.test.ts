@@ -101,7 +101,7 @@ describe('fetchHealthV2Data', () => {
         Object.values(probes).map(probe => probe.technicalStatus),
       ),
     );
-    expect(new Set(statuses)).toEqual(new Set(['GREEN', 'RED']));
+    expect(new Set(statuses)).toEqual(new Set(['GREEN', 'GRAY', 'RED']));
   });
 
   it('covers endpoint-style payloads, platforms, statuses, and nullable metadata', () => {

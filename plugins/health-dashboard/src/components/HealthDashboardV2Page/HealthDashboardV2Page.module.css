@@ -1,8 +1,7 @@
 .groupCell {
-  background-color: var(--bui-bg-neutral-2);
   background-color: color-mix(
     in srgb,
-    var(--bui-bg-neutral-2) 85%,
+    var(--bui-bg-neutral-2) 95%,
     var(--bui-fg-primary)
   );
 }
@@ -10,9 +9,13 @@
 :global([data-theme-mode='dark']) .groupCell {
   background-color: color-mix(
     in srgb,
-    var(--bui-bg-neutral-2) 85%,
+    var(--bui-bg-neutral-2) 99%,
     var(--bui-fg-primary)
   );
+}
+
+.groupRow .groupCell:first-child {
+  border-inline-start: 5px solid var(--bui-accent-bg);
 }
 
 .groupRow {
@@ -20,7 +23,11 @@
 }
 
 :global(.bui-TableRow:hover) .groupCell {
-  background-image: linear-gradient(#c3004520, #c3004520);
+  background-color: color-mix(
+    in srgb,
+    #c3004520,
+    #c3004520
+  );
 }
 
 .groupToggle {
