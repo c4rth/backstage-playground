@@ -46,7 +46,7 @@ export const healthDashboardTranslationRef = createTranslationRef({
       description:
         'View application health by platform component and environment.',
       statusDescription:
-        'For each environment, RED means at least one probe is red; GREEN means all probes are green. Other statuses are shown as UNKNOWN.',
+        'Application rectangles summarize health by environment: Red means at least one probe is red, Green means all probes are green, and Gray means the status is unknown. Select a component status dot to view its probe details.',
       filters: {
         applications: 'Applications',
         applicationLabel: 'Application',
@@ -58,6 +58,11 @@ export const healthDashboardTranslationRef = createTranslationRef({
       },
       summary: {
         toggle: 'Toggle components for {{application}}',
+        status: {
+          GREEN: 'Green',
+          RED: 'Red',
+          UNKNOWN: 'Unknown',
+        },
       },
       details: {
         title: '{{application}} - {{component}} - {{environment}}',

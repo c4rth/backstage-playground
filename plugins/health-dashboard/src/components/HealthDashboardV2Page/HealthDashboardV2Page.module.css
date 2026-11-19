@@ -1,39 +1,115 @@
-.groupCell {
-  background-color: color-mix(
-    in srgb,
-    var(--bui-bg-neutral-2) 95%,
-    var(--bui-fg-primary)
-  );
+.groupedTable :global(.bui-Table) {
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-:global([data-theme-mode='dark']) .groupCell {
-  background-color: color-mix(
-    in srgb,
-    var(--bui-bg-neutral-2) 99%,
-    var(--bui-fg-primary)
-  );
+.groupedTable :global(.bui-Table) :is(.groupRow, .componentRow) {
+  background-color: transparent;
 }
 
-.groupRow .groupCell:first-child {
-  border-inline-start: 5px solid var(--bui-accent-bg);
+:is(.groupRow, .componentRow) > :global(.bui-TableCell) {
+  position: relative;
+  isolation: isolate;
+}
+
+.groupedTable :global(.bui-Table) .groupRow:not(:first-child) {
+  --application-gap: 12px;
+}
+
+.groupedTable :global(.bui-Table) .groupRow > .groupCell {
+  padding-block-start: var(--application-gap, 0px);
+  color: var(--bui-black);
+}
+
+/* Keep the decoration inside cells so it cannot add a table column. */
+:is(.groupRow, .componentRow) > :global(.bui-TableCell)::before {
+  content: '';
+  position: absolute;
+  inset: var(--application-gap, 0px) 0 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+:is(.groupRow, .componentRow) > :global(.bui-TableCell):first-child::before {
+  border-inline-start: 1px solid var(--bui-border-2);
+}
+
+:is(.groupRow, .componentRow) > :global(.bui-TableCell):last-child::before {
+  border-inline-end: 1px solid var(--bui-border-2);
+}
+
+.groupRow > .groupCell::before {
+  border-block-start: 1px solid var(--bui-border-2);
+  background-color: var(--bui-white);
+}
+
+.groupRow > .groupCell:first-child::before {
+  border-start-start-radius: 10px;
+}
+
+.groupRow > .groupCell:last-child::before {
+  border-start-end-radius: 10px;
+}
+
+.groupRow:hover > .groupCell::before {
+  background-color: #c3004520;
+}
+
+.componentRow > :global(.bui-TableCell)::before {
+  border-block-start: 1px solid var(--bui-border-1);
+}
+
+.componentRow:hover > :global(.bui-TableCell)::before {
+  background-color: #c3004520;
+}
+
+:is(.groupRow, .componentRow):is(:has(+ .groupRow), :last-child)
+  > :global(.bui-TableCell)::before {
+  border-block-end: 1px solid var(--bui-border-2);
+}
+
+:is(.groupRow, .componentRow):is(:has(+ .groupRow), :last-child)
+  > :global(.bui-TableCell):first-child::before {
+  border-end-start-radius: 10px;
+}
+
+:is(.groupRow, .componentRow):is(:has(+ .groupRow), :last-child)
+  > :global(.bui-TableCell):last-child::before {
+  border-end-end-radius: 10px;
 }
 
 .groupRow {
   cursor: pointer;
 }
 
-:global(.bui-TableRow:hover) .groupCell {
-  background-color: color-mix(
-    in srgb,
-    #c3004520,
-    #c3004520
-  );
+.summaryBadge[data-status] {
+  box-sizing: border-box;
+  width: 1.75rem;
+  height: 1rem;
+  border-radius: 5px;
+  background-color: var(--bui-fg-secondary);
+}
+
+.summaryBadge[data-status='GREEN'] {
+  background-color: var(--bui-fg-success);
+}
+
+.summaryBadge[data-status='RED'] {
+  background-color: var(--bui-fg-danger);
+}
+
+.environmentCell {
+  border-inline-start: 1px solid var(--bui-border-1);
+}
+
+.noStatus {
+  color: var(--bui-fg-secondary);
 }
 
 .groupToggle {
   display: inline-flex;
   align-items: center;
-  min-height: 2rem;
+  min-height: 2.5rem;
   padding: 0;
   border: 0;
   background: transparent;
