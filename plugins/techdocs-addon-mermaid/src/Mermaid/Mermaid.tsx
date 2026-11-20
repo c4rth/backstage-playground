@@ -92,7 +92,7 @@ const stripLineNumberGutters = (text: string): string => {
 };
 
 const getDiagramSource = (element: HTMLElement): string => {
-// const sourceRoot = element.matches('code')
+  // const sourceRoot = element.matches('code')
   //  ? element
   //  : (element.querySelector('code') ?? element);
   const sourceRoot =
@@ -101,9 +101,7 @@ const getDiagramSource = (element: HTMLElement): string => {
       : (element.querySelector('code') ?? element);
   const clone = sourceRoot.cloneNode(true);
   if (clone instanceof HTMLElement) {
-    clone
-      .querySelectorAll(lineNumberSelectors)
-      .forEach((node) => node.remove());
+    clone.querySelectorAll(lineNumberSelectors).forEach(node => node.remove());
   }
   return stripLineNumberGutters(clone.textContent ?? '');
 };
@@ -129,8 +127,8 @@ const declaredLanguage = (element: HTMLElement): string | undefined => {
 
 const outermostCandidates = (elements: HTMLElement[]): HTMLElement[] => {
   const unique = [...new Set(elements)];
-  return unique.filter((element) =>
-    unique.every((other) => other === element || !other.contains(element)),
+  return unique.filter(element =>
+    unique.every(other => other === element || !other.contains(element)),
   );
 };
 
@@ -185,12 +183,12 @@ export const MermaidAddon = (properties: MermaidProps) => {
     }
     let cancelled = false;
     loadMermaid().then(
-      (loaded) => {
+      loaded => {
         if (cancelled) {
           return;
         }
         loaded.registerExternalDiagrams([zenuml]);
-              const config: MermaidConfig = selectConfig(
+        const config: MermaidConfig = selectConfig(
           theme.palette.type,
           properties,
         );
@@ -203,7 +201,7 @@ export const MermaidAddon = (properties: MermaidProps) => {
         loaded.initialize({ suppressErrorRendering: true, ...config });
         setMermaid(loaded);
       },
-      (error) => {
+      error => {
         // eslint-disable-next-line no-console
         console.error('Failed to load mermaid', error);
       },
@@ -218,7 +216,7 @@ export const MermaidAddon = (properties: MermaidProps) => {
       return;
     }
 
-    outermostCandidates(candidates).forEach((candidate) => {
+    outermostCandidates(candidates).forEach(candidate => {
       if (
         candidate.style.display === 'none' ||
         candidate.dataset.mermaidRendered === 'true'

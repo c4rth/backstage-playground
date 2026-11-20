@@ -40,12 +40,18 @@ export const SidebarContent = NavContentBlueprint.make({
             <SidebarSearchModal
               icon={RiMenuSearchLine as IconComponent}
               resultItemComponents={[
-                <ApiSearchResultListItem icon={useApi(coreApis.icons).icon('catalog')} />,
+                <ApiSearchResultListItem
+                  icon={useApi(coreApis.icons).icon('catalog')}
+                />,
                 <McaComponentSearchResultListItem
                   icon={<RiBubbleChartLine />}
                 />,
-                <CatalogSearchResultListItem icon={useApi(coreApis.icons).icon('catalog')} />,
-                <TechDocsSearchResultListItem icon={useApi(coreApis.icons).icon('docs')} />,
+                <CatalogSearchResultListItem
+                  icon={useApi(coreApis.icons).icon('catalog')}
+                />,
+                <TechDocsSearchResultListItem
+                  icon={useApi(coreApis.icons).icon('docs')}
+                />,
               ]}
             />
           </SidebarGroup>

@@ -1,6 +1,4 @@
-import {
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   ANNOTATION_API_NAME,
@@ -80,9 +78,9 @@ const getData = async (
     search: search,
     orderBy: sort
       ? ({
-        field: sort.column.toString(),
-        direction: sort.direction,
-      } as ApiDefinitionsListRequest['orderBy'])
+          field: sort.column.toString(),
+          direction: sort.direction,
+        } as ApiDefinitionsListRequest['orderBy'])
       : undefined,
     ownershipType,
     apiType,
@@ -90,13 +88,13 @@ const getData = async (
 
   return result
     ? {
-      data: result.items.map(toEntityRow),
-      totalCount: result.totalCount,
-    }
+        data: result.items.map(toEntityRow),
+        totalCount: result.totalCount,
+      }
     : {
-      data: [],
-      totalCount: 0,
-    };
+        data: [],
+        totalCount: 0,
+      };
 };
 
 const getColumns = (t: ApiPlatformTranslator): ColumnConfig<TableRow>[] => [

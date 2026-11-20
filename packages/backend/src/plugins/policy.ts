@@ -90,8 +90,7 @@ class CustomPermissionPolicy implements PermissionPolicy {
     const allowed = this.customPermissions.get(permissionName);
     if (!allowed) return undefined;
     const isAllowed =
-      userInfo?.ownershipEntityRefs.some(ref => allowed.includes(ref)) ??
-      false;
+      userInfo?.ownershipEntityRefs.some(ref => allowed.includes(ref)) ?? false;
     return isAllowed ? AuthorizeResult.ALLOW : AuthorizeResult.DENY;
   }
 

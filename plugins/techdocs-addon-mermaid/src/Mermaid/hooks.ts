@@ -18,9 +18,9 @@ import type { MermaidApi } from './loadMermaid';
 
 export const isMermaidCode = (code: string, mermaid: MermaidApi): boolean => {
   try {
-    mermaid.detectType(code)
-    return true
+    mermaid.detectType(code);
+    return true;
   } catch (_) {
-    return false
+    return false;
   }
 };

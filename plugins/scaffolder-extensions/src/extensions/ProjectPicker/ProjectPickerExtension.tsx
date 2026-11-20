@@ -1,6 +1,4 @@
-import {
-  useApi,
-} from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { coreApis } from '@backstage/frontend-plugin-api';
 import useDebounce from 'react-use/lib/useDebounce';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';

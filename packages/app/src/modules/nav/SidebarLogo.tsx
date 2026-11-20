@@ -3,9 +3,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { LogoFull, LogoIcon } from '../brand';
 import styles from './SidebarLogo.module.css';
 import { Link } from '@backstage/ui';
-import {
-  coreApis,
-} from '@backstage/frontend-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 export const SidebarLogo = () => {
   const { isOpen } = useSidebarOpenState();

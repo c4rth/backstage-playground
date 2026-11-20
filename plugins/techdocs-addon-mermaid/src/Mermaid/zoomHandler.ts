@@ -51,7 +51,7 @@ export class ZoomHandler {
   constructor(
     private container: HTMLElement,
     private diagram: SVGGElement,
-    private options: ZoomOptions = {}
+    private options: ZoomOptions = {},
   ) {}
 
   /**
@@ -99,15 +99,19 @@ export class ZoomHandler {
    * @param zb - The D3 zoom behavior to use for scaling
    */
   private attachWheelListener(zb: ZoomBehavior<HTMLElement, unknown>): void {
-    this.container.addEventListener('wheel', (event: WheelEvent) => {
-      if (!(event.metaKey || event.ctrlKey)) {
-        return;
-      }
-      event.preventDefault();
-      const factor = event.deltaY > 0 ? 0.9 : 1.1;
-      const [px, py] = pointer(event, this.container);
-      select(this.container).call(zb.scaleBy, factor, [px, py]);
-    }, { passive: false });
+    this.container.addEventListener(
+      'wheel',
+      (event: WheelEvent) => {
+        if (!(event.metaKey || event.ctrlKey)) {
+          return;
+        }
+        event.preventDefault();
+        const factor = event.deltaY > 0 ? 0.9 : 1.1;
+        const [px, py] = pointer(event, this.container);
+        select(this.container).call(zb.scaleBy, factor, [px, py]);
+      },
+      { passive: false },
+    );
   }
 
   /**
@@ -115,14 +119,14 @@ export class ZoomHandler {
    * @param zb - The D3 zoom behavior to use for transformations
    */
   private attachMouseListeners(zb: ZoomBehavior<HTMLElement, unknown>): void {
-    this.container.addEventListener('mousedown', (event) => {
+    this.container.addEventListener('mousedown', event => {
       // Allow panning by holding meta, ctrl or the middle mouse button
       if (event.metaKey || event.ctrlKey || event.button === 1) {
         this.handleMouseDown(event);
       }
     });
 
-    document.addEventListener('mousemove', (event) => {
+    document.addEventListener('mousemove', event => {
       if (this.state.isPanning) {
         this.handleMouseMove(event, zb);
       }
@@ -146,7 +150,7 @@ export class ZoomHandler {
    * @param event - The mouse down event that triggered the pan
    */
   private handleMouseDown(event: MouseEvent): void {
-    event.preventDefault()
+    event.preventDefault();
 
     this.state.isPanning = true;
     this.state.startX = event.clientX;
@@ -170,7 +174,10 @@ export class ZoomHandler {
    * @param event - The mouse move event
    * @param zb - The D3 zoom behavior to use for transformations
    */
-  private handleMouseMove(event: MouseEvent, zb: ZoomBehavior<HTMLElement, unknown>): void {
+  private handleMouseMove(
+    event: MouseEvent,
+    zb: ZoomBehavior<HTMLElement, unknown>,
+  ): void {
     event.preventDefault();
 
     // Convert current mouse position to SVG coordinates
@@ -211,4 +218,4 @@ export class ZoomHandler {
     this.state.isPanning = false;
     this.container.style.cursor = 'auto';
   }
-} 
+}

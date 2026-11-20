@@ -28,8 +28,8 @@ let mermaidPromise: Promise<MermaidApi> | undefined;
  */
 export function loadMermaid(): Promise<MermaidApi> {
   mermaidPromise ??= import('mermaid').then(
-    (module) => module.default,
-    (error) => {
+    module => module.default,
+    error => {
       mermaidPromise = undefined;
       throw error;
     },

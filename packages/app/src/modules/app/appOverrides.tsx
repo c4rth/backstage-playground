@@ -15,9 +15,7 @@ import {
   AppRootElementBlueprint,
   coreApis,
 } from '@backstage/frontend-plugin-api';
-import {
-  microsoftAuthApiRef,
-} from '@backstage/core-plugin-api';
+import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
 import { DarkThemeProvider, LightThemeProvider } from '../brand/customThemes';
 import { CustomAnalyticsApi } from '@internal/plugin-analytics';
