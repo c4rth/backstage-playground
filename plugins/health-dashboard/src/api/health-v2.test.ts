@@ -108,7 +108,7 @@ describe('fetchHealthV2Data', () => {
     const probes = Object.values(fixture).flatMap(groups =>
       Object.values(groups).flatMap(Object.values),
     );
-    expect(probes).toHaveLength(49);
+    expect(probes).toHaveLength(50);
     expect(new Set(probes.map(probe => probe.httpStatusCode))).toEqual(
       new Set([0, 200, 404, 503]),
     );

@@ -13,12 +13,12 @@
 }
 
 .groupedTable :global(.bui-Table) .groupRow:not(:first-child) {
-  --application-gap: 12px;
+  --application-gap: 6px;
 }
 
 .groupedTable :global(.bui-Table) .groupRow > .groupCell {
   padding-block-start: var(--application-gap, 0px);
-  color: var(--bui-black);
+  color: var(--bui-fg-primary);
 }
 
 /* Keep the decoration inside cells so it cannot add a table column. */
@@ -40,7 +40,7 @@
 
 .groupRow > .groupCell::before {
   border-block-start: 1px solid var(--bui-border-2);
-  background-color: var(--bui-white);
+  background-color: var(--bui-bg-neutral-1);
 }
 
 .groupRow > .groupCell:first-child::before {

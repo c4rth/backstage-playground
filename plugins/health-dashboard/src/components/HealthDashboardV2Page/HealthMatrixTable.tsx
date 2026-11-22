@@ -179,7 +179,7 @@ export const HealthMatrixTable = ({
       },
       {
         id: 'component',
-        label: t('dashboardV2Page.columns.component'),
+        label: '',
         isRowHeader: true,
         cell: item => (
           <Cell
@@ -187,7 +187,11 @@ export const HealthMatrixTable = ({
               item.kind === 'application' ? groupStyles.groupCell : undefined
             }
           >
-            {item.kind === 'component' && (
+            {item.kind === 'application' ? (
+              expandedApplications.has(item.application) && (
+                <b>{t('dashboardV2Page.columns.component')}</b>
+              )
+            ) : (
               <span title={item.component ?? '-'}>{item.component ?? '-'}</span>
             )}
           </Cell>
