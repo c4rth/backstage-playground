@@ -3,12 +3,12 @@ import { Button, TooltipTrigger, Tooltip } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { toolkitTranslationRef } from '../../translation';
 
-type Props = {
-  sample: string;
-  setInput: (input: string) => void;
+type Props<T> = {
+  sample: T;
+  setInput: (input: T) => void;
 };
 
-export const SampleButton = (props: Props) => {
+export const SampleButton = <T,>(props: Props<T>) => {
   const { t } = useTranslationRef(toolkitTranslationRef);
   return (
     <TooltipTrigger>

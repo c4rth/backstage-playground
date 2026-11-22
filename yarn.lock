@@ -4816,7 +4816,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.12.4":
+"@codemirror/lang-yaml@npm:^6.1.3":
+  version: 6.1.3
+  resolution: "@codemirror/lang-yaml@npm:6.1.3"
+  dependencies:
+    "@codemirror/autocomplete": "npm:^6.0.0"
+    "@codemirror/language": "npm:^6.0.0"
+    "@codemirror/state": "npm:^6.0.0"
+    "@lezer/common": "npm:^1.2.0"
+    "@lezer/highlight": "npm:^1.2.0"
+    "@lezer/lr": "npm:^1.0.0"
+    "@lezer/yaml": "npm:^1.0.0"
+  checksum: 10/0af746beca691bbab992843b7803b30529da1e8b089978cde58de335bbad68de78f905d3cef4391011b64e9e77537bb5b39ff0bfc53c4e408903bc814a50168e
+  languageName: node
+  linkType: hard
+
+"@codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.13.1":
   version: 6.13.1
   resolution: "@codemirror/language@npm:6.13.1"
   dependencies:
@@ -4890,7 +4905,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.37.0, @codemirror/view@npm:^6.42.0":
+"@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.37.0, @codemirror/view@npm:^6.42.0, @codemirror/view@npm:^6.43.15":
   version: 6.43.15
   resolution: "@codemirror/view@npm:6.43.15"
   dependencies:
@@ -5995,7 +6010,7 @@ __metadata:
     express-promise-router: "npm:^4.1.0"
     knex: "npm:^3.1.0"
     semver: "npm:^7.8.5"
-    yaml: "npm:^2.9.0"
+    yaml: "npm:^2.9.1"
     zod: "npm:^4.6.7"
   languageName: unknown
   linkType: soft
@@ -6064,7 +6079,7 @@ __metadata:
     "@types/react": "npm:^18.0.0"
     "@types/swagger-ui-react": "npm:^5.18.0"
     react: "npm:^18.0.2"
-    swagger-ui-react: "npm:^5.34.1"
+    swagger-ui-react: "npm:^5.35.1"
   peerDependencies:
     "@types/react": ^17.0.0 || ^18.0.0
     react: ^17.0.0 || ^18.0.0
@@ -6245,7 +6260,7 @@ __metadata:
     csv-parser: "npm:^3.2.1"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
-    fast-xml-parser: "npm:^5.11.0"
+    fast-xml-parser: "npm:^5.12.1"
     knex: "npm:^3.1.0"
     zod: "npm:^4.6.7"
   languageName: unknown
@@ -6280,8 +6295,8 @@ __metadata:
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
     "@types/react": "npm:^18.0.0"
     "@types/react-syntax-highlighter": "npm:^15.0.0"
-    fast-xml-parser: "npm:^5.11.0"
-    fast-xml-validator: "npm:^1.4.0"
+    fast-xml-parser: "npm:^5.12.1"
+    fast-xml-validator: "npm:^1.4.4"
     react: "npm:^18.0.2"
     react-syntax-highlighter: "npm:^15.4.5"
     react-use: "npm:^17.6.0"
@@ -6310,7 +6325,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": "backstage:^"
     "@types/fs-extra": "npm:^11.0.0"
     fs-extra: "npm:^11.2.0"
-    yaml: "npm:^2.9.0"
+    yaml: "npm:^2.9.1"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0
     react-router-dom: ^6.3.0
@@ -6422,7 +6437,7 @@ __metadata:
     d3-zoom: "npm:^3.0.0"
     jest: "npm:^30"
     jsdom: "npm:^27"
-    mermaid: "npm:^12.2.0"
+    mermaid: "npm:^12.3.0"
     msw: "npm:^1.0.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
@@ -6441,6 +6456,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@internal/plugin-toolkit-backend@workspace:^, @internal/plugin-toolkit-backend@workspace:plugins/toolkit-backend":
+  version: 0.0.0-use.local
+  resolution: "@internal/plugin-toolkit-backend@workspace:plugins/toolkit-backend"
+  dependencies:
+    "@backstage/backend-defaults": "backstage:^"
+    "@backstage/backend-plugin-api": "backstage:^"
+    "@backstage/backend-test-utils": "backstage:^"
+    "@backstage/cli": "backstage:^"
+    "@backstage/errors": "backstage:^"
+    "@types/express": "npm:^4.17.6"
+    "@types/supertest": "npm:^6.0.0"
+    express: "npm:^4.17.1"
+    express-promise-router: "npm:^4.1.0"
+    supertest: "npm:^7.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@internal/plugin-toolkit@workspace:^, @internal/plugin-toolkit@workspace:plugins/toolkit":
   version: 0.0.0-use.local
   resolution: "@internal/plugin-toolkit@workspace:plugins/toolkit"
@@ -6455,7 +6487,9 @@ __metadata:
     "@backstage/plugin-home": "backstage:^"
     "@backstage/ui": "backstage:^"
     "@codemirror/lang-json": "npm:^6.0.2"
-    "@codemirror/language": "npm:^6.12.4"
+    "@codemirror/lang-yaml": "npm:^6.1.3"
+    "@codemirror/language": "npm:^6.13.1"
+    "@codemirror/view": "npm:^6.43.15"
     "@faker-js/faker": "npm:^10.6.0"
     "@internal/plugin-components-react": "workspace:^"
     "@remixicon/react": "npm:>=4.6.0 <4.9.0"
@@ -6463,8 +6497,8 @@ __metadata:
     "@testing-library/react": "npm:^16.0.0"
     "@types/lodash": "npm:^4.14.202"
     "@types/react": "npm:^18.0.0"
-    "@uiw/codemirror-theme-vscode": "npm:^4.25.11"
-    "@uiw/react-codemirror": "npm:^4.25.11"
+    "@uiw/codemirror-theme-vscode": "npm:^4.25.12"
+    "@uiw/react-codemirror": "npm:^4.25.12"
     asn1js: "npm:^3.0.7"
     cronstrue: "npm:^3.24.0"
     crypto-es: "npm:^3.1.3"
@@ -7361,7 +7395,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lezer/highlight@npm:^1.0.0":
+"@lezer/highlight@npm:^1.0.0, @lezer/highlight@npm:^1.2.0":
   version: 1.2.5
   resolution: "@lezer/highlight@npm:1.2.5"
   dependencies:
@@ -7381,12 +7415,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lezer/lr@npm:^1.0.0":
+"@lezer/lr@npm:^1.0.0, @lezer/lr@npm:^1.4.0":
   version: 1.4.12
   resolution: "@lezer/lr@npm:1.4.12"
   dependencies:
     "@lezer/common": "npm:^1.0.0"
   checksum: 10/1dada93114ffff0554a2f0f085d51e299ebb01dd3750dacd16683243aff32653fe8cd0f84370d82af7bde24c2b0dd7f8e826b43df2375ca37598d2d48929361a
+  languageName: node
+  linkType: hard
+
+"@lezer/yaml@npm:^1.0.0":
+  version: 1.0.4
+  resolution: "@lezer/yaml@npm:1.0.4"
+  dependencies:
+    "@lezer/common": "npm:^1.2.0"
+    "@lezer/highlight": "npm:^1.0.0"
+    "@lezer/lr": "npm:^1.4.0"
+  checksum: 10/9116e6f9b579be2737e281136c848d916def52de47937b5c2238fe5533e3bf636880b6aa5a5347bac955f3a179cb8d5345589995eee71bdee366f83a23af7062
   languageName: node
   linkType: hard
 
@@ -13541,6 +13586,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/supertest@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "@types/supertest@npm:6.0.3"
+  dependencies:
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10/6ec05eb591c97bc856b0e78c12f5bec10545f3a749688f34232d189797a506d971bc95931718eb57b378d8513f6d2d12462383e6d68455fa72df35c19de6e89e
+  languageName: node
+  linkType: hard
+
 "@types/supertest@npm:^7.0.0":
   version: 7.2.1
   resolution: "@types/supertest@npm:7.2.1"
@@ -13883,7 +13938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-vscode@npm:^4.25.11":
+"@uiw/codemirror-theme-vscode@npm:^4.25.12":
   version: 4.25.12
   resolution: "@uiw/codemirror-theme-vscode@npm:4.25.12"
   dependencies:
@@ -13909,7 +13964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uiw/react-codemirror@npm:^4.25.11, @uiw/react-codemirror@npm:^4.9.3":
+"@uiw/react-codemirror@npm:^4.25.12, @uiw/react-codemirror@npm:^4.9.3":
   version: 4.25.12
   resolution: "@uiw/react-codemirror@npm:4.25.12"
   dependencies:
@@ -15440,6 +15495,7 @@ __metadata:
     "@internal/plugin-scaffolder-extensions-backend": "workspace:^"
     "@internal/plugin-search-backend-module-api-platform": "workspace:^"
     "@internal/plugin-search-backend-module-mca": "workspace:^"
+    "@internal/plugin-toolkit-backend": "workspace:^"
     "@microsoft/microsoft-graph-types": "npm:^2.43.1"
     app: "workspace:^"
   languageName: unknown
@@ -20061,7 +20117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^5.11.0, fast-xml-parser@npm:^5.3.4, fast-xml-parser@npm:^5.5.1, fast-xml-parser@npm:^5.5.9":
+"fast-xml-parser@npm:^5.12.1, fast-xml-parser@npm:^5.3.4, fast-xml-parser@npm:^5.5.1, fast-xml-parser@npm:^5.5.9":
   version: 5.12.1
   resolution: "fast-xml-parser@npm:5.12.1"
   dependencies:
@@ -20077,7 +20133,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-validator@npm:^1.4.0":
+"fast-xml-validator@npm:^1.4.4":
   version: 1.4.4
   resolution: "fast-xml-validator@npm:1.4.4"
   dependencies:
@@ -25162,7 +25218,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mermaid@npm:^12.2.0":
+"mermaid@npm:^12.3.0":
   version: 12.3.0
   resolution: "mermaid@npm:12.3.0"
   dependencies:
@@ -32002,7 +32058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swagger-ui-react@npm:^5.27.1, swagger-ui-react@npm:^5.34.1":
+"swagger-ui-react@npm:^5.27.1":
   version: 5.35.0
   resolution: "swagger-ui-react@npm:5.35.0"
   dependencies:
@@ -32044,6 +32100,51 @@ __metadata:
     react: ">=16.8.0 <20"
     react-dom: ">=16.8.0 <20"
   checksum: 10/690679e8e42fa2a5ef47615a845f5358ac1f832e9192b8de5d420ae7cb469a510437280e7d86dbf04c52beff283be38c76c742a4f2ad36d3dce87d6f4702cc12
+  languageName: node
+  linkType: hard
+
+"swagger-ui-react@npm:^5.35.1":
+  version: 5.35.1
+  resolution: "swagger-ui-react@npm:5.35.1"
+  dependencies:
+    "@babel/runtime-corejs3": "npm:^7.27.1"
+    "@scarf/scarf": "npm:=1.4.0"
+    "@tanstack/react-virtual": "npm:=3.14.10"
+    base64-js: "npm:^1.5.1"
+    buffer: "npm:^6.0.3"
+    classnames: "npm:^2.5.1"
+    css.escape: "npm:1.5.1"
+    deep-extend: "npm:0.6.0"
+    dompurify: "npm:^3.4.17"
+    ieee754: "npm:^1.2.1"
+    immutable: "npm:^5.1.9"
+    js-file-download: "npm:^0.4.12"
+    js-yaml: "npm:=4.3.2"
+    lodash: "npm:^4.18.1"
+    prop-types: "npm:^15.8.1"
+    randexp: "npm:^0.5.3"
+    randombytes: "npm:^2.1.0"
+    react-copy-to-clipboard: "npm:5.1.1"
+    react-debounce-input: "npm:=3.3.0"
+    react-immutable-proptypes: "npm:2.2.0"
+    react-immutable-pure-component: "npm:^2.2.0"
+    react-inspector: "npm:^6.0.1"
+    react-redux: "npm:^9.3.0"
+    react-syntax-highlighter: "npm:^16.0.0"
+    redux: "npm:^5.0.1"
+    remarkable: "npm:^2.0.1"
+    reselect: "npm:^5.1.1"
+    serialize-error: "npm:^8.1.0"
+    sha.js: "npm:^2.4.12"
+    swagger-client: "npm:^3.39.0"
+    url-parse: "npm:^1.5.10"
+    xml: "npm:=1.0.1"
+    xml-but-prettier: "npm:^1.0.1"
+    zenscroll: "npm:^4.0.2"
+  peerDependencies:
+    react: ">=16.8.0 <20"
+    react-dom: ">=16.8.0 <20"
+  checksum: 10/7ad1fc8f579d10a03a0570a8bfe21baa2c3035978024b6d56a02b7143e4713dbb9ef0cf2b75a738c8ce19b9ffb1092ac56bc2c1a86b94695db49d8cf645adde6
   languageName: node
   linkType: hard
 
@@ -34395,7 +34496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.1.1, yaml@npm:^2.2.1, yaml@npm:^2.2.2, yaml@npm:^2.6.0, yaml@npm:^2.9.0, yaml@npm:^2.9.1":
+"yaml@npm:^2.0.0, yaml@npm:^2.1.1, yaml@npm:^2.2.1, yaml@npm:^2.2.2, yaml@npm:^2.6.0, yaml@npm:^2.9.1":
   version: 2.9.1
   resolution: "yaml@npm:2.9.1"
   bin:

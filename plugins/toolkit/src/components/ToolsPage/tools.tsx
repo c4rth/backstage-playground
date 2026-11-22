@@ -11,6 +11,7 @@ const JSONataTester = lazy(() => import('../Tools/jsonata/JSONataTester'));
 const StringUtilities = lazy(() => import('../Tools/StringUtilities'));
 const CryptoCoder = lazy(() => import('../Tools/CryptoCoder'));
 const JsonFormater = lazy(() => import('../Tools/JsonFormater'));
+const HelmPlayground = lazy(() => import('../Tools/helm/HelmPlayground'));
 
 export const getDefaultTools = (t: ToolkitTranslator): Tool[] => [
   {
@@ -48,6 +49,14 @@ export const getDefaultTools = (t: ToolkitTranslator): Tool[] => [
     component: <JsonFormater />,
     category: t('tools.categories.decode'),
     description: t('tools.json.description'),
+  },
+  {
+    id: 'helm-playground',
+    name: t('tools.helm.name'),
+    component: <HelmPlayground />,
+    category: t('tools.categories.utilities'),
+    description: t('tools.helm.description'),
+    aliases: ['helm', 'kubernetes'],
   },
   {
     id: 'crypto-coder',

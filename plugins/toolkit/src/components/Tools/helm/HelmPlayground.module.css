@@ -1,0 +1,81 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: var(--bui-space-2);
+}
+
+.editors {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rightEditors {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  gap: var(--bui-space-1);
+}
+
+.editor {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--bui-border-1);
+}
+
+.fileToolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bui-space-1);
+}
+
+.filePicker {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.message {
+  max-height: 8rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 800px) {
+  .editors {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .panel {
+    flex: 1;
+    min-height: 16rem;
+  }
+
+  .columnDivider {
+    display: none;
+  }
+
+  .rightEditors {
+    flex: 2;
+    min-height: 32rem;
+  }
+
+  .rightEditors .panel {
+    min-height: 0;
+  }
+}

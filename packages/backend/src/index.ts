@@ -78,6 +78,9 @@ backend.add(import('@backstage-community/plugin-sonarqube-backend'));
 backend.add(import('@backstage/plugin-devtools-backend'));
 backend.add(import('@backstage/plugin-catalog-backend-module-unprocessed'));
 
+// Toolkit
+backend.add(import('@internal/plugin-toolkit-backend'));
+
 // Api Platform
 backend.add(import('@internal/plugin-api-platform-backend'));
 

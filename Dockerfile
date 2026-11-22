@@ -1,6 +1,8 @@
 #ARG imagename=c4rth/backstage-base:20251219.1
 ARG imagename=localhost/carth-backstage-base:0.0.1
 
+FROM alpine/helm:4.3.2 AS helm
+
 # Stage 1 - Create yarn install skeleton layer
 FROM ${imagename} AS packages
 
@@ -42,6 +44,8 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
 
 # Stage 3 - Build the actual backend image and install production dependencies
 FROM ${imagename}
+
+COPY --from=helm /usr/bin/helm /usr/local/bin/helm
 
 # From here on we use the least-privileged `node` user to run the backend.
 USER node

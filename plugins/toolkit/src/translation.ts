@@ -35,6 +35,10 @@ export const toolkitTranslationRef = createTranslationRef({
         name: 'JSON Formater',
         description: 'Format JSON strings',
       },
+      helm: {
+        name: 'Helm Playground',
+        description: 'Render Helm charts with custom values',
+      },
       crypto: {
         name: 'Ciphers',
         description: 'Encrypt and decrypt strings',
@@ -191,6 +195,44 @@ export const toolkitTranslationRef = createTranslationRef({
       noMatch: '** no match **',
       resizeHorizontal: 'Resize horizontal divider',
       resizeVertical: 'Resize vertical divider',
+    },
+    helm: {
+      chart: 'Helm chart',
+      values: 'Values overrides (YAML)',
+      files: 'Chart files',
+      selectFile: 'Select a chart file...',
+      fileContent: 'Chart file contents',
+      newFile: 'New file',
+      createFile: 'Create file',
+      rename: 'Rename',
+      renameFile: 'Rename file',
+      delete: 'Delete',
+      deleteFile: 'Delete file',
+      cancel: 'Cancel',
+      filename: 'Filename',
+      newFilenameHelp:
+        'New files are created in templates/. Enter a filename, for example deployment.yaml or tests/test.yaml.',
+      filenameHelp:
+        'Use Chart.yaml or a path inside templates/, for example templates/deployment.yaml.',
+      chartFilenameRequired:
+        'Use Chart.yaml or a file inside the templates/ directory.',
+      invalidFilename:
+        'Enter a relative filename of up to 256 characters without empty, "." or ".." path segments, backslashes, colons or control characters.',
+      duplicateFilename: 'A file with this name already exists.',
+      conflictingFilename:
+        'This path conflicts with an existing file or folder.',
+      tooManyFiles: 'A chart can contain at most 100 files.',
+      confirmDelete: 'Delete "{{filename}}"? Its contents will be lost.',
+      emptyChart: 'Create a file or load the sample to begin.',
+      output: 'Rendered manifests',
+      render: 'Render',
+      rendering: 'Rendering...',
+      resizeHorizontal: 'Resize horizontal divider',
+      resizeVertical: 'Resize vertical divider',
+      error: 'Helm rendering failed: {{detail}}',
+      invalidResponse:
+        'The backend returned an invalid Helm rendering response',
+      warnings: 'Helm warnings: {{detail}}',
     },
   },
 });

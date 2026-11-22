@@ -236,7 +236,6 @@ export const LoremIpsum = () => {
               iconStart={<RiEditBoxLine />}
               onClick={() => generate(fakerType)}
               size="small"
-              variant="tertiary"
             >
               {t('lorem.generate')}
             </Button>
