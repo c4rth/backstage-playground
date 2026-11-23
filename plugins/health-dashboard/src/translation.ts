@@ -26,7 +26,7 @@ export const healthDashboardTranslationRef = createTranslationRef({
         title: 'Health Status',
         move: 'Move health status legend by dragging or using arrow keys',
         ok: 'OK',
-        accepted: 'XXX',
+        accepted: 'KO SL7',
         notFound: 'Not Found',
         unavailable: 'Unavailable',
         error: 'Error',
