@@ -5,7 +5,7 @@ import {
   InformationPopup,
   InformationPopupContent,
 } from '@internal/plugin-components-react';
-import { Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode, useLayoutEffect, useRef } from 'react';
 import { healthDashboardTranslationRef } from '../../translation';
 import { HealthDataError } from '../../types';
 import {
@@ -37,9 +37,29 @@ export const HealthDashboardLayout = ({
   children,
 }: HealthDashboardLayoutProps) => {
   const { t } = useTranslationRef(healthDashboardTranslationRef);
+  const pageRef = useRef<HTMLElement>(null);
+
+  useLayoutEffect(() => {
+    const page = pageRef.current;
+    const header = page?.querySelector('.bui-HeaderContent');
+    if (!page || !header) {
+      return undefined;
+    }
+
+    const updateHeaderHeight = () => {
+      page.style.setProperty(
+        '--health-dashboard-header-height',
+        `${header.getBoundingClientRect().height}px`,
+      );
+    };
+    updateHeaderHeight();
+    const observer = new ResizeObserver(updateHeaderHeight);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <FullPage>
+    <FullPage ref={pageRef}>
       <Header
         title={title}
         sticky

@@ -4,7 +4,8 @@
 }
 
 .healthTable :global(.bui-TableScrollContainer) {
-  overflow-x: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .healthTable :global(.bui-TableRow:hover) {
@@ -21,7 +22,7 @@
 
 .healthTable :global(.bui-TableHeader .bui-TableHead) {
   position: sticky;
-  top: 0;
+  top: var(--health-dashboard-header-height, 0px);
   z-index: 1;
   background-color: var(--bui-bg-neutral-1);
 }
