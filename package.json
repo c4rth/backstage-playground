@@ -37,7 +37,11 @@
     "@backstage/cli": "backstage:^",
     "@backstage/cli-defaults": "backstage:^",
     "@backstage/eslint-plugin": "backstage:^",
+    "@backstage/repo-tools": "backstage:^",
     "@jest/environment-jsdom-abstract": "^30.2.0",
+    "@microsoft/api-extractor-model": "^7.33.16",
+    "@microsoft/tsdoc": "^0.17.1",
+    "@microsoft/tsdoc-config": "^0.18.3",
     "@playwright/test": "^1.32.3",
     "@spotify/eslint-config-base": "^15.0.0",
     "@spotify/eslint-config-react": "^15.0.0",
@@ -51,6 +55,7 @@
     "jsdom": "^27.3.0",
     "knip": "^6.0.0",
     "prettier": "^3.9.4",
+    "ts-morph": "^24.0.0",
     "typescript": "~6.0.3"
   },
   "resolutions": {

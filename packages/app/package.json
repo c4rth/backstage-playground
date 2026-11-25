@@ -7,10 +7,10 @@
     "role": "frontend"
   },
   "dependencies": {
-    "@backstage-community/plugin-entity-validation": "^0.25.0",
-    "@backstage-community/plugin-shortcuts": "^0.26.0",
-    "@backstage-community/plugin-sonarqube": "^1.4.0",
-    "@backstage-community/plugin-sonarqube-react": "^1.4.0",
+    "@backstage-community/plugin-entity-validation": "^0.26.0",
+    "@backstage-community/plugin-shortcuts": "^0.27.0",
+    "@backstage-community/plugin-sonarqube": "^1.5.0",
+    "@backstage-community/plugin-sonarqube-react": "^1.5.0",
     "@backstage/app-defaults": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/cli": "backstage:^",
@@ -72,8 +72,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.32.3",
-    "@testing-library/dom": "^10.0.0",
-    "@testing-library/react": "^16.0.0",
     "@types/qs": "^6",
     "@types/react": "*",
     "@types/react-dom": "*"

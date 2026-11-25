@@ -25,28 +25,32 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops-common": "^0.28.0",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/integration-react": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@backstage/plugin-scaffolder": "backstage:^",
     "@backstage/plugin-scaffolder-react": "backstage:^",
     "@backstage/ui": "backstage:^",
     "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
-    "react": "^18.0.2"
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2"
   },
   "files": [
     "dist"
   ],
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
   }
 }

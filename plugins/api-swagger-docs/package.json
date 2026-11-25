@@ -24,7 +24,6 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@internal/plugin-components-react": "workspace:^",
     "swagger-ui-react": "^5.35.1"
@@ -33,15 +32,21 @@
     "@backstage/cli": "backstage:^",
     "@types/react": "^18.0.0",
     "@types/swagger-ui-react": "^5.18.0",
-    "react": "^18.0.2"
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  }
 }

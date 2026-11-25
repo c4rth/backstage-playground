@@ -16,9 +16,9 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
-    "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.24.0",
-    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.29.0",
-    "@backstage-community/plugin-sonarqube-backend": "^1.4.0",
+    "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "^0.25.0",
+    "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "^0.30.0",
+    "@backstage-community/plugin-sonarqube-backend": "^1.5.0",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
@@ -27,7 +27,6 @@
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/plugin-auth-backend-module-microsoft-provider": "backstage:^",
-    "@backstage/plugin-auth-node": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
     "@backstage/plugin-catalog-backend-module-logs": "backstage:^",
     "@backstage/plugin-catalog-backend-module-msgraph": "backstage:^",

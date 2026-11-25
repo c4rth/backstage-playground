@@ -43,21 +43,29 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@internal/plugin-components-react": "workspace:^",
     "recharts": "^3.11.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@types/react": "backstage:^",
-    "react": "^18.0.2"
+    "@types/react": "^18.0.0",
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "react": "^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  }
 }

@@ -42,23 +42,28 @@
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@internal/plugin-api-platform-common": "workspace:^",
-    "@internal/plugin-components-react": "workspace:^",
     "@remixicon/react": ">=4.6.0 <4.9.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@types/react": "^18.0.0",
-    "react": "^18.0.2"
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",
     "config.d.ts"
   ],
-  "configSchema": "config.d.ts"
+  "configSchema": "config.d.ts",
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  }
 }

@@ -41,14 +41,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops-common": "^0.28.0",
-    "@backstage-community/plugin-sonarqube": "^1.4.0",
-    "@backstage-community/plugin-sonarqube-react": "^1.4.0",
+    "@backstage-community/plugin-azure-devops-common": "^0.29.0",
+    "@backstage-community/plugin-sonarqube": "^1.5.0",
+    "@backstage-community/plugin-sonarqube-react": "^1.5.0",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
-    "@backstage/plugin-api-docs": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/plugin-catalog-graph": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
@@ -74,17 +73,23 @@
     "@testing-library/dom": "^10.0.0",
     "@testing-library/react": "^16.0.0",
     "@types/react": "^18.0.0",
-    "react": "^18.0.2"
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",
     "config.d.ts"
   ],
-  "configSchema": "config.d.ts"
+  "configSchema": "config.d.ts",
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  }
 }

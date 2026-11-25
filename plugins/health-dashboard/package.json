@@ -40,27 +40,31 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@internal/plugin-components-react": "workspace:^",
-    "@remixicon/react": ">=4.6.0 <4.9.0",
-    "react-aria-components": "^1.22.0"
+    "@remixicon/react": ">=4.6.0 <4.9.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
-    "@backstage/plugin-app-react": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/react": "^16.0.0",
     "@types/react": "^18.0.0",
-    "react": "^18.0.2"
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",
     "config.d.ts"
   ],
-  "configSchema": "config.d.ts"
+  "configSchema": "config.d.ts",
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  }
 }
