@@ -1,5 +1,5 @@
 {
-  "releaseVersion": "1.57.1",
+  "releaseVersion": "1.57.2",
   "requirements": {
     "node": "^24.15.0 || ^26.13.0"
   },
@@ -190,7 +190,7 @@
     },
     {
       "name": "@backstage/frontend-app-api",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "@backstage/frontend-defaults",
