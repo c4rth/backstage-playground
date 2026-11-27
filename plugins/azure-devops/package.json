@@ -53,7 +53,7 @@
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@internal/plugin-components-react": "workspace:^",
-    "humanize-duration": "^3.35.1",
+    "humanize-duration": "^3.36.0",
     "luxon": "^3.0.0",
     "react-use": "^17.2.4"
   },

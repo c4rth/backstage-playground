@@ -39,9 +39,6 @@
     "@backstage/eslint-plugin": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@jest/environment-jsdom-abstract": "^30.2.0",
-    "@microsoft/api-extractor-model": "^7.33.16",
-    "@microsoft/tsdoc": "^0.17.1",
-    "@microsoft/tsdoc-config": "^0.18.3",
     "@playwright/test": "^1.32.3",
     "@spotify/eslint-config-base": "^15.0.0",
     "@spotify/eslint-config-react": "^15.0.0",
@@ -59,13 +56,13 @@
     "typescript": "~6.0.3"
   },
   "resolutions": {
-    "@inquirer/type@npm:^4.0.5": "4.0.7",
-    "@inquirer/type@npm:^4.0.7": "4.0.7",
-    "@remixicon/react": ">=4.6.0 <4.9.0",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "ast-types@npm:^0.13.4": "0.16.3",
-    "csstype@npm:^3.0.2": "3.0.9"
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@octokit/rest": "^22.0.1",
+    "@octokit/plugin-paginate-rest": "^16.0.0",
+    "@octokit/plugin-rest-endpoint-methods": "^18.0.0",
+    "nan": "2.30.0",
+    "@protobufjs/inquire": "1.1.2"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

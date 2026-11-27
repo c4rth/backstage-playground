@@ -28,7 +28,7 @@
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/plugin-scaffolder-node": "backstage:^",
     "fs-extra": "^11.2.0",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.0"

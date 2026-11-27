@@ -41,7 +41,7 @@
     "@backstage/errors": "backstage:^",
     "@backstage/integration": "backstage:^",
     "@backstage/plugin-permission-common": "backstage:^",
-    "azure-devops-node-api": "^17.0.0",
+    "azure-devops-node-api": "^17.0.2",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "mime-types": "^2.1.27",
